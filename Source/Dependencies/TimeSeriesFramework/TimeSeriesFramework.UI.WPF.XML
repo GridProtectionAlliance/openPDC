@@ -4,59 +4,103 @@
         <name>TimeSeriesFramework.UI.WPF</name>
     </assembly>
     <members>
-        <member name="T:TimeSeriesFramework.UI.MenuItemStyleSelector">
+        <member name="T:TimeSeriesFramework.UI.Commands.MenuCommand">
             <summary>
-            Represents wrapper object around <see cref="T:System.Windows.Controls.StyleSelector"/> class.
+            Exposes <see cref="T:System.Windows.Input.ICommand"/> object to be used to handle menu item click event.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.MenuDataItem">
+        <member name="M:TimeSeriesFramework.UI.Commands.MenuCommand.CanExecute(System.Object)">
             <summary>
-            Represents a menu item in a WPF Menu control.
-            </summary>           
+            Evaluates if menu item should be visible to current user with access to <see cref="P:TimeSeriesFramework.UI.Commands.MenuCommand.Roles"/>.
+            </summary>
+            <param name="parameter">
+            Data used by the <see cref="T:TimeSeriesFramework.UI.Commands.MenuCommand"/>. If the <see cref="T:TimeSeriesFramework.UI.Commands.MenuCommand"/> does not require
+            data to be passed, this object can be set to <c>null</c>.
+            </param>
+            <returns><c>true</c> if this <see cref="T:TimeSeriesFramework.UI.Commands.MenuCommand"/> can be executed; otherwise, <c>false</c>.</returns>
         </member>
-        <member name="P:TimeSeriesFramework.UI.MenuDataItem.Icon">
+        <member name="M:TimeSeriesFramework.UI.Commands.MenuCommand.Execute(System.Object)">
             <summary>
-            Gets or sets path <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/> image icon.
+            Handles <see cref="T:System.Windows.Input.ICommand"/> action. 
+            Loads user control as defined in the <see cref="P:TimeSeriesFramework.UI.Commands.MenuCommand.UserControlPath"/> property from assembly name set in the 
+            <see cref="P:TimeSeriesFramework.UI.Commands.MenuCommand.UserControlAssembly"/> property.
+            </summary>
+            <param name="parameter">
+            Data used by the <see cref="T:TimeSeriesFramework.UI.Commands.MenuCommand"/>. If the <see cref="T:TimeSeriesFramework.UI.Commands.MenuCommand"/> does not require
+            data to be passed, this object can be set to <c>null</c>.
+            </param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Commands.MenuCommand.OnCanExecuteChanged">
+            <summary>
+            Raises the <see cref="E:TimeSeriesFramework.UI.Commands.MenuCommand.CanExecuteChanged"/> event.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.MenuDataItem.MenuText">
+        <member name="E:TimeSeriesFramework.UI.Commands.MenuCommand.CanExecuteChanged">
             <summary>
-            Gets or sets text of <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/> to be displayed in menu.
+            Raises when value of <see cref="M:TimeSeriesFramework.UI.Commands.MenuCommand.CanExecute(System.Object)"/> changes.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.MenuDataItem.Description">
+        <member name="P:TimeSeriesFramework.UI.Commands.MenuCommand.Roles">
             <summary>
-            Gets or sets description of the <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/>.
+            Gets or sets comma seperated values of roles for which menuitem is visible.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.MenuDataItem.Roles">
+        <member name="P:TimeSeriesFramework.UI.Commands.MenuCommand.UserControlAssembly">
             <summary>
-            Gets or sets comma seperated list of roles with access to this <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/>.
-            </summary>                
-        </member>
-        <member name="P:TimeSeriesFramework.UI.MenuDataItem.UserControlAssembly">
-            <summary>
-            Gets or sets the assembly name where user control is defined.
+            Gets or sets name of the assembly where user control belongs to.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.MenuDataItem.UserControlPath">
+        <member name="P:TimeSeriesFramework.UI.Commands.MenuCommand.UserControlPath">
             <summary>
-            Gets or sets path for the user control to be loaded when <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/> is clicked.
-            </summary>        
+            Gets or sets name of the user control to be loaded.
+            </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.MenuDataItem.Command">
+        <member name="P:TimeSeriesFramework.UI.Commands.MenuCommand.Description">
             <summary>
-            Gets or sets the commnad to execute when <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/> is clicked.
-            </summary> 
+            Gets or sets the description of associated <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/>.
+            </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.MenuDataItem.SubMenuItems">
+        <member name="T:TimeSeriesFramework.UI.Commands.RelayCommand">
             <summary>
-            Gets or sets sub menu items for <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/>.
-            </summary>         
+            Defines a relay <see cref="T:System.Windows.Input.ICommand"/>.
+            </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.PagedViewModelBase`2">
+        <member name="M:TimeSeriesFramework.UI.Commands.RelayCommand.#ctor(System.Action,System.Func{System.Boolean})">
             <summary>
-            Represents an abstract class with paging support which all ViewModel objects derive from.
+            Creates a new <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/> for the common case delegates.
+            </summary>
+            <param name="execute">Execute method pointer.</param>
+            <param name="canExecute">Can execute method pointer.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Commands.RelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})">
+            <summary>
+            Creates a new <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/>.
+            </summary>
+            <param name="execute">Execute method pointer.</param>
+            <param name="canExecute">Can execute method pointer.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Commands.RelayCommand.CanExecute(System.Object)">
+            <summary>
+            Defines the method that determines whether the command can execute in its current state.
+            </summary>
+            <param name="parameter">
+            Data used by the <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/>. If the <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/> does not require
+            data to be passed, this object can be set to <c>null</c>.
+            </param>
+            <returns><c>true</c> if this <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/> can be executed; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Commands.RelayCommand.Execute(System.Object)">
+            <summary>
+            Defines the method to be called when the command is invoked.
+            </summary>
+            <param name="parameter">
+            Data used by the <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/>. If the <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/> does not require
+            data to be passed, this object can be set to <c>null</c>.
+            </param>
+        </member>
+        <member name="E:TimeSeriesFramework.UI.Commands.RelayCommand.CanExecuteChanged">
+            <summary>
+            Occurs when changes occur that affect whether or not the command should execute.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.IViewModel">
@@ -146,6 +190,61 @@
             Gets boolean value to indicate if Clear operation can be executed.
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.MenuDataItem">
+            <summary>
+            Represents a menu item in a WPF Menu control.
+            </summary>           
+        </member>
+        <member name="P:TimeSeriesFramework.UI.MenuDataItem.Icon">
+            <summary>
+            Gets or sets path <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/> image icon.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.MenuDataItem.MenuText">
+            <summary>
+            Gets or sets text of <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/> to be displayed in menu.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.MenuDataItem.Description">
+            <summary>
+            Gets or sets description of the <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/>.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.MenuDataItem.Roles">
+            <summary>
+            Gets or sets comma seperated list of roles with access to this <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/>.
+            </summary>                
+        </member>
+        <member name="P:TimeSeriesFramework.UI.MenuDataItem.UserControlAssembly">
+            <summary>
+            Gets or sets the assembly name where user control is defined.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.MenuDataItem.UserControlPath">
+            <summary>
+            Gets or sets path for the user control to be loaded when <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/> is clicked.
+            </summary>        
+        </member>
+        <member name="P:TimeSeriesFramework.UI.MenuDataItem.Command">
+            <summary>
+            Gets or sets the commnad to execute when <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/> is clicked.
+            </summary> 
+        </member>
+        <member name="P:TimeSeriesFramework.UI.MenuDataItem.SubMenuItems">
+            <summary>
+            Gets or sets sub menu items for <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/>.
+            </summary>         
+        </member>
+        <member name="T:TimeSeriesFramework.UI.MenuItemStyleSelector">
+            <summary>
+            Represents wrapper object around <see cref="T:System.Windows.Controls.StyleSelector"/> class.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.PagedViewModelBase`2">
+            <summary>
+            Represents an abstract class with paging support which all ViewModel objects derive from.
+            </summary>
         </member>
         <member name="M:TimeSeriesFramework.UI.PagedViewModelBase`2.#ctor(System.Int32,System.Boolean)">
             <summary>
@@ -382,204 +481,20 @@
             Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Nodes.#ctor(System.Int32,System.Boolean)">
+        <member name="T:TimeSeriesFramework.UI.Properties.Resources">
             <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.Nodes"/> class.
-            </summary>
-            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
-            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Nodes.GetCurrentItemKey">
-            <summary>
-            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Nodes.GetCurrentItemName">
-            <summary>
-            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.Nodes.IsNewRecord">
-            <summary>
-            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+              A strongly-typed resource class, for looking up localized strings, etc.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.CustomActionAdapterUserControl">
+        <member name="P:TimeSeriesFramework.UI.Properties.Resources.ResourceManager">
             <summary>
-            Interaction logic for CustomActionAdapterUserControl.xaml
-            </summary>
-            <summary>
-            CustomActionAdapterUserControl
+              Returns the cached ResourceManager instance used by this class.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.CustomActionAdapterUserControl.#ctor">
+        <member name="P:TimeSeriesFramework.UI.Properties.Resources.Culture">
             <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.CustomActionAdapterUserControl"/> class.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.CustomActionAdapterUserControl.InitializeComponent">
-            <summary>
-            InitializeComponent
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl">
-            <summary>
-            Interaction logic for VendorDeviceUserControl.xaml
-            </summary>
-            <summary>
-            VendorDeviceUserControl
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl.#ctor">
-            <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl"/> class.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl.VendorDeviceUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Hanldes unloaded event of the <see cref="T:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl"/>.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments of the event.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl.InitializeComponent">
-            <summary>
-            InitializeComponent
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.HomeUserControl">
-            <summary>
-            Interaction logic for HomeUserControl.xaml
-            </summary>
-            <summary>
-            HomeUserControl
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.#ctor">
-            <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.HomeUserControl"/>.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.CommonClickHandler(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles click event of the buttons on the screen.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Event arguments.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.GetMenuDataItem(System.Collections.ObjectModel.ObservableCollection{TimeSeriesFramework.UI.MenuDataItem},System.String,TimeSeriesFramework.UI.MenuDataItem@)">
-            <summary>
-            Recursively finds menu item to navigate to when a button is clicked on the UI.
-            </summary>
-            <param name="items">Collection of menu items.</param>
-            <param name="stringToMatch">Item to search for in menu items collection.</param>
-            <param name="item">Returns a menu item.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.InitializeComponent">
-            <summary>
-            InitializeComponent
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.ViewModels.Measurements">
-            <summary>
-            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> collection.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.#ctor(System.Int32,System.Int32,System.Boolean)">
-            <summary>
-            Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.ViewModels.Measurements"/> class.
-            </summary>
-            <param name="deviceID">The ID of the device that the current measurement is associated with..</param>
-            <param name="itemsPerPage">The number of measurements to display on each page of the data grid.</param>
-            <param name="autosave">Determines whether the current item is saved automatically when a new item is selected.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.GetCurrentItemKey">
-            <summary>
-            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.GetCurrentItemName">
-            <summary>
-            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.Clear">
-            <summary>
-            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> and assigns it to CurrentItem.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.Load">
-            <summary>
-            Loads collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> defined in the database.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.IsNewRecord">
-            <summary>
-            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.HistorianLookupList">
-            <summary>
-            Gets <see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of historians defined in the database.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.SignalTypeLookupList">
-            <summary>
-            Gets <see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of signal types defined in the database.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.HistorianUserControl">
-            <summary>
-            Interaction logic for HistorianUserControl.xaml
-            </summary>
-            <summary>
-            HistorianUserControl
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.HistorianUserControl.#ctor">
-            <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.HistorianUserControl"/> class.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.HistorianUserControl.HistorianUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles unload event of the <see cref="T:TimeSeriesFramework.UI.UserControls.HistorianUserControl"/>.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments for the event.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.HistorianUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
-            <summary>
-            Handles PreviewKeyDown event on the datagrid.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments for the event.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.HistorianUserControl.InitializeComponent">
-            <summary>
-            InitializeComponent
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.CustomInputAdapterUserControl">
-            <summary>
-            Interaction logic for CustomInputAdapterUserControl.xaml
-            </summary>
-            <summary>
-            CustomInputAdapterUserControl
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.CustomInputAdapterUserControl.#ctor">
-            <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.CustomInputAdapterUserControl"/> class.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.CustomInputAdapterUserControl.InitializeComponent">
-            <summary>
-            InitializeComponent
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.UserControls.AdapterUserControl">
@@ -628,285 +543,90 @@
             InitializeComponent
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.Commands.RelayCommand">
+        <member name="T:TimeSeriesFramework.UI.UserControls.CompanyUserControl">
             <summary>
-            Defines a relay <see cref="T:System.Windows.Input.ICommand"/>.
+            Interaction logic for CompanyUserControl.xaml
+            </summary>
+            <summary>
+            CompanyUserControl
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.Commands.RelayCommand.#ctor(System.Action,System.Func{System.Boolean})">
+        <member name="M:TimeSeriesFramework.UI.UserControls.CompanyUserControl.#ctor">
             <summary>
-            Creates a new <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/> for the common case delegates.
-            </summary>
-            <param name="execute">Execute method pointer.</param>
-            <param name="canExecute">Can execute method pointer.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Commands.RelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})">
-            <summary>
-            Creates a new <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/>.
-            </summary>
-            <param name="execute">Execute method pointer.</param>
-            <param name="canExecute">Can execute method pointer.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Commands.RelayCommand.CanExecute(System.Object)">
-            <summary>
-            Defines the method that determines whether the command can execute in its current state.
-            </summary>
-            <param name="parameter">
-            Data used by the <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/>. If the <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/> does not require
-            data to be passed, this object can be set to <c>null</c>.
-            </param>
-            <returns><c>true</c> if this <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/> can be executed; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Commands.RelayCommand.Execute(System.Object)">
-            <summary>
-            Defines the method to be called when the command is invoked.
-            </summary>
-            <param name="parameter">
-            Data used by the <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/>. If the <see cref="T:TimeSeriesFramework.UI.Commands.RelayCommand"/> does not require
-            data to be passed, this object can be set to <c>null</c>.
-            </param>
-        </member>
-        <member name="E:TimeSeriesFramework.UI.Commands.RelayCommand.CanExecuteChanged">
-            <summary>
-            Occurs when changes occur that affect whether or not the command should execute.
+            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.UserControls.CompanyUserControl"/>.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.ViewModels.IaonTrees">
+        <member name="M:TimeSeriesFramework.UI.UserControls.CompanyUserControl.CompanyUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
             <summary>
-            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> collection and current selection information for UI.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.IaonTrees.#ctor(System.Int32,System.Boolean)">
-            <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.IaonTrees"/> class.
-            </summary>
-            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
-            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.IaonTrees.GetCurrentItemKey">
-            <summary>
-            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.IaonTrees.GetCurrentItemName">
-            <summary>
-            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.IaonTrees.IsNewRecord">
-            <summary>
-            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.ViewModels.ApplicationRoles">
-            <summary>
-            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> collection.3
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.#ctor(System.Int32,System.Boolean)">
-            <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.ApplicationRoles"/> class.
-            </summary>
-            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
-            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.GetCurrentItemKey">
-            <summary>
-            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.GetCurrentItemName">
-            <summary>
-            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.AddUser(System.Object)">
-            <summary>
-            Handles <see cref="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.AddUserCommand"/>.
-            </summary>
-            <param name="parameter">Collection of users to be added to <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.RemoveUser(System.Object)">
-            <summary>
-            Handles <see cref="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.RemoveUserCommand"/>.
-            </summary>
-            <param name="parameter">Collection of users to be removed from <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</param>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.IsNewRecord">
-            <summary>
-            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.AddUserCommand">
-            <summary>
-            Gets <see cref="T:System.Windows.Input.ICommand"/> for add users to role operation.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.RemoveUserCommand">
-            <summary>
-            Gets <see cref="T:System.Windows.Input.ICommand"/> to remove users from role operation.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.AddGroupCommand">
-            <summary>
-            Gets <see cref="T:System.Windows.Input.ICommand"/> for add groups to role operation.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.RemoveGroupCommand">
-            <summary>
-            Gets <see cref="T:System.Windows.Input.ICommand"/> to remove groups from role operation.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.ViewModelBase">
-            <summary>
-            Represents an abstract class from which all ViewModel objects will derive.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModelBase.OnPropertyChanged(System.String)">
-            <summary>
-            Raises the <see cref="E:TimeSeriesFramework.UI.ViewModelBase.PropertyChanged"/> event.
-            </summary>
-            <param name="propertyName">The property that has a new value.</param>
-        </member>
-        <member name="E:TimeSeriesFramework.UI.ViewModelBase.PropertyChanged">
-            <summary>
-            Raised when a property on this object has a new value.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModelBase.Popup">
-            <summary>
-            Gets a <see cref="T:System.Windows.MessageBox"/> to display information to UI user.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModelBase.Confirm">
-            <summary>
-            Gets a <see cref="T:System.Windows.MessageBox"/> to request confirmation from UI user.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl">
-            <summary>
-            Interaction logic for ProtocolGroupUserControl.xaml
-            </summary>
-            <summary>
-            ProtocolGroupUserControl
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl.#ctor">
-            <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl"/> class.
-            </summary> 
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl.ProtocolGroupUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles unloaded event.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments of the event.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
-            <summary>
-            Handles key down event on the datagrid object.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments of the event.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl.InitializeComponent">
-            <summary>
-            InitializeComponent
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.NodeUserControl">
-            <summary>
-            Interaction logic for NodeUserControl.xaml
-            </summary>
-            <summary>
-            NodeUserControl
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.NodeUserControl.#ctor">
-            <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.NodeUserControl"/> class.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.NodeUserControl.NodeUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles unload event of the <see cref="T:TimeSeriesFramework.UI.UserControls.NodeUserControl"/>.
+            Handles unload event of the <see cref="T:TimeSeriesFramework.UI.UserControls.CompanyUserControl"/>.
             </summary>
             <param name="sender">Source of the event.</param>
             <param name="e">Arguments for the event.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.NodeUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
+        <member name="M:TimeSeriesFramework.UI.UserControls.CompanyUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
             Handles PreviewKeyDown event on the datagrid.
             </summary>
             <param name="sender">Source of the event.</param>
             <param name="e">Arguments for the event.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.NodeUserControl.InitializeComponent">
+        <member name="M:TimeSeriesFramework.UI.UserControls.CompanyUserControl.InitializeComponent">
             <summary>
             InitializeComponent
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl">
+        <member name="T:TimeSeriesFramework.UI.UserControls.CustomActionAdapterUserControl">
             <summary>
-            Interaction logic for DetailViewFooterUserControl.xaml
+            Interaction logic for CustomActionAdapterUserControl.xaml
             </summary>
             <summary>
-            DetailViewFooterUserControl
-            </summary>
-        </member>
-        <member name="F:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.DeleteCommandProperty">
-            <summary>
-            <see cref="T:System.Windows.DependencyProperty"/> for delete operation.
+            CustomActionAdapterUserControl
             </summary>
         </member>
-        <member name="F:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.ClearCommandProperty">
+        <member name="M:TimeSeriesFramework.UI.UserControls.CustomActionAdapterUserControl.#ctor">
             <summary>
-            <see cref="T:System.Windows.DependencyProperty"/> for clear form operation.
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.CustomActionAdapterUserControl"/> class.
             </summary>
         </member>
-        <member name="F:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.SaveCommandProperty">
-            <summary>
-            <see cref="T:System.Windows.DependencyProperty"/> for save operation.
-            </summary>
-        </member>
-        <member name="F:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.SaveEnabledProperty">
-            <summary>
-            <see cref="T:System.Windows.DependencyProperty"/> to determine if Save button is enabled on UI.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.#ctor">
-            <summary>
-            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl"/>.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.InitializeComponent">
+        <member name="M:TimeSeriesFramework.UI.UserControls.CustomActionAdapterUserControl.InitializeComponent">
             <summary>
             InitializeComponent
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.DeleteCommand">
+        <member name="T:TimeSeriesFramework.UI.UserControls.CustomInputAdapterUserControl">
             <summary>
-            Gets or sets <see cref="T:System.Windows.Input.ICommand"/> to delete selected object.
+            Interaction logic for CustomInputAdapterUserControl.xaml
+            </summary>
+            <summary>
+            CustomInputAdapterUserControl
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.ClearCommand">
+        <member name="M:TimeSeriesFramework.UI.UserControls.CustomInputAdapterUserControl.#ctor">
             <summary>
-            Gets or sets <see cref="T:System.Windows.Input.ICommand"/> to reset selection.
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.CustomInputAdapterUserControl"/> class.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.SaveCommand">
+        <member name="M:TimeSeriesFramework.UI.UserControls.CustomInputAdapterUserControl.InitializeComponent">
             <summary>
-            Gets or sets <see cref="T:System.Windows.Input.ICommand"/> to save selected object information into backend datastore.
+            InitializeComponent
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.SaveEnabled">
+        <member name="T:TimeSeriesFramework.UI.UserControls.CustomOutputAdapterUserControl">
             <summary>
-            Gets or sets boolean value indicating IsEnabled property of Save button.
+            Interaction logic for CustomOutputAdapterUserControl.xaml
+            </summary>
+            <summary>
+            CustomOutputAdapterUserControl
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.CustomOutputAdapterUserControl.#ctor">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.CustomOutputAdapterUserControl"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.CustomOutputAdapterUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.UserControls.DataPagerUserControl">
@@ -987,90 +707,181 @@
             Gets or sets <see cref="T:System.Windows.Input.ICommand"/> for moving to the last page.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.ViewModels.SecurityGroups">
+        <member name="T:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl">
             <summary>
-            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> collection.
+            Interaction logic for DetailViewFooterUserControl.xaml
+            </summary>
+            <summary>
+            DetailViewFooterUserControl
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.#ctor(System.Int32,System.Boolean)">
+        <member name="F:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.DeleteCommandProperty">
             <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.SecurityGroups"/> class.
-            </summary>
-            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
-            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.GetCurrentItemKey">
-            <summary>
-            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.GetCurrentItemName">
-            <summary>
-            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.Clear">
-            <summary>
-            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> and assigns it to CurrentItem.
+            <see cref="T:System.Windows.DependencyProperty"/> for delete operation.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.AddUser(System.Object)">
+        <member name="F:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.ClearCommandProperty">
             <summary>
-            Handles <see cref="P:TimeSeriesFramework.UI.ViewModels.SecurityGroups.AddUserCommand"/>.
-            </summary>
-            <param name="parameter">Collection of users to be added to <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.RemoveUser(System.Object)">
-            <summary>
-            Handles <see cref="P:TimeSeriesFramework.UI.ViewModels.SecurityGroups.RemoveUserCommand"/>.
-            </summary>
-            <param name="parameter">Collection of users to be removed from <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</param>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.SecurityGroups.IsNewRecord">
-            <summary>
-            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+            <see cref="T:System.Windows.DependencyProperty"/> for clear form operation.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.SecurityGroups.AddUserCommand">
+        <member name="F:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.SaveCommandProperty">
             <summary>
-            Gets <see cref="T:System.Windows.Input.ICommand"/> for add users to group operation.
+            <see cref="T:System.Windows.DependencyProperty"/> for save operation.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.SecurityGroups.RemoveUserCommand">
+        <member name="F:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.SaveEnabledProperty">
             <summary>
-            Gets <see cref="T:System.Windows.Input.ICommand"/> to remove users from group operation.
+            <see cref="T:System.Windows.DependencyProperty"/> to determine if Save button is enabled on UI.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.CompanyUserControl">
+        <member name="M:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.#ctor">
             <summary>
-            Interaction logic for CompanyUserControl.xaml
-            </summary>
-            <summary>
-            CompanyUserControl
+            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl"/>.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.CompanyUserControl.#ctor">
+        <member name="M:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.InitializeComponent">
             <summary>
-            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.UserControls.CompanyUserControl"/>.
+            InitializeComponent
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.CompanyUserControl.CompanyUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
+        <member name="P:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.DeleteCommand">
             <summary>
-            Handles unload event of the <see cref="T:TimeSeriesFramework.UI.UserControls.CompanyUserControl"/>.
+            Gets or sets <see cref="T:System.Windows.Input.ICommand"/> to delete selected object.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.ClearCommand">
+            <summary>
+            Gets or sets <see cref="T:System.Windows.Input.ICommand"/> to reset selection.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.SaveCommand">
+            <summary>
+            Gets or sets <see cref="T:System.Windows.Input.ICommand"/> to save selected object information into backend datastore.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.SaveEnabled">
+            <summary>
+            Gets or sets boolean value indicating IsEnabled property of Save button.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.UserControls.HistorianUserControl">
+            <summary>
+            Interaction logic for HistorianUserControl.xaml
+            </summary>
+            <summary>
+            HistorianUserControl
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.HistorianUserControl.#ctor">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.HistorianUserControl"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.HistorianUserControl.HistorianUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handles unload event of the <see cref="T:TimeSeriesFramework.UI.UserControls.HistorianUserControl"/>.
             </summary>
             <param name="sender">Source of the event.</param>
             <param name="e">Arguments for the event.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.CompanyUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
+        <member name="M:TimeSeriesFramework.UI.UserControls.HistorianUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
             Handles PreviewKeyDown event on the datagrid.
             </summary>
             <param name="sender">Source of the event.</param>
             <param name="e">Arguments for the event.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.CompanyUserControl.InitializeComponent">
+        <member name="M:TimeSeriesFramework.UI.UserControls.HistorianUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.UserControls.HomeUserControl">
+            <summary>
+            Interaction logic for HomeUserControl.xaml
+            </summary>
+            <summary>
+            HomeUserControl
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.#ctor">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.HomeUserControl"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.CommonClickHandler(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handles click event of the buttons on the screen.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.GetMenuDataItem(System.Collections.ObjectModel.ObservableCollection{TimeSeriesFramework.UI.MenuDataItem},System.String,TimeSeriesFramework.UI.MenuDataItem@)">
+            <summary>
+            Recursively finds menu item to navigate to when a button is clicked on the UI.
+            </summary>
+            <param name="items">Collection of menu items.</param>
+            <param name="stringToMatch">Item to search for in menu items collection.</param>
+            <param name="item">Returns a menu item.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.UserControls.IaonTreeUserControl">
+            <summary>
+            Interaction logic for IaonTreeUserControl.xaml
+            </summary>
+            <summary>
+            IaonTreeUserControl
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.IaonTreeUserControl.#ctor">
+            <summary>
+            Creates new instance of <see cref="T:TimeSeriesFramework.UI.UserControls.IaonTreeUserControl"/>
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.IaonTreeUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.UserControls.MeasurementUserControl">
+            <summary>
+            Interaction logic for MeasurementUserControl.xaml
+            </summary>
+            <summary>
+            MeasurementUserControl
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.#ctor">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.MeasurementUserControl"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.#ctor(System.Int32)">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.MeasurementUserControl"/> class.
+            </summary>
+            <param name="deviceID">ID of the device to filter measurements.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.MeasurementUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handles unloaded event.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Arguments of the event.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
+            <summary>
+            Handles key down event on the datagrid object.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Arguments of the event.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.InitializeComponent">
             <summary>
             InitializeComponent
             </summary>
@@ -1147,100 +958,109 @@
             InitializeComponent
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.VersionConfigToNamespaceAssemblyObjectBinder">
+        <member name="T:TimeSeriesFramework.UI.UserControls.NodeUserControl">
             <summary>
-            Class to override default type binding when parsing *.PmuConnection file.
+            Interaction logic for NodeUserControl.xaml
+            </summary>
+            <summary>
+            NodeUserControl
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.VersionConfigToNamespaceAssemblyObjectBinder.BindToType(System.String,System.String)">
+        <member name="M:TimeSeriesFramework.UI.UserControls.NodeUserControl.#ctor">
             <summary>
-            Controls the binding of a serialized object to type.
-            </summary>
-            <param name="assemblyName">Specifies the <see cref="T:System.Reflection.Assembly"/> name of the serialized object.</param>
-            <param name="typeName">Specified the <see cref="T:System.Type"/> name of the serialized object.</param>
-            <returns></returns>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.MeasurementUserControl">
-            <summary>
-            Interaction logic for MeasurementUserControl.xaml
-            </summary>
-            <summary>
-            MeasurementUserControl
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.NodeUserControl"/> class.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.#ctor">
+        <member name="M:TimeSeriesFramework.UI.UserControls.NodeUserControl.NodeUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
             <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.MeasurementUserControl"/> class.
+            Handles unload event of the <see cref="T:TimeSeriesFramework.UI.UserControls.NodeUserControl"/>.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Arguments for the event.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.NodeUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
+            <summary>
+            Handles PreviewKeyDown event on the datagrid.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Arguments for the event.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.NodeUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.#ctor(System.Int32)">
+        <member name="T:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl">
             <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.MeasurementUserControl"/> class.
+            Interaction logic for ProtocolGroupUserControl.xaml
             </summary>
-            <param name="deviceID">ID of the device to filter measurements.</param>
+            <summary>
+            ProtocolGroupUserControl
+            </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.MeasurementUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
+        <member name="M:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl.#ctor">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl"/> class.
+            </summary> 
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl.ProtocolGroupUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
             <summary>
             Handles unloaded event.
             </summary>
             <param name="sender">Source of the event.</param>
             <param name="e">Arguments of the event.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
+        <member name="M:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
             Handles key down event on the datagrid object.
             </summary>
             <param name="sender">Source of the event.</param>
             <param name="e">Arguments of the event.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.InitializeComponent">
+        <member name="M:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl.InitializeComponent">
             <summary>
             InitializeComponent
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.ViewModels.Vendors">
+        <member name="T:TimeSeriesFramework.UI.UserControls.SecurityUserControl">
             <summary>
-            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> collection and selected vendor for UI.
+            Interaction logic for SecurityUserControl.xaml
+            </summary>
+            <summary>
+            SecurityUserControl
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Vendors.#ctor(System.Int32,System.Boolean)">
+        <member name="M:TimeSeriesFramework.UI.UserControls.SecurityUserControl.#ctor">
             <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.Vendors"/> class.
-            </summary>
-            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
-            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Vendors.GetCurrentItemKey">
-            <summary>
-            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Vendors.GetCurrentItemName">
-            <summary>
-            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
-            </summary>
-            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.Vendors.IsNewRecord">
-            <summary>
-            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.SecurityUserControl"/> class.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.IaonTreeUserControl">
+        <member name="M:TimeSeriesFramework.UI.UserControls.SecurityUserControl.InitializeComponent">
             <summary>
-            Interaction logic for IaonTreeUserControl.xaml
-            </summary>
-            <summary>
-            IaonTreeUserControl
+            InitializeComponent
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.IaonTreeUserControl.#ctor">
+        <member name="T:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl">
             <summary>
-            Creates new instance of <see cref="T:TimeSeriesFramework.UI.UserControls.IaonTreeUserControl"/>
+            Interaction logic for VendorDeviceUserControl.xaml
+            </summary>
+            <summary>
+            VendorDeviceUserControl
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.IaonTreeUserControl.InitializeComponent">
+        <member name="M:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl.#ctor">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl.VendorDeviceUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Hanldes unloaded event of the <see cref="T:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl"/>.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Arguments of the event.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl.InitializeComponent">
             <summary>
             InitializeComponent
             </summary>
@@ -1277,56 +1097,205 @@
             InitializeComponent
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.CustomOutputAdapterUserControl">
+        <member name="T:TimeSeriesFramework.UI.VersionConfigToNamespaceAssemblyObjectBinder">
             <summary>
-            Interaction logic for CustomOutputAdapterUserControl.xaml
-            </summary>
-            <summary>
-            CustomOutputAdapterUserControl
+            Class to override default type binding when parsing *.PmuConnection file.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.CustomOutputAdapterUserControl.#ctor">
+        <member name="M:TimeSeriesFramework.UI.VersionConfigToNamespaceAssemblyObjectBinder.BindToType(System.String,System.String)">
             <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.CustomOutputAdapterUserControl"/> class.
+            Controls the binding of a serialized object to type.
+            </summary>
+            <param name="assemblyName">Specifies the <see cref="T:System.Reflection.Assembly"/> name of the serialized object.</param>
+            <param name="typeName">Specified the <see cref="T:System.Type"/> name of the serialized object.</param>
+            <returns></returns>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.ViewModelBase">
+            <summary>
+            Represents an abstract class from which all ViewModel objects will derive.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.CustomOutputAdapterUserControl.InitializeComponent">
+        <member name="M:TimeSeriesFramework.UI.ViewModelBase.OnPropertyChanged(System.String)">
             <summary>
-            InitializeComponent
+            Raises the <see cref="E:TimeSeriesFramework.UI.ViewModelBase.PropertyChanged"/> event.
+            </summary>
+            <param name="propertyName">The property that has a new value.</param>
+        </member>
+        <member name="E:TimeSeriesFramework.UI.ViewModelBase.PropertyChanged">
+            <summary>
+            Raised when a property on this object has a new value.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.ViewModels.UserAccounts">
+        <member name="P:TimeSeriesFramework.UI.ViewModelBase.Popup">
             <summary>
-            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> collection.
+            Gets a <see cref="T:System.Windows.MessageBox"/> to display information to UI user.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.UserAccounts.#ctor(System.Int32,System.Boolean)">
+        <member name="P:TimeSeriesFramework.UI.ViewModelBase.Confirm">
             <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.UserAccounts"/> class.
+            Gets a <see cref="T:System.Windows.MessageBox"/> to request confirmation from UI user.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter">
+            <summary>
+            View-model for a key-value pair in an adapter connection string.
+            This can also represent key-value pairs which aren't necessarily
+            in the connection string, but rather are defined by properties
+            in an adapter class. This view-model is used by the
+            <see cref="T:TimeSeriesFramework.UI.UserControls.AdapterUserControl"/>.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Info">
+            <summary>
+            Gets or sets the <see cref="T:System.Reflection.PropertyInfo"/> of the
+            <see cref="T:TimeSeriesFramework.Adapters.ConnectionStringParameterAttribute"/>
+            associated with this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Name">
+            <summary>
+            Gets or sets the name of the <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
+            which is either a key in the connection string or the name of a property in
+            the adapter class.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Description">
+            <summary>
+            Gets or sets the description of the <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
+            obtained through the <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Info"/> using reflection. A property annotated with
+            <see cref="T:TimeSeriesFramework.Adapters.ConnectionStringParameterAttribute"/>
+            must also define a <see cref="T:System.ComponentModel.DescriptionAttribute"/> for this
+            to become populated.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Value">
+            <summary>
+            Gets or sets the value of the <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/> as defined
+            by either the connection string or the <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.DefaultValue"/> of the parameter.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.DefaultValue">
+            <summary>
+            Gets or sets the default value of the <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
+            obtained through the <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Info"/> using reflection. A property annotated with
+            <see cref="T:TimeSeriesFramework.Adapters.ConnectionStringParameterAttribute"/> must
+            also define a <see cref="T:System.ComponentModel.DefaultValueAttribute"/> for this to
+            be populated.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.IsRequired">
+            <summary>
+            Gets or sets a value that indicates whether this parameter is defined by a property
+            that is annotated with the <see cref="T:System.ComponentModel.DefaultValueAttribute"/>.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Color">
+            <summary>
+            Gets or sets the color of the item in the <see cref="T:System.Windows.Controls.ListBox"/>
+            that the <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/> is modeling.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Boldness">
+            <summary>
+            Gets or sets the boldness of the item in the <see cref="T:System.Windows.Controls.ListBox"/> that the
+            <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/> is modeling.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.EnumValues">
+            <summary>
+            Gets a list of enum types if this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>'s type is an enum.
+            If it is not an enum, this returns null.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.IsFalseChecked">
+            <summary>
+            Gets a value that indicates whether the <see cref="T:System.Windows.Controls.RadioButton"/>
+            labeled "False" is checked. Since the actual value of this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
+            is represented by <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Value"/>, and that value is what goes into the connection string
+            this simply returns true if the value in the Value property is the word "false".
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.IsBoolean">
+            <summary>
+            Gets a value that indicates whether the type of this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
+            is defined to be a <see cref="T:System.Boolean"/> in the adapter type. This determines whether the
+            <see cref="T:System.Windows.Controls.RadioButton"/>s labeled "True" and "False" are visible.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.IsEnum">
+            <summary>
+            Gets a value that indicates whether the type of this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
+            is defined to be an enum in the adapter type. This determines whether the
+            <see cref="T:System.Windows.Controls.ComboBox"/> bound to the enum values is visible.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.IsOther">
+            <summary>
+            Gets a value that indicates whether the type of this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
+            is something other than a <see cref="T:System.Boolean"/> or an enum. This determines whether the
+            <see cref="T:System.Windows.Controls.TextBox"/> bound to the <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Value"/> of the parameters is
+            visible. The value is true for most parameters, including those which are not defined by an adapter type.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.ViewModels.ApplicationRoles">
+            <summary>
+            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> collection.3
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.ApplicationRoles"/> class.
             </summary>
             <param name="itemsPerPage">Integer value to determine number of items per page.</param>
             <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.UserAccounts.GetCurrentItemKey">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.GetCurrentItemKey">
             <summary>
             Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
             </summary>
             <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.UserAccounts.GetCurrentItemName">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.GetCurrentItemName">
             <summary>
             Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
             </summary>
             <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.UserAccounts.Clear">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.AddUser(System.Object)">
             <summary>
-            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> and assigns it to CurrentItem.
+            Handles <see cref="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.AddUserCommand"/>.
             </summary>
+            <param name="parameter">Collection of users to be added to <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</param>
         </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.UserAccounts.IsNewRecord">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.RemoveUser(System.Object)">
+            <summary>
+            Handles <see cref="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.RemoveUserCommand"/>.
+            </summary>
+            <param name="parameter">Collection of users to be removed from <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</param>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.IsNewRecord">
             <summary>
             Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.AddUserCommand">
+            <summary>
+            Gets <see cref="T:System.Windows.Input.ICommand"/> for add users to role operation.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.RemoveUserCommand">
+            <summary>
+            Gets <see cref="T:System.Windows.Input.ICommand"/> to remove users from role operation.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.AddGroupCommand">
+            <summary>
+            Gets <see cref="T:System.Windows.Input.ICommand"/> for add groups to role operation.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.ApplicationRoles.RemoveGroupCommand">
+            <summary>
+            Gets <see cref="T:System.Windows.Input.ICommand"/> to remove groups from role operation.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.ViewModels.Adapters">
@@ -1495,60 +1464,33 @@
             selected parameters when the ParameterList is updated.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.Commands.MenuCommand">
+        <member name="T:TimeSeriesFramework.UI.ViewModels.Companies">
             <summary>
-            Exposes <see cref="T:System.Windows.Input.ICommand"/> object to be used to handle menu item click event.
+            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> collection and selected company for UI.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.Commands.MenuCommand.CanExecute(System.Object)">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Companies.#ctor(System.Int32,System.Boolean)">
             <summary>
-            Evaluates if menu item should be visible to current user with access to <see cref="P:TimeSeriesFramework.UI.Commands.MenuCommand.Roles"/>.
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.Companies"/> class.
             </summary>
-            <param name="parameter">
-            Data used by the <see cref="T:TimeSeriesFramework.UI.Commands.MenuCommand"/>. If the <see cref="T:TimeSeriesFramework.UI.Commands.MenuCommand"/> does not require
-            data to be passed, this object can be set to <c>null</c>.
-            </param>
-            <returns><c>true</c> if this <see cref="T:TimeSeriesFramework.UI.Commands.MenuCommand"/> can be executed; otherwise, <c>false</c>.</returns>
+            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
+            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.Commands.MenuCommand.Execute(System.Object)">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Companies.GetCurrentItemKey">
             <summary>
-            Handles <see cref="T:System.Windows.Input.ICommand"/> action. 
-            Loads user control as defined in the <see cref="P:TimeSeriesFramework.UI.Commands.MenuCommand.UserControlPath"/> property from assembly name set in the 
-            <see cref="P:TimeSeriesFramework.UI.Commands.MenuCommand.UserControlAssembly"/> property.
+            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
             </summary>
-            <param name="parameter">
-            Data used by the <see cref="T:TimeSeriesFramework.UI.Commands.MenuCommand"/>. If the <see cref="T:TimeSeriesFramework.UI.Commands.MenuCommand"/> does not require
-            data to be passed, this object can be set to <c>null</c>.
-            </param>
+            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.Commands.MenuCommand.OnCanExecuteChanged">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Companies.GetCurrentItemName">
             <summary>
-            Raises the <see cref="E:TimeSeriesFramework.UI.Commands.MenuCommand.CanExecuteChanged"/> event.
+            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
             </summary>
+            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
         </member>
-        <member name="E:TimeSeriesFramework.UI.Commands.MenuCommand.CanExecuteChanged">
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Companies.IsNewRecord">
             <summary>
-            Raises when value of <see cref="M:TimeSeriesFramework.UI.Commands.MenuCommand.CanExecute(System.Object)"/> changes.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.Commands.MenuCommand.Roles">
-            <summary>
-            Gets or sets comma seperated values of roles for which menuitem is visible.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.Commands.MenuCommand.UserControlAssembly">
-            <summary>
-            Gets or sets name of the assembly where user control belongs to.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.Commands.MenuCommand.UserControlPath">
-            <summary>
-            Gets or sets name of the user control to be loaded.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.Commands.MenuCommand.Description">
-            <summary>
-            Gets or sets the description of associated <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/>.
+            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.ViewModels.Historians">
@@ -1590,67 +1532,107 @@
             Gets <see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> defined in the database.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.Properties.Resources">
+        <member name="T:TimeSeriesFramework.UI.ViewModels.IaonTrees">
             <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
+            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> collection and current selection information for UI.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.Properties.Resources.ResourceManager">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.IaonTrees.#ctor(System.Int32,System.Boolean)">
             <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.Properties.Resources.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.ViewModels.Companies">
-            <summary>
-            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> collection and selected company for UI.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Companies.#ctor(System.Int32,System.Boolean)">
-            <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.Companies"/> class.
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.IaonTrees"/> class.
             </summary>
             <param name="itemsPerPage">Integer value to determine number of items per page.</param>
             <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Companies.GetCurrentItemKey">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.IaonTrees.GetCurrentItemKey">
             <summary>
             Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
             </summary>
             <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.Companies.GetCurrentItemName">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.IaonTrees.GetCurrentItemName">
             <summary>
             Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
             </summary>
             <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
         </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.Companies.IsNewRecord">
+        <member name="P:TimeSeriesFramework.UI.ViewModels.IaonTrees.IsNewRecord">
             <summary>
             Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.SecurityUserControl">
+        <member name="T:TimeSeriesFramework.UI.ViewModels.Measurements">
             <summary>
-            Interaction logic for SecurityUserControl.xaml
-            </summary>
-            <summary>
-            SecurityUserControl
+            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> collection.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.SecurityUserControl.#ctor">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.#ctor(System.Int32,System.Int32,System.Boolean)">
             <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.SecurityUserControl"/> class.
+            Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.ViewModels.Measurements"/> class.
+            </summary>
+            <param name="deviceID">The ID of the device that the current measurement is associated with..</param>
+            <param name="itemsPerPage">The number of measurements to display on each page of the data grid.</param>
+            <param name="autosave">Determines whether the current item is saved automatically when a new item is selected.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.GetCurrentItemKey">
+            <summary>
+            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.GetCurrentItemName">
+            <summary>
+            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.Clear">
+            <summary>
+            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> and assigns it to CurrentItem.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.SecurityUserControl.InitializeComponent">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.Load">
             <summary>
-            InitializeComponent
+            Loads collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> defined in the database.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.IsNewRecord">
+            <summary>
+            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.HistorianLookupList">
+            <summary>
+            Gets <see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of historians defined in the database.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.SignalTypeLookupList">
+            <summary>
+            Gets <see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of signal types defined in the database.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Nodes.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.Nodes"/> class.
+            </summary>
+            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
+            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Nodes.GetCurrentItemKey">
+            <summary>
+            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Nodes.GetCurrentItemName">
+            <summary>
+            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Nodes.IsNewRecord">
+            <summary>
+            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.ViewModels.Protocols">
@@ -1683,6 +1665,96 @@
             </summary>
         </member>
         <member name="P:TimeSeriesFramework.UI.ViewModels.Protocols.IsNewRecord">
+            <summary>
+            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.ViewModels.SecurityGroups">
+            <summary>
+            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> collection.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.SecurityGroups"/> class.
+            </summary>
+            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
+            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.GetCurrentItemKey">
+            <summary>
+            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.GetCurrentItemName">
+            <summary>
+            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.Clear">
+            <summary>
+            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> and assigns it to CurrentItem.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.AddUser(System.Object)">
+            <summary>
+            Handles <see cref="P:TimeSeriesFramework.UI.ViewModels.SecurityGroups.AddUserCommand"/>.
+            </summary>
+            <param name="parameter">Collection of users to be added to <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.SecurityGroups.RemoveUser(System.Object)">
+            <summary>
+            Handles <see cref="P:TimeSeriesFramework.UI.ViewModels.SecurityGroups.RemoveUserCommand"/>.
+            </summary>
+            <param name="parameter">Collection of users to be removed from <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</param>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.SecurityGroups.IsNewRecord">
+            <summary>
+            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.SecurityGroups.AddUserCommand">
+            <summary>
+            Gets <see cref="T:System.Windows.Input.ICommand"/> for add users to group operation.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.SecurityGroups.RemoveUserCommand">
+            <summary>
+            Gets <see cref="T:System.Windows.Input.ICommand"/> to remove users from group operation.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.ViewModels.UserAccounts">
+            <summary>
+            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> collection.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.UserAccounts.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.UserAccounts"/> class.
+            </summary>
+            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
+            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.UserAccounts.GetCurrentItemKey">
+            <summary>
+            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.UserAccounts.GetCurrentItemName">
+            <summary>
+            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.UserAccounts.Clear">
+            <summary>
+            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> and assigns it to CurrentItem.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.UserAccounts.IsNewRecord">
             <summary>
             Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
             </summary>
@@ -1721,105 +1793,33 @@
             Gets <see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> defined in the database.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter">
+        <member name="T:TimeSeriesFramework.UI.ViewModels.Vendors">
             <summary>
-            View-model for a key-value pair in an adapter connection string.
-            This can also represent key-value pairs which aren't necessarily
-            in the connection string, but rather are defined by properties
-            in an adapter class. This view-model is used by the
-            <see cref="T:TimeSeriesFramework.UI.UserControls.AdapterUserControl"/>.
+            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> collection and selected vendor for UI.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Info">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Vendors.#ctor(System.Int32,System.Boolean)">
             <summary>
-            Gets or sets the <see cref="T:System.Reflection.PropertyInfo"/> of the
-            <see cref="T:TimeSeriesFramework.Adapters.ConnectionStringParameterAttribute"/>
-            associated with this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>.
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.Vendors"/> class.
             </summary>
+            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
+            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Name">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Vendors.GetCurrentItemKey">
             <summary>
-            Gets or sets the name of the <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
-            which is either a key in the connection string or the name of a property in
-            the adapter class.
+            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
             </summary>
+            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
         </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Description">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Vendors.GetCurrentItemName">
             <summary>
-            Gets or sets the description of the <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
-            obtained through the <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Info"/> using reflection. A property annotated with
-            <see cref="T:TimeSeriesFramework.Adapters.ConnectionStringParameterAttribute"/>
-            must also define a <see cref="T:System.ComponentModel.DescriptionAttribute"/> for this
-            to become populated.
+            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
             </summary>
+            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
         </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Value">
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Vendors.IsNewRecord">
             <summary>
-            Gets or sets the value of the <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/> as defined
-            by either the connection string or the <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.DefaultValue"/> of the parameter.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.DefaultValue">
-            <summary>
-            Gets or sets the default value of the <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
-            obtained through the <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Info"/> using reflection. A property annotated with
-            <see cref="T:TimeSeriesFramework.Adapters.ConnectionStringParameterAttribute"/> must
-            also define a <see cref="T:System.ComponentModel.DefaultValueAttribute"/> for this to
-            be populated.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.IsRequired">
-            <summary>
-            Gets or sets a value that indicates whether this parameter is defined by a property
-            that is annotated with the <see cref="T:System.ComponentModel.DefaultValueAttribute"/>.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Color">
-            <summary>
-            Gets or sets the color of the item in the <see cref="T:System.Windows.Controls.ListBox"/>
-            that the <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/> is modeling.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Boldness">
-            <summary>
-            Gets or sets the boldness of the item in the <see cref="T:System.Windows.Controls.ListBox"/> that the
-            <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/> is modeling.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.EnumValues">
-            <summary>
-            Gets a list of enum types if this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>'s type is an enum.
-            If it is not an enum, this returns null.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.IsFalseChecked">
-            <summary>
-            Gets a value that indicates whether the <see cref="T:System.Windows.Controls.RadioButton"/>
-            labeled "False" is checked. Since the actual value of this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
-            is represented by <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Value"/>, and that value is what goes into the connection string
-            this simply returns true if the value in the Value property is the word "false".
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.IsBoolean">
-            <summary>
-            Gets a value that indicates whether the type of this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
-            is defined to be a <see cref="T:System.Boolean"/> in the adapter type. This determines whether the
-            <see cref="T:System.Windows.Controls.RadioButton"/>s labeled "True" and "False" are visible.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.IsEnum">
-            <summary>
-            Gets a value that indicates whether the type of this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
-            is defined to be an enum in the adapter type. This determines whether the
-            <see cref="T:System.Windows.Controls.ComboBox"/> bound to the enum values is visible.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.IsOther">
-            <summary>
-            Gets a value that indicates whether the type of this <see cref="T:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter"/>
-            is something other than a <see cref="T:System.Boolean"/> or an enum. This determines whether the
-            <see cref="T:System.Windows.Controls.TextBox"/> bound to the <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Value"/> of the parameters is
-            visible. The value is true for most parameters, including those which are not defined by an adapter type.
+            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
             </summary>
         </member>
     </members>

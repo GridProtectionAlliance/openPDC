@@ -36,12 +36,6 @@
             <param name="maxLength">Maximum length of the status message.</param>
             <returns>Text of the status message.</returns>
         </member>
-        <member name="M:AdoAdapters.AdoInputAdapter.Dispose(System.Boolean)">
-            <summary>
-            Releases the unmanaged resources used by the <see cref="T:AdoAdapters.AdoInputAdapter"/> object and optionally releases the managed resources.
-            </summary>
-            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        </member>
         <member name="P:AdoAdapters.AdoInputAdapter.TableName">
             <summary>
             Gets or sets the table name in the data source from which measurements are read.
@@ -71,6 +65,11 @@
             <summary>
             Gets or sets a value that determines whether the timestamps should
             be simulated for the purposes of real-time concentration.
+            </summary>
+        </member>
+        <member name="P:AdoAdapters.AdoInputAdapter.CacheFileName">
+            <summary>
+            Gets or sets a cache file name so that when defined, future data loads will be from cache instead of the database as an optimization.
             </summary>
         </member>
         <member name="P:AdoAdapters.AdoInputAdapter.UseAsyncConnect">
