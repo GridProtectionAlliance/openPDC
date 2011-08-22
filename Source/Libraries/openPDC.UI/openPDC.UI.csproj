@@ -123,6 +123,7 @@
     <Compile Include="DataModels\OutputStreamDeviceAnalog.cs" />
     <Compile Include="DataModels\OutputStreamDeviceDigital.cs" />
     <Compile Include="DataModels\OutputStreamDevicePhasor.cs" />
+    <Compile Include="DataModels\OutputStreamMeasurement.cs" />
     <Compile Include="DataModels\Phasor.cs" />
     <Compile Include="DataModels\RealTimeStream.cs" />
     <Compile Include="DataModels\RealTimeStatistic.cs" />
