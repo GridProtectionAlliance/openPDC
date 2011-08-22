@@ -39,16 +39,16 @@ namespace openPDC.UI.DataModels
     {
         #region[Members]
 
-        public string m_nodeID;
-        public int m_outputStreamDeviceID;
-        public int m_id;
-        public string m_label;
-        public int m_maskValue;
-        public int m_loadOrder;
-        public DateTime m_createdOn;
-        public string m_createdBy;
-        public DateTime m_updatedOn;
-        public string m_updatedBy;
+        private string m_nodeID;
+        private int m_outputStreamDeviceID;
+        private int m_id;
+        private string m_label;
+        private int m_maskValue;
+        private int m_loadOrder;
+        private DateTime m_createdOn;
+        private string m_createdBy;
+        private DateTime m_updatedOn;
+        private string m_updatedBy;
 
         #endregion
 

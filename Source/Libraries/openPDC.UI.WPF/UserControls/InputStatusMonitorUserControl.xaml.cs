@@ -22,6 +22,7 @@
 //******************************************************************************************************
 
 using System.Windows.Controls;
+using openPDC.UI.ViewModels;
 
 namespace openPDC.UI.UserControls
 {
@@ -30,9 +31,13 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class InputStatusMonitorUserControl : UserControl
     {
+        /// <summary>
+        /// Creates an instance of <see cref="InputStatusMonitorUserControl"/>.
+        /// </summary>
         public InputStatusMonitorUserControl()
         {
             InitializeComponent();
+            this.DataContext = new RealTimeStreams(1);
         }
     }
 }

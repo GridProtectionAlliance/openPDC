@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  OutputStreamDevicePhasors.cs - Gbtc
+//  RealTimeStreams.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -16,20 +16,38 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  08/16/2011 - Aniket Salver
+//  08/18/2011 - mthakkar
 //       Generated original version of source code.
 //
 //******************************************************************************************************
+
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 
 namespace openPDC.UI.ViewModels
 {
-    // <summary>
-    /// Class to hold bindable <see cref="OutputStreamDevicePhasors"/> collection and selected OutputStreamDevicePhasor for UI.
+    /// <summary>
+    /// Class to hold bindable <see cref="RealTimeStream"/> collection and current selection information for UI.
     /// </summary>
-    internal class OutputStreamDevicePhasors : PagedViewModelBase<OutputStreamDevicePhasor, int>
+    internal class RealTimeStreams : PagedViewModelBase<RealTimeStream, int>
     {
+        #region [ Members ]
+
+        // Fields
+        private bool m_expanded;
+
+        #endregion
+
+        #region [ Constructors ]
+
+        public RealTimeStreams(int itemsPerPage, bool autoSave = false)
+            : base(itemsPerPage, autoSave)
+        {
+
+        }
+
+        #endregion
+
         #region [ Properties ]
 
         /// <summary>
@@ -43,19 +61,20 @@ namespace openPDC.UI.ViewModels
             }
         }
 
-        #endregion
-
-        #region [ Constructor ]
-
         /// <summary>
-        /// Creates an instance of <see cref="OutputStreamDevicePhasors "/> class.
+        /// Gets or sets a boolean flag <see cref="RealTimeStreams"/> expanded flag.
         /// </summary>
-        /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
-        /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        public OutputStreamDevicePhasors(int itemsPerPage, bool autoSave = true)
-            : base(itemsPerPage, autoSave)
+        public bool Expanded
         {
-
+            get
+            {
+                return m_expanded;
+            }
+            set
+            {
+                m_expanded = value;
+                OnPropertyChanged("Expanded");
+            }
         }
 
         #endregion
@@ -77,8 +96,24 @@ namespace openPDC.UI.ViewModels
         /// <returns>The string based named identifier of the <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/>.</returns>
         public override string GetCurrentItemName()
         {
-            return CurrentItem.Label;
+            return CurrentItem.Name;
         }
+
+        #endregion
+
+        #region [ Operators ]
+
+        #endregion
+
+        #region [ Static ]
+
+        // Static Fields
+
+        // Static Constructor
+
+        // Static Properties
+
+        // Static Methods
 
         #endregion
 

@@ -38,20 +38,20 @@ namespace openPDC.UI.DataModels
     {
         #region[Members]
 
-        public string m_nodeID;
-        public int m_adapterID;
-        public int m_id;
-        public int m_idCode;
-        public string m_acronym;
-        public string m_bpaAcronym;
-        public string m_name;
-        public string m_phasorDataFormat;
-        public string m_frequencyDataFormat;
-        public string m_analogDataFormat;
-        public string m_coordinateFormat;
-        public int m_loadOrder;
-        public bool m_enabled;
-        public bool m_virtual;
+        private string m_nodeID;
+        private int m_adapterID;
+        private int m_id;
+        private int m_idCode;
+        private string m_acronym;
+        private string m_bpaAcronym;
+        private string m_name;
+        private string m_phasorDataFormat;
+        private string m_frequencyDataFormat;
+        private string m_analogDataFormat;
+        private string m_coordinateFormat;
+        private int m_loadOrder;
+        private bool m_enabled;
+        private bool m_virtual;
         private DateTime m_createdOn;
         private string m_createdBy;
         private DateTime m_updatedOn;
@@ -360,6 +360,7 @@ namespace openPDC.UI.DataModels
         /// Loads <see cref="OutputStreamDevice"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamID">ID of the <see cref="OutputStream"/> to filter data.</param>
         /// <returns>Collection of <see cref="OutputStreamDevice"/>.</returns>
         public static ObservableCollection<OutputStreamDevice> Load(AdoDataConnection database, int outputStreamID)
         {

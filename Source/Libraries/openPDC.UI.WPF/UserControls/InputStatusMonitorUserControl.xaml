@@ -37,7 +37,8 @@
                     
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor}"/>
-                        
+                        <Button Content="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics"
+                                Width="Auto"/>
                     </StackPanel>
                     
                 </HierarchicalDataTemplate>
@@ -47,7 +48,7 @@
                 </Style>
                 
             </StackPanel.Resources>
-            
+                        
             <StackPanel Orientation="Horizontal" >
                 <TextBlock Text="Refresh Interval: 30 sec" FontSize="{StaticResource SmallTextSize}" />
                 <TextBlock Text=" | " Width="Auto" />
@@ -55,6 +56,8 @@
             </StackPanel>
             
             <!-- Measurement Tree -->
+            <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" 
+                      Height="616" VerticalAlignment="Top"/>
             
         </StackPanel>
 
