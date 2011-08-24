@@ -181,6 +181,7 @@
     <Compile Include="ViewModels\OutputStreamDeviceDigitals.cs" />
     <Compile Include="ViewModels\OutputStreamDevicePhasors.cs" />
     <Compile Include="ViewModels\OutputStreamDevices.cs" />
+    <Compile Include="ViewModels\OutputStreamMeasurements.cs" />
     <Compile Include="ViewModels\PhasorMeasurements.cs" />
     <Compile Include="ViewModels\Phasors.cs" />
     <Compile Include="ViewModels\RealTimeStreams.cs" />
