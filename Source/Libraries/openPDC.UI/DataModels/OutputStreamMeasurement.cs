@@ -318,7 +318,7 @@ namespace openPDC.UI.DataModels
 				DataTable OutputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Name FROM OutputStreamMeasurement ORDER BY LoadOrder");
 
 				foreach (DataRow row in OutputStreamMeasurementTable.Rows)
-					OutputStreamMeasurementList[row.ConvertField<int>("ID")] = row.Field<string>("NodeID");
+					OutputStreamMeasurementList[row.ConvertField<int>("ID")] = row.Field<string>("SignalReference");
 
 				return OutputStreamMeasurementList;
 			}
