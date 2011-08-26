@@ -165,6 +165,12 @@
     <Compile Include="UserControls\InputWizardUserControl.xaml.cs">
       <DependentUpon>InputWizardUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\OutputStreamDeviceAnalogUserControl.xaml.cs">
+      <DependentUpon>OutputStreamDeviceAnalogUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\OutputStreamDeviceUserControl.xaml.cs">
+      <DependentUpon>OutputStreamDeviceUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\PhasorMeasurementUserControl.xaml.cs">
       <DependentUpon>PhasorMeasurementUserControl.xaml</DependentUpon>
     </Compile>
@@ -236,6 +242,14 @@
     <Page Include="UserControls\InputWizardUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\OutputStreamDeviceAnalogUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\OutputStreamDeviceUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\PhasorMeasurementUserControl.xaml">
       <SubType>Designer</SubType>

@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="openPDC.UI.UserControls.OutputStreamDeviceUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            mc:Ignorable="d" d:DesignHeight="650" d:DesignWidth="850"
+             xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:uc="clr-namespace:TimeSeriesFramework.UI.UserControls;assembly=TimeSeriesFramework.UI.WPF"
+             xmlns:tsfBinding="clr-namespace:TimeSeriesFramework.UI.Binding;assembly=TimeSeriesFramework.UI"
+             Background="Transparent">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/TimeSeriesFramework.UI.WPF;Component/Resources/CommonResource.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel Orientation="Vertical">
+
+        <StackPanel.Resources>
+            <CollectionViewSource Source="{Binding Path=PhasorDataFormatLookupList}" x:Key="PhasorDataFormatLookupList"/>
+            <CollectionViewSource Source="{Binding Path=FrequencyDataFormatLookupList}" x:Key="FrequencyDataFormatLookupList"/>
+            <CollectionViewSource Source="{Binding Path=AnalogDataFormatLookupList}" x:Key="AnalogDataFormatLookupList"/>
+            <CollectionViewSource Source="{Binding Path=CoordinateFormatLookupList}" x:Key="CoordinateFormatLookupList"/>  
+        </StackPanel.Resources>
+
+        <Grid x:Name="GridDetailView" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" DataContext="{Binding Path=CurrentItem, Mode=TwoWay}">
+            <Grid.BindingGroup>
+                <BindingGroup Name="input"/>
+            </Grid.BindingGroup>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!--First Row-->
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=Acronym}" CharacterCasing="Upper" MaxLength="200" />
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" >
+                <TextBlock Text="Acronym" Style="{StaticResource RequiredLabel}"/>
+                <TextBlock Style="{StaticResource RequiredMarker}"/>
+            </StackPanel>
+            <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=Acronym}" CharacterCasing="Upper" MaxLength="200" />
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
+                <TextBlock Text="Name" Style="{StaticResource RequiredLabel}" />
+                <TextBlock Style="{StaticResource RequiredMarker}"/>
+            </StackPanel>
+            <!--Second Row-->
+
+            <TextBlock Text="BPA Acronym" Grid.Row="1" Grid.Column="0"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=BpaAcronym}" MaxLength="4" />
+
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right">
+                <TextBlock Text="Load Order" Style="{StaticResource RequiredLabel}" />
+                <TextBlock Style="{StaticResource RequiredMarker}"/>
+            </StackPanel>
+            <TextBox Grid.Row="1" Grid.Column="3" Text="{tsfBinding:Column Path=LoadOrder}" />
+
+            <!--Third Row-->
+            <TextBlock Text="Phasor Data Format" Grid.Row="2" Grid.Column="0" />
+            <ComboBox Grid.Row="2" Grid.Column="1"  ItemsSource="{Binding Source={StaticResource PhasorDataFormatLookupList}}" DisplayMemberPath="Value"
+                      SelectedItem="{tsfBinding:Column Path=PhasorDataFormatID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource PhasorDataFormatLookupList}}"/>
+            <TextBlock Text="Frequency Data Format" Grid.Row="2" Grid.Column="2" />
+            <ComboBox Grid.Row="2" Grid.Column="3" ItemsSource="{Binding Source={StaticResource FrequencyDataFormatLookupList}}" DisplayMemberPath="Value"
+                      SelectedItem="{tsfBinding:Column Path=FrequencyDataFormatID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource FrequencyDataFormatLookupList}}"/>
+            <!--Fourth Row-->
+            <TextBlock Text="Analog Data Format" Grid.Row="3" Grid.Column="0" />
+            <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource AnalogDataFormatLookupList}}" DisplayMemberPath="Value"
+                      SelectedItem="{tsfBinding:Column Path=AnalogDataFormatID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource AnalogDataFormatLookupList}}"/>
+            <TextBlock Text="Coordinate Format" Grid.Row="3" Grid.Column="2" />
+            <ComboBox Grid.Row="3" Grid.Column="3" ItemsSource="{Binding Source={StaticResource CoordinateFormatLookupList}}" DisplayMemberPath="Value"
+                      SelectedItem="{tsfBinding:Column Path=CoordinateFormatID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource CoordinateFormatLookupList}}"/>
+            <!--Fifth Row-->
+
+            <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right">
+                <TextBlock Text="ID Code" Style="{StaticResource RequiredLabel}"/>
+                <TextBlock Style="{StaticResource RequiredMarker}"/>
+            </StackPanel>
+            <TextBox Grid.Row="4" Grid.Column="1" Text="{tsfBinding:Column Path=IDCode}" />
+
+            <!--Button-->
+            <CheckBox Content="Enabled" Grid.Row="4" Grid.Column="3" IsChecked="{tsfBinding:Column Path=Enabled}"/>
+
+            <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
+                SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" />
+
+            <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="825"
+               PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="4">
+                <sdk:DataGrid.Columns>
+                    <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}"/>
+                    <sdk:DataGridTextColumn Header=" Name" Width="*" Binding="{tsfBinding:Column Path=Name}" />
+                    <sdk:DataGridTextColumn Header="Enabled" Width="2*" Binding="{tsfBinding:Column Path=Enabled}" />
+                    <sdk:DataGridCheckBoxColumn Header="Phasors" Width="*" Binding="{tsfBinding:Column Path=Phasors}" />
+                    <sdk:DataGridCheckBoxColumn Header="Analogs" Width="*" Binding="{tsfBinding:Column Path=Analogs}" />
+                    <sdk:DataGridCheckBoxColumn Header="Digitals" Width="*" Binding="{tsfBinding:Column Path=Digitals}" />
+                    <sdk:DataGridCheckBoxColumn Header="Delete" Width="*" Binding="{tsfBinding:Column Path=Delete}" />
+                </sdk:DataGrid.Columns>
+            </sdk:DataGrid>
+
+            <uc:DataPagerUserControl Grid.Row="7" Grid.Column="0"  Grid.ColumnSpan="4" CurrentPageNumber="{Binding CurrentPageNumber}" PageCount="{Binding PageCount}"
+                                 FirstCommand="{Binding FirstCommand}" PreviousCommand="{Binding PreviousCommand}"
+                                 NextCommand="{Binding NextCommand}" LastCommand="{Binding LastCommand}"/>
+
+        </Grid>
+    </StackPanel>
+</UserControl>

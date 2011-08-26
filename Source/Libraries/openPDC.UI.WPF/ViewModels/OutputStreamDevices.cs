@@ -18,11 +18,14 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/03/2011 - Aniket Salver
 //       Generated original version of source code.
+// 08/26/2011 - Aniket Salver
+//       Added few Properties which help in binding the objects
 //
 //******************************************************************************************************
 
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
+using System.Collections.Generic;
 
 namespace openPDC.UI.ViewModels
 {
@@ -35,7 +38,12 @@ namespace openPDC.UI.ViewModels
         #region [ Members ]
 
         // Fields
+
         private int m_outputStreamID;
+        private Dictionary<string, string> m_phasorDataformatLookupList;
+        private Dictionary<string, string> m_frequencyDataformatLookupList;
+        private Dictionary<string, string> m_analogDataformatLookupList;
+        private Dictionary<string, string> m_coordinateDataformatLookupList;
 
         #endregion
 
@@ -51,6 +59,50 @@ namespace openPDC.UI.ViewModels
             {
                 m_outputStreamID = value;
                 OnPropertyChanged("OutputStreamID");
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> PhasorDataformat collection of type defined in the database.
+        /// </summary>
+        public Dictionary<string, string> PhasorDataformatLookupList
+        {
+            get
+            {
+                return m_phasorDataformatLookupList;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> FrequencyDataformat collection of type defined in the database.
+        /// </summary>
+        public Dictionary<string, string> FrequencyDataformatLookupList
+        {
+            get
+            {
+                return m_frequencyDataformatLookupList;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> AnalogDataformat collection of type defined in the database.
+        /// </summary>
+        public Dictionary<string, string> AnalogDataformatLookupList
+        {
+            get
+            {
+                return m_analogDataformatLookupList;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> CoordinateDataformat collection of type defined in the database.
+        /// </summary>
+        public Dictionary<string, string> CoordinateDataformatLookupList
+        {
+            get
+            {
+                return m_coordinateDataformatLookupList;
             }
         }
 
@@ -78,6 +130,27 @@ namespace openPDC.UI.ViewModels
             : base(itemsPerPage, autoSave)
         {
             OutputStreamID = outputStreamID;
+
+            m_phasorDataformatLookupList = new Dictionary<string, string>();
+            m_phasorDataformatLookupList.Add("", "Select Phasor Data Format");
+            m_phasorDataformatLookupList.Add("", "FloatingPoint");
+            m_phasorDataformatLookupList.Add("", "FixedInteger");
+
+            m_frequencyDataformatLookupList = new Dictionary<string, string>();
+            m_frequencyDataformatLookupList.Add("", "Select Frequency Data Format");
+            m_frequencyDataformatLookupList.Add("", "FloatingPoint");
+            m_frequencyDataformatLookupList.Add("", "FixedInteger");
+
+            m_analogDataformatLookupList = new Dictionary<string, string>();
+            m_analogDataformatLookupList.Add("", "Select Frequency Data Format");
+            m_analogDataformatLookupList.Add("", "FloatingPoint");
+            m_analogDataformatLookupList.Add("", "FixedInteger");
+
+            m_coordinateDataformatLookupList = new Dictionary<string, string>();
+            m_coordinateDataformatLookupList.Add("", "Select Coordinate Format");
+            m_coordinateDataformatLookupList.Add("", "Polar");
+            m_coordinateDataformatLookupList.Add("", "Rectangular");
+
         }
 
         #endregion
