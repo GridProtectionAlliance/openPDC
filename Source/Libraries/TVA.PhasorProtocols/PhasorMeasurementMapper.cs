@@ -961,8 +961,8 @@ namespace TVA.PhasorProtocols
         {
             if (m_frameParser != null)
             {
-                m_frameParser.SendDeviceCommand(command);
-                OnStatusMessage("Sent device command \"{0}\"...", command);
+                if (m_frameParser.SendDeviceCommand(command) != null)
+                    OnStatusMessage("Sent device command \"{0}\"...", command);
             }
             else
                 OnStatusMessage("Failed to send device command \"{0}\", no frame parser is defined.", command);

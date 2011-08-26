@@ -315,7 +315,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         }
 
         #endregion
-       
+
         #region [ Properties ]
 
         /// <summary>
@@ -504,7 +504,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         protected override void OnReceivedDataFrame(IDataFrame frame)
         {
             // We override this method so we can detect and respond to a configuration change notification
- 	        base.OnReceivedDataFrame(frame);
+            base.OnReceivedDataFrame(frame);
 
             bool configurationChangeDetected = false;
 
@@ -516,7 +516,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 for (int x = 0; x < dataCells.Count; x++)
                 {
                     // Configuration change is only relevant if raw status flags <> FF (status undefined)
-                    if (dataCells[x].ConfigurationChangeDetected && ((DataCellBase)dataCells[x]).StatusFlags != ushort.MaxValue)
+                    if (dataCells[x].ConfigurationChangeDetected && !dataCells[x].DeviceError && ((DataCellBase)dataCells[x]).StatusFlags != ushort.MaxValue)
                     {
                         configurationChangeDetected = true;
 
@@ -633,7 +633,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 // Create a new IEEE C37.118 configuration frame converted from equivalent configuration information
                 ConfigurationCell derivedCell;
                 IFrequencyDefinition sourceFrequency;
-                
+
                 // Assuming configuration frame 2 and timebase = 100000
                 if (draftRevision == DraftRevision.Draft7)
                     derivedFrame = new ConfigurationFrame2(100000, sourceFrame.IDCode, sourceFrame.Timestamp, sourceFrame.FrameRate);

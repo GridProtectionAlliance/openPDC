@@ -159,6 +159,8 @@ namespace TVA.PhasorProtocols
         private bool m_autoPublishConfigurationFrame;
         private bool m_autoStartDataChannel;
         private bool m_processDataValidFlag;
+        private bool m_addPhaseLabelSuffix;
+        private char m_replaceWithSpaceChar;
         private ushort m_idCode;
         private long m_totalLatency;
         private long m_minimumLatency;
@@ -895,6 +897,23 @@ namespace TVA.PhasorProtocols
             else
                 m_processDataValidFlag = true;
 
+            if (settings.TryGetValue("addPhaseLabelSuffix", out setting))
+                m_addPhaseLabelSuffix = setting.ParseBoolean();
+            else
+                m_addPhaseLabelSuffix = true;
+
+            if (settings.TryGetValue("replaceWithSpaceChar", out setting))
+            {
+                if (!string.IsNullOrWhiteSpace(setting) && setting.Length > 0)
+                    m_replaceWithSpaceChar = setting[0];
+                else
+                    m_replaceWithSpaceChar = Char.MinValue;
+            }
+            else
+            {
+                m_replaceWithSpaceChar = Char.MinValue;
+            }
+
             // Initialize data channel if defined
             if (!string.IsNullOrEmpty(dataChannel))
                 this.DataChannel = new UdpServer(dataChannel);
@@ -965,16 +984,25 @@ namespace TVA.PhasorProtocols
 
                     // Assign device identification labels
                     cell.IDLabel = deviceRow["Name"].ToString().TruncateRight(cell.IDLabelLength).Trim();
-                    cell.StationName = deviceRow["Acronym"].ToString().TruncateRight(cell.MaximumStationNameLength).Trim();
+                    label = deviceRow["Acronym"].ToString().TruncateRight(cell.MaximumStationNameLength).Trim();
+
+                    if (m_replaceWithSpaceChar != Char.MinValue)
+                        label = label.Replace(m_replaceWithSpaceChar, ' ');
+
+                    // Station name is serialized to configuration frame
+                    cell.StationName = label;
 
                     // Define all the phasors configured for this device
                     foreach (DataRow phasorRow in DataSource.Tables["OutputStreamDevicePhasors"].Select(string.Format("OutputStreamDeviceID={0}", deviceID), "LoadOrder"))
                     {
                         order = int.Parse(phasorRow["LoadOrder"].ToNonNullString("0"));
-                        label = phasorRow["Label"].ToNonNullString("Phasor " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength);
+                        label = phasorRow["Label"].ToNonNullString("Phasor " + order).Trim().TruncateRight(labelLength);
                         type = phasorRow["Type"].ToNonNullString("V").Trim().ToUpper().StartsWith("V") ? PhasorType.Voltage : PhasorType.Current;
                         phase = phasorRow["Phase"].ToNonNullString("+").Trim().ToUpper()[0];
                         scale = phasorRow["ScalingValue"].ToNonNullString("0");
+
+                        if (m_replaceWithSpaceChar != Char.MinValue)
+                            label = label.Replace(m_replaceWithSpaceChar, ' ');
 
                         // Scale can be defined as a negative value in database, so check both formatting styles
                         if (!uint.TryParse(scale, out scalingValue))
@@ -1003,9 +1031,12 @@ namespace TVA.PhasorProtocols
                         foreach (DataRow analogRow in DataSource.Tables["OutputStreamDeviceAnalogs"].Select(string.Format("OutputStreamDeviceID={0}", deviceID), "LoadOrder"))
                         {
                             order = int.Parse(analogRow["LoadOrder"].ToNonNullString("0"));
-                            label = analogRow["Label"].ToNonNullString("Analog " + order).Trim().RemoveDuplicateWhiteSpace().TruncateRight(labelLength);
+                            label = analogRow["Label"].ToNonNullString("Analog " + order).Trim().TruncateRight(labelLength);
                             analogType = (AnalogType)int.Parse(analogRow["Type"].ToNonNullString("0"));
                             scale = analogRow["ScalingValue"].ToNonNullString("0");
+
+                            if (m_replaceWithSpaceChar != Char.MinValue)
+                                label = label.Replace(m_replaceWithSpaceChar, ' ');
 
                             // Scale can be defined as a negative value in database, so check both formatting styles
                             if (!uint.TryParse(scale, out scalingValue))
@@ -1028,9 +1059,11 @@ namespace TVA.PhasorProtocols
                             order = int.Parse(digitalRow["LoadOrder"].ToNonNullString("0"));
                             scale = digitalRow["MaskValue"].ToNonNullString("0");
 
-                            // IEEE C37.118 digital labels are defined with all 16-labels (one for each bit) in one large formatted
-                            // string - so we don't remove duplicate white space in this string
+                            // IEEE C37.118 digital labels are defined with all 16-labels (one for each bit) in one large formatted string
                             label = digitalRow["Label"].ToNonNullString("Digital " + order).Trim().TruncateRight(labelLength * 16);
+
+                            if (m_replaceWithSpaceChar != Char.MinValue)
+                                label = label.Replace(m_replaceWithSpaceChar, ' ');
 
                             // Mask can be defined as a negative value in database, so check both formatting styles
                             if (!uint.TryParse(scale, out scalingValue))
@@ -1114,6 +1147,78 @@ namespace TVA.PhasorProtocols
 
             // Cache new protocol specific configuration frame
             CacheConfigurationFrame(m_configurationFrame, Name);
+        }
+
+        // Generate a more descriptive phasor label including line phase and phasor type
+        private string GeneratePhasorLabel(string phasorLabel, char phase, PhasorType type)
+        {
+            StringBuilder phaseSuffix = new StringBuilder();
+
+            if (string.IsNullOrWhiteSpace(phasorLabel))
+                phasorLabel = "Phasor";
+
+            if (m_addPhaseLabelSuffix)
+            {
+                string suffix = phasorLabel.TruncateLeft(4).TruncateRight(3).ToUpper();
+                bool appended = false;
+
+                // Add phase suffix if it's not already there
+                switch (phase)
+                {
+                    case '+':   // Positive sequence
+                        if (suffix != " +S")
+                        {
+                            phaseSuffix.Append(" +S");
+                            appended = true;
+                        }
+                        break;
+                    case '-':   // Negative sequence
+                        if (suffix != " -S")
+                        {
+                            phaseSuffix.Append(" -S");
+                            appended = true;
+                        }
+                        break;
+                    case '0':   // Zero sequence
+                        if (suffix != " 0S")
+                        {
+                            phaseSuffix.Append(" 0S");
+                            appended = true;
+                        }
+                        break;
+                    case 'A':   // A-Phase
+                        if (suffix != " AP")
+                        {
+                            phaseSuffix.Append(" AP");
+                            appended = true;
+                        }
+                        break;
+                    case 'B':   // B-Phase
+                        if (suffix != " BP")
+                        {
+                            phaseSuffix.Append(" BP");
+                            appended = true;
+                        }
+                        break;
+                    case 'C':   // C-Phase
+                        if (suffix != " CP")
+                        {
+                            phaseSuffix.Append(" CP");
+                            appended = true;
+                        }
+                        break;
+                }
+
+                if (appended)
+                {
+                    // Return label with appended phase suffix
+                    phaseSuffix.Append(type == PhasorType.Voltage ? 'V' : 'I');
+                    return phasorLabel.TruncateRight(12) + phaseSuffix.ToString();
+                }
+            }
+
+            // Return original label
+            return phasorLabel;
         }
 
         /// <summary>
@@ -1595,81 +1700,6 @@ namespace TVA.PhasorProtocols
         }
 
         #endregion
-
-        #endregion
-
-        #region [ Static ]
-
-        // Static Methods
-
-        // Generate a more descriptive phasor label including line phase and phasor type
-        private static string GeneratePhasorLabel(string phasorLabel, char phase, PhasorType type)
-        {
-            StringBuilder phaseSuffix = new StringBuilder();
-
-            if (string.IsNullOrWhiteSpace(phasorLabel))
-                phasorLabel = "Phasor";
-
-            string suffix = phasorLabel.TruncateLeft(4).TruncateRight(3).ToUpper();
-            bool appended = false;
-
-            // Add phase suffix if it's not already there
-            switch (phase)
-            {
-                case '+':   // Positive sequence
-                    if (suffix != " +S")
-                    {
-                        phaseSuffix.Append(" +S");
-                        appended = true;
-                    }
-                    break;
-                case '-':   // Negative sequence
-                    if (suffix != " -S")
-                    {
-                        phaseSuffix.Append(" -S");
-                        appended = true;
-                    }
-                    break;
-                case '0':   // Zero sequence
-                    if (suffix != " 0S")
-                    {
-                        phaseSuffix.Append(" 0S");
-                        appended = true;
-                    }
-                    break;
-                case 'A':   // A-Phase
-                    if (suffix != " AP")
-                    {
-                        phaseSuffix.Append(" AP");
-                        appended = true;
-                    }
-                    break;
-                case 'B':   // B-Phase
-                    if (suffix != " BP")
-                    {
-                        phaseSuffix.Append(" BP");
-                        appended = true;
-                    }
-                    break;
-                case 'C':   // C-Phase
-                    if (suffix != " CP")
-                    {
-                        phaseSuffix.Append(" CP");
-                        appended = true;
-                    }
-                    break;
-            }
-
-            if (appended)
-            {
-                // Return label with appended phase suffix
-                phaseSuffix.Append(type == PhasorType.Voltage ? 'V' : 'I');
-                return phasorLabel.TruncateRight(12) + phaseSuffix.ToString();
-            }
-
-            // Return original label
-            return phasorLabel;
-        }
 
         #endregion
     }
