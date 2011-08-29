@@ -1371,6 +1371,7 @@ namespace TVA.PhasorProtocols
                     m_configurationFrame.Timestamp = dataFrame.Timestamp;
                     image = m_configurationFrame.BinaryImage;
                     m_publishChannel.MulticastAsync(image, 0, image.Length);
+                    Thread.Sleep(1);
                 }
 
                 // If the expected values did not arrive for a device, we mark the data as invalid
