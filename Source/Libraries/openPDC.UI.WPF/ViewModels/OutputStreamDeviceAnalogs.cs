@@ -18,11 +18,14 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/08/2011 - Aniket Salver
 //       Generated original version of source code.
+//  08/30/2011 - Aniket Salver
+//       Added few properties which helps in biding.
 //
 //******************************************************************************************************
 
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
+using System.Collections.Generic;
 
 namespace openPDC.UI.ViewModels
 {
@@ -31,6 +34,14 @@ namespace openPDC.UI.ViewModels
     /// </summary>
     internal class OutputStreamDeviceAnalogs : PagedViewModelBase<OutputStreamDeviceAnalog, int>
     {
+        #region[Members]
+
+        // Fields
+
+        private Dictionary<int, string> m_typeLookupList;
+
+        #endregion
+
         #region [ Properties ]
 
         /// <summary>
@@ -41,6 +52,17 @@ namespace openPDC.UI.ViewModels
             get
             {
                 return CurrentItem.ID == 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> Type collection of type defined in the database.
+        /// </summary>
+        public Dictionary<int,string> TypeLookupList
+        {
+            get
+            {
+                return m_typeLookupList;
             }
         }
 
@@ -56,6 +78,10 @@ namespace openPDC.UI.ViewModels
         public OutputStreamDeviceAnalogs(int itemsPerPage, bool autoSave = true)
             : base(itemsPerPage, autoSave)
         {
+            m_typeLookupList = new Dictionary<int, string>();
+            m_typeLookupList.Add(0, "Single point-on-wave");
+            m_typeLookupList.Add(1, "RMS of analog input");
+            m_typeLookupList.Add(2, "Peak of analog input");
 
         }
 
