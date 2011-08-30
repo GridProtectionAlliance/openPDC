@@ -986,9 +986,6 @@ namespace TVA.PhasorProtocols
                     cell.IDLabel = deviceRow["Name"].ToString().TruncateRight(cell.IDLabelLength).Trim();
                     label = deviceRow["Acronym"].ToString().TruncateRight(cell.MaximumStationNameLength).Trim();
 
-                    if (m_replaceWithSpaceChar != Char.MinValue)
-                        label = label.Replace(m_replaceWithSpaceChar, ' ');
-
                     // Station name is serialized to configuration frame
                     cell.StationName = label;
 
@@ -1141,6 +1138,15 @@ namespace TVA.PhasorProtocols
             // Assign action adapter input measurement keys - this assigns the expected measurements per frame needed
             // by the concentration engine for preemptive publication 
             InputMeasurementKeys = m_signalReferences.Keys.ToArray();
+
+            // Allow for spaces in output stream device names if a replacement character has been defined for spaces
+            if (m_replaceWithSpaceChar != Char.MinValue)
+            {
+                foreach (ConfigurationCell cell in m_baseConfigurationFrame.Cells)
+                {
+                    cell.StationName = cell.StationName.Replace(m_replaceWithSpaceChar, ' ');
+                }
+            }
 
             // Create a new protocol specific configuration frame
             m_configurationFrame = CreateNewConfigurationFrame(m_baseConfigurationFrame);
