@@ -1,118 +1,146 @@
+--  ----------------------------------------------------------------------------------------------------
+--  openPDC Data Structures for SQLite - Gbtc
+--
+--  Copyright © 2011, Grid Protection Alliance.  All Rights Reserved.
+--
+--  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
+--  the NOTICE file distributed with this work for additional information regarding copyright ownership.
+--  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+--  not use this file except in compliance with the License. You may obtain a copy of the License at:
+--
+--      http://www.opensource.org/licenses/eclipse-1.0.php
+--
+--  Unless agreed to in writing, the subject software distributed under the License is distributed on an
+--  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
+--  License for the specific language governing permissions and limitations.
+--
+--  Schema Modification History:
+--  ----------------------------------------------------------------------------------------------------
+--  05/07/2011 - J. Ritchie Carroll
+--       Generated original version of schema.
+--  07/15/2011 - Stephen C. Wills
+--       Translated MySQL script to SQLite.
+--  ----------------------------------------------------------------------------------------------------
+
 CREATE TABLE ErrorLog(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Source NVARCHAR(256) NOT NULL,
-	Message NVARCHAR(1024) NOT NULL,
-	Detail LONGTEXT NULL,
-	CreatedOn DATETIME NOT NULL DEFAULT 0
+	Source VARCHAR(200) NOT NULL,
+	Message TEXT NOT NULL,
+	Detail TEXT NULL,
+	CreatedOn DATETIME NOT NULL DEFAULT ''
 );
 
 CREATE TABLE Runtime(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	SourceID INTEGER NOT NULL,
-	SourceTable NVARCHAR(50) NOT NULL,
+	SourceTable VARCHAR(200) NOT NULL,
 	CONSTRAINT IX_Runtime UNIQUE (ID)
 );
 
 CREATE TABLE AuditLog(
-  ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-  TableName VARCHAR(128) NOT NULL,
-  PrimaryKeyColumn VARCHAR(128) NOT NULL,
-  PrimaryKeyValue LONGTEXT NOT NULL,
-  ColumnName VARCHAR(128) NOT NULL,
-  OriginalValue LONGTEXT,
-  NewValue LONGTEXT,
-  Deleted BOOLEAN NOT NULL DEFAULT '0',
-  UpdatedBy VARCHAR(128) NOT NULL DEFAULT '',
-  UpdatedOn DATETIME NOT NULL DEFAULT ''
+    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    TableName VARCHAR(200) NOT NULL,
+    PrimaryKeyColumn VARCHAR(200) NOT NULL,
+    PrimaryKeyValue TEXT NOT NULL,
+    ColumnName VARCHAR(200) NOT NULL,
+    OriginalValue TEXT,
+    NewValue TEXT,
+    Deleted BOOLEAN NOT NULL DEFAULT '0',
+    UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    UpdatedOn DATETIME NOT NULL DEFAULT ''
 );
 
 CREATE TABLE Company(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Acronym NVARCHAR(50) NOT NULL,
-	MapAcronym NCHAR(3) NOT NULL,
-	Name NVARCHAR(100) NOT NULL,
-	URL LONGTEXT NULL,
+	Acronym VARCHAR(200) NOT NULL,
+	MapAcronym NCHAR(10) NOT NULL,
+	Name VARCHAR(200) NOT NULL,
+	URL TEXT NULL,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT ''
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT ''
 );
 
 CREATE TABLE ConfigurationEntity(
-	SourceName NVARCHAR(100) NOT NULL,
-	RuntimeName NVARCHAR(100) NOT NULL,
-	Description LONGTEXT NULL,
+	SourceName VARCHAR(200) NOT NULL,
+	RuntimeName VARCHAR(200) NOT NULL,
+	Description TEXT NULL,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	Enabled BOOLEAN NOT NULL DEFAULT 0
 );
 
 CREATE TABLE Vendor(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Acronym NVARCHAR(3) NULL,
-	Name NVARCHAR(100) NOT NULL,
-	PhoneNumber NVARCHAR(100) NULL,
-	ContactEmail NVARCHAR(100) NULL,
-	URL LONGTEXT NULL,
+	Acronym VARCHAR(200) NULL,
+	Name VARCHAR(200) NOT NULL,
+	PhoneNumber VARCHAR(200) NULL,
+	ContactEmail VARCHAR(200) NULL,
+	URL TEXT NULL,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT ''
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT ''
 );
 
 CREATE TABLE Protocol(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Acronym NVARCHAR(50) NOT NULL,
-	Name NVARCHAR(100) NOT NULL,
+	Acronym VARCHAR(200) NOT NULL,
+	Name VARCHAR(200) NOT NULL,
+	Type VARCHAR(200) NOT NULL DEFAULT 'Frame',
+	Category VARCHAR(200) NOT NULL DEFAULT 'Phasor',
+	AssemblyName VARCHAR(1024) NOT NULL DEFAULT 'TVA.PhasorProtocols.dll',
+	TypeName VARCHAR(200) NOT NULL DEFAULT 'TVA.PhasorProtocols.PhasorMeasurementMapper',
 	LoadOrder INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE SignalType(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Name NVARCHAR(100) NOT NULL,
-	Acronym NVARCHAR(4) NOT NULL,
-	Suffix NVARCHAR(2) NOT NULL,
-	Abbreviation NVARCHAR(2) NOT NULL,
-	Source NVARCHAR(10) NOT NULL,
-	EngineeringUnits NVARCHAR(10) NULL
+	Name VARCHAR(200) NOT NULL,
+	Acronym VARCHAR(4) NOT NULL,
+	Suffix VARCHAR(2) NOT NULL,
+	Abbreviation VARCHAR(2) NOT NULL,
+	Source VARCHAR(10) NOT NULL,
+	EngineeringUnits VARCHAR(10) NULL
 );
 
 CREATE TABLE Interconnection(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Acronym NVARCHAR(50) NOT NULL,
-	Name NVARCHAR(100) NOT NULL,
+	Acronym VARCHAR(200) NOT NULL,
+	Name VARCHAR(200) NOT NULL,
 	LoadOrder INTEGER NULL DEFAULT 0
 );
 
 CREATE TABLE Node(
 	ID NCHAR(36) NULL,
-	Name NVARCHAR(100) NOT NULL,
+	Name VARCHAR(200) NOT NULL,
 	CompanyID INTEGER NULL,
 	Longitude DECIMAL(9, 6) NULL,
 	Latitude DECIMAL(9, 6) NULL,
-	Description LONGTEXT NULL,
-	ImagePath LONGTEXT NULL,
-	TimeSeriesDataServiceUrl LONGTEXT NULL,
-	RemoteStatusServiceUrl LONGTEXT NULL,
-	RealTimeStatisticServiceUrl LONGTEXT NULL,
+	Description TEXT NULL,
+	ImagePath TEXT NULL,
+	Settings TEXT NULL,
+	MenuType VARCHAR(200) NOT NULL DEFAULT 'File',
+	MenuData TEXT NOT NULL,
 	Master BOOLEAN NOT NULL DEFAULT 0,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT PK_Node PRIMARY KEY (ID ASC),
 	CONSTRAINT FK_Node_Company FOREIGN KEY(CompanyID) REFERENCES Company (ID)
 );
 
 CREATE TABLE DataOperation(
 	NodeID NCHAR(36) NULL,
-	Description LONGTEXT NULL,
+	Description TEXT NULL,
 	AssemblyName TEXT NOT NULL,
 	TypeName TEXT NOT NULL,
-	MethodName NVARCHAR(255) NOT NULL,
-	Arguments LONGTEXT NULL,
+	MethodName VARCHAR(200) NOT NULL,
+	Arguments TEXT NULL,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CONSTRAINT FK_DataOperation_Node FOREIGN KEY(NodeID) REFERENCES Node (ID)
@@ -120,8 +148,8 @@ CREATE TABLE DataOperation(
 
 CREATE TABLE OtherDevice(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Acronym NVARCHAR(16) NOT NULL,
-	Name NVARCHAR(100) NULL,
+	Acronym VARCHAR(200) NOT NULL,
+	Name VARCHAR(200) NULL,
 	IsConcentrator BOOLEAN NOT NULL DEFAULT 0,
 	CompanyID INTEGER NULL,
 	VendorDeviceID INTEGER NULL,
@@ -132,9 +160,9 @@ CREATE TABLE OtherDevice(
 	Desired BOOLEAN NOT NULL DEFAULT 0,
 	InProgress BOOLEAN NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_OtherDevice_Company FOREIGN KEY(CompanyID) REFERENCES Company (ID),
 	CONSTRAINT FK_OtherDevice_Interconnection FOREIGN KEY(InterconnectionID) REFERENCES Interconnection (ID),
 	CONSTRAINT FK_OtherDevice_VendorDevice FOREIGN KEY(VendorDeviceID) REFERENCES VendorDevice (ID)
@@ -144,8 +172,10 @@ CREATE TABLE Device(
 	NodeID NCHAR(36) NOT NULL,
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	ParentID INTEGER NULL,
-	Acronym NVARCHAR(16) NOT NULL,
-	Name NVARCHAR(100) NULL,
+	UniqueID NCHAR(36) NULL,
+	Acronym VARCHAR(200) NOT NULL,
+	Name VARCHAR(200) NULL,
+	OriginalSource VARCHAR(200) NULL,
 	IsConcentrator BOOLEAN NOT NULL DEFAULT 0,
 	CompanyID INTEGER NULL,
 	HistorianID INTEGER NULL,
@@ -155,8 +185,8 @@ CREATE TABLE Device(
 	Longitude DECIMAL(9, 6) NULL,
 	Latitude DECIMAL(9, 6) NULL,
 	InterconnectionID INTEGER NULL,
-	ConnectionString LONGTEXT NULL,
-	TimeZone NVARCHAR(128) NULL,
+	ConnectionString TEXT NULL,
+	TimeZone VARCHAR(200) NULL,
 	FramesPerSecond INTEGER NULL DEFAULT 30,
 	TimeAdjustmentTicks BIGINT NOT NULL DEFAULT 0,
 	DataLossInterval DOUBLE NOT NULL DEFAULT 5,
@@ -167,15 +197,17 @@ CREATE TABLE Device(
 	AutoStartDataParsingSequence BOOLEAN NOT NULL DEFAULT 1,
 	SkipDisableRealTimeData BOOLEAN NOT NULL DEFAULT 0,
 	MeasurementReportingInterval INTEGER NOT NULL DEFAULT 100000,
-	ContactList LONGTEXT NULL,
+	ConnectOnDemand BOOLEAN NOT NULL DEFAULT 1,
+	ContactList TEXT NULL,
 	MeasuredLines INTEGER NULL,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
-	Enabled BOOLEAN NOT NULL DEFAULT 0,	
+	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
-	CONSTRAINT IX_Device_Acronym UNIQUE (Acronym ASC),
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
+	CONSTRAINT IX_Device_UniqueID UNIQUE (UniqueID ASC),
+	CONSTRAINT IX_Device_NodeID_Acronym UNIQUE (NodeID ASC, Acronym ASC),
 	CONSTRAINT FK_Device_Company FOREIGN KEY(CompanyID) REFERENCES Company (ID),
 	CONSTRAINT FK_Device_Device FOREIGN KEY(ParentID) REFERENCES Device (ID),
 	CONSTRAINT FK_Device_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID),
@@ -188,13 +220,13 @@ CREATE TABLE Device(
 CREATE TABLE VendorDevice(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	VendorID INTEGER NOT NULL DEFAULT 10,
-	Name NVARCHAR(100) NOT NULL,
-	Description LONGTEXT NULL,
-	URL LONGTEXT NULL,
+	Name VARCHAR(200) NOT NULL,
+	Description TEXT NULL,
+	URL TEXT NULL,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_VendorDevice_Vendor FOREIGN KEY(VendorID) REFERENCES Vendor (ID)
 );
 
@@ -202,13 +234,13 @@ CREATE TABLE OutputStreamDeviceDigital(
 	NodeID NCHAR(36) NOT NULL,
 	OutputStreamDeviceID INTEGER NOT NULL,
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Label NVARCHAR(256) NOT NULL,
+	Label VARCHAR(200) NOT NULL,
 	MaskValue INTEGER NOT NULL DEFAULT 0,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_OutputStreamDeviceDigital_Node FOREIGN KEY(NodeID) REFERENCES Node (ID),
 	CONSTRAINT FK_OutputStreamDeviceDigital_OutputStreamDevice FOREIGN KEY(OutputStreamDeviceID) REFERENCES OutputStreamDevice (ID) ON DELETE CASCADE
 );
@@ -217,15 +249,15 @@ CREATE TABLE OutputStreamDevicePhasor(
 	NodeID NCHAR(36) NOT NULL,
 	OutputStreamDeviceID INTEGER NOT NULL,
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Label NVARCHAR(256) NOT NULL,
+	Label VARCHAR(200) NOT NULL,
 	Type NCHAR(1) NOT NULL DEFAULT 'V',
 	Phase NCHAR(1) NOT NULL DEFAULT '+',
 	ScalingValue INTEGER NOT NULL DEFAULT 0,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_OutputStreamDevicePhasor_Node FOREIGN KEY(NodeID) REFERENCES Node (ID),
 	CONSTRAINT FK_OutputStreamDevicePhasor_OutputStreamDevice FOREIGN KEY(OutputStreamDeviceID) REFERENCES OutputStreamDevice (ID) ON DELETE CASCADE
 );
@@ -234,39 +266,39 @@ CREATE TABLE OutputStreamDeviceAnalog(
 	NodeID NCHAR(36) NOT NULL,
 	OutputStreamDeviceID INTEGER NOT NULL,
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Label NVARCHAR(16) NOT NULL,
+	Label VARCHAR(16) NOT NULL,
 	Type INTEGER NOT NULL DEFAULT 0,
 	ScalingValue INTEGER NOT NULL DEFAULT 0,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_OutputStreamDeviceAnalog_Node FOREIGN KEY(NodeID) REFERENCES Node (ID),
 	CONSTRAINT FK_OutputStreamDeviceAnalog_OutputStreamDevice FOREIGN KEY(OutputStreamDeviceID) REFERENCES OutputStreamDevice (ID) ON DELETE CASCADE
 );
 
 CREATE TABLE Measurement(
+	PointID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	SignalID NCHAR(36) NULL,
 	HistorianID INTEGER NULL,
-	PointID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	DeviceID INTEGER NULL,
-	PointTag NVARCHAR(50) NOT NULL,
-	AlternateTag NVARCHAR(50) NULL,
+	PointTag VARCHAR(200) NOT NULL,
+	AlternateTag VARCHAR(200) NULL,
 	SignalTypeID INTEGER NOT NULL,
 	PhasorSourceIndex INTEGER NULL,
-	SignalReference NVARCHAR(24) NOT NULL,
+	SignalReference VARCHAR(200) NOT NULL,
 	Adder DOUBLE NOT NULL DEFAULT 0.0,
 	Multiplier DOUBLE NOT NULL DEFAULT 1.0,
-	Description LONGTEXT NULL,
+	Description TEXT NULL,
+	Subscribed BOOLEAN NOT NULL DEFAULT 0,
+	Internal BOOLEAN NOT NULL DEFAULT 1,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT IX_Measurement UNIQUE (PointID ASC),
-	CONSTRAINT IX_Measurement_PointTag UNIQUE (PointTag ASC),
-	CONSTRAINT IX_Measurement_SignalReference UNIQUE (SignalReference ASC),
 	CONSTRAINT FK_Measurement_Device FOREIGN KEY(DeviceID) REFERENCES Device (ID) ON DELETE CASCADE,
 	CONSTRAINT FK_Measurement_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID),
 	CONSTRAINT FK_Measurement_SignalType FOREIGN KEY(SignalTypeID) REFERENCES SignalType (ID)
@@ -276,40 +308,41 @@ CREATE TABLE ImportedMeasurement(
 	NodeID NCHAR(36) NULL,
 	SourceNodeID NCHAR(36) NULL,
 	SignalID NCHAR(36) NULL,
-	Source NVARCHAR(50) NOT NULL,
+	Source VARCHAR(200) NOT NULL,
 	PointID INTEGER NOT NULL,
-	PointTag NVARCHAR(50) NOT NULL,
-	AlternateTag NVARCHAR(50) NULL,
-	SignalTypeAcronym NVARCHAR(4) NULL,
-	SignalReference NVARCHAR(24) NOT NULL,
+	PointTag VARCHAR(200) NOT NULL,
+	AlternateTag VARCHAR(200) NULL,
+	SignalTypeAcronym VARCHAR(4) NULL,
+	SignalReference TEXT NOT NULL,
 	FramesPerSecond INTEGER NULL,
-	ProtocolAcronym NVARCHAR(50) NULL,
+	ProtocolAcronym VARCHAR(200) NULL,
+	ProtocolType VARCHAR(200) NOT NULL DEFAULT 'Frame',
 	PhasorID INTEGER NULL,
 	PhasorType NCHAR(1) NULL,
 	Phase NCHAR(1) NULL,
 	Adder DOUBLE NOT NULL DEFAULT 0.0,
 	Multiplier DOUBLE NOT NULL DEFAULT 1.0,
-	CompanyAcronym NVARCHAR(50) NULL,
+	CompanyAcronym VARCHAR(200) NULL,
 	Longitude DECIMAL(9, 6) NULL,
 	Latitude DECIMAL(9, 6) NULL,
-	Description LONGTEXT NULL,
+	Description TEXT NULL,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CONSTRAINT FK_ImportedMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID)
 );
 
 CREATE TABLE Statistic(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Source NVARCHAR(20) NOT NULL,
+	Source VARCHAR(20) NOT NULL,
 	SignalIndex INTEGER NOT NULL,
-	Name NVARCHAR(100) NOT NULL,
-	Description LONGTEXT NULL,
+	Name VARCHAR(200) NOT NULL,
+	Description TEXT NULL,
 	AssemblyName TEXT NOT NULL,
 	TypeName TEXT NOT NULL,
-	MethodName NVARCHAR(255) NOT NULL,
-	Arguments LONGTEXT NULL,
+	MethodName VARCHAR(200) NOT NULL,
+	Arguments TEXT NULL,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
-	DataType NVARCHAR(255) NULL,
-	DisplayFormat LONGTEXT NULL,
+	DataType VARCHAR(200) NULL,
+	DisplayFormat TEXT NULL,
 	IsConnectedState BOOLEAN NOT NULL DEFAULT 0,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	CONSTRAINT IX_Statistic_Source_SignalIndex UNIQUE (Source ASC, SignalIndex ASC)
@@ -321,11 +354,11 @@ CREATE TABLE OutputStreamMeasurement(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	HistorianID INTEGER NULL,
 	PointID INTEGER NOT NULL,
-	SignalReference TEXT NOT NULL,
+	SignalReference VARCHAR(200) NOT NULL,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_OutputStreamMeasurement_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID),
 	CONSTRAINT FK_OutputStreamMeasurement_Measurement FOREIGN KEY(PointID) REFERENCES Measurement (PointID) ON DELETE CASCADE,
 	CONSTRAINT FK_OutputStreamMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID),
@@ -337,19 +370,19 @@ CREATE TABLE OutputStreamDevice(
 	AdapterID INTEGER NOT NULL,
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	IDCode INTEGER NOT NULL DEFAULT 0,
-	Acronym NVARCHAR(16) NOT NULL,
-	BpaAcronym NVARCHAR(4) NULL,
-	Name NVARCHAR(100) NOT NULL,
-	PhasorDataFormat NVARCHAR(15) NULL,
-	FrequencyDataFormat NVARCHAR(15) NULL,
-	AnalogDataFormat NVARCHAR(15) NULL,
-	CoordinateFormat NVARCHAR(15) NULL,
+	Acronym VARCHAR(200) NOT NULL,
+	BpaAcronym VARCHAR(4) NULL,
+	Name VARCHAR(200) NOT NULL,
+	PhasorDataFormat VARCHAR(15) NULL,
+	FrequencyDataFormat VARCHAR(15) NULL,
+	AnalogDataFormat VARCHAR(15) NULL,
+	CoordinateFormat VARCHAR(15) NULL,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_OutputStreamDevice_Node FOREIGN KEY(NodeID) REFERENCES Node (ID),
 	CONSTRAINT FK_OutputStreamDevice_OutputStream FOREIGN KEY(AdapterID) REFERENCES OutputStream (ID) ON DELETE CASCADE
 );
@@ -357,15 +390,15 @@ CREATE TABLE OutputStreamDevice(
 CREATE TABLE Phasor(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	DeviceID INTEGER NOT NULL,
-	Label NVARCHAR(256) NOT NULL,
+	Label VARCHAR(200) NOT NULL,
 	Type NCHAR(1) NOT NULL DEFAULT 'V',
 	Phase NCHAR(1) NOT NULL DEFAULT '+',
 	DestinationPhasorID INTEGER NULL,
 	SourceIndex INTEGER NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_Phasor_Device FOREIGN KEY(DeviceID) REFERENCES Device (ID) ON DELETE CASCADE,
 	CONSTRAINT FK_Phasor_Phasor FOREIGN KEY(DestinationPhasorID) REFERENCES Phasor (ID)
 );
@@ -373,14 +406,14 @@ CREATE TABLE Phasor(
 CREATE TABLE CalculatedMeasurement(
 	NodeID NCHAR(36) NOT NULL,
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Acronym NVARCHAR(50) NOT NULL,
-	Name NVARCHAR(100) NULL,
+	Acronym VARCHAR(200) NOT NULL,
+	Name VARCHAR(200) NULL,
 	AssemblyName TEXT NOT NULL,
 	TypeName TEXT NOT NULL,
-	ConnectionString LONGTEXT NULL,
-	ConfigSection NVARCHAR(100) NULL,
-	InputMeasurements LONGTEXT NULL,
-	OutputMeasurements LONGTEXT NULL,
+	ConnectionString TEXT NULL,
+	ConfigSection VARCHAR(200) NULL,
+	InputMeasurements TEXT NULL,
+	OutputMeasurements TEXT NULL,
 	MinimumMeasurementsToUse INTEGER NOT NULL DEFAULT -1,
 	FramesPerSecond INTEGER NOT NULL DEFAULT 30,
 	LagTime DOUBLE NOT NULL DEFAULT 3.0,
@@ -390,78 +423,78 @@ CREATE TABLE CalculatedMeasurement(
 	IgnoreBadTimeStamps BOOLEAN NOT NULL DEFAULT 0,
 	TimeResolution INTEGER NOT NULL DEFAULT 10000,
 	AllowPreemptivePublishing BOOLEAN NOT NULL DEFAULT 1,
-	PerformTimestampReasonabilityCheck BOOLEAN NOT NULL DEFAULT 1,
-	DownsamplingMethod NVARCHAR(15) NOT NULL DEFAULT 'LastReceived',
+	PerformTimeReasonabilityCheck BOOLEAN NOT NULL DEFAULT 1,
+	DownsamplingMethod VARCHAR(15) NOT NULL DEFAULT 'LastReceived',
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_CalculatedMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID)
 );
 
 CREATE TABLE CustomActionAdapter(
 	NodeID NCHAR(36) NOT NULL,
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	AdapterName NVARCHAR(50) NOT NULL,
+	AdapterName VARCHAR(200) NOT NULL,
 	AssemblyName TEXT NOT NULL,
 	TypeName TEXT NOT NULL,
-	ConnectionString LONGTEXT NULL,
+	ConnectionString TEXT NULL,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_CustomActionAdapter_Node FOREIGN KEY(NodeID) REFERENCES Node (ID)
 );
 
 CREATE TABLE Historian(
 	NodeID NCHAR(36) NOT NULL,
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Acronym NVARCHAR(50) NOT NULL,
-	Name NVARCHAR(100) NULL,
-	AssemblyName LONGTEXT NULL,
-	TypeName LONGTEXT NULL,
-	ConnectionString LONGTEXT NULL,
+	Acronym VARCHAR(200) NOT NULL,
+	Name VARCHAR(200) NULL,
+	AssemblyName TEXT NULL,
+	TypeName TEXT NULL,
+	ConnectionString TEXT NULL,
 	IsLocal BOOLEAN NOT NULL DEFAULT 1,
 	MeasurementReportingInterval INTEGER NOT NULL DEFAULT 100000,
-	Description LONGTEXT NULL,
+	Description TEXT NULL,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_Historian_Node FOREIGN KEY(NodeID) REFERENCES Node (ID)
 );
 
 CREATE TABLE CustomInputAdapter(
 	NodeID NCHAR(36) NOT NULL,
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	AdapterName NVARCHAR(50) NOT NULL,
+	AdapterName VARCHAR(200) NOT NULL,
 	AssemblyName TEXT NOT NULL,
 	TypeName TEXT NOT NULL,
-	ConnectionString LONGTEXT NULL,
+	ConnectionString TEXT NULL,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_CustomInputAdapter_Node FOREIGN KEY(NodeID) REFERENCES Node (ID)
 );
 
 CREATE TABLE OutputStream(
 	NodeID NCHAR(36) NOT NULL,
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Acronym NVARCHAR(50) NOT NULL,
-	Name NVARCHAR(100) NULL,
+	Acronym VARCHAR(200) NOT NULL,
+	Name VARCHAR(200) NULL,
 	Type INTEGER NOT NULL DEFAULT 0,
-	ConnectionString LONGTEXT NULL,
-	DataChannel LONGTEXT NULL,
-	CommandChannel LONGTEXT NULL,
+	ConnectionString TEXT NULL,
+	DataChannel TEXT NULL,
+	CommandChannel TEXT NULL,
 	IDCode INTEGER NOT NULL DEFAULT 0,
 	AutoPublishConfigFrame BOOLEAN NOT NULL DEFAULT 0,
 	AutoStartDataChannel BOOLEAN NOT NULL DEFAULT 1,
@@ -474,10 +507,10 @@ CREATE TABLE OutputStream(
 	IgnoreBadTimeStamps BOOLEAN NOT NULL DEFAULT 0,
 	TimeResolution INTEGER NOT NULL DEFAULT 330000,
 	AllowPreemptivePublishing BOOLEAN NOT NULL DEFAULT 1,
-	PerformTimestampReasonabilityCheck BOOLEAN NOT NULL DEFAULT 1,
-	DownsamplingMethod NVARCHAR(15) NOT NULL DEFAULT 'LastReceived',
-	DataFormat NVARCHAR(15) NOT NULL DEFAULT 'FloatingPoint',
-	CoordinateFormat NVARCHAR(15) NOT NULL DEFAULT 'Polar',
+	PerformTimeReasonabilityCheck BOOLEAN NOT NULL DEFAULT 1,
+	DownsamplingMethod VARCHAR(15) NOT NULL DEFAULT 'LastReceived',
+	DataFormat VARCHAR(15) NOT NULL DEFAULT 'FloatingPoint',
+	CoordinateFormat VARCHAR(15) NOT NULL DEFAULT 'Polar',
 	CurrentScalingValue INTEGER NOT NULL DEFAULT 2423,
 	VoltageScalingValue INTEGER NOT NULL DEFAULT 2725785,
 	AnalogScalingValue INTEGER NOT NULL DEFAULT 1373291,
@@ -485,100 +518,178 @@ CREATE TABLE OutputStream(
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_OutputStream_Node FOREIGN KEY(NodeID) REFERENCES Node (ID)
 );
 
 CREATE TABLE CustomOutputAdapter(
 	NodeID NCHAR(36) NOT NULL,
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	AdapterName NVARCHAR(50) NOT NULL,
+	AdapterName VARCHAR(200) NOT NULL,
 	AssemblyName TEXT NOT NULL,
 	TypeName TEXT NOT NULL,
-	ConnectionString LONGTEXT NULL,
+	ConnectionString TEXT NULL,
 	LoadOrder INTEGER NOT NULL DEFAULT 0,
 	Enabled BOOLEAN NOT NULL DEFAULT 0,
 	CreatedOn DATETIME NOT NULL DEFAULT '',
-	CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
   	UpdatedOn DATETIME NOT NULL DEFAULT '',
-	UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
 	CONSTRAINT FK_CustomOutputAdapter_Node FOREIGN KEY(NodeID) REFERENCES Node (ID)
 );
 
 CREATE TABLE AccessLog (
-  ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-  UserName VARCHAR(50) NOT NULL,
-  AccessGranted BOOLEAN UNSIGNED NOT NULL,
-  COMMENT LONGTEXT,
-  CreatedOn DATETIME NOT NULL DEFAULT ''
+	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	UserName VARCHAR(200) NOT NULL,
+	AccessGranted BOOLEAN NOT NULL,
+	Comment TEXT,
+	CreatedOn DATETIME NOT NULL DEFAULT ''
 );
 
 CREATE TABLE UserAccount (
-  ID NCHAR(36) NOT NULL DEFAULT '',
-  NAME VARCHAR(50) NOT NULL,
-  PASSWORD VARCHAR(256) DEFAULT NULL,
-  FirstName VARCHAR(50) DEFAULT NULL,
-  LastName VARCHAR(50) DEFAULT NULL,
-  DefaultNodeID NCHAR(36) NOT NULL,
-  Phone VARCHAR(50) DEFAULT NULL,
-  Email VARCHAR(256) DEFAULT NULL,
-  LockedOut BOOLEAN UNSIGNED NOT NULL DEFAULT '0',
-  UseADAuthentication BOOLEAN UNSIGNED NOT NULL DEFAULT '1',
-  ChangePasswordOn DATETIME DEFAULT NULL,
-  CreatedOn DATETIME NOT NULL DEFAULT '',
-  CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
-  UpdatedOn DATETIME NOT NULL DEFAULT '',
-  UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
-  CONSTRAINT PK_UserAccount PRIMARY KEY (ID ASC),
-  CONSTRAINT FK_useraccount FOREIGN KEY (DefaultNodeID) REFERENCES node (ID) ON DELETE CASCADE ON UPDATE CASCADE
+	ID NCHAR(36) NOT NULL DEFAULT '',
+	Name VARCHAR(200) NOT NULL,
+	Password VARCHAR(200) DEFAULT NULL,
+	FirstName VARCHAR(200) DEFAULT NULL,
+	LastName VARCHAR(200) DEFAULT NULL,
+	DefaultNodeID NCHAR(36) NOT NULL,
+	Phone VARCHAR(200) DEFAULT NULL,
+	Email VARCHAR(200) DEFAULT NULL,
+	LockedOut BOOLEAN NOT NULL DEFAULT '0',
+	UseADAuthentication BOOLEAN NOT NULL DEFAULT '1',
+	ChangePasswordOn DATETIME DEFAULT NULL,
+	CreatedOn DATETIME NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
+	UpdatedOn DATETIME NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
+	CONSTRAINT PK_UserAccount PRIMARY KEY (ID ASC),
+	CONSTRAINT FK_useraccount FOREIGN KEY (DefaultNodeID) REFERENCES node (ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE SecurityGroup (
-  ID NCHAR(36) NOT NULL DEFAULT '',
-  NAME VARCHAR(50) NOT NULL,
-  Description LONGTEXT,
-  CreatedOn DATETIME NOT NULL DEFAULT '',
-  CreatedBy VARCHAR(50) NOT NULL DEFAULT '',
-  UpdatedOn DATETIME NOT NULL DEFAULT '',
-  UpdatedBy VARCHAR(50) NOT NULL DEFAULT '',
-  CONSTRAINT PK_SecurityGorup PRIMARY KEY (ID ASC)
+	ID NCHAR(36) NOT NULL DEFAULT '',
+	Name VARCHAR(200) NOT NULL,
+	Description TEXT,
+	CreatedOn DATETIME NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
+	UpdatedOn DATETIME NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
+	CONSTRAINT PK_SecurityGorup PRIMARY KEY (ID ASC)
 );
 
 CREATE TABLE ApplicationRole (
-  ID NCHAR(36) NOT NULL DEFAULT '',
-  NAME VARCHAR(50) NOT NULL,
-  Description LONGTEXT,
-  NodeID NCHAR(36) NOT NULL,
-  CreatedOn DATETIME NOT NULL DEFAULT '',
-  CreatedBy VARCHAR(50) NOT NULL DEFAULT 'Admin',
-  UpdatedOn DATETIME NOT NULL DEFAULT '',
-  UpdatedBy VARCHAR(50) NOT NULL DEFAULT 'Admin',
-  CONSTRAINT PK_ApplicationRole PRIMARY KEY (ID ASC),
-  CONSTRAINT FK_applicationrole FOREIGN KEY (NodeID) REFERENCES node (ID) ON DELETE CASCADE ON UPDATE CASCADE
+	ID NCHAR(36) NOT NULL DEFAULT '',
+	Name VARCHAR(200) NOT NULL,
+	Description TEXT,
+	NodeID NCHAR(36) NOT NULL,
+	CreatedOn DATETIME NOT NULL DEFAULT '',
+	CreatedBy VARCHAR(200) NOT NULL DEFAULT 'Admin',
+	UpdatedOn DATETIME NOT NULL DEFAULT '',
+	UpdatedBy VARCHAR(200) NOT NULL DEFAULT 'Admin',
+	CONSTRAINT PK_ApplicationRole PRIMARY KEY (ID ASC),
+	CONSTRAINT FK_applicationrole FOREIGN KEY (NodeID) REFERENCES node (ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE ApplicationRoleSecurityGroup (
-  ApplicationRoleID NCHAR(36) NOT NULL,
-  SecurityGroupID NCHAR(36) NOT NULL,
-  CONSTRAINT FK_applicationrolesecuritygroup_applicationrole FOREIGN KEY (ApplicationRoleID) REFERENCES applicationrole (ID) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FK_applicationrolesecuritygroup_securitygroup FOREIGN KEY (SecurityGroupID) REFERENCES securitygroup (ID) ON DELETE CASCADE ON UPDATE CASCADE
+	ApplicationRoleID NCHAR(36) NOT NULL,
+	SecurityGroupID NCHAR(36) NOT NULL,
+	CONSTRAINT FK_applicationrolesecuritygroup_applicationrole FOREIGN KEY (ApplicationRoleID) REFERENCES applicationrole (ID) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT FK_applicationrolesecuritygroup_securitygroup FOREIGN KEY (SecurityGroupID) REFERENCES securitygroup (ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE ApplicationRoleUserAccount (
-  ApplicationRoleID NCHAR(36) NOT NULL,
-  UserAccountID NCHAR(36) NOT NULL,
-  CONSTRAINT FK_applicationroleuseraccount_useraccount FOREIGN KEY (UserAccountID) REFERENCES useraccount (ID) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FK_applicationroleuseraccount_applicationrole FOREIGN KEY (ApplicationRoleID) REFERENCES applicationrole (ID) ON DELETE CASCADE ON UPDATE CASCADE
+	ApplicationRoleID NCHAR(36) NOT NULL,
+	UserAccountID NCHAR(36) NOT NULL,
+	CONSTRAINT FK_applicationroleuseraccount_useraccount FOREIGN KEY (UserAccountID) REFERENCES useraccount (ID) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT FK_applicationroleuseraccount_applicationrole FOREIGN KEY (ApplicationRoleID) REFERENCES applicationrole (ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE SecurityGroupUserAccount (
-  SecurityGroupID NCHAR(36) NOT NULL,
-  UserAccountID NCHAR(36) NOT NULL,
-  CONSTRAINT FK_securitygroupuseraccount_useraccount FOREIGN KEY (UserAccountID) REFERENCES useraccount (ID) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FK_securitygroupuseraccount_securitygroup FOREIGN KEY (SecurityGroupID) REFERENCES securitygroup (ID) ON DELETE CASCADE ON UPDATE CASCADE
+	SecurityGroupID NCHAR(36) NOT NULL,
+	UserAccountID NCHAR(36) NOT NULL,
+	CONSTRAINT FK_securitygroupuseraccount_useraccount FOREIGN KEY (UserAccountID) REFERENCES useraccount (ID) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT FK_securitygroupuseraccount_securitygroup FOREIGN KEY (SecurityGroupID) REFERENCES securitygroup (ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE Subscriber (
+    NodeID NCHAR(36) NOT NULL,
+    ID NCHAR(36) NOT NULL DEFAULT '',
+    Acronym VARCHAR(200) NOT NULL,
+    Name VARCHAR(200) NULL,
+    SharedSecret VARCHAR(200) NOT NULL,
+    AuthKey TEXT NOT NULL,
+    ValidIPAddresses TEXT NOT NULL,
+    Enabled BOOLEAN NOT NULL DEFAULT 0,
+    CreatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    UpdatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    CONSTRAINT PK_Subscriber PRIMARY KEY (NodeID ASC, ID ASC),
+    CONSTRAINT IX_Subscriber_NodeID_Acronym UNIQUE (NodeID ASC, Acronym ASC),
+	CONSTRAINT FK_Subscriber_Node FOREIGN KEY(NodeID) REFERENCES Node (ID)
+);
+
+CREATE TABLE SubscriberMeasurement(
+    NodeID NCHAR(36) NOT NULL,
+    SubscriberID NCHAR(36) NOT NULL,
+    SignalID NCHAR(36) NOT NULL,
+    Allowed BOOLEAN NOT NULL DEFAULT 0,
+    CreatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    UpdatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    CONSTRAINT PK_SubscriberMeasurement PRIMARY KEY (NodeID ASC, SubscriberID ASC, SignalID ASC),
+	CONSTRAINT FK_SubscriberMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID),
+	CONSTRAINT FK_SubscriberMeasurement_Measurement FOREIGN KEY(SignalID) REFERENCES Measurement (SignalID),
+	CONSTRAINT FK_SubscriberMeasurement_Subscriber FOREIGN KEY(NodeID, SubscriberID) REFERENCES Subscriber (NodeID, ID)
+);
+
+CREATE TABLE SubscriberMeasurementGroup (
+    NodeID NCHAR(36) NOT NULL,
+    SubscriberID NCHAR(36) NOT NULL,
+    MeasurementGroupID INTEGER NOT NULL,
+    Allowed BOOLEAN NOT NULL DEFAULT 0,
+    CreatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    UpdatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    CONSTRAINT PK_SubscriberMeasurementGroup PRIMARY KEY (NodeID ASC, SubscriberID ASC, MeasurementGroupID ASC),
+	CONSTRAINT FK_SubscriberMeasurementGroup_Node FOREIGN KEY(NodeID) REFERENCES Node (ID),
+	CONSTRAINT FK_SubscriberMeasurementGroup_Subscriber FOREIGN KEY(NodeID, SubscriberID) REFERENCES Subscriber (NodeID, ID),
+	CONSTRAINT FK_SubscriberMeasurementGroup_MeasurementGroup FOREIGN KEY(MeasurementGroupID) REFERENCES MeasurementGroup (ID)
+);
+
+CREATE TABLE MeasurementGroup (
+    NodeID NCHAR(36) NOT NULL,
+    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    Name VARCHAR(200) NOT NULL,
+    Description TEXT,
+    CreatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    UpdatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
+	CONSTRAINT FK_MeasurementGroup_Node FOREIGN KEY(NodeID) REFERENCES Node (ID)
+);
+
+CREATE TABLE MeasurementGroupMeasurement (
+    NodeID NCHAR(36) NOT NULL,
+    MeasurementGroupID INTEGER NOT NULL,
+    SignalID NCHAR(36) NOT NULL,
+    CreatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    UpdatedOn DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    CONSTRAINT PK_MeasurementGroupMeasurement PRIMARY KEY (NodeID ASC, MeasurementGroupID ASC, SignalID ASC),
+	CONSTRAINT FK_MeasurementGroupMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID),
+	CONSTRAINT FK_MeasurementGroupMeasurement_Measurement FOREIGN KEY(SignalID) REFERENCES Measurement (SignalID),
+	CONSTRAINT FK_MeasurementGroupMeasurement_MeasurementGroup FOREIGN KEY(MeasurementGroupID) REFERENCES MeasurementGroup (ID)
+);
+
+-- ----------------------------------------------------------------------------
 
 CREATE UNIQUE INDEX PK_Runtime ON Runtime (SourceID ASC, SourceTable ASC);
 
@@ -607,8 +718,7 @@ ORDER BY Historian.LoadOrder;
 
 CREATE VIEW RuntimeDevice
 AS
-SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, 'TVA.PhasorProtocols.dll' AS AssemblyName, 
- 'TVA.PhasorProtocols.PhasorMeasurementMapper' AS TypeName,
+SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, Protocol.AssemblyName, Protocol.TypeName,
  Device.ConnectionString || ';' || ('isConcentrator=' || Device.IsConcentrator) || ';' ||
  ('accessID=' || Device.AccessID) || ';' ||
  CASE WHEN Device.TimeZone IS NULL THEN '' ELSE 'timeZone=' || Device.TimeZone END || ';' ||
@@ -691,7 +801,7 @@ SELECT OutputStream.NodeID, Runtime.ID, OutputStream.Acronym AS AdapterName,
  ('currentScalingValue=' || OutputStream.CurrentScalingValue) || ';' ||
  ('voltageScalingValue=' || OutputStream.VoltageScalingValue) || ';' ||
  ('analogScalingValue=' || OutputStream.AnalogScalingValue) || ';' ||
- ('performTimestampReasonabilityCheck=' || OutputStream.PerformTimestampReasonabilityCheck) || ';' ||
+ ('performTimestampReasonabilityCheck=' || OutputStream.PerformTimeReasonabilityCheck) || ';' ||
  ('digitalMaskValue=' || OutputStream.DigitalMaskValue) AS ConnectionString
 FROM OutputStream LEFT OUTER JOIN
  Runtime ON OutputStream.ID = Runtime.SourceID AND Runtime.SourceTable = 'OutputStream'
@@ -722,7 +832,7 @@ SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym A
  ('ignoreBadTimestamps=' || CalculatedMeasurement.IgnoreBadTimeStamps) || ';' ||
  ('timeResolution=' || CalculatedMeasurement.TimeResolution) || ';' ||
  ('allowPreemptivePublishing=' || CalculatedMeasurement.AllowPreemptivePublishing) || ';' ||
- ('performTimestampReasonabilityCheck=' || CalculatedMeasurement.PerformTimestampReasonabilityCheck) || ';' ||
+ ('performTimestampReasonabilityCheck=' || CalculatedMeasurement.PerformTimeReasonabilityCheck) || ';' ||
  ('downsamplingMethod=' || CalculatedMeasurement.DownsamplingMethod) || ';' ||
  ('useLocalClockAsRealTime=' || CalculatedMeasurement.UseLocalClockAsRealTime) AS ConnectionString
 FROM CalculatedMeasurement LEFT OUTER JOIN
@@ -735,10 +845,11 @@ AS
 SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID,
  COALESCE(Device.NodeID, Historian.NodeID) AS SourceNodeID,
  COALESCE(Historian.Acronym, Device.Acronym, '__') || ':' || Measurement.PointID AS ID,
- Measurement.SignalID, Measurement.PointTag, Measurement.AlternateTag, Measurement.SignalReference, Device.Acronym AS Device,
+ Measurement.SignalID, Measurement.PointTag, Measurement.AlternateTag, Measurement.SignalReference,
+ Measurement.Internal, Measurement.Subscribed, Device.Acronym AS Device,
  CASE WHEN Device.IsConcentrator = 0 AND Device.ParentID IS NOT NULL THEN RuntimeP.ID ELSE Runtime.ID END AS DeviceID,
  COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond,
- Protocol.Acronym AS Protocol, Measurement.SignalType, Phasor.ID AS PhasorID,
+ Protocol.Acronym AS Protocol, Protocol.Type AS ProtocolType, Measurement.SignalType, Phasor.ID AS PhasorID,
  Phasor.Type AS PhasorType, Phasor.Phase, Measurement.Adder, Measurement.Multiplier,
  Device.CompanyAcronym AS Company, Device.Longitude, Device.Latitude, Measurement.Description
 FROM (SELECT *, SignalType.Acronym AS SignalType FROM Measurement LEFT OUTER JOIN
@@ -753,8 +864,8 @@ FROM (SELECT *, SignalType.Acronym AS SignalType FROM Measurement LEFT OUTER JOI
 WHERE (Device.Enabled <> 0 OR Device.Enabled IS NULL) AND (Measurement.Enabled <> 0)
 UNION ALL
 SELECT NodeID, SourceNodeID, (Source || ':' || PointID) AS ID, SignalID, PointTag,
-	AlternateTag, SignalReference, NULL AS Device, NULL AS DeviceID,
-	FramesPerSecond, ProtocolAcronym AS Protocol, SignalTypeAcronym AS SignalType, PhasorID, PhasorType, Phase, Adder, Multiplier,
+	AlternateTag, SignalReference, 0 AS Internal, 1 AS Subscribed, NULL AS Device, NULL AS DeviceID,
+	FramesPerSecond, ProtocolAcronym AS Protocol, ProtocolType, SignalTypeAcronym AS SignalType, PhasorID, PhasorType, Phase, Adder, Multiplier,
 	CompanyAcronym AS Company, Longitude, Latitude, Description
 FROM ImportedMeasurement
 WHERE ImportedMeasurement.Enabled <> 0;
@@ -804,7 +915,7 @@ SELECT     Device.CompanyID, Device.CompanyAcronym, Device.CompanyName, Measurem
                       Device.VendorDeviceID, VendorDevice.Name AS VendorDeviceName, VendorDevice.Description AS VendorDeviceDescription, 
                       Device.ProtocolID, Protocol.Acronym AS ProtocolAcronym, Protocol.Name AS ProtocolName, Measurement.SignalTypeID, 
                       Measurement.PhasorSourceIndex, Phasor.Label AS PhasorLabel, Phasor.Type AS PhasorType, Phasor.Phase, 
-                      Measurement.SignalReference, Measurement.Adder, Measurement.Multiplier, Measurement.Description, Measurement.Enabled, 
+                      Measurement.SignalReference, Measurement.Adder, Measurement.Multiplier, Measurement.Description, Measurement.Subscribed, Measurement.Internal, Measurement.Enabled, 
                       COALESCE (Measurement.EngineeringUnits, '') AS EngineeringUnits, Measurement.Source, Measurement.SignalAcronym, 
                       Measurement.SignalName, Measurement.SignalTypeSuffix, Device.Longitude, Device.Latitude,
 					  (COALESCE(Historian.Acronym, Device.Acronym, '__') || ':' || Measurement.PointID) AS ID
@@ -840,7 +951,7 @@ AS
 SELECT CM.NodeID, CM.ID, CM.Acronym, COALESCE(CM.Name, '') AS Name, CM.AssemblyName, CM.TypeName, COALESCE(CM.ConnectionString, '') AS ConnectionString,
 		COALESCE(CM.ConfigSection, '') AS ConfigSection, COALESCE(CM.InputMeasurements, '') AS InputMeasurements, COALESCE(CM.OutputMeasurements, '') AS OutputMeasurements,
 		CM.MinimumMeasurementsToUse, CM.FramesPerSecond, CM.LagTime, CM.LeadTime, CM.UseLocalClockAsRealTime, CM.AllowSortsByArrival, CM.LoadOrder, CM.Enabled,
-		N.Name AS NodeName, CM.IgnoreBadTimeStamps, CM.TimeResolution, CM.AllowPreemptivePublishing, COALESCE(CM.DownsamplingMethod, '') AS DownsamplingMethod, CM.PerformTimestampReasonabilityCheck
+		N.Name AS NodeName, CM.IgnoreBadTimeStamps, CM.TimeResolution, CM.AllowPreemptivePublishing, COALESCE(CM.DownsamplingMethod, '') AS DownsamplingMethod, CM.PerformTimeReasonabilityCheck
 FROM CalculatedMeasurement CM, Node N
 WHERE CM.NodeID = N.ID;
 
@@ -848,15 +959,12 @@ CREATE VIEW HistorianDetail
 AS
 SELECT H.NodeID, H.ID, H.Acronym, COALESCE(H.Name, '') AS Name, COALESCE(H.AssemblyName, '') AS AssemblyName, COALESCE(H.TypeName, '') AS TypeName, 
 	COALESCE(H.ConnectionString, '') AS ConnectionString, H.IsLocal, COALESCE(H.Description, '') AS Description, H.LoadOrder, H.Enabled, N.Name AS NodeName, H.MeasurementReportingInterval 
-FROM Historian AS H INNER JOIN
-	 Node AS N ON H.NodeID = N.ID;
+FROM Historian AS H INNER JOIN Node AS N ON H.NodeID = N.ID;
 
 CREATE VIEW NodeDetail
 AS
 SELECT N.ID, N.Name, N.CompanyID AS CompanyID, COALESCE(N.Longitude, 0) AS Longitude, COALESCE(N.Latitude, 0) AS Latitude, 
-		COALESCE(N.Description, '') AS Description, COALESCE(N.ImagePath, '') AS ImagePath, N.Master, N.LoadOrder, N.Enabled, 
-		COALESCE(N.TimeSeriesDataServiceUrl, '') AS TimeSeriesDataServiceUrl, COALESCE(N.RemoteStatusServiceUrl, '') AS RemoteStatusServiceUrl,	
-		COALESCE(N.RealTimeStatisticServiceUrl, '') AS RealTimeStatisticServiceUrl, COALESCE(C.Name, '') AS CompanyName
+		COALESCE(N.Description, '') AS Description, COALESCE(N.ImagePath, '') AS ImagePath, COALESCE(N.Settings, '') AS Settings, N.MenuType, N.MenuData, N.Master, N.LoadOrder, N.Enabled, COALESCE(C.Name, '') AS CompanyName
 FROM Node N LEFT JOIN Company C 
 ON N.CompanyID = C.ID;
 
@@ -868,20 +976,17 @@ FROM Vendor;
 CREATE VIEW CustomActionAdapterDetail AS
 SELECT     CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, COALESCE(CA.ConnectionString, '') AS ConnectionString, CA.LoadOrder, 
                       CA.Enabled, N.Name AS NodeName
-FROM         CustomActionAdapter AS CA INNER JOIN
-                      Node AS N ON CA.NodeID = N.ID;
+FROM         CustomActionAdapter AS CA INNER JOIN Node AS N ON CA.NodeID = N.ID;
  
 CREATE VIEW CustomInputAdapterDetail AS
 SELECT     CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, COALESCE(CA.ConnectionString, '') AS ConnectionString, CA.LoadOrder, 
                       CA.Enabled, N.Name AS NodeName
-FROM         CustomInputAdapter AS CA INNER JOIN
-                      Node AS N ON CA.NodeID = N.ID;
+FROM         CustomInputAdapter AS CA INNER JOIN Node AS N ON CA.NodeID = N.ID;
  
 CREATE VIEW CustomOutputAdapterDetail AS
 SELECT     CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, COALESCE(CA.ConnectionString, '') AS ConnectionString, CA.LoadOrder, 
                       CA.Enabled, N.Name AS NodeName
-FROM         CustomOutputAdapter AS CA INNER JOIN
-                      Node AS N ON CA.NodeID = N.ID;
+FROM         CustomOutputAdapter AS CA INNER JOIN Node AS N ON CA.NodeID = N.ID;
  
 CREATE VIEW IaonTreeView AS
 SELECT     'Action Adapters' AS AdapterType, NodeID, ID, AdapterName, AssemblyName, TypeName, COALESCE(ConnectionString, '') AS ConnectionString
@@ -904,26 +1009,25 @@ FROM         OtherDevice AS OD LEFT OUTER JOIN
  
 CREATE VIEW VendorDeviceDistribution AS
 SELECT Device.NodeID, Vendor.Name AS VendorName, COUNT(*) AS DeviceCount 
-FROM Device 
-      LEFT OUTER JOIN VendorDevice ON Device.VendorDeviceID = VendorDevice.ID
-      INNER JOIN Vendor ON VendorDevice.VendorID = Vendor.ID
-      GROUP BY Device.NodeID, Vendor.Name;
+FROM Device  LEFT OUTER JOIN
+	VendorDevice ON Device.VendorDeviceID = VendorDevice.ID INNER JOIN
+	Vendor ON VendorDevice.VendorID = Vendor.ID
+GROUP BY Device.NodeID, Vendor.Name;
 
 CREATE VIEW VendorDeviceDetail
 AS
 SELECT     VD.ID, VD.VendorID, VD.Name, COALESCE(VD.Description, '') AS Description, COALESCE(VD.URL, '') AS URL, V.Name AS VendorName, 
                       V.Acronym AS VendorAcronym
-FROM         VendorDevice AS VD INNER JOIN
-                      Vendor AS V ON VD.VendorID = V.ID;
+FROM         VendorDevice AS VD INNER JOIN Vendor AS V ON VD.VendorID = V.ID;
                       
 CREATE VIEW DeviceDetail
 AS
-SELECT     D.NodeID, D.ID, D.ParentID, D.Acronym, COALESCE(D.Name, '') AS Name, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
+SELECT     D.NodeID, D.ID, D.ParentID, D.UniqueID, D.Acronym, COALESCE(D.Name, '') AS Name, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
                       D.ProtocolID, D.Longitude, D.Latitude, D.InterconnectionID, COALESCE(D.ConnectionString, '') AS ConnectionString, COALESCE(D.TimeZone, '') AS TimeZone, 
-                      COALESCE(D.FramesPerSecond, 30) AS FramesPerSecond, D.TimeAdjustmentTicks, D.DataLossInterval, COALESCE(D.ContactList, '') AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
+                      COALESCE(D.FramesPerSecond, 30) AS FramesPerSecond, D.TimeAdjustmentTicks, D.DataLossInterval, D.ConnectOnDemand, COALESCE(D.ContactList, '') AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
                       AS CompanyName, COALESCE(C.Acronym, '') AS CompanyAcronym, COALESCE(C.MapAcronym, '') AS CompanyMapAcronym, COALESCE(H.Acronym, '') 
                       AS HistorianAcronym, COALESCE(VD.VendorAcronym, '') AS VendorAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(P.Name, '') 
-                      AS ProtocolName, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym, D.CreatedOn, D.AllowedParsingExceptions, 
+                      AS ProtocolName, P.Type AS ProtocolType, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym, D.CreatedOn, D.AllowedParsingExceptions, 
                       D.ParsingExceptionWindow, D.DelayedConnectionInterval, D.AllowUseOfCachedConfiguration, D.AutoStartDataParsingSequence, D.SkipDisableRealTimeData, 
                       D.MeasurementReportingInterval
 FROM         Device AS D LEFT OUTER JOIN
@@ -941,8 +1045,7 @@ SELECT     'Device' AS DeviceType, NodeID, ID, Acronym, COALESCE(Name, '') AS Na
 FROM         DeviceDetail AS D
 UNION ALL
 SELECT     'OtherDevice' AS DeviceType, NULL AS NodeID, ID, Acronym, COALESCE(Name, '') AS Name, CompanyMapAcronym, CompanyName, VendorDeviceName, 
-                      Longitude, Latitude, 0 AS Reporting, 1 AS Inprogress, 1 AS Planned, 1 
-                      AS Desired
+                      Longitude, Latitude, 0 AS Reporting, 1 AS Inprogress, 1 AS Planned, 1 AS Desired
 FROM         OtherDeviceDetail AS OD;
 
 CREATE VIEW OutputStreamDetail AS
@@ -951,9 +1054,8 @@ SELECT     OS.NodeID, OS.ID, OS.Acronym, COALESCE(OS.Name, '') AS Name, OS.Type,
                       OS.AutoStartDataChannel, OS.NominalFrequency, OS.FramesPerSecond, OS.LagTime, OS.LeadTime, OS.UseLocalClockAsRealTime, 
                       OS.AllowSortsByArrival, OS.LoadOrder, OS.Enabled, N.Name AS NodeName, OS.DigitalMaskValue, OS.AnalogScalingValue, 
                       OS.VoltageScalingValue, OS.CurrentScalingValue, OS.CoordinateFormat, OS.DataFormat, OS.DownsamplingMethod, 
-                      OS.AllowPreemptivePublishing, OS.TimeResolution, OS.IgnoreBadTimeStamps, OS.PerformTimestampReasonabilityCheck
-FROM         OutputStream AS OS INNER JOIN
-                      Node AS N ON OS.NodeID = N.ID;
+                      OS.AllowPreemptivePublishing, OS.TimeResolution, OS.IgnoreBadTimeStamps, OS.PerformTimeReasonabilityCheck
+FROM         OutputStream AS OS INNER JOIN Node AS N ON OS.NodeID = N.ID;
                       
 CREATE VIEW OutputStreamMeasurementDetail AS
 SELECT     OSM.NodeID, OSM.AdapterID, OSM.ID, OSM.HistorianID, OSM.PointID, OSM.SignalReference, M.PointTag AS SourcePointTag, COALESCE(H.Acronym, '') 
@@ -980,23 +1082,38 @@ FROM Phasor P LEFT OUTER JOIN Phasor DP ON P.DestinationPhasorID = DP.ID
 CREATE VIEW StatisticMeasurement AS
 SELECT     MeasurementDetail.CompanyID, MeasurementDetail.CompanyAcronym, MeasurementDetail.CompanyName, MeasurementDetail.SignalID, MeasurementDetail.HistorianID, MeasurementDetail.HistorianAcronym, MeasurementDetail.HistorianConnectionString, MeasurementDetail.PointID, MeasurementDetail.PointTag, MeasurementDetail.AlternateTag, MeasurementDetail.DeviceID, 
                       MeasurementDetail.NodeID, MeasurementDetail.DeviceAcronym, MeasurementDetail.DeviceName, MeasurementDetail.FramesPerSecond, MeasurementDetail.DeviceEnabled, MeasurementDetail.ContactList, MeasurementDetail.VendorDeviceID, MeasurementDetail.VendorDeviceName, MeasurementDetail.VendorDeviceDescription, MeasurementDetail.ProtocolID, 
-                      MeasurementDetail.ProtocolAcronym, MeasurementDetail.ProtocolName, MeasurementDetail.SignalTypeID, MeasurementDetail.PhasorSourceIndex, MeasurementDetail.PhasorLabel, MeasurementDetail.PhasorType, MeasurementDetail.Phase, MeasurementDetail.SignalReference, MeasurementDetail.Adder, MeasurementDetail.Multiplier, MeasurementDetail.Description, MeasurementDetail.Enabled, 
-                      MeasurementDetail.EngineeringUnits, MeasurementDetail.Source, MeasurementDetail.SignalAcronym, MeasurementDetail.SignalName, MeasurementDetail.SignalTypeSuffix, MeasurementDetail.Longitude, MeasurementDetail.Latitude
+                      MeasurementDetail.ProtocolAcronym, MeasurementDetail.ProtocolName, MeasurementDetail.SignalTypeID, MeasurementDetail.PhasorSourceIndex, MeasurementDetail.PhasorLabel, MeasurementDetail.PhasorType, MeasurementDetail.Phase, MeasurementDetail.SignalReference, MeasurementDetail.Adder, MeasurementDetail.Multiplier, MeasurementDetail.Description,
+					  MeasurementDetail.Subscribed, MeasurementDetail.Internal, MeasurementDetail.Enabled, MeasurementDetail.EngineeringUnits, MeasurementDetail.Source, MeasurementDetail.SignalAcronym, MeasurementDetail.SignalName, MeasurementDetail.SignalTypeSuffix, MeasurementDetail.Longitude, MeasurementDetail.Latitude
 FROM MeasurementDetail 
 WHERE MeasurementDetail.SignalAcronym = 'STAT';
 
-CREATE VIEW ApplicationRoleSecurityGroupDetail AS 
+CREATE VIEW AppRoleSecurityGroupDetail AS 
 SELECT ApplicationRoleSecurityGroup.ApplicationRoleID AS ApplicationRoleID,ApplicationRoleSecurityGroup.SecurityGroupID AS SecurityGroupID,ApplicationRole.Name AS ApplicationRoleName,ApplicationRole.Description AS ApplicationRoleDescription,SecurityGroup.Name AS SecurityGroupName,SecurityGroup.Description AS SecurityGroupDescription 
 FROM ((ApplicationRoleSecurityGroup JOIN ApplicationRole ON((ApplicationRoleSecurityGroup.ApplicationRoleID = ApplicationRole.ID))) 
 	JOIN SecurityGroup ON((ApplicationRoleSecurityGroup.SecurityGroupID = SecurityGroup.ID)));
 
-CREATE VIEW ApplicationRoleUserAccountDetail AS 
+CREATE VIEW AppRoleUserAccountDetail AS 
 SELECT ApplicationRoleUserAccount.ApplicationRoleID AS ApplicationRoleID,ApplicationRoleUserAccount.UserAccountID AS UserAccountID,UserAccount.Name AS UserName,UserAccount.FirstName AS FirstName,UserAccount.LastName AS LastName,UserAccount.Email AS Email,ApplicationRole.Name AS ApplicationRoleName,ApplicationRole.Description AS ApplicationRoleDescription 
 FROM ((ApplicationRoleUserAccount JOIN ApplicationRole ON((ApplicationRoleUserAccount.ApplicationRoleID = ApplicationRole.ID))) JOIN UserAccount ON((ApplicationRoleUserAccount.UserAccountID = UserAccount.ID)));
 
 CREATE VIEW SecurityGroupUserAccountDetail AS 
 SELECT SecurityGroupUserAccount.SecurityGroupID AS SecurityGroupID,SecurityGroupUserAccount.UserAccountID AS UserAccountID,UserAccount.Name AS UserName,UserAccount.FirstName AS FirstName,UserAccount.LastName AS LastName,UserAccount.Email AS Email,SecurityGroup.Name AS SecurityGroupName,SecurityGroup.Description AS SecurityGroupDescription 
 FROM ((SecurityGroupUserAccount JOIN SecurityGroup ON((SecurityGroupUserAccount.SecurityGroupID = SecurityGroup.ID))) JOIN UserAccount ON((SecurityGroupUserAccount.UserAccountID = UserAccount.ID)));
+
+CREATE VIEW SubscriberMeasurementDetail AS 
+SELECT SubscriberMeasurement.NodeID AS NodeID, SubscriberMeasurement.SubscriberID AS SubscriberID, Subscriber.Acronym AS SubscriberAcronym, COALESCE(Subscriber.Name, '') AS SubscriberName, 
+SubscriberMeasurement.SignalID AS SignalID, SubscriberMeasurement.Allowed AS Allowed, Measurement.PointID AS PointID, Measurement.PointTag AS PointTag, Measurement.SignalReference AS SignalReference
+FROM ((SubscriberMeasurement JOIN Subscriber ON (SubscriberMeasurement.SubscriberID = Subscriber.ID)) JOIN Measurement ON (SubscriberMeasurement.SignalID = Measurement.SignalID));
+
+CREATE VIEW SubscriberMeasGroupDetail AS 
+SELECT SubscriberMeasurementGroup.NodeID AS NodeID, SubscriberMeasurementGroup.SubscriberID AS SubscriberID, Subscriber.Acronym AS SubscriberAcronym, COALESCE(Subscriber.Name, '') AS SubscriberName, 
+SubscriberMeasurementGroup.MeasurementGroupID AS MeasurementGroupID, SubscriberMeasurementGroup.Allowed AS Allowed, MeasurementGroup.Name AS MeasurementGroupName
+FROM ((SubscriberMeasurementGroup JOIN Subscriber ON (SubscriberMeasurementGroup.SubscriberID = Subscriber.ID)) JOIN MeasurementGroup ON (SubscriberMeasurementGroup.MeasurementGroupID = MeasurementGroup.ID));
+
+CREATE VIEW MeasurementGroupMeasDetail AS 
+SELECT MeasurementGroupMeasurement.MeasurementGroupID AS MeasurementGroupID, MeasurementGroup.Name AS MeasurementGroupName,
+MeasurementGroupMeasurement.SignalID AS SignalID, Measurement.PointID AS PointID, Measurement.PointTag AS PointTag, Measurement.SignalReference AS SignalReference
+FROM ((MeasurementGroupMeasurement JOIN MeasurementGroup ON (MeasurementGroupMeasurement.MeasurementGroupID = MeasurementGroup.ID)) JOIN Measurement ON (MeasurementGroupMeasurement.SignalID = Measurement.SignalID));
 
 CREATE VIEW NEW_GUID AS
 SELECT lower(
@@ -1116,6 +1233,7 @@ FOR EACH ROW
 CREATE TRIGGER Device_InsertDefault AFTER INSERT ON Device
 FOR EACH ROW
   BEGIN
+	UPDATE Device SET UniqueID = (SELECT * FROM NEW_GUID) WHERE ROWID = NEW.ROWID AND UniqueID IS NULL;
     UPDATE Device SET CreatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND CreatedOn = '';
 	UPDATE Device SET UpdatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND UpdatedOn = '';
   END;
@@ -1125,6 +1243,14 @@ FOR EACH ROW
   BEGIN
     UPDATE Historian SET CreatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND CreatedOn = '';
 	UPDATE Historian SET UpdatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND UpdatedOn = '';
+  END;
+  
+CREATE TRIGGER Subscriber_InsertDefault AFTER INSERT ON Subscriber
+FOR EACH ROW
+  BEGIN
+    UPDATE Subscriber SET ID = (SELECT * FROM NEW_GUID) WHERE ROWID = NEW.ROWID AND ID = '';
+	UPDATE Subscriber SET CreatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND CreatedOn = '';
+	UPDATE Subscriber SET UpdatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND UpdatedOn = '';
   END;
 
 CREATE TRIGGER Measurement_InsertDefault AFTER INSERT ON Measurement
@@ -1214,7 +1340,7 @@ FOR EACH ROW
   END;
 
 CREATE TRIGGER ErrorLog_InsertDefault AFTER INSERT ON ErrorLog FOR EACH ROW
-BEGIN UPDATE ErrorLog SET CreatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND CreatedOn = 0; END;
+BEGIN UPDATE ErrorLog SET CreatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND CreatedOn = ''; END;
 
 CREATE TRIGGER AuditLog_InsertDefault AFTER INSERT ON AuditLog FOR EACH ROW
 BEGIN UPDATE AuditLog SET UpdatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND UpdatedOn = ''; END;

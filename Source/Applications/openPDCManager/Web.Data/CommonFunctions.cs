@@ -6590,7 +6590,7 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From ApplicationRoleUserAccountDetail WHERE ApplicationRoleID = @applicationRoleID Order By UserName";
+                command.CommandText = "Select * From AppRoleUserAccountDetail WHERE ApplicationRoleID = @applicationRoleID Order By UserName";
 
 
                 if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
@@ -6669,7 +6669,7 @@ namespace openPDCManager.Data
 
                 IDbCommand command = connection.Connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "Select * From ApplicationRoleSecurityGroupDetail WHERE ApplicationRoleID = @applicationRoleID Order By SecurityGroupName";
+                command.CommandText = "Select * From AppRoleSecurityGroupDetail WHERE ApplicationRoleID = @applicationRoleID Order By SecurityGroupName";
                 if (command.Connection.ConnectionString.Contains("Microsoft.Jet.OLEDB"))
                     command.Parameters.Add(AddWithValue(command, "@applicationRoleID", "{" + applicationRoleID + "}"));
                 else

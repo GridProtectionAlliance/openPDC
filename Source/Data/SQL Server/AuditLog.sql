@@ -1190,3 +1190,107 @@ BEGIN
 
 END
 GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER Subscriber_AuditUpdate 
+   ON  Subscriber
+   AFTER UPDATE
+AS 
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	SELECT * INTO #deleted  FROM deleted
+	SELECT * INTO #inserted FROM inserted
+
+	DECLARE @id NVARCHAR(MAX)		
+	SELECT @id = CONVERT(NVARCHAR(MAX), ID) FROM #deleted	
+	
+	EXEC InsertIntoAuditLog 'Subscriber', 'ID', @id
+	
+	DROP TABLE #inserted
+	DROP TABLE #deleted
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER Subscriber_AuditDelete
+   ON  Subscriber
+   AFTER DELETE
+AS 
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	SELECT * INTO #deleted FROM deleted
+		
+	DECLARE @id NVARCHAR(MAX)		
+	SELECT @id = CONVERT(NVARCHAR(MAX), ID) FROM #deleted	
+
+	EXEC InsertIntoAuditLog 'Subscriber', 'ID', @id, '1'
+		
+	DROP TABLE #deleted
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER MeasurementGroup_AuditUpdate 
+   ON  MeasurementGroup
+   AFTER UPDATE
+AS 
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	SELECT * INTO #deleted  FROM deleted
+	SELECT * INTO #inserted FROM inserted
+
+	DECLARE @id NVARCHAR(MAX)		
+	SELECT @id = CONVERT(NVARCHAR(MAX), ID) FROM #deleted	
+	
+	EXEC InsertIntoAuditLog 'MeasurementGroup', 'ID', @id
+	
+	DROP TABLE #inserted
+	DROP TABLE #deleted
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER MeasurementGroup_AuditDelete
+   ON  MeasurementGroup
+   AFTER DELETE
+AS 
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	SELECT * INTO #deleted FROM deleted
+		
+	DECLARE @id NVARCHAR(MAX)		
+	SELECT @id = CONVERT(NVARCHAR(MAX), ID) FROM #deleted	
+
+	EXEC InsertIntoAuditLog 'MeasurementGroup', 'ID', @id, '1'
+		
+	DROP TABLE #deleted
+
+END
+GO
