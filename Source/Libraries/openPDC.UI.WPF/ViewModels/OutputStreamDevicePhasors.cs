@@ -18,18 +18,29 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/16/2011 - Aniket Salver
 //       Generated original version of source code.
+// 08/31/2011 - Aniket Salver
+//       Added few properties which helps in binding.
 //
 //******************************************************************************************************
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
+using System.Collections.Generic;
 
 namespace openPDC.UI.ViewModels
 {
-    // <summary>
+    ///<summary>
     /// Class to hold bindable <see cref="OutputStreamDevicePhasors"/> collection and selected OutputStreamDevicePhasor for UI.
     /// </summary>
+   
     internal class OutputStreamDevicePhasors : PagedViewModelBase<OutputStreamDevicePhasor, int>
     {
+        #region[Members]
+
+        private Dictionary<string, string> m_phaseLookupList;
+        private Dictionary<string, string> m_typeLookupList;
+
+        #endregion
+
         #region [ Properties ]
 
         /// <summary>
@@ -40,6 +51,28 @@ namespace openPDC.UI.ViewModels
             get
             {
                 return CurrentItem.ID == 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> Phase collection of type defined in the database.
+        /// </summary>
+        public Dictionary<string, string> PhaseLookupList
+        {
+            get
+            {
+                return m_phaseLookupList;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> Type collection of type defined in the database.
+        /// </summary>
+        public Dictionary<string, string> TypeLookupList
+        {
+            get
+            {
+                return m_typeLookupList;
             }
         }
 
@@ -55,7 +88,17 @@ namespace openPDC.UI.ViewModels
         public OutputStreamDevicePhasors(int itemsPerPage, bool autoSave = true)
             : base(itemsPerPage, autoSave)
         {
+            m_phaseLookupList = new Dictionary<string, string>();
+            m_phaseLookupList.Add("+", "Positive Sequence");
+            m_phaseLookupList.Add("-", "Negative Sequence");
+            m_phaseLookupList.Add("0", "Zero Sequence");
+            m_phaseLookupList.Add("A", "Phase A");
+            m_phaseLookupList.Add("B", "Phase B");
+            m_phaseLookupList.Add("C", "Phase C");
 
+            m_typeLookupList = new Dictionary<string, string>();
+            m_typeLookupList.Add("V", "Voltage");
+            m_typeLookupList.Add("I", "Current");
         }
 
         #endregion
