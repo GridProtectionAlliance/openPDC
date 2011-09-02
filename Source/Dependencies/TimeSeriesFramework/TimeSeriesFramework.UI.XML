@@ -129,26 +129,12 @@
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
             <returns>Boolean, indicating if source database is MySQL.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.RemoteStatusServerConnectionString(TVA.Data.AdoDataConnection)">
-            <summary>
-            Retrieves connection string to connect to backend windows service.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
-            <returns>IP address and port on which backend windows service is running.</returns>
-        </member>
         <member name="M:TimeSeriesFramework.UI.CommonFunctions.RealTimeStatisticServiceUrl(TVA.Data.AdoDataConnection)">
             <summary>
             Retrieves web service url to query real time statistics values.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
             <returns>string, url to web service.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.DataPublisherPort(TVA.Data.AdoDataConnection)">
-            <summary>
-            Retrieves a port number on which back end service is publishing data.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
-            <returns>port number on which data is being published.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.CommonFunctions.TimeSeriesDataServiceUrl(TVA.Data.AdoDataConnection)">
             <summary>
