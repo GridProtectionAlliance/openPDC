@@ -157,6 +157,8 @@ namespace TVA.PhasorProtocols
         private uint m_analogScalingValue;
         private uint m_digitalMaskValue;
         private bool m_autoPublishConfigurationFrame;
+        private int m_lastConfigurationPublishMinute;
+        private bool m_configurationFramePublished;
         private bool m_autoStartDataChannel;
         private bool m_processDataValidFlag;
         private bool m_addPhaseLabelSuffix;
@@ -583,6 +585,12 @@ namespace TVA.PhasorProtocols
             {
                 StringBuilder status = new StringBuilder();
 
+                if (m_configurationFrame != null)
+                {
+                    status.AppendFormat("  Configuration frame size: {0} bytes", m_configurationFrame.BinaryLength);
+                    status.AppendLine();
+                }
+
                 if (m_baseConfigurationFrame != null && m_baseConfigurationFrame.Cells != null)
                 {
                     status.AppendFormat("  Total configured devices: {0}", m_baseConfigurationFrame.Cells.Count);
@@ -716,6 +724,9 @@ namespace TVA.PhasorProtocols
             if (Enabled)
                 Stop();
 
+            m_lastConfigurationPublishMinute = -1;
+            m_configurationFramePublished = false;
+
             // Wait for initialization to complete
             if (WaitForInitialize(InitializationTimeout))
             {
@@ -772,6 +783,7 @@ namespace TVA.PhasorProtocols
         {
             // Make sure publication channel is defined
             EstablishPublicationChannel();
+
             // Make sure publication channel has started
             if (m_publishChannel != null && m_publishChannel.CurrentState == ServerState.NotRunning)
             {
@@ -1371,13 +1383,28 @@ namespace TVA.PhasorProtocols
 
                 // Send the configuration frame at the top of each minute if the class has been configured
                 // to automatically publish the configuration frame over the data channel
-                if (m_autoPublishConfigurationFrame && index == 0 && ((DateTime)dataFrame.Timestamp).Second == 0)
+                if (m_autoPublishConfigurationFrame)
                 {
-                    // Publish configuration frame binary image
-                    m_configurationFrame.Timestamp = dataFrame.Timestamp;
-                    image = m_configurationFrame.BinaryImage;
-                    m_publishChannel.MulticastAsync(image, 0, image.Length);
-                    Thread.Sleep(1);
+                    DateTime frameTime = dataFrame.Timestamp;
+
+                    if (frameTime.Second == 0)
+                    {
+                        if (frameTime.Minute != m_lastConfigurationPublishMinute)
+                        {
+                            m_lastConfigurationPublishMinute = frameTime.Minute;
+                            m_configurationFramePublished = false;
+                        }
+
+                        if (!m_configurationFramePublished)
+                        {
+                            // Publish configuration frame binary image
+                            m_configurationFramePublished = true;
+                            m_configurationFrame.Timestamp = dataFrame.Timestamp;
+                            image = m_configurationFrame.BinaryImage;
+                            m_publishChannel.MulticastAsync(image, 0, image.Length);
+                            Thread.Sleep(FramesPerSecond / 2);
+                        }
+                    }
                 }
 
                 // If the expected values did not arrive for a device, we mark the data as invalid
