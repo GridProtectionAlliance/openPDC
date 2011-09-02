@@ -571,27 +571,27 @@ namespace openPDC.UI.UserControls
 
         void StartSubscriptionForChart()
         {
-            string server = string.Empty;
-            try
-            {
-                Dictionary<string, string> settings = database.RemoteStatusServerConnectionString().ParseKeyValuePairs();
-                if (settings.ContainsKey("server"))
-                    server = settings["server"];
+            //string server = string.Empty;
+            //try
+            //{
+            //    Dictionary<string, string> settings = database.RemoteStatusServerConnectionString().ParseKeyValuePairs();
+            //    if (settings.ContainsKey("server"))
+            //        server = settings["server"];
 
-                if (server.Contains(":"))
-                    server = server.Substring(0, server.LastIndexOf(":"));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Failed to parse node connection string." + Environment.NewLine + ex.ToString(), "Parse Node Connection String", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            //    if (server.Contains(":"))
+            //        server = server.Substring(0, server.LastIndexOf(":"));
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Failed to parse node connection string." + Environment.NewLine + ex.ToString(), "Parse Node Connection String", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
             m_chartSubscriber = new DataSubscriber();
             m_chartSubscriber.StatusMessage += chartSubscriber_StatusMessage;
             m_chartSubscriber.ProcessException += chartSubscriber_ProcessException;
             m_chartSubscriber.ConnectionEstablished += chartSubscriber_ConnectionEstablished;
             m_chartSubscriber.NewMeasurements += chartSubscriber_NewMeasurements;
             m_chartSubscriber.ConnectionTerminated += chartSubscriber_ConnectionTerminated;
-            m_chartSubscriber.ConnectionString = "server=" + server + ":" + database.DataPublisherPort();
+            m_chartSubscriber.ConnectionString = database.DataPublisherConnectionString();
             m_chartSubscriber.Initialize();
             m_chartSubscriber.Start();
         }
@@ -819,20 +819,20 @@ namespace openPDC.UI.UserControls
 
         void StartSubscriptionForTreeData()
         {
-            string server = string.Empty;
-            try
-            {
-                Dictionary<string, string> settings = database.RemoteStatusServerConnectionString().ParseKeyValuePairs();
-                if (settings.ContainsKey("server"))
-                    server = settings["server"];
+            //string server = string.Empty;
+            //try
+            //{
+            //    Dictionary<string, string> settings = database.RemoteStatusServerConnectionString().ParseKeyValuePairs();
+            //    if (settings.ContainsKey("server"))
+            //        server = settings["server"];
 
-                if (server.Contains(":"))
-                    server = server.Substring(0, server.LastIndexOf(":"));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Failed to parse node connection string." + Environment.NewLine + ex.ToString(), "Parse Node Connection String", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            //    if (server.Contains(":"))
+            //        server = server.Substring(0, server.LastIndexOf(":"));
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Failed to parse node connection string." + Environment.NewLine + ex.ToString(), "Parse Node Connection String", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
 
             m_measurementDataSubscriber = new DataSubscriber();
             m_measurementDataSubscriber.StatusMessage += measurementDataSubscriber_StatusMessage;
@@ -840,7 +840,7 @@ namespace openPDC.UI.UserControls
             m_measurementDataSubscriber.ConnectionEstablished += measurementDataSubscriber_ConnectionEstablished;
             m_measurementDataSubscriber.NewMeasurements += measurementDataSubscriber_NewMeasurements;
             m_measurementDataSubscriber.ConnectionTerminated += measurementDataSubscriber_ConnectionTerminated;
-            m_measurementDataSubscriber.ConnectionString = "server=" + server + ":" + database.DataPublisherPort();
+            m_measurementDataSubscriber.ConnectionString = database.DataPublisherConnectionString();
             m_measurementDataSubscriber.Initialize();
             m_measurementDataSubscriber.Start();
         }

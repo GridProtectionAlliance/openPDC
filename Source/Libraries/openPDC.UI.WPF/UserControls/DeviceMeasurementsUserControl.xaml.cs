@@ -133,7 +133,7 @@ namespace openPDC.UI.UserControls
         void StartSubscription()
         {
             // Create server connection string
-            string server = database.DataPublisherPort();
+            //string server = database.DataPublisherPort();
 
             m_dataSubscriber = new DataSubscriber();
             m_dataSubscriber.StatusMessage += dataSubscriber_StatusMessage;
@@ -141,7 +141,7 @@ namespace openPDC.UI.UserControls
             m_dataSubscriber.ConnectionEstablished += dataSubscriber_ConnectionEstablished;
             m_dataSubscriber.NewMeasurements += dataSubscriber_NewMeasurements;
             m_dataSubscriber.ConnectionTerminated += dataSubscriber_ConnectionTerminated;
-            m_dataSubscriber.ConnectionString = "server=localhost:6170";
+            m_dataSubscriber.ConnectionString = database.ServiceConnectionString();
             m_dataSubscriber.Initialize();
             m_dataSubscriber.Start();
         }

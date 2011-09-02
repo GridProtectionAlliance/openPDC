@@ -53,8 +53,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Access", "Access", "{F0072C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B1AC9848-2909-4A7B-9541-8EA4E89E72F1}"
 	ProjectSection(SolutionItems) = preProject
-		Data\MySQL\AuditLog.sql = Data\MySQL\AuditLog.sql
-		Data\MySQL\InitialDataSet.sql = Data\MySQL\InitialDataSet.sql
 		Data\MySQL\openPDC.sql = Data\MySQL\openPDC.sql
 		Data\MySQL\SampleDataSet.sql = Data\MySQL\SampleDataSet.sql
 	EndProjectSection
@@ -63,16 +61,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDC", "openPDC", "{CE26
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B}"
 	ProjectSection(SolutionItems) = preProject
-		Dependencies\TVA\Hadoop.Replication.dll = Dependencies\TVA\Hadoop.Replication.dll
 		Dependencies\TVA\Hadoop.Replication.XML = Dependencies\TVA\Hadoop.Replication.XML
 		Dependencies\TVA\TVA.Core.dll = Dependencies\TVA\TVA.Core.dll
 		Dependencies\TVA\TVA.Core.XML = Dependencies\TVA\TVA.Core.XML
-		Dependencies\TVA\TVA.Historian.dll = Dependencies\TVA\TVA.Historian.dll
 		Dependencies\TVA\TVA.Historian.XML = Dependencies\TVA\TVA.Historian.XML
-		Dependencies\TVA\TVA.Security.dll = Dependencies\TVA\TVA.Security.dll
-		Dependencies\TVA\TVA.Security.XML = Dependencies\TVA\TVA.Security.XML
 		Dependencies\TVA\TVA.ServiceBus.dll = Dependencies\TVA\TVA.ServiceBus.dll
-		Dependencies\TVA\TVA.ServiceBus.XML = Dependencies\TVA\TVA.ServiceBus.XML
 		Dependencies\TVA\TVA.ServiceModel.dll = Dependencies\TVA\TVA.ServiceModel.dll
 		Dependencies\TVA\TVA.ServiceModel.XML = Dependencies\TVA\TVA.ServiceModel.XML
 		Dependencies\TVA\TVA.ServiceProcess.dll = Dependencies\TVA\TVA.ServiceProcess.dll
@@ -162,17 +155,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSeriesFramework", "Time
 		Dependencies\TimeSeriesFramework\CsvAdapters.XML = Dependencies\TimeSeriesFramework\CsvAdapters.XML
 		Dependencies\TimeSeriesFramework\DataQualityMonitoring.dll = Dependencies\TimeSeriesFramework\DataQualityMonitoring.dll
 		Dependencies\TimeSeriesFramework\DataQualityMonitoring.XML = Dependencies\TimeSeriesFramework\DataQualityMonitoring.XML
-		Dependencies\TimeSeriesFramework\MongoAdapters.dll = Dependencies\TimeSeriesFramework\MongoAdapters.dll
 		Dependencies\TimeSeriesFramework\MongoAdapters.XML = Dependencies\TimeSeriesFramework\MongoAdapters.XML
 		Dependencies\TimeSeriesFramework\MySqlAdapters.dll = Dependencies\TimeSeriesFramework\MySqlAdapters.dll
 		Dependencies\TimeSeriesFramework\MySqlAdapters.XML = Dependencies\TimeSeriesFramework\MySqlAdapters.XML
 		Dependencies\TimeSeriesFramework\TestingAdapters.dll = Dependencies\TimeSeriesFramework\TestingAdapters.dll
 		Dependencies\TimeSeriesFramework\TestingAdapters.XML = Dependencies\TimeSeriesFramework\TestingAdapters.XML
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.dll
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll
 		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.XML = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.XML
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.XML = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.XML
 		Dependencies\TimeSeriesFramework\WavInputAdapter.dll = Dependencies\TimeSeriesFramework\WavInputAdapter.dll
 		Dependencies\TimeSeriesFramework\WavInputAdapter.XML = Dependencies\TimeSeriesFramework\WavInputAdapter.XML
 	EndProjectSection

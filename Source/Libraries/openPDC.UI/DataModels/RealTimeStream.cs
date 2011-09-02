@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Windows.Media;
 using TimeSeriesFramework.UI;
 using TVA.Data;
 
@@ -203,7 +204,7 @@ namespace openPDC.UI.DataModels
 
                 // Get PDCs list.
                 resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym, Name, CompanyName, Enabled FROM DeviceDetail " +
-                    "WHERE NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Enabled = @enabled ORDER BY Acronym", DefaultTimeout, database.CurrentNodeID(), true, true));
+                    "WHERE NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Enabled = @enabled ORDER BY Acronym", DefaultTimeout, database.CurrentNodeID(), true, true).Copy());
 
                 resultSet.Tables[0].TableName = "PdcTable";
 
@@ -218,15 +219,15 @@ namespace openPDC.UI.DataModels
 
                 // Get Non-PDC device list.
                 resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, " +
-                    "ParentAcronym, Enabled FROM DeviceDetail WHERE NodeID = @nodeID AND IsConcetrator = @isConcentrator AND Enabled = @enabled ORDER BY Acronym",
-                    DefaultTimeout, database.CurrentNodeID(), false, true));
+                    "ParentAcronym, Enabled FROM DeviceDetail WHERE NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Enabled = @enabled ORDER BY Acronym",
+                    DefaultTimeout, database.CurrentNodeID(), false, true).Copy());
 
                 resultSet.Tables[1].TableName = "DeviceTable";
 
                 // Get non-statistics Measurements list.
                 resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, "SELECT DeviceID, SignalID, PointID, PointTag, SignalReference, " +
                     "SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym FROM MeasurementDetail WHERE NodeID = @nodeID AND " +
-                    "SignalAcronym <> @signalAcronym ORDER BY SignalReference", DefaultTimeout, database.CurrentNodeID(), "STAT"));
+                    "SignalAcronym <> @signalAcronym ORDER BY SignalReference", DefaultTimeout, database.CurrentNodeID(), "STAT").Copy());
 
                 resultSet.Tables[2].TableName = "MeasurementTable";
 
@@ -282,11 +283,14 @@ namespace openPDC.UI.DataModels
                                                     SignalReference = measurement.Field<string>("SignalReference"),
                                                     Description = measurement.Field<string>("description"),
                                                     SignalName = measurement.Field<string>("SignalName"),
+                                                    SignalAcronym = measurement.Field<string>("SignalAcronym"),
                                                     EngineeringUnit = measurement.Field<string>("EngineeringUnits"),
                                                     Expanded = false,
+                                                    Selected = false,
                                                     TimeTag = "N/A",
                                                     Value = "--",
-                                                    Quality = "N/A"
+                                                    Quality = "N/A",
+                                                    Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0))
                                                 }
                                             )
                                     }
@@ -318,7 +322,7 @@ namespace openPDC.UI.DataModels
         /// Saves <see cref="RealTimeStream"/> information into the database.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="stream">Information about <see cref="RealTimeStream"/>.<see cref=""/></param>
+        /// <param name="stream">Information about <see cref="RealTimeStream"/></param>
         /// <returns>String, for display use, indicating success.</returns>
         /// <remarks>This is only a place holder method with no implementation.</remarks>
         public static string Save(AdoDataConnection database, RealTimeStream stream)
@@ -527,12 +531,14 @@ namespace openPDC.UI.DataModels
         private string m_signalReference;
         private string m_description;
         private string m_signalName;
+        private string m_signalAcronym;
         private string m_engineeringUnit;
         private bool m_expanded;
         private bool m_selected;
         private string m_timeTag;
         private string m_value;
         private string m_quality;
+        private SolidColorBrush m_foreground;
 
         #endregion
 
@@ -667,6 +673,22 @@ namespace openPDC.UI.DataModels
         }
 
         /// <summary>
+        /// Gets or sets SignalAcronym for <see cref="RealTimeMeasurement"/>.
+        /// </summary>
+        public string SignalAcronym
+        {
+            get
+            {
+                return m_signalAcronym;
+            }
+            set
+            {
+                m_signalAcronym = value;
+                OnPropertyChanged("SignalAcronym");
+            }
+        }
+
+        /// <summary>
         /// Gets or sets Engineering Unit for <see cref="RealTimeMeasurement"/>.
         /// </summary>
         public string EngineeringUnit
@@ -759,6 +781,22 @@ namespace openPDC.UI.DataModels
             {
                 m_quality = value;
                 OnPropertyChanged("Quality");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets Foreground for <see cref="RealTimeMeasurement"/> to display on the screen.
+        /// </summary>
+        public SolidColorBrush Foreground
+        {
+            get
+            {
+                return m_foreground;
+            }
+            set
+            {
+                m_foreground = value;
+                OnPropertyChanged("Foreground");
             }
         }
 
