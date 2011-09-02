@@ -219,7 +219,7 @@
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.5.44"
+        "ProductVersion" = "8:1.5.45"
         "Manufacturer" = "8:Grid Protection Alliance"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
