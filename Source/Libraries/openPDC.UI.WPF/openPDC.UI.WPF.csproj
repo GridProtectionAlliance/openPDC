@@ -171,6 +171,9 @@
     <Compile Include="UserControls\OutputStreamDeviceDigitalUserControl.xaml.cs">
       <DependentUpon>OutputStreamDeviceDigitalUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\OutputStreamDeviceMeasurementUserControl.xaml.cs">
+      <DependentUpon>OutputStreamDeviceMeasurementUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\OutputStreamDeviceUserControl.xaml.cs">
       <DependentUpon>OutputStreamDeviceUserControl.xaml</DependentUpon>
     </Compile>
@@ -251,6 +254,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\OutputStreamDeviceDigitalUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\OutputStreamDeviceMeasurementUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
