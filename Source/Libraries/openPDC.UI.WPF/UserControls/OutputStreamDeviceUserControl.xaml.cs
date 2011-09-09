@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using openPDC.UI.ViewModels;
 
 namespace openPDC.UI.UserControls
 {
@@ -19,9 +9,13 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class OutputStreamDeviceUserControl : UserControl
     {
+        /// <summary>
+        /// Creates an instance of <see cref="OutputStreamDeviceUserControl"/> class.
+        /// </summary>
         public OutputStreamDeviceUserControl()
         {
             InitializeComponent();
+            this.DataContext = new OutputStreamDevices(1, 6);
         }
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)

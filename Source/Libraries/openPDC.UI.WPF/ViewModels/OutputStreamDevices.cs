@@ -133,23 +133,23 @@ namespace openPDC.UI.ViewModels
 
             m_phasorDataformatLookupList = new Dictionary<string, string>();
             m_phasorDataformatLookupList.Add("", "Select Phasor Data Format");
-            m_phasorDataformatLookupList.Add("", "FloatingPoint");
-            m_phasorDataformatLookupList.Add("", "FixedInteger");
+            m_phasorDataformatLookupList.Add("FloatingPoint", "FloatingPoint");
+            m_phasorDataformatLookupList.Add("FixedInteger", "FixedInteger");
 
             m_frequencyDataformatLookupList = new Dictionary<string, string>();
             m_frequencyDataformatLookupList.Add("", "Select Frequency Data Format");
-            m_frequencyDataformatLookupList.Add("", "FloatingPoint");
-            m_frequencyDataformatLookupList.Add("", "FixedInteger");
+            m_frequencyDataformatLookupList.Add("FloatingPoint", "FloatingPoint");
+            m_frequencyDataformatLookupList.Add("FixedInteger", "FixedInteger");
 
             m_analogDataformatLookupList = new Dictionary<string, string>();
             m_analogDataformatLookupList.Add("", "Select Frequency Data Format");
-            m_analogDataformatLookupList.Add("", "FloatingPoint");
-            m_analogDataformatLookupList.Add("", "FixedInteger");
+            m_analogDataformatLookupList.Add("FloatingPoint", "FloatingPoint");
+            m_analogDataformatLookupList.Add("FixedInteger", "FixedInteger");
 
             m_coordinateDataformatLookupList = new Dictionary<string, string>();
             m_coordinateDataformatLookupList.Add("", "Select Coordinate Format");
-            m_coordinateDataformatLookupList.Add("", "Polar");
-            m_coordinateDataformatLookupList.Add("", "Rectangular");
+            m_coordinateDataformatLookupList.Add("Polar", "Polar");
+            m_coordinateDataformatLookupList.Add("Rectangular", "Rectangular");
 
         }
 

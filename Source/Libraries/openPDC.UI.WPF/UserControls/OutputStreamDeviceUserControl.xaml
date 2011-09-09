@@ -54,7 +54,7 @@
                 <TextBlock Text="Acronym" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=Acronym}" CharacterCasing="Upper" MaxLength="200" />
+            <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=Name}" CharacterCasing="Upper" MaxLength="200" />
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
                 <TextBlock Text="Name" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
@@ -73,17 +73,17 @@
             <!--Third Row-->
             <TextBlock Text="Phasor Data Format" Grid.Row="2" Grid.Column="0" />
             <ComboBox Grid.Row="2" Grid.Column="1"  ItemsSource="{Binding Source={StaticResource PhasorDataFormatLookupList}}" DisplayMemberPath="Value"
-                      SelectedItem="{tsfBinding:Column Path=PhasorDataFormatID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource PhasorDataFormatLookupList}}"/>
+                      SelectedItem="{tsfBinding:Column Path=PhasorDataFormat, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource PhasorDataFormatLookupList}}"/>
             <TextBlock Text="Frequency Data Format" Grid.Row="2" Grid.Column="2" />
             <ComboBox Grid.Row="2" Grid.Column="3" ItemsSource="{Binding Source={StaticResource FrequencyDataFormatLookupList}}" DisplayMemberPath="Value"
-                      SelectedItem="{tsfBinding:Column Path=FrequencyDataFormatID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource FrequencyDataFormatLookupList}}"/>
+                      SelectedItem="{tsfBinding:Column Path=FrequencyDataFormat, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource FrequencyDataFormatLookupList}}"/>
             <!--Fourth Row-->
             <TextBlock Text="Analog Data Format" Grid.Row="3" Grid.Column="0" />
             <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource AnalogDataFormatLookupList}}" DisplayMemberPath="Value"
-                      SelectedItem="{tsfBinding:Column Path=AnalogDataFormatID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource AnalogDataFormatLookupList}}"/>
+                      SelectedItem="{tsfBinding:Column Path=AnalogDataFormat, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource AnalogDataFormatLookupList}}"/>
             <TextBlock Text="Coordinate Format" Grid.Row="3" Grid.Column="2" />
             <ComboBox Grid.Row="3" Grid.Column="3" ItemsSource="{Binding Source={StaticResource CoordinateFormatLookupList}}" DisplayMemberPath="Value"
-                      SelectedItem="{tsfBinding:Column Path=CoordinateFormatID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource CoordinateFormatLookupList}}"/>
+                      SelectedItem="{tsfBinding:Column Path=CoordinateFormat, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource CoordinateFormatLookupList}}"/>
             <!--Fifth Row-->
 
             <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right">

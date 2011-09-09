@@ -16,6 +16,11 @@
       <MenuDataItem Icon="" MenuText="Iaon Tree" Description=" View Iaon Tree" Roles="*" UserControlAssembly="TimeSeriesFramework.UI.WPF.dll" UserControlPath="TimeSeriesFramework.UI.UserControls.IaonTreeUserControl"/>
     </SubMenuItems>
   </MenuDataItem>
+  <MenuDataItem Icon="" MenuText="Output" Description="" Roles="*" UserControlAssembly="" UserControlPath="">
+    <SubMenuItems>
+      <MenuDataItem Icon="" MenuText="Output Stream Devices" Description="Manage Output Stream Devices" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDeviceUserControl" />
+    </SubMenuItems>
+  </MenuDataItem>
   <MenuDataItem Icon="" MenuText="Manage" Description="" Roles="*" UserControlAssembly="" UserControlPath="">
     <SubMenuItems>
       <MenuDataItem Icon="" MenuText="Nodes" Description="Manage Nodes" Roles="*" UserControlAssembly="TimeSeriesFramework.UI.WPF.dll" UserControlPath="TimeSeriesFramework.UI.UserControls.NodeUserControl" />
