@@ -177,6 +177,9 @@
     <Compile Include="UserControls\OutputStreamDeviceUserControl.xaml.cs">
       <DependentUpon>OutputStreamDeviceUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\OutputStreamUserControl.xaml.cs">
+      <DependentUpon>OutputStreamUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\PhasorMeasurementUserControl.xaml.cs">
       <DependentUpon>PhasorMeasurementUserControl.xaml</DependentUpon>
     </Compile>
@@ -194,6 +197,7 @@
     <Compile Include="ViewModels\OutputStreamDevicePhasors.cs" />
     <Compile Include="ViewModels\OutputStreamDevices.cs" />
     <Compile Include="ViewModels\OutputStreamMeasurements.cs" />
+    <Compile Include="ViewModels\OutputStreams.cs" />
     <Compile Include="ViewModels\PhasorMeasurements.cs" />
     <Compile Include="ViewModels\Phasors.cs" />
     <Compile Include="ViewModels\RealTimeStreams.cs" />
@@ -264,6 +268,10 @@
     <Page Include="UserControls\OutputStreamDeviceUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\OutputStreamUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\PhasorMeasurementUserControl.xaml">
       <SubType>Designer</SubType>

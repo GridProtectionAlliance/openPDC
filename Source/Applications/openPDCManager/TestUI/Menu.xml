@@ -18,6 +18,7 @@
   </MenuDataItem>
   <MenuDataItem Icon="" MenuText="Output" Description="" Roles="*" UserControlAssembly="" UserControlPath="">
     <SubMenuItems>
+      <MenuDataItem Icon="" MenuText="Output Stream" Description="Manage Output Streams" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamUserControl" />
       <MenuDataItem Icon="" MenuText="Output Stream Devices" Description="Manage Output Stream Devices" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDeviceUserControl" />
     </SubMenuItems>
   </MenuDataItem>

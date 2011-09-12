@@ -18,30 +18,35 @@
 //  ----------------------------------------------------------------------------------------------------
 //  07/26/2011 - Magdiel Lorenzo
 //       Generated original version of source code.
+//  09/08/2011 - Mehulbhai Thakkar
+//       Modified code to use sql queries directly instead from script file resource.
+//       Added comments to all properties and static methods.
 //
 //******************************************************************************************************
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TimeSeriesFramework.UI;
 using System.Collections.ObjectModel;
-using TVA.Data;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.IO;
-using openPDCManager.UI.SqlScripts;
+using System.Linq;
+using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.DataModels;
+using TVA.Data;
 
 namespace openPDCManager.UI.DataModels
 {
+    /// <summary>
+    /// Represents a record of <see cref="OutputStream"/> as defined in the database.
+    /// </summary>
     public class OutputStream : DataModelBase
     {
         #region [ Members ]
 
         private Guid m_nodeID;
         private int m_ID;
-        private string m_acronym;        
+        private string m_acronym;
         private string m_name;
         private int m_type;
         private string m_connectionString;
@@ -75,12 +80,15 @@ namespace openPDCManager.UI.DataModels
         private string m_createdBy;
         private DateTime m_updatedOn;
         private string m_updatedBy;
-        
-        
+
+
         #endregion
 
         #region [ Properties ]
-        
+
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s NodeID.
+        /// </summary>
         public Guid NodeID
         {
             get
@@ -94,6 +102,10 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s ID.
+        /// </summary>
+        // Field is populated by database via auto-increment and has no screen interaction, so no validation attributes are applied.
         public int ID
         {
             get
@@ -107,19 +119,29 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s Acronym.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream acronym is a required field, please provide value.")]
+        [StringLength(200, ErrorMessage = "Output stream acronym cannot exceed 200 characters.")]
+        [RegularExpression("^[A-Z0-9-'!'_]+$", ErrorMessage = "Only upper case letters, numbers, '!', '-' and '_' are allowed.")]
         public string Acronym
         {
-            get 
-            { 
-                return m_acronym; 
+            get
+            {
+                return m_acronym;
             }
-            set 
-            { 
+            set
+            {
                 m_acronym = value;
                 OnPropertyChanged("Acronym");
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s Name.
+        /// </summary>
+        [StringLength(200, ErrorMessage = "Output stream name cannot exceed 200 characters.")]
         public string Name
         {
             get
@@ -133,6 +155,10 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s Type.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream type is a required, please provide a value.")]
         public int Type
         {
             get
@@ -146,6 +172,9 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s ConnectionString.
+        /// </summary>
         public string ConnectionString
         {
             get
@@ -159,6 +188,10 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s IDCode.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream IDCode is a required field, please provide a value.")]
         public int IDCode
         {
             get
@@ -172,6 +205,9 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s CommandChannel.
+        /// </summary>
         public string CommandChannel
         {
             get
@@ -185,6 +221,9 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s DataChannel.
+        /// </summary>
         public string DataChannel
         {
             get
@@ -198,6 +237,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s AutoPublishConfigFrame flag.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream auto publish config frame is a required field, please provide a value.")]
+        [DefaultValue(false)]
         public bool AutoPublishConfigFrame
         {
             get
@@ -211,6 +255,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s AutoStartDataChannel flag.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream auto start data channel is a required field, please provide a value.")]
+        [DefaultValue(true)]
         public bool AutoStartDataChannel
         {
             get
@@ -224,6 +273,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s Nominal Frequency.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream nominal frequency is a required field, please provide a value.")]
+        [DefaultValue(60)]
         public int NominalFrequency
         {
             get
@@ -237,6 +291,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s Frames Per Second.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream frames per second is a required field, please provide a value.")]
+        [DefaultValue(30)]
         public int FramesPerSecond
         {
             get
@@ -250,6 +309,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s LagTime.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream lag time is a required field, please provide a value.")]
+        [DefaultValue(3.0)]
         public double LagTime
         {
             get
@@ -263,6 +327,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s LeadTime.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream lead time is a required field, please provide a value.")]
+        [DefaultValue(1.0)]
         public double LeadTime
         {
             get
@@ -276,6 +345,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s UseLocalClockAsRealTime flag.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream use local clock as realtime is a required field, please provide a value.")]
+        [DefaultValue(false)]
         public bool UseLocalClockAsRealTime
         {
             get
@@ -289,6 +363,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s AllowSortsByArrival flag.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream allow sorts by arrival is a required field, please provide a value.")]
+        [DefaultValue(true)]
         public bool AllowSortsByArrival
         {
             get
@@ -302,6 +381,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s LoadOrder.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream load order is a required field, please provide a value.")]
+        [DefaultValue(0)]
         public int LoadOrder
         {
             get
@@ -315,6 +399,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s Enabled flag.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream enabled is a required field, please provide a value.")]
+        [DefaultValue(false)]
         public bool Enabled
         {
             get
@@ -328,6 +417,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s IgnoreBadTimeStamps flag.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream ignore bad timestamps is a required field, please provide a value.")]
+        [DefaultValue(false)]
         public bool IgnoreBadTimeStamps
         {
             get
@@ -341,6 +435,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s TimeResolution.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream time resolution is a required field, please provide a value.")]
+        [DefaultValue(330000)]
         public int TimeResolution
         {
             get
@@ -354,6 +453,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s AllowPreemptivePublishing flag.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream allow preemptive publishing flag is a required field, please provide a value.")]
+        [DefaultValue(true)]
         public bool AllowPreemptivePublishing
         {
             get
@@ -367,6 +471,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s DownSamplingMethod.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream down sampling method is a required field, please provide a value.")]
+        [DefaultValue("LastReceived")]
         public string DownSamplingMethod
         {
             get
@@ -380,6 +489,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s DataFormat.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream data format is a required field, please provide a value.")]
+        [DefaultValue("FloatingPoint")]
         public string DataFormat
         {
             get
@@ -393,6 +507,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s CoordinateFormat.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream coordinate format is a required field, please provide a value.")]
+        [DefaultValue("Polar")]
         public string CoordinateFormat
         {
             get
@@ -406,6 +525,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s CurrentScalingValue.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream current scaling value is a required field, please provide a value.")]
+        [DefaultValue(2423)]
         public int CurrentScalingValue
         {
             get
@@ -419,6 +543,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s VoltageScalingValue.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream voltage scaling value is a required field, please provide a value.")]
+        [DefaultValue(2725785)]
         public int VoltageScalingValue
         {
             get
@@ -432,6 +561,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s AnalogScalingValue.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream analog scaling value is a required field, please provide a value.")]
+        [DefaultValue(1373291)]
         public int AnalogScalingValue
         {
             get
@@ -445,6 +579,11 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s DigitalMaskValue.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream digital mask value is a required field, please provide a value.")]
+        [DefaultValue(-65536)]
         public int DigitalMaskValue
         {
             get
@@ -458,32 +597,33 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets <see cref="OutputStream"/>'s Node name.
+        /// </summary>        
         public string NodeName
         {
             get
             {
                 return m_nodeName;
             }
-            set
-            {
-                m_nodeName = value;
-                OnPropertyChanged("NodeName");
-            }
         }
 
+        /// <summary>
+        /// Gets <see cref="OutputStream"/>'s TypeName.
+        /// </summary>
         public string TypeName
         {
             get
             {
                 return m_typeName;
             }
-            set
-            {
-                m_typeName = value;
-                OnPropertyChanged("TypeName");
-            }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/>'s PerformTimestampReasonabilityCheck flag.
+        /// </summary>
+        [Required(ErrorMessage = "Output stream perform timestamp reasonability check is a required field, please provide a value.")]
+        [DefaultValue(true)]
         public bool PerformTimestampReasonabilityCheck
         {
             get
@@ -497,6 +637,10 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/> CreatedOn.
+        /// </summary>
+        // Field is populated by database via trigger and has no screen interaction, so no validation attributes are applied
         public DateTime CreatedOn
         {
             get
@@ -506,10 +650,13 @@ namespace openPDCManager.UI.DataModels
             set
             {
                 m_createdOn = value;
-                OnPropertyChanged("CreatedOn");
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/> CreatedBy.
+        /// </summary>
+        // Field is populated by database via trigger and has no screen interaction, so no validation attributes are applied
         public string CreatedBy
         {
             get
@@ -519,10 +666,13 @@ namespace openPDCManager.UI.DataModels
             set
             {
                 m_createdBy = value;
-                OnPropertyChanged("CreatedBy");
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/> UpdatedOn.
+        /// </summary>
+        // Field is populated by database via trigger and has no screen interaction, so no validation attributes are applied
         public DateTime UpdatedOn
         {
             get
@@ -532,10 +682,13 @@ namespace openPDCManager.UI.DataModels
             set
             {
                 m_updatedOn = value;
-                OnPropertyChanged("UpdatedOn");
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/> UpdatedBy.
+        /// </summary>
+        // Field is populated by database via trigger and has no screen interaction, so no validation attributes are applied
         public string UpdatedBy
         {
             get
@@ -545,7 +698,6 @@ namespace openPDCManager.UI.DataModels
             set
             {
                 m_updatedBy = value;
-                OnPropertyChanged("UpdatedBy");
             }
         }
 
@@ -553,12 +705,20 @@ namespace openPDCManager.UI.DataModels
 
         #region [ Static ]
 
-        public static ObservableCollection<OutputStream> Load(AdoDataConnection connection, bool enabledOnly, Guid nodeID)
+        // Static Methods
+
+        /// <summary>
+        /// Loads <see cref="OutputStream"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="enabledOnly">Boolean flag indicating if only enabled <see cref="OutputStream"/>s needed.</param>        
+        /// <returns>Collection of <see cref="OutputStream"/>.</returns>
+        public static ObservableCollection<OutputStream> Load(AdoDataConnection database, bool enabledOnly)
         {
             bool createdConnection = false;
             try
             {
-                createdConnection = CreateConnection(ref connection);
+                createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<OutputStream> outputStreamList;
 
@@ -566,17 +726,17 @@ namespace openPDCManager.UI.DataModels
 
                 if (enabledOnly)
                 {
-                    resultTable = connection.Connection.RetrieveData(connection.AdapterType, "SELECT * FROM OuputStreamDetail WHERE NodeID = @nodeID AND Enabled = @enabled ORDER BY Load Order", connection.Guid(nodeID), true);
+                    resultTable = database.Connection.RetrieveData(database.AdapterType, "SELECT * FROM OuputStreamDetail WHERE NodeID = @nodeID AND Enabled = @enabled ORDER BY Load Order", database.CurrentNodeID(), true);
                 }
                 else
                 {
-                    resultTable = connection.Connection.RetrieveData(connection.AdapterType, "SELECT * FROM OutputStreamdetail WHERE NodeID = @nodeID ORDER BY LoadOrder", connection.Guid(nodeID));
+                    resultTable = database.Connection.RetrieveData(database.AdapterType, "SELECT * FROM OutputStreamdetail WHERE NodeID = @nodeID ORDER BY LoadOrder", database.CurrentNodeID());
                 }
 
                 outputStreamList = new ObservableCollection<OutputStream>(from item in resultTable.AsEnumerable()
                                                                           select new OutputStream()
                                                                           {
-                                                                              NodeID = connection.Guid(item, "NodeID"),
+                                                                              NodeID = database.Guid(item, "NodeID"),
                                                                               ID = Convert.ToInt32(item.Field<object>("ID")),
                                                                               Acronym = item.Field<string>("Acronym"),
                                                                               Name = item.Field<string>("Name"),
@@ -595,8 +755,8 @@ namespace openPDCManager.UI.DataModels
                                                                               AllowSortsByArrival = Convert.ToBoolean(item.Field<object>("AllowSortsByArrival")),
                                                                               LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                                                               Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-                                                                              NodeName = item.Field<string>("NodeName"),
-                                                                              TypeName = Convert.ToInt32(item.Field<object>("Type")) == 0 ? "IEEE C37.118" : "BPA",
+                                                                              m_nodeName = item.Field<string>("NodeName"),
+                                                                              m_typeName = Convert.ToInt32(item.Field<object>("Type")) == 0 ? "IEEE C37.118" : "BPA",
                                                                               IgnoreBadTimeStamps = Convert.ToBoolean(item.Field<object>("IgnoreBadTimeStamps")),
                                                                               TimeResolution = Convert.ToInt32(item.Field<object>("TimeResolution")),
                                                                               AllowPreemptivePublishing = Convert.ToBoolean(item.Field<object>("AllowPreemptivePublishing")),
@@ -614,52 +774,82 @@ namespace openPDCManager.UI.DataModels
             }
             finally
             {
-                if (createdConnection && connection != null)
-                    connection.Dispose();
+                if (createdConnection && database != null)
+                    database.Dispose();
             }
         }
 
-        public static string Save(AdoDataConnection connection, OutputStream outputStream, bool isNew)
+        /// <summary>
+        /// Saves <see cref="OutputStream"/> information to database.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStream">Information about <see cref="OutputStream"/>.</param>        
+        /// <returns>String, for display use, indicating success.</returns>
+        public static string Save(AdoDataConnection database, OutputStream outputStream)
         {
             bool createdConnection = false;
             try
             {
-                createdConnection = CreateConnection(ref connection);
+                createdConnection = CreateConnection(ref database);
 
-                if (isNew)
+                if (outputStream.ID == 0)
                 {
-                    connection.Connection.ExecuteNonQuery(Scripts.SaveOutputStreamIfNew, connection.Guid(outputStream.NodeID), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name, outputStream.Type, outputStream.ConnectionString, outputStream.IDCode, outputStream.CommandChannel,
+                    database.Connection.ExecuteNonQuery("INSERT INTO OutputStream (NodeID, Acronym, Name, Type, ConnectionString, IDCode, CommandChannel, DataChannel, " +
+                        "AutoPublishConfigFrame, AutoStartDataChannel, NominalFrequency, FramesPerSecond, LagTime, LeadTime, UseLocalClockAsRealTime, AllowSortsByArrival, " +
+                        "LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, DownSamplingMethod, DataFormat, CoordinateFormat, CurrentScalingValue, " +
+                        "VoltageScalingValue, AnalogScalingValue, DigitalMaskValue, PerformTimestampReasonabilityCheck, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES " +
+                        "(@nodeID, @acronym, @name, @type, @ConnectionString, @idCode, @commandChannel,	@dataChannel, @autoPublishConfigFrame, @autoStartDataChannel, @nominalFrequency, " +
+                        "@framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled, @ignoreBadTimeStamps,	@timeResolution, " +
+                        "@allowPreemptivePublishing, @downSamplingMethod, @dataFormat, @coordinateFormat, @currentScalingValue, @voltageScalingValue, @analogScalingValue, " +
+                        "@digitalMaskValue, @performTimestampReasonabilityCheck, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout, database.Guid(outputStream.NodeID),
+                        outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name, outputStream.Type, outputStream.ConnectionString, outputStream.IDCode, outputStream.CommandChannel,
                         outputStream.DataChannel, outputStream.AutoPublishConfigFrame, outputStream.AutoStartDataChannel, outputStream.NominalFrequency, outputStream.FramesPerSecond, outputStream.LagTime, outputStream.LeadTime, outputStream.UseLocalClockAsRealTime,
                         outputStream.AllowSortsByArrival, outputStream.LoadOrder, outputStream.Enabled, outputStream.IgnoreBadTimeStamps, outputStream.TimeResolution, outputStream.AllowPreemptivePublishing, outputStream.DownSamplingMethod, outputStream.DataFormat,
-                        outputStream.CoordinateFormat, outputStream.CurrentScalingValue, outputStream.VoltageScalingValue, outputStream.AnalogScalingValue, outputStream.DigitalMaskValue, outputStream.PerformTimestampReasonabilityCheck, CommonFunctions.CurrentUser, connection.UtcNow(), CommonFunctions.CurrentUser, connection.UtcNow());
+                        outputStream.CoordinateFormat, outputStream.CurrentScalingValue, outputStream.VoltageScalingValue, outputStream.AnalogScalingValue, outputStream.DigitalMaskValue, outputStream.PerformTimestampReasonabilityCheck, CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
                 }
                 else
                 {
-                    connection.Connection.ExecuteNonQuery(Scripts.SaveOutputStream, connection.Guid(outputStream.NodeID), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name, outputStream.Type, outputStream.ConnectionString, outputStream.IDCode, outputStream.CommandChannel,
-                        outputStream.DataChannel, outputStream.AutoPublishConfigFrame, outputStream.AutoStartDataChannel, outputStream.NominalFrequency, outputStream.FramesPerSecond, outputStream.LagTime, outputStream.LeadTime, outputStream.UseLocalClockAsRealTime,
-                        outputStream.AllowSortsByArrival, outputStream.LoadOrder, outputStream.Enabled, outputStream.IgnoreBadTimeStamps, outputStream.TimeResolution, outputStream.AllowPreemptivePublishing, outputStream.DownSamplingMethod, outputStream.DataFormat,
-                        outputStream.CoordinateFormat, outputStream.CurrentScalingValue, outputStream.VoltageScalingValue, outputStream.AnalogScalingValue, outputStream.DigitalMaskValue, outputStream.PerformTimestampReasonabilityCheck, CommonFunctions.CurrentUser, connection.UtcNow(), CommonFunctions.CurrentUser, connection.UtcNow());
+                    database.Connection.ExecuteNonQuery("UPDATE OutputStream SET NodeID = @nodeID, Acronym = @acronym, Name = @name, Type = @type, ConnectionString = @connectionString, " +
+                        "IDCode = @idCode, CommandChannel = @commandChannel, DataChannel = @dataChannel, AutoPublishConfigFrame = @autoPublishConfigFrame, AutoStartDataChannel = @autoStartDataChannel, " +
+                        "NominalFrequncy = @nominalFrequency, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, UseLocalClockAsRealTime = @useLocalClockAsRealTime, " +
+                        "AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled, IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, " +
+                        "AllowPreemptivePublishing = @allowPreemptivePublishing, DownSamplingMethod = @downsamplingMethod, DataFormat = @dataFormat, CoordinateFormat = @coordinateFormat, " +
+                        "CurrentScalingValue = @currentScalingValue, VoltageScalingValue = @voltageScalingValue, AnalogScalingValue = @analogScalingValue, DigitalMaskValue = @digitalMaskValue, " +
+                        "PerformTimestampReasonabilityCheck = @perforTimestampReasonabilityCheck, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout,
+                        database.Guid(outputStream.NodeID), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name, outputStream.Type, outputStream.ConnectionString,
+                        outputStream.IDCode, outputStream.CommandChannel, outputStream.DataChannel, outputStream.AutoPublishConfigFrame, outputStream.AutoStartDataChannel,
+                        outputStream.NominalFrequency, outputStream.FramesPerSecond, outputStream.LagTime, outputStream.LeadTime, outputStream.UseLocalClockAsRealTime,
+                        outputStream.AllowSortsByArrival, outputStream.LoadOrder, outputStream.Enabled, outputStream.IgnoreBadTimeStamps, outputStream.TimeResolution,
+                        outputStream.AllowPreemptivePublishing, outputStream.DownSamplingMethod, outputStream.DataFormat, outputStream.CoordinateFormat, outputStream.CurrentScalingValue,
+                        outputStream.VoltageScalingValue, outputStream.AnalogScalingValue, outputStream.DigitalMaskValue, outputStream.PerformTimestampReasonabilityCheck,
+                        CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
                 }
                 return "Output Stream Information Saved Successfully";
             }
             finally
             {
-                if (createdConnection && connection != null)
-                    connection.Dispose();
+                if (createdConnection && database != null)
+                    database.Dispose();
             }
         }
 
-        public static Dictionary<int, string> GetLookupList(AdoDataConnection connection, bool isOptional = true)
+        /// <summary>
+        /// Gets a <see cref="Dictionary{T1,T2}"/> style list of <see cref="OutputStream"/> information.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
+        /// <returns><see cref="Dictionary{T1,T2}"/> containing ID and Name of <see cref="OutputStream"/>s defined in the database.</returns>
+        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, bool isOptional = true)
         {
             bool createdConnection = false;
 
             try
             {
-                createdConnection = CreateConnection(ref connection);
+                createdConnection = CreateConnection(ref database);
 
                 Dictionary<int, string> osList = new Dictionary<int, string>();
 
-                DataTable results = connection.Connection.RetrieveData(connection.AdapterType, Scripts.LoadOSLookupList, connection.CurrentNodeID());
+                DataTable results = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Name FROM OutputStream WHERE NodeID = @nodeID ORDER BY Name", DefaultTimeout, database.CurrentNodeID());
 
                 foreach (DataRow row in results.Rows)
                     osList[row.ConvertField<int>("ID")] = row.Field<string>("Name");
@@ -668,36 +858,48 @@ namespace openPDCManager.UI.DataModels
             }
             finally
             {
-                if (createdConnection && connection != null)
-                    connection.Dispose();
+                if (createdConnection && database != null)
+                    database.Dispose();
             }
         }
 
-        public static string DeleteOutputStream(AdoDataConnection connection, int outputStreamID)
+        /// <summary>
+        /// Deletes specified <see cref="OutputStream"/> record from database.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamID">ID of the record to be deleted.</param>
+        /// <returns>String, for display use, indicating success.</returns>
+        public static string DeleteOutputStream(AdoDataConnection database, int outputStreamID)
         {
             bool createdConnection = false;
 
             try
             {
-                createdConnection = CreateConnection(ref connection);
+                createdConnection = CreateConnection(ref database);
 
-                connection.Connection.ExecuteNonQuery(Scripts.DeleteOutputStream, outputStreamID);
+                database.Connection.ExecuteNonQuery("DELETE FROM OutputStream WHERE ID = @outputStreamID", DefaultTimeout, outputStreamID);
 
                 return "Output Stream Deleted Successfully";
             }
             finally
             {
-                if (createdConnection && connection != null)
-                    connection.Dispose();
+                if (createdConnection && database != null)
+                    database.Dispose();
             }
         }
 
-        public static OutputStream GetOutputStreamByAcronym(AdoDataConnection connection, string acronym, Guid nodeID)
+        /// <summary>
+        /// Retrieves <see cref="OutputStream"/> information based on acronym provided.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="acronym"><see cref="OutputStream"/> acronym to filter data.</param>
+        /// <returns><see cref="OutputStream"/> information.</returns>
+        public static OutputStream GetOutputStreamByAcronym(AdoDataConnection database, string acronym)
         {
             try
             {
                 List<OutputStream> outputStreamList = new List<OutputStream>();
-                outputStreamList = (from item in Load(connection, false, nodeID)
+                outputStreamList = (from item in Load(database, false)
                                     where item.Acronym.ToUpper() == acronym.ToUpper()
                                     select item).ToList();
 
@@ -708,45 +910,45 @@ namespace openPDCManager.UI.DataModels
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException(connection, "GetOutputStreamByAcronym", ex);
+                CommonFunctions.LogException(database, "GetOutputStreamByAcronym", ex);
                 return null;
             }
         }
 
-        public static List<Measurement> GetOutputStreamStatistics(AdoDataConnection connection, string outputStreamAcronym)
+        public static List<Measurement> GetOutputStreamStatistics(AdoDataConnection database, string outputStreamAcronym)
         {
             try
             {
                 List<Measurement> measurementList = new List<Measurement>();
-                measurementList = (from item in Measurement.Load(connection)
+                measurementList = (from item in Measurement.Load(database)
                                    where item.SignalReference.StartsWith(outputStreamAcronym + "!OS")
                                    select item).ToList();
                 return measurementList;
             }
             catch (Exception ex)
             {
-                CommonFunctions.LogException(connection, "GetOutputStreamStatistics", ex);
+                CommonFunctions.LogException(database, "GetOutputStreamStatistics", ex);
                 return null;
             }
         }
 
-        public static string UpdateOutputStreamStatistics(AdoDataConnection connection, string oldAcronym, string newAcronym, string oldName, string newName)
+        public static string UpdateOutputStreamStatistics(AdoDataConnection database, string oldAcronym, string newAcronym, string oldName, string newName)
         {
             bool createdConnection = false;
 
             try
             {
-                createdConnection = CreateConnection(ref connection);
+                createdConnection = CreateConnection(ref database);
 
                 if (!string.IsNullOrEmpty(oldAcronym) && oldAcronym != newAcronym)
                 {
-                    List<Measurement> measurementList = GetOutputStreamStatistics(connection, oldAcronym);
+                    List<Measurement> measurementList = GetOutputStreamStatistics(database, oldAcronym);
                     foreach (Measurement measurement in measurementList)
                     {
                         measurement.SignalReference = measurement.SignalReference.Replace(oldAcronym, newAcronym);
                         measurement.PointTag = measurement.PointTag.Replace(oldAcronym, newAcronym);
                         measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldName, newName, System.Text.RegularExpressions.RegexOptions.IgnoreCase);      //measurement.Description.Replace(oldAcronym, newAcronym);
-                        Measurement.Save(connection, measurement);
+                        Measurement.Save(database, measurement);
                     }
                 }
 
@@ -754,8 +956,8 @@ namespace openPDCManager.UI.DataModels
             }
             finally
             {
-                if (createdConnection && connection != null)
-                    connection.Dispose();
+                if (createdConnection && database != null)
+                    database.Dispose();
             }
         }
 

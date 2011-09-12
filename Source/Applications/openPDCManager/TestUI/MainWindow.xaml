@@ -34,7 +34,7 @@
             </Grid.RowDefinitions>
 
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-                <Image Source="/TimeSeriesFramework.UI;component/images/GPALock.png"/>
+                <Image Source="/TimeSeriesFramework.UI;component/images/GPALock.png" ToolTip="Grid Protection Alliance"/>
                 <TextBlock x:Name="TextBoxTitle"  Style="{StaticResource MainTitleStyle}" Margin="5,-10,0,0"/>                
             </StackPanel>
             
@@ -45,7 +45,7 @@
             </StackPanel>
 
             <Border Background="{StaticResource MenuBackgroundBrush}" BorderThickness="0" CornerRadius="5" VerticalAlignment="Top" 
-                    HorizontalAlignment="Right" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,5,0" Width="875" Height="32">
+                    Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,5,0" Width="875" Height="32">
                 <Menu x:Name="MenuMain" ItemsSource="{Binding}" Style="{StaticResource MenuStyle}" ItemContainerStyleSelector="{StaticResource MenuItemStyleSelector}"
                       HorizontalAlignment="Left"/>
             </Border>

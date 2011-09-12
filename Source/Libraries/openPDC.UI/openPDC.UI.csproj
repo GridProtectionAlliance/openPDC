@@ -119,6 +119,7 @@
     <Compile Include="DataModels\DeviceMeasurementData.cs" />
     <Compile Include="DataModels\InputMonitorData.cs" />
     <Compile Include="DataModels\InputWizardDevice.cs" />
+    <Compile Include="DataModels\OutputStream.cs" />
     <Compile Include="DataModels\OutputStreamDevice.cs" />
     <Compile Include="DataModels\OutputStreamDeviceAnalog.cs" />
     <Compile Include="DataModels\OutputStreamDeviceDigital.cs" />
@@ -132,7 +133,6 @@
     <Compile Include="IsolatedStorageManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Images\Copy.png" />
     <Content Include="Images\EditConfiguration.png" />

@@ -1,59 +1,74 @@
-﻿using System;
+﻿//******************************************************************************************************
+//  OutputStreams.cs - Gbtc
+//
+//  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
+//
+//  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
+//  the NOTICE file distributed with this work for additional information regarding copyright ownership.
+//  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+//  not use this file except in compliance with the License. You may obtain a copy of the License at:
+//
+//      http://www.opensource.org/licenses/eclipse-1.0.php
+//
+//  Unless agreed to in writing, the subject software distributed under the License is distributed on an
+//  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
+//  License for the specific language governing permissions and limitations.
+//
+//  Code Modification History:
+//  ----------------------------------------------------------------------------------------------------
+//  09/09/2011 - Mehulbhai Thakkar
+//       Generated original version of source code.
+//
+//******************************************************************************************************
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.DataModels;
-using System.Windows.Input;
-using TimeSeriesFramework.UI.Commands;
-using TVA.Data;
-using openPDCManager.UI.DataModels;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Input;
+using openPDCManager.UI.DataModels;
+using TimeSeriesFramework.UI;
+using TimeSeriesFramework.UI.Commands;
+using TimeSeriesFramework.UI.DataModels;
 
 namespace openPDCManager.UI.ViewModels
 {
-    internal class OutputStreams : PagedViewModelBase<openPDCManager.UI.DataModels.OutputStream, int>
+    internal class OutputStreams : PagedViewModelBase<OutputStream, int>
     {
-
         #region [ Members ]
 
         private Dictionary<Guid, string> m_nodelookupList;
-        private RelayCommand m_sendInitCommand;
+        private Dictionary<string, string> m_downSamplingMethodLookupList;
+        private Dictionary<string, string> m_dataFormatLookupList;
+        private Dictionary<string, string> m_coordinateFormatLookupList;
+        private Dictionary<int, string> m_typeLookupList;
         private RelayCommand m_initializeCommand;
         private RelayCommand m_copyCommand;
-        private RelayCommand m_updateCommand;
-        private RelayCommand m_deleteCommand;
-        private AdoDataConnection database;
+        private RelayCommand m_updateConfigurationCommand;
+        private Dictionary<Guid, string> m_nodeLookupList;
 
         #endregion
 
         #region [ Properties ]
 
-        public ICommand UpdateCommand
+        /// <summary>
+        /// Gets <see cref="ICommand"/> object for update operation.
+        /// </summary>
+        public ICommand UpdateConfigurationCommand
         {
             get
             {
-                if (m_updateCommand == null)
+                if (m_updateConfigurationCommand == null)
                 {
-                    m_updateCommand = new RelayCommand(UpdateConfig);
+                    m_updateConfigurationCommand = new RelayCommand(UpdateConfiguration);
                 }
-                return m_updateCommand;
+                return m_updateConfigurationCommand;
             }
         }
 
-        public ICommand DeleteCommand
-        {
-            get
-            {
-                if (m_deleteCommand == null)
-                {
-                    m_deleteCommand = new RelayCommand(DeleteComm);
-                }
-                return m_deleteCommand;
-            }
-        }
-
+        /// <summary>
+        /// Gets <see cref="ICommand"/> object for copy operation.
+        /// </summary>
         public ICommand CopyCommand
         {
             get
@@ -67,6 +82,9 @@ namespace openPDCManager.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets <see cref="ICommand"/> object for Initialize operation.
+        /// </summary>
         public ICommand InitializeCommand
         {
             get
@@ -79,18 +97,9 @@ namespace openPDCManager.UI.ViewModels
             }
         }
 
-        public ICommand SendInitCommand
-        {
-            get
-            {
-                if (m_sendInitCommand == null)
-                {
-
-                }
-                return m_sendInitCommand;
-            }
-        }
-
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> type collection of <see cref="Node"/> defined in the database.
+        /// </summary>
         public Dictionary<Guid, string> NodeLookupList
         {
             get
@@ -99,11 +108,58 @@ namespace openPDCManager.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> type collection of <see cref="OutputStream"/> types.
+        /// </summary>
+        public Dictionary<int, string> TypeLookupList
+        {
+            get
+            {
+                return m_typeLookupList;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> type collection of <see cref="OutputStream"/> down sampling methods.
+        /// </summary>
+        public Dictionary<string, string> DownSamplingMethodLookupList
+        {
+            get
+            {
+                return m_downSamplingMethodLookupList;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> type collection of <see cref="OutputStream"/> data formats.
+        /// </summary>
+        public Dictionary<string, string> DataFormatLookupList
+        {
+            get
+            {
+                return m_dataFormatLookupList;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="Dictionary{T1,T2}"/> type collection of <see cref="OutputStream"/> coordinate formats.
+        /// </summary>
+        public Dictionary<string, string> CoordinateFormatLookupList
+        {
+            get
+            {
+                return m_coordinateFormatLookupList;
+            }
+        }
+
+        /// <summary>
+        /// Gets flag that determines if <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/> is a new record.
+        /// </summary>
         public override bool IsNewRecord
         {
             get
             {
-                throw new NotImplementedException();
+                return CurrentItem.ID == 0;
             }
         }
 
@@ -115,12 +171,30 @@ namespace openPDCManager.UI.ViewModels
             : base(itemsPerPage, autoSave)
         {
             m_nodelookupList = Node.GetLookupList(null);
-            database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
+
+            m_typeLookupList = new Dictionary<int, string>();
+            m_typeLookupList.Add(0, "IEEE C37.118");
+            m_typeLookupList.Add(1, "BPA");
+
+            m_downSamplingMethodLookupList = new Dictionary<string, string>();
+            m_downSamplingMethodLookupList.Add("LastReceived", "LastReceived");
+            m_downSamplingMethodLookupList.Add("Closest", "Closest");
+            m_downSamplingMethodLookupList.Add("Filtered", "Filtered");
+            m_downSamplingMethodLookupList.Add("BestQuality", "BestQuality");
+
+            m_dataFormatLookupList = new Dictionary<string, string>();
+            m_dataFormatLookupList.Add("FloatingPoint", "FloatingPoint");
+            m_dataFormatLookupList.Add("FixedInteger", "FixedInteger");
+
+            m_coordinateFormatLookupList = new Dictionary<string, string>();
+            m_coordinateFormatLookupList.Add("Polar", "Polar");
+            m_coordinateFormatLookupList.Add("Rectangular", "Rectangular");
         }
- 
+
         #endregion
 
         #region [ Methods ]
+
         public override int GetCurrentItemKey()
         {
             return CurrentItem.ID;
@@ -139,41 +213,46 @@ namespace openPDCManager.UI.ViewModels
 
         public override void Load()
         {
-            base.Load();
-
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
-                ItemsSource = OutputStream.Load(null, false, (Guid)database.CurrentNodeID());
+                ItemsSource = OutputStream.Load(null, false);
             }
             catch (Exception ex)
             {
-                Popup("Error: ", ex.Message, MessageBoxImage.Error);
+                if (ex.InnerException != null)
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                else
+                    Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
             }
         }
 
         private void SendInitializeCommand()
         {
-            try
-            {
-                    var result = CommonFunctions.SendCommandToService("Initialize" + CommonFunctions.GetRuntimeID("OutputStream", CurrentItem.ID));
-                    Popup(result, "", System.Windows.MessageBoxImage.Information);
-                    CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
-            }
-            catch (Exception ex)
-            {
-                CommonFunctions.LogException(null, "WPF.SendInitialize", ex);
-                Popup("Failed to Send Initialize Command", ex.Message, System.Windows.MessageBoxImage.Error);
-            }
+
         }
 
         private void InitCommand()
         {
-            if (Confirm("Do you want to send Initialize Command?", "Output Stream Acronym: " + CurrentItem.Acronym))
+            if (Confirm("Do you want to send Initialize Command?", "Output Stream: " + CurrentItem.Acronym))
             {
-                SendInitializeCommand();
+                try
+                {
+                    var result = CommonFunctions.SendCommandToService("Initialize" + CommonFunctions.GetRuntimeID("OutputStream", CurrentItem.ID));
+                    Popup(result, "", System.Windows.MessageBoxImage.Information);
+                    CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
+                }
+                catch (Exception ex)
+                {
+                    CommonFunctions.LogException(null, "WPF.SendInitialize", ex);
+                    Popup("Failed to Send Initialize Command", ex.Message, System.Windows.MessageBoxImage.Error);
+                }
             }
-        } 
+        }
 
         private void Copy(object parameter)
         {
@@ -186,25 +265,24 @@ namespace openPDCManager.UI.ViewModels
                     outputStreamToCopy.Name = "Copy of " + outputStreamToCopy.Name;
                     outputStreamToCopy.Enabled = false;
                     string originalAcronym = outputStreamToCopy.Acronym;
-                    Guid nodeID = (Guid)database.CurrentNodeID();
                     int i = 1;
                     do
                     {
                         outputStreamToCopy.Acronym = originalAcronym + i.ToString();
                         i++;
                     }
-                    while (OutputStream.GetOutputStreamByAcronym(null, outputStreamToCopy.Acronym, nodeID) != null);
+                    while (OutputStream.GetOutputStreamByAcronym(null, outputStreamToCopy.Acronym) != null);
 
                     CurrentItem = outputStreamToCopy;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Popup("Failed to delete output stream.", ex.Message, System.Windows.MessageBoxImage.Error);
+                Popup("Failed to copy output stream.", ex.Message, System.Windows.MessageBoxImage.Error);
             }
         }
 
-        private void UpdateConfig()
+        private void UpdateConfiguration()
         {
             try
             {
@@ -219,23 +297,6 @@ namespace openPDCManager.UI.ViewModels
             catch (Exception ex)
             {
                 Popup("Failed to UpdateConfiguration", ex.Message, MessageBoxImage.Error);
-            }
-        }
-
-        private void DeleteComm()
-        {
-            try
-            {
-
-                if (Confirm("Do you want to delete output stream?", "Output Stream Acronym: "))
-                {
-                    OutputStream.DeleteOutputStream(null, CurrentItem.ID);
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Popup("Failed to delete output stream", ex.Message, MessageBoxImage.Error);
             }
         }
 
