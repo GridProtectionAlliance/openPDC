@@ -58,7 +58,7 @@
             <!--Second Row-->
             <TextBlock Text="Type" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" />
             <ComboBox Grid.Row="1" Grid.Column="1"  ItemsSource="{Binding Source={StaticResource TypeLookupList}}" DisplayMemberPath="Value"
-                      SelectedItem="{tsfBinding:Column Path=TypeID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource TypeLookupList}}"/>
+                      SelectedItem="{tsfBinding:Column Path=Type, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource TypeLookupList}}"/>
             <TextBox Grid.Row="1" Grid.Column="3" Text="{tsfBinding:Column Path=ScalingValue}" CharacterCasing="Upper" />
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right">
                 <TextBlock Text="Scaling Value" Style="{StaticResource RequiredLabel}" />
