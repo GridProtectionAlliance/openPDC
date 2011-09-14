@@ -72,7 +72,8 @@
 
             <!--Third Row-->
             <TextBlock Text="Phasor Data Format" Grid.Row="2" Grid.Column="0" />
-            <ComboBox Grid.Row="2" Grid.Column="1"  ItemsSource="{Binding Source={StaticResource PhasorDataFormatLookupList}}" DisplayMemberPath="Value"
+
+            <ComboBox Grid.Row="2" Grid.Column="1"  ItemsSource="{Binding Source={StaticResource PhasorDataFormatLookupList}}" DisplayMemberPath="Value" SelectedValuePath="Key"
                       SelectedItem="{tsfBinding:Column Path=PhasorDataFormat, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource PhasorDataFormatLookupList}}"/>
             <TextBlock Text="Frequency Data Format" Grid.Row="2" Grid.Column="2" />
             <ComboBox Grid.Row="2" Grid.Column="3" ItemsSource="{Binding Source={StaticResource FrequencyDataFormatLookupList}}" DisplayMemberPath="Value"
@@ -107,7 +108,6 @@
                     <sdk:DataGridCheckBoxColumn Header="Phasors" Width="*" Binding="{tsfBinding:Column Path=Phasors}" />
                     <sdk:DataGridCheckBoxColumn Header="Analogs" Width="*" Binding="{tsfBinding:Column Path=Analogs}" />
                     <sdk:DataGridCheckBoxColumn Header="Digitals" Width="*" Binding="{tsfBinding:Column Path=Digitals}" />
-                    <sdk:DataGridCheckBoxColumn Header="Delete" Width="*" Binding="{tsfBinding:Column Path=Delete}" />
                 </sdk:DataGrid.Columns>
             </sdk:DataGrid>
 

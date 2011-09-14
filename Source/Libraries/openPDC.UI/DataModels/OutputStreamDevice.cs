@@ -373,7 +373,7 @@ namespace openPDC.UI.DataModels
                 ObservableCollection<OutputStreamDevice> OutputStreamDeviceList = new ObservableCollection<OutputStreamDevice>();
                 DataTable OutputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, AdapterID, ID, IDCode, Acronym, BpaAcronym " +
                     "Name, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, LoadOrder, Enabled, Virtual  " +
-                    "FROM OutputStreamDevice WHERE AdapterID = @outputStreamID ORDER BY LoadOrder", DefaultTimeout, outputStreamID);
+                    "FROM OutputStreamDeviceDetail WHERE AdapterID = @outputStreamID ORDER BY LoadOrder", DefaultTimeout, outputStreamID);
 
                 foreach (DataRow row in OutputStreamDeviceTable.Rows)
                 {

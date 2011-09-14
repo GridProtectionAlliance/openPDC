@@ -49,6 +49,9 @@ namespace openPDC.UI.ViewModels
 
         #region [ Properties ]
 
+        /// <summary>
+        /// Gets or sets Output Stream ID.
+        /// </summary>
         public int OutputStreamID
         {
             get
@@ -65,7 +68,7 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Gets <see cref="Dictionary{T1,T2}"/> PhasorDataformat collection of type defined in the database.
         /// </summary>
-        public Dictionary<string, string> PhasorDataformatLookupList
+        public Dictionary<string, string> PhasorDataFormatLookupList
         {
             get
             {
@@ -76,7 +79,7 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Gets <see cref="Dictionary{T1,T2}"/> FrequencyDataformat collection of type defined in the database.
         /// </summary>
-        public Dictionary<string, string> FrequencyDataformatLookupList
+        public Dictionary<string, string> FrequencyDataFormatLookupList
         {
             get
             {
@@ -87,7 +90,7 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Gets <see cref="Dictionary{T1,T2}"/> AnalogDataformat collection of type defined in the database.
         /// </summary>
-        public Dictionary<string, string> AnalogDataformatLookupList
+        public Dictionary<string, string> AnalogDataFormatLookupList
         {
             get
             {
@@ -98,7 +101,7 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Gets <see cref="Dictionary{T1,T2}"/> CoordinateDataformat collection of type defined in the database.
         /// </summary>
-        public Dictionary<string, string> CoordinateDataformatLookupList
+        public Dictionary<string, string> CoordinateFormatLookupList
         {
             get
             {
@@ -124,6 +127,7 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamDevices"/> class.
         /// </summary>
+        /// <param name="outputStreamID">ID of the output stream to filter data.</param>
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         public OutputStreamDevices(int outputStreamID, int itemsPerPage, bool autoSave = true)
@@ -157,6 +161,9 @@ namespace openPDC.UI.ViewModels
 
         #region [ Methods ]
 
+        /// <summary>
+        /// Loads output Stream Id to filter data.
+        /// </summary>
         public override void Load()
         {
             //base.Load();

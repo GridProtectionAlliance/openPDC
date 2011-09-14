@@ -15,11 +15,14 @@
       <MenuDataItem Icon="" MenuText="" Description="" Roles="*" UserControlAssembly="" UserControlPath="" />
       <MenuDataItem Icon="" MenuText="Iaon Tree" Description=" View Iaon Tree" Roles="*" UserControlAssembly="TimeSeriesFramework.UI.WPF.dll" UserControlPath="TimeSeriesFramework.UI.UserControls.IaonTreeUserControl"/>
     </SubMenuItems>
-  </MenuDataItem>
+  </MenuDataItem>  
   <MenuDataItem Icon="" MenuText="Output" Description="" Roles="*" UserControlAssembly="" UserControlPath="">
     <SubMenuItems>
-      <MenuDataItem Icon="" MenuText="Output Stream" Description="Manage Output Streams" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamUserControl" />
       <MenuDataItem Icon="" MenuText="Output Stream Devices" Description="Manage Output Stream Devices" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDeviceUserControl" />
+      <MenuDataItem Icon="" MenuText="Output Stream Device Analog" Description="Manage Output Stream Devices Analog" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDeviceAnalogUserControl" />
+      <MenuDataItem Icon="" MenuText="Output Stream Device Digital" Description="Manage Output Stream Devices Digital" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDeviceDigitalUserControl" />
+      <MenuDataItem Icon="" MenuText="Output Stream Device Phasor" Description="Manage Output Stream Devices Phasor" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDevicePhasorUserControl" />
+      <MenuDataItem Icon="" MenuText="Output Stream Measurement" Description="Manage Output Stream Devices Measurement" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDeviceMeasurementUserControl" />
     </SubMenuItems>
   </MenuDataItem>
   <MenuDataItem Icon="" MenuText="Manage" Description="" Roles="*" UserControlAssembly="" UserControlPath="">
