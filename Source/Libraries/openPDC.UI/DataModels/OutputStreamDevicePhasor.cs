@@ -38,7 +38,7 @@ namespace openPDC.UI.DataModels
     {
         #region[Members]
 
-        private string m_nodeID;
+        private Guid m_nodeID;
         private int m_outputStreamDeviceID;
         private int m_id;
         private string m_label;
@@ -61,7 +61,7 @@ namespace openPDC.UI.DataModels
         /// Gets or sets <see cref="OutputStreamDevicePhasor"/> NodeID.
         /// </summary>
         [Required(ErrorMessage = "OutputStreamDevicePhasor NodeID is a required field, please provide value.")]
-        public string NodeID
+        public Guid NodeID
         {
             get
             {
@@ -302,7 +302,7 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<OutputStreamDevicePhasor> OutputStreamDevicePhasorList = new ObservableCollection<OutputStreamDevicePhasor>();
-                DataTable OutputStreamDevicePhasorTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, OutputStreamDeviceID, ID, Label, Phase, ScalingValue, LoadOrder, PhasorType, PhaseType " +
+                DataTable OutputStreamDevicePhasorTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, OutputStreamDeviceID, ID, Label, Type, Phase, ScalingValue, LoadOrder " +
                     "FROM OutputStreamDevicePhasor ORDER BY LoadOrder");
 
 
@@ -310,7 +310,7 @@ namespace openPDC.UI.DataModels
                 {
                     OutputStreamDevicePhasorList.Add(new OutputStreamDevicePhasor()
                     {
-                        NodeID = row.ConvertField<String>("NodeID"),
+                        NodeID = row.ConvertField<Guid>("NodeID"),
                         OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
                         ID = row.ConvertField<int>("ID"),
                         Label = row.Field<string>("Label"),
@@ -318,8 +318,6 @@ namespace openPDC.UI.DataModels
                         Phase = row.Field<string>("Phase"),
                         ScalingValue = row.ConvertField<int>("ScalingValue"),
                         LoadOrder = row.ConvertField<int>("LoadOrder"),
-                        PhasorType = row.Field<string>("PhasorType"),
-                        PhaseType = row.Field<string>("PhaseType"),
                     });
                 }
 
@@ -378,17 +376,20 @@ namespace openPDC.UI.DataModels
 
                 if (OutputStreamDevicePhasor.ID == 0)
                     database.Connection.ExecuteNonQuery("INSERT INTO OutputStreamDevicePhasor (NodeID, OutputStreamDeviceID, ID, Label, Type, Phase " +
-                        " ScalingValue, LoadOrder, TypeName, PhasorType, PhaseType )" +
-                        "VALUES (@nodeID, @outputStreamDeviceID, @id, @label, @type, @type, @phase, @scalingValue, @loadOrder, @phasorName, @phaseType, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout,
+                        " ScalingValue, LoadOrder, TypeName )" +
+                        "VALUES (@nodeID, @outputStreamDeviceID, @id, @label, @type, @phase, @scalingValue, @loadOrder, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout,
                         OutputStreamDevicePhasor.NodeID, OutputStreamDevicePhasor.OutputStreamDeviceID, OutputStreamDevicePhasor.ID, OutputStreamDevicePhasor.Label, OutputStreamDevicePhasor.Type,
-                        OutputStreamDevicePhasor.Phase, OutputStreamDevicePhasor.ScalingValue, OutputStreamDevicePhasor.LoadOrder, OutputStreamDevicePhasor.PhasorType, OutputStreamDevicePhasor.PhaseType, CommonFunctions.CurrentUser, database.UtcNow(),
+                        OutputStreamDevicePhasor.Phase, OutputStreamDevicePhasor.ScalingValue, OutputStreamDevicePhasor.LoadOrder, CommonFunctions.CurrentUser, database.UtcNow(),
                         CommonFunctions.CurrentUser, database.UtcNow());
+                //    PhasorType, PhaseType @phasorName, @phaseType, OutputStreamDevicePhasor.PhasorType, OutputStreamDevicePhasor.PhaseType
                 else
                     database.Connection.ExecuteNonQuery("UPDATE OutputStreamDevicePhasor SET NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID , ID = @id, Label = @label, Type = @type, Phase = @phase " +
-                    " ScalingValue = @scalingValue, LoadOrder = @loadOrder,  PhasorType = @typeName, PhaseType = @PhaseType" +
+                    " ScalingValue = @scalingValue, LoadOrder = @loadOrder,  " +
                     "UpdatedBy = @updatedBy, UpdatedOn = @updatedOn, CreatedBy = @createdBy, CreatedOn = @createdOn " +
                      DefaultTimeout, OutputStreamDevicePhasor.NodeID, OutputStreamDevicePhasor.OutputStreamDeviceID, OutputStreamDevicePhasor.ID, OutputStreamDevicePhasor.Label, OutputStreamDevicePhasor.Type,
-                        OutputStreamDevicePhasor.Phase, OutputStreamDevicePhasor.ScalingValue, OutputStreamDevicePhasor.LoadOrder, OutputStreamDevicePhasor.PhasorType, OutputStreamDevicePhasor.PhaseType, CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamDevicePhasor.ID);
+                        OutputStreamDevicePhasor.Phase, OutputStreamDevicePhasor.ScalingValue, OutputStreamDevicePhasor.LoadOrder,  CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamDevicePhasor.ID);
+
+                //PhasorType = @typeName, PhaseType = @PhaseType" OutputStreamDevicePhasor.PhasorType, OutputStreamDevicePhasor.PhaseType,
 
                 return "OutputStreamDevicePhasor information saved successfully";
             }

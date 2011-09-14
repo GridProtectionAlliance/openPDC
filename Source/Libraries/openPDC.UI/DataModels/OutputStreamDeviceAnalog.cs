@@ -37,7 +37,7 @@ namespace openPDC.UI.DataModels
     {
         # region[Members]
 
-        private string m_nodeID;
+        private Guid m_nodeID;
         private int m_outputStreamDeviceID;
         private int m_id;
         private string m_label;
@@ -58,7 +58,7 @@ namespace openPDC.UI.DataModels
         /// Gets or sets the current <see cref="OutputStreamDeviceAnalog"/>'s NodeID.
         /// </summary>
         [Required(ErrorMessage = "OutputStreamDeviceAnalog NodeID is a required field, please provide value.")]
-        public string NodeID
+        public Guid NodeID
         {
             get
             {
@@ -276,7 +276,7 @@ namespace openPDC.UI.DataModels
                 {
                     OutputStreamDeviceAnalogList.Add(new OutputStreamDeviceAnalog()
                     {
-                        NodeID = row.Field<string>("NodeID"),
+                        NodeID = row.Field<Guid>("NodeID"),
                         OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
                         ID = row.ConvertField<int>("ID"),
                         Label = row.Field<string>("Label"),

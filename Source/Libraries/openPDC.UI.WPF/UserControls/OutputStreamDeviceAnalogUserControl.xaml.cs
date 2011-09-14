@@ -32,6 +32,8 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class OutputStreamDeviceAnalogUserControl : UserControl
     {
+        #region[Constructor]
+   
         /// <summary>
         /// Creates an instance of <see cref=" OutputStreamDeviceAnalogUserControl"/> class.
         /// </summary>
@@ -41,9 +43,16 @@ namespace openPDC.UI.UserControls
             this.DataContext = new OutputStreamDeviceAnalogs(1, true);
         }
 
+        #endregion
+
+        #region[Methods]
+        
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
 
         }
+
+        #endregion
+
     }
 }

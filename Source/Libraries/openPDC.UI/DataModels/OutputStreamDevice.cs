@@ -38,7 +38,7 @@ namespace openPDC.UI.DataModels
     {
         #region[Members]
 
-        private string m_nodeID;
+        private Guid m_nodeID;
         private int m_adapterID;
         private int m_id;
         private int m_idCode;
@@ -65,7 +65,7 @@ namespace openPDC.UI.DataModels
         /// Gets or sets the current <see cref="OutputStreamDevice"/>'s NodeID.
         /// </summary>
         [Required(ErrorMessage = "OutputStreamDevice NodeID is a required field, please provide value.")]
-        public string NodeID
+        public Guid NodeID
         {
             get
             {
@@ -379,7 +379,7 @@ namespace openPDC.UI.DataModels
                 {
                     OutputStreamDeviceList.Add(new OutputStreamDevice()
                     {
-                        NodeID = row.Field<string>("NodeID"),
+                        NodeID = row.Field<Guid>("NodeID"),
                         AdapterID = row.ConvertField<int>("AdapterID"),
                         ID = row.ConvertField<int>("ID"),
                         IDCode = row.ConvertField<int>("IDCode"),
@@ -506,6 +506,7 @@ namespace openPDC.UI.DataModels
 
 
         #endregion
+
     }
 }
 

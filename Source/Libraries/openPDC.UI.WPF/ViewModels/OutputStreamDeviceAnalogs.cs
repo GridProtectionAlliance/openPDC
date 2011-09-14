@@ -58,7 +58,7 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Gets <see cref="Dictionary{T1,T2}"/> Type collection of type defined in the database.
         /// </summary>
-        public Dictionary<int,string> TypeLookupList
+        public Dictionary<int, string> TypeLookupList
         {
             get
             {

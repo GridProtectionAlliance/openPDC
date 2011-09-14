@@ -39,7 +39,7 @@ namespace openPDC.UI.DataModels
     {
         #region[Members]
 
-        private string m_nodeID;
+        private Guid m_nodeID;
         private int m_outputStreamDeviceID;
         private int m_id;
         private string m_label;
@@ -57,7 +57,7 @@ namespace openPDC.UI.DataModels
         /// Gets or sets <see cref="OutputStreamDeviceDigital"/> NodeID.
         /// </summary>
         [Required(ErrorMessage = "OutputStreamDeviceDigital NodeID is a required field, please provide value.")]
-        public string NodeID
+        public Guid NodeID
         {
             get
             {
@@ -235,15 +235,15 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                ObservableCollection<OutputStreamDeviceDigital> OutputStreamDeviceDigitalList = new ObservableCollection<OutputStreamDeviceDigital>();
-                DataTable OutputStreamDeviceDigitalTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, OutputStreamDeviceID, ID, Label, MaskValue, LoadOrder " +
+                ObservableCollection<OutputStreamDeviceDigital> outputStreamDeviceDigitalList = new ObservableCollection<OutputStreamDeviceDigital>();
+                DataTable outputStreamDeviceDigitalTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, OutputStreamDeviceID, ID, Label, MaskValue, LoadOrder " +
                     "FROM OutputStreamDeviceDigital ORDER BY LoadOrder");
 
-                foreach (DataRow row in OutputStreamDeviceDigitalTable.Rows)
+                foreach (DataRow row in outputStreamDeviceDigitalTable.Rows)
                 {
-                    OutputStreamDeviceDigitalList.Add(new OutputStreamDeviceDigital()
+                    outputStreamDeviceDigitalList.Add(new OutputStreamDeviceDigital()
                     {
-                        NodeID = row.ConvertField<String>("NodeID"),
+                        NodeID = row.ConvertField<Guid>("NodeID"),
                         OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
                         ID = row.ConvertField<int>("ID"),
                         Label = row.Field<string>("Label"),
@@ -252,7 +252,7 @@ namespace openPDC.UI.DataModels
                     });
                 }
 
-                return OutputStreamDeviceDigitalList;
+                return outputStreamDeviceDigitalList;
             }
             finally
             {

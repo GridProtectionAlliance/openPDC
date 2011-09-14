@@ -75,7 +75,6 @@
                     <sdk:DataGridTextColumn Header="Label" Width="*" Binding="{tsfBinding:Column Path=Label}"/>
                     <sdk:DataGridTextColumn Header=" Type" Width="*" Binding="{tsfBinding:Column Path=Type}" />
                     <sdk:DataGridTextColumn Header="Load Order" Width="2*" Binding="{tsfBinding:Column Path=LoadOrder}" />
-                    <sdk:DataGridCheckBoxColumn Header="Delete" Width="*" Binding="{tsfBinding:Column Path=Delete}" />
                 </sdk:DataGrid.Columns>
             </sdk:DataGrid>
 
