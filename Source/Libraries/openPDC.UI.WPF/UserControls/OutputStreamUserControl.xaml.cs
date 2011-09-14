@@ -22,10 +22,13 @@
 //       Modified code to use MVVM pattern.
 //******************************************************************************************************
 
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using openPDCManager.UI.ViewModels;
+using TimeSeriesFramework.UI.UserControls;
 
 namespace openPDC.UI.UserControls
 {
@@ -42,7 +45,7 @@ namespace openPDC.UI.UserControls
         public OutputStreamUserControl()
         {
             InitializeComponent();
-            this.DataContext = new OutputStreams(10);
+            this.DataContext = new OutputStreams(5);
         }
 
         #endregion
@@ -51,10 +54,10 @@ namespace openPDC.UI.UserControls
 
         private void ButtonHelp_Click(object sender, RoutedEventArgs e)
         {
-            //HelpMeChoose hmc = new HelpMeChoose(((Button)sender).Tag.ToString());
-            //hmc.Owner = Window.GetWindow(this);
-            //hmc.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            //hmc.ShowDialog();
+            PanAndZoomViewer viewer = new PanAndZoomViewer(new BitmapImage(new Uri(@"/openPDC.UI;component/Images/" + ((Button)sender).Tag.ToString(), UriKind.Relative)), "Help Me Choose");
+            viewer.Owner = Window.GetWindow(this);
+            viewer.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            viewer.ShowDialog();
         }
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)

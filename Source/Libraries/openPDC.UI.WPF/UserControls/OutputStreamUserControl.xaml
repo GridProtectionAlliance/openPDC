@@ -225,9 +225,10 @@
             
             <TextBlock Grid.Row="8" Grid.Column="0" Text="Runtime ID" />
             <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="1">
-                <TextBlock x:Name="TextBlockRuntimeID" VerticalAlignment="Center"/>                
-                <Button Content="Initialize" Command="{tsfBinding:GridButtonCommand Path=DataContext.InitializeCommand}" />
-            </StackPanel>
+                    <TextBlock Text="{tsfBinding:Column Path=DataContext.RuntimeID, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" />
+                    <Button Content="Initialize" Command="{Binding Path=DataContext.InitializeCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" 
+                        IsEnabled="{Binding Path=DataContext.IsNewRecord, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}, Converter={StaticResource NotConverter}}"/>
+                </StackPanel>
             
         </Grid>
 
@@ -238,10 +239,10 @@
 
         <sdk:DataGrid x:Name="OSGrid" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" PreviewKeyDown="DataGrid_PreviewKeyDown">
             <sdk:DataGrid.Columns>
-                <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}"/>
-                <sdk:DataGridTextColumn Header="Name" Width="*" Binding="{tsfBinding:Column Path=Name}"/>
-                <sdk:DataGridTextColumn Header="Type" Width="*" Binding="{Binding Path=TypeName}"/>
-                <sdk:DataGridCheckBoxColumn Header="Enabled" Width="*" Binding="{tsfBinding:Column Path=Enabled}"/>
+                <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                <sdk:DataGridTextColumn Header="Name" Width="*" Binding="{tsfBinding:Column Path=Name}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                <sdk:DataGridTextColumn Header="Type" Width="*" Binding="{Binding Path=TypeName}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                <sdk:DataGridCheckBoxColumn Header="Enabled" Width="*" Binding="{tsfBinding:Column Path=Enabled}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
                 <sdk:DataGridTemplateColumn Header="" Width="*">
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -267,11 +268,11 @@
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button ToolTip="Update Configuration" Command="{tsfBinding:GridButtonCommand Path=DataContext.UpdateCommand}" Width="Auto">
-                                    <Image Source="/TimeSeriesFramework.UI;component/images/EditConfiguration.png" Height="16" Width="16"/>
+                                <Button ToolTip="Update Configuration" Command="{tsfBinding:GridButtonCommand Path=DataContext.UpdateConfigurationCommand}" Width="Auto">
+                                    <Image Source="/TimeSeriesFramework.UI;component/images/EditConfiguration.png" Height="16" Width="16" Margin="0,0,5,0"/>
                                 </Button>
                                 <Button ToolTip="Make Copy" Command="{tsfBinding:GridButtonCommand Path=DataContext.CopyCommand}" CommandParameter="{tsfBinding:GridButtonCommand Path=DataContext.CurrentItem}" Width="Auto">
-                                    <Image Source="/TimeSeriesFramework.UI;component/images/Copy.png" Height="16" Width="16"/>
+                                    <Image Source="/TimeSeriesFramework.UI;component/images/Copy.png" Height="16" Width="16" Margin="5,0,0,0"/>
                                 </Button>
                             </StackPanel>
                         </DataTemplate>

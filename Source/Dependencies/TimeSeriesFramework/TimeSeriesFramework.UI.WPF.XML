@@ -1822,5 +1822,24 @@
             visible. The value is true for most parameters, including those which are not defined by an adapter type.
             </summary>
         </member>
+        <member name="T:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer">
+            <summary>
+            Interaction logic for PanAndZoomViewer.xaml
+            </summary>
+            <summary>
+            PanAndZoomViewer
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer.#ctor(System.Windows.Media.Imaging.BitmapImage,System.String)">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer"/>.
+            </summary>
+            <param name="image"></param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
     </members>
 </doc>

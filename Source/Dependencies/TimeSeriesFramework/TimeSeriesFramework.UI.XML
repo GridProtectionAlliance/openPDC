@@ -2217,5 +2217,39 @@
             <returns>String value.</returns>
             <remarks>This method has not been implemented.</remarks>
         </member>
+        <member name="T:TimeSeriesFramework.UI.PanAndZoom">
+            <summary>
+            <see cref="T:System.Windows.Controls.ContentControl"/> class which allows deep zoom composoer type functionalities in WPF apps.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.#ctor">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.PanAndZoom"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.OnApplyTemplate">
+            <summary>
+            Overrides OnApplyTemplate method from <see cref="T:System.Windows.Controls.ContentControl"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.CreatePanAnimation(System.Double)">
+            <summary>Helper to create the panning animation for x,y coordinates.</summary>
+            <param name="toValue">New value of the coordinate.</param>
+            <returns>Double animation</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.CreateZoomAnimation(System.Double)">
+            <summary>Helper to create the zoom double animation for scaling.</summary>
+            <param name="toValue">Value to animate to.</param>
+            <returns>Double animation.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.DoZoom(System.Double,System.Windows.Point,System.Windows.Point)">
+            <summary>Zoom into or out of the content.</summary>
+            <param name="deltaZoom">Factor to mutliply the zoom level by. </param>
+            <param name="mousePosition">Logical mouse position relative to the original content.</param>
+            <param name="physicalPosition">Actual mouse position on the screen (relative to the parent window)</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.Reset">
+            <summary>Reset to default zoom level and centered content.</summary>
+        </member>
     </members>
 </doc>

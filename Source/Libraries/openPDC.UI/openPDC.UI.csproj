@@ -134,8 +134,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\Copy.png" />
-    <Content Include="Images\EditConfiguration.png" />
+    <Resource Include="Images\HMC - Allow Preemptive Publishing.png" />
+    <Resource Include="Images\HMC - Allow Sorts By Arrival.png" />
+    <Resource Include="Images\HMC - Auto Publish Config Frame.png" />
+    <Resource Include="Images\HMC - Auto Start Data Channel.png" />
+    <Resource Include="Images\HMC - Downsampling Method.png" />
+    <Resource Include="Images\HMC - Ignore Bad Timestamps.png" />
+    <Resource Include="Images\HMC - Lag Time.png" />
+    <Resource Include="Images\HMC - Lead Time.png" />
+    <Resource Include="Images\HMC - Time Resolution.png" />
+    <Resource Include="Images\HMC - Use Local Clock as RealTime.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

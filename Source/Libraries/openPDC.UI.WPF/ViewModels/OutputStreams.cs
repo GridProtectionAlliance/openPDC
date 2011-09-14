@@ -46,6 +46,7 @@ namespace openPDCManager.UI.ViewModels
         private RelayCommand m_copyCommand;
         private RelayCommand m_updateConfigurationCommand;
         private Dictionary<Guid, string> m_nodeLookupList;
+        private string m_runtimeID;
 
         #endregion
 
@@ -75,7 +76,7 @@ namespace openPDCManager.UI.ViewModels
             {
                 if (m_copyCommand == null)
                 {
-                    m_copyCommand = new RelayCommand(Copy);
+                    m_copyCommand = new RelayCommand(MakeCopy);
                 }
 
                 return m_copyCommand;
@@ -91,7 +92,7 @@ namespace openPDCManager.UI.ViewModels
             {
                 if (m_initializeCommand == null)
                 {
-                    m_initializeCommand = new RelayCommand(InitCommand);
+                    m_initializeCommand = new RelayCommand(Initialize);
                 }
                 return m_initializeCommand;
             }
@@ -163,6 +164,22 @@ namespace openPDCManager.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStream"/> RuntimeID.
+        /// </summary>
+        public string RuntimeID
+        {
+            get
+            {
+                return m_runtimeID;
+            }
+            set
+            {
+                m_runtimeID = value;
+                OnPropertyChanged("RuntimeID");
+            }
+        }
+
         #endregion
 
         #region [ Constructor ]
@@ -231,18 +248,13 @@ namespace openPDCManager.UI.ViewModels
             }
         }
 
-        private void SendInitializeCommand()
-        {
-
-        }
-
-        private void InitCommand()
+        private void Initialize()
         {
             if (Confirm("Do you want to send Initialize Command?", "Output Stream: " + CurrentItem.Acronym))
             {
                 try
                 {
-                    var result = CommonFunctions.SendCommandToService("Initialize" + CommonFunctions.GetRuntimeID("OutputStream", CurrentItem.ID));
+                    var result = CommonFunctions.SendCommandToService("Initialize " + RuntimeID);
                     Popup(result, "", System.Windows.MessageBoxImage.Information);
                     CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
                 }
@@ -254,26 +266,56 @@ namespace openPDCManager.UI.ViewModels
             }
         }
 
-        private void Copy(object parameter)
+        private void MakeCopy(object parameter)
         {
-            OutputStream outputStreamToCopy = new OutputStream();
-            outputStreamToCopy = (OutputStream)parameter;
             try
             {
                 if (Confirm("Do you want to make a copy of " + CurrentItem.Acronym + " output stream?", "This will only copy the output stream configuration, not associated devices."))
                 {
-                    outputStreamToCopy.Name = "Copy of " + outputStreamToCopy.Name;
-                    outputStreamToCopy.Enabled = false;
-                    string originalAcronym = outputStreamToCopy.Acronym;
+                    OutputStream newOutputStream = new OutputStream()
+                    {
+                        ID = 0, // Set it to zero so it will be inserted instead of updated.
+                        Enabled = false,
+                        Acronym = CurrentItem.Acronym,
+                        Name = "Copy of " + CurrentItem.Name,
+                        AllowPreemptivePublishing = CurrentItem.AllowPreemptivePublishing,
+                        AllowSortsByArrival = CurrentItem.AllowSortsByArrival,
+                        AnalogScalingValue = CurrentItem.AnalogScalingValue,
+                        AutoPublishConfigFrame = CurrentItem.AutoPublishConfigFrame,
+                        AutoStartDataChannel = CurrentItem.AutoStartDataChannel,
+                        CommandChannel = CurrentItem.CommandChannel,
+                        ConnectionString = CurrentItem.ConnectionString,
+                        CoordinateFormat = CurrentItem.CoordinateFormat,
+                        CurrentScalingValue = CurrentItem.CurrentScalingValue,
+                        DataChannel = CurrentItem.DataChannel,
+                        DataFormat = CurrentItem.DataFormat,
+                        DigitalMaskValue = CurrentItem.DigitalMaskValue,
+                        DownSamplingMethod = CurrentItem.DownSamplingMethod,
+                        FramesPerSecond = CurrentItem.FramesPerSecond,
+                        IDCode = CurrentItem.IDCode,
+                        IgnoreBadTimeStamps = CurrentItem.IgnoreBadTimeStamps,
+                        LagTime = CurrentItem.LagTime,
+                        LeadTime = CurrentItem.LeadTime,
+                        LoadOrder = CurrentItem.LoadOrder,
+                        NodeID = CurrentItem.NodeID,
+                        NominalFrequency = CurrentItem.NominalFrequency,
+                        PerformTimestampReasonabilityCheck = CurrentItem.PerformTimestampReasonabilityCheck,
+                        TimeResolution = CurrentItem.TimeResolution,
+                        Type = CurrentItem.Type,
+                        UseLocalClockAsRealTime = CurrentItem.UseLocalClockAsRealTime,
+                        VoltageScalingValue = CurrentItem.VoltageScalingValue
+                    };
+
+                    string originalAcronym = newOutputStream.Acronym;
                     int i = 1;
                     do
                     {
-                        outputStreamToCopy.Acronym = originalAcronym + i.ToString();
+                        newOutputStream.Acronym = originalAcronym + i.ToString();
                         i++;
                     }
-                    while (OutputStream.GetOutputStreamByAcronym(null, outputStreamToCopy.Acronym) != null);
+                    while (OutputStream.GetOutputStreamByAcronym(null, newOutputStream.Acronym) != null);
 
-                    CurrentItem = outputStreamToCopy;
+                    CurrentItem = newOutputStream;
                 }
             }
             catch (Exception ex)
@@ -297,6 +339,19 @@ namespace openPDCManager.UI.ViewModels
             catch (Exception ex)
             {
                 Popup("Failed to UpdateConfiguration", ex.Message, MessageBoxImage.Error);
+            }
+        }
+
+        protected override void OnPropertyChanged(string propertyName)
+        {
+            base.OnPropertyChanged(propertyName);
+
+            if (propertyName == "CurrentItem")
+            {
+                if (CurrentItem == null)
+                    RuntimeID = string.Empty;
+                else
+                    RuntimeID = TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("OutputStream", CurrentItem.ID);
             }
         }
 
