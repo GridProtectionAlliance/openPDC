@@ -72,8 +72,7 @@
 
             <!--Third Row-->
             <TextBlock Text="Phasor Data Format" Grid.Row="2" Grid.Column="0" />
-
-            <ComboBox Grid.Row="2" Grid.Column="1"  ItemsSource="{Binding Source={StaticResource PhasorDataFormatLookupList}}" DisplayMemberPath="Value" SelectedValuePath="Key"
+            <ComboBox Grid.Row="2" Grid.Column="1"  ItemsSource="{Binding Source={StaticResource PhasorDataFormatLookupList}}" DisplayMemberPath="Value"
                       SelectedItem="{tsfBinding:Column Path=PhasorDataFormat, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource PhasorDataFormatLookupList}}"/>
             <TextBlock Text="Frequency Data Format" Grid.Row="2" Grid.Column="2" />
             <ComboBox Grid.Row="2" Grid.Column="3" ItemsSource="{Binding Source={StaticResource FrequencyDataFormatLookupList}}" DisplayMemberPath="Value"
