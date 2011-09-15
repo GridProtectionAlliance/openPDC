@@ -1170,7 +1170,7 @@ namespace openPDC.UI.DataModels
                                 Measurement.Save(database, measurement);
                             }
                         }
-                        else
+                        else if (signal.Suffix == "FQ" || signal.Suffix == "DF" || signal.Suffix == "SF")
                         {
                             measurement = Measurement.GetMeasurement(database, "WHERE DeviceID = " + savedDevice.ID + " AND SignalTypeSuffix = '" + signal.Suffix + "'");
 

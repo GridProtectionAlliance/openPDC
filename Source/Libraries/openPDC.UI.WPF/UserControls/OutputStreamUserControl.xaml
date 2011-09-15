@@ -80,12 +80,14 @@
             <TextBlock Grid.Row="3" Grid.Column="0" Text="TCP Channel" VerticalAlignment="Top"/>
             <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" VerticalAlignment="Top">
                 <TextBox Text="{tsfBinding:Column Path=CommandChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap"/>
-                <Button Content=" + " ToolTipService.ToolTip="Build Command Channel String" Width="Auto" VerticalAlignment="Top"/>
+                <Button Content=" + " ToolTipService.ToolTip="Build Command Channel String" Width="Auto" VerticalAlignment="Top"
+                        Command="{Binding Path=DataContext.BuildCommandChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
             </StackPanel>
             <TextBlock Grid.Row="3" Grid.Column="2" Text="UDP Channel"  VerticalAlignment="Top"/>
             <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3" VerticalAlignment="Top">
                 <TextBox Text="{tsfBinding:Column Path=DataChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap"/>
-                <Button Content=" + " ToolTipService.ToolTip="Build Data Channel String" Width="Auto" VerticalAlignment="Top" />
+                <Button Content=" + " ToolTipService.ToolTip="Build Data Channel String" Width="Auto" VerticalAlignment="Top"
+                        Command="{Binding Path=DataContext.BuildDataChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right">

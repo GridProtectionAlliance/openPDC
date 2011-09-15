@@ -1227,6 +1227,26 @@
             Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
             </summary>
         </member>
+        <member name="T:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer">
+            <summary>
+            Interaction logic for PanAndZoomViewer.xaml
+            </summary>
+            <summary>
+            PanAndZoomViewer
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer.#ctor(System.Windows.Media.Imaging.BitmapImage,System.String)">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer"/>.
+            </summary>
+            <param name="image">Image to be displayed in <see cref="T:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer"/>.</param>
+            <param name="title">Title of the <see cref="T:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer"/> window.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
         <member name="T:TimeSeriesFramework.UI.UserControls.IaonTreeUserControl">
             <summary>
             Interaction logic for IaonTreeUserControl.xaml
@@ -1820,25 +1840,6 @@
             is something other than a <see cref="T:System.Boolean"/> or an enum. This determines whether the
             <see cref="T:System.Windows.Controls.TextBox"/> bound to the <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Value"/> of the parameters is
             visible. The value is true for most parameters, including those which are not defined by an adapter type.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer">
-            <summary>
-            Interaction logic for PanAndZoomViewer.xaml
-            </summary>
-            <summary>
-            PanAndZoomViewer
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer.#ctor(System.Windows.Media.Imaging.BitmapImage,System.String)">
-            <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer"/>.
-            </summary>
-            <param name="image"></param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.PanAndZoomViewer.InitializeComponent">
-            <summary>
-            InitializeComponent
             </summary>
         </member>
     </members>

@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using openPDC.UI.Modal;
 using openPDCManager.UI.DataModels;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
@@ -45,6 +46,11 @@ namespace openPDCManager.UI.ViewModels
         private RelayCommand m_initializeCommand;
         private RelayCommand m_copyCommand;
         private RelayCommand m_updateConfigurationCommand;
+        private RelayCommand m_deviceCommand;
+        private RelayCommand m_measurementCommand;
+        private RelayCommand m_wizardCommand;
+        private RelayCommand m_buildCommandChannelCommand;
+        private RelayCommand m_buildDataChannelCommand;
         private Dictionary<Guid, string> m_nodeLookupList;
         private string m_runtimeID;
 
@@ -95,6 +101,34 @@ namespace openPDCManager.UI.ViewModels
                     m_initializeCommand = new RelayCommand(Initialize);
                 }
                 return m_initializeCommand;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="ICommand"/> object to pop open connection string builder for command channel configuration.
+        /// </summary>
+        public ICommand BuildCommandChannelCommand
+        {
+            get
+            {
+                if (m_buildCommandChannelCommand == null)
+                    m_buildCommandChannelCommand = new RelayCommand(BuildCommandChannel, () => CanSave);
+
+                return m_buildCommandChannelCommand;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="ICommand"/> object to pop open connection string builder for data channel configuration.
+        /// </summary>
+        public ICommand BuildDataChannelCommand
+        {
+            get
+            {
+                if (m_buildDataChannelCommand == null)
+                    m_buildDataChannelCommand = new RelayCommand(BuildDataChannel, () => CanSave);
+
+                return m_buildDataChannelCommand;
             }
         }
 
@@ -340,6 +374,59 @@ namespace openPDCManager.UI.ViewModels
             {
                 Popup("Failed to UpdateConfiguration", ex.Message, MessageBoxImage.Error);
             }
+        }
+
+        private void BuildCommandChannel()
+        {
+            if (CurrentItem != null)
+            {
+                ConnectionStringBuilder csb = new ConnectionStringBuilder(ConnectionStringBuilder.ConnectionType.CommandChannel);
+                if (!string.IsNullOrEmpty(CurrentItem.CommandChannel))
+                    csb.ConnectionString = CurrentItem.CommandChannel;
+
+                csb.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)csb.DialogResult)
+                        CurrentItem.CommandChannel = csb.ConnectionString;
+                });
+                csb.Owner = System.Windows.Application.Current.MainWindow;
+                csb.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                csb.ShowDialog();
+            }
+        }
+
+        private void BuildDataChannel()
+        {
+            if (CurrentItem != null)
+            {
+                ConnectionStringBuilder csb = new ConnectionStringBuilder(ConnectionStringBuilder.ConnectionType.DataChannel);
+                if (!string.IsNullOrEmpty(CurrentItem.DataChannel))
+                    csb.ConnectionString = CurrentItem.DataChannel;
+
+                csb.Closed += new EventHandler(delegate(object popupWindow, EventArgs eargs)
+                {
+                    if ((bool)csb.DialogResult)
+                        CurrentItem.DataChannel = csb.ConnectionString;
+                });
+                csb.Owner = System.Windows.Application.Current.MainWindow;
+                csb.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                csb.ShowDialog();
+            }
+        }
+
+        private void GoToDevices(object parameter)
+        {
+
+        }
+
+        private void LaunchDeviceWizard(object parameter)
+        {
+
+        }
+
+        private void GoToMeasurements(object parameter)
+        {
+
         }
 
         protected override void OnPropertyChanged(string propertyName)

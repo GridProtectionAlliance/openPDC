@@ -26,7 +26,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
 using TimeSeriesFramework.UI;
@@ -399,7 +401,18 @@ namespace openPDC.UI.ViewModels
                         ((System.Windows.Controls.Frame)frame).Navigate(deviceListUserControl);
 
                         if (groupBox != null)
-                            ((GroupBox)groupBox).Header = "Browse Devices";
+                        {
+                            Run run = new Run();
+                            run.FontWeight = FontWeights.Bold;
+                            run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                            run.Text = "Browse Devices";
+
+                            TextBlock txt = new TextBlock();
+                            txt.Padding = new Thickness(5.0);
+                            txt.Inlines.Add(run);
+
+                            ((GroupBox)groupBox).Header = txt;
+                        }
 
                     }
                 }
@@ -432,7 +445,18 @@ namespace openPDC.UI.ViewModels
                 ((System.Windows.Controls.Frame)frame).Navigate(deviceUserControl);
 
                 if (groupBox != null)
-                    ((GroupBox)groupBox).Header = "Manage Device Configuration";
+                {
+                    Run run = new Run();
+                    run.FontWeight = FontWeights.Bold;
+                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                    run.Text = "Manage Device Configuration";
+
+                    TextBlock txt = new TextBlock();
+                    txt.Padding = new Thickness(5.0);
+                    txt.Inlines.Add(run);
+
+                    ((GroupBox)groupBox).Header = txt;
+                }
             }
         }
 
@@ -470,7 +494,18 @@ namespace openPDC.UI.ViewModels
                 ((System.Windows.Controls.Frame)frame).Navigate(deviceUserControl);
 
                 if (groupBox != null)
-                    ((GroupBox)groupBox).Header = "Manage Device Configuration";
+                {
+                    Run run = new Run();
+                    run.FontWeight = FontWeights.Bold;
+                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                    run.Text = "Manage Device Configuration";
+
+                    TextBlock txt = new TextBlock();
+                    txt.Padding = new Thickness(5.0);
+                    txt.Inlines.Add(run);
+
+                    ((GroupBox)groupBox).Header = txt;
+                }
             }
         }
 
@@ -504,7 +539,18 @@ namespace openPDC.UI.ViewModels
                 ((System.Windows.Controls.Frame)frame).Navigate(measurementUserControl);
 
                 if (groupBox != null)
-                    ((GroupBox)groupBox).Header = "Manage Measurements for " + device.Acronym;
+                {
+                    Run run = new Run();
+                    run.FontWeight = FontWeights.Bold;
+                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                    run.Text = "Manage Measurements for " + device.Acronym;
+
+                    TextBlock txt = new TextBlock();
+                    txt.Padding = new Thickness(5.0);
+                    txt.Inlines.Add(run);
+
+                    ((GroupBox)groupBox).Header = txt;
+                }
             }
         }
 
@@ -527,7 +573,18 @@ namespace openPDC.UI.ViewModels
                 ((System.Windows.Controls.Frame)frame).Navigate(phasorUserControl);
 
                 if (groupBox != null)
-                    ((GroupBox)groupBox).Header = "Manage Phasors for " + device.Acronym;
+                {
+                    Run run = new Run();
+                    run.FontWeight = FontWeights.Bold;
+                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                    run.Text = "Manage Phasors for " + device.Acronym;
+
+                    TextBlock txt = new TextBlock();
+                    txt.Padding = new Thickness(5.0);
+                    txt.Inlines.Add(run);
+
+                    ((GroupBox)groupBox).Header = txt;
+                }
             }
         }
 
