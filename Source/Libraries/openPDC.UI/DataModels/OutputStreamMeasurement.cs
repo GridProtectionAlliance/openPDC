@@ -38,7 +38,7 @@ namespace openPDC.UI.DataModels
    {
 	   #region[Members]
 
-		private string m_nodeID ;
+		private Guid m_nodeID ;
 		private int m_adapterID;
 		private int m_id;
 		private int? m_historianID ;
@@ -59,7 +59,7 @@ namespace openPDC.UI.DataModels
 		/// Gets or sets the current <see cref="OutputStreamMeasurement"/>'s NodeID.
 		/// </summary>
 		[Required(ErrorMessage = "OutputStreamMeasurement NodeID is a required field, please provide value.")]
-		public string NodeID
+		public Guid NodeID
 		{
 			get
 			{
@@ -278,7 +278,7 @@ namespace openPDC.UI.DataModels
 				{
 					OutputStreamMeasurementList.Add(new OutputStreamMeasurement()
 					{
-						NodeID = row.Field<string>("NodeID"),
+						NodeID = row.Field<Guid>("NodeID"),
 						AdapterID = row.ConvertField<int>("AdapterID"),
 						ID = row.ConvertField<int>("ID"),
 						HistorianID = row.Field<int?>("HistorianID"),

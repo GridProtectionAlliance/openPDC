@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="openPDC.UI.UserControls.OutputStreamDeviceMeasurementUserControl"
+﻿<UserControl x:Class="openPDC.UI.UserControls.OutputStreamMeasurementUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -67,7 +67,6 @@
                     <sdk:DataGridTextColumn Header="Signal Reference" Width="*" Binding="{tsfBinding:Column Path=SignalReference}"/>
                     <sdk:DataGridTextColumn Header="Source PointTag" Width="2*" Binding="{tsfBinding:Column Path=SourcePointTag}" />
                     <sdk:DataGridTextColumn Header="Historian" Width="*" Binding="{tsfBinding:Column Path=Historian}"/>
-                    <sdk:DataGridTextColumn Header="Delete" Width="*" Binding="{tsfBinding:Column Path=Delete}"/>
                 </sdk:DataGrid.Columns>
             </sdk:DataGrid>
 
