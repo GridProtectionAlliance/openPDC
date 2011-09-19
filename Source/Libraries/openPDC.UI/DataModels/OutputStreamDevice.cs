@@ -471,7 +471,7 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                if (OutputStreamDevice.ID == 0)
+                if (outputStreamDevice.ID == 0)
                 {
                     query = database.ParameterizedQueryString("INSERT INTO OutputStreamDevice (NodeID, AdapterID, IDCode, Acronym, BpaAcronym, Name, " +
                         "PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, LoadOrder, Enabled, Virtual, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn)" +
@@ -479,10 +479,10 @@ namespace openPDC.UI.DataModels
                         "bpaAcronym", "name", "phasorDataFormat", "frequencyDataFormat", "analogDataFormat", "coordinateFormat", "loadOrder", "enabled", "virtual",
                         "updatedBy", "updatedOn", "createdBy", "createdOn");
 
-                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamDevice.NodeID, OutputStreamDevice.AdapterID, OutputStreamDevice.IDCode,
-                        OutputStreamDevice.Acronym, OutputStreamDevice.BpaAcronym.ToNotNull(), OutputStreamDevice.Name, OutputStreamDevice.PhasorDataFormat.ToNotNull(),
-                        OutputStreamDevice.FrequencyDataFormat.ToNotNull(), OutputStreamDevice.AnalogDataFormat.ToNotNull(), OutputStreamDevice.CoordinateFormat.ToNotNull(),
-                        OutputStreamDevice.LoadOrder, database.Bool(OutputStreamDevice.Enabled), database.Bool(OutputStreamDevice.Virtual), CommonFunctions.CurrentUser,
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, outputStreamDevice.NodeID, outputStreamDevice.AdapterID, outputStreamDevice.IDCode,
+                        outputStreamDevice.Acronym, outputStreamDevice.BpaAcronym.ToNotNull(), outputStreamDevice.Name, outputStreamDevice.PhasorDataFormat.ToNotNull(),
+                        outputStreamDevice.FrequencyDataFormat.ToNotNull(), outputStreamDevice.AnalogDataFormat.ToNotNull(), outputStreamDevice.CoordinateFormat.ToNotNull(),
+                        outputStreamDevice.LoadOrder, database.Bool(outputStreamDevice.Enabled), database.Bool(outputStreamDevice.Virtual), CommonFunctions.CurrentUser,
                         database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
                 }
                 else
@@ -492,11 +492,11 @@ namespace openPDC.UI.DataModels
                         "Virtual = {12}, UpdatedBy = {13}, UpdatedOn = {14} WHERE ID = {15}", "nodeID", "adapterID", "idCode", "acronym", "bpaAcronym", "name",
                         "phasorDataFormat", "frequencyDataFormat", "analogDataFormat", "coordinateFormat", "loadOrder", "enabled", "virtual", "updatedBy", "updatedOn", "id");
 
-                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamDevice.NodeID, OutputStreamDevice.AdapterID, OutputStreamDevice.IDCode,
-                        OutputStreamDevice.Acronym, OutputStreamDevice.BpaAcronym.ToNotNull(), OutputStreamDevice.Name, OutputStreamDevice.PhasorDataFormat.ToNotNull(),
-                        OutputStreamDevice.FrequencyDataFormat.ToNotNull(), OutputStreamDevice.AnalogDataFormat.ToNotNull(), OutputStreamDevice.CoordinateFormat.ToNotNull(),
-                        OutputStreamDevice.LoadOrder, database.Bool(OutputStreamDevice.Enabled), database.Bool(OutputStreamDevice.Virtual), CommonFunctions.CurrentUser,
-                        database.UtcNow(), OutputStreamDevice.ID);
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, outputStreamDevice.NodeID, outputStreamDevice.AdapterID, outputStreamDevice.IDCode,
+                        outputStreamDevice.Acronym, outputStreamDevice.BpaAcronym.ToNotNull(), outputStreamDevice.Name, outputStreamDevice.PhasorDataFormat.ToNotNull(),
+                        outputStreamDevice.FrequencyDataFormat.ToNotNull(), outputStreamDevice.AnalogDataFormat.ToNotNull(), outputStreamDevice.CoordinateFormat.ToNotNull(),
+                        outputStreamDevice.LoadOrder, database.Bool(outputStreamDevice.Enabled), database.Bool(outputStreamDevice.Virtual), CommonFunctions.CurrentUser,
+                        database.UtcNow(), outputStreamDevice.ID);
                 }
 
                 return "OutputStreamDevice information saved successfully";
