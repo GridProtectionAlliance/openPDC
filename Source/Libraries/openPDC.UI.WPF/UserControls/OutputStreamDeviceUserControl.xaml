@@ -95,10 +95,12 @@
             <!--Button-->
             <CheckBox Content="Enabled" Grid.Row="4" Grid.Column="3" IsChecked="{tsfBinding:Column Path=Enabled}"/>
 
-            <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
-                SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" />
-
-            <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="825"
+        </Grid>
+        
+        <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
+                SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
+        
+        <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="825"
                PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="4">
                 <sdk:DataGrid.Columns>
                     <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}"/>
@@ -131,10 +133,8 @@
                 </sdk:DataGrid.Columns>
             </sdk:DataGrid>
 
-            <uc:DataPagerUserControl Grid.Row="7" Grid.Column="0"  Grid.ColumnSpan="4" CurrentPageNumber="{Binding CurrentPageNumber}" PageCount="{Binding PageCount}"
+        <uc:DataPagerUserControl Grid.Row="7" Grid.Column="0"  Grid.ColumnSpan="4" CurrentPageNumber="{Binding CurrentPageNumber}" PageCount="{Binding PageCount}"
                                  FirstCommand="{Binding FirstCommand}" PreviousCommand="{Binding PreviousCommand}"
-                                 NextCommand="{Binding NextCommand}" LastCommand="{Binding LastCommand}"/>
-
-        </Grid>
+                                 NextCommand="{Binding NextCommand}" LastCommand="{Binding LastCommand}"/>        
     </StackPanel>
 </UserControl>

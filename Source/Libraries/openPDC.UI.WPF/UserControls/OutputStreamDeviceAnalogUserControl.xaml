@@ -44,7 +44,7 @@
             </Grid.RowDefinitions>
             
             <!--Frist Row-->
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=Label}" CharacterCasing="Upper"  MaxLength="16" />
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=Label}" MaxLength="16" />
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" >
                 <TextBlock Text="Label" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
@@ -56,32 +56,33 @@
             <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=LoadOrder}" />
 
             <!--Second Row-->
-            <TextBlock Text="Type" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" />
+            <TextBlock Text="Type" Grid.Row="1" Grid.Column="0"/>
             <ComboBox Grid.Row="1" Grid.Column="1"  ItemsSource="{Binding Source={StaticResource TypeLookupList}}" DisplayMemberPath="Value"
                       SelectedItem="{tsfBinding:Column Path=Type, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource TypeLookupList}}"/>
-            <TextBox Grid.Row="1" Grid.Column="3" Text="{tsfBinding:Column Path=ScalingValue}" CharacterCasing="Upper" />
+            <TextBox Grid.Row="1" Grid.Column="3" Text="{tsfBinding:Column Path=ScalingValue}"/>
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right">
                 <TextBlock Text="Scaling Value" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-
-            <!--Buttons-->
-            <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
-                SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" />
-
-            <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="600"
-               PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4">
-                <sdk:DataGrid.Columns>
-                    <sdk:DataGridTextColumn Header="Label" Width="*" Binding="{tsfBinding:Column Path=Label}"/>
-                    <sdk:DataGridTextColumn Header=" Type" Width="*" Binding="{tsfBinding:Column Path=Type}" />
-                    <sdk:DataGridTextColumn Header="Load Order" Width="2*" Binding="{tsfBinding:Column Path=LoadOrder}" />
-                </sdk:DataGrid.Columns>
-            </sdk:DataGrid>
-
-            <uc:DataPagerUserControl Grid.Row="4" Grid.Column="0"  Grid.ColumnSpan="4" CurrentPageNumber="{Binding CurrentPageNumber}" PageCount="{Binding PageCount}"
-                                 FirstCommand="{Binding FirstCommand}" PreviousCommand="{Binding PreviousCommand}"
-                                 NextCommand="{Binding NextCommand}" LastCommand="{Binding LastCommand}"/>         
+            
         </Grid>
+        
+        <!--Buttons-->
+        <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
+            SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
+
+        <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="600"
+            PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4">
+            <sdk:DataGrid.Columns>
+                <sdk:DataGridTextColumn Header="Label" Width="*" Binding="{tsfBinding:Column Path=Label}"/>
+                <sdk:DataGridTextColumn Header=" Type" Width="*" Binding="{tsfBinding:Column Path=Type}" />
+                <sdk:DataGridTextColumn Header="Load Order" Width="2*" Binding="{tsfBinding:Column Path=LoadOrder}" />
+            </sdk:DataGrid.Columns>
+        </sdk:DataGrid>
+
+        <uc:DataPagerUserControl Grid.Row="4" Grid.Column="0"  Grid.ColumnSpan="4" CurrentPageNumber="{Binding CurrentPageNumber}" PageCount="{Binding PageCount}"
+                                FirstCommand="{Binding FirstCommand}" PreviousCommand="{Binding PreviousCommand}"
+                                NextCommand="{Binding NextCommand}" LastCommand="{Binding LastCommand}"/>                 
     
     </StackPanel>
 

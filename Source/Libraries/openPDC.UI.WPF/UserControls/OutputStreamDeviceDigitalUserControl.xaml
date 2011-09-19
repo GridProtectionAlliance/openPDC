@@ -52,28 +52,31 @@
             <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=LoadOrder}" />
             
             <!--Second Row-->
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=MaskValue}" CharacterCasing="Upper" />
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=MaskValue}"/>
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" >
                 <TextBlock Text="Mask Value" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <!--Buttons-->
-            <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
-                SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" />
 
-            <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="600"
-               PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4">
-                <sdk:DataGrid.Columns>
-                    <sdk:DataGridTextColumn Header="Label" Width="*" Binding="{tsfBinding:Column Path=Label}"/>
-                    <sdk:DataGridTextColumn Header=" Mask value" Width="*" Binding="{tsfBinding:Column Path=MaskValue}" />
-                    <sdk:DataGridTextColumn Header="Load Order" Width="2*" Binding="{tsfBinding:Column Path=LoadOrder}" />
-                </sdk:DataGrid.Columns>
-            </sdk:DataGrid>
-
-            <uc:DataPagerUserControl Grid.Row="4" Grid.Column="0"  Grid.ColumnSpan="4" CurrentPageNumber="{Binding CurrentPageNumber}" PageCount="{Binding PageCount}"
-                                 FirstCommand="{Binding FirstCommand}" PreviousCommand="{Binding PreviousCommand}"
-                                 NextCommand="{Binding NextCommand}" LastCommand="{Binding LastCommand}"/>
         </Grid>
+        
+        <!--Buttons-->
+        <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
+            SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
+
+        <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="600"
+            PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4">
+            <sdk:DataGrid.Columns>
+                <sdk:DataGridTextColumn Header="Label" Width="*" Binding="{tsfBinding:Column Path=Label}"/>
+                <sdk:DataGridTextColumn Header=" Mask value" Width="*" Binding="{tsfBinding:Column Path=MaskValue}" />
+                <sdk:DataGridTextColumn Header="Load Order" Width="2*" Binding="{tsfBinding:Column Path=LoadOrder}" />
+            </sdk:DataGrid.Columns>
+        </sdk:DataGrid>
+
+        <uc:DataPagerUserControl Grid.Row="4" Grid.Column="0"  Grid.ColumnSpan="4" CurrentPageNumber="{Binding CurrentPageNumber}" PageCount="{Binding PageCount}"
+                                FirstCommand="{Binding FirstCommand}" PreviousCommand="{Binding PreviousCommand}"
+                                NextCommand="{Binding NextCommand}" LastCommand="{Binding LastCommand}"/>
+        
         
     </StackPanel>
 

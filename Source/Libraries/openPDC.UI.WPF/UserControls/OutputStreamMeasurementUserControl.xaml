@@ -41,40 +41,42 @@
             </Grid.RowDefinitions>
 
             <!--Frist Row-->
-            <TextBlock Text="Source Measurment" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" />
-            <Button Content="..." Width=" Auto" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" />
+            <TextBlock Text="Source Measurment" Grid.Row="0" Grid.Column="0" />
+            <Button Content=" ... " Grid.Row="0" Grid.Column="1" Width="Auto" HorizontalAlignment="Left"/>
 
             <!--Second Row-->
-            <TextBlock Text="Historian" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" />
-            <TextBlock Text="Point ID"  Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left"/>
-
+            <TextBlock Text="Historian" Grid.Row="1" Grid.Column="0"/>
+            <TextBlock Text="{tsfBinding:Column Path=HistorianID}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
+            <TextBlock Text="Point ID"  Grid.Row="1" Grid.Column="2"/>
+            <TextBlock Text="{tsfBinding:Column Path=PointID}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left"/>
+            
             <!--Third Row-->
             <TextBox Grid.Row="2" Grid.Column="1" Text="{tsfBinding:Column Path=SignalReference}"/>
             <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Signal Reference" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBlock Text="Source PointTag" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left"/>
-
-            <!--Button-->
-            <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
-                      SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" />
-
-            <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="550"
-                          PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4">
-                <sdk:DataGrid.Columns>
-                    <sdk:DataGridTextColumn Header="Point ID" Width="*" Binding="{tsfBinding:Column Path=PointID}"/>
-                    <sdk:DataGridTextColumn Header="Signal Reference" Width="*" Binding="{tsfBinding:Column Path=SignalReference}"/>
-                    <sdk:DataGridTextColumn Header="Source PointTag" Width="2*" Binding="{tsfBinding:Column Path=SourcePointTag}" />
-                    <sdk:DataGridTextColumn Header="Historian" Width="*" Binding="{tsfBinding:Column Path=Historian}"/>
-                </sdk:DataGrid.Columns>
-            </sdk:DataGrid>
-
-            <uc:DataPagerUserControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" CurrentPageNumber="{Binding CurrentPageNumber}" PageCount="{Binding PageCount}"
-                                     FirstCommand="{Binding FirstCommand}" PreviousCommand="{Binding PreviousCommand}"
-                                     NextCommand="{Binding NextCommand}" LastCommand="{Binding LastCommand}"/>
+            <TextBlock Text="Source PointTag" Grid.Row="2" Grid.Column="2" />
+            <TextBlock Text="{tsfBinding:Column Path=SourcePointTag}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left"/>
+            
         </Grid>
+                
+        <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
+                      SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
 
+        <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="550"
+                        PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4">
+            <sdk:DataGrid.Columns>
+                <sdk:DataGridTextColumn Header="Point ID" Width="*" Binding="{tsfBinding:Column Path=PointID}"/>
+                <sdk:DataGridTextColumn Header="Signal Reference" Width="*" Binding="{tsfBinding:Column Path=SignalReference}"/>
+                <sdk:DataGridTextColumn Header="Source PointTag" Width="2*" Binding="{tsfBinding:Column Path=SourcePointTag}" />
+                <sdk:DataGridTextColumn Header="Historian" Width="*" Binding="{tsfBinding:Column Path=Historian}"/>
+            </sdk:DataGrid.Columns>
+        </sdk:DataGrid>
+
+        <uc:DataPagerUserControl Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" CurrentPageNumber="{Binding CurrentPageNumber}" PageCount="{Binding PageCount}"
+                                    FirstCommand="{Binding FirstCommand}" PreviousCommand="{Binding PreviousCommand}"
+                                    NextCommand="{Binding NextCommand}" LastCommand="{Binding LastCommand}"/>
     </StackPanel>
 
 </UserControl>
