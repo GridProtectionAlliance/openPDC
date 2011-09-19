@@ -96,7 +96,7 @@ namespace openPDC.UI.UserControls
         {
             try
             {
-                m_deviceMeasurementDataList = openPDC.UI.DataModels.DeviceMeasurementData.Load(null, (Guid)database.CurrentNodeID());
+                m_deviceMeasurementDataList = openPDC.UI.DataModels.DeviceMeasurementData.Load(null, Guid.Parse(database.CurrentNodeID().ToString()));
                 m_dataForBinding.DeviceMeasurementDataList = m_deviceMeasurementDataList;
 
                 StringBuilder sb = new StringBuilder();

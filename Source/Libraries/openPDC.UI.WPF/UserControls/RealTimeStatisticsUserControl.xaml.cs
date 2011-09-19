@@ -39,7 +39,7 @@ namespace openPDC.UI.UserControls
             m_dataForBinding = new StatisticMeasurementDataForBinding();
             m_statisticMeasurementDataList = new ObservableCollection<StatisticMeasurementData>();
             m_minMaxPointIDs = new KeyValuePair<int?, int?>();
-            m_nodeID = (Guid)database.CurrentNodeID();
+            m_nodeID = Guid.Parse(database.CurrentNodeID().ToString());
 
             int interval = 10;
 

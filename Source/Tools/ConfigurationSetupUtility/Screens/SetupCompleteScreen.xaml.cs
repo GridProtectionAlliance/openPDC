@@ -521,6 +521,9 @@ namespace ConfigurationSetupUtility.Screens
                     }
                     else    //we need to add user to the UserAccount table and then attach it to admin role.
                     {
+                        bool oracle = connection.GetType().Name == "OracleConnection";
+                        char paramChar = oracle ? ':' : '@';
+
                         // Add Administrative User.                
                         IDbCommand adminCredentialCommand = connection.CreateCommand();
                         if (m_state["authenticationType"].ToString() == "windows")
@@ -529,9 +532,9 @@ namespace ConfigurationSetupUtility.Screens
                             IDbDataParameter createdByParameter = adminCredentialCommand.CreateParameter();
                             IDbDataParameter updatedByParameter = adminCredentialCommand.CreateParameter();
 
-                            nameParameter.ParameterName = "@name";
-                            createdByParameter.ParameterName = "@createdBy";
-                            updatedByParameter.ParameterName = "@updatedBy";
+                            nameParameter.ParameterName = paramChar + "name";
+                            createdByParameter.ParameterName = paramChar + "createdBy";
+                            updatedByParameter.ParameterName = paramChar + "updatedBy";
 
                             nameParameter.Value = m_state["adminUserName"].ToString();
                             createdByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
@@ -541,7 +544,10 @@ namespace ConfigurationSetupUtility.Screens
                             adminCredentialCommand.Parameters.Add(createdByParameter);
                             adminCredentialCommand.Parameters.Add(updatedByParameter);
 
-                            adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, DefaultNodeID, CreatedBy, UpdatedBy) Values (@name, {0}, @createdBy, @updatedBy)", nodeID);
+                            if (oracle)
+                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, DefaultNodeID, CreatedBy, UpdatedBy) Values (:name, {0}, :createdBy, :updatedBy)", nodeID);
+                            else
+                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, DefaultNodeID, CreatedBy, UpdatedBy) Values (@name, {0}, @createdBy, @updatedBy)", nodeID);
                         }
                         else
                         {
@@ -552,12 +558,12 @@ namespace ConfigurationSetupUtility.Screens
                             IDbDataParameter createdByParameter = adminCredentialCommand.CreateParameter();
                             IDbDataParameter updatedByParameter = adminCredentialCommand.CreateParameter();
 
-                            nameParameter.ParameterName = "@name";
-                            passwordParameter.ParameterName = "@password";
-                            firstNameParameter.ParameterName = "@firstName";
-                            lastNameParameter.ParameterName = "@lastName";
-                            createdByParameter.ParameterName = "@createdBy";
-                            updatedByParameter.ParameterName = "@updatedBy";
+                            nameParameter.ParameterName = paramChar + "name";
+                            passwordParameter.ParameterName = paramChar + "password";
+                            firstNameParameter.ParameterName = paramChar + "firstName";
+                            lastNameParameter.ParameterName = paramChar + "lastName";
+                            createdByParameter.ParameterName = paramChar + "createdBy";
+                            updatedByParameter.ParameterName = paramChar + "updatedBy";
 
                             nameParameter.Value = m_state["adminUserName"].ToString();
                             passwordParameter.Value = FormsAuthentication.HashPasswordForStoringInConfigFile(@"O3990\P78f9E66b:a35_V©6M13©6~2&[" + m_state["adminPassword"].ToString(), "SHA1");
@@ -576,6 +582,9 @@ namespace ConfigurationSetupUtility.Screens
                             if (!string.IsNullOrEmpty(connectionSetting) && connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
                                 adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, [Password], FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
                                     "(@name, @password, @firstName, @lastName, {0}, 0, @createdBy, @updatedBy)", nodeID);
+                            else if (oracle)
+                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
+                                    "(:name, :password, :firstName, :lastName, {0}, 0, :createdBy, :updatedBy)", nodeID);
                             else
                                 adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
                                     "(@name, @password, @firstName, @lastName, {0}, 0, @createdBy, @updatedBy)", nodeID);
@@ -589,10 +598,10 @@ namespace ConfigurationSetupUtility.Screens
                         {
                             IDbDataParameter nameParameter = adminCredentialCommand.CreateParameter();
 
-                            nameParameter.ParameterName = "@name";
+                            nameParameter.ParameterName = paramChar + "name";
                             nameParameter.Value = m_state["adminUserName"].ToString();
 
-                            adminCredentialCommand.CommandText = "SELECT ID FROM UserAccount WHERE Name = @name";
+                            adminCredentialCommand.CommandText = "SELECT ID FROM UserAccount WHERE Name = " + paramChar + "name";
                             adminCredentialCommand.Parameters.Clear();
                             adminCredentialCommand.Parameters.Add(nameParameter);
                             userIdReader = adminCredentialCommand.ExecuteReader();

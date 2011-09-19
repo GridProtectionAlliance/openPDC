@@ -319,8 +319,9 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<Phasor> phasorList = new ObservableCollection<Phasor>();
-                DataTable phasorTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, DeviceID, Label, Type, Phase, DestinationPhasorID, SourceIndex, " +
-                    "CreatedBy, CreatedOn, UpdatedBy, UpdatedOn FROM Phasor WHERE DeviceID = @deviceID ORDER BY DeviceID", DefaultTimeout, deviceID);
+                string query = database.ParameterizedQueryString("SELECT ID, DeviceID, Label, Type, Phase, DestinationPhasorID, SourceIndex, " +
+                    "CreatedBy, CreatedOn, UpdatedBy, UpdatedOn FROM Phasor WHERE DeviceID = {0} ORDER BY DeviceID", "deviceID");
+                DataTable phasorTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, deviceID);
 
                 foreach (DataRow row in phasorTable.Rows)
                 {
@@ -367,8 +368,8 @@ namespace openPDC.UI.DataModels
                 if (deviceID == 0)
                     return phasorList;
 
-                DataTable phasorTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Label FROM Phasor WHERE DeviceID = @deviceID " +
-                    "ORDER BY SourceIndex", DefaultTimeout, deviceID);
+                string query = database.ParameterizedQueryString("SELECT ID, Label FROM Phasor WHERE DeviceID = {0} ORDER BY SourceIndex", "deviceID");
+                DataTable phasorTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, deviceID);
 
                 foreach (DataRow row in phasorTable.Rows)
                     phasorList[row.ConvertField<int>("ID")] = row.Field<string>("Label");
@@ -391,19 +392,29 @@ namespace openPDC.UI.DataModels
         public static string Save(AdoDataConnection database, Phasor phasor)
         {
             bool createdConnection = false;
+            string query;
 
             try
             {
                 createdConnection = CreateConnection(ref database);
 
                 if (phasor.ID == 0)
-                    database.Connection.ExecuteNonQuery("INSERT INTO Phasor (DeviceID, Label, Type, Phase, SourceIndex, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
-                        "VALUES (@DeviceID, @Label, @Type, @Phase, @sourceIndex, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout, phasor.DeviceID, phasor.Label,
-                        phasor.Type, phasor.Phase, phasor.SourceIndex, TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
+                {
+                    query = database.ParameterizedQueryString("INSERT INTO Phasor (DeviceID, Label, Type, Phase, SourceIndex, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) " +
+                        "VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8})", "deviceID", "label", "type", "phase", "sourceIndex", "updatedBy", "updatedOn", "createdBy",
+                        "createdOn");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, phasor.DeviceID, phasor.Label, phasor.Type, phasor.Phase, phasor.SourceIndex,
+                        TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
+                }
                 else
-                    database.Connection.ExecuteNonQuery("UPDATE Phasor SET DeviceID = @deviceID, Label = @label, Type = @type, Phase = @phase, SourceIndex = @sourceIndex, " +
-                        "UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout, phasor.DeviceID, phasor.Label, phasor.Type,
+                {
+                    query = database.ParameterizedQueryString("UPDATE Phasor SET DeviceID = {0}, Label = {1}, Type = {2}, Phase = {3}, SourceIndex = {4}, " +
+                        "UpdatedBy = {5}, UpdatedOn = {6} WHERE ID = {7}", "deviceID", "label", "type", "phase", "sourceIndex", "updatedBy", "updatedOn", "id");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, phasor.DeviceID, phasor.Label, phasor.Type,
                         phasor.Phase, phasor.SourceIndex, TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), phasor.ID);
+                }
 
                 // Get reference to the device to which phasor is being added.
                 Device device = Device.GetDevice(database, "WHERE ID = " + phasor.DeviceID);
@@ -463,7 +474,7 @@ namespace openPDC.UI.DataModels
                 // Setup current user context for any delete triggers
                 TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
-                database.Connection.ExecuteNonQuery("DELETE FROM Phasor WHERE ID = @phasorID", DefaultTimeout, phasorID);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Phasor WHERE ID = {0}", "phasorID"), DefaultTimeout, phasorID);
 
                 return "Phasor deleted successfully";
             }

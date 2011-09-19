@@ -388,9 +388,10 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<OutputStreamDevice> OutputStreamDeviceList = new ObservableCollection<OutputStreamDevice>();
-                DataTable OutputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, AdapterID, ID, IDCode, Acronym, BpaAcronym " +
+                string query = database.ParameterizedQueryString("SELECT NodeID, AdapterID, ID, IDCode, Acronym, BpaAcronym " +
                     "Name, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, LoadOrder, Enabled, Virtual  " +
-                    "FROM OutputStreamDeviceDetail WHERE AdapterID = @outputStreamID ORDER BY LoadOrder", DefaultTimeout, outputStreamID);
+                    "FROM OutputStreamDeviceDetail WHERE AdapterID = {0} ORDER BY LoadOrder", "outputStreamID");
+                DataTable OutputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
 
                 foreach (DataRow row in OutputStreamDeviceTable.Rows)
                 {
@@ -440,8 +441,8 @@ namespace openPDC.UI.DataModels
                 if (isOptional)
                     OutputStreamDeviceList.Add(0, "Select OutputStreamDevice");
 
-                DataTable OutputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Name FROM OutputStreamDevice WHERE AdapterID = @adapterID " +
-                    "ORDER BY LoadOrder", DefaultTimeout, outputStreamID);
+                string query = database.ParameterizedQueryString("SELECT ID, Name FROM OutputStreamDevice WHERE AdapterID = {0} ORDER BY LoadOrder", "adapterID");
+                DataTable OutputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
 
                 foreach (DataRow row in OutputStreamDeviceTable.Rows)
                     OutputStreamDeviceList[row.ConvertField<int>("ID")] = row.Field<string>("Name");
@@ -464,27 +465,39 @@ namespace openPDC.UI.DataModels
         public static string Save(AdoDataConnection database, OutputStreamDevice OutputStreamDevice)
         {
             bool createdConnection = false;
+            string query;
+
             try
             {
                 createdConnection = CreateConnection(ref database);
 
                 if (OutputStreamDevice.ID == 0)
-                    database.Connection.ExecuteNonQuery("INSERT INTO OutputStreamDevice (NodeID, AdapterID, ID, IDCode, Acronym, BpaAcronym, Name, " +
+                {
+                    query = database.ParameterizedQueryString("INSERT INTO OutputStreamDevice (NodeID, AdapterID, IDCode, Acronym, BpaAcronym, Name, " +
                         "PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, LoadOrder, Enabled, Virtual, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn)" +
-                        "VALUES (@nodeID, @adapterID, @iD, @iDCode, @acronym, @bpaAcronym, @name, @phasorDataFormat, @frequencyDataFormat, @analogDataFormat, @coordinateFormat, @loadOrder, @enabled, @virtual, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout,
-                        OutputStreamDevice.NodeID, OutputStreamDevice.AdapterID, OutputStreamDevice.ID, OutputStreamDevice.IDCode, OutputStreamDevice.Acronym,
-                        OutputStreamDevice.BpaAcronym.ToNotNull(), OutputStreamDevice.Name, OutputStreamDevice.PhasorDataFormat.ToNotNull(), OutputStreamDevice.FrequencyDataFormat.ToNotNull(),
-                        OutputStreamDevice.AnalogDataFormat.ToNotNull(), OutputStreamDevice.CoordinateFormat.ToNotNull(), OutputStreamDevice.LoadOrder,
-                        OutputStreamDevice.Enabled, OutputStreamDevice.Virtual, CommonFunctions.CurrentUser, database.UtcNow(),
-                        CommonFunctions.CurrentUser, database.UtcNow());
+                        "VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16})", "nodeID", "adapterID", "idCode", "acronym",
+                        "bpaAcronym", "name", "phasorDataFormat", "frequencyDataFormat", "analogDataFormat", "coordinateFormat", "loadOrder", "enabled", "virtual",
+                        "updatedBy", "updatedOn", "createdBy", "createdOn");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamDevice.NodeID, OutputStreamDevice.AdapterID, OutputStreamDevice.IDCode,
+                        OutputStreamDevice.Acronym, OutputStreamDevice.BpaAcronym.ToNotNull(), OutputStreamDevice.Name, OutputStreamDevice.PhasorDataFormat.ToNotNull(),
+                        OutputStreamDevice.FrequencyDataFormat.ToNotNull(), OutputStreamDevice.AnalogDataFormat.ToNotNull(), OutputStreamDevice.CoordinateFormat.ToNotNull(),
+                        OutputStreamDevice.LoadOrder, database.Bool(OutputStreamDevice.Enabled), database.Bool(OutputStreamDevice.Virtual), CommonFunctions.CurrentUser,
+                        database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+                }
                 else
-                    database.Connection.ExecuteNonQuery("UPDATE OutputStreamDevice SET NodeID = @nodeID, AdapterID = @adapterID , ID = @iD, IDCode = @iDCode, Acronym = @acronym, BpaAcronym = @bpaAcronym, Name = @name, " +
-                    "PhasorDataFormat = @phasorDataFormat, FrequencyDataFormat = @frequencyDataFormat, AnalogDataFormat = @analogDataFormat, CoordinateFormat = @coordinateFormat , LoadOrder = @loadOrder, " +
-                    "Enabled = @enabled, Virtual = @virtual, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn, CreatedBy = @createdBy, CreatedOn = @createdOn " +
-                     DefaultTimeout, OutputStreamDevice.NodeID, OutputStreamDevice.AdapterID, OutputStreamDevice.ID, OutputStreamDevice.IDCode, OutputStreamDevice.Acronym,
-                     OutputStreamDevice.BpaAcronym.ToNotNull(), OutputStreamDevice.Name, OutputStreamDevice.PhasorDataFormat.ToNotNull(), OutputStreamDevice.FrequencyDataFormat.ToNotNull(),
-                     OutputStreamDevice.AnalogDataFormat.ToNotNull(), OutputStreamDevice.CoordinateFormat.ToNotNull(), OutputStreamDevice.LoadOrder,
-                     OutputStreamDevice.Enabled, OutputStreamDevice.Virtual, CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamDevice.ID);
+                {
+                    query = database.ParameterizedQueryString("UPDATE OutputStreamDevice SET NodeID = {0}, AdapterID = {1}, IDCode = {2}, Acronym = {3}, BpaAcronym = {4}, " +
+                        "Name = {5}, PhasorDataFormat = {6}, FrequencyDataFormat = {7}, AnalogDataFormat = {8}, CoordinateFormat = {9}, LoadOrder = {10}, Enabled = {11}, " +
+                        "Virtual = {12}, UpdatedBy = {13}, UpdatedOn = {14} WHERE ID = {15}", "nodeID", "adapterID", "idCode", "acronym", "bpaAcronym", "name",
+                        "phasorDataFormat", "frequencyDataFormat", "analogDataFormat", "coordinateFormat", "loadOrder", "enabled", "virtual", "updatedBy", "updatedOn", "id");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamDevice.NodeID, OutputStreamDevice.AdapterID, OutputStreamDevice.IDCode,
+                        OutputStreamDevice.Acronym, OutputStreamDevice.BpaAcronym.ToNotNull(), OutputStreamDevice.Name, OutputStreamDevice.PhasorDataFormat.ToNotNull(),
+                        OutputStreamDevice.FrequencyDataFormat.ToNotNull(), OutputStreamDevice.AnalogDataFormat.ToNotNull(), OutputStreamDevice.CoordinateFormat.ToNotNull(),
+                        OutputStreamDevice.LoadOrder, database.Bool(OutputStreamDevice.Enabled), database.Bool(OutputStreamDevice.Virtual), CommonFunctions.CurrentUser,
+                        database.UtcNow(), OutputStreamDevice.ID);
+                }
 
                 return "OutputStreamDevice information saved successfully";
             }
@@ -512,7 +525,7 @@ namespace openPDC.UI.DataModels
                 // Setup current user context for any delete triggers
                 CommonFunctions.SetCurrentUserContext(database);
 
-                database.Connection.ExecuteNonQuery("DELETE FROM OutputStreamDevice WHERE ID = @OutputStreamDeviceID", DefaultTimeout, OutputStreamDeviceID);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamDevice WHERE ID = {0}", "outputStreamDeviceID"), DefaultTimeout, OutputStreamDeviceID);
 
                 return "OutputStreamDevice deleted successfully";
             }

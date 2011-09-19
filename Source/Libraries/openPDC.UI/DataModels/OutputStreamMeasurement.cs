@@ -276,10 +276,10 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                ObservableCollection<OutputStreamMeasurement> OutputStreamMeasurementList = new ObservableCollection<OutputStreamMeasurement>();
-                DataTable OutputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, AdapterID, ID,  " +
-                    "HistorianID, PointID, SignalReference, SourcePointTag, HistorianAcronym  " +
-                    "FROM OutputStreamMeasurementDetail WHERE AdapterID = @outputStreamID ORDER BY SignalReference", DefaultTimeout, outputStreamID);
+				ObservableCollection<OutputStreamMeasurement> OutputStreamMeasurementList = new ObservableCollection<OutputStreamMeasurement>();
+                string query = database.ParameterizedQueryString("SELECT NodeID, AdapterID, ID, HistorianID, PointID, SignalReference, SourcePointTag, HistorianAcronym " +
+                    "FROM OutputStreamMeasurement WHERE AdapterID = {0} ORDER BY SignalReference", "outputStreamID");
+				DataTable OutputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
 
                 foreach (DataRow row in OutputStreamMeasurementTable.Rows)
                 {
@@ -323,8 +323,8 @@ namespace openPDC.UI.DataModels
                 if (isOptional)
                     OutputStreamMeasurementList.Add(0, "Select OutputStreamMeasurement");
 
-                DataTable OutputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, "SELECT PointID, SignalReference FROM OutputStreamMeasurement " +
-                    "WHERE AdapterID = @adapterID ORDER BY LoadOrder", DefaultTimeout, outputStreamID);
+                string query = database.ParameterizedQueryString("SELECT PointID, SignalReference FROM OutputStreamMeasurement WHERE AdapterID = {0} ORDER BY LoadOrder", "adapterID");
+                DataTable OutputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
 
                 foreach (DataRow row in OutputStreamMeasurementTable.Rows)
                     OutputStreamMeasurementList[row.ConvertField<int>("PointID")] = row.Field<string>("SignalReference");
@@ -338,33 +338,42 @@ namespace openPDC.UI.DataModels
             }
         }
 
-        /// <summary>
-        /// Saves <see cref="OutputStreamMeasurement"/> information to database.
-        /// </summary>
-        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="OutputStreamMeasurement">Information about <see cref="OutputStreamMeasurement"/>.</param>        
-        /// <returns>String, for display use, indicating success.</returns>
-        public static string Save(AdoDataConnection database, OutputStreamMeasurement OutputStreamMeasurement)
-        {
-            bool createdConnection = false;
-            try
-            {
-                createdConnection = CreateConnection(ref database);
+		/// <summary>
+		/// Saves <see cref="OutputStreamMeasurement"/> information to database.
+		/// </summary>
+		/// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+		/// <param name="OutputStreamMeasurement">Information about <see cref="OutputStreamMeasurement"/>.</param>        
+		/// <returns>String, for display use, indicating success.</returns>
+		public static string Save(AdoDataConnection database, OutputStreamMeasurement OutputStreamMeasurement)
+		{
+			bool createdConnection = false;
+            string query;
+
+			try
+			{
+				createdConnection = CreateConnection(ref database);
 
                 if (OutputStreamMeasurement.ID == 0)
-                    database.Connection.ExecuteNonQuery("INSERT INTO OutputStreamMeasurement (NodeID, AdapterID, ID, HistorianID, PointID, " +
-                        "SignalReference, SourcePointTag, HistorianAcronym, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn)" +
-                        "VALUES (@nodeID, @adapterID, @iD, @historianID, @pointID, @signalReference, @sourcePointTag, @historianAcronym, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout,
-                        OutputStreamMeasurement.NodeID, OutputStreamMeasurement.AdapterID, OutputStreamMeasurement.ID, OutputStreamMeasurement.HistorianID, OutputStreamMeasurement.PointID,
-                        OutputStreamMeasurement.SignalReference, OutputStreamMeasurement.SourcePointTag, OutputStreamMeasurement.HistorianAcronym, CommonFunctions.CurrentUser, database.UtcNow(),
-                        CommonFunctions.CurrentUser, database.UtcNow());
+                {
+                    query = database.ParameterizedQueryString("INSERT INTO OutputStreamMeasurement (NodeID, AdapterID, HistorianID, PointID, SignalReference, " +
+                        "SourcePointTag, HistorianAcronym, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10})",
+                        "nodeID", "adapterID", "historianID", "pointID", "signalReference", "sourcePointTag", "historianAcronym", "updatedBy", "updatedOn", "createdBy",
+                        "createdOn");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamMeasurement.NodeID, OutputStreamMeasurement.AdapterID,
+                        OutputStreamMeasurement.HistorianID, OutputStreamMeasurement.PointID, OutputStreamMeasurement.SignalReference, OutputStreamMeasurement.SourcePointTag,
+                        OutputStreamMeasurement.HistorianAcronym, CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+                }
                 else
-                    database.Connection.ExecuteNonQuery("UPDATE OutputStreamMeasurement SET NodeID = @nodeID, AdapterID = @adapterID , ID = @iD, HistorianID = @historianID, PointID = @pointID, " +
-                    "SignalReference = @signalReference, SourcePointTag = @sourcePointTag, HistorianAcronym = @historianAcronym," +
-                    "UpdatedBy = @updatedBy, UpdatedOn = @updatedOn, CreatedBy = @createdBy, CreatedOn = @createdOn " +
-                     DefaultTimeout, OutputStreamMeasurement.NodeID, OutputStreamMeasurement.AdapterID, OutputStreamMeasurement.ID, OutputStreamMeasurement.HistorianID,
-                     OutputStreamMeasurement.PointID, OutputStreamMeasurement.SignalReference, OutputStreamMeasurement.SourcePointTag, OutputStreamMeasurement.HistorianAcronym,
-                     CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamMeasurement.ID);
+                {
+                    query = database.ParameterizedQueryString("UPDATE OutputStreamMeasurement SET NodeID = {0}, AdapterID = {1}, HistorianID = {2}, PointID = {3}, " +
+                        "SignalReference = {4}, SourcePointTag = {5}, HistorianAcronym = {6}, UpdatedBy = {7}, UpdatedOn = {8} WHERE ID = {9}", "nodeID", "adapterID",
+                        "historianID", "pointID", "signalReference", "sourcePointTag", "historianAcronym", "updatedBy", "updatedOn", "id");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamMeasurement.NodeID, OutputStreamMeasurement.AdapterID,
+                        OutputStreamMeasurement.HistorianID, OutputStreamMeasurement.PointID, OutputStreamMeasurement.SignalReference, OutputStreamMeasurement.SourcePointTag,
+                        OutputStreamMeasurement.HistorianAcronym, CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamMeasurement.ID);
+                }
 
                 return "OutputStreamMeasurement information saved successfully";
             }
@@ -392,7 +401,7 @@ namespace openPDC.UI.DataModels
                 // Setup current user context for any delete triggers
                 CommonFunctions.SetCurrentUserContext(database);
 
-                database.Connection.ExecuteNonQuery("DELETE FROM OutputStreamMeasurement WHERE ID = @OutputStreamMeasurementID", DefaultTimeout, OutputStreamMeasurementID);
+				database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamMeasurement WHERE ID = {0}", "outputStreamMeasurementID"), DefaultTimeout, OutputStreamMeasurementID);
 
                 return "OutputStreamMeasurement deleted successfully";
             }

@@ -723,13 +723,17 @@ namespace openPDCManager.UI.DataModels
 
                 DataTable resultTable;
 
+                string query;
+
                 if (enabledOnly)
                 {
-                    resultTable = database.Connection.RetrieveData(database.AdapterType, "SELECT * FROM OuputStreamDetail WHERE NodeID = @nodeID AND Enabled = @enabled ORDER BY Load Order", database.CurrentNodeID(), true);
+                    query = database.ParameterizedQueryString("SELECT * FROM OuputStreamDetail WHERE NodeID = {0} AND Enabled = {1} ORDER BY Load Order", "nodeID", "enabled");
+                    resultTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID(), database.Bool(true));
                 }
                 else
                 {
-                    resultTable = database.Connection.RetrieveData(database.AdapterType, "SELECT * FROM OutputStreamdetail WHERE NodeID = @nodeID ORDER BY LoadOrder", database.CurrentNodeID());
+                    query = database.ParameterizedQueryString("SELECT * FROM OutputStreamdetail WHERE NodeID = {0} ORDER BY LoadOrder", "nodeID");
+                    resultTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID());
                 }
 
                 outputStreamList = new ObservableCollection<OutputStream>(from item in resultTable.AsEnumerable()
@@ -787,43 +791,54 @@ namespace openPDCManager.UI.DataModels
         public static string Save(AdoDataConnection database, OutputStream outputStream)
         {
             bool createdConnection = false;
+            string query;
+
             try
             {
                 createdConnection = CreateConnection(ref database);
 
                 if (outputStream.ID == 0)
                 {
-                    database.Connection.ExecuteNonQuery("INSERT INTO OutputStream (NodeID, Acronym, Name,  Type, ConnectionString, IDCode, CommandChannel, DataChannel, " +
+                    query = database.ParameterizedQueryString("INSERT INTO OutputStream (NodeID, Acronym, Name,  Type, ConnectionString, IDCode, CommandChannel, DataChannel, " +
                         "AutoPublishConfigFrame, AutoStartDataChannel, NominalFrequency, FramesPerSecond, LagTime, LeadTime, UseLocalClockAsRealTime, AllowSortsByArrival, " +
                         "LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, DownSamplingMethod, DataFormat, CoordinateFormat, " +
-                        "CurrentScalingValue, VoltageScalingValue, AnalogScalingValue, DigitalMaskValue, PerformTimestampReasonabilityCheck, UpdatedBy, UpdatedOn, " +
-                        "CreatedBy, CreatedOn) VALUES (@nodeID, @acronym, @name, @type, @connectionString, @idCode, @commandChannel, @dataChannel, @autoPublishConfigFrame, " +
-                        "@autoStartDataChannel, @nominalFrequency, @framesPerSecond, @lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, " +
-                        "@enabled, @ignoreBadTimeStamps, @timeResolution, @allowPreemptivePublishing, @downSamplingMethod, @dataFormat, @coordinateFormat, @currentScalingValue," +
-                        "@voltageScalingValue, @analogScalingValue, @digitalMaskValue, @performTimestampReasonabilityCheck, @updatedBy, @updatedOn, @createdBy, @createdOn)",
+                        "CurrentScalingValue, VoltageScalingValue, AnalogScalingValue, DigitalMaskValue, PerformTimeReasonabilityCheck, UpdatedBy, UpdatedOn, " +
+                        "CreatedBy, CreatedOn) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19}, {20}, " +
+                        "{21}, {22}, {23}, {24}, {25}, {26}, {27}, {28}, {29}, {30}, {31}, {32})", "nodeID", "acronym", "name", "type", "connectionString", "idCode",
+                        "commandChannel", "dataChannel", "autoPublishConfigFrame", "autoStartDataChannel", "nominalFrequency", "framesPerSecond", "lagTime", "leadTime",
+                        "useLocalClockAsRealTime", "allowSortsByArrival", "loadOrder", "enabled", "ignoreBadTimeStamps", "timeResolution", "allowPreemptivePublishing",
+                        "downSamplingMethod", "dataFormat", "coordinateFormat", "currentScalingValue", "voltageScalingValue", "analogScalingValue", "digitalMaskValue",
+                        "performTimeReasonabilityCheck", "updatedBy", "updatedOn", "createdBy", "createdOn");
+
+                    database.Connection.ExecuteNonQuery(query,
                         database.Guid(outputStream.NodeID), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name, outputStream.Type, outputStream.ConnectionString.ToNotNull(),
-                        outputStream.IDCode, outputStream.CommandChannel.ToNotNull(), outputStream.DataChannel.ToNotNull(), outputStream.AutoPublishConfigFrame, outputStream.AutoStartDataChannel,
-                        outputStream.NominalFrequency, outputStream.FramesPerSecond, outputStream.LagTime, outputStream.LeadTime, outputStream.UseLocalClockAsRealTime, outputStream.AllowSortsByArrival,
-                        outputStream.LoadOrder, outputStream.Enabled, outputStream.IgnoreBadTimeStamps, outputStream.TimeResolution, outputStream.AllowPreemptivePublishing,
+                        outputStream.IDCode, outputStream.CommandChannel.ToNotNull(), outputStream.DataChannel.ToNotNull(), database.Bool(outputStream.AutoPublishConfigFrame), database.Bool(outputStream.AutoStartDataChannel),
+                        outputStream.NominalFrequency, outputStream.FramesPerSecond, outputStream.LagTime, outputStream.LeadTime, database.Bool(outputStream.UseLocalClockAsRealTime), database.Bool(outputStream.AllowSortsByArrival),
+                        outputStream.LoadOrder, database.Bool(outputStream.Enabled), database.Bool(outputStream.IgnoreBadTimeStamps), outputStream.TimeResolution, database.Bool(outputStream.AllowPreemptivePublishing),
                         outputStream.DownSamplingMethod.ToNotNull(), outputStream.DataFormat.ToNotNull(), outputStream.CoordinateFormat.ToNotNull(), outputStream.CurrentScalingValue,
-                        outputStream.VoltageScalingValue, outputStream.AnalogScalingValue, outputStream.DigitalMaskValue, outputStream.PerformTimestampReasonabilityCheck,
+                        outputStream.VoltageScalingValue, outputStream.AnalogScalingValue, outputStream.DigitalMaskValue, database.Bool(outputStream.PerformTimestampReasonabilityCheck),
                         CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
                 }
                 else
                 {
-                    database.Connection.ExecuteNonQuery("UPDATE OutputStream SET NodeID = @nodeID, Acronym = @acronym, Name = @name, Type = @type, ConnectionString = @connectionString, " +
-                        "IDCode = @idCode, CommandChannel = @commandChannel, DataChannel = @dataChannel, AutoPublishConfigFrame = @autoPublishConfigFrame, AutoStartDataChannel = @autoStartDataChannel, " +
-                        "NominalFrequency = @nominalFrequency, FramesPerSecond = @framesPerSecond, LagTime = @lagTime, LeadTime = @leadTime, UseLocalClockAsRealTime = @useLocalClockAsRealTime, " +
-                        "AllowSortsByArrival = @allowSortsByArrival, LoadOrder = @loadOrder, Enabled = @enabled, IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, " +
-                        "AllowPreemptivePublishing = @allowPreemptivePublishing, DownSamplingMethod = @downsamplingMethod, DataFormat = @dataFormat, CoordinateFormat = @coordinateFormat, " +
-                        "CurrentScalingValue = @currentScalingValue, VoltageScalingValue = @voltageScalingValue, AnalogScalingValue = @analogScalingValue, DigitalMaskValue = @digitalMaskValue, " +
-                        "PerformTimestampReasonabilityCheck = @perforTimestampReasonabilityCheck, UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout,
+                    query = database.ParameterizedQueryString("UPDATE OutputStream SET NodeID = {0}, Acronym = {1}, Name = {2}, Type = {3}, ConnectionString = {4}, " +
+                        "IDCode = {5}, CommandChannel = {6}, DataChannel = {7}, AutoPublishConfigFrame = {8}, AutoStartDataChannel = {9}, NominalFrequency = {10}, " +
+                        "FramesPerSecond = {11}, LagTime = {12}, LeadTime = {13}, UseLocalClockAsRealTime = {14}, AllowSortsByArrival = {15}, LoadOrder = {16}, " +
+                        "Enabled = {17}, IgnoreBadTimeStamps = {18}, TimeResolution = {19}, AllowPreemptivePublishing = {20}, DownSamplingMethod = {21}, " +
+                        "DataFormat = {22}, CoordinateFormat = {23}, CurrentScalingValue = {24}, VoltageScalingValue = {25}, AnalogScalingValue = {26}, " +
+                        "DigitalMaskValue = {27}, PerformTimeReasonabilityCheck = {28}, UpdatedBy = {29}, UpdatedOn = {30} WHERE ID = {31}", "nodeID", "acronym", "name",
+                        "type", "connectionString", "idCode", "commandChannel", "dataChannel", "autoPublishConfigFrame", "autoStartDataChannel", "nominalFrequency",
+                        "framesPerSecond", "lagTime", "leadTime", "useLocalClockAsRealTime", "allowSortsByArrival", "loadOrder", "enabled", "ignoreBadTimeStamps",
+                        "timeResolution", "allowPreemptivePublishing", "downsamplingMethod", "dataFormat", "coordinateFormat", "currentScalingValue", "voltageScalingValue",
+                        "analogScalingValue", "digitalMaskValue", "performTimeReasonabilityCheck", "updatedBy", "updatedOn", "id");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout,
                         database.Guid(outputStream.NodeID), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name, outputStream.Type, outputStream.ConnectionString.ToNotNull(),
-                        outputStream.IDCode, outputStream.CommandChannel.ToNotNull(), outputStream.DataChannel.ToNotNull(), outputStream.AutoPublishConfigFrame, outputStream.AutoStartDataChannel,
-                        outputStream.NominalFrequency, outputStream.FramesPerSecond, outputStream.LagTime, outputStream.LeadTime, outputStream.UseLocalClockAsRealTime,
-                        outputStream.AllowSortsByArrival, outputStream.LoadOrder, outputStream.Enabled, outputStream.IgnoreBadTimeStamps, outputStream.TimeResolution,
-                        outputStream.AllowPreemptivePublishing, outputStream.DownSamplingMethod.ToNotNull(), outputStream.DataFormat.ToNotNull(), outputStream.CoordinateFormat.ToNotNull(),
-                        outputStream.CurrentScalingValue, outputStream.VoltageScalingValue, outputStream.AnalogScalingValue, outputStream.DigitalMaskValue, outputStream.PerformTimestampReasonabilityCheck,
+                        outputStream.IDCode, outputStream.CommandChannel.ToNotNull(), outputStream.DataChannel.ToNotNull(), database.Bool(outputStream.AutoPublishConfigFrame), database.Bool(outputStream.AutoStartDataChannel),
+                        outputStream.NominalFrequency, outputStream.FramesPerSecond, outputStream.LagTime, outputStream.LeadTime, database.Bool(outputStream.UseLocalClockAsRealTime),
+                        database.Bool(outputStream.AllowSortsByArrival), outputStream.LoadOrder, database.Bool(outputStream.Enabled), database.Bool(outputStream.IgnoreBadTimeStamps), outputStream.TimeResolution,
+                        database.Bool(outputStream.AllowPreemptivePublishing), outputStream.DownSamplingMethod.ToNotNull(), outputStream.DataFormat.ToNotNull(), outputStream.CoordinateFormat.ToNotNull(),
+                        outputStream.CurrentScalingValue, outputStream.VoltageScalingValue, outputStream.AnalogScalingValue, outputStream.DigitalMaskValue, database.Bool(outputStream.PerformTimestampReasonabilityCheck),
                         CommonFunctions.CurrentUser, database.UtcNow(), outputStream.ID);
                 }
                 return "Output Stream Information Saved Successfully";
@@ -855,7 +870,7 @@ namespace openPDCManager.UI.DataModels
 
                 Dictionary<int, string> osList = new Dictionary<int, string>();
 
-                DataTable results = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Name FROM OutputStream WHERE NodeID = @nodeID ORDER BY Name", DefaultTimeout, database.CurrentNodeID());
+                DataTable results = database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, Name FROM OutputStream WHERE NodeID = {0} ORDER BY Name", "nodeID"), DefaultTimeout, database.CurrentNodeID());
 
                 foreach (DataRow row in results.Rows)
                     osList[row.ConvertField<int>("ID")] = row.Field<string>("Name");
@@ -883,7 +898,7 @@ namespace openPDCManager.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                database.Connection.ExecuteNonQuery("DELETE FROM OutputStream WHERE ID = @outputStreamID", DefaultTimeout, outputStreamID);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStream WHERE ID = {0}", "outputStreamID"), DefaultTimeout, outputStreamID);
 
                 return "Output Stream Deleted Successfully";
             }

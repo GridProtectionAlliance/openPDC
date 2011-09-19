@@ -579,11 +579,11 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<CalculatedMeasurement> calculatedMeasurementList = new ObservableCollection<CalculatedMeasurement>();
-                DataTable calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, ID, Acronym, Name, AssemblyName, " +
+                string query = database.ParameterizedQueryString("SELECT NodeID, ID, Acronym, Name, AssemblyName, " +
                     "TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, " +
                     "LeadTime, UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, " +
-                    "DownSamplingMethod, NodeName, PerformTimestampReasonabilityCheck From CalculatedMeasurementDetail WHERE NodeID = @nodeID ORDER BY LoadOrder",
-                    DefaultTimeout, database.CurrentNodeID());
+                    "DownSamplingMethod, NodeName, PerformTimeReasonabilityCheck From CalculatedMeasurementDetail WHERE NodeID = {0} ORDER BY LoadOrder", "nodeID");
+                DataTable calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
 
                 foreach (DataRow row in calculatedMeasurementTable.Rows)
                 {
@@ -601,8 +601,8 @@ namespace openPDC.UI.DataModels
                         OutputMeasurements = row.Field<string>("OutputMeasurements"),
                         MinimumMeasurementsToUse = row.ConvertField<int>("MinimumMeasurementsToUse"),
                         FramesPerSecond = Convert.ToInt32(row.Field<object>("FramesPerSecond") ?? 30),
-                        LagTime = row.Field<double>("LagTime"),
-                        LeadTime = row.Field<double>("LeadTime"),
+                        LagTime = row.ConvertField<double>("LagTime"),
+                        LeadTime = row.ConvertField<double>("LeadTime"),
                         UseLocalClockAsRealTime = Convert.ToBoolean(row.Field<object>("UseLocalClockAsRealTime")),
                         AllowSortsByArrival = Convert.ToBoolean(row.Field<object>("AllowSortsByArrival")),
                         LoadOrder = row.ConvertField<int>("LoadOrder"),
@@ -667,42 +667,54 @@ namespace openPDC.UI.DataModels
         public static string Save(AdoDataConnection database, CalculatedMeasurement calculatedMeasurement)
         {
             bool createdConnection = false;
+            string query;
 
             try
             {
                 createdConnection = CreateConnection(ref database);
 
                 if (calculatedMeasurement.ID == 0)
-                    database.Connection.ExecuteNonQuery("INSERT INTO CalculatedMeasurement (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, " +
+                {
+                    query = database.ParameterizedQueryString("INSERT INTO CalculatedMeasurement (NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, " +
                         "ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, LeadTime, UseLocalClockAsRealTime, " +
                         "AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, DownsamplingMethod, " +
-                        "PerformTimestampReasonabilityCheck, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values (@nodeID, @acronym, @name, @assemblyName, " +
-                        "@typeName, @connectionString, @configSection, @inputMeasurements, @outputMeasurements, @minimumMeasurementsToUse, @framesPerSecond, " +
-                        "@lagTime, @leadTime, @useLocalClockAsRealTime, @allowSortsByArrival, @loadOrder, @enabled, @ignoreBadTimeStamps, @timeResolution, " +
-                        "@allowPreemptivePublishing, @downsamplingMethod, @performTimestampReasonabilityCheck, @updatedBy, @updatedOn, @createdBy, @createdOn)",
+                        "PerformTimeReasonabilityCheck, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, " +
+                        "{9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19}, {20}, {21}, {22}, {23}, {24}, {25})", "nodeID", "acronym", "name",
+                        "assemblyName", "typeName", "connectionString", "configSection", "inputMeasurements", "outputMeasurements", "minimumMeasurementsToUse",
+                        "framesPerSecond", "lagTime", "leadTime", "useLocalClockAsRealTime", "allowSortsByArrival", "loadOrder", "enabled", "ignoreBadTimeStamps",
+                        "timeResolution", "allowPreemptivePublishing", "downsamplingMethod", "performTimeReasonabilityCheck", "updatedBy", "updatedOn",
+                        "createdBy", "createdOn");
+
+                    database.Connection.ExecuteNonQuery(query,
                         DefaultTimeout, database.CurrentNodeID(), calculatedMeasurement.Acronym.Replace(" ", "").ToUpper(), calculatedMeasurement.Name.ToNotNull(),
                         calculatedMeasurement.AssemblyName, calculatedMeasurement.TypeName, calculatedMeasurement.ConnectionString.ToNotNull(), calculatedMeasurement.ConfigSection.ToNotNull(),
                         calculatedMeasurement.InputMeasurements.ToNotNull(), calculatedMeasurement.OutputMeasurements.ToNotNull(), calculatedMeasurement.MinimumMeasurementsToUse,
-                        calculatedMeasurement.FramesPerSecond, calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, calculatedMeasurement.UseLocalClockAsRealTime,
-                        calculatedMeasurement.AllowSortsByArrival, calculatedMeasurement.LoadOrder, calculatedMeasurement.Enabled, calculatedMeasurement.IgnoreBadTimeStamps,
-                        calculatedMeasurement.TimeResolution, calculatedMeasurement.AllowPreemptivePublishing, calculatedMeasurement.DownsamplingMethod,
-                        calculatedMeasurement.PerformTimestampReasonabilityCheck, TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(),
-                        TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
+                        calculatedMeasurement.FramesPerSecond, calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, database.Bool(calculatedMeasurement.UseLocalClockAsRealTime),
+                        database.Bool(calculatedMeasurement.AllowSortsByArrival), calculatedMeasurement.LoadOrder, database.Bool(calculatedMeasurement.Enabled),
+                        database.Bool(calculatedMeasurement.IgnoreBadTimeStamps), calculatedMeasurement.TimeResolution, database.Bool(calculatedMeasurement.AllowPreemptivePublishing),
+                        calculatedMeasurement.DownsamplingMethod, database.Bool(calculatedMeasurement.PerformTimestampReasonabilityCheck), TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
+                        database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
+                }
                 else
-                    database.Connection.ExecuteNonQuery("UPDATE CalculatedMeasurement SET NodeID = @nodeID, Acronym = @acronym, Name = @name, AssemblyName = @assemblyName, " +
-                        "TypeName = @typeName, ConnectionString = @connectionString, ConfigSection = @configSection, InputMeasurements = @inputMeasurements, " +
-                        "OutputMeasurements = @outputMeasurements, MinimumMeasurementsToUse = @minimumMeasurementsToUse, FramesPerSecond = @framesPerSecond, " +
-                        "LagTime = @lagTime, LeadTime = @leadTime, UseLocalClockAsRealTime = @useLocalClockAsRealTime, AllowSortsByArrival = @allowSortsByArrival, " +
-                        "LoadOrder = @loadOrder, Enabled = @enabled, IgnoreBadTimeStamps = @ignoreBadTimeStamps, TimeResolution = @timeResolution, AllowPreemptivePublishing " +
-                        "= @allowPreemptivePublishing, DownsamplingMethod = @downsamplingMethod, PerformTimestampReasonabilityCheck = @performTimestampReasonabilityCheck, " +
-                        "UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout, database.Guid(calculatedMeasurement.NodeID),
+                {
+                    query = database.ParameterizedQueryString("UPDATE CalculatedMeasurement SET NodeID = {0}, Acronym = {1}, Name = {2}, AssemblyName = {3}, " +
+                        "TypeName = {4}, ConnectionString = {5}, ConfigSection = {6}, InputMeasurements = {7}, OutputMeasurements = {8}, MinimumMeasurementsToUse = {9}, " +
+                        "FramesPerSecond = {10}, LagTime = {11}, LeadTime = {12}, UseLocalClockAsRealTime = {13}, AllowSortsByArrival = {14}, LoadOrder = {15}, " +
+                        "Enabled = {16}, IgnoreBadTimeStamps = {17}, TimeResolution = {18}, AllowPreemptivePublishing = {19}, DownsamplingMethod = {20}, " +
+                        "PerformTimeReasonabilityCheck = {21}, UpdatedBy = {22}, UpdatedOn = {23} WHERE ID = {24}", "nodeID", "acronym", "name", "assemblyName",
+                        "typeName", "connectionString", "configSection", "inputMeasurements", "outputMeasurements", "minimumMeasurementsToUse", "framesPerSecond",
+                        "lagTime", "leadTime", "useLocalClockAsRealTime", "allowSortsByArrival", "loadOrder", "enabled", "ignoreBadTimeStamps", "timeResolution",
+                        "allowPreemptivePublishing", "downsamplingMethod", "performTimeReasonabilityCheck", "updatedBy", "updatedOn", "id");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.Guid(calculatedMeasurement.NodeID),
                         calculatedMeasurement.Acronym.Replace(" ", "").ToUpper(), calculatedMeasurement.Name.ToNotNull(), calculatedMeasurement.AssemblyName,
                         calculatedMeasurement.TypeName, calculatedMeasurement.ConnectionString.ToNotNull(), calculatedMeasurement.ConfigSection.ToNotNull(), calculatedMeasurement.InputMeasurements.ToNotNull(),
                         calculatedMeasurement.OutputMeasurements.ToNotNull(), calculatedMeasurement.MinimumMeasurementsToUse, calculatedMeasurement.FramesPerSecond,
-                        calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, calculatedMeasurement.UseLocalClockAsRealTime, calculatedMeasurement.AllowSortsByArrival,
-                        calculatedMeasurement.LoadOrder, calculatedMeasurement.Enabled, calculatedMeasurement.IgnoreBadTimeStamps, calculatedMeasurement.TimeResolution,
-                        calculatedMeasurement.AllowPreemptivePublishing, calculatedMeasurement.DownsamplingMethod, calculatedMeasurement.PerformTimestampReasonabilityCheck,
+                        calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, database.Bool(calculatedMeasurement.UseLocalClockAsRealTime), database.Bool(calculatedMeasurement.AllowSortsByArrival),
+                        calculatedMeasurement.LoadOrder, database.Bool(calculatedMeasurement.Enabled), database.Bool(calculatedMeasurement.IgnoreBadTimeStamps), calculatedMeasurement.TimeResolution,
+                        database.Bool(calculatedMeasurement.AllowPreemptivePublishing), calculatedMeasurement.DownsamplingMethod, database.Bool(calculatedMeasurement.PerformTimestampReasonabilityCheck),
                         TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), calculatedMeasurement.ID);
+                }
 
                 return "Calculated measurement information saved successfully";
             }
@@ -730,7 +742,7 @@ namespace openPDC.UI.DataModels
                 // Setup current user context for any delete triggers
                 TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
-                database.Connection.ExecuteNonQuery("DELETE FROM CalculatedMeasurement WHERE ID = @calculatedMeasurementID", DefaultTimeout, calculatedMeasurementID);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM CalculatedMeasurement WHERE ID = {0}", "calculatedMeasurementID"), DefaultTimeout, calculatedMeasurementID);
 
                 return "Calculated measurement deleted successfully";
             }

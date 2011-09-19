@@ -895,13 +895,18 @@ namespace openPDC.UI.DataModels
 
                 ObservableCollection<Device> deviceList = new ObservableCollection<Device>();
                 DataTable deviceTable;
+                string query;
 
                 if (parentID > 0)
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT * FROM DeviceDetail WHERE NodeID = @nodeID AND ParentID = @parentID " +
-                        "ORDER BY Acronym", DefaultTimeout, database.CurrentNodeID(), parentID);
+                {
+                    query = database.ParameterizedQueryString("SELECT * FROM DeviceDetail WHERE NodeID = {0} AND ParentID = {1} ORDER BY Acronym", "nodeID", "parentID");
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), parentID);
+                }
                 else
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT * FROM DeviceDetail WHERE NodeID = @nodeID ORDER BY Acronym",
-                        DefaultTimeout, database.CurrentNodeID());
+                {
+                    query = database.ParameterizedQueryString("SELECT * FROM DeviceDetail WHERE NodeID = {0} ORDER BY Acronym", "nodeID");
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
+                }
 
                 foreach (DataRow row in deviceTable.Rows)
                 {
@@ -927,15 +932,15 @@ namespace openPDC.UI.DataModels
                         TimeZone = row.Field<string>("TimeZone"),
                         FramesPerSecond = Convert.ToInt32(row.Field<object>("FramesPerSecond") ?? 30),
                         TimeAdjustmentTicks = Convert.ToInt64(row.Field<object>("TimeAdjustmentTicks")),
-                        DataLossInterval = row.Field<double>("DataLossInterval"),
+                        DataLossInterval = row.ConvertField<double>("DataLossInterval"),
                         ContactList = row.Field<string>("ContactList"),
                         MeasuredLines = row.ConvertNullableField<int>("MeasuredLines"),
                         LoadOrder = row.ConvertField<int>("LoadOrder"),
                         Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
                         CreatedOn = row.Field<DateTime>("CreatedOn"),
                         AllowedParsingExceptions = Convert.ToInt32(row.Field<object>("AllowedParsingExceptions")),
-                        ParsingExceptionWindow = row.Field<double>("ParsingExceptionWindow"),
-                        DelayedConnectionInterval = row.Field<double>("DelayedConnectionInterval"),
+                        ParsingExceptionWindow = row.ConvertField<double>("ParsingExceptionWindow"),
+                        DelayedConnectionInterval = row.ConvertField<double>("DelayedConnectionInterval"),
                         AllowUseOfCachedConfiguration = Convert.ToBoolean(row.Field<object>("AllowUseOfCachedConfiguration")),
                         AutoStartDataParsingSequence = Convert.ToBoolean(row.Field<object>("AutoStartDataParsingSequence")),
                         SkipDisableRealTimeData = Convert.ToBoolean(row.Field<object>("SkipDisableRealTimeData")),
@@ -979,19 +984,30 @@ namespace openPDC.UI.DataModels
 
                 Dictionary<int, string> deviceList = new Dictionary<int, string>();
                 DataTable deviceTable;
+                string query;
 
                 if (isOptional)
                     deviceList.Add(0, "Select Device");
 
                 if (deviceType == DeviceType.Concentrator)
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym FROM Device WHERE IsConcentrator = @isConcentrator " +
-                        "AND NodeID = @nodeID ORDER BY LoadOrder", DefaultTimeout, true, database.CurrentNodeID());
+                {
+                    query = database.ParameterizedQueryString("SELECT ID, Acronym FROM Device WHERE IsConcentrator = {0} AND NodeID = {1} ORDER BY LoadOrder",
+                        "isConcentrator", "nodeID");
+
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.Bool(true), database.CurrentNodeID());
+                }
                 else if (deviceType == DeviceType.DirectConnected)
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym FROM Device WHERE IsConcentrator = @isConcentrator " +
-                        "AND NodeID = @nodeID ORDER BY LoadOrder", DefaultTimeout, false, database.CurrentNodeID());
+                {
+                    query = database.ParameterizedQueryString("SELECT ID, Acronym FROM Device WHERE IsConcentrator = {0} AND NodeID = {1} ORDER BY LoadOrder",
+                        "isConcentrator", "nodeID");
+
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.Bool(false), database.CurrentNodeID());
+                }
                 else
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym FROM Device WHERE " +
-                        "NodeID = @nodeID ORDER BY LoadOrder", DefaultTimeout, database.CurrentNodeID());
+                {
+                    query = database.ParameterizedQueryString("SELECT ID, Acronym FROM Device WHERE NodeID = {0} ORDER BY LoadOrder", "nodeID");
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
+                }
 
                 foreach (DataRow row in deviceTable.Rows)
                     deviceList[row.ConvertField<int>("ID")] = row.Field<string>("Acronym");
@@ -1022,12 +1038,15 @@ namespace openPDC.UI.DataModels
 
                 Dictionary<int, string> deviceList = new Dictionary<int, string>();
                 DataTable deviceTable;
+                string query;
 
                 if (isOptional)
                     deviceList.Add(0, "All Device");
 
-                deviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym FROM DeviceDetail WHERE " +
-                        "NodeID = @nodeID AND ProtocolType = @protocolType ORDER BY LoadOrder", DefaultTimeout, database.CurrentNodeID(), protocolType);
+                query = database.ParameterizedQueryString("SELECT ID, Acronym FROM DeviceDetail WHERE NodeID = {0} AND ProtocolType = {1} ORDER BY LoadOrder",
+                    "nodeID", "protocolType");
+
+                deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), protocolType);
 
                 foreach (DataRow row in deviceTable.Rows)
                     deviceList[row.ConvertField<int>("ID")] = row.Field<string>("Acronym");
@@ -1063,6 +1082,7 @@ namespace openPDC.UI.DataModels
         public static string SaveWithAnalogsDigitals(AdoDataConnection database, Device device, int digitalCount, int analogCount)
         {
             bool createdConnection = false;
+            string query;
 
             try
             {
@@ -1075,37 +1095,50 @@ namespace openPDC.UI.DataModels
                     nodeID = database.Guid(device.NodeID);
 
                 if (device.ID == 0)
-                    database.Connection.ExecuteNonQuery("INSERT INTO Device (NodeID, ParentID, UniqueID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, " +
+                {
+                    query = database.ParameterizedQueryString("INSERT INTO Device (NodeID, ParentID, UniqueID, Acronym, Name, IsConcentrator, CompanyID, HistorianID, AccessID, VendorDeviceID, " +
                         "ProtocolID, Longitude, Latitude, InterconnectionID, ConnectionString, TimeZone, FramesPerSecond, TimeAdjustmentTicks, DataLossInterval, ContactList, " +
                         "MeasuredLines, LoadOrder, Enabled, AllowedParsingExceptions, ParsingExceptionWindow, DelayedConnectionInterval, AllowUseOfCachedConfiguration, " +
                         "AutoStartDataParsingSequence, SkipDisableRealTimeData, MeasurementReportingInterval, ConnectOndemand, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) Values " +
-                        "(@nodeID, @parentID, @uniqueID, @acronym, @name, @isConcentrator, @companyID, @historianID, @accessID, @vendorDeviceID, @protocolID, @longitude, @latitude, @interconnectionID, " +
-                        "@connectionString, @timezone, @framesPerSecond, @timeAdjustmentTicks, @dataLossInterval, @contactList, @measuredLines, @loadOrder, @enabled, " +
-                        "@allowedParsingExceptions, @parsingExceptionWindow, @delayedConnectionInterval, @allowUseOfCachedConfiguration, @autoStartDataParsingSequence, " +
-                        "@skipDisableRealTimeData, @measurementReportingInterval, @connectOndemand, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout, nodeID,
-                        device.ParentID.ToNotNull(), database.Guid(Guid.NewGuid()), device.Acronym.Replace(" ", "").ToUpper(), device.Name.ToNotNull(), device.IsConcentrator, device.CompanyID.ToNotNull(),
+                        "({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19}, {20}, {21}, {22}, {23}, {24}, {25}, " +
+                        "{26}, {27}, {28}, {29}, {30}, {31}, {32}, {33}, {34})", "nodeID", "parentID", "uniqueID", "acronym", "name", "isConcentrator", "companyID",
+                        "historianID", "accessID", "vendorDeviceID", "protocolID", "longitude", "latitude", "interconnectionID", "connectionString", "timezone",
+                        "framesPerSecond", "timeAdjustmentTicks", "dataLossInterval", "contactList", "measuredLines", "loadOrder", "enabled", "allowedParsingExceptions",
+                        "parsingExceptionWindow", "delayedConnectionInterval", "allowUseOfCachedConfiguration", "autoStartDataParsingSequence", "skipDisableRealTimeData",
+                        "measurementReportingInterval", "connectOndemand", "updatedBy", "updatedOn", "createdBy", "createdOn");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, nodeID,
+                        device.ParentID.ToNotNull(), database.Guid(Guid.NewGuid()), device.Acronym.Replace(" ", "").ToUpper(), device.Name.ToNotNull(), database.Bool(device.IsConcentrator), device.CompanyID.ToNotNull(),
                         device.HistorianID.ToNotNull(), device.AccessID, device.VendorDeviceID.ToNotNull(),
                         device.ProtocolID.ToNotNull(), device.Longitude.ToNotNull(), device.Latitude.ToNotNull(), device.InterconnectionID.ToNotNull(),
                         BuildConnectionString(device), device.TimeZone.ToNotNull(), device.FramesPerSecond ?? 30, device.TimeAdjustmentTicks, device.DataLossInterval, device.ContactList.ToNotNull(), device.MeasuredLines.ToNotNull(),
-                        device.LoadOrder, device.Enabled, device.AllowedParsingExceptions, device.ParsingExceptionWindow, device.DelayedConnectionInterval, device.AllowUseOfCachedConfiguration,
-                        device.AutoStartDataParsingSequence, device.SkipDisableRealTimeData, device.MeasurementReportingInterval, device.ConnectOnDemand, TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
+                        device.LoadOrder, database.Bool(device.Enabled), device.AllowedParsingExceptions, device.ParsingExceptionWindow, device.DelayedConnectionInterval, database.Bool(device.AllowUseOfCachedConfiguration),
+                        database.Bool(device.AutoStartDataParsingSequence), database.Bool(device.SkipDisableRealTimeData), device.MeasurementReportingInterval, database.Bool(device.ConnectOnDemand), TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
                         database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
+                }
                 else
-                    database.Connection.ExecuteNonQuery("UPDATE Device SET NodeID = @nodeID, ParentID = @parentID, UniqueID = @uniqueID, Acronym = @acronym, Name = @name, IsConcentrator = @isConcentrator, " +
-                        "CompanyID = @companyID, HistorianID = @historianID, AccessID = @accessID, VendorDeviceID = @vendorDeviceID, ProtocolID = @protocolID, Longitude = @longitude, " +
-                        "Latitude = @latitude, InterconnectionID = @interconnectionID, ConnectionString = @connectionString, TimeZone = @timezone, FramesPerSecond = @framesPerSecond, " +
-                        "TimeAdjustmentTicks = @timeAdjustmentTicks, DataLossInterval = @dataLossInterval, ContactList = @contactList, MeasuredLines = @measuredLines, " +
-                        "LoadOrder = @loadOrder, Enabled = @enabled, AllowedParsingExceptions = @allowedParsingExceptions, ParsingExceptionWindow = @parsingExceptionWindow, " +
-                        "DelayedConnectionInterval = @delayedConnectionInterval, AllowUseOfCachedConfiguration = @allowUseOfCachedConfiguration, AutoStartDataParsingSequence " +
-                        "= @autoStartDataParsingSequence, SkipDisableRealTimeData = @skipDisableRealTimeData, MeasurementReportingInterval = @measurementReportingInterval, ConnectOnDemand = @ConnectOnDemand, " +
-                        "UpdatedBy = @updatedBy, UpdatedOn = @updatedOn WHERE ID = @id", DefaultTimeout, nodeID,
-                        device.ParentID.ToNotNull(), database.Guid(device.UniqueID), device.Acronym.Replace(" ", "").ToUpper(), device.Name.ToNotNull(), device.IsConcentrator, device.CompanyID.ToNotNull(),
+                {
+                    query = database.ParameterizedQueryString("UPDATE Device SET NodeID = {0}, ParentID = {1}, UniqueID = {2}, Acronym = {3}, Name = {4}, " +
+                        "IsConcentrator = {5}, CompanyID = {6}, HistorianID = {7}, AccessID = {8}, VendorDeviceID = {9}, ProtocolID = {10}, Longitude = {11}, " +
+                        "Latitude = {12}, InterconnectionID = {13}, ConnectionString = {14}, TimeZone = {15}, FramesPerSecond = {16}, TimeAdjustmentTicks = {17}, " +
+                        "DataLossInterval = {18}, ContactList = {19}, MeasuredLines = {20}, LoadOrder = {21}, Enabled = {22}, AllowedParsingExceptions = {23}, " +
+                        "ParsingExceptionWindow = {24}, DelayedConnectionInterval = {25}, AllowUseOfCachedConfiguration = {26}, AutoStartDataParsingSequence = {27}, " +
+                        "SkipDisableRealTimeData = {28}, MeasurementReportingInterval = {29}, ConnectOnDemand = {30}, UpdatedBy = {31}, UpdatedOn = {32} WHERE ID = {33}",
+                        "nodeID", "parentID", "uniqueID", "acronym", "name", "isConcentrator", "companyID", "historianID", "accessID", "vendorDeviceID", "protocolID",
+                        "longitude", "latitude", "interconnectionID", "connectionString", "timezone", "framesPerSecond", "timeAdjustmentTicks", "dataLossInterval",
+                        "contactList", "measuredLines", "loadOrder", "enabled", "allowedParsingExceptions", "parsingExceptionWindow", "delayedConnectionInterval",
+                        "allowUseOfCachedConfiguration", "autoStartDataParsingSequence", "skipDisableRealTimeData", "measurementReportingInterval", "connectOnDemand",
+                        "updatedBy", "updatedOn", "id");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, nodeID,
+                        device.ParentID.ToNotNull(), database.Guid(device.UniqueID), device.Acronym.Replace(" ", "").ToUpper(), device.Name.ToNotNull(), database.Bool(device.IsConcentrator), device.CompanyID.ToNotNull(),
                         device.HistorianID.ToNotNull(), device.AccessID, device.VendorDeviceID.ToNotNull(),
                         device.ProtocolID.ToNotNull(), device.Longitude.ToNotNull(), device.Latitude.ToNotNull(), device.InterconnectionID.ToNotNull(),
                         BuildConnectionString(device), device.TimeZone.ToNotNull(), device.FramesPerSecond ?? 30, device.TimeAdjustmentTicks, device.DataLossInterval, device.ContactList.ToNotNull(), device.MeasuredLines.ToNotNull(),
-                        device.LoadOrder, device.Enabled, device.AllowedParsingExceptions, device.ParsingExceptionWindow, device.DelayedConnectionInterval, device.AllowUseOfCachedConfiguration,
-                        device.AutoStartDataParsingSequence, device.SkipDisableRealTimeData, device.MeasurementReportingInterval, device.ConnectOnDemand, TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
+                        device.LoadOrder, database.Bool(device.Enabled), device.AllowedParsingExceptions, device.ParsingExceptionWindow, device.DelayedConnectionInterval, database.Bool(device.AllowUseOfCachedConfiguration),
+                        database.Bool(device.AutoStartDataParsingSequence), database.Bool(device.SkipDisableRealTimeData), device.MeasurementReportingInterval, database.Bool(device.ConnectOnDemand), TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
                         database.UtcNow(), device.ID);
+                }
 
 
                 Device savedDevice = GetDevice(database, "WHERE Acronym = '" + device.Acronym.Replace(" ", "").ToUpper() + "'");
@@ -1238,7 +1271,7 @@ namespace openPDC.UI.DataModels
                 // Setup current user context for any delete triggers
                 TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
-                database.Connection.ExecuteNonQuery("DELETE FROM Device WHERE ID = @deviceID", DefaultTimeout, deviceID);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Device WHERE ID = {0}", "deviceID"), DefaultTimeout, deviceID);
 
                 return "Device deleted successfully";
             }
@@ -1290,15 +1323,15 @@ namespace openPDC.UI.DataModels
                     TimeZone = row.Field<string>("TimeZone"),
                     FramesPerSecond = Convert.ToInt32(row.Field<object>("FramesPerSecond") ?? 30),
                     TimeAdjustmentTicks = Convert.ToInt64(row.Field<object>("TimeAdjustmentTicks")),
-                    DataLossInterval = row.Field<double>("DataLossInterval"),
+                    DataLossInterval = row.ConvertField<double>("DataLossInterval"),
                     ContactList = row.Field<string>("ContactList"),
                     MeasuredLines = row.ConvertNullableField<int>("MeasuredLines"),
                     LoadOrder = row.ConvertField<int>("LoadOrder"),
                     Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
                     CreatedOn = row.Field<DateTime>("CreatedOn"),
                     AllowedParsingExceptions = Convert.ToInt32(row.Field<object>("AllowedParsingExceptions")),
-                    ParsingExceptionWindow = row.Field<double>("ParsingExceptionWindow"),
-                    DelayedConnectionInterval = row.Field<double>("DelayedConnectionInterval"),
+                    ParsingExceptionWindow = row.ConvertField<double>("ParsingExceptionWindow"),
+                    DelayedConnectionInterval = row.ConvertField<double>("DelayedConnectionInterval"),
                     AllowUseOfCachedConfiguration = Convert.ToBoolean(row.Field<object>("AllowUseOfCachedConfiguration")),
                     AutoStartDataParsingSequence = Convert.ToBoolean(row.Field<object>("AutoStartDataParsingSequence")),
                     SkipDisableRealTimeData = Convert.ToBoolean(row.Field<object>("SkipDisableRealTimeData")),

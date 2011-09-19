@@ -1150,7 +1150,7 @@ namespace TVA.PhasorProtocols
                 SignalKind[] validOutputSignalKinds = { SignalKind.Angle, SignalKind.Magnitude, SignalKind.Frequency, SignalKind.DfDt, SignalKind.Status, SignalKind.Analog, SignalKind.Digital, SignalKind.Calculation };
                 List<int> measurementIDsToDelete = new List<int>();
                 SignalReference deviceSignalReference;
-                string acronym, signalReference, pointTag, company, vendorDevice, description;
+                string query, acronym, signalReference, pointTag, company, vendorDevice, description;
                 int adapterID, signalIndex;
 
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating device measurements..."));
@@ -1174,7 +1174,11 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", device.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            using (IDbCommand command = connection.CreateParameterizedCommand("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, device.ConvertField<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
+                            query = ParameterizedQueryString(adapterType, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, " +
+                                "SignalReference, Description, Enabled) VALUES({0}, {1}, {2}, {3}, NULL, {4}, {5}, 1)", "statHistorianID", "deviceID", "pointTag",
+                                "statSignalTypeID", "signalReference", "description");
+
+                            using (IDbCommand command = connection.CreateParameterizedCommand(query, statHistorianID, device.ConvertField<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
                             {
                                 command.ExecuteNonQuery();
                             }
@@ -1203,7 +1207,11 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", inputStream.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
-                            using (IDbCommand command = connection.CreateParameterizedCommand("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, @deviceID, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, inputStream.ConvertField<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
+                            query = ParameterizedQueryString(adapterType, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, " +
+                                "SignalReference, Description, Enabled) VALUES({0}, {1}, {2}, {3}, NULL, {4}, {5}, 1)", "statHistorianID", "deviceID", "pointTag",
+                                "statSignalTypeID", "signalReference", "description");
+
+                            using (IDbCommand command = connection.CreateParameterizedCommand(query, statHistorianID, inputStream.ConvertField<int>("ID"), pointTag, statSignalTypeID, signalReference, description))
                             {
                                 command.ExecuteNonQuery();
                             }
@@ -1248,7 +1256,11 @@ namespace TVA.PhasorProtocols
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} Statistic for {1}", outputStream.Field<string>("Name"), statistic.Field<string>("Description"));
 
-                            using (IDbCommand command = connection.CreateParameterizedCommand("INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, SignalReference, Description, Enabled) VALUES(@statHistorianID, NULL, @pointTag, @statSignalTypeID, NULL, @signalReference, @description, 1);", statHistorianID, pointTag, statSignalTypeID, signalReference, description))
+                            query = ParameterizedQueryString(adapterType, "INSERT INTO Measurement(HistorianID, DeviceID, PointTag, SignalTypeID, PhasorSourceIndex, " +
+                                "SignalReference, Description, Enabled) VALUES({0}, NULL, {1}, {2}, NULL, {3}, {4}, 1)", "statHistorianID", "pointTag", "statSignalTypeID",
+                                "signalReference", "description");
+
+                            using (IDbCommand command = connection.CreateParameterizedCommand(query, statHistorianID, pointTag, statSignalTypeID, signalReference, description))
                             {
                                 command.ExecuteNonQuery();
                             }
@@ -1295,6 +1307,22 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Creates a parameterized query string for the underlying database type 
+        /// based on the given format string and the parameter names.
+        /// </summary>
+        /// <param name="adapterType">The adapter type used to determine the underlying database type.</param>
+        /// <param name="format">A composite format string.</param>
+        /// <param name="parameterNames">A string array that contains zero or more parameter names to format.</param>
+        /// <returns>A parameterized query string based on the given format and parameter names.</returns>
+        private static string ParameterizedQueryString(Type adapterType, string format, params string[] parameterNames)
+        {
+            bool oracle = adapterType.Name == "OracleDataAdapter";
+            char paramChar = oracle ? ':' : '@';
+            object[] parameters = parameterNames.Select(name => paramChar + name).ToArray();
+            return string.Format(format, parameters);
+        }
+
+        /// <summary>
         /// Creates the default node for the Node table.
         /// </summary>
         /// <param name="connection">The database connection.</param>
@@ -1306,8 +1334,8 @@ namespace TVA.PhasorProtocols
             if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Node;")) == 0)
             {
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Creating default record for Node..."));
-                connection.ExecuteNonQuery("INSERT INTO Node(Name, Description, TimeSeriesDataServiceUrl, RemoteStatusServiceUrl, RealTimeStatisticServiceUrl, Master, LoadOrder, Enabled) VALUES('Default', 'Default node', 'http://localhost:6152/historian', 'Server=localhost:8500', 'http://localhost:6052/historian', 1, 0, 1);");
-                connection.ExecuteNonQuery("UPDATE Node SET ID=" + nodeIDQueryString + ";");
+                connection.ExecuteNonQuery("INSERT INTO Node(Name, CompanyID, Description, Settings, MenuType, MenuData, Master, LoadOrder, Enabled) VALUES('Default', NULL, 'Default node', 'TimeSeriesDataServiceUrl=http://localhost:6152/historian;RemoteStatusServerConnectionString={server=localhost:8500};datapublisherport=6165;RealTimeStatisticServiceUrl=http://localhost:6052/historian', 'File', 'Menu.xml', 1, 0, 1)");
+                connection.ExecuteNonQuery("UPDATE Node SET ID=" + nodeIDQueryString);
             }
         }
 
@@ -1464,16 +1492,19 @@ namespace TVA.PhasorProtocols
         [SuppressMessage("Microsoft.Security", "CA2100")]
         private static void LoadStatistic(IDbConnection connection, string commandText, string displayFormat)
         {
+            bool oracle = connection.GetType().Name == "OracleConnection";
+            char paramChar = oracle ? ':' : '@';
+
             using (IDbCommand command = connection.CreateCommand())
             {
                 IDbDataParameter parameter = command.CreateParameter();
 
-                parameter.ParameterName = "@displayFormat";
+                parameter.ParameterName = paramChar + "displayFormat";
                 parameter.Value = displayFormat;
                 parameter.Direction = ParameterDirection.Input;
 
                 command.Parameters.Add(parameter);
-                command.CommandText = commandText;
+                command.CommandText = oracle ? commandText.Replace('@', ':') : commandText;
                 command.ExecuteNonQuery();
             }
         }

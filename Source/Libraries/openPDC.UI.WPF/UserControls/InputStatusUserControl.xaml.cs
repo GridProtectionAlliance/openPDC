@@ -143,7 +143,7 @@ namespace openPDC.UI.UserControls
 
             InitializeColors();
             GetDeviceMeasurementData();
-            m_deviceIDsWithStatusPointIDs = GetDeviceIDsWithStatusPointIDs((Guid)database.CurrentNodeID());
+            m_deviceIDsWithStatusPointIDs = GetDeviceIDsWithStatusPointIDs(Guid.Parse(database.CurrentNodeID().ToString()));
             GetTimeTaggedMeasurementsForStatus(m_urlForStatistics);
             InitializeChart();
         }
@@ -401,7 +401,7 @@ namespace openPDC.UI.UserControls
 
         void GetMinMaxPointIDs()
         {
-            m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(null, (Guid)database.CurrentNodeID());
+            m_minMaxPointIDs = CommonFunctions.GetMinMaxPointIDs(null, Guid.Parse(database.CurrentNodeID().ToString()));
         }
 
         void GetSettingsFromIsolatedStorage()
@@ -737,7 +737,7 @@ namespace openPDC.UI.UserControls
         {
             try
             {
-                m_deviceMeasurementDataList = DeviceMeasurementData.Load(database, (Guid)database.CurrentNodeID());
+                m_deviceMeasurementDataList = DeviceMeasurementData.Load(database, Guid.Parse(database.CurrentNodeID().ToString()));
                 GetSettingsFromIsolatedStorage();
                 if (m_deviceMeasurementDataList.Count > 0 && !string.IsNullOrEmpty(m_measurementDataPointsForSubscription))
                     SubscribeDataForTree();
@@ -756,7 +756,7 @@ namespace openPDC.UI.UserControls
                 {
                     m_retrievingData = true;
                     Dictionary<int, TimeTaggedMeasurement> timeTaggedMeasurements = new Dictionary<int, TimeTaggedMeasurement>();
-                    timeTaggedMeasurements = TimeTaggedMeasurement.GetStatisticMeasurements(url, ((Guid)database.CurrentNodeID()).ToString());
+                    timeTaggedMeasurements = TimeTaggedMeasurement.GetStatisticMeasurements(url, database.CurrentNodeID().ToString());
                     foreach (DeviceMeasurementData deviceMeasurement in m_deviceMeasurementDataList)
                     {
                         int statusPointID;

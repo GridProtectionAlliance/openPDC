@@ -275,9 +275,9 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<OutputStreamDeviceAnalog> OutputStreamDeviceAnalogList = new ObservableCollection<OutputStreamDeviceAnalog>();
-                DataTable OutputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, OutputStreamDeviceID, ID, Label, " +
-                    "Type, ScalingValue, LoadOrder, TypeName  " +
-                    "FROM OutputStreamDeviceAnalog WHERE OutputStreamDeviceID = @id ORDER BY LoadOrder", DefaultTimeout, outputStreamDeviceID);
+                string query = database.ParameterizedQueryString("SELECT NodeID, OutputStreamDeviceID, ID, Label, Type, ScalingValue, LoadOrder, TypeName " +
+                    "FROM OutputStreamDeviceAnalog WHERE OutputStreamDeviceID = {0} ORDER BY LoadOrder", "id");
+                DataTable OutputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamDeviceID);
 
                 foreach (DataRow row in OutputStreamDeviceAnalogTable.Rows)
                 {
@@ -321,8 +321,8 @@ namespace openPDC.UI.DataModels
                 if (isOptional)
                     OutputStreamDeviceAnalogList.Add(0, "Select OutputStreamDeviceAnalog");
 
-                DataTable OutputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Label FROM OutputStreamDeviceAnalog " +
-                    "WHERE OutputStreamDeviceID = @outputStreamDeviceID ORDER BY LoadOrder", DefaultTimeout, outputStreamDeviceID);
+                string query = database.ParameterizedQueryString("SELECT ID, Label FROM OutputStreamDeviceAnalog WHERE OutputStreamDeviceID = {0} ORDER BY LoadOrder", "outputStreamDeviceID");
+                DataTable OutputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamDeviceID);
 
                 foreach (DataRow row in OutputStreamDeviceAnalogTable.Rows)
                     OutputStreamDeviceAnalogList[row.ConvertField<int>("ID")] = row.Field<string>("Label");
@@ -345,23 +345,32 @@ namespace openPDC.UI.DataModels
         public static string Save(AdoDataConnection database, OutputStreamDeviceAnalog OutputStreamDeviceAnalog)
         {
             bool createdConnection = false;
+            string query;
+
             try
             {
                 createdConnection = CreateConnection(ref database);
 
                 if (OutputStreamDeviceAnalog.ID == 0)
-                    database.Connection.ExecuteNonQuery("INSERT INTO OutputStreamDeviceAnalog (NodeID, OutputStreamDeviceID, ID, Label, " +
-                        "Type, ScalingValue, LoadOrder, TypeName )" +
-                        "VALUES (@nodeID, @outputStreamDeviceID, @id, @label, @type, @scalingValue, @loadOrder, @typeName, @updatedBy, @updatedOn, @createdBy, @createdOn)", DefaultTimeout,
-                        OutputStreamDeviceAnalog.NodeID, OutputStreamDeviceAnalog.OutputStreamDeviceID, OutputStreamDeviceAnalog.ID, OutputStreamDeviceAnalog.Label, OutputStreamDeviceAnalog.Type,
-                        OutputStreamDeviceAnalog.ScalingValue, OutputStreamDeviceAnalog.LoadOrder, OutputStreamDeviceAnalog.TypeName, CommonFunctions.CurrentUser, database.UtcNow(),
-                        CommonFunctions.CurrentUser, database.UtcNow());
+                {
+                    query = database.ParameterizedQueryString("INSERT INTO OutputStreamDeviceAnalog (NodeID, OutputStreamDeviceID, Label, Type, ScalingValue, LoadOrder, " +
+                        "TypeName, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10})", "nodeID",
+                        "outputStreamDeviceID", "label", "type", "scalingValue", "loadOrder", "typeName", "updatedBy", "updatedOn", "createdBy", "createdOn");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamDeviceAnalog.NodeID, OutputStreamDeviceAnalog.OutputStreamDeviceID,
+                        OutputStreamDeviceAnalog.Label, OutputStreamDeviceAnalog.Type, OutputStreamDeviceAnalog.ScalingValue, OutputStreamDeviceAnalog.LoadOrder,
+                        OutputStreamDeviceAnalog.TypeName, CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+                }
                 else
-                    database.Connection.ExecuteNonQuery("UPDATE OutputStreamDeviceAnalog SET NodeID = @nodeID, OutputStreamDeviceID = @outputStreamDeviceID , ID = @id, Label = @label, Type = @type, " +
-                    " ScalingValue = @scalingValue, LoadOrder = @loadOrder,  TypeName= @typeName, " +
-                    "UpdatedBy = @updatedBy, UpdatedOn = @updatedOn, CreatedBy = @createdBy, CreatedOn = @createdOn " +
-                     DefaultTimeout, OutputStreamDeviceAnalog.NodeID, OutputStreamDeviceAnalog.OutputStreamDeviceID, OutputStreamDeviceAnalog.ID, OutputStreamDeviceAnalog.Label, OutputStreamDeviceAnalog.Type,
-                        OutputStreamDeviceAnalog.ScalingValue, OutputStreamDeviceAnalog.LoadOrder, OutputStreamDeviceAnalog.TypeName, CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamDeviceAnalog.ID);
+                {
+                    query = database.ParameterizedQueryString("UPDATE OutputStreamDeviceAnalog SET NodeID = {0}, OutputStreamDeviceID = {1}, Label = {2}, Type = {3}, " +
+                        "ScalingValue = {4}, LoadOrder = {5},  TypeName= {6}, UpdatedBy = {7}, UpdatedOn = {8} WHERE ID = {9}", "nodeID", "outputStreamDeviceID",
+                        "label", "type", "scalingValue", "loadOrder", "typeName", "updatedBy", "updatedOn", "id");
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamDeviceAnalog.NodeID, OutputStreamDeviceAnalog.OutputStreamDeviceID,
+                        OutputStreamDeviceAnalog.Label, OutputStreamDeviceAnalog.Type, OutputStreamDeviceAnalog.ScalingValue, OutputStreamDeviceAnalog.LoadOrder,
+                        OutputStreamDeviceAnalog.TypeName, CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamDeviceAnalog.ID);
+                }
 
                 return "OutputStreamDeviceAnalog information saved successfully";
             }
@@ -389,7 +398,7 @@ namespace openPDC.UI.DataModels
                 // Setup current user context for any delete triggers
                 CommonFunctions.SetCurrentUserContext(database);
 
-                database.Connection.ExecuteNonQuery("DELETE FROM OutputStreamDeviceAnalog WHERE ID = @OutputStreamDeviceAnalogID", DefaultTimeout, OutputStreamDeviceAnalogID);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamDeviceAnalog WHERE ID = {0}", "outputStreamDeviceAnalogID"), DefaultTimeout, OutputStreamDeviceAnalogID);
 
                 return "OutputStreamDeviceAnalog deleted successfully";
             }

@@ -200,7 +200,7 @@ namespace openPDC.UI.DataModels
 
                 //------------------------------------------
                 DataSet resultSet = new DataSet();
-                DataTable resultTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym, Name, CompanyName, Enabled FROM DeviceDetail WHERE NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Enabled = @enabled", database.Guid(nodeID), true, true);
+                DataTable resultTable = database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, Acronym, Name, CompanyName, Enabled FROM DeviceDetail WHERE NodeID = {0} AND IsConcentrator = {1} AND Enabled = {2}", "nodeID", "isConcentrator", "enabled"), database.Guid(nodeID), database.Bool(true), database.Bool(true));
                 resultTable.TableName = "PdcTable";
                 DataRow row = resultTable.NewRow();
                 row["ID"] = 0;
@@ -212,7 +212,7 @@ namespace openPDC.UI.DataModels
                 resultSet.Tables.Add(resultTable.Copy());
 
                 //------------------------------------------
-                resultTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym, Name, CompanyName, ProtocolName, VendorDeviceName, ParentAcronym, Enabled FROM DeviceDetail WHERE NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Enabled = @enabled ORDER BY Acronym", database.Guid(nodeID), false, true);
+                resultTable = database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, Acronym, Name, CompanyName, ProtocolName, VendorDeviceName, ParentAcronym, Enabled FROM DeviceDetail WHERE NodeID = {0} AND IsConcentrator = {1} AND Enabled = {2} ORDER BY Acronym", "nodeID", "isConcentrator", "enabled"), database.Guid(nodeID), database.Bool(false), database.Bool(true));
                 resultTable.TableName = "DeviceTable";
                 row = resultTable.NewRow();
                 row["ID"] = DBNull.Value;
@@ -227,9 +227,9 @@ namespace openPDC.UI.DataModels
 
                 //------------------------------------------
                 resultTable = database.Connection.RetrieveData(database.AdapterType,
-                    "SELECT DeviceID, SignalID, PointID, PointTag, SignalReference, SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym " +
-                    "FROM MeasurementDetail WHERE NodeID = @nodeID AND SignalAcronym <> 'STAT' AND (Internal = @internal OR Subscribed = @subscribed) ORDER BY SignalReference",
-                    database.Guid(nodeID), true, true);
+                    database.ParameterizedQueryString("SELECT DeviceID, SignalID, PointID, PointTag, SignalReference, SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym " +
+                    "FROM MeasurementDetail WHERE NodeID = {0} AND SignalAcronym <> 'STAT' AND (Internal = {1} OR Subscribed = {2}) ORDER BY SignalReference", "nodeID", "internal", "subscribed"),
+                    database.Guid(nodeID), database.Bool(true), database.Bool(true));
                 resultTable.TableName = "MeasurementTable";
                 resultSet.Tables.Add(resultTable.Copy());
 

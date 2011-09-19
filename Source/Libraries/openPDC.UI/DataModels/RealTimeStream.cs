@@ -203,8 +203,8 @@ namespace openPDC.UI.DataModels
                 resultSet.EnforceConstraints = false;
 
                 // Get PDCs list.
-                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym, Name, CompanyName, Enabled FROM DeviceDetail " +
-                    "WHERE NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Enabled = @enabled ORDER BY Acronym", DefaultTimeout, database.CurrentNodeID(), true, true).Copy());
+                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, Acronym, Name, CompanyName, Enabled FROM DeviceDetail " +
+                    "WHERE NodeID = {0} AND IsConcentrator = {1} AND Enabled = {2} ORDER BY Acronym", "nodeID", "isConcentrator", "enabled"), DefaultTimeout, database.CurrentNodeID(), database.Bool(true), database.Bool(true)).Copy());
 
                 resultSet.Tables[0].TableName = "PdcTable";
 
@@ -218,16 +218,16 @@ namespace openPDC.UI.DataModels
                 resultSet.Tables["PdcTable"].Rows.Add(row);
 
                 // Get Non-PDC device list.
-                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, " +
-                    "ParentAcronym, Enabled FROM DeviceDetail WHERE NodeID = @nodeID AND IsConcentrator = @isConcentrator AND Enabled = @enabled ORDER BY Acronym",
-                    DefaultTimeout, database.CurrentNodeID(), false, true).Copy());
+                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, " +
+                    "ParentAcronym, Enabled FROM DeviceDetail WHERE NodeID = {0} AND IsConcentrator = {1} AND Enabled = {2} ORDER BY Acronym", "nodeID", "isConcentrator", "enabled"),
+                    DefaultTimeout, database.CurrentNodeID(), database.Bool(false), database.Bool(true)).Copy());
 
                 resultSet.Tables[1].TableName = "DeviceTable";
 
                 // Get non-statistics Measurements list.
-                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, "SELECT DeviceID, SignalID, PointID, PointTag, SignalReference, " +
-                    "SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym FROM MeasurementDetail WHERE NodeID = @nodeID AND " +
-                    "SignalAcronym <> @signalAcronym ORDER BY SignalReference", DefaultTimeout, database.CurrentNodeID(), "STAT").Copy());
+                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT DeviceID, SignalID, PointID, PointTag, SignalReference, " +
+                    "SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym FROM MeasurementDetail WHERE NodeID = {0} AND " +
+                    "SignalAcronym <> {1} ORDER BY SignalReference", "nodeID", "signalAcronym"), DefaultTimeout, database.CurrentNodeID(), "STAT").Copy());
 
                 resultSet.Tables[2].TableName = "MeasurementTable";
 
