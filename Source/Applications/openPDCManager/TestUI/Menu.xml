@@ -17,12 +17,6 @@
   <MenuDataItem Icon="" MenuText="Adapters" Description="" Roles="*" UserControlAssembly="" UserControlPath="">
     <SubMenuItems>
       <MenuDataItem Icon="" MenuText="Output Streams" Description="Manage Output Streams" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamUserControl" />
-      <MenuDataItem Icon="" MenuText="Output Stream Devices" Description="Manage Output Stream Devices" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDeviceUserControl" />
-      <MenuDataItem Icon="" MenuText="Output Stream Device Analog" Description="Manage Output Stream Devices Analog" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDeviceAnalogUserControl" />
-      <MenuDataItem Icon="" MenuText="Output Stream Device Digital" Description="Manage Output Stream Devices Digital" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDeviceDigitalUserControl" />
-      <MenuDataItem Icon="" MenuText="Output Stream Device Phasor" Description="Manage Output Stream Devices Phasor" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDevicePhasorUserControl" />
-      <MenuDataItem Icon="" MenuText="Output Stream Measurement" Description="Manage Output Stream Devices Measurement" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamDeviceMeasurementUserControl" />
-      <MenuDataItem Icon="" MenuText="" Description="" Roles="*" UserControlAssembly="" UserControlPath="" />
       <MenuDataItem Icon="" MenuText="Calculated Measurements" Description="Manage Calculated Measurements" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.CalculatedMeasurementUserControl" />
       <MenuDataItem Icon="" MenuText="Historians" Description="Manage Historians" Roles="*" UserControlAssembly="TimeSeriesFramework.UI.WPF.dll" UserControlPath="TimeSeriesFramework.UI.UserControls.HistorianUserControl" />
       <MenuDataItem Icon="" MenuText="" Description="" Roles="*" UserControlAssembly="" UserControlPath="" />

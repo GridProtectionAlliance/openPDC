@@ -18,6 +18,9 @@
 //  ----------------------------------------------------------------------------------------------------
 //   08/4/2011 - Aniket Salver
 //       Generated original version of source code.
+//   09/19/2011 - Mehulbhai P Thakkar
+//       Added OnPropertyChanged() on all properties to reflect changes on UI.
+//       Fixed Load() and GetLookupList() static methods.
 //
 //******************************************************************************************************
 
@@ -74,6 +77,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_nodeID = value;
+                OnPropertyChanged("NodeID");
             }
         }
 
@@ -90,6 +94,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_adapterID = value;
+                OnPropertyChanged("AdapterID");
             }
         }
 
@@ -106,6 +111,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_id = value;
+                OnPropertyChanged("ID");
             }
         }
 
@@ -122,6 +128,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_idCode = value;
+                OnPropertyChanged("IDCode");
             }
         }
 
@@ -140,6 +147,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_acronym = value;
+                OnPropertyChanged("Acronym");
             }
         }
 
@@ -156,6 +164,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_bpaAcronym = value;
+                OnPropertyChanged("BpaAcronym");
             }
         }
 
@@ -173,6 +182,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_name = value;
+                OnPropertyChanged("Name");
             }
         }
 
@@ -189,6 +199,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_phasorDataFormat = value;
+                OnPropertyChanged("PhasorDataFormat");
             }
         }
 
@@ -205,6 +216,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_frequencyDataFormat = value;
+                OnPropertyChanged("FrequencyDataFormat");
             }
         }
 
@@ -221,6 +233,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_analogDataFormat = value;
+                OnPropertyChanged("AnalogDataFormat");
             }
         }
 
@@ -237,6 +250,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_coordinateFormat = value;
+                OnPropertyChanged("CoordinateFormat");
             }
         }
 
@@ -253,6 +267,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_loadOrder = value;
+                OnPropertyChanged("LoadOrder");
             }
         }
 
@@ -268,6 +283,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_enabled = value;
+                OnPropertyChanged("Enabled");
             }
         }
 
@@ -283,6 +299,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_virtual = value;
+                OnPropertyChanged("Virtual");
             }
         }
 
@@ -360,7 +377,7 @@ namespace openPDC.UI.DataModels
         /// Loads <see cref="OutputStreamDevice"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="outputStreamID">ID of the <see cref="OutputStream"/> to filter data.</param>
+        /// <param name="outputStreamID">ID of the OutputStream to filter data.</param>
         /// <returns>Collection of <see cref="OutputStreamDevice"/>.</returns>
         public static ObservableCollection<OutputStreamDevice> Load(AdoDataConnection database, int outputStreamID)
         {
@@ -392,7 +409,7 @@ namespace openPDC.UI.DataModels
                         CoordinateFormat = row.Field<string>("CoordinateFormat"),
                         LoadOrder = row.ConvertField<int>("LoadOrder"),
                         Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
-                        Virtual = Convert.ToBoolean(row.Field<object>("Virtual")),
+                        Virtual = Convert.ToBoolean(row.Field<object>("Virtual"))
                     });
                 }
 
@@ -409,9 +426,10 @@ namespace openPDC.UI.DataModels
         /// Gets a <see cref="Dictionary{T1,T2}"/> style list of <see cref="OutputStreamDevice"/> information.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamID">ID of the output stream to filter data.</param>
         /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
         /// <returns><see cref="Dictionary{T1,T2}"/> containing ID and Name of OutputStreamDevice defined in the database.</returns>
-        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, bool isOptional = false)
+        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, int outputStreamID, bool isOptional = false)
         {
             bool createdConnection = false;
             try
@@ -422,7 +440,8 @@ namespace openPDC.UI.DataModels
                 if (isOptional)
                     OutputStreamDeviceList.Add(0, "Select OutputStreamDevice");
 
-                DataTable OutputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Name FROM OutputStreamDevice ORDER BY LoadOrder");
+                DataTable OutputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Name FROM OutputStreamDevice WHERE AdapterID = @adapterID " +
+                    "ORDER BY LoadOrder", DefaultTimeout, outputStreamID);
 
                 foreach (DataRow row in OutputStreamDeviceTable.Rows)
                     OutputStreamDeviceList[row.ConvertField<int>("ID")] = row.Field<string>("Name");

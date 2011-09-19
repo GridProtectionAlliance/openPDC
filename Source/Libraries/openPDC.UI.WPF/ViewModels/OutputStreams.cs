@@ -25,8 +25,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using openPDC.UI.Modal;
+using openPDC.UI.UserControls;
 using openPDCManager.UI.DataModels;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
@@ -129,6 +133,48 @@ namespace openPDCManager.UI.ViewModels
                     m_buildDataChannelCommand = new RelayCommand(BuildDataChannel, () => CanSave);
 
                 return m_buildDataChannelCommand;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="ICommand"/> to go to Devices configuration.
+        /// </summary>
+        public ICommand DeviceCommand
+        {
+            get
+            {
+                if (m_deviceCommand == null)
+                    m_deviceCommand = new RelayCommand(GoToDevices);
+
+                return m_deviceCommand;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="ICommand"/> to go to Measurements configuration.
+        /// </summary>
+        public ICommand MeasurementCommand
+        {
+            get
+            {
+                if (m_measurementCommand == null)
+                    m_measurementCommand = new RelayCommand(GoToMeasurements);
+
+                return m_measurementCommand;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="ICommand"/> to launch device wizard.
+        /// </summary>
+        public ICommand WizardCommand
+        {
+            get
+            {
+                if (m_wizardCommand == null)
+                    m_wizardCommand = new RelayCommand(LaunchDeviceWizard);
+
+                return m_wizardCommand;
             }
         }
 
@@ -416,7 +462,30 @@ namespace openPDCManager.UI.ViewModels
 
         private void GoToDevices(object parameter)
         {
+            UIElement frame = null;
+            UIElement groupBox = null;
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
 
+            if (frame != null)
+            {
+                OutputStreamDeviceUserControl outputStreamDeviceUserControl = new OutputStreamDeviceUserControl(CurrentItem.ID);
+                ((System.Windows.Controls.Frame)frame).Navigate(outputStreamDeviceUserControl);
+
+                if (groupBox != null)
+                {
+                    Run run = new Run();
+                    run.FontWeight = FontWeights.Bold;
+                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                    run.Text = "Manage Devices for " + CurrentItem.Acronym;
+
+                    TextBlock txt = new TextBlock();
+                    txt.Padding = new Thickness(5.0);
+                    txt.Inlines.Add(run);
+
+                    ((GroupBox)groupBox).Header = txt;
+                }
+            }
         }
 
         private void LaunchDeviceWizard(object parameter)
@@ -426,7 +495,30 @@ namespace openPDCManager.UI.ViewModels
 
         private void GoToMeasurements(object parameter)
         {
+            UIElement frame = null;
+            UIElement groupBox = null;
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
 
+            if (frame != null)
+            {
+                OutputStreamMeasurementUserControl outputStreamMeasurementUserControl = new OutputStreamMeasurementUserControl(CurrentItem.ID);
+                ((System.Windows.Controls.Frame)frame).Navigate(outputStreamMeasurementUserControl);
+
+                if (groupBox != null)
+                {
+                    Run run = new Run();
+                    run.FontWeight = FontWeights.Bold;
+                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                    run.Text = "Manage Measurements for " + CurrentItem.Acronym;
+
+                    TextBlock txt = new TextBlock();
+                    txt.Padding = new Thickness(5.0);
+                    txt.Inlines.Add(run);
+
+                    ((GroupBox)groupBox).Header = txt;
+                }
+            }
         }
 
         protected override void OnPropertyChanged(string propertyName)

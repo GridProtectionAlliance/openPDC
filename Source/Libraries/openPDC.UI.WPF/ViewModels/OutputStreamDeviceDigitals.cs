@@ -21,6 +21,8 @@
 //
 //******************************************************************************************************
 
+using System;
+using System.Windows;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 
@@ -31,6 +33,12 @@ namespace openPDC.UI.ViewModels
     /// </summary>
     internal class OutputStreamDeviceDigitals : PagedViewModelBase<OutputStreamDeviceDigital, int>
     {
+        #region [ Members ]
+
+        private int m_outputStreamDeviceID;
+
+        #endregion
+
         #region [ Properties ]
 
         /// <summary>
@@ -53,10 +61,10 @@ namespace openPDC.UI.ViewModels
         /// </summary>
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        public OutputStreamDeviceDigitals(int itemsPerPage, bool autoSave = true)
+        public OutputStreamDeviceDigitals(int outputStreamDeviceID, int itemsPerPage, bool autoSave = true)
             : base(itemsPerPage, autoSave)
         {
-
+            m_outputStreamDeviceID = outputStreamDeviceID;
         }
 
         #endregion
@@ -79,6 +87,24 @@ namespace openPDC.UI.ViewModels
         public override string GetCurrentItemName()
         {
             return CurrentItem.Label;
+        }
+
+        /// <summary>
+        /// Load output stream device phasors.
+        /// </summary>
+        public override void Load()
+        {
+            try
+            {
+                ItemsSource = OutputStreamDeviceDigital.Load(null, m_outputStreamDeviceID);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                else
+                    Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+            }
         }
 
         #endregion

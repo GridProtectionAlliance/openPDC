@@ -1,4 +1,5 @@
-﻿//******************************************************************************************************
+﻿using System.Windows;
+//******************************************************************************************************
 //  OutputStreamDevicePhasorUserControl.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
@@ -18,6 +19,10 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/14/2011 - Aniket Salver
 //       Generated original version of source code.
+//  09/16/2011 - Mehulbhai P Thakkar
+//       Fixed costructor to support proper binding. 
+//       Organized code into regions.
+//       Added code to handle delete key presses.
 //
 //******************************************************************************************************
 using System.Windows.Controls;
@@ -31,18 +36,34 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class OutputStreamDevicePhasorUserControl : UserControl
     {
+        #region [ Constructor ]
+
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamDevicePhasorUserControl"/> class.
         /// </summary>
-        public OutputStreamDevicePhasorUserControl()
+        public OutputStreamDevicePhasorUserControl(int outputStreamDeviceID)
         {
             InitializeComponent();
-            this.DataContext = new OutputStreamDevicePhasors(1, true);
+            this.DataContext = new OutputStreamDevicePhasors(outputStreamDeviceID, 10, true);
         }
+
+        #endregion
+
+        #region [ Methods ]
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-
+            if (e.Key == Key.Delete)
+            {
+                DataGrid dataGrid = sender as DataGrid;
+                if (dataGrid.SelectedItems.Count > 0)
+                {
+                    if (MessageBox.Show("Are you sure you want to delete " + dataGrid.SelectedItems.Count + " selected item(s)?", "Delete Selected Items", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                        e.Handled = true;
+                }
+            }
         }
+
+        #endregion
     }
 }

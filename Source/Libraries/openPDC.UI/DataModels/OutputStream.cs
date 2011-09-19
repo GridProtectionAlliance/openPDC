@@ -80,7 +80,6 @@ namespace openPDCManager.UI.DataModels
         private string m_createdBy;
         private DateTime m_updatedOn;
         private string m_updatedBy;
-        private string m_runtimeID;
 
         #endregion
 

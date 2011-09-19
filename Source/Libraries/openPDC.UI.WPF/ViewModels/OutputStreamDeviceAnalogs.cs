@@ -23,9 +23,11 @@
 //
 //******************************************************************************************************
 
+using System;
+using System.Collections.Generic;
+using System.Windows;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
-using System.Collections.Generic;
 
 namespace openPDC.UI.ViewModels
 {
@@ -37,7 +39,7 @@ namespace openPDC.UI.ViewModels
         #region[Members]
 
         // Fields
-
+        private int m_outputStreamDeviceID;
         private Dictionary<int, string> m_typeLookupList;
 
         #endregion
@@ -75,14 +77,14 @@ namespace openPDC.UI.ViewModels
         /// </summary>
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        public OutputStreamDeviceAnalogs(int itemsPerPage, bool autoSave = true)
+        public OutputStreamDeviceAnalogs(int outputStreamDeviceID, int itemsPerPage, bool autoSave = true)
             : base(itemsPerPage, autoSave)
         {
+            m_outputStreamDeviceID = outputStreamDeviceID;
             m_typeLookupList = new Dictionary<int, string>();
             m_typeLookupList.Add(0, "Single point-on-wave");
             m_typeLookupList.Add(1, "RMS of analog input");
             m_typeLookupList.Add(2, "Peak of analog input");
-
         }
 
         #endregion
@@ -105,6 +107,24 @@ namespace openPDC.UI.ViewModels
         public override string GetCurrentItemName()
         {
             return CurrentItem.Label;
+        }
+
+        /// <summary>
+        /// Load output stream device phasors.
+        /// </summary>
+        public override void Load()
+        {
+            try
+            {
+                ItemsSource = OutputStreamDeviceAnalog.Load(null, m_outputStreamDeviceID);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                else
+                    Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+            }
         }
 
         #endregion

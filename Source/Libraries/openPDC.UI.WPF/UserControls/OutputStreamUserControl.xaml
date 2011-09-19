@@ -248,21 +248,24 @@
                 <sdk:DataGridTemplateColumn Header="" Width="*">
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Devices" Width="Auto"/>
+                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Devices" Width="Auto"
+                                    Command="{tsfBinding:GridButtonCommand Path=DataContext.DeviceCommand}"/>
                         </DataTemplate>
                     </sdk:DataGridTemplateColumn.CellTemplate>
                 </sdk:DataGridTemplateColumn>
                 <sdk:DataGridTemplateColumn Header="" Width="*">
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Measurements" Width="Auto"/>
+                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Measurements" Width="Auto"
+                                    Command="{tsfBinding:GridButtonCommand Path=DataContext.MeasurementCommand}"/>
                         </DataTemplate>
                     </sdk:DataGridTemplateColumn.CellTemplate>
                 </sdk:DataGridTemplateColumn>
                 <sdk:DataGridTemplateColumn Header="" Width="*">
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Device Wizard" Width="Auto"/>
+                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Device Wizard" Width="Auto"
+                                    Command="{tsfBinding:GridButtonCommand Path=DataContext.WizardCommand}"/>
                         </DataTemplate>
                     </sdk:DataGridTemplateColumn.CellTemplate>
                 </sdk:DataGridTemplateColumn>

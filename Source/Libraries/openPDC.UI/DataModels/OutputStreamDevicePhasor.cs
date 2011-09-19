@@ -18,6 +18,11 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/15/2011 - Aniket Salver
 //       Generated original version of source code.
+//  09/16/2011 - Mehulbhai P Thakkar
+//       Fixed bug in Load() method.
+//   09/19/2011 - Mehulbhai P Thakkar
+//       Added OnPropertyChanged() on all properties to reflect changes on UI.
+//       Fixed Load() and GetLookupList() static methods.
 //
 //******************************************************************************************************
 
@@ -70,6 +75,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_nodeID = value;
+                OnPropertyChanged("NodeID");
             }
         }
 
@@ -86,6 +92,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_outputStreamDeviceID = value;
+                OnPropertyChanged("OutputStreamDeviceID");
             }
         }
 
@@ -103,6 +110,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_id = value;
+                OnPropertyChanged("ID");
             }
         }
 
@@ -120,6 +128,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_label = value;
+                OnPropertyChanged("Label");
             }
         }
 
@@ -136,6 +145,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_type = value;
+                OnPropertyChanged("Type");
             }
         }
 
@@ -152,6 +162,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_phase = value;
+                OnPropertyChanged("Phase");
             }
         }
 
@@ -168,6 +179,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_scalingValue = value;
+                OnPropertyChanged("ScalingValue");
             }
         }
 
@@ -184,38 +196,29 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_loadOrder = value;
+                OnPropertyChanged("LoadOrder");
             }
         }
 
         /// <summary>
         /// Gets or sets <see cref="OutputStreamDevicePhasor"/> PhasorType.
-        /// </summary>
-        [Required(ErrorMessage = "OutputStreamDevicePhasor PhasorType is a required field, please provide value.")]
+        /// </summary>        
         public string PhasorType
         {
             get
             {
                 return m_phasorType;
             }
-            set
-            {
-                m_phasorType = value;
-            }
         }
 
         /// <summary>
         /// Gets or sets <see cref="OutputStreamDevicePhasor"/> PhaseType.
-        /// </summary>
-        [Required(ErrorMessage = "OutputStreamDevicePhasor PhaseType is a required field, please provide value.")]
+        /// </summary>        
         public string PhaseType
         {
             get
             {
                 return m_phaseType;
-            }
-            set
-            {
-                m_phaseType = value;
             }
         }
 
@@ -292,8 +295,9 @@ namespace openPDC.UI.DataModels
         /// Loads <see cref="OutputStreamDevicePhasor"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamDeviceID">ID of the output stream device to filter data.</param>
         /// <returns>Collection of <see cref="OutputStreamDevicePhasor"/>.</returns>
-        public static ObservableCollection<OutputStreamDevicePhasor> Load(AdoDataConnection database)
+        public static ObservableCollection<OutputStreamDevicePhasor> Load(AdoDataConnection database, int outputStreamDeviceID)
         {
             bool createdConnection = false;
 
@@ -303,7 +307,7 @@ namespace openPDC.UI.DataModels
 
                 ObservableCollection<OutputStreamDevicePhasor> OutputStreamDevicePhasorList = new ObservableCollection<OutputStreamDevicePhasor>();
                 DataTable OutputStreamDevicePhasorTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, OutputStreamDeviceID, ID, Label, Type, Phase, ScalingValue, LoadOrder " +
-                    "FROM OutputStreamDevicePhasor ORDER BY LoadOrder");
+                    "FROM OutputStreamDevicePhasor WHERE OutputStreamDeviceID = @id ORDER BY LoadOrder", DefaultTimeout, outputStreamDeviceID);
 
 
                 foreach (DataRow row in OutputStreamDevicePhasorTable.Rows)
@@ -318,6 +322,10 @@ namespace openPDC.UI.DataModels
                         Phase = row.Field<string>("Phase"),
                         ScalingValue = row.ConvertField<int>("ScalingValue"),
                         LoadOrder = row.ConvertField<int>("LoadOrder"),
+                        m_phaseType = row.Field<string>("Phase") == "+" ? "Positive Sequence" : row.Field<string>("Phase") == "-" ? "Negative Sequence" :
+                                                                row.Field<string>("Phase") == "0" ? "Zero Sequence" : row.Field<string>("Phase") == "A" ? "Phase A" :
+                                                                row.Field<string>("Phase") == "B" ? "Phase B" : "Phase C",
+                        m_phasorType = row.Field<string>("Type") == "V" ? "Voltage" : "Current"
                     });
                 }
 
@@ -336,7 +344,7 @@ namespace openPDC.UI.DataModels
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
         /// <returns><see cref="Dictionary{T1,T2}"/> containing ID and Label of OutputStreamDevicePhasors defined in the database.</returns>
-        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, bool isOptional = false)
+        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, int outputStreamDeviceID, bool isOptional = false)
         {
             bool createdConnection = false;
             try
@@ -347,7 +355,8 @@ namespace openPDC.UI.DataModels
                 if (isOptional)
                     OutputStreamDevicePhasorList.Add(0, "Select OutputStreamDevicePhasor");
 
-                DataTable OutputStreamDevicePhasorTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Label FROM OutputStreamDevicePhasor ORDER BY LoadOrder");
+                DataTable OutputStreamDevicePhasorTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Label FROM OutputStreamDevicePhasor " +
+                    "WHERE OutputStreamDeviceID = @outputStreamDeviceID, ORDER BY LoadOrder", DefaultTimeout, outputStreamDeviceID);
 
                 foreach (DataRow row in OutputStreamDevicePhasorTable.Rows)
                     OutputStreamDevicePhasorList[row.ConvertField<int>("ID")] = row.Field<string>("Label");
@@ -387,7 +396,7 @@ namespace openPDC.UI.DataModels
                     " ScalingValue = @scalingValue, LoadOrder = @loadOrder,  " +
                     "UpdatedBy = @updatedBy, UpdatedOn = @updatedOn, CreatedBy = @createdBy, CreatedOn = @createdOn " +
                      DefaultTimeout, OutputStreamDevicePhasor.NodeID, OutputStreamDevicePhasor.OutputStreamDeviceID, OutputStreamDevicePhasor.ID, OutputStreamDevicePhasor.Label, OutputStreamDevicePhasor.Type,
-                        OutputStreamDevicePhasor.Phase, OutputStreamDevicePhasor.ScalingValue, OutputStreamDevicePhasor.LoadOrder,  CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamDevicePhasor.ID);
+                        OutputStreamDevicePhasor.Phase, OutputStreamDevicePhasor.ScalingValue, OutputStreamDevicePhasor.LoadOrder, CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamDevicePhasor.ID);
 
                 //PhasorType = @typeName, PhaseType = @PhaseType" OutputStreamDevicePhasor.PhasorType, OutputStreamDevicePhasor.PhaseType,
 

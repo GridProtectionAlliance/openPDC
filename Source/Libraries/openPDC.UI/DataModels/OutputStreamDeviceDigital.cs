@@ -18,6 +18,9 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/10/2011 - Aniket Salver
 //       Generated original version of source code.
+//   09/19/2011 - Mehulbhai P Thakkar
+//       Added OnPropertyChanged() on all properties to reflect changes on UI.
+//       Fixed Load() and GetLookupList() static methods.
 //
 //******************************************************************************************************
 
@@ -53,6 +56,7 @@ namespace openPDC.UI.DataModels
         #endregion
 
         #region[properties]
+
         /// <summary>
         /// Gets or sets <see cref="OutputStreamDeviceDigital"/> NodeID.
         /// </summary>
@@ -66,6 +70,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_nodeID = value;
+                OnPropertyChanged("NodeID");
             }
         }
 
@@ -82,6 +87,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_outputStreamDeviceID = value;
+                OnPropertyChanged("OutputStreamDeviceID");
             }
         }
 
@@ -99,6 +105,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_id = value;
+                OnPropertyChanged("ID");
             }
         }
 
@@ -116,6 +123,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_label = value;
+                OnPropertyChanged("Label");
             }
         }
 
@@ -132,6 +140,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_maskValue = value;
+                OnPropertyChanged("MaskValue");
             }
         }
 
@@ -149,6 +158,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_loadOrder = value;
+                OnPropertyChanged("LoadOrder");
             }
         }
 
@@ -226,8 +236,9 @@ namespace openPDC.UI.DataModels
         /// Loads <see cref="OutputStreamDeviceDigital"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamDeviceID">ID of the output stream device to filter data.</param>
         /// <returns>Collection of <see cref="OutputStreamDeviceDigital"/>.</returns>
-        public static ObservableCollection<OutputStreamDeviceDigital> Load(AdoDataConnection database)
+        public static ObservableCollection<OutputStreamDeviceDigital> Load(AdoDataConnection database, int outputStreamDeviceID)
         {
             bool createdConnection = false;
 
@@ -237,7 +248,7 @@ namespace openPDC.UI.DataModels
 
                 ObservableCollection<OutputStreamDeviceDigital> outputStreamDeviceDigitalList = new ObservableCollection<OutputStreamDeviceDigital>();
                 DataTable outputStreamDeviceDigitalTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, OutputStreamDeviceID, ID, Label, MaskValue, LoadOrder " +
-                    "FROM OutputStreamDeviceDigital ORDER BY LoadOrder");
+                    "FROM OutputStreamDeviceDigital WHERE OutputStreamDeviceID = @id ORDER BY LoadOrder", DefaultTimeout, outputStreamDeviceID);
 
                 foreach (DataRow row in outputStreamDeviceDigitalTable.Rows)
                 {
@@ -265,9 +276,10 @@ namespace openPDC.UI.DataModels
         /// Gets a <see cref="Dictionary{T1,T2}"/> style list of <see cref="OutputStreamDeviceDigital"/> information.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamDeviceID">ID of the output stream device to filter data.</param>
         /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
         /// <returns><see cref="Dictionary{T1,T2}"/> containing ID and Label of OutputStreamDeviceDigitals defined in the database.</returns>
-        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, bool isOptional = false)
+        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, int outputStreamDeviceID, bool isOptional = false)
         {
             bool createdConnection = false;
             try
@@ -278,7 +290,8 @@ namespace openPDC.UI.DataModels
                 if (isOptional)
                     OutputStreamDeviceDigitalList.Add(0, "Select OutputStreamDeviceDigital");
 
-                DataTable OutputStreamDeviceDigitalTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Label FROM OutputStreamDeviceDigital ORDER BY LoadOrder");
+                DataTable OutputStreamDeviceDigitalTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Label FROM OutputStreamDeviceDigital " +
+                    "WHERE OutputStreamDeviceID = @outputStreamDeviceID ORDER BY LoadOrder", DefaultTimeout, outputStreamDeviceID);
 
                 foreach (DataRow row in OutputStreamDeviceDigitalTable.Rows)
                     OutputStreamDeviceDigitalList[row.ConvertField<int>("ID")] = row.Field<string>("Label");

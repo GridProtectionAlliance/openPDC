@@ -18,6 +18,12 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/5/2011 - Aniket Salver
 //       Generated original version of source code.
+//  09/16/2011 - Mehulbhai P Thakkar
+//       Fixed load method to filter data correctly.
+//   09/19/2011 - Mehulbhai P Thakkar
+//       Added OnPropertyChanged() on all properties to reflect changes on UI.
+//       Fixed database queries and collection population.
+//       Fixed Load() and GetLookupList() static methods.
 //
 //******************************************************************************************************
 using System;
@@ -67,6 +73,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_nodeID = value;
+                OnPropertyChanged("NodeID");
             }
         }
 
@@ -83,6 +90,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_outputStreamDeviceID = value;
+                OnPropertyChanged("OutputStreamDeviceID");
             }
         }
 
@@ -99,6 +107,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_id = value;
+                OnPropertyChanged("ID");
             }
         }
 
@@ -115,6 +124,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_label = value;
+                OnPropertyChanged("Label");
             }
         }
 
@@ -131,6 +141,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_type = value;
+                OnPropertyChanged("Type");
             }
         }
 
@@ -147,6 +158,7 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_scalingValue = value;
+                OnPropertyChanged("ScalingValue");
             }
         }
 
@@ -163,22 +175,18 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_loadOrder = value;
+                OnPropertyChanged("LoadOrder");
             }
         }
 
         /// <summary>
-        /// Gets or sets the current <see cref="OutputStreamDeviceAnalog"/>'s TypeName.
+        /// Gets the current <see cref="OutputStreamDeviceAnalog"/>'s TypeName.
         /// </summary>
-        [Required(ErrorMessage = "OutputStreamDeviceAnalog TypeName is a required field, please provide value.")]
         public string TypeName
         {
             get
             {
                 return m_typeName;
-            }
-            set
-            {
-                m_typeName = value;
             }
         }
 
@@ -269,8 +277,7 @@ namespace openPDC.UI.DataModels
                 ObservableCollection<OutputStreamDeviceAnalog> OutputStreamDeviceAnalogList = new ObservableCollection<OutputStreamDeviceAnalog>();
                 DataTable OutputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, "SELECT NodeID, OutputStreamDeviceID, ID, Label, " +
                     "Type, ScalingValue, LoadOrder, TypeName  " +
-                    "FROM OutputStreamDeviceAnalog ORDER BY LoadOrder");
-                // WHERE AdapterID = @outputStreamID // DefaultTimeout, outputStreamID
+                    "FROM OutputStreamDeviceAnalog WHERE OutputStreamDeviceID = @id ORDER BY LoadOrder", DefaultTimeout, outputStreamDeviceID);
 
                 foreach (DataRow row in OutputStreamDeviceAnalogTable.Rows)
                 {
@@ -283,7 +290,7 @@ namespace openPDC.UI.DataModels
                         Type = row.ConvertField<int>("Type"),
                         ScalingValue = row.Field<int>("ScalingValue"),
                         LoadOrder = row.ConvertField<int>("LoadOrder"),
-                        TypeName = row.Field<string>("TypeName"),
+                        m_typeName = row.ConvertField<int>("Type") == 0 ? "Single point-on-wave" : row.ConvertField<int>("Type") == 1 ? "RMS of analog input" : "Peak of analog input"
                     });
                 }
 
@@ -300,9 +307,10 @@ namespace openPDC.UI.DataModels
         /// Gets a <see cref="Dictionary{T1,T2}"/> style list of <see cref="OutputStreamDeviceAnalog"/> information.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamDeviceID">ID of the output stream device to filter data.</param>
         /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
         /// <returns><see cref="Dictionary{T1,T2}"/> containing ID and Name of OutputStreamDeviceAnalog defined in the database.</returns>
-        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, bool isOptional = false)
+        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, int outputStreamDeviceID, bool isOptional = false)
         {
             bool createdConnection = false;
             try
@@ -313,10 +321,11 @@ namespace openPDC.UI.DataModels
                 if (isOptional)
                     OutputStreamDeviceAnalogList.Add(0, "Select OutputStreamDeviceAnalog");
 
-                DataTable OutputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Name FROM OutputStreamDeviceAnalog ORDER BY LoadOrder");
+                DataTable OutputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Label FROM OutputStreamDeviceAnalog " +
+                    "WHERE OutputStreamDeviceID = @outputStreamDeviceID ORDER BY LoadOrder", DefaultTimeout, outputStreamDeviceID);
 
                 foreach (DataRow row in OutputStreamDeviceAnalogTable.Rows)
-                    OutputStreamDeviceAnalogList[row.ConvertField<int>("ID")] = row.Field<string>("Name");
+                    OutputStreamDeviceAnalogList[row.ConvertField<int>("ID")] = row.Field<string>("Label");
 
                 return OutputStreamDeviceAnalogList;
             }

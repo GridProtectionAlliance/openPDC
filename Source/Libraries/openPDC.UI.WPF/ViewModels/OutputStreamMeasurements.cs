@@ -18,9 +18,13 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/23/2011 - Aniket Salver
 //       Generated original version of source code.
+//  09/16/2011 - Mehulbhai P Thakkar
+//       Modified load method to do proper binding.
 //
 //******************************************************************************************************
 
+using System;
+using System.Windows;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 
@@ -31,20 +35,43 @@ namespace openPDC.UI.ViewModels
     /// </summary>
     internal class OutputStreamMeasurements : PagedViewModelBase<OutputStreamMeasurement, int>
     {
+        #region [ Members ]
+
+        // Fields
+        private int m_outputStreamID;
+
+        #endregion
+
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets Output Stream ID.
+        /// </summary>
+        public int OutputStreamID
+        {
+            get
+            {
+                return m_outputStreamID;
+            }
+            set
+            {
+                m_outputStreamID = value;
+                OnPropertyChanged("OutputStreamID");
+            }
+        }
 
         /// <summary>
         /// Gets flag that determines if <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/> is a new record.
         /// </summary>
         public override bool IsNewRecord
         {
-            get 
+            get
             {
                 return CurrentItem.ID == 0;
             }
         }
 
-         #endregion 
+        #endregion
 
         #region [ Constructor ]
 
@@ -53,10 +80,10 @@ namespace openPDC.UI.ViewModels
         /// </summary>
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        public OutputStreamMeasurements(int itemsPerPage, bool autoSave = true)
-            : base(itemsPerPage ,autoSave)
+        public OutputStreamMeasurements(int outputStreamID, int itemsPerPage, bool autoSave = true)
+            : base(itemsPerPage, autoSave)
         {
-
+            OutputStreamID = outputStreamID;
         }
 
         #endregion
@@ -69,9 +96,9 @@ namespace openPDC.UI.ViewModels
         /// <returns>The primary key value of the <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/>.</returns>
         public override int GetCurrentItemKey()
         {
-            return CurrentItem.ID;     
+            return CurrentItem.ID;
         }
-        
+
         /// <summary>
         /// Gets the string based named identifier of the <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/>.
         /// </summary>
@@ -81,6 +108,24 @@ namespace openPDC.UI.ViewModels
             return CurrentItem.SignalReference;
         }
 
-        #endregion 
+        /// <summary>
+        /// Loads output Stream Id to filter data.
+        /// </summary>
+        public override void Load()
+        {
+            try
+            {
+                ItemsSource = OutputStreamMeasurement.Load(null, OutputStreamID);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                else
+                    Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+            }
+        }
+
+        #endregion
     }
 }

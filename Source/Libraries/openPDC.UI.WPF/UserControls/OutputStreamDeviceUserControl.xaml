@@ -54,7 +54,7 @@
                 <TextBlock Text="Acronym" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=Name}" CharacterCasing="Upper" MaxLength="200" />
+            <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=Name}" MaxLength="200" />
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
                 <TextBlock Text="Name" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
@@ -104,9 +104,30 @@
                     <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}"/>
                     <sdk:DataGridTextColumn Header=" Name" Width="*" Binding="{tsfBinding:Column Path=Name}" />
                     <sdk:DataGridTextColumn Header="Enabled" Width="2*" Binding="{tsfBinding:Column Path=Enabled}" />
-                    <sdk:DataGridCheckBoxColumn Header="Phasors" Width="*" Binding="{tsfBinding:Column Path=Phasors}" />
-                    <sdk:DataGridCheckBoxColumn Header="Analogs" Width="*" Binding="{tsfBinding:Column Path=Analogs}" />
-                    <sdk:DataGridCheckBoxColumn Header="Digitals" Width="*" Binding="{tsfBinding:Column Path=Digitals}" />
+                    <sdk:DataGridTemplateColumn Header="" Width="*">
+                        <sdk:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Phasors" Width="Auto"
+                                    Command="{tsfBinding:GridButtonCommand Path=DataContext.PhasorCommand}"/>
+                            </DataTemplate>
+                        </sdk:DataGridTemplateColumn.CellTemplate>
+                    </sdk:DataGridTemplateColumn>
+                    <sdk:DataGridTemplateColumn Header="" Width="*">
+                        <sdk:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Analogs" Width="Auto"
+                                    Command="{tsfBinding:GridButtonCommand Path=DataContext.AnalogCommand}"/>
+                            </DataTemplate>
+                        </sdk:DataGridTemplateColumn.CellTemplate>
+                    </sdk:DataGridTemplateColumn>
+                    <sdk:DataGridTemplateColumn Header="" Width="*">
+                        <sdk:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Digitals" Width="Auto"
+                                    Command="{tsfBinding:GridButtonCommand Path=DataContext.DigitalCommand}"/>
+                            </DataTemplate>
+                        </sdk:DataGridTemplateColumn.CellTemplate>
+                    </sdk:DataGridTemplateColumn>
                 </sdk:DataGrid.Columns>
             </sdk:DataGrid>
 

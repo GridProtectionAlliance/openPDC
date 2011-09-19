@@ -18,24 +18,30 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/16/2011 - Aniket Salver
 //       Generated original version of source code.
-// 08/31/2011 - Aniket Salver
+//  08/31/2011 - Aniket Salver
 //       Added few properties which helps in binding.
+//  09/16/2011 - Mehulbhai P Thakkar
+//       Modified constructor to filter data by output stream device id.
+//       Overrode Load() method to apply above metioned filter.
 //
 //******************************************************************************************************
+
+using System;
+using System.Collections.Generic;
+using System.Windows;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
-using System.Collections.Generic;
 
 namespace openPDC.UI.ViewModels
 {
     ///<summary>
     /// Class to hold bindable <see cref="OutputStreamDevicePhasors"/> collection and selected OutputStreamDevicePhasor for UI.
     /// </summary>
-   
     internal class OutputStreamDevicePhasors : PagedViewModelBase<OutputStreamDevicePhasor, int>
     {
         #region[Members]
 
+        private int m_outputStreamDeviceID;
         private Dictionary<string, string> m_phaseLookupList;
         private Dictionary<string, string> m_typeLookupList;
 
@@ -85,9 +91,10 @@ namespace openPDC.UI.ViewModels
         /// </summary>
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        public OutputStreamDevicePhasors(int itemsPerPage, bool autoSave = true)
+        public OutputStreamDevicePhasors(int outputStreamDeviceID, int itemsPerPage, bool autoSave = true)
             : base(itemsPerPage, autoSave)
         {
+            m_outputStreamDeviceID = outputStreamDeviceID;
             m_phaseLookupList = new Dictionary<string, string>();
             m_phaseLookupList.Add("+", "Positive Sequence");
             m_phaseLookupList.Add("-", "Negative Sequence");
@@ -121,6 +128,24 @@ namespace openPDC.UI.ViewModels
         public override string GetCurrentItemName()
         {
             return CurrentItem.Label;
+        }
+
+        /// <summary>
+        /// Load output stream device phasors.
+        /// </summary>
+        public override void Load()
+        {
+            try
+            {
+                ItemsSource = OutputStreamDevicePhasor.Load(null, m_outputStreamDeviceID);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                else
+                    Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+            }
         }
 
         #endregion

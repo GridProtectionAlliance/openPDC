@@ -18,9 +18,13 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/14/2011 - Aniket Salver
 //       Generated original version of source code.
+//  09/16/2011 - Mehulbhai Thakkar
+//       Added code to attach this user control to parent Output Stream.
+//       Added delete key handling logic.
 //
 //******************************************************************************************************
 
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using openPDC.UI.ViewModels;
@@ -33,23 +37,31 @@ namespace openPDC.UI.UserControls
     public partial class OutputStreamMeasurementUserControl : UserControl
     {
         #region[Constructors]
-       
+
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamMeasurementUserControl"/> class.
         /// </summary>
-        public OutputStreamMeasurementUserControl()
+        public OutputStreamMeasurementUserControl(int outputStreamID)
         {
             InitializeComponent();
-            this.DataContext = new OutputStreamMeasurements(1, true);
+            this.DataContext = new OutputStreamMeasurements(outputStreamID, 10);
         }
 
         #endregion
 
         #region[Methods]
-        
+
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-
+            if (e.Key == Key.Delete)
+            {
+                DataGrid dataGrid = sender as DataGrid;
+                if (dataGrid.SelectedItems.Count > 0)
+                {
+                    if (MessageBox.Show("Are you sure you want to delete " + dataGrid.SelectedItems.Count + " selected item(s)?", "Delete Selected Items", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                        e.Handled = true;
+                }
+            }
         }
 
         #endregion

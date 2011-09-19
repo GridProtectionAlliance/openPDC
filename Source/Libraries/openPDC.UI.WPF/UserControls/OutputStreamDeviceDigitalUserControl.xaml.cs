@@ -1,4 +1,5 @@
-﻿//******************************************************************************************************
+﻿using System.Windows;
+//******************************************************************************************************
 //  OutputStreamDeviceDigitalUserControl.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
@@ -36,19 +37,27 @@ namespace openPDC.UI.UserControls
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamDeviceDigitalUserControl"/>
         /// </summary>
-        public OutputStreamDeviceDigitalUserControl()
+        public OutputStreamDeviceDigitalUserControl(int outputStreamDeviceID)
         {
             InitializeComponent();
-            this.DataContext = new OutputStreamDeviceDigitals(1, true);
+            this.DataContext = new OutputStreamDeviceDigitals(outputStreamDeviceID, 10, true);
         }
 
         #endregion
 
         #region[Methods]
-   
+
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-
+            if (e.Key == Key.Delete)
+            {
+                DataGrid dataGrid = sender as DataGrid;
+                if (dataGrid.SelectedItems.Count > 0)
+                {
+                    if (MessageBox.Show("Are you sure you want to delete " + dataGrid.SelectedItems.Count + " selected item(s)?", "Delete Selected Items", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                        e.Handled = true;
+                }
+            }
         }
 
         #endregion

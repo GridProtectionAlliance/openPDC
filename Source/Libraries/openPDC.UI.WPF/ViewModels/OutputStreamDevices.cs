@@ -18,14 +18,24 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/03/2011 - Aniket Salver
 //       Generated original version of source code.
-// 08/26/2011 - Aniket Salver
+//  08/26/2011 - Aniket Salver
 //       Added few Properties which help in binding the objects
+//  09/16/2011 - Mehulbhai P Thakkar
+//       Modified Load() method to display binding properly.
+//       Added commands to go to other screens.
 //
 //******************************************************************************************************
 
-using openPDC.UI.DataModels;
-using TimeSeriesFramework.UI;
+using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
+using openPDC.UI.DataModels;
+using openPDC.UI.UserControls;
+using TimeSeriesFramework.UI;
+using TimeSeriesFramework.UI.Commands;
 
 namespace openPDC.UI.ViewModels
 {
@@ -44,6 +54,9 @@ namespace openPDC.UI.ViewModels
         private Dictionary<string, string> m_frequencyDataformatLookupList;
         private Dictionary<string, string> m_analogDataformatLookupList;
         private Dictionary<string, string> m_coordinateDataformatLookupList;
+        private RelayCommand m_phasorCommand;
+        private RelayCommand m_analogCommand;
+        private RelayCommand m_digitalCommand;
 
         #endregion
 
@@ -109,6 +122,30 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        ///// <summary>
+        ///// Gets <see cref="ICommand"/> object to go to Phasors screen.
+        ///// </summary>
+        //public ICommand PhasorCommand
+        //{
+
+        //}
+
+        ///// <summary>
+        ///// Gets <see cref="ICommand"/> object to go to Analogs screen.
+        ///// </summary>
+        //public ICommand AnalogCommand
+        //{
+
+        //}
+
+        ///// <summary>
+        ///// Gets <see cref="ICommand"/> object to go to Digitals screen.
+        ///// </summary>
+        //public ICommand DigitalCommand
+        //{
+
+        //}
+
         /// <summary>
         /// Gets flag that determines if <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/> is a new record.
         /// </summary>
@@ -154,7 +191,6 @@ namespace openPDC.UI.ViewModels
             m_coordinateDataformatLookupList.Add("", "Select Coordinate Format");
             m_coordinateDataformatLookupList.Add("Polar", "Polar");
             m_coordinateDataformatLookupList.Add("Rectangular", "Rectangular");
-
         }
 
         #endregion
@@ -162,12 +198,21 @@ namespace openPDC.UI.ViewModels
         #region [ Methods ]
 
         /// <summary>
-        /// Loads output Stream Id to filter data.
+        /// Loads output stream devices.
         /// </summary>
         public override void Load()
         {
-            //base.Load();
-            OutputStreamDevice.Load(null, OutputStreamID);
+            try
+            {
+                ItemsSource = OutputStreamDevice.Load(null, OutputStreamID);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                else
+                    Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+            }
         }
 
         /// <summary>
@@ -186,6 +231,90 @@ namespace openPDC.UI.ViewModels
         public override string GetCurrentItemName()
         {
             return CurrentItem.Name;
+        }
+
+        private void GoToPhasors()
+        {
+            UIElement frame = null;
+            UIElement groupBox = null;
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
+
+            if (frame != null)
+            {
+                OutputStreamDevicePhasorUserControl outputStreamDevicePhasorUserControl = new OutputStreamDevicePhasorUserControl(CurrentItem.ID);
+                ((System.Windows.Controls.Frame)frame).Navigate(outputStreamDevicePhasorUserControl);
+
+                if (groupBox != null)
+                {
+                    Run run = new Run();
+                    run.FontWeight = FontWeights.Bold;
+                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                    run.Text = "Manage Phasors for " + CurrentItem.Acronym;
+
+                    TextBlock txt = new TextBlock();
+                    txt.Padding = new Thickness(5.0);
+                    txt.Inlines.Add(run);
+
+                    ((GroupBox)groupBox).Header = txt;
+                }
+            }
+        }
+
+        private void GoToAnalogs()
+        {
+            UIElement frame = null;
+            UIElement groupBox = null;
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
+
+            if (frame != null)
+            {
+                OutputStreamDeviceAnalogUserControl outputStreamDeviceAnalogUserControl = new OutputStreamDeviceAnalogUserControl(CurrentItem.ID);
+                ((System.Windows.Controls.Frame)frame).Navigate(outputStreamDeviceAnalogUserControl);
+
+                if (groupBox != null)
+                {
+                    Run run = new Run();
+                    run.FontWeight = FontWeights.Bold;
+                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                    run.Text = "Manage Analogs for " + CurrentItem.Acronym;
+
+                    TextBlock txt = new TextBlock();
+                    txt.Padding = new Thickness(5.0);
+                    txt.Inlines.Add(run);
+
+                    ((GroupBox)groupBox).Header = txt;
+                }
+            }
+        }
+
+        private void GoToDigitals()
+        {
+            UIElement frame = null;
+            UIElement groupBox = null;
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
+
+            if (frame != null)
+            {
+                OutputStreamDeviceDigitalUserControl outputStreamDeviceDigitalUserControl = new OutputStreamDeviceDigitalUserControl(CurrentItem.ID);
+                ((System.Windows.Controls.Frame)frame).Navigate(outputStreamDeviceDigitalUserControl);
+
+                if (groupBox != null)
+                {
+                    Run run = new Run();
+                    run.FontWeight = FontWeights.Bold;
+                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                    run.Text = "Manage Digitals for " + CurrentItem.Acronym;
+
+                    TextBlock txt = new TextBlock();
+                    txt.Padding = new Thickness(5.0);
+                    txt.Inlines.Add(run);
+
+                    ((GroupBox)groupBox).Header = txt;
+                }
+            }
         }
 
         #endregion

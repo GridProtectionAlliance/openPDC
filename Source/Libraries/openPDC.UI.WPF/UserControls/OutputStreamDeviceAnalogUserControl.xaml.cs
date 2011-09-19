@@ -20,10 +20,11 @@
 //       Generated original version of source code.
 //
 //******************************************************************************************************
+
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using openPDC.UI.ViewModels;
-using openPDC.UI.DataModels;
 
 namespace openPDC.UI.UserControls
 {
@@ -33,23 +34,31 @@ namespace openPDC.UI.UserControls
     public partial class OutputStreamDeviceAnalogUserControl : UserControl
     {
         #region[Constructor]
-   
+
         /// <summary>
         /// Creates an instance of <see cref=" OutputStreamDeviceAnalogUserControl"/> class.
         /// </summary>
-        public OutputStreamDeviceAnalogUserControl()
+        public OutputStreamDeviceAnalogUserControl(int outputStreamDeviceID)
         {
             InitializeComponent();
-            this.DataContext = new OutputStreamDeviceAnalogs(1, true);
+            this.DataContext = new OutputStreamDeviceAnalogs(outputStreamDeviceID, 10, true);
         }
 
         #endregion
 
         #region[Methods]
-        
+
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-
+            if (e.Key == Key.Delete)
+            {
+                DataGrid dataGrid = sender as DataGrid;
+                if (dataGrid.SelectedItems.Count > 0)
+                {
+                    if (MessageBox.Show("Are you sure you want to delete " + dataGrid.SelectedItems.Count + " selected item(s)?", "Delete Selected Items", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                        e.Handled = true;
+                }
+            }
         }
 
         #endregion
