@@ -165,6 +165,9 @@
     <Compile Include="UserControls\InputWizardUserControl.xaml.cs">
       <DependentUpon>InputWizardUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\OutputStreamAddDeviceUserControl.xaml.cs">
+      <DependentUpon>OutputStreamAddDeviceUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\OutputStreamCurrentDeviceUserControl.xaml.cs">
       <DependentUpon>OutputStreamCurrentDeviceUserControl.xaml</DependentUpon>
     </Compile>
@@ -258,6 +261,10 @@
     <Page Include="UserControls\InputWizardUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\OutputStreamAddDeviceUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\OutputStreamCurrentDeviceUserControl.xaml">
       <SubType>Designer</SubType>
