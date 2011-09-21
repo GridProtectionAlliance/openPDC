@@ -31,7 +31,10 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.Charts;
@@ -42,6 +45,7 @@ using openPDC.UI.ViewModels;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Transport;
 using TimeSeriesFramework.UI;
+using TimeSeriesFramework.UI.UserControls;
 using TVA;
 using TVA.Data;
 
@@ -61,20 +65,40 @@ namespace openPDC.UI.UserControls
 
         // Synchronized Subscription Fields.
         private bool m_restartConnectionCycle;
-        private int[] m_xAxisDataCollection;    //contains source data for the binding collection.
-        private EnumerableDataSource<int> m_xAxisBindingCollection;     //contains values plotted on X-Axis.
         private DataSubscriber m_synchronizedSubscriber;
         private bool m_subscribedSynchronized;
         private DispatcherTimer m_refreshTimer;
+        private string m_selectedSignalIDs;
+        private int m_processingSynchronizedMeasurements = 0;
+
+        private int[] m_xAxisDataCollection;    //contains source data for the binding collection.
+        private EnumerableDataSource<int> m_xAxisBindingCollection;     //contains values plotted on X-Axis.
         private ConcurrentQueue<string> m_timeStampList;
         private ConcurrentDictionary<Guid, ConcurrentQueue<double>> m_yAxisDataCollection;            //contains source data for the binding collection. Format is <signalID, collection of values from subscription API>.
         private ConcurrentDictionary<Guid, EnumerableDataSource<double>> m_yAxisBindingCollection;    //contains values plotted on Y-Axis.
         private ConcurrentDictionary<Guid, LineGraph> m_lineGraphCollection;                          //contains list of graphs plotted on the chart.
         private ConcurrentDictionary<Guid, RealTimeMeasurement> m_selectedMeasurements;                  //measurements user have selected to plot.
         private ObservableCollection<RealTimeMeasurement> m_displayedMeasurement;
-        private string m_selectedSignalIDs;
-        private int m_processingSynchronizedMeasurements = 0;
+
         private int m_numberOfDataPointsToPlot = 30;
+        private int m_framesPerSecond = 30;     //sample rate of the data from subscription API/Data Resolution
+        private double m_leadTime = 1.0;
+        private double m_lagTime = 3.0;
+        private bool m_useLocalClockAsRealtime;
+        private bool m_ignoreBadTimestamps;
+        private int m_chartRefreshInterval = 250;
+        private int m_statisticsDataRefershInterval = 10;
+        private int m_measurementsDataRefreshInterval = 10;
+        private double m_frequencyRangeMin = 59.95;
+        private double m_frequencyRangeMax = 60.05;
+        private bool m_displayFrequencyYAxis;
+        private bool m_displayPhaseAngleYAxis;
+        private bool m_displayVoltageYAxis;
+        private bool m_displayCurrentYAxis;
+        private bool m_displayXAxis;
+        private bool m_displayLegend;
+        private long m_refreshRate = Ticks.FromMilliseconds(500); // This is used to refresh real-time values below chart.
+        private long m_lastRefreshTime;
 
         #endregion
 
@@ -86,14 +110,7 @@ namespace openPDC.UI.UserControls
         public InputStatusMonitorUserControl()
         {
             InitializeComponent();
-            m_timeStampList = new ConcurrentQueue<string>();
-            m_xAxisDataCollection = new int[m_numberOfDataPointsToPlot];
-            m_yAxisDataCollection = new ConcurrentDictionary<Guid, ConcurrentQueue<double>>();
-            m_yAxisBindingCollection = new ConcurrentDictionary<Guid, EnumerableDataSource<double>>();
-            m_lineGraphCollection = new ConcurrentDictionary<Guid, LineGraph>();
-            m_selectedMeasurements = new ConcurrentDictionary<Guid, RealTimeMeasurement>();
-            m_displayedMeasurement = new ObservableCollection<RealTimeMeasurement>();
-            m_restartConnectionCycle = true;
+            Initialize();
             this.Loaded += new System.Windows.RoutedEventHandler(InputStatusMonitorUserControl_Loaded);
             this.Unloaded += new RoutedEventHandler(InputStatusMonitorUserControl_Unloaded);
         }
@@ -110,7 +127,7 @@ namespace openPDC.UI.UserControls
             UnsubscribeSynchronizedData();
             m_dataContext.UnsubscribeUnsynchronizedData();
 
-            // TODO: Store current selection into Isolated Storage.
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("InputMonitoringPoints", m_selectedSignalIDs);
         }
 
         /// <summary>
@@ -120,13 +137,7 @@ namespace openPDC.UI.UserControls
         /// <param name="e">Event arguments.</param>
         private void InputStatusMonitorUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            m_dataContext = new RealTimeStreams(1);
-            this.DataContext = m_dataContext;
-            ListBoxCurrentValues.ItemsSource = m_displayedMeasurement;
-
-            // Initialize Chart Properties.
-            InitializeColors();
-            InitializeChart();
+            InitializeUserControl();
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -157,14 +168,7 @@ namespace openPDC.UI.UserControls
                 if (result != null && (bool)result == true)
                 {
                     using (StreamWriter writer = new StreamWriter(saveDialog.FileName))
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        foreach (KeyValuePair<Guid, RealTimeMeasurement> selectedMeasurement in m_selectedMeasurements)
-                        {
-                            sb.Append(selectedMeasurement.Value.SignalReference + ";");
-                        }
-                        writer.Write(sb.ToString());
-                    }
+                        writer.Write(m_selectedSignalIDs);
                 }
             }
             catch (Exception)
@@ -187,38 +191,8 @@ namespace openPDC.UI.UserControls
                     {
                         string selection = reader.ReadLine();
                         string[] signalIDs = selection.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        foreach (RealTimeStream stream in m_dataContext.ItemsSource)
-                        {
-                            stream.Expanded = false;
-                            foreach (RealTimeDevice device in stream.DeviceList)
-                            {
-                                device.Expanded = false;
-                                foreach (RealTimeMeasurement measurement in device.MeasurementList)
-                                {
-                                    if (signalIDs.Contains(measurement.SignalID.ToString()))
-                                    {
-                                        measurement.Selected = true;
-                                        device.Expanded = true;
-                                        stream.Expanded = true;
-                                        m_selectedMeasurements.TryAdd(measurement.SignalID, measurement);
-                                        AddToDisplayedMeasurements(measurement);
-                                    }
-                                    else
-                                    {
-                                        measurement.Selected = false;
-                                        if (m_selectedMeasurements.ContainsKey(measurement.SignalID))
-                                        {
-                                            //TODO: Remove graph.
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        AutoSelectMeasurements(signalIDs);
                     }
-
-                    if (m_selectedMeasurements.Count > 0)
-                        SubscribeSynchronizedData();
                 }
             }
             catch (Exception)
@@ -261,22 +235,35 @@ namespace openPDC.UI.UserControls
 
         #endregion
 
-        private void RefreshSelectedMeasurements()
+        private void Initialize()
         {
-            StringBuilder sb = new StringBuilder();
+            m_timeStampList = new ConcurrentQueue<string>();
+            m_yAxisDataCollection = new ConcurrentDictionary<Guid, ConcurrentQueue<double>>();
+            m_yAxisBindingCollection = new ConcurrentDictionary<Guid, EnumerableDataSource<double>>();
+            m_lineGraphCollection = new ConcurrentDictionary<Guid, LineGraph>();
+            m_selectedMeasurements = new ConcurrentDictionary<Guid, RealTimeMeasurement>();
+            m_displayedMeasurement = new ObservableCollection<RealTimeMeasurement>();
+            m_restartConnectionCycle = true;
+            RetrieveSettingsFromIsolatedStorage();
+            m_xAxisDataCollection = new int[m_numberOfDataPointsToPlot];
+            m_refreshRate = Ticks.FromMicroseconds(m_chartRefreshInterval);
+        }
 
-            foreach (KeyValuePair<Guid, RealTimeMeasurement> measurement in m_selectedMeasurements)
-            {
-                sb.Append(measurement.Value.SignalID.ToString());
-                sb.Append(";");
-            }
+        private void InitializeUserControl()
+        {
+            m_dataContext = new RealTimeStreams(1);
+            this.DataContext = m_dataContext;
+            ListBoxCurrentValues.ItemsSource = m_displayedMeasurement;
 
-            m_selectedSignalIDs = sb.ToString();
-            if (m_selectedSignalIDs.Length > 0)
-                m_selectedSignalIDs = m_selectedSignalIDs.Substring(0, m_selectedSignalIDs.Length - 1);
+            // Initialize Chart Properties.
+            InitializeColors();
+            InitializeChart();
 
-            // once user has changed selection, resubscribe with new values.
-            SubscribeSynchronizedData();
+            m_selectedSignalIDs = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("InputMonitoringPoints").ToString();
+            string[] signalIDs = m_selectedSignalIDs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            AutoSelectMeasurements(signalIDs);
+
+            PopulateSettings();
         }
 
         private void InitializeColors()
@@ -298,14 +285,97 @@ namespace openPDC.UI.UserControls
         {
             ((HorizontalAxis)ChartPlotterDynamic.MainHorizontalAxis).LabelProvider.LabelStringFormat = "";
             ChartPlotterDynamic.LegendVisibility = Visibility.Collapsed;
+            ChartPlotterDynamic.MainVerticalAxisVisibility = FrequencyAxisTitle.Visibility = m_displayFrequencyYAxis ? Visibility.Visible : Visibility.Collapsed;
+            ChartPlotterDynamic.MainHorizontalAxisVisibility = m_displayXAxis ? Visibility.Visible : Visibility.Collapsed;
+            PhaseAngleYAxis.Visibility = PhaseAngleAxisTitle.Visibility = m_displayPhaseAngleYAxis ? Visibility.Visible : Visibility.Collapsed;
+            VoltageYAxis.Visibility = VoltageAxisTitle.Visibility = m_displayVoltageYAxis ? Visibility.Visible : Visibility.Collapsed;
+            CurrentYAxis.Visibility = CurrentAxisTitle.Visibility = m_displayCurrentYAxis ? Visibility.Visible : Visibility.Collapsed;
+            ChartPlotterDynamic.Visible = DataRect.Create(0, m_frequencyRangeMin, m_numberOfDataPointsToPlot, m_frequencyRangeMax);
+            PhaseAnglePlotter.Visible = DataRect.Create(0, -180, m_numberOfDataPointsToPlot, 180);
+            TextBlockLeft.Visibility = TextBlockRight.Visibility = ChartPlotterDynamic.MainHorizontalAxisVisibility;
 
             for (int i = 0; i < m_numberOfDataPointsToPlot; i++)
                 m_xAxisDataCollection[i] = i;
             m_xAxisBindingCollection = new EnumerableDataSource<int>(m_xAxisDataCollection);
             m_xAxisBindingCollection.SetXMapping(x => x);
+        }
 
-            ChartPlotterDynamic.Visible = DataRect.Create(0, 59.95, m_numberOfDataPointsToPlot, 60.05);
-            PhaseAnglePlotter.Visible = DataRect.Create(0, -180, m_numberOfDataPointsToPlot, 180);
+        private void RetrieveSettingsFromIsolatedStorage()
+        {
+            // Retreive values from IsolatedStorage.
+            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfDataPointsToPlot").ToString(), out m_numberOfDataPointsToPlot);
+            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DataResolution").ToString(), out m_framesPerSecond);
+            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("ChartRefreshInterval").ToString(), out m_chartRefreshInterval);
+            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticsDataRefershInterval);
+            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("MeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
+            double.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("LagTime").ToString(), out m_lagTime);
+            double.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("LeadTime").ToString(), out m_leadTime);
+            double.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin").ToString(), out m_frequencyRangeMin);
+            double.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax").ToString(), out m_frequencyRangeMax);
+            m_displayXAxis = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayXAxis").ToString().ParseBoolean();
+            m_displayLegend = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayLegend").ToString().ParseBoolean();
+            m_displayFrequencyYAxis = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayFrequencyYAxis").ToString().ParseBoolean();
+            m_displayPhaseAngleYAxis = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayPhaseAngleYAxis").ToString().ParseBoolean();
+            m_displayCurrentYAxis = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayCurrentYAxis").ToString().ParseBoolean();
+            m_displayVoltageYAxis = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayVoltageYAxis").ToString().ParseBoolean();
+            m_useLocalClockAsRealtime = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("UseLocalClockAsRealtime").ToString().ParseBoolean();
+            m_ignoreBadTimestamps = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("IgnoreBadTimestamps").ToString().ParseBoolean();
+        }
+
+        private void AutoSelectMeasurements(string[] signalIDs)
+        {
+            if (signalIDs.Count() > 0)
+            {
+                foreach (RealTimeStream stream in m_dataContext.ItemsSource)
+                {
+                    stream.Expanded = false;
+                    foreach (RealTimeDevice device in stream.DeviceList)
+                    {
+                        device.Expanded = false;
+                        foreach (RealTimeMeasurement measurement in device.MeasurementList)
+                        {
+                            if (signalIDs.Contains(measurement.SignalID.ToString()))
+                            {
+                                measurement.Selected = true;
+                                device.Expanded = true;
+                                stream.Expanded = true;
+                                m_selectedMeasurements.TryAdd(measurement.SignalID, measurement);
+                                AddToDisplayedMeasurements(measurement);
+                            }
+                            else
+                            {
+                                measurement.Selected = false;
+                                RemoveFromDisplayedMeasurements(measurement);
+
+                                RealTimeMeasurement tempMeasurement;
+                                m_selectedMeasurements.TryRemove(measurement.SignalID, out tempMeasurement);
+                                RemoveLineGraph(measurement);
+                            }
+                        }
+                    }
+                }
+
+                if (m_selectedMeasurements.Count > 0)
+                    SubscribeSynchronizedData();
+            }
+        }
+
+        private void RefreshSelectedMeasurements()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (KeyValuePair<Guid, RealTimeMeasurement> measurement in m_selectedMeasurements)
+            {
+                sb.Append(measurement.Value.SignalID.ToString());
+                sb.Append(";");
+            }
+
+            m_selectedSignalIDs = sb.ToString();
+            if (m_selectedSignalIDs.Length > 0)
+                m_selectedSignalIDs = m_selectedSignalIDs.Substring(0, m_selectedSignalIDs.Length - 1);
+
+            // once user has changed selection, resubscribe with new values.
+            SubscribeSynchronizedData();
         }
 
         private void StartRefreshTimer()
@@ -313,7 +383,7 @@ namespace openPDC.UI.UserControls
             if (m_refreshTimer == null)
             {
                 m_refreshTimer = new DispatcherTimer();
-                m_refreshTimer.Interval = TimeSpan.FromMilliseconds(250);
+                m_refreshTimer.Interval = TimeSpan.FromMilliseconds(m_chartRefreshInterval);
                 m_refreshTimer.Tick += new EventHandler(m_refreshTimer_Tick);
                 m_refreshTimer.Start();
             }
@@ -364,16 +434,17 @@ namespace openPDC.UI.UserControls
 
             m_yAxisBindingCollection.TryRemove(measurement.SignalID, out bindingCollectionToBeRemoved);
             m_yAxisDataCollection.TryRemove(measurement.SignalID, out dataCollectionToBeRemoved);
-            m_lineGraphCollection.TryRemove(measurement.SignalID, out lineGraphToBeRemoved);
-
-            if (measurement.SignalAcronym == "FREQ")
-                ChartPlotterDynamic.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
-            else if (measurement.SignalAcronym == "IPHA" || measurement.SignalAcronym == "VPHA")
-                PhaseAnglePlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
-            else if (measurement.SignalAcronym == "VPHM")
-                VoltagePlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
-            else if (measurement.SignalAcronym == "IPHM")
-                CurrentPlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
+            if (m_lineGraphCollection.TryRemove(measurement.SignalID, out lineGraphToBeRemoved))
+            {
+                if (measurement.SignalAcronym == "FREQ")
+                    ChartPlotterDynamic.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
+                else if (measurement.SignalAcronym == "IPHA" || measurement.SignalAcronym == "VPHA")
+                    PhaseAnglePlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
+                else if (measurement.SignalAcronym == "VPHM")
+                    VoltagePlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
+                else if (measurement.SignalAcronym == "IPHM")
+                    CurrentPlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
+            }
         }
 
         #region [ Synchronized Subscription ]
@@ -480,9 +551,6 @@ namespace openPDC.UI.UserControls
             }
         }
 
-        private long m_refreshRate = Ticks.FromMilliseconds(500);
-        private long m_lastRefreshTime;
-
         private void m_synchronizedSubscriber_ConnectionEstablished(object sender, EventArgs e)
         {
             m_subscribedSynchronized = true;
@@ -550,7 +618,7 @@ namespace openPDC.UI.UserControls
                     InitializeSynchronizedSubscription();
 
                 if (m_subscribedSynchronized && !string.IsNullOrEmpty(m_selectedSignalIDs))
-                    m_synchronizedSubscriber.SynchronizedSubscribe(true, 30, 4, 10, m_selectedSignalIDs);
+                    m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
 
                 ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
                     {
@@ -579,6 +647,110 @@ namespace openPDC.UI.UserControls
 
         #endregion
 
+        #region [ Isolated Storage Management ]
+
+        private void ButtonHelp_Click(object sender, RoutedEventArgs e)
+        {
+            PanAndZoomViewer viewer = new PanAndZoomViewer(new BitmapImage(new Uri(@"/openPDC.UI;component/Images/" + ((Button)sender).Tag.ToString(), UriKind.Relative)), "Help Me Choose");
+            viewer.Owner = Window.GetWindow(this);
+            viewer.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            viewer.ShowDialog();
+        }
+
+        private void ButtonRestoreSettings_Click(object sender, RoutedEventArgs e)
+        {
+            TimeSeriesFramework.UI.IsolatedStorageManager.InitializeIsolatedStorage(true);
+            PopupSettings.IsOpen = false;
+            Reload();
+        }
+
+        private void ButtonSaveSettings_Click(object sender, RoutedEventArgs e)
+        {
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("ForceIPv4", (bool)CheckBoxForceIPv4.IsChecked);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("InputMonitoringPoints", TextBoxLastSelectedMeasurements.Text);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("NumberOfDataPointsToPlot", TextBoxNumberOFDataPointsToPlot.Text);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("DataResolution", TextBoxDataResolution.Text);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("LagTime", TextBoxLagTime.Text);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("LeadTime", TextBoxLeadTime.Text);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("UseLocalClockAsRealtime", (bool)CheckBoxUseLocalClockAsRealTime.IsChecked);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("IgnoreBadTimestamps", (bool)CheckBoxIgnoreBadTimestamps.IsChecked);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("ChartRefreshInterval", TextBoxChartRefreshInterval.Text);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("StatisticsDataRefreshInterval", TextBoxStatisticDataRefreshInterval.Text);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("MeasurementsDataRefreshInterval", TextBoxMeasurementDataRefreshInterval.Text);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayXAxis", (bool)CheckBoxDisplayXAxis.IsChecked);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayFrequencyYAxis", (bool)CheckBoxDisplayFrequencyYAxis.IsChecked);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayPhaseAngleYAxis", (bool)CheckBoxDisplayPhaseAngleYAxis.IsChecked);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayVoltageYAxis", (bool)CheckBoxDisplayVoltageMagnitudeYAxis.IsChecked);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayCurrentYAxis", (bool)CheckBoxDisplayCurrentMagnitudeYAxis.IsChecked);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("FrequencyRangeMin", TextBoxFrequencyRangeMin.Text);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("FrequencyRangeMax", TextBoxFrequencyRangeMax.Text);
+            TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayLegend", (bool)CheckBoxDisplayLegend.IsChecked);
+
+            PopupSettings.IsOpen = false;
+            Reload();
+        }
+
+        private void PopulateSettings()
+        {
+            // Populate settings popup control.
+            TextBoxNumberOFDataPointsToPlot.Text = m_numberOfDataPointsToPlot.ToString();
+            TextBoxDataResolution.Text = m_framesPerSecond.ToString();
+            TextBoxChartRefreshInterval.Text = m_chartRefreshInterval.ToString();
+            TextBoxStatisticDataRefreshInterval.Text = m_statisticsDataRefershInterval.ToString();
+            TextBoxMeasurementDataRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString();
+            TextBoxLagTime.Text = m_lagTime.ToString();
+            TextBoxLeadTime.Text = m_leadTime.ToString();
+            TextBoxFrequencyRangeMin.Text = m_frequencyRangeMin.ToString();
+            TextBoxFrequencyRangeMax.Text = m_frequencyRangeMax.ToString();
+            CheckBoxDisplayXAxis.IsChecked = m_displayXAxis;
+            CheckBoxDisplayLegend.IsChecked = m_displayLegend;
+            CheckBoxDisplayFrequencyYAxis.IsChecked = m_displayFrequencyYAxis;
+            CheckBoxDisplayPhaseAngleYAxis.IsChecked = m_displayPhaseAngleYAxis;
+            CheckBoxDisplayCurrentMagnitudeYAxis.IsChecked = m_displayCurrentYAxis;
+            CheckBoxDisplayVoltageMagnitudeYAxis.IsChecked = m_displayVoltageYAxis;
+            CheckBoxUseLocalClockAsRealTime.IsChecked = m_useLocalClockAsRealtime;
+            CheckBoxIgnoreBadTimestamps.IsChecked = m_ignoreBadTimestamps;
+        }
+
+        private void Reload()
+        {
+            UIElement frame = null;
+            UIElement groupBox = null;
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
+            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
+
+            if (frame != null)
+            {
+                InputStatusMonitorUserControl inputStatusMonitorUserControl = new InputStatusMonitorUserControl();
+
+                ((System.Windows.Controls.Frame)frame).Navigate(inputStatusMonitorUserControl);
+
+                if (groupBox != null)
+                {
+                    Run run = new Run();
+                    run.FontWeight = FontWeights.Bold;
+                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                    run.Text = "Input Status &amp; Monitoring";
+
+                    TextBlock txt = new TextBlock();
+                    txt.Padding = new Thickness(5.0);
+                    txt.Inlines.Add(run);
+
+                    ((GroupBox)groupBox).Header = txt;
+                }
+            }
+        }
+
+        private void ButtonManageSettings_Click(object sender, RoutedEventArgs e)
+        {
+            PopupSettings.Placement = PlacementMode.Center;
+            PopupSettings.IsOpen = true;
+        }
+
         #endregion
+
+        #endregion
+
     }
+
 }

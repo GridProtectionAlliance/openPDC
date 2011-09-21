@@ -164,7 +164,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSeriesFramework", "Time
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\TimeSeriesFramework\AdoAdapters.dll = Dependencies\TimeSeriesFramework\AdoAdapters.dll
 		Dependencies\TimeSeriesFramework\AdoAdapters.XML = Dependencies\TimeSeriesFramework\AdoAdapters.XML
-		Dependencies\TimeSeriesFramework\CsvAdapters.dll = Dependencies\TimeSeriesFramework\CsvAdapters.dll
 		Dependencies\TimeSeriesFramework\CsvAdapters.XML = Dependencies\TimeSeriesFramework\CsvAdapters.XML
 		Dependencies\TimeSeriesFramework\DataQualityMonitoring.dll = Dependencies\TimeSeriesFramework\DataQualityMonitoring.dll
 		Dependencies\TimeSeriesFramework\DataQualityMonitoring.XML = Dependencies\TimeSeriesFramework\DataQualityMonitoring.XML

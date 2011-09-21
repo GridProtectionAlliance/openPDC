@@ -106,6 +106,8 @@ namespace TestUI
             ComboboxNode.ItemsSource = Node.GetLookupList(null);
             if (ComboboxNode.Items.Count > 0)
                 ComboboxNode.SelectedIndex = 0;
+
+            IsolatedStorageManager.InitializeIsolatedStorage(false);
         }
 
         /// <summary>

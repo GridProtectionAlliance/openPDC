@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid ShowGridLines="True">
+    <Grid>
         
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>            
@@ -29,8 +29,107 @@
             <RowDefinition Height="*"/>             
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" VerticalAlignment="Top">
-            
+        <!-- Setting Popup XAML Starts -->
+
+        <Popup x:Name="PopupSettings">
+
+            <Border CornerRadius="5" BorderThickness="2" Background="White" BorderBrush="Blue">
+
+                <Grid Margin="5">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Last Selected Measurements" Grid.Row="0" Grid.Column="0"/>
+                    <TextBox x:Name="TextBoxLastSelectedMeasurements" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" TextWrapping="Wrap" Height="50" Width="340"/>
+
+                    <TextBlock Text="Number of Data Points to Plot" Grid.Row="2" Grid.Column="0"/>
+                    <TextBox x:Name="TextBoxNumberOFDataPointsToPlot" Grid.Row="2" Grid.Column="1" Width="50"/>
+                    <TextBlock Text="Data Resolution (Frames Per Second)" Grid.Row="2" Grid.Column="2"/>
+                    <TextBox x:Name="TextBoxDataResolution" Grid.Row="2" Grid.Column="3" Width="50"/>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right">
+                        <TextBlock Text="Lag Time" />
+                        <Button Content="?" Tag="HMC - Lag Time.png" ToolTipService.ToolTip="Click here for help on Lag Time" 
+                                    Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}" Click="ButtonHelp_Click"/>
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxLagTime" Grid.Row="3" Grid.Column="1" Width="50"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right">
+                        <TextBlock Text="Lead Time"/>
+                        <Button Content="?" Tag="HMC - Lead Time.png" ToolTipService.ToolTip="Click here for help on Lead Time" 
+                                    Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}" Click="ButtonHelp_Click"/>
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxLeadTime" Grid.Row="3" Grid.Column="3" Width="50"/>
+
+                    <TextBlock Text="Frequency Range Min" Grid.Row="4" Grid.Column="0"/>
+                    <TextBox x:Name="TextBoxFrequencyRangeMin" Grid.Row="4" Grid.Column="1" Width="50"/>
+                    <TextBlock Text="Frequency Range Max" Grid.Row="4" Grid.Column="2"/>
+                    <TextBox x:Name="TextBoxFrequencyRangeMax" Grid.Row="4" Grid.Column="3" Width="50"/>
+
+                    <TextBlock Text="Chart Refresh Interval (in miliseconds)" Grid.Row="5" Grid.Column="0"/>
+                    <TextBox x:Name="TextBoxChartRefreshInterval" Grid.Row="5" Grid.Column="1" Width="50"/>
+                    <TextBlock Text="Statistic Data Refresh Interval (in seconds)" Grid.Row="5" Grid.Column="2"/>
+                    <TextBox x:Name="TextBoxStatisticDataRefreshInterval" Grid.Row="5" Grid.Column="3" Width="50"/>
+
+                    <TextBlock Text="Measurement Data Refersh Interval (in seconds)" Grid.Row="6" Grid.Column="0"/>
+                    <TextBox x:Name="TextBoxMeasurementDataRefreshInterval" Grid.Row="6" Grid.Column="1" Width="50"/>
+                    <CheckBox x:Name="CheckBoxForceIPv4" Content="Force IPv4" Grid.Row="6" Grid.Column="2"/>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2">
+                        <CheckBox x:Name="CheckBoxUseLocalClockAsRealTime" Content="Use Local Clock as Real-Time"/>
+                        <Button Content="?" Tag="HMC - Use Local Clock as RealTime.png" ToolTipService.ToolTip="Click here for help on Use Local Clock as Real-time" 
+                                    Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}" Click="ButtonHelp_Click"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2">
+                        <CheckBox x:Name="CheckBoxIgnoreBadTimestamps" Content="Ignore Bad Timestamps"/>
+                        <Button Content="?" Tag="HMC - Ignore Bad Timestamps.png" ToolTipService.ToolTip="Click here for help on Ignore Bad Timestamps" 
+                                    Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}" Click="ButtonHelp_Click"/>
+                    </StackPanel>
+
+                    <CheckBox x:Name="CheckBoxDisplayFrequencyYAxis" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Content="Display Frequency Y-Axis"/>
+                    <CheckBox x:Name="CheckBoxDisplayPhaseAngleYAxis" Grid.Row="8" Grid.Column="2" Grid.ColumnSpan="2" Content="Display Phase Angle Y-Axis"/>
+
+                    <CheckBox x:Name="CheckBoxDisplayVoltageMagnitudeYAxis" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Content="Display Voltage Magnitude Y-Axis"/>
+                    <CheckBox x:Name="CheckBoxDisplayCurrentMagnitudeYAxis" Grid.Row="9" Grid.Column="2" Grid.ColumnSpan="2" Content="Display Current Magnitude Y-Axis"/>
+
+                    <CheckBox x:Name="CheckBoxDisplayXAxis" Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Content="Display X-Axis"/>
+                    <CheckBox x:Name="CheckBoxDisplayLegend" Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="2" Content="Display Legend"/>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Right">
+                        <Button Content="Restore Default" Margin="0,0,5,0" Click="ButtonRestoreSettings_Click" Width="Auto"/>
+                        <Button Content="Save" Click="ButtonSaveSettings_Click"/>
+                    </StackPanel>
+
+                </Grid>
+
+            </Border>
+
+        </Popup>
+
+        <!-- /Setting Popup XAML Ends -->
+
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" VerticalAlignment="Top">                        
+
             <StackPanel.Resources>
                 
                 <HierarchicalDataTemplate x:Key="MeasurementNodeTemplate">
@@ -70,7 +169,7 @@
                 </Style>
                 
             </StackPanel.Resources>
-                        
+         
             <StackPanel Orientation="Horizontal" >
                 <TextBlock Text="Refresh Interval: 30 sec" FontSize="{StaticResource SmallTextSize}" />
                 <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" FontSize="{StaticResource SmallTextSize}" />
@@ -87,6 +186,8 @@
             <!-- Top Buttons -->
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Manage Display Settings" Width="Auto" Click="ButtonManageSettings_Click"/>
+                <TextBlock Text="|"/>
                 <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Save Display Settings" Width="Auto" Click="ButtonSave_Click"/>
                 <TextBlock Text="|"/>
                 <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Load Display Settings" Width="Auto" Click="ButtonLoad_Click"/>
