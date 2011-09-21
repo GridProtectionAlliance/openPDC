@@ -46,7 +46,7 @@
 
             <!--Second Row-->
             <TextBlock Text="Historian" Grid.Row="1" Grid.Column="0"/>
-            <TextBlock Text="{tsfBinding:Column Path=HistorianID}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
+            <TextBlock Text="{Binding Path=HistorianID}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
             <TextBlock Text="Point ID"  Grid.Row="1" Grid.Column="2"/>
             <TextBlock Text="{tsfBinding:Column Path=PointID}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left"/>
             
@@ -57,7 +57,7 @@
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
             <TextBlock Text="Source PointTag" Grid.Row="2" Grid.Column="2" />
-            <TextBlock Text="{tsfBinding:Column Path=SourcePointTag}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left"/>
+            <TextBlock Text="{Binding Path=SourcePointTag}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left"/>
             
         </Grid>
                 
