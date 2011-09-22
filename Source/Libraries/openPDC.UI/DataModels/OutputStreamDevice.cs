@@ -385,7 +385,7 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<OutputStreamDevice> OutputStreamDeviceList = new ObservableCollection<OutputStreamDevice>();
-                string query = database.ParameterizedQueryString("SELECT NodeID, AdapterID, ID, IDCode, Acronym, BpaAcronym " +
+                string query = database.ParameterizedQueryString("SELECT NodeID, AdapterID, ID, IDCode, Acronym, BpaAcronym, " +
                     "Name, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, LoadOrder, Enabled, Virtual " +
                     "FROM OutputStreamDeviceDetail WHERE AdapterID = {0} ORDER BY LoadOrder", "outputStreamID");
                 DataTable OutputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
@@ -472,11 +472,11 @@ namespace openPDC.UI.DataModels
                 {
                     query = database.ParameterizedQueryString("INSERT INTO OutputStreamDevice (NodeID, AdapterID, IDCode, Acronym, BpaAcronym, Name, " +
                         "PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, LoadOrder, Enabled, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn)" +
-                        "VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15},)", "nodeID", "adapterID", "idCode", "acronym",
+                        "VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15})", "nodeID", "adapterID", "idCode", "acronym",
                         "bpaAcronym", "name", "phasorDataFormat", "frequencyDataFormat", "analogDataFormat", "coordinateFormat", "loadOrder", "enabled", 
                         "updatedBy", "updatedOn", "createdBy", "createdOn");
 
-                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, outputStreamDevice.NodeID, outputStreamDevice.AdapterID, outputStreamDevice.IDCode,
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.CurrentNodeID(), outputStreamDevice.AdapterID, outputStreamDevice.IDCode,
                         outputStreamDevice.Acronym, outputStreamDevice.BpaAcronym.ToNotNull(), outputStreamDevice.Name, outputStreamDevice.PhasorDataFormat.ToNotNull(),
                         outputStreamDevice.FrequencyDataFormat.ToNotNull(), outputStreamDevice.AnalogDataFormat.ToNotNull(), outputStreamDevice.CoordinateFormat.ToNotNull(),
                         outputStreamDevice.LoadOrder, database.Bool(outputStreamDevice.Enabled), CommonFunctions.CurrentUser,

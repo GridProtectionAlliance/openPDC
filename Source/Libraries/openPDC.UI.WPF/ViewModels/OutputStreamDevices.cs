@@ -168,9 +168,11 @@ namespace openPDC.UI.ViewModels
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         public OutputStreamDevices(int outputStreamID, int itemsPerPage, bool autoSave = true)
-            : base(itemsPerPage, autoSave)
+            : base(0, autoSave)
         {
+            ItemsPerPage = itemsPerPage;
             OutputStreamID = outputStreamID;
+            Load();
 
             m_phasorDataformatLookupList = new Dictionary<string, string>();
             m_phasorDataformatLookupList.Add("", "Select Phasor Data Format");
@@ -205,6 +207,7 @@ namespace openPDC.UI.ViewModels
             try
             {
                 ItemsSource = OutputStreamDevice.Load(null, OutputStreamID);
+                CurrentItem.AdapterID = m_outputStreamID;
             }
             catch (Exception ex)
             {
@@ -213,6 +216,12 @@ namespace openPDC.UI.ViewModels
                 else
                     Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
             }
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            CurrentItem.AdapterID = m_outputStreamID;
         }
 
         /// <summary>
