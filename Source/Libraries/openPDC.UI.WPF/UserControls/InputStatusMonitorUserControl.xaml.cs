@@ -32,7 +32,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -124,9 +123,9 @@ namespace openPDC.UI.UserControls
         private void InputStatusMonitorUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             m_restartConnectionCycle = false;
+            m_dataContext.RestartConnectionCycle = false;
             UnsubscribeSynchronizedData();
             m_dataContext.UnsubscribeUnsynchronizedData();
-
             TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("InputMonitoringPoints", m_selectedSignalIDs);
         }
 
@@ -246,7 +245,9 @@ namespace openPDC.UI.UserControls
             m_restartConnectionCycle = true;
             RetrieveSettingsFromIsolatedStorage();
             m_xAxisDataCollection = new int[m_numberOfDataPointsToPlot];
-            m_refreshRate = Ticks.FromMicroseconds(m_chartRefreshInterval);
+            m_refreshRate = Ticks.FromMilliseconds(m_chartRefreshInterval);
+            TextBlockMeasurementRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString();
+            TextBlockStatisticsRefreshInterval.Text = m_statisticsDataRefershInterval.ToString();
         }
 
         private void InitializeUserControl()
@@ -339,6 +340,7 @@ namespace openPDC.UI.UserControls
                                 measurement.Selected = true;
                                 device.Expanded = true;
                                 stream.Expanded = true;
+                                m_dataContext.Expanded = true;
                                 m_selectedMeasurements.TryAdd(measurement.SignalID, measurement);
                                 AddToDisplayedMeasurements(measurement);
                             }
@@ -346,7 +348,6 @@ namespace openPDC.UI.UserControls
                             {
                                 measurement.Selected = false;
                                 RemoveFromDisplayedMeasurements(measurement);
-
                                 RealTimeMeasurement tempMeasurement;
                                 m_selectedMeasurements.TryRemove(measurement.SignalID, out tempMeasurement);
                                 RemoveLineGraph(measurement);
@@ -431,7 +432,7 @@ namespace openPDC.UI.UserControls
             LineGraph lineGraphToBeRemoved;
             EnumerableDataSource<double> bindingCollectionToBeRemoved;
             ConcurrentQueue<double> dataCollectionToBeRemoved;
-
+            measurement.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
             m_yAxisBindingCollection.TryRemove(measurement.SignalID, out bindingCollectionToBeRemoved);
             m_yAxisDataCollection.TryRemove(measurement.SignalID, out dataCollectionToBeRemoved);
             if (m_lineGraphCollection.TryRemove(measurement.SignalID, out lineGraphToBeRemoved))
@@ -445,6 +446,18 @@ namespace openPDC.UI.UserControls
                 else if (measurement.SignalAcronym == "IPHM")
                     CurrentPlotter.Children.Remove((IPlotterElement)lineGraphToBeRemoved);
             }
+        }
+
+        private void ButtonGetStatistics_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ButtonEdit_Click(object sender, RoutedEventArgs e)
+        {
+            Device device = Device.GetDevice(null, "WHERE Acronym = '" + ((Button)sender).Tag.ToString() + "'");
+            DeviceUserControl deviceUserControl = new DeviceUserControl(device);
+            CommonFunctions.LoadUserControl(deviceUserControl, "Manage Device Configuration");
         }
 
         #region [ Synchronized Subscription ]
@@ -464,6 +477,13 @@ namespace openPDC.UI.UserControls
                 try
                 {
                     bool processedTimestamp = false;
+                    bool refreshMeasurementValueBelowChart = false;
+                    if (DateTime.UtcNow.Ticks - m_lastRefreshTime > m_refreshRate)
+                    {
+                        m_lastRefreshTime = DateTime.UtcNow.Ticks;
+                        refreshMeasurementValueBelowChart = true;
+                    }
+
                     foreach (IMeasurement newMeasurement in e.Argument)
                     {
                         if (!processedTimestamp)
@@ -526,10 +546,8 @@ namespace openPDC.UI.UserControls
                                 }
                             }
 
-                            if (DateTime.UtcNow.Ticks - m_lastRefreshTime > m_refreshRate)
+                            if (refreshMeasurementValueBelowChart)
                             {
-                                m_lastRefreshTime = DateTime.UtcNow.Ticks;
-
                                 lock (m_selectedMeasurements)
                                 {
                                     RealTimeMeasurement measurement;
@@ -661,7 +679,7 @@ namespace openPDC.UI.UserControls
         {
             TimeSeriesFramework.UI.IsolatedStorageManager.InitializeIsolatedStorage(true);
             PopupSettings.IsOpen = false;
-            Reload();
+            CommonFunctions.LoadUserControl(new InputStatusMonitorUserControl(), "Input Status &amp; Monitoring");
         }
 
         private void ButtonSaveSettings_Click(object sender, RoutedEventArgs e)
@@ -687,7 +705,8 @@ namespace openPDC.UI.UserControls
             TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayLegend", (bool)CheckBoxDisplayLegend.IsChecked);
 
             PopupSettings.IsOpen = false;
-            Reload();
+
+            CommonFunctions.LoadUserControl(new InputStatusMonitorUserControl(), "Input Status &amp; Monitoring");
         }
 
         private void PopulateSettings()
@@ -710,35 +729,6 @@ namespace openPDC.UI.UserControls
             CheckBoxDisplayVoltageMagnitudeYAxis.IsChecked = m_displayVoltageYAxis;
             CheckBoxUseLocalClockAsRealTime.IsChecked = m_useLocalClockAsRealtime;
             CheckBoxIgnoreBadTimestamps.IsChecked = m_ignoreBadTimestamps;
-        }
-
-        private void Reload()
-        {
-            UIElement frame = null;
-            UIElement groupBox = null;
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
-
-            if (frame != null)
-            {
-                InputStatusMonitorUserControl inputStatusMonitorUserControl = new InputStatusMonitorUserControl();
-
-                ((System.Windows.Controls.Frame)frame).Navigate(inputStatusMonitorUserControl);
-
-                if (groupBox != null)
-                {
-                    Run run = new Run();
-                    run.FontWeight = FontWeights.Bold;
-                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-                    run.Text = "Input Status &amp; Monitoring";
-
-                    TextBlock txt = new TextBlock();
-                    txt.Padding = new Thickness(5.0);
-                    txt.Inlines.Add(run);
-
-                    ((GroupBox)groupBox).Header = txt;
-                }
-            }
         }
 
         private void ButtonManageSettings_Click(object sender, RoutedEventArgs e)

@@ -25,10 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
 using TimeSeriesFramework.UI;
@@ -390,31 +387,8 @@ namespace openPDC.UI.ViewModels
 
                 if (ItemsPerPage == 0) // i.e. if user is on form page then go back to list page after save.
                 {
-                    UIElement frame = null;
-                    UIElement groupBox = null;
-                    TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-                    TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
-
-                    if (frame != null)
-                    {
-                        openPDC.UI.UserControls.DeviceListUserControl deviceListUserControl = new openPDC.UI.UserControls.DeviceListUserControl();
-                        ((System.Windows.Controls.Frame)frame).Navigate(deviceListUserControl);
-
-                        if (groupBox != null)
-                        {
-                            Run run = new Run();
-                            run.FontWeight = FontWeights.Bold;
-                            run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-                            run.Text = "Browse Devices";
-
-                            TextBlock txt = new TextBlock();
-                            txt.Padding = new Thickness(5.0);
-                            txt.Inlines.Add(run);
-
-                            ((GroupBox)groupBox).Header = txt;
-                        }
-
-                    }
+                    openPDC.UI.UserControls.DeviceListUserControl deviceListUserControl = new openPDC.UI.UserControls.DeviceListUserControl();
+                    CommonFunctions.LoadUserControl(deviceListUserControl, "Browse Devices");
                 }
             }
             catch (Exception ex)
@@ -434,30 +408,8 @@ namespace openPDC.UI.ViewModels
         private void GoToEdit(object parameter)
         {
             openPDC.UI.DataModels.Device deviceToEdit = (openPDC.UI.DataModels.Device)parameter;
-            UIElement frame = null;
-            UIElement groupBox = null;
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
-
-            if (frame != null)
-            {
-                openPDC.UI.UserControls.DeviceUserControl deviceUserControl = new openPDC.UI.UserControls.DeviceUserControl(deviceToEdit);
-                ((System.Windows.Controls.Frame)frame).Navigate(deviceUserControl);
-
-                if (groupBox != null)
-                {
-                    Run run = new Run();
-                    run.FontWeight = FontWeights.Bold;
-                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-                    run.Text = "Manage Device Configuration";
-
-                    TextBlock txt = new TextBlock();
-                    txt.Padding = new Thickness(5.0);
-                    txt.Inlines.Add(run);
-
-                    ((GroupBox)groupBox).Header = txt;
-                }
-            }
+            openPDC.UI.UserControls.DeviceUserControl deviceUserControl = new openPDC.UI.UserControls.DeviceUserControl(deviceToEdit);
+            CommonFunctions.LoadUserControl(deviceUserControl, "Manage Device Configuration");
         }
 
         /// <summary>
@@ -483,30 +435,8 @@ namespace openPDC.UI.ViewModels
             ItemsPerPage = 0; // Set this so that on Save() user will be sent back to list screen.
 
             // Go to edit screen.
-            UIElement frame = null;
-            UIElement groupBox = null;
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
-
-            if (frame != null)
-            {
-                openPDC.UI.UserControls.DeviceUserControl deviceUserControl = new openPDC.UI.UserControls.DeviceUserControl(deviceToCopy);
-                ((System.Windows.Controls.Frame)frame).Navigate(deviceUserControl);
-
-                if (groupBox != null)
-                {
-                    Run run = new Run();
-                    run.FontWeight = FontWeights.Bold;
-                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-                    run.Text = "Manage Device Configuration";
-
-                    TextBlock txt = new TextBlock();
-                    txt.Padding = new Thickness(5.0);
-                    txt.Inlines.Add(run);
-
-                    ((GroupBox)groupBox).Header = txt;
-                }
-            }
+            openPDC.UI.UserControls.DeviceUserControl deviceUserControl = new openPDC.UI.UserControls.DeviceUserControl(deviceToCopy);
+            CommonFunctions.LoadUserControl(deviceUserControl, "Manage Device Configuration");
         }
 
         private bool DeviceExists(string acronym)
@@ -527,31 +457,8 @@ namespace openPDC.UI.ViewModels
         private void GoToMeasurements(object parameter)
         {
             openPDC.UI.DataModels.Device device = (openPDC.UI.DataModels.Device)parameter;
-
-            UIElement frame = null;
-            UIElement groupBox = null;
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
-
-            if (frame != null)
-            {
-                MeasurementUserControl measurementUserControl = new MeasurementUserControl(device.ID);
-                ((System.Windows.Controls.Frame)frame).Navigate(measurementUserControl);
-
-                if (groupBox != null)
-                {
-                    Run run = new Run();
-                    run.FontWeight = FontWeights.Bold;
-                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-                    run.Text = "Manage Measurements for " + device.Acronym;
-
-                    TextBlock txt = new TextBlock();
-                    txt.Padding = new Thickness(5.0);
-                    txt.Inlines.Add(run);
-
-                    ((GroupBox)groupBox).Header = txt;
-                }
-            }
+            MeasurementUserControl measurementUserControl = new MeasurementUserControl(device.ID);
+            CommonFunctions.LoadUserControl(measurementUserControl, "Manage Measurements for " + device.Acronym);
         }
 
         /// <summary>
@@ -561,31 +468,8 @@ namespace openPDC.UI.ViewModels
         private void GoToPhasors(object parameter)
         {
             openPDC.UI.DataModels.Device device = (openPDC.UI.DataModels.Device)parameter;
-
-            UIElement frame = null;
-            UIElement groupBox = null;
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
-
-            if (frame != null)
-            {
-                openPDC.UI.UserControls.PhasorUserControl phasorUserControl = new openPDC.UI.UserControls.PhasorUserControl(device.ID);
-                ((System.Windows.Controls.Frame)frame).Navigate(phasorUserControl);
-
-                if (groupBox != null)
-                {
-                    Run run = new Run();
-                    run.FontWeight = FontWeights.Bold;
-                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-                    run.Text = "Manage Phasors for " + device.Acronym;
-
-                    TextBlock txt = new TextBlock();
-                    txt.Padding = new Thickness(5.0);
-                    txt.Inlines.Add(run);
-
-                    ((GroupBox)groupBox).Header = txt;
-                }
-            }
+            openPDC.UI.UserControls.PhasorUserControl phasorUserControl = new openPDC.UI.UserControls.PhasorUserControl(device.ID);
+            CommonFunctions.LoadUserControl(phasorUserControl, "Manage Phasors for " + device.Acronym);
         }
 
         protected override void OnPropertyChanged(string propertyName)

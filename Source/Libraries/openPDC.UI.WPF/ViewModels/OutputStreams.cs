@@ -25,10 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using openPDC.UI.Modal;
 using openPDC.UI.UserControls;
 using openPDCManager.UI.DataModels;
@@ -462,30 +459,8 @@ namespace openPDCManager.UI.ViewModels
 
         private void GoToDevices(object parameter)
         {
-            UIElement frame = null;
-            UIElement groupBox = null;
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
-
-            if (frame != null)
-            {
-                OutputStreamDeviceUserControl outputStreamDeviceUserControl = new OutputStreamDeviceUserControl(CurrentItem.ID);
-                ((System.Windows.Controls.Frame)frame).Navigate(outputStreamDeviceUserControl);
-
-                if (groupBox != null)
-                {
-                    Run run = new Run();
-                    run.FontWeight = FontWeights.Bold;
-                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-                    run.Text = "Manage Devices for " + CurrentItem.Acronym;
-
-                    TextBlock txt = new TextBlock();
-                    txt.Padding = new Thickness(5.0);
-                    txt.Inlines.Add(run);
-
-                    ((GroupBox)groupBox).Header = txt;
-                }
-            }
+            OutputStreamDeviceUserControl outputStreamDeviceUserControl = new OutputStreamDeviceUserControl(CurrentItem.ID);
+            CommonFunctions.LoadUserControl(outputStreamDeviceUserControl, "Manage Devices for " + CurrentItem.Acronym);
         }
 
         private void LaunchDeviceWizard(object parameter)
@@ -495,30 +470,8 @@ namespace openPDCManager.UI.ViewModels
 
         private void GoToMeasurements(object parameter)
         {
-            UIElement frame = null;
-            UIElement groupBox = null;
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
-
-            if (frame != null)
-            {
-                OutputStreamMeasurementUserControl outputStreamMeasurementUserControl = new OutputStreamMeasurementUserControl(CurrentItem.ID);
-                ((System.Windows.Controls.Frame)frame).Navigate(outputStreamMeasurementUserControl);
-
-                if (groupBox != null)
-                {
-                    Run run = new Run();
-                    run.FontWeight = FontWeights.Bold;
-                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-                    run.Text = "Manage Measurements for " + CurrentItem.Acronym;
-
-                    TextBlock txt = new TextBlock();
-                    txt.Padding = new Thickness(5.0);
-                    txt.Inlines.Add(run);
-
-                    ((GroupBox)groupBox).Header = txt;
-                }
-            }
+            OutputStreamMeasurementUserControl outputStreamMeasurementUserControl = new OutputStreamMeasurementUserControl(CurrentItem.ID);
+            CommonFunctions.LoadUserControl(outputStreamMeasurementUserControl, "Manage Measurements for " + CurrentItem.Acronym);
         }
 
         protected override void OnPropertyChanged(string propertyName)

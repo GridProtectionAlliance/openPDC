@@ -146,20 +146,22 @@
                 
                 <HierarchicalDataTemplate x:Key="DeviceNodeTemplate" ItemsSource="{tsfBinding:Column Path=MeasurementList}" ItemTemplate="{StaticResource MeasurementNodeTemplate}"> 
                     <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor}"/>
+                        <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}"/>
                         <Button Content="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics"
-                                Height="20" Width="Auto" />
-                        <Button Content="Edit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Height="20" Width="Auto"/>
+                                Height="20" Width="Auto" Click="ButtonGetStatistics_Click"/>
+                        <Button Content="Edit" Tag="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Height="20" Width="Auto" Click="ButtonEdit_Click"
+                                />
                     </StackPanel>
                 </HierarchicalDataTemplate>
                 
                 <HierarchicalDataTemplate x:Key="RootNodeTemplate" ItemsSource="{tsfBinding:Column Path=DeviceList}" ItemTemplate="{StaticResource DeviceNodeTemplate}">
                     
                     <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor}"/>
+                        <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}"/>
                         <Button Content="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics"
-                                Height="20" Width="Auto"/>
-                        <Button Content="Edit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Height="20" Width="Auto"/>
+                                Height="20" Width="Auto" Click="ButtonGetStatistics_Click"/>
+                        <Button Content="Edit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Height="20" Width="Auto" Click="ButtonEdit_Click"
+                                Visibility="{tsfBinding:Column Path=ID, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                     </StackPanel>
                     
                 </HierarchicalDataTemplate>
@@ -171,7 +173,9 @@
             </StackPanel.Resources>
          
             <StackPanel Orientation="Horizontal" >
-                <TextBlock Text="Refresh Interval: 30 sec" FontSize="{StaticResource SmallTextSize}" />
+                <TextBlock Text="Refresh Interval: " FontSize="{StaticResource SmallTextSize}"/>
+                <TextBlock x:Name="TextBlockMeasurementRefreshInterval" FontSize="{StaticResource SmallTextSize}" />
+                <TextBlock Text=" sec" FontSize="{StaticResource SmallTextSize}"/>
                 <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" FontSize="{StaticResource SmallTextSize}" />
             </StackPanel>
             
@@ -195,7 +199,7 @@
             
             <!-- Chart -->
 
-            <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="2" Height="250">
+            <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="2" Height="250" Width="510">
 
                 <d3:InjectedPlotter Name="PhaseAnglePlotter" SetViewportBinding="False">
                     <d3:VerticalAxis Name="PhaseAngleYAxis" Placement="Left" />
@@ -224,7 +228,7 @@
 
             <!-- Real-Time Data -->
             
-            <ListBox x:Name="ListBoxCurrentValues" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="113">
+            <ListBox x:Name="ListBoxCurrentValues" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="125">
                 
                 <ListBox.ItemTemplate>
                     
@@ -251,6 +255,7 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Run-Time Statistics" FontWeight="Bold"/>
                 <TextBlock Text="Refresh Interval: "/>
+                <TextBlock x:Name="TextBlockStatisticsRefreshInterval"/>
             </StackPanel>
                 
             <ListBox Height="150">

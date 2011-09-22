@@ -29,14 +29,11 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Media;
+using System.Windows.Input;
 using openPDC.UI.DataModels;
 using openPDC.UI.UserControls;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
-using System.Windows.Input;
 
 namespace openPDC.UI.ViewModels
 {
@@ -263,86 +260,20 @@ namespace openPDC.UI.ViewModels
 
         private void GoToPhasors()
         {
-            UIElement frame = null;
-            UIElement groupBox = null;
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
-
-            if (frame != null)
-            {
-                OutputStreamDevicePhasorUserControl outputStreamDevicePhasorUserControl = new OutputStreamDevicePhasorUserControl(CurrentItem.ID);
-                ((System.Windows.Controls.Frame)frame).Navigate(outputStreamDevicePhasorUserControl);
-
-                if (groupBox != null)
-                {
-                    Run run = new Run();
-                    run.FontWeight = FontWeights.Bold;
-                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-                    run.Text = "Manage Phasors for " + CurrentItem.Acronym;
-
-                    TextBlock txt = new TextBlock();
-                    txt.Padding = new Thickness(5.0);
-                    txt.Inlines.Add(run);
-
-                    ((GroupBox)groupBox).Header = txt;
-                }
-            }
+            OutputStreamDevicePhasorUserControl outputStreamDevicePhasorUserControl = new OutputStreamDevicePhasorUserControl(CurrentItem.ID);
+            CommonFunctions.LoadUserControl(outputStreamDevicePhasorUserControl, "Manage Phasors for " + CurrentItem.Acronym);
         }
 
         private void GoToAnalogs()
         {
-            UIElement frame = null;
-            UIElement groupBox = null;
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
-
-            if (frame != null)
-            {
-                OutputStreamDeviceAnalogUserControl outputStreamDeviceAnalogUserControl = new OutputStreamDeviceAnalogUserControl(CurrentItem.ID);
-                ((System.Windows.Controls.Frame)frame).Navigate(outputStreamDeviceAnalogUserControl);
-
-                if (groupBox != null)
-                {
-                    Run run = new Run();
-                    run.FontWeight = FontWeights.Bold;
-                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-                    run.Text = "Manage Analogs for " + CurrentItem.Acronym;
-
-                    TextBlock txt = new TextBlock();
-                    txt.Padding = new Thickness(5.0);
-                    txt.Inlines.Add(run);
-
-                    ((GroupBox)groupBox).Header = txt;
-                }
-            }
+            OutputStreamDeviceAnalogUserControl outputStreamDeviceAnalogUserControl = new OutputStreamDeviceAnalogUserControl(CurrentItem.ID);
+            CommonFunctions.LoadUserControl(outputStreamDeviceAnalogUserControl, "Manage Analogs for " + CurrentItem.Acronym);
         }
 
         private void GoToDigitals()
         {
-            UIElement frame = null;
-            UIElement groupBox = null;
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(System.Windows.Controls.Frame), ref frame);
-            TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(Application.Current.MainWindow, typeof(GroupBox), ref groupBox);
-
-            if (frame != null)
-            {
-                OutputStreamDeviceDigitalUserControl outputStreamDeviceDigitalUserControl = new OutputStreamDeviceDigitalUserControl(CurrentItem.ID);
-                ((System.Windows.Controls.Frame)frame).Navigate(outputStreamDeviceDigitalUserControl);
-
-                if (groupBox != null)
-                {
-                    Run run = new Run();
-                    run.FontWeight = FontWeights.Bold;
-                    run.Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-                    run.Text = "Manage Digitals for " + CurrentItem.Acronym;
-
-                    TextBlock txt = new TextBlock();
-                    txt.Padding = new Thickness(5.0);
-                    txt.Inlines.Add(run);
-
-                    ((GroupBox)groupBox).Header = txt;
-                }
-            }
+            OutputStreamDeviceDigitalUserControl outputStreamDeviceDigitalUserControl = new OutputStreamDeviceDigitalUserControl(CurrentItem.ID);
+            CommonFunctions.LoadUserControl(outputStreamDeviceDigitalUserControl, "Manage Digitals for " + CurrentItem.Acronym);
         }
 
         #endregion

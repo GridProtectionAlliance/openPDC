@@ -100,6 +100,21 @@ namespace openPDC.UI.ViewModels
         }
 
         /// <summary>
+        /// Gets or sets a boolean flag indicating if connection to backend windows service needs to be reestablished upon disconnection.
+        /// </summary>
+        public bool RestartConnectionCycle
+        {
+            get
+            {
+                return m_restartConnectionCycle;
+            }
+            set
+            {
+                m_restartConnectionCycle = value;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a last refresh time to display on UI.
         /// </summary>
         public string LastRefresh
@@ -173,13 +188,18 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        public void GetStatistics(object device)
+        {
+
+        }
+
         #region [ Unsynchronized Subscription ]
 
         private void m_unsynchronizedSubscriber_ConnectionTerminated(object sender, EventArgs e)
         {
             m_subscribedUnsynchronized = false;
             UnsubscribeUnsynchronizedData();
-            if (m_restartConnectionCycle)
+            if (RestartConnectionCycle)
                 InitializeUnsynchronizedSubscription();
         }
 
@@ -200,7 +220,7 @@ namespace openPDC.UI.ViewModels
                                     if (measurement.SignalID == newMeasurement.ID)
                                     {
                                         measurement.Quality = newMeasurement.ValueQualityIsGood() ? "GOOD" : "BAD";
-                                        measurement.TimeTag = newMeasurement.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                                        measurement.TimeTag = newMeasurement.Timestamp.ToString("HH:mm:ss.fff");
                                         measurement.Value = newMeasurement.Value.ToString("0.###");
 
                                         if (measurement.SignalAcronym == "FLAG")

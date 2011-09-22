@@ -1873,6 +1873,13 @@
             <param name="source">Source of exception</param>
             <param name="ex">Exception to be logged</param>
         </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.LoadUserControl(System.Object,System.String)">
+            <summary>
+            Loads provided user control into the frame control inside main window.
+            </summary>
+            <param name="userControl">User control to be loaded.</param>
+            <param name="title">Title of the user control to be loaded.</param>
+        </member>
         <member name="T:TimeSeriesFramework.UI.Converters.StringToStatusColorConverter">
             <summary>
             Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes string value and returns <see cref="T:System.Windows.Media.Brush"/> object.
