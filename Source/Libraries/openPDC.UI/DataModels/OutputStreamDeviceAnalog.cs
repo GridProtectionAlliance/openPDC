@@ -114,6 +114,7 @@ namespace openPDC.UI.DataModels
         /// <summary>
         /// Gets or sets the current <see cref="OutputStreamDeviceAnalog"/>'s Label.
         /// </summary>
+        [Required(ErrorMessage = "OutputStreamDeviceAnalog Lable is a required field, please provide value.")]
         [StringLength(16, ErrorMessage = "OutputStreamDeviceAnalog Label cannot exceed 16 characters.")]
         public string Label
         {
@@ -275,7 +276,7 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<OutputStreamDeviceAnalog> OutputStreamDeviceAnalogList = new ObservableCollection<OutputStreamDeviceAnalog>();
-                string query = database.ParameterizedQueryString("SELECT NodeID, OutputStreamDeviceID, ID, Label, Type, ScalingValue, LoadOrder, TypeName " +
+                string query = database.ParameterizedQueryString("SELECT NodeID, OutputStreamDeviceID, ID, Label, Type, ScalingValue, LoadOrder " +
                     "FROM OutputStreamDeviceAnalog WHERE OutputStreamDeviceID = {0} ORDER BY LoadOrder", "id");
                 DataTable OutputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamDeviceID);
 
@@ -340,9 +341,9 @@ namespace openPDC.UI.DataModels
         /// Saves <see cref="OutputStreamDeviceAnalog"/> information to database.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="OutputStreamDeviceAnalog">Information about <see cref="OutputStreamDeviceAnalog"/>.</param>        
+        /// <param name="outputStreamDeviceAnalog">Information about <see cref="OutputStreamDeviceAnalog"/>.</param>        
         /// <returns>String, for display use, indicating success.</returns>
-        public static string Save(AdoDataConnection database, OutputStreamDeviceAnalog OutputStreamDeviceAnalog)
+        public static string Save(AdoDataConnection database, OutputStreamDeviceAnalog outputStreamDeviceAnalog)
         {
             bool createdConnection = false;
             string query;
@@ -351,26 +352,34 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                if (OutputStreamDeviceAnalog.ID == 0)
+                if (outputStreamDeviceAnalog.ID == 0)
                 {
                     query = database.ParameterizedQueryString("INSERT INTO OutputStreamDeviceAnalog (NodeID, OutputStreamDeviceID, Label, Type, ScalingValue, LoadOrder, " +
-                        "TypeName, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10})", "nodeID",
-                        "outputStreamDeviceID", "label", "type", "scalingValue", "loadOrder", "typeName", "updatedBy", "updatedOn", "createdBy", "createdOn");
+                        "UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})", "nodeID",
+                        "outputStreamDeviceID", "label", "type", "scalingValue", "loadOrder", "updatedBy", "updatedOn", "createdBy", "createdOn");
 
-                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamDeviceAnalog.NodeID, OutputStreamDeviceAnalog.OutputStreamDeviceID,
-                        OutputStreamDeviceAnalog.Label, OutputStreamDeviceAnalog.Type, OutputStreamDeviceAnalog.ScalingValue, OutputStreamDeviceAnalog.LoadOrder,
-                        OutputStreamDeviceAnalog.TypeName, CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+                    // TypeName, "typeName",
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.CurrentNodeID(), outputStreamDeviceAnalog.OutputStreamDeviceID,
+                        outputStreamDeviceAnalog.Label, outputStreamDeviceAnalog.Type, outputStreamDeviceAnalog.ScalingValue, outputStreamDeviceAnalog.LoadOrder,
+                        CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+
+                    //outputStreamDeviceAnalog.TypeName,
                 }
                 else
                 {
                     query = database.ParameterizedQueryString("UPDATE OutputStreamDeviceAnalog SET NodeID = {0}, OutputStreamDeviceID = {1}, Label = {2}, Type = {3}, " +
-                        "ScalingValue = {4}, LoadOrder = {5},  TypeName= {6}, UpdatedBy = {7}, UpdatedOn = {8} WHERE ID = {9}", "nodeID", "outputStreamDeviceID",
-                        "label", "type", "scalingValue", "loadOrder", "typeName", "updatedBy", "updatedOn", "id");
+                        "ScalingValue = {4}, LoadOrder = {5}, UpdatedBy = {6}, UpdatedOn = {7} WHERE ID = {8}", "nodeID", "outputStreamDeviceID",
+                        "label", "type", "scalingValue", "loadOrder", "updatedBy", "updatedOn", "id");
 
-                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamDeviceAnalog.NodeID, OutputStreamDeviceAnalog.OutputStreamDeviceID,
-                        OutputStreamDeviceAnalog.Label, OutputStreamDeviceAnalog.Type, OutputStreamDeviceAnalog.ScalingValue, OutputStreamDeviceAnalog.LoadOrder,
-                        OutputStreamDeviceAnalog.TypeName, CommonFunctions.CurrentUser, database.UtcNow(), OutputStreamDeviceAnalog.ID);
+                    //   TypeName= {6},  "typeName",
+
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, outputStreamDeviceAnalog.NodeID, outputStreamDeviceAnalog.OutputStreamDeviceID,
+                        outputStreamDeviceAnalog.Label, outputStreamDeviceAnalog.Type, outputStreamDeviceAnalog.ScalingValue, outputStreamDeviceAnalog.LoadOrder,
+                        CommonFunctions.CurrentUser, database.UtcNow(), outputStreamDeviceAnalog.ID);
                 }
+
+                //  OutputStreamDeviceAnalog.TypeName,
 
                 return "OutputStreamDeviceAnalog information saved successfully";
             }

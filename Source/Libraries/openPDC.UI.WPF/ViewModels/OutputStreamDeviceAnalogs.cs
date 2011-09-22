@@ -68,6 +68,18 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        public int OutputStreamDeviceID
+        {
+            get
+            {
+                return m_outputStreamDeviceID;
+            }
+            set
+            {
+                m_outputStreamDeviceID = value;
+            }
+        }
+
         #endregion
 
         #region [ Constructor ]
@@ -75,12 +87,16 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamDeviceAnalogs "/> class.
         /// </summary>
+        /// <param name="outputStreamDeviceID"> ID of the out put stream device to filter data</param>
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         public OutputStreamDeviceAnalogs(int outputStreamDeviceID, int itemsPerPage, bool autoSave = true)
-            : base(itemsPerPage, autoSave)
+            : base(0, autoSave)
         {
             m_outputStreamDeviceID = outputStreamDeviceID;
+            ItemsPerPage = itemsPerPage;
+            Load();
+                        
             m_typeLookupList = new Dictionary<int, string>();
             m_typeLookupList.Add(0, "Single point-on-wave");
             m_typeLookupList.Add(1, "RMS of analog input");
@@ -117,6 +133,7 @@ namespace openPDC.UI.ViewModels
             try
             {
                 ItemsSource = OutputStreamDeviceAnalog.Load(null, m_outputStreamDeviceID);
+                CurrentItem.OutputStreamDeviceID = m_outputStreamDeviceID;
             }
             catch (Exception ex)
             {
@@ -126,6 +143,13 @@ namespace openPDC.UI.ViewModels
                     Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
             }
         }
+
+        public override void Clear()
+        {
+            base.Clear();
+            CurrentItem.OutputStreamDeviceID = m_outputStreamDeviceID;
+        }
+
 
         #endregion
     }
