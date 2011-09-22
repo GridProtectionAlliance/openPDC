@@ -52,6 +52,18 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        public int OutputStreamDeviceID
+        {
+            get
+            {
+                return m_outputStreamDeviceID;
+            }
+             set
+            {
+                m_outputStreamDeviceID = value;
+            }
+        }
+
         #endregion
 
         #region [ Constructor ]
@@ -62,9 +74,11 @@ namespace openPDC.UI.ViewModels
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         public OutputStreamDeviceDigitals(int outputStreamDeviceID, int itemsPerPage, bool autoSave = true)
-            : base(itemsPerPage, autoSave)
+            : base(0, autoSave)
         {
             m_outputStreamDeviceID = outputStreamDeviceID;
+            ItemsPerPage = itemsPerPage;
+            Load();
         }
 
         #endregion
@@ -97,6 +111,7 @@ namespace openPDC.UI.ViewModels
             try
             {
                 ItemsSource = OutputStreamDeviceDigital.Load(null, m_outputStreamDeviceID);
+                CurrentItem.OutputStreamDeviceID = m_outputStreamDeviceID;
             }
             catch (Exception ex)
             {
@@ -105,6 +120,12 @@ namespace openPDC.UI.ViewModels
                 else
                     Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
             }
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            CurrentItem.OutputStreamDeviceID = m_outputStreamDeviceID;
         }
 
         #endregion

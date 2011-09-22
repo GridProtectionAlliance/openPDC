@@ -313,7 +313,7 @@ namespace openPDC.UI.DataModels
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="OutputStreamDeviceDigital">Information about <see cref="OutputStreamDeviceDigital"/>.</param>        
         /// <returns>String, for display use, indicating success.</returns>
-        public static string Save(AdoDataConnection database, OutputStreamDeviceDigital OutputStreamDeviceDigital)
+        public static string Save(AdoDataConnection database, OutputStreamDeviceDigital outputStreamDeviceDigital)
         {
             bool createdConnection = false;
             string query;
@@ -322,14 +322,14 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                if (OutputStreamDeviceDigital.ID == 0)
+                if (outputStreamDeviceDigital.ID == 0)
                 {
                     query = database.ParameterizedQueryString("INSERT INTO OutputStreamDeviceDigital (NodeID, OutputStreamDeviceID, Label, MaskValue, LoadOrder, " +
                         "UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8})", "nodeID", "outputStreamDeviceID", "label",
                         "maskValue", "loadOrder", "updatedBy", "updatedOn", "createdBy", "createdOn");
 
-                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamDeviceDigital.NodeID, OutputStreamDeviceDigital.OutputStreamDeviceID,
-                        OutputStreamDeviceDigital.Label, OutputStreamDeviceDigital.MaskValue, OutputStreamDeviceDigital.LoadOrder, CommonFunctions.CurrentUser,
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.CurrentNodeID(), outputStreamDeviceDigital.OutputStreamDeviceID,
+                        outputStreamDeviceDigital.Label, outputStreamDeviceDigital.MaskValue, outputStreamDeviceDigital.LoadOrder, CommonFunctions.CurrentUser,
                         database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
                 }
                 else
@@ -338,9 +338,9 @@ namespace openPDC.UI.DataModels
                         "LoadOrder = {4}, UpdatedBy = {5}, UpdatedOn = {6} WHERE ID = {7}", "nodeID", "outputStreamDeviceID", "label", "maskValue", "loadOrder", "updatedBy",
                         "updatedOn", "id");
 
-                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, OutputStreamDeviceDigital.NodeID, OutputStreamDeviceDigital.OutputStreamDeviceID,
-                        OutputStreamDeviceDigital.Label, OutputStreamDeviceDigital.MaskValue, OutputStreamDeviceDigital.LoadOrder, CommonFunctions.CurrentUser,
-                        database.UtcNow(), OutputStreamDeviceDigital.ID);
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, outputStreamDeviceDigital.NodeID, outputStreamDeviceDigital.OutputStreamDeviceID,
+                        outputStreamDeviceDigital.Label, outputStreamDeviceDigital.MaskValue, outputStreamDeviceDigital.LoadOrder, CommonFunctions.CurrentUser,
+                        database.UtcNow(), outputStreamDeviceDigital.ID);
                 }
 
                 return "OutputStreamDeviceDigital information saved successfully";
