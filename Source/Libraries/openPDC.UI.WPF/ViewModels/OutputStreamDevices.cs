@@ -36,6 +36,7 @@ using openPDC.UI.DataModels;
 using openPDC.UI.UserControls;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
+using System.Windows.Input;
 
 namespace openPDC.UI.ViewModels
 {
@@ -122,29 +123,47 @@ namespace openPDC.UI.ViewModels
             }
         }
 
-        ///// <summary>
-        ///// Gets <see cref="ICommand"/> object to go to Phasors screen.
-        ///// </summary>
-        //public ICommand PhasorCommand
-        //{
+        /// <summary>
+        /// Gets <see cref="ICommand"/> object to go to Phasors screen.
+        /// </summary>
+        public ICommand PhasorCommand
+        {
+            get
+            {
+                if (m_phasorCommand == null)
+                    m_phasorCommand = new RelayCommand(GoToPhasors);
 
-        //}
+                return m_phasorCommand;
+            }
+        }
 
-        ///// <summary>
-        ///// Gets <see cref="ICommand"/> object to go to Analogs screen.
-        ///// </summary>
-        //public ICommand AnalogCommand
-        //{
+        /// <summary>
+        /// Gets <see cref="ICommand"/> object to go to Analogs screen.
+        /// </summary>
+        public ICommand AnalogCommand
+        {
+            get
+            {
+                if (m_analogCommand == null)
+                    m_analogCommand = new RelayCommand(GoToAnalogs);
 
-        //}
+                return m_analogCommand;
+            }
+        }
 
-        ///// <summary>
-        ///// Gets <see cref="ICommand"/> object to go to Digitals screen.
-        ///// </summary>
-        //public ICommand DigitalCommand
-        //{
+        /// <summary>
+        /// Gets <see cref="ICommand"/> object to go to Digitals screen.
+        /// </summary>
+        public ICommand DigitalCommand
+        {
+            get
+            {
+                if (m_digitalCommand == null)
+                    m_digitalCommand = new RelayCommand(GoToDigitals);
 
-        //}
+                return m_digitalCommand;
+            }
+        }
 
         /// <summary>
         /// Gets flag that determines if <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/> is a new record.

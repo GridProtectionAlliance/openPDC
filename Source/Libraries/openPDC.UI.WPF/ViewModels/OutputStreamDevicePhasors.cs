@@ -82,6 +82,18 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        public int OutputStreamDeviceID
+        {
+            get
+            {
+                return m_outputStreamDeviceID;
+            }
+            set
+            {
+                m_outputStreamDeviceID = value;
+            }
+        }
+
         #endregion
 
         #region [ Constructor ]
@@ -89,12 +101,16 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamDevicePhasors "/> class.
         /// </summary>
+        /// <param name="outputStreamDeviceID">ID of the output stream device to filter data.</param>
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         public OutputStreamDevicePhasors(int outputStreamDeviceID, int itemsPerPage, bool autoSave = true)
-            : base(itemsPerPage, autoSave)
+            : base(0, autoSave)
         {
-            m_outputStreamDeviceID = outputStreamDeviceID;
+            ItemsPerPage = itemsPerPage;
+            OutputStreamDeviceID = outputStreamDeviceID;
+            Load();
+                        
             m_phaseLookupList = new Dictionary<string, string>();
             m_phaseLookupList.Add("+", "Positive Sequence");
             m_phaseLookupList.Add("-", "Negative Sequence");
@@ -138,6 +154,7 @@ namespace openPDC.UI.ViewModels
             try
             {
                 ItemsSource = OutputStreamDevicePhasor.Load(null, m_outputStreamDeviceID);
+                CurrentItem.OutputStreamDeviceID = m_outputStreamDeviceID;
             }
             catch (Exception ex)
             {
@@ -146,6 +163,12 @@ namespace openPDC.UI.ViewModels
                 else
                     Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
             }
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            CurrentItem.OutputStreamDeviceID = m_outputStreamDeviceID;
         }
 
         #endregion
