@@ -225,7 +225,7 @@ namespace openPDC.UI.DataModels
                 resultSet.Tables[1].TableName = "DeviceTable";
 
                 // Get non-statistics Measurements list.
-                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT DeviceID, SignalID, PointID, PointTag, SignalReference, " +
+                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, DeviceID, SignalID, PointID, PointTag, SignalReference, " +
                     "SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym FROM MeasurementDetail WHERE NodeID = {0} AND " +
                     "SignalAcronym <> {1} ORDER BY SignalReference", "nodeID", "signalAcronym"), DefaultTimeout, database.CurrentNodeID(), "STAT").Copy());
 
@@ -276,6 +276,7 @@ namespace openPDC.UI.DataModels
                                                 where measurement.ConvertNullableField<int>("DeviceID") == device.ConvertNullableField<int>("ID")
                                                 select new RealTimeMeasurement()
                                                 {
+                                                    ID = measurement.Field<string>("ID"),
                                                     DeviceID = measurement.ConvertNullableField<int>("DeviceID"),
                                                     SignalID = Guid.Parse(measurement.Field<object>("SignalID").ToString()),
                                                     PointID = measurement.ConvertField<int>("PointID"),

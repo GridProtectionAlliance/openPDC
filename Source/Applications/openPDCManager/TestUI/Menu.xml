@@ -5,6 +5,7 @@
     <SubMenuItems>
       <MenuDataItem Icon="" MenuText="Remote System Console" Description="Remote System Console" Roles="*" UserControlAssembly="TimeSeriesFramework.UI.WPF.dll" UserControlPath="TimeSeriesFramework.UI.UserControls.MonitoringUserControl" />
       <MenuDataItem Icon="" MenuText="Input Status &amp; Monitoring" Description="Input Status Monitor" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.InputStatusMonitorUserControl"/>
+      <MenuDataItem Icon="" MenuText="Real-Time Measurements" Description="Real-Time Measurements" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.RealTimeMeasurementUserControl"/>
     </SubMenuItems>
   </MenuDataItem>
   <MenuDataItem Icon="" MenuText="Devices" Description="" Roles="*" UserControlAssembly="" UserControlPath="">

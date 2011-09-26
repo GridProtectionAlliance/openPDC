@@ -129,10 +129,10 @@ namespace openPDC.UI.UserControls
             TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("InputMonitoringPoints", m_selectedSignalIDs);
         }
 
-        /// <summary>
+        // <summary>
         /// Handles loaded event.
         /// </summary>
-        /// <param name="sender">Source of the event.</param>
+        // <param name="sender">Source of the event.</param>
         /// <param name="e">Event arguments.</param>
         private void InputStatusMonitorUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {

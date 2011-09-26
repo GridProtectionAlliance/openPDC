@@ -90,6 +90,9 @@ namespace TestUI
             }
         }
 
+        /// <summary>
+        /// Gets title of the application window.
+        /// </summary>
         public string Title
         {
             get

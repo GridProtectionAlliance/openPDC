@@ -195,6 +195,9 @@
     <Compile Include="UserControls\PhasorUserControl.xaml.cs">
       <DependentUpon>PhasorUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\RealTimeMeasurementUserControl.xaml.cs">
+      <DependentUpon>RealTimeMeasurementUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\RealTimeStatisticsUserControl.xaml.cs">
       <DependentUpon>RealTimeStatisticsUserControl.xaml</DependentUpon>
     </Compile>
@@ -301,6 +304,10 @@
     <Page Include="UserControls\PhasorUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\RealTimeMeasurementUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\RealTimeStatisticsUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
