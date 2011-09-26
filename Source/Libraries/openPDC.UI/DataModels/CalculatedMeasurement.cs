@@ -612,7 +612,7 @@ namespace openPDC.UI.DataModels
                         AllowPreemptivePublishing = Convert.ToBoolean(row.Field<object>("AllowPreemptivePublishing")),
                         DownsamplingMethod = row.Field<string>("DownSamplingMethod"),
                         m_nodeName = row.Field<string>("NodeName"),
-                        PerformTimestampReasonabilityCheck = Convert.ToBoolean(row.Field<object>("PerformTimestampReasonabilityCheck"))
+                        PerformTimestampReasonabilityCheck = Convert.ToBoolean(row.Field<object>("PerformTimeReasonabilityCheck"))
                     });
                 }
 

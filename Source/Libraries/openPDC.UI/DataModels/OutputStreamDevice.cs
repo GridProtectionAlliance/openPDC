@@ -32,6 +32,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using TimeSeriesFramework.UI;
+using TimeSeriesFramework.UI.DataModels;
 using TVA.Data;
 
 namespace openPDC.UI.DataModels
@@ -61,6 +62,7 @@ namespace openPDC.UI.DataModels
         private string m_createdBy;
         private DateTime m_updatedOn;
         private string m_updatedBy;
+        private bool m_selected;    //added this for use in output stream device wizard.
 
         #endregion
 
@@ -364,6 +366,23 @@ namespace openPDC.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="OutputStreamDevice"/>'s selected flag.
+        /// </summary>
+        /// <remarks>Used only for output stream device wizard to make <see cref="OutputStreamDevice"/> selectable via checkbox.</remarks>
+        public bool Selected
+        {
+            get
+            {
+                return m_selected;
+            }
+            set
+            {
+                m_selected = value;
+                OnPropertyChanged("Selected");
+            }
+        }
+
         #endregion
 
         #region[static]
@@ -407,7 +426,7 @@ namespace openPDC.UI.DataModels
                         CoordinateFormat = row.Field<string>("CoordinateFormat"),
                         LoadOrder = row.ConvertField<int>("LoadOrder"),
                         Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
-                       m_virtual = Convert.ToBoolean(row.Field<object>("Virtual"))
+                        m_virtual = Convert.ToBoolean(row.Field<object>("Virtual"))
                     });
                 }
 
@@ -473,7 +492,7 @@ namespace openPDC.UI.DataModels
                     query = database.ParameterizedQueryString("INSERT INTO OutputStreamDevice (NodeID, AdapterID, IDCode, Acronym, BpaAcronym, Name, " +
                         "PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, LoadOrder, Enabled, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn)" +
                         "VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15})", "nodeID", "adapterID", "idCode", "acronym",
-                        "bpaAcronym", "name", "phasorDataFormat", "frequencyDataFormat", "analogDataFormat", "coordinateFormat", "loadOrder", "enabled", 
+                        "bpaAcronym", "name", "phasorDataFormat", "frequencyDataFormat", "analogDataFormat", "coordinateFormat", "loadOrder", "enabled",
                         "updatedBy", "updatedOn", "createdBy", "createdOn");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.CurrentNodeID(), outputStreamDevice.AdapterID, outputStreamDevice.IDCode,
@@ -487,12 +506,12 @@ namespace openPDC.UI.DataModels
                     query = database.ParameterizedQueryString("UPDATE OutputStreamDevice SET NodeID = {0}, AdapterID = {1}, IDCode = {2}, Acronym = {3}, BpaAcronym = {4}, " +
                         "Name = {5}, PhasorDataFormat = {6}, FrequencyDataFormat = {7}, AnalogDataFormat = {8}, CoordinateFormat = {9}, LoadOrder = {10}, Enabled = {11}, " +
                         " UpdatedBy = {12}, UpdatedOn = {13} WHERE ID = {14}", "nodeID", "adapterID", "idCode", "acronym", "bpaAcronym", "name",
-                        "phasorDataFormat", "frequencyDataFormat", "analogDataFormat", "coordinateFormat", "loadOrder", "enabled",  "updatedBy", "updatedOn", "id");
+                        "phasorDataFormat", "frequencyDataFormat", "analogDataFormat", "coordinateFormat", "loadOrder", "enabled", "updatedBy", "updatedOn", "id");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout, outputStreamDevice.NodeID, outputStreamDevice.AdapterID, outputStreamDevice.IDCode,
                         outputStreamDevice.Acronym, outputStreamDevice.BpaAcronym.ToNotNull(), outputStreamDevice.Name, outputStreamDevice.PhasorDataFormat.ToNotNull(),
                         outputStreamDevice.FrequencyDataFormat.ToNotNull(), outputStreamDevice.AnalogDataFormat.ToNotNull(), outputStreamDevice.CoordinateFormat.ToNotNull(),
-                        outputStreamDevice.LoadOrder, database.Bool(outputStreamDevice.Enabled),  CommonFunctions.CurrentUser,
+                        outputStreamDevice.LoadOrder, database.Bool(outputStreamDevice.Enabled), CommonFunctions.CurrentUser,
                         database.UtcNow(), outputStreamDevice.ID);
                 }
 
@@ -509,9 +528,10 @@ namespace openPDC.UI.DataModels
         /// Deletes specified <see cref="OutputStreamDevice"/> record from database.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="OutputStreamDeviceID">ID of the record to be deleted.</param>
+        /// <param name="outputStreamID">ID of the output stream to filter data.</param>
+        /// <param name="outputStreamDeviceAcronym">ID of the record to be deleted.</param>
         /// <returns>String, for display use, indicating success.</returns>
-        public static string Delete(AdoDataConnection database, int OutputStreamDeviceID)
+        public static string Delete(AdoDataConnection database, int outputStreamID, string outputStreamDeviceAcronym)
         {
             bool createdConnection = false;
 
@@ -521,8 +541,17 @@ namespace openPDC.UI.DataModels
 
                 // Setup current user context for any delete triggers
                 CommonFunctions.SetCurrentUserContext(database);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamDevice WHERE AdapterID = {0} AND Acronym = {1}", "outputStreamID", "outputStreamDeviceAcronym"), DefaultTimeout, outputStreamID, outputStreamDeviceAcronym);
 
-                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamDevice WHERE ID = {0}", "outputStreamDeviceID"), DefaultTimeout, OutputStreamDeviceID);
+                try
+                {
+                    database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE From OutputStreamMeasurement WHERE AdapterID = {0} AND SignalReference LIKE {1}", "outputStreamID", "outputStreamDeviceAcronym"),
+                        DefaultTimeout, outputStreamID, "%" + outputStreamDeviceAcronym + "%");
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("Failed to delete measurements associated with output stream device.", ex);
+                }
 
                 return "OutputStreamDevice deleted successfully";
             }
@@ -533,6 +562,149 @@ namespace openPDC.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Adds multiple devices to output steam.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamID">ID of the output stream to which devices needs to be added.</param>
+        /// <param name="devices">Collection of devices to be added.</param>
+        /// <param name="addDigitals">Boolean flag indicating if analogs should be added.</param>
+        /// <param name="addAnalogs">Boolean flag indicating if digirals should be added.</param>
+        /// <returns>String, for display use, indicating success.</returns>
+        public static string AddDevices(AdoDataConnection database, int outputStreamID, ObservableCollection<Device> devices, bool addDigitals, bool addAnalogs)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                foreach (Device device in devices)
+                {
+                    OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
+                    outputStreamDevice.NodeID = device.NodeID;
+                    outputStreamDevice.AdapterID = outputStreamID;
+                    outputStreamDevice.Acronym = device.Acronym;
+                    outputStreamDevice.BpaAcronym = string.Empty;
+                    outputStreamDevice.Name = device.Name;
+                    outputStreamDevice.LoadOrder = device.LoadOrder;
+                    outputStreamDevice.Enabled = true;
+                    outputStreamDevice.IDCode = device.AccessID;
+                    Save(database, outputStreamDevice);
+
+                    outputStreamDevice = GetOutputStreamDevice(database, "WHERE Acronym = '" + device.Acronym + "'");
+
+                    if (outputStreamDevice != null)
+                    {
+                        ObservableCollection<Phasor> phasors = Phasor.Load(database, device.ID);
+                        foreach (Phasor phasor in phasors)
+                        {
+                            OutputStreamDevicePhasor outputStreamDevicePhasor = new OutputStreamDevicePhasor();
+                            outputStreamDevicePhasor.NodeID = device.NodeID;
+                            outputStreamDevicePhasor.OutputStreamDeviceID = outputStreamDevice.ID;
+                            outputStreamDevicePhasor.Label = phasor.Label;
+                            outputStreamDevicePhasor.Type = phasor.Type;
+                            outputStreamDevicePhasor.Phase = phasor.Phase;
+                            outputStreamDevicePhasor.LoadOrder = phasor.SourceIndex;
+                            OutputStreamDevicePhasor.Save(database, outputStreamDevicePhasor);
+                        }
+
+                        ObservableCollection<Measurement> measurements = Measurement.Load(database, device.ID);
+                        int analogIndex = 0;
+                        foreach (Measurement measurement in measurements)
+                        {
+                            if (measurement.SignalAcronym != "STAT")
+                            {
+                                OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
+                                outputStreamMeasurement.NodeID = device.NodeID;
+                                outputStreamMeasurement.AdapterID = outputStreamID;
+                                outputStreamMeasurement.HistorianID = measurement.HistorianID;
+                                outputStreamMeasurement.PointID = measurement.PointID;
+                                outputStreamMeasurement.SignalReference = measurement.SignalReference;
+                                OutputStreamMeasurement.Save(database, outputStreamMeasurement);
+
+                                if (addAnalogs && measurement.SignalAcronym == "ALOG")
+                                {
+                                    OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
+                                    outputStreamDeviceAnalog.NodeID = device.NodeID;
+                                    outputStreamDeviceAnalog.OutputStreamDeviceID = device.ID;
+                                    outputStreamDeviceAnalog.Label = device.Acronym.Length > 12 ? device.Acronym.Substring(0, 12) + ":A" + analogIndex.ToString() : device.Acronym + ":A" + analogIndex.ToString(); // measurement.PointTag;                                    
+                                    outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+                                    OutputStreamDeviceAnalog.Save(database, outputStreamDeviceAnalog);
+                                    analogIndex++;
+                                }
+                                else if (addDigitals && measurement.SignalAcronym == "DIGI")
+                                {
+                                    OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
+                                    outputStreamDeviceDigital.NodeID = device.NodeID;
+                                    outputStreamDeviceDigital.OutputStreamDeviceID = device.ID;
+                                    outputStreamDeviceDigital.Label = digitalLabel;     // measurement.PointTag;
+                                    outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
+                                    OutputStreamDeviceDigital.Save(database, outputStreamDeviceDigital);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return "Output Stream Device(s) added successfully!";
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        private static string digitalLabel = "DIGITAL0        DIGITAL1        DIGITAL2        DIGITAL3        DIGITAL4        DIGITAL5        DIGITAL6        DIGITAL7        DIGITAL8        DIGITAL9        DIGITAL10       DIGITAL11       DIGITAL12       DIGITAL13       DIGITAL14       DIGITAL15       ";
+
+        /// <summary>
+        /// Gets output stream device from the database based on where condition provided.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="whereClause">query string to filter data.</param>
+        /// <returns><see cref="OutputStreamDevice"/> information.</returns>
+        public static OutputStreamDevice GetOutputStreamDevice(AdoDataConnection database, string whereClause)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+                DataTable deviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT * FROM OutputStreamDeviceDetail " + whereClause);
+
+                if (deviceTable.Rows.Count == 0)
+                    return null;
+
+                DataRow row = deviceTable.Rows[0];
+
+                OutputStreamDevice device = new OutputStreamDevice()
+                {
+                    NodeID = row.Field<Guid>("NodeID"),
+                    AdapterID = row.ConvertField<int>("AdapterID"),
+                    ID = row.ConvertField<int>("ID"),
+                    IDCode = row.ConvertField<int>("IDCode"),
+                    Acronym = row.Field<string>("Acronym"),
+                    BpaAcronym = row.Field<string>("BpaAcronym"),
+                    Name = row.Field<string>("Name"),
+                    PhasorDataFormat = row.Field<string>("PhasorDataFormat"),
+                    FrequencyDataFormat = row.Field<string>("FrequencyDataFormat"),
+                    AnalogDataFormat = row.Field<string>("AnalogDataFormat"),
+                    CoordinateFormat = row.Field<string>("CoordinateFormat"),
+                    LoadOrder = row.ConvertField<int>("LoadOrder"),
+                    Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
+                    m_virtual = Convert.ToBoolean(row.Field<object>("Virtual"))
+                };
+
+                return device;
+
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
 
         #endregion
 

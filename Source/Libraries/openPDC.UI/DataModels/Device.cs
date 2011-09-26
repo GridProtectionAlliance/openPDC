@@ -32,6 +32,8 @@
 //       Added regular expression validator for Acronym.
 //  05/21/2011 - Mehulbhai P Thakkar
 //       Modified Save method to create or update associated measurements.
+//  09/23/2011 - Mehulbhai P Thakkar
+//       Added static method to retrieve new devices for output stream.
 //
 //******************************************************************************************************
 
@@ -1423,6 +1425,81 @@ namespace openPDC.UI.DataModels
             }
 
             return connectionString;
+        }
+
+        public static ObservableCollection<Device> GetNewDevicesForOutputStream(AdoDataConnection database, int outputStreamID)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                ObservableCollection<Device> deviceList = new ObservableCollection<Device>();
+                DataTable deviceTable;
+                string query;
+
+                query = database.ParameterizedQueryString("SELECT * FROM DeviceDetail WHERE NodeID = {0} AND IsConcentrator = {1} AND Acronym NOT IN "
+                    + "(SELECT Acronym FROM OutputStreamDevice WHERE AdapterID = {2}) ORDER BY Acronym", "nodeID", "isConcentrator", "adapterID");
+                deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), database.Bool(false), outputStreamID);
+
+                foreach (DataRow row in deviceTable.Rows)
+                {
+                    deviceList.Add(new Device()
+                    {
+                        NodeID = database.Guid(row, "NodeID"),
+                        ID = row.ConvertField<int>("ID"),
+                        ParentID = row.ConvertNullableField<int>("ParentID"),
+                        UniqueID = database.Guid(row, "UniqueID"),
+                        Acronym = row.Field<string>("Acronym"),
+                        Name = row.Field<string>("Name"),
+                        IsConcentrator = Convert.ToBoolean(row.Field<object>("IsConcentrator")),
+                        CompanyID = row.ConvertNullableField<int>("CompanyID"),
+                        HistorianID = row.ConvertNullableField<int>("HistorianID"),
+                        AccessID = row.ConvertField<int>("AccessID"),
+                        VendorDeviceID = row.ConvertNullableField<int>("VendorDeviceID"),
+                        ProtocolID = row.ConvertNullableField<int>("ProtocolID"),
+                        Longitude = row.ConvertNullableField<decimal>("Longitude"),
+                        Latitude = row.ConvertNullableField<decimal>("Latitude"),
+                        InterconnectionID = row.ConvertNullableField<int>("InterconnectionID"),
+                        ConnectionString = ParseConnectionString(row.Field<string>("ConnectionString")),
+                        AlternateCommandChannel = ParseAlternateCommand(row.Field<string>("ConnectionString")),
+                        TimeZone = row.Field<string>("TimeZone"),
+                        FramesPerSecond = Convert.ToInt32(row.Field<object>("FramesPerSecond") ?? 30),
+                        TimeAdjustmentTicks = Convert.ToInt64(row.Field<object>("TimeAdjustmentTicks")),
+                        DataLossInterval = row.ConvertField<double>("DataLossInterval"),
+                        ContactList = row.Field<string>("ContactList"),
+                        MeasuredLines = row.ConvertNullableField<int>("MeasuredLines"),
+                        LoadOrder = row.ConvertField<int>("LoadOrder"),
+                        Enabled = false, // We will use enable flag for check boxes on output stream device wizard so that we do not need to add selected flag.
+                        CreatedOn = row.Field<DateTime>("CreatedOn"),
+                        AllowedParsingExceptions = Convert.ToInt32(row.Field<object>("AllowedParsingExceptions")),
+                        ParsingExceptionWindow = row.ConvertField<double>("ParsingExceptionWindow"),
+                        DelayedConnectionInterval = row.ConvertField<double>("DelayedConnectionInterval"),
+                        AllowUseOfCachedConfiguration = Convert.ToBoolean(row.Field<object>("AllowUseOfCachedConfiguration")),
+                        AutoStartDataParsingSequence = Convert.ToBoolean(row.Field<object>("AutoStartDataParsingSequence")),
+                        SkipDisableRealTimeData = Convert.ToBoolean(row.Field<object>("SkipDisableRealTimeData")),
+                        MeasurementReportingInterval = Convert.ToInt32(row.Field<object>("MeasurementReportingInterval")),
+                        ConnectOnDemand = Convert.ToBoolean(row.Field<object>("ConnectOnDemand")),
+                        m_companyName = row.Field<string>("CompanyName"),
+                        m_companyAcronym = row.Field<string>("CompanyAcronym"),
+                        m_historianAcronym = row.Field<string>("HistorianAcronym"),
+                        m_vendorDeviceName = row.Field<string>("VendorDeviceName"),
+                        m_vendorAcronym = row.Field<string>("VendorAcronym"),
+                        m_protocolName = row.Field<string>("ProtocolName"),
+                        m_interconnectionName = row.Field<string>("InterconnectionName"),
+                        m_nodeName = row.Field<string>("NodeName"),
+                        m_parentAcronym = row.Field<string>("ParentAcronym")
+                    });
+                }
+
+                return deviceList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
         }
 
         #endregion

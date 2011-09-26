@@ -465,7 +465,8 @@ namespace openPDCManager.UI.ViewModels
 
         private void LaunchDeviceWizard(object parameter)
         {
-
+            OutputStreamCurrentDeviceUserControl outputStreamCurrentDeviceUserControl = new OutputStreamCurrentDeviceUserControl(CurrentItem.ID, CurrentItem.Acronym);
+            CommonFunctions.LoadUserControl(outputStreamCurrentDeviceUserControl, "Current Devices for " + CurrentItem.Acronym);
         }
 
         private void GoToMeasurements(object parameter)

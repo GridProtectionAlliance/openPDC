@@ -770,7 +770,7 @@ namespace openPDCManager.UI.DataModels
                                                                               VoltageScalingValue = Convert.ToInt32(item.Field<object>("VoltageScalingValue")),
                                                                               AnalogScalingValue = Convert.ToInt32(item.Field<object>("AnalogScalingValue")),
                                                                               DigitalMaskValue = Convert.ToInt32(item.Field<object>("DigitalMaskValue")),
-                                                                              PerformTimestampReasonabilityCheck = Convert.ToBoolean(item.Field<object>("PerformTimestampReasonabilityCheck"))
+                                                                              PerformTimestampReasonabilityCheck = Convert.ToBoolean(item.Field<object>("PerformTimeReasonabilityCheck"))
                                                                           });
                 return outputStreamList;
 

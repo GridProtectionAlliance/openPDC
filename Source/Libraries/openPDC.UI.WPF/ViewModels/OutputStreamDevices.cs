@@ -234,10 +234,44 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Creates new instance of <see cref="OutputStreamDevice"/> and assigns it to CurrentItem.
+        /// </summary>
         public override void Clear()
         {
             base.Clear();
             CurrentItem.AdapterID = m_outputStreamID;
+        }
+
+        /// <summary>
+        /// Deletes <see cref="OutputStreamDevice"/>.
+        /// </summary>
+        public override void Delete()
+        {
+            //base.Delete();
+            if (CanDelete && Confirm("Are you sure you want to delete \'" + GetCurrentItemName() + "\'?", "Delete " + DataModelName))
+            {
+                try
+                {
+                    if (OnBeforeDeleteCanceled())
+                        throw new OperationCanceledException("Delete was canceled.");
+
+                    string result = OutputStreamDevice.Delete(null, m_outputStreamID, CurrentItem.Acronym);
+
+                    OnDeleted();
+
+                    Load();
+
+                    Popup(result, "Delete " + DataModelName, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException != null)
+                        Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Delete " + DataModelName + " Exception:", MessageBoxImage.Error);
+                    else
+                        Popup(ex.Message, "Delete " + DataModelName + " Exception:", MessageBoxImage.Error);
+                }
+            }
         }
 
         /// <summary>
