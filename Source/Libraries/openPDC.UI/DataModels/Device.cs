@@ -1244,7 +1244,7 @@ namespace openPDC.UI.DataModels
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Device information saved successfully. Failed to send Initialize command to backend service." + Environment.NewLine + ex.Message);
+                    return "Device information saved successfully. Failed to send Initialize command to backend service." + Environment.NewLine + ex.Message;
                 }
 
                 return "Device information saved successfully";
@@ -1427,6 +1427,12 @@ namespace openPDC.UI.DataModels
             return connectionString;
         }
 
+        /// <summary>
+        /// Retrieves devices for output stream.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamID">ID of the output stream to filter out devices that already exist.</param>
+        /// <returns>Collection of <see cref="Device"/>.</returns>
         public static ObservableCollection<Device> GetNewDevicesForOutputStream(AdoDataConnection database, int outputStreamID)
         {
             bool createdConnection = false;

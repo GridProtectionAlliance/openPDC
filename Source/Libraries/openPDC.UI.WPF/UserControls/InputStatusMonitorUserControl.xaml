@@ -167,7 +167,7 @@
                 </HierarchicalDataTemplate>
                 
                 <Style x:Key="ExpandedItemStyle" TargetType="TreeViewItem">
-                    <Setter Property="IsExpanded" Value="{tsfBinding:Column Path=DataContext.Expanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}"/>
+                    <Setter Property="IsExpanded" Value="{tsfBinding:Column Path=Expanded}"/>
                 </Style>
                 
             </StackPanel.Resources>
