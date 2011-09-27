@@ -402,7 +402,11 @@ namespace TVA.PhasorProtocols
         /// If a <see cref="IConfigurationFrame"/> has been parsed, this will return a reference to the parsed frame.  Consumer can manually assign a
         /// <see cref="IConfigurationFrame"/> to start parsing data if one has not been encountered in the stream.
         /// </remarks>
-        public abstract IConfigurationFrame ConfigurationFrame { get; set; }
+        public abstract IConfigurationFrame ConfigurationFrame
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets any connection specific <see cref="IConnectionParameters"/> that may be needed for parsing.
@@ -427,24 +431,24 @@ namespace TVA.PhasorProtocols
             get
             {
                 StringBuilder status = new StringBuilder();
+
                 status.Append(base.Status);
                 status.Append("     Received config frame: ");
                 status.Append(ConfigurationFrame == null ? "No" : "Yes");
                 status.AppendLine();
+
                 if (ConfigurationFrame != null)
                 {
                     status.Append("   Devices in config frame: ");
                     status.Append(ConfigurationFrame.Cells.Count);
                     status.Append(" total - ");
                     status.AppendLine();
-                    for (int x = 0; x < ConfigurationFrame.Cells.Count; x++)
+
+                    foreach (IConfigurationCell cell in ConfigurationFrame.Cells)
                     {
-                        status.Append("               (");
-                        status.Append(ConfigurationFrame.Cells[x].IDCode);
-                        status.Append(") ");
-                        status.Append(ConfigurationFrame.Cells[x].StationName);
-                        status.AppendLine();
+                        status.AppendFormat("               ({0:00000}) {1}{2}\r\n", cell.IDCode, cell.StationName.PadRight(16), string.IsNullOrEmpty(cell.IDLabel) ? "" : string.Format(" [{0}]", cell.IDLabel));
                     }
+
                     status.Append("     Configured frame rate: ");
                     status.Append(ConfigurationFrame.FrameRate);
                     status.AppendLine();
