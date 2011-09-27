@@ -368,6 +368,7 @@ namespace openPDC.UI.DataModels
         ///  Gets or sets <see cref="Device"/> Latitude.
         /// </summary>
         // Because of database design, no validation attributes are applied.
+        [RegularExpression(@"^[-]?([0-9]{1,3})?([.][0-9]{1,2})?$", ErrorMessage = "Invalid value. Please provide value in decimal(9,6) format.")]
         public decimal? Latitude
         {
             get
