@@ -180,6 +180,7 @@
                         IsEnabled="{Binding Path=DataContext.IsNewRecord, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}, Converter={StaticResource NotConverter}}"/>
             </StackPanel>
 
+            <CheckBox Content="Connect On Demand" IsChecked="{tsfBinding:Column Path=ConnectOnDemand}" Grid.Row="12" Grid.Column="2"/>
             <CheckBox Content="Enabled" IsChecked="{tsfBinding:Column Path=Enabled}" Grid.Row="12" Grid.Column="3"/>
 
         </Grid>

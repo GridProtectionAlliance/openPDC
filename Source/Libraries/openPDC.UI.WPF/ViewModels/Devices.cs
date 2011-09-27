@@ -98,7 +98,7 @@ namespace openPDC.UI.ViewModels
             get
             {
                 if (m_buildConnectionStringCommand == null)
-                    m_buildConnectionStringCommand = new RelayCommand(BuildConnectionString, () => CanSave);
+                    m_buildConnectionStringCommand = new RelayCommand(BuildConnectionString);
 
                 return m_buildConnectionStringCommand;
             }
@@ -112,7 +112,7 @@ namespace openPDC.UI.ViewModels
             get
             {
                 if (m_buildAlternateCommandChannelCommand == null)
-                    m_buildAlternateCommandChannelCommand = new RelayCommand(BuildAlternateCommandChannel, () => CanSave);
+                    m_buildAlternateCommandChannelCommand = new RelayCommand(BuildAlternateCommandChannel);
 
                 return m_buildAlternateCommandChannelCommand;
             }
