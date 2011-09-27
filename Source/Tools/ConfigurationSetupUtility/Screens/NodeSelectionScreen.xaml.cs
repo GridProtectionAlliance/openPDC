@@ -214,8 +214,12 @@ namespace ConfigurationSetupUtility.Screens
                     return GetAccessDatabaseConnection();
                 else if (databaseType == "sql server")
                     return GetSqlServerConnection();
-                else
+                else if (databaseType == "mysql")
                     return GetMySqlConnection();
+                else if (databaseType == "oracle")
+                    return GetOracleConnection();
+                else
+                    return GetSqliteDatabaseConnection();
             }
         }
 
@@ -240,6 +244,24 @@ namespace ConfigurationSetupUtility.Screens
             MySqlSetup sqlSetup = m_state["mySqlSetup"] as MySqlSetup;
             string connectionString = (sqlSetup == null) ? null : sqlSetup.ConnectionString;
             string dataProviderString = m_state["mySqlDataProviderString"].ToString();
+            return GetConnection(connectionString, dataProviderString);
+        }
+
+        // Gets a database connection to the Oracle database configured earlier in the setup.
+        private IDbConnection GetOracleConnection()
+        {
+            OracleSetup oracleSetup = m_state["oracleSetup"] as OracleSetup;
+            string connectionString = (oracleSetup == null) ? null : oracleSetup.ConnectionString;
+            string dataProviderString = (oracleSetup == null) ? OracleSetup.DefaultDataProviderString : oracleSetup.DataProviderString;
+            return GetConnection(connectionString, dataProviderString);
+        }
+
+        // Gets a database connection to the Access database configured earlier in the setup.
+        private IDbConnection GetSqliteDatabaseConnection()
+        {
+            string databaseFileName = m_state["sqliteDatabaseFilePath"].ToString();
+            string connectionString = "Data Source=" + databaseFileName + "; Version=3";
+            string dataProviderString = "AssemblyName={System.Data.SQLite, Version=1.0.74.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139}; ConnectionType=System.Data.SQLite.SQLiteConnection; AdapterType=System.Data.SQLite.SQLiteDataAdapter";
             return GetConnection(connectionString, dataProviderString);
         }
 

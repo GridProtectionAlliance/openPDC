@@ -359,6 +359,15 @@ namespace ConfigurationSetupUtility.Screens
                     if (string.IsNullOrWhiteSpace(dataProviderString))
                         dataProviderString = "AssemblyName={MySql.Data, Version=6.3.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
                 }
+                else if (databaseType == "oracle")
+                {
+                    OracleSetup oracleSetup = m_state["oracleSetup"] as OracleSetup;
+                    connectionString = oracleSetup.ConnectionString;
+                    dataProviderString = oracleSetup.DataProviderString;
+
+                    if (string.IsNullOrWhiteSpace(dataProviderString))
+                        dataProviderString = OracleSetup.DefaultDataProviderString;
+                }
                 else
                 {
                     string destination = m_state["sqliteDatabaseFilePath"].ToString();

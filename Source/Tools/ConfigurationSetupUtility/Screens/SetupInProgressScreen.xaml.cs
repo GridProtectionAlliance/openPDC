@@ -224,6 +224,8 @@ namespace ConfigurationSetupUtility.Screens
                 SetUpSqlServerDatabase();
             else if (databaseType == "mysql")
                 SetUpMySqlDatabase();
+            else if (databaseType == "oracle")
+                SetUpOracleDatabase();
             else
                 SetUpSqliteDatabase();
         }
@@ -571,6 +573,124 @@ namespace ConfigurationSetupUtility.Screens
             }
         }
 
+        // Called when the user has asked to set up an Oracle database.
+        private void SetUpOracleDatabase()
+        {
+            OracleSetup oracleSetup = null;
+
+            try
+            {
+                bool existing = Convert.ToBoolean(m_state["existing"]);
+                bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+                string adminUserName, adminPassword;
+                string dataProviderString = null;
+
+                oracleSetup = m_state["oracleSetup"] as OracleSetup;
+                m_state["newOleDbConnectionString"] = oracleSetup.OleDbConnectionString;
+                adminUserName = oracleSetup.AdminUserName;
+                adminPassword = oracleSetup.AdminPassword;
+
+                // Get user customized data provider string
+                dataProviderString = oracleSetup.DataProviderString;
+
+                if (string.IsNullOrWhiteSpace(dataProviderString))
+                    dataProviderString = OracleSetup.DefaultDataProviderString;
+
+                if (!existing || migrate)
+                {
+                    if (!oracleSetup.CreateNewSchema || !CheckIfDatabaseExists(oracleSetup.ConnectionString, dataProviderString, oracleSetup.SchemaUserName))
+                    {
+                        IDbConnection dbConnection = null;
+                        List<string> scriptNames = new List<string>();
+                        bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
+                        bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
+                        bool enableAuditLog = Convert.ToBoolean(m_state["enableAuditLog"]);
+                        bool createNewSchema = oracleSetup.CreateNewSchema;
+                        int progress = 0;
+
+                        // Determine which scripts need to be run.
+                        scriptNames.Add("openPG.sql");
+                        if (initialDataScript)
+                        {
+                            scriptNames.Add("InitialDataSet.sql");
+                            if (sampleDataScript)
+                                scriptNames.Add("SampleDataSet.sql");
+                        }
+
+                        if (enableAuditLog)
+                            scriptNames.Add("AuditLog.sql");
+
+                        // Create new Oracle database user.
+                        if (createNewSchema)
+                        {
+                            string user = oracleSetup.SchemaUserName;
+
+                            AppendStatusMessage(string.Format("Attempting to create new user {0}...", user));
+                            oracleSetup.ExecuteStatement(string.Format("CREATE TABLESPACE {0}_TS DATAFILE '{0}.dbf' SIZE 20M AUTOEXTEND ON", user));
+                            oracleSetup.ExecuteStatement(string.Format("CREATE USER {0} IDENTIFIED BY {1} DEFAULT TABLESPACE {0}_TS", user, oracleSetup.SchemaPassword));
+                            oracleSetup.ExecuteStatement(string.Format("GRANT UNLIMITED TABLESPACE TO {0}", user));
+                            oracleSetup.ExecuteStatement(string.Format("GRANT CREATE SESSION TO {0}", user));
+
+                            UpdateProgressBar(8);
+                            AppendStatusMessage("New database user created successfully.");
+                            AppendStatusMessage(string.Empty);
+                        }
+
+                        try
+                        {
+                            oracleSetup.OpenAdminConnection(ref dbConnection);
+                            oracleSetup.ExecuteStatement(dbConnection, string.Format("ALTER SESSION SET CURRENT_SCHEMA = {0}", oracleSetup.SchemaUserName));
+
+                            foreach (string scriptName in scriptNames)
+                            {
+                                string scriptPath = Directory.GetCurrentDirectory() + "\\Database scripts\\Oracle\\" + scriptName;
+                                AppendStatusMessage(string.Format("Attempting to run {0} script...", scriptName));
+                                oracleSetup.ExecuteScript(dbConnection, scriptPath);
+                                progress += 90 / scriptNames.Count;
+                                UpdateProgressBar(progress);
+                                AppendStatusMessage(string.Format("{0} ran successfully.", scriptName));
+                                AppendStatusMessage(string.Empty);
+                            }
+                        }
+                        finally
+                        {
+                            if ((object)dbConnection != null)
+                                dbConnection.Dispose();
+                        }
+
+                        // Set up the initial historian.
+                        if (Convert.ToBoolean(m_state["setupHistorian"]))
+                            SetUpInitialHistorian(oracleSetup.ConnectionString, dataProviderString);
+
+                        if (!migrate)
+                            SetupAdminUserCredentials(oracleSetup.ConnectionString, dataProviderString);
+                    }
+                    else
+                    {
+                        this.CanGoBack = true;
+                        ScreenManager sm = m_state["screenManager"] as ScreenManager;
+                        this.Dispatcher.Invoke((Action)delegate()
+                        {
+                            while (!(sm.CurrentScreen is SqlServerDatabaseSetupScreen))
+                                sm.GoToPreviousScreen();
+                        });
+                    }
+                }
+
+                // Modify the openPG configuration file.
+                string connectionString = oracleSetup.ConnectionString;
+                ModifyConfigFiles(connectionString, dataProviderString, oracleSetup.EncryptConnectionString);
+                SaveOldConnectionString();
+
+                OnSetupSucceeded();
+            }
+            catch (Exception ex)
+            {
+                AppendStatusMessage(ex.Message);
+                OnSetupFailed();
+            }
+        }
+
         // Called when the user has asked to set up a SQLite database.
         private void SetUpSqliteDatabase()
         {
@@ -667,6 +787,8 @@ namespace ConfigurationSetupUtility.Screens
 
                     if (m_state["databaseType"].ToString() == "sql server")
                         command.CommandText = string.Format("SELECT COUNT(*) FROM sys.databases WHERE name = '{0}'", databaseName);
+                    else if (m_state["databaseType"].ToString() == "oracle")
+                        command.CommandText = string.Format("SELECT COUNT(*) FROM all_users WHERE USERNAME = '{0}'", databaseName.ToUpper());
                     else
                         command.CommandText = string.Format("SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}'", databaseName);
 
@@ -708,6 +830,21 @@ namespace ConfigurationSetupUtility.Screens
                                 AppendStatusMessage(string.Format("Dropped database {0} successfully.", databaseName));
 
                             sqlServerSetup.DatabaseName = databaseName;
+                        }
+                        else if (m_state["databaseType"].ToString() == "oracle")
+                        {
+                            OracleSetup oracleSetup = m_state["oracleSetup"] as OracleSetup;
+
+                            try
+                            {
+                                oracleSetup.ExecuteStatement(string.Format("DROP USER {0} CASCADE", databaseName));
+                                oracleSetup.ExecuteStatement(string.Format("DROP TABLESPACE {0}_TS", databaseName));
+                                AppendStatusMessage(string.Format("Dropped database {0} successfully.", databaseName));
+                            }
+                            catch
+                            {
+                                MessageBox.Show(string.Format("Failed to delete database {0}", databaseName), "Delete Database Failed");
+                            }
                         }
                         else
                         {

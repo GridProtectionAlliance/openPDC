@@ -123,6 +123,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="OracleSetup.cs" />
     <Compile Include="Screens\AccessDatabaseSetupScreen.xaml.cs">
       <DependentUpon>AccessDatabaseSetupScreen.xaml</DependentUpon>
     </Compile>
@@ -134,6 +135,9 @@
     </Compile>
     <Compile Include="Screens\ConfigurationTypeScreen.xaml.cs">
       <DependentUpon>ConfigurationTypeScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\OracleDatabaseSetupScreen.xaml.cs">
+      <DependentUpon>OracleDatabaseSetupScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="Screens\SqliteDatabaseSetupScreen.xaml.cs">
       <DependentUpon>SqliteDatabaseSetupScreen.xaml</DependentUpon>
@@ -206,6 +210,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Screens\ConfigurationTypeScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\OracleDatabaseSetupScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

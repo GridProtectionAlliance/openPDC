@@ -49,6 +49,7 @@ namespace ConfigurationSetupUtility.Screens
         private AccessDatabaseSetupScreen m_accessDatabaseSetupScreen;
         private SqlServerDatabaseSetupScreen m_sqlServerDatabaseSetupScreen;
         private MySqlDatabaseSetupScreen m_mySqlDatabaseSetupScreen;
+        private OracleDatabaseSetupScreen m_oracleDatabaseSetupScreen;
         private SqliteDatabaseSetupScreen m_sqliteDatabaseSetupScreen;
         private Dictionary<string, object> m_state;
         private bool m_sampleScriptChanged;
@@ -88,6 +89,8 @@ namespace ConfigurationSetupUtility.Screens
                     return m_sqlServerDatabaseSetupScreen;
                 else if (databaseType == "mysql")
                     return m_mySqlDatabaseSetupScreen;
+                else if (databaseType == "oracle")
+                    return m_oracleDatabaseSetupScreen;
                 else
                     return m_sqliteDatabaseSetupScreen;
             }
@@ -300,6 +303,7 @@ namespace ConfigurationSetupUtility.Screens
             m_accessDatabaseSetupScreen = new AccessDatabaseSetupScreen();
             m_sqlServerDatabaseSetupScreen = new SqlServerDatabaseSetupScreen();
             m_mySqlDatabaseSetupScreen = new MySqlDatabaseSetupScreen();
+            m_oracleDatabaseSetupScreen = new OracleDatabaseSetupScreen();
             m_sqliteDatabaseSetupScreen = new SqliteDatabaseSetupScreen();
         }
 
@@ -348,6 +352,25 @@ namespace ConfigurationSetupUtility.Screens
             {
                 // Make it visible for MySQL database
                 ManageEnableAuditLogCheckBox();
+                if (!m_enableAuditLogChanged)
+                    m_enableAuditLogCheckBox.IsChecked = false;
+            }
+        }
+
+        // Occurs when the user chooses to set up a Oracle database.
+        private void OracleRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (m_state != null)
+                m_state["databaseType"] = "oracle";
+
+            if (!m_sampleScriptChanged && m_sampleDataScriptCheckBox != null)
+                m_sampleDataScriptCheckBox.IsChecked = false;
+
+            if (m_enableAuditLogCheckBox != null)
+            {
+                //Make it visible for Oracle database.
+                ManageEnableAuditLogCheckBox();
+
                 if (!m_enableAuditLogChanged)
                     m_enableAuditLogCheckBox.IsChecked = false;
             }
