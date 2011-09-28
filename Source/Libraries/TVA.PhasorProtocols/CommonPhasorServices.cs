@@ -1065,26 +1065,26 @@ namespace TVA.PhasorProtocols
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating signal types..."));
 
                 // Validate that the acronym for status flags is FLAG (it was STAT in prior versions)
-                if (connection.ExecuteScalar("SELECT Acronym FROM SignalType WHERE Suffix='SF';").ToNonNullString().ToUpper() == "STAT")
-                    connection.ExecuteNonQuery("UPDATE SignalType SET Acronym='FLAG' WHERE Suffix='SF';");
+                if (connection.ExecuteScalar("SELECT Acronym FROM SignalType WHERE Suffix='SF'").ToNonNullString().ToUpper() == "STAT")
+                    connection.ExecuteNonQuery("UPDATE SignalType SET Acronym='FLAG' WHERE Suffix='SF'");
 
                 // Validate that the calculation and statistic signal types are defined (they did not in initial release)
-                if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='CALC';")) == 0)
-                    connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Calculated Value', 'CALC', 'CV', 'C', 'PMU', '');");
+                if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='CALC'")) == 0)
+                    connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Calculated Value', 'CALC', 'CV', 'C', 'PMU', '')");
 
-                if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='STAT';")) == 0)
-                    connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Statistic', 'STAT', 'ST', 'P', 'Any', '');");
+                if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType WHERE Acronym='STAT'")) == 0)
+                    connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Statistic', 'STAT', 'ST', 'P', 'Any', '')");
 
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating output stream device ID codes..."));
 
                 // Validate all ID codes for output stream devices are not set their default value
-                connection.ExecuteNonQuery("UPDATE OutputStreamDevice SET IDCode=ID WHERE IDCode=0;");
+                connection.ExecuteNonQuery("UPDATE OutputStreamDevice SET IDCode=ID WHERE IDCode=0");
 
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Verifying statistics archive exists..."));
 
                 // Validate that the statistics historian exists
-                if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Historian WHERE Acronym='STAT' AND NodeID={0};", nodeIDQueryString))) == 0)
-                    connection.ExecuteNonQuery(string.Format("INSERT INTO Historian(NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) VALUES({0}, 'STAT', 'Statistics Archive', 'HistorianAdapters.dll', 'HistorianAdapters.LocalOutputAdapter', '', 1, 'Local historian used to archive system statistics', 9999, 1);", nodeIDQueryString));
+                if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Historian WHERE Acronym='STAT' AND NodeID={0}", nodeIDQueryString))) == 0)
+                    connection.ExecuteNonQuery(string.Format("INSERT INTO Historian(NodeID, Acronym, Name, AssemblyName, TypeName, ConnectionString, IsLocal, Description, LoadOrder, Enabled) VALUES({0}, 'STAT', 'Statistics Archive', 'HistorianAdapters.dll', 'HistorianAdapters.LocalOutputAdapter', '', 1, 'Local historian used to archive system statistics', 9999, 1)", nodeIDQueryString));
 
                 // Make sure statistics path exists to hold historian files
                 string statisticsPath = FilePath.GetAbsolutePath(FilePath.AddPathSuffix("Statistics"));
@@ -1134,12 +1134,12 @@ namespace TVA.PhasorProtocols
                 configFile.Save();
 
                 // Get the needed statistic related IDs
-                int statSignalTypeID = Convert.ToInt32(connection.ExecuteScalar("SELECT ID FROM SignalType WHERE Acronym='STAT';"));
-                int statHistorianID = Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT ID FROM Historian WHERE Acronym='STAT' AND NodeID={0};", nodeIDQueryString)));
-                object nodeCompanyID = connection.ExecuteScalar(string.Format("SELECT CompanyID FROM Node WHERE ID={0};", nodeIDQueryString));
+                int statSignalTypeID = Convert.ToInt32(connection.ExecuteScalar("SELECT ID FROM SignalType WHERE Acronym='STAT'"));
+                int statHistorianID = Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT ID FROM Historian WHERE Acronym='STAT' AND NodeID={0}", nodeIDQueryString)));
+                object nodeCompanyID = connection.ExecuteScalar(string.Format("SELECT CompanyID FROM Node WHERE ID={0}", nodeIDQueryString));
 
                 // Load the defined system statistics
-                IEnumerable<DataRow> statistics = connection.RetrieveData(adapterType, "SELECT * FROM Statistic ORDER BY Source, SignalIndex;").AsEnumerable();
+                IEnumerable<DataRow> statistics = connection.RetrieveData(adapterType, "SELECT * FROM Statistic ORDER BY Source, SignalIndex").AsEnumerable();
 
                 // Filter statistics to device, input stream and output stream types            
                 IEnumerable<DataRow> deviceStatistics = statistics.Where(row => string.Compare(row.Field<string>("Source"), "Device", true) == 0);
@@ -1156,7 +1156,7 @@ namespace TVA.PhasorProtocols
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating device measurements..."));
 
                 // Make sure needed device statistic measurements exist
-                foreach (DataRow device in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE IsConcentrator = 0 AND NodeID = {0};", nodeIDQueryString)).Rows)
+                foreach (DataRow device in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE IsConcentrator = 0 AND NodeID = {0}", nodeIDQueryString)).Rows)
                 {
                     foreach (DataRow statistic in deviceStatistics)
                     {
@@ -1164,13 +1164,13 @@ namespace TVA.PhasorProtocols
                         signalIndex = statistic.ConvertField<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
-                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
+                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1}", signalReference, statHistorianID))) == 0)
                         {
-                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", device.ConvertNullableField<int>("CompanyID") ?? 0));
+                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0}", device.ConvertNullableField<int>("CompanyID") ?? 0));
                             if (string.IsNullOrEmpty(company))
                                 company = configFile.Settings["systemSettings"]["CompanyAcronym"].Value.TruncateRight(3);
 
-                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", device.ConvertNullableField<int>("VendorDeviceID") ?? 0));
+                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0}", device.ConvertNullableField<int>("VendorDeviceID") ?? 0));
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", device.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
@@ -1189,7 +1189,7 @@ namespace TVA.PhasorProtocols
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating input stream measurements..."));
 
                 // Make sure needed input stream statistic measurements exist
-                foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE ((IsConcentrator <> 0) OR (IsConcentrator = 0 AND ParentID IS NULL)) AND (NodeID = {0});", nodeIDQueryString)).Rows)
+                foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE ((IsConcentrator <> 0) OR (IsConcentrator = 0 AND ParentID IS NULL)) AND (NodeID = {0})", nodeIDQueryString)).Rows)
                 {
                     foreach (DataRow statistic in inputStreamStatistics)
                     {
@@ -1197,13 +1197,13 @@ namespace TVA.PhasorProtocols
                         signalIndex = statistic.ConvertField<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
-                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
+                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1}", signalReference, statHistorianID))) == 0)
                         {
-                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", inputStream.ConvertNullableField<int>("CompanyID") ?? 0));
+                            company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0}", inputStream.ConvertNullableField<int>("CompanyID") ?? 0));
                             if (string.IsNullOrEmpty(company))
                                 company = configFile.Settings["systemSettings"]["CompanyAcronym"].Value.TruncateRight(3);
 
-                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0};", inputStream.ConvertNullableField<int>("VendorDeviceID") ?? 0)); // Modified to retrieve VendorDeviceID into Nullable of Int as it is not a required field.
+                            vendorDevice = (string)connection.ExecuteScalar(string.Format("SELECT Name FROM VendorDevice WHERE ID={0}", inputStream.ConvertNullableField<int>("VendorDeviceID") ?? 0)); // Modified to retrieve VendorDeviceID into Nullable of Int as it is not a required field.
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} {1} Statistic for {2}", inputStream.Field<string>("Name"), vendorDevice, statistic.Field<string>("Description"));
 
@@ -1221,7 +1221,7 @@ namespace TVA.PhasorProtocols
 
                 // Make sure devices associated with a concentrator do not have any extraneous input stream statistic measurements - this can happen
                 // when a device was once a direct connect device but now is part of a concentrator...
-                foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE (IsConcentrator = 0 AND ParentID IS NOT NULL) AND (NodeID = {0});", nodeIDQueryString)).Rows)
+                foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE (IsConcentrator = 0 AND ParentID IS NOT NULL) AND (NodeID = {0})", nodeIDQueryString)).Rows)
                 {
                     foreach (DataRow statistic in inputStreamStatistics)
                     {
@@ -1229,14 +1229,14 @@ namespace TVA.PhasorProtocols
                         signalIndex = statistic.ConvertField<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
-                        connection.ExecuteNonQuery(string.Format("DELETE FROM Measurement WHERE SignalReference = '{0}';", signalReference));
+                        connection.ExecuteNonQuery(string.Format("DELETE FROM Measurement WHERE SignalReference = '{0}'", signalReference));
                     }
                 }
 
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating output stream measurements..."));
 
                 // Make sure needed output stream statistic measurements exist
-                foreach (DataRow outputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStream WHERE NodeID = {0};", nodeIDQueryString)).Rows)
+                foreach (DataRow outputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStream WHERE NodeID = {0}", nodeIDQueryString)).Rows)
                 {
                     adapterID = outputStream.ConvertField<int>("ID");
                     acronym = outputStream.Field<string>("Acronym") + "!OS";
@@ -1246,12 +1246,12 @@ namespace TVA.PhasorProtocols
                         signalIndex = statistic.ConvertField<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
-                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1};", signalReference, statHistorianID))) == 0)
+                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1}", signalReference, statHistorianID))) == 0)
                         {
                             if (nodeCompanyID is DBNull)
                                 company = configFile.Settings["systemSettings"]["CompanyAcronym"].Value.TruncateRight(3);
                             else
-                                company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0};", nodeCompanyID));
+                                company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0}", nodeCompanyID));
 
                             pointTag = string.Format("{0}_{1}:ST{2}", company, acronym, signalIndex);
                             description = string.Format("{0} Statistic for {1}", outputStream.Field<string>("Name"), statistic.Field<string>("Description"));
@@ -1268,10 +1268,10 @@ namespace TVA.PhasorProtocols
                     }
 
                     // Load devices associated with this output stream
-                    outputStreamDevices = connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStreamDevice WHERE AdapterID = {0} AND NodeID = {1};", adapterID, nodeIDQueryString)).AsEnumerable();
+                    outputStreamDevices = connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStreamDevice WHERE AdapterID = {0} AND NodeID = {1}", adapterID, nodeIDQueryString)).AsEnumerable();
 
                     // Validate measurements associated with this output stream
-                    foreach (DataRow outputStreamMeasurement in connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStreamMeasurement WHERE AdapterID = {0} AND NodeID = {1};", adapterID, nodeIDQueryString)).Rows)
+                    foreach (DataRow outputStreamMeasurement in connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStreamMeasurement WHERE AdapterID = {0} AND NodeID = {1}", adapterID, nodeIDQueryString)).Rows)
                     {
                         // Parse output stream measurement signal reference
                         deviceSignalReference = new SignalReference(outputStreamMeasurement.Field<string>("SignalReference"));
@@ -1300,7 +1300,7 @@ namespace TVA.PhasorProtocols
 
                     foreach (int measurementID in measurementIDsToDelete)
                     {
-                        connection.ExecuteNonQuery(string.Format("DELETE FROM OutputStreamMeasurement WHERE ID = {0} AND NodeID = {1};", measurementID, nodeIDQueryString));
+                        connection.ExecuteNonQuery(string.Format("DELETE FROM OutputStreamMeasurement WHERE ID = {0} AND NodeID = {1}", measurementID, nodeIDQueryString));
                     }
                 }
             }
@@ -1331,7 +1331,7 @@ namespace TVA.PhasorProtocols
         /// <param name="processException">The delegate which will handle exception logging.</param>
         private static void CreateDefaultNode(IDbConnection connection, string nodeIDQueryString, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
-            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Node;")) == 0)
+            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Node")) == 0)
             {
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Creating default record for Node..."));
                 connection.ExecuteNonQuery("INSERT INTO Node(Name, CompanyID, Description, Settings, MenuType, MenuData, Master, LoadOrder, Enabled) VALUES('Default', NULL, 'Default node', 'TimeSeriesDataServiceUrl=http://localhost:6152/historian;RemoteStatusServerConnectionString={server=localhost:8500};datapublisherport=6165;RealTimeStatisticServiceUrl=http://localhost:6052/historian', 'File', 'Menu.xml', 1, 0, 1)");
@@ -1347,20 +1347,20 @@ namespace TVA.PhasorProtocols
         /// <param name="processException">The delegate which will handle exception logging.</param>
         private static void LoadDefaultConfigurationEntity(IDbConnection connection, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
-            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM ConfigurationEntity;")) == 0)
+            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM ConfigurationEntity")) == 0)
             {
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Loading default records for ConfigurationEntity..."));
-                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('IaonInputAdapter', 'InputAdapters', 'Defines IInputAdapter definitions for a PDC node', 1, 1);");
-                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('IaonActionAdapter', 'ActionAdapters', 'Defines IActionAdapter definitions for a PDC node', 2, 1);");
-                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('IaonOutputAdapter', 'OutputAdapters', 'Defines IOutputAdapter definitions for a PDC node', 3, 1);");
-                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('ActiveMeasurement', 'ActiveMeasurements', 'Defines active system measurements for a PDC node', 4, 1);");
-                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('RuntimeInputStreamDevice', 'InputStreamDevices', 'Defines input stream devices associated with a concentrator', 5, 1);");
-                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('RuntimeOutputStreamDevice', 'OutputStreamDevices', 'Defines output stream devices defined for a concentrator', 6, 1);");
-                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('RuntimeOutputStreamMeasurement', 'OutputStreamMeasurements', 'Defines output stream measurements for an output stream', 7, 1);");
-                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('OutputStreamDevicePhasor', 'OutputStreamDevicePhasors', 'Defines phasors for output stream devices', 8, 1);");
-                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('OutputStreamDeviceAnalog', 'OutputStreamDeviceAnalogs', 'Defines analog values for output stream devices', 9, 1);");
-                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('OutputStreamDeviceDigital', 'OutputStreamDeviceDigitals', 'Defines digital values for output stream devices', 10, 1);");
-                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('RuntimeStatistic', 'Statistics', 'Defines statistics that are monitored for devices and output streams', 11, 1);");
+                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('IaonInputAdapter', 'InputAdapters', 'Defines IInputAdapter definitions for a PDC node', 1, 1)");
+                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('IaonActionAdapter', 'ActionAdapters', 'Defines IActionAdapter definitions for a PDC node', 2, 1)");
+                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('IaonOutputAdapter', 'OutputAdapters', 'Defines IOutputAdapter definitions for a PDC node', 3, 1)");
+                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('ActiveMeasurement', 'ActiveMeasurements', 'Defines active system measurements for a PDC node', 4, 1)");
+                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('RuntimeInputStreamDevice', 'InputStreamDevices', 'Defines input stream devices associated with a concentrator', 5, 1)");
+                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('RuntimeOutputStreamDevice', 'OutputStreamDevices', 'Defines output stream devices defined for a concentrator', 6, 1)");
+                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('RuntimeOutputStreamMeasurement', 'OutputStreamMeasurements', 'Defines output stream measurements for an output stream', 7, 1)");
+                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('OutputStreamDevicePhasor', 'OutputStreamDevicePhasors', 'Defines phasors for output stream devices', 8, 1)");
+                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('OutputStreamDeviceAnalog', 'OutputStreamDeviceAnalogs', 'Defines analog values for output stream devices', 9, 1)");
+                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('OutputStreamDeviceDigital', 'OutputStreamDeviceDigitals', 'Defines digital values for output stream devices', 10, 1)");
+                connection.ExecuteNonQuery("INSERT INTO ConfigurationEntity(SourceName, RuntimeName, Description, LoadOrder, Enabled) VALUES('RuntimeStatistic', 'Statistics', 'Defines statistics that are monitored for devices and output streams', 11, 1)");
             }
         }
 
@@ -1372,15 +1372,15 @@ namespace TVA.PhasorProtocols
         /// <param name="processException">The delegate which will handle exception logging.</param>
         private static void LoadDefaultInterconnection(IDbConnection connection, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
-            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Interconnection;")) == 0)
+            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Interconnection")) == 0)
             {
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Loading default records for Interconnection..."));
-                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('Eastern', 'Eastern Interconnection', 0);");
-                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('Western', 'Western Interconnection', 1);");
-                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('ERCOT', 'Texas Interconnection', 2);");
-                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('Quebec', 'Quebec Interconnection', 3);");
-                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('Alaskan', 'Alaskan Interconnection', 4);");
-                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('Hawaii', 'Islands of Hawaii', 5);");
+                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('Eastern', 'Eastern Interconnection', 0)");
+                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('Western', 'Western Interconnection', 1)");
+                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('ERCOT', 'Texas Interconnection', 2)");
+                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('Quebec', 'Quebec Interconnection', 3)");
+                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('Alaskan', 'Alaskan Interconnection', 4)");
+                connection.ExecuteNonQuery("INSERT INTO Interconnection(Acronym, Name, LoadOrder) VALUES('Hawaii', 'Islands of Hawaii', 5)");
             }
         }
 
@@ -1392,17 +1392,17 @@ namespace TVA.PhasorProtocols
         /// <param name="processException">The delegate which will handle exception logging.</param>
         private static void LoadDefaultProtocol(IDbConnection connection, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
-            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Protocol;")) == 0)
+            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Protocol")) == 0)
             {
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Loading default records for Protocol..."));
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('BpaPdcStream', 'BPA PDCstream');");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('OPC', 'OPC');");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('Ieee1344', 'IEEE 1344-1995');");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('IeeeC37_118D6', 'IEEE C37.118 Draft 6');");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('IeeeC37_118V1', 'IEEE C37.118-2005');");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('FNet', 'Virginia Tech FNET');");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('SelFastMessage', 'SEL Fast Message');");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('Macrodyne', 'Macrodyne');");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('BpaPdcStream', 'BPA PDCstream')");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('OPC', 'OPC')");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('Ieee1344', 'IEEE 1344-1995')");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('IeeeC37_118D6', 'IEEE C37.118 Draft 6')");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('IeeeC37_118V1', 'IEEE C37.118-2005')");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('FNet', 'Virginia Tech FNET')");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('SelFastMessage', 'SEL Fast Message')");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('Macrodyne', 'Macrodyne')");
             }
         }
 
@@ -1414,20 +1414,20 @@ namespace TVA.PhasorProtocols
         /// <param name="processException">The delegate which will handle exception logging.</param>
         private static void LoadDefaultSignalType(IDbConnection connection, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
-            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType;")) == 0)
+            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM SignalType")) == 0)
             {
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Loading default records for SignalType..."));
-                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Current Magnitude', 'IPHM', 'PM', 'I', 'Phasor', 'Amps');");
-                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Current Phase Angle', 'IPHA', 'PA', 'IH', 'Phasor', 'Degrees');");
-                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Voltage Magnitude', 'VPHM', 'PM', 'V', 'Phasor', 'Volts');");
-                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Voltage Phase Angle', 'VPHA', 'PA', 'VH', 'Phasor', 'Degrees');");
-                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Frequency', 'FREQ', 'FQ', 'F', 'PMU', 'Hz');");
-                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Frequency Delta (dF/dt)', 'DFDT', 'DF', 'DF', 'PMU', '');");
-                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Analog Value', 'ALOG', 'AV', 'A', 'PMU', '');");
-                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Status Flags', 'FLAG', 'SF', 'S', 'PMU', '');");
-                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Digital Value', 'DIGI', 'DV', 'D', 'PMU', '');");
-                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Calculated Value', 'CALC', 'CV', 'C', 'PMU', '');");
-                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Statistic', 'STAT', 'ST', 'P', 'Any', '');");
+                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Current Magnitude', 'IPHM', 'PM', 'I', 'Phasor', 'Amps')");
+                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Current Phase Angle', 'IPHA', 'PA', 'IH', 'Phasor', 'Degrees')");
+                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Voltage Magnitude', 'VPHM', 'PM', 'V', 'Phasor', 'Volts')");
+                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Voltage Phase Angle', 'VPHA', 'PA', 'VH', 'Phasor', 'Degrees')");
+                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Frequency', 'FREQ', 'FQ', 'F', 'PMU', 'Hz')");
+                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Frequency Delta (dF/dt)', 'DFDT', 'DF', 'DF', 'PMU', '')");
+                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Analog Value', 'ALOG', 'AV', 'A', 'PMU', '')");
+                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Status Flags', 'FLAG', 'SF', 'S', 'PMU', '')");
+                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Digital Value', 'DIGI', 'DV', 'D', 'PMU', '')");
+                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Calculated Value', 'CALC', 'CV', 'C', 'PMU', '')");
+                connection.ExecuteNonQuery("INSERT INTO SignalType(Name, Acronym, Suffix, Abbreviation, Source, EngineeringUnits) VALUES('Statistic', 'STAT', 'ST', 'P', 'Any', '')");
             }
         }
 
@@ -1439,54 +1439,54 @@ namespace TVA.PhasorProtocols
         /// <param name="processException">The delegate which will handle exception logging.</param>
         private static void LoadDefaultStatistic(IDbConnection connection, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
-            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Statistic;")) == 0)
+            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Statistic")) == 0)
             {
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Loading default records for Statistic..."));
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('Device', 1, 'Data Quality Errors', 'Number of data quaility errors reported by device during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetDeviceStatistic_DataQualityErrors', '', 1, 'System.Int32', @displayFormat, 0, 1);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('Device', 2, 'Time Quality Errors', 'Number of time quality errors reported by device during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetDeviceStatistic_TimeQualityErrors', '', 1, 'System.Int32', @displayFormat, 0, 2);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('Device', 3, 'Device Errors', 'Number of device errors reported by device during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetDeviceStatistic_DeviceErrors', '', 1, 'System.Int32', @displayFormat, 0, 3);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 1, 'Total Frames', 'Total number of frames received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_TotalFrames', '', 1, 'System.Int32', @displayFormat, 0, 2);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 2, 'Last Report Time', 'Timestamp of last received data frame from input stream.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_LastReportTime', '', 1, 'System.DateTime', @displayFormat, 0, 1);", "{0:mm':'ss'.'fff}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 3, 'Missing Frames', 'Number of frames that were not received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_MissingFrames', '', 1, 'System.Int32', @displayFormat, 0, 3);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 4, 'CRC Errors', 'Number of CRC errors reported from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_CRCErrors', '', 1, 'System.Int32', @displayFormat, 0, 15);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 5, 'Out of Order Frames', 'Number of out-of-order frames received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_OutOfOrderFrames', '', 1, 'System.Int32', @displayFormat, 0, 16);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 6, 'Minimum Latency', 'Minimum latency from input stream, in milliseconds, during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_MinimumLatency', '', 1, 'System.Double', @displayFormat, 0, 9);", "{0:N3} ms");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 7, 'Maximum Latency', 'Maximum latency from input stream, in milliseconds, during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_MaximumLatency', '', 1, 'System.Double', @displayFormat, 0, 10);", "{0:N3} ms");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 8, 'Input Stream Connected', 'Boolean value representing if input stream was continually connected during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_Connected', '', 1, 'System.Boolean', @displayFormat, 1, 17);", "{0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 9, 'Received Configuration', 'Boolean value representing if input stream has received (or has cached) a configuration frame during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_ReceivedConfiguration', '', 1, 'System.Boolean', @displayFormat, 0, 7);", "{0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 10, 'Configuration Changes', 'Number of configuration changes reported by input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_ConfigurationChanges', '', 1, 'System.Int32', @displayFormat, 0, 8);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 11, 'Total Data Frames', 'Number of data frames received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_TotalDataFrames', '', 1, 'System.Int32', @displayFormat, 0, 4);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 12, 'Total Configuration Frames', 'Number of configuration frames received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_TotalConfigurationFrames', '', 1, 'System.Int32', @displayFormat, 0, 5);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 13, 'Total Header Frames', 'Number of header frames received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_TotalHeaderFrames', '', 1, 'System.Int32', @displayFormat, 0, 6);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 14, 'Average Latency', 'Average latency, in milliseconds, for data received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_AverageLatency', '', 1, 'System.Double', @displayFormat, 0, 11);", "{0:N3} ms");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 15, 'Defined Frame Rate', 'Frame rate as defined by input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_DefinedFrameRate', '', 1, 'System.Int32', @displayFormat, 0, 12);", "{0:N0} frames / second");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 16, 'Actual Frame Rate', 'Latest actual mean frame rate for data received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_ActualFrameRate', '', 1, 'System.Double', @displayFormat, 0, 13);", "{0:N3} frames / second");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 17, 'Actual Data Rate', 'Latest actual mean Mbps data rate for data received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_ActualDataRate', '', 1, 'System.Double', @displayFormat, 0, 14);", "{0:N3} Mbps");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 1, 'Discarded Measurements', 'Number of discarded measurements reported by output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_DiscardedMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 4);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 2, 'Received Measurements', 'Number of received measurements reported by the output strean during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_ReceivedMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 2);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 3, 'Expected Measurements', 'Number of expected measurements reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_ExpectedMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 1);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 4, 'Processed Measurements', 'Number of processed measurements reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_ProcessedMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 3);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 5, 'Measurements Sorted by Arrival', 'Number of measurments sorted by arrival reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_MeasurementsSortedByArrival', '', 1, 'System.Int32', @displayFormat, 0, 7);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 6, 'Published Measurements', 'Number of published measurements reported by output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_PublishedMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 5);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 7, 'Downsampled Measurements', 'Number of downsampled measurements reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_DownsampledMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 6);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 8, 'Missed Sorts by Timeout', 'Number of missed sorts by timeout reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_MissedSortsByTimeout', '', 1, 'System.Int32', @displayFormat, 0, 8);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 9, 'Frames Ahead of Schedule', 'Number of frames ahead of schedule reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_FramesAheadOfSchedule', '', 1, 'System.Int32', @displayFormat, 0, 9);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 10, 'Published Frames', 'Number of published frames reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_PublishedFrames', '', 1, 'System.Int32', @displayFormat, 0, 10);", "{0:N0}");
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 11, 'Output Stream Connected', 'Boolean value representing if the output stream was continually connected during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_Connected', '', 1, 'System.Boolean', @displayFormat, 1, 11);", "{0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('Device', 1, 'Data Quality Errors', 'Number of data quaility errors reported by device during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetDeviceStatistic_DataQualityErrors', '', 1, 'System.Int32', @displayFormat, 0, 1)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('Device', 2, 'Time Quality Errors', 'Number of time quality errors reported by device during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetDeviceStatistic_TimeQualityErrors', '', 1, 'System.Int32', @displayFormat, 0, 2)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('Device', 3, 'Device Errors', 'Number of device errors reported by device during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetDeviceStatistic_DeviceErrors', '', 1, 'System.Int32', @displayFormat, 0, 3)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 1, 'Total Frames', 'Total number of frames received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_TotalFrames', '', 1, 'System.Int32', @displayFormat, 0, 2)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 2, 'Last Report Time', 'Timestamp of last received data frame from input stream.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_LastReportTime', '', 1, 'System.DateTime', @displayFormat, 0, 1)", "{0:mm':'ss'.'fff}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 3, 'Missing Frames', 'Number of frames that were not received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_MissingFrames', '', 1, 'System.Int32', @displayFormat, 0, 3)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 4, 'CRC Errors', 'Number of CRC errors reported from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_CRCErrors', '', 1, 'System.Int32', @displayFormat, 0, 15)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 5, 'Out of Order Frames', 'Number of out-of-order frames received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_OutOfOrderFrames', '', 1, 'System.Int32', @displayFormat, 0, 16)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 6, 'Minimum Latency', 'Minimum latency from input stream, in milliseconds, during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_MinimumLatency', '', 1, 'System.Double', @displayFormat, 0, 9)", "{0:N3} ms");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 7, 'Maximum Latency', 'Maximum latency from input stream, in milliseconds, during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_MaximumLatency', '', 1, 'System.Double', @displayFormat, 0, 10)", "{0:N3} ms");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 8, 'Input Stream Connected', 'Boolean value representing if input stream was continually connected during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_Connected', '', 1, 'System.Boolean', @displayFormat, 1, 17)", "{0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 9, 'Received Configuration', 'Boolean value representing if input stream has received (or has cached) a configuration frame during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_ReceivedConfiguration', '', 1, 'System.Boolean', @displayFormat, 0, 7)", "{0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 10, 'Configuration Changes', 'Number of configuration changes reported by input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_ConfigurationChanges', '', 1, 'System.Int32', @displayFormat, 0, 8)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 11, 'Total Data Frames', 'Number of data frames received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_TotalDataFrames', '', 1, 'System.Int32', @displayFormat, 0, 4)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 12, 'Total Configuration Frames', 'Number of configuration frames received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_TotalConfigurationFrames', '', 1, 'System.Int32', @displayFormat, 0, 5)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 13, 'Total Header Frames', 'Number of header frames received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_TotalHeaderFrames', '', 1, 'System.Int32', @displayFormat, 0, 6)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 14, 'Average Latency', 'Average latency, in milliseconds, for data received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_AverageLatency', '', 1, 'System.Double', @displayFormat, 0, 11)", "{0:N3} ms");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 15, 'Defined Frame Rate', 'Frame rate as defined by input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_DefinedFrameRate', '', 1, 'System.Int32', @displayFormat, 0, 12)", "{0:N0} frames / second");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 16, 'Actual Frame Rate', 'Latest actual mean frame rate for data received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_ActualFrameRate', '', 1, 'System.Double', @displayFormat, 0, 13)", "{0:N3} frames / second");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('InputStream', 17, 'Actual Data Rate', 'Latest actual mean Mbps data rate for data received from input stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetInputStreamStatistic_ActualDataRate', '', 1, 'System.Double', @displayFormat, 0, 14)", "{0:N3} Mbps");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 1, 'Discarded Measurements', 'Number of discarded measurements reported by output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_DiscardedMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 4)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 2, 'Received Measurements', 'Number of received measurements reported by the output strean during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_ReceivedMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 2)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 3, 'Expected Measurements', 'Number of expected measurements reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_ExpectedMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 1)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 4, 'Processed Measurements', 'Number of processed measurements reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_ProcessedMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 3)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 5, 'Measurements Sorted by Arrival', 'Number of measurments sorted by arrival reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_MeasurementsSortedByArrival', '', 1, 'System.Int32', @displayFormat, 0, 7)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 6, 'Published Measurements', 'Number of published measurements reported by output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_PublishedMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 5)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 7, 'Downsampled Measurements', 'Number of downsampled measurements reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_DownsampledMeasurements', '', 1, 'System.Int32', @displayFormat, 0, 6)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 8, 'Missed Sorts by Timeout', 'Number of missed sorts by timeout reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_MissedSortsByTimeout', '', 1, 'System.Int32', @displayFormat, 0, 8)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 9, 'Frames Ahead of Schedule', 'Number of frames ahead of schedule reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_FramesAheadOfSchedule', '', 1, 'System.Int32', @displayFormat, 0, 9)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 10, 'Published Frames', 'Number of published frames reported by the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_PublishedFrames', '', 1, 'System.Int32', @displayFormat, 0, 10)", "{0:N0}");
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 11, 'Output Stream Connected', 'Boolean value representing if the output stream was continually connected during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_Connected', '', 1, 'System.Boolean', @displayFormat, 1, 11)", "{0}");
             }
 
             // Make sure new output stream statistics are defined
-            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Statistic WHERE MethodName = 'GetOutputStreamStatistic_MinimumLatency';")) == 0)
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 12, 'Minimum Latency', 'Minimum latency from output stream, in milliseconds, during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_MinimumLatency', '', 1, 'System.Double', @displayFormat, 0, 12);", "{0:N3} ms");
+            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Statistic WHERE MethodName = 'GetOutputStreamStatistic_MinimumLatency'")) == 0)
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 12, 'Minimum Latency', 'Minimum latency from output stream, in milliseconds, during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_MinimumLatency', '', 1, 'System.Double', @displayFormat, 0, 12)", "{0:N3} ms");
 
-            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Statistic WHERE MethodName = 'GetOutputStreamStatistic_MaximumLatency';")) == 0)
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 13, 'Maximum Latency', 'Maximum latency from output stream, in milliseconds, during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_MaximumLatency', '', 1, 'System.Double', @displayFormat, 0, 13);", "{0:N3} ms");
+            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Statistic WHERE MethodName = 'GetOutputStreamStatistic_MaximumLatency'")) == 0)
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 13, 'Maximum Latency', 'Maximum latency from output stream, in milliseconds, during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_MaximumLatency', '', 1, 'System.Double', @displayFormat, 0, 13)", "{0:N3} ms");
 
-            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Statistic WHERE MethodName = 'GetOutputStreamStatistic_AverageLatency';")) == 0)
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 14, 'Average Latency', 'Average latency, in milliseconds, for data published from output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_AverageLatency', '', 1, 'System.Double', @displayFormat, 0, 14);", "{0:N3} ms");
+            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Statistic WHERE MethodName = 'GetOutputStreamStatistic_AverageLatency'")) == 0)
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 14, 'Average Latency', 'Average latency, in milliseconds, for data published from output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_AverageLatency', '', 1, 'System.Double', @displayFormat, 0, 14)", "{0:N3} ms");
 
-            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Statistic WHERE MethodName = 'GetOutputStreamStatistic_ConnectedClientCount';")) == 0)
-                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 15, 'Connected Clients', 'Number of clients connected to the command channel of the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_ConnectedClientCount', '', 1, 'System.Int32', @displayFormat, 0, 15);", "{0:N0}");
+            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Statistic WHERE MethodName = 'GetOutputStreamStatistic_ConnectedClientCount'")) == 0)
+                LoadStatistic(connection, "INSERT INTO Statistic(Source, SignalIndex, Name, Description, AssemblyName, TypeName, MethodName, Arguments, Enabled, DataType, DisplayFormat, IsConnectedState, LoadOrder) VALUES('OutputStream', 15, 'Connected Clients', 'Number of clients connected to the command channel of the output stream during last reporting interval.', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.CommonPhasorServices', 'GetOutputStreamStatistic_ConnectedClientCount', '', 1, 'System.Int32', @displayFormat, 0, 15)", "{0:N0}");
         }
 
         [SuppressMessage("Microsoft.Security", "CA2100")]
@@ -1525,7 +1525,7 @@ namespace TVA.PhasorProtocols
             statusMessage("CommonPhasorServices", new EventArgs<string>("Establishing default measurement key cache..."));
 
             // Establish default measurement key cache
-            foreach (DataRow measurement in connection.RetrieveData(adapterType, "SELECT ID, SignalID FROM ActiveMeasurement;").Rows)
+            foreach (DataRow measurement in connection.RetrieveData(adapterType, "SELECT ID, SignalID FROM ActiveMeasurement").Rows)
             {
                 keyID = measurement["ID"].ToNonNullString();
 

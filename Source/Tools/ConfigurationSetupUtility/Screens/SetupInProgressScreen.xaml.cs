@@ -609,7 +609,7 @@ namespace ConfigurationSetupUtility.Screens
                         int progress = 0;
 
                         // Determine which scripts need to be run.
-                        scriptNames.Add("openPG.sql");
+                        scriptNames.Add("openPDC.sql");
                         if (initialDataScript)
                         {
                             scriptNames.Add("InitialDataSet.sql");
@@ -677,7 +677,7 @@ namespace ConfigurationSetupUtility.Screens
                     }
                 }
 
-                // Modify the openPG configuration file.
+                // Modify the openPDC configuration file.
                 string connectionString = oracleSetup.ConnectionString;
                 ModifyConfigFiles(connectionString, dataProviderString, oracleSetup.EncryptConnectionString);
                 SaveOldConnectionString();

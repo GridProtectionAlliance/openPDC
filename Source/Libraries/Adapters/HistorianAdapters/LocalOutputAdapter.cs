@@ -706,7 +706,7 @@ namespace HistorianAdapters
                 statusMessage("LocalOutputAdapter", new EventArgs<string>("Optimizing settings for local historians..."));
 
                 // Load the defined local system historians
-                IEnumerable<DataRow> historians = connection.RetrieveData(adapterType, string.Format("SELECT AdapterName FROM RuntimeHistorian WHERE NodeID = {0} AND TypeName = 'HistorianAdapters.LocalOutputAdapter';", nodeIDQueryString)).AsEnumerable();
+                IEnumerable<DataRow> historians = connection.RetrieveData(adapterType, string.Format("SELECT AdapterName FROM RuntimeHistorian WHERE NodeID = {0} AND TypeName = 'HistorianAdapters.LocalOutputAdapter'", nodeIDQueryString)).AsEnumerable();
                 List<string> validHistorians = new List<string>();
                 string name, acronym, currentPath, archivePath, fileName, defaultFileName;
 

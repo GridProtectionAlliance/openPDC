@@ -266,7 +266,7 @@ namespace ConfigurationSetupUtility.Screens
                     m_oracleSetup.SchemaPassword = m_schemaUserPasswordTextBox.Password;
                 }
 
-                m_schemaUserNameTextBox.Text = migrate ? "openPGv2" : "openPG";
+                m_schemaUserNameTextBox.Text = migrate ? "openPDCv2" : "openPDC";
             }
         }
 
