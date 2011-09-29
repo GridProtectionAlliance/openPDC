@@ -21,10 +21,12 @@
 //
 //******************************************************************************************************
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using TimeSeriesFramework.UI;
 using TVA.Data;
 
@@ -307,12 +309,41 @@ namespace openPDC.UI.DataModels
         /// Loads <see cref="Statistic"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <returns>Collection of <see cref="Statistic"/>.</returns>
-        // TODO: For now, this method is just a place holder. In future when we create screen to manage Statistic
-        // definitions, we will need to add code to it.
+        /// <returns>Collection of <see cref="Statistic"/>.</returns>        
         public static ObservableCollection<Statistic> Load(AdoDataConnection database)
         {
-            return null;
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                ObservableCollection<Statistic> statisticList = new ObservableCollection<Statistic>();
+                DataTable statisticTable = database.Connection.RetrieveData(database.AdapterType, "SELECT Source, SignalIndex, Name, Description, DataType, DisplayFormat, " +
+                    "IsConnectedState, LoadOrder FROM Statistic ORDER BY Source, SignalIndex");
+
+                foreach (DataRow row in statisticTable.Rows)
+                {
+                    statisticList.Add(new Statistic()
+                    {
+                        Source = row.Field<string>("Source"),
+                        SignalIndex = row.ConvertField<int>("SignalIndex"),
+                        Name = row.Field<string>("Name"),
+                        Description = row.Field<string>("Description"),
+                        DataType = row.Field<string>("DataType"),
+                        DisplayFormat = row.Field<string>("DisplayFormat"),
+                        IsConnectedState = Convert.ToBoolean(row.Field<object>("IsConnectedState")),
+                        LoadOrder = row.ConvertField<int>("LoadOrder")
+                    });
+                }
+
+                return statisticList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
         }
 
         /// <summary>

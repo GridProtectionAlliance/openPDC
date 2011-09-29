@@ -1,0 +1,116 @@
+﻿<UserControl x:Class="openPDC.UI.UserControls.RealTimeStatisticUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" d:DesignHeight="590" d:DesignWidth="850"
+             xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:uc="clr-namespace:TimeSeriesFramework.UI.UserControls;assembly=TimeSeriesFramework.UI.WPF"
+             xmlns:tsfBinding="clr-namespace:TimeSeriesFramework.UI.Binding;assembly=TimeSeriesFramework.UI"
+             xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
+             Background="Transparent">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/TimeSeriesFramework.UI.WPF;Component/Resources/CommonResource.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel Orientation="Vertical">
+
+        <StackPanel.Resources>
+
+            <HierarchicalDataTemplate x:Key="MeasurementTemplate">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="TextAlignment" Value="Left"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <TextBlock Text="{tsfBinding:Column Path=ID}" FontSize="{StaticResource SmallTextSize}" Width="100"/>
+                    <TextBlock Text="{tsfBinding:Column Path=SignalReference}" FontSize="{StaticResource SmallTextSize}" Width="150"/>
+                    <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTip="{tsfBinding:Column Path=StatisticDescription}" FontSize="{StaticResource SmallTextSize}" Width="175" TextWrapping="Wrap"/>
+                    <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontSize="{StaticResource SmallTextSize}" FontWeight="Bold" Width="100" HorizontalAlignment="Center" TextAlignment="Center"/>
+                    <TextBlock Text="{tsfBinding:Column Path=Value}" FontSize="{StaticResource SmallTextSize}" FontWeight="Bold" Width="75"
+                                   Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center" TextAlignment="Center"/>
+                    
+                </StackPanel>
+            </HierarchicalDataTemplate>
+
+            <HierarchicalDataTemplate x:Key="DeviceTemplate" ItemsSource="{tsfBinding:Column Path=StatisticMeasurementList}" ItemTemplate="{StaticResource MeasurementTemplate}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="TextAlignment" Value="Left"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <TextBlock Text="{tsfBinding:Column Path=DeviceAcronym}" FontSize="{StaticResource SmallTextSize}" Width="125" FontWeight="Bold"/>
+                    <TextBlock Text="{tsfBinding:Column Path=DeviceName}" FontSize="{StaticResource SmallTextSize}" Width="550" FontWeight="Bold"/>                    
+                </StackPanel>
+            </HierarchicalDataTemplate>
+
+            <HierarchicalDataTemplate x:Key="StreamTemplate" ItemsSource="{tsfBinding:Column Path=DeviceStatisticList}" ItemTemplate="{StaticResource DeviceTemplate}">
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="TextAlignment" Value="Left"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <TextBlock Text="{tsfBinding:Column Path=Acronym}" FontSize="{StaticResource SmallTextSize}" Width="125" FontWeight="Bold"/>
+                    <TextBlock Text="{tsfBinding:Column Path=Name}" FontSize="{StaticResource SmallTextSize}" Width="575" FontWeight="Bold"/>
+                    
+                </StackPanel>
+                
+            </HierarchicalDataTemplate>
+
+            <HierarchicalDataTemplate x:Key="RootNodeTemplate" ItemsSource="{tsfBinding:Column Path=StreamStatisticList}" ItemTemplate="{StaticResource StreamTemplate}">
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="TextAlignment" Value="Left"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <TextBlock Text="{tsfBinding:Column Path=SourceType}" FontSize="{StaticResource SmallTextSize}" Width="725" FontWeight="Bold"/>
+                    
+                </StackPanel>
+
+            </HierarchicalDataTemplate>
+
+            <Style x:Key="ExpandedItemStyle" TargetType="TreeViewItem">
+                <Setter Property="IsExpanded" Value="{tsfBinding:Column Path=DataContext.Expanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}"/>
+            </Style>
+
+        </StackPanel.Resources>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock Text="Refresh Interval (sec): " FontSize="{StaticResource SmallTextSize}"/>
+            <TextBlock x:Name="TextBlockMeasurementRefreshInterval" FontSize="{StaticResource SmallTextSize}" Width="Auto"/>
+            <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" FontSize="{StaticResource SmallTextSize}" />
+        </StackPanel>
+
+        <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" 
+                      Height="570" VerticalAlignment="Top" HorizontalAlignment="Left" />
+
+    </StackPanel>
+    
+</UserControl>

@@ -201,6 +201,9 @@
     <Compile Include="UserControls\RealTimeStatisticsUserControl.xaml.cs">
       <DependentUpon>RealTimeStatisticsUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\RealTimeStatisticUserControl.xaml.cs">
+      <DependentUpon>RealTimeStatisticUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\CalculatedMeasurements.cs" />
     <Compile Include="ViewModels\Devices.cs" />
     <Compile Include="ViewModels\InputWizardDevices.cs" />
@@ -212,6 +215,7 @@
     <Compile Include="ViewModels\OutputStreams.cs" />
     <Compile Include="ViewModels\PhasorMeasurements.cs" />
     <Compile Include="ViewModels\Phasors.cs" />
+    <Compile Include="ViewModels\RealTimeStatistics.cs" />
     <Compile Include="ViewModels\RealTimeStreams.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -312,6 +316,10 @@
     <Page Include="UserControls\RealTimeStatisticsUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\RealTimeStatisticUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
