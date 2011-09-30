@@ -143,6 +143,7 @@ namespace openPDC.UI.ViewModels
                         StreamReader reader = new StreamReader(response.GetResponseStream());
                         XElement timeSeriesDataPoints = XElement.Parse(reader.ReadToEnd());
 
+
                         foreach (XElement element in timeSeriesDataPoints.Element("TimeSeriesDataPoints").Elements("TimeSeriesDataPoint"))
                         {
                             StatisticMeasurement measurement;
@@ -158,6 +159,21 @@ namespace openPDC.UI.ViewModels
                                 measurement.Quality = quality;
                                 measurement.Value = string.Format(measurement.DisplayFormat, ConvertValueToType(element.Element("Value").Value, measurement.DataType));
                                 measurement.TimeTag = sourceDateTime.ToString("HH:mm:ss.fff");
+
+                                StreamStatistic streamStatistic;
+                                if (measurement.ConnectedState) //if measurement defines connection state.
+                                {
+                                    if ((measurement.Source == "InputStream" && RealTimeStatistic.InputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
+                                        (measurement.Source == "OutputStream" && RealTimeStatistic.OutputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)))
+                                    {
+                                        if (DateTime.TryParseExact(element.Element("Time").Value, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 30)
+                                            streamStatistic.StatusColor = "Gray";
+                                        else if (Convert.ToBoolean(measurement.Value))
+                                            streamStatistic.StatusColor = "Green";
+                                        else
+                                            streamStatistic.StatusColor = "Red";
+                                    }
+                                }
                             }
                         }
                     }

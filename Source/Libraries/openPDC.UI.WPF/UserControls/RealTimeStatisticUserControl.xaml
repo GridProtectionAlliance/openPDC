@@ -23,24 +23,26 @@
         <StackPanel.Resources>
 
             <HierarchicalDataTemplate x:Key="MeasurementTemplate">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                
+                <Border BorderThickness="0,0,0,1" BorderBrush="#FFDDDDDD">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <StackPanel.Resources>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="TextAlignment" Value="Left"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </StackPanel.Resources>
 
-                    <StackPanel.Resources>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="HorizontalAlignment" Value="Left"/>
-                            <Setter Property="TextAlignment" Value="Left"/>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                        </Style>
-                    </StackPanel.Resources>
-
-                    <TextBlock Text="{tsfBinding:Column Path=ID}" FontSize="{StaticResource SmallTextSize}" Width="100"/>
-                    <TextBlock Text="{tsfBinding:Column Path=SignalReference}" FontSize="{StaticResource SmallTextSize}" Width="150"/>
-                    <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTip="{tsfBinding:Column Path=StatisticDescription}" FontSize="{StaticResource SmallTextSize}" Width="175" TextWrapping="Wrap"/>
-                    <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontSize="{StaticResource SmallTextSize}" FontWeight="Bold" Width="100" HorizontalAlignment="Center" TextAlignment="Center"/>
-                    <TextBlock Text="{tsfBinding:Column Path=Value}" FontSize="{StaticResource SmallTextSize}" FontWeight="Bold" Width="75"
+                        <TextBlock Text="{tsfBinding:Column Path=ID}" FontSize="{StaticResource SmallTextSize}" Width="100"/>
+                        <TextBlock Text="{tsfBinding:Column Path=SignalReference}" FontSize="{StaticResource SmallTextSize}" Width="150"/>
+                        <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTip="{tsfBinding:Column Path=StatisticDescription}" FontSize="{StaticResource SmallTextSize}" Width="150" TextWrapping="Wrap"/>
+                        <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontSize="{StaticResource SmallTextSize}" FontWeight="Bold" Width="75" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontSize="{StaticResource SmallTextSize}" FontWeight="Bold" Width="150"
                                    Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center" TextAlignment="Center"/>
-                    
-                </StackPanel>
+                    </StackPanel>
+                </Border>
+                
             </HierarchicalDataTemplate>
 
             <HierarchicalDataTemplate x:Key="DeviceTemplate" ItemsSource="{tsfBinding:Column Path=StatisticMeasurementList}" ItemTemplate="{StaticResource MeasurementTemplate}">
@@ -71,6 +73,7 @@
                         </Style>
                     </StackPanel.Resources>
 
+                    <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}" Margin="0,0,5,0"/>
                     <TextBlock Text="{tsfBinding:Column Path=Acronym}" FontSize="{StaticResource SmallTextSize}" Width="125" FontWeight="Bold"/>
                     <TextBlock Text="{tsfBinding:Column Path=Name}" FontSize="{StaticResource SmallTextSize}" Width="575" FontWeight="Bold"/>
                     

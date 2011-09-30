@@ -265,6 +265,7 @@ namespace openPDC.UI.DataModels
                                     {
                                         ID = device.ConvertNullableField<int>("ID"),
                                         Acronym = device.Field<string>("Acronym"),
+                                        Name = device.Field<string>("Name"),
                                         ProtocolName = device.Field<string>("ProtocolName"),
                                         VendorDeviceName = device.Field<string>("VendorDeviceName"),
                                         ParentAcronym = string.IsNullOrEmpty(device.Field<string>("ParentAcronym")) ? "DIRECT CONNECTED" : device.Field<string>("ParentAcronym"),
@@ -357,6 +358,7 @@ namespace openPDC.UI.DataModels
         // Fields        
         private int? m_id;
         private string m_acronym;
+        private string m_name;
         private string m_protocolName;
         private string m_vendorDeviceName;
         private string m_parentAcronym;
@@ -398,6 +400,22 @@ namespace openPDC.UI.DataModels
             {
                 m_acronym = value;
                 OnPropertyChanged("Acronym");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets Name of the <see cref="RealTimeDevice"/>
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return m_name;
+            }
+            set
+            {
+                m_name = value;
+                OnPropertyChanged("Name");
             }
         }
 

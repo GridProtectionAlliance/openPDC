@@ -101,6 +101,12 @@ namespace openPDC.UI.DataModels
         #region [ Methods ]
 
         // Static
+
+        /// <summary>
+        /// Creates <see cref="ObservableCollection{T}"/> type collection of <see cref="RealTimeStatistic"/>.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <returns>Collection of <see cref="RealTimeStatistic"/>.</returns>
         public static ObservableCollection<RealTimeStatistic> Load(AdoDataConnection database)
         {
             bool createdConnection = false;
@@ -162,6 +168,7 @@ namespace openPDC.UI.DataModels
                                     select new PdcDeviceStatistic()
                                     {
                                         DeviceID = Convert.ToInt32(pdcdevice.Field<object>("ID")),
+                                        ParentID = Convert.ToInt32(pdcdevice.Field<object>("ParentID")),
                                         DeviceAcronym = pdcdevice.Field<string>("Acronym"),
                                         DeviceName = pdcdevice.Field<string>("Name"),
                                         StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(
@@ -174,6 +181,7 @@ namespace openPDC.UI.DataModels
                         }
                     );
 
+                InputStreamStatistics = new Dictionary<int, StreamStatistic>();
                 foreach (StreamStatistic streamStatistic in inputStreamStatistics)
                 {
                     streamStatistic.DeviceStatisticList.Insert(0, new PdcDeviceStatistic()
@@ -185,6 +193,9 @@ namespace openPDC.UI.DataModels
                         });
 
                     streamStatistic.StatisticMeasurementList = null;
+
+                    // We do this for later use in refreshing data.
+                    InputStreamStatistics.Add(streamStatistic.ID, streamStatistic);
                 }
 
                 // Create an output stream statistics list.
@@ -205,8 +216,13 @@ namespace openPDC.UI.DataModels
                         }
                     );
 
+                OutputStreamStatistics = new Dictionary<int, StreamStatistic>();
                 foreach (StreamStatistic streamStatistic in outputStreamStatistics)
                 {
+                    // We do this to associate statistic measurement to parent output stream easily.
+                    foreach (StatisticMeasurement measurement in streamStatistic.StatisticMeasurementList)
+                        measurement.DeviceID = streamStatistic.ID;
+
                     streamStatistic.DeviceStatisticList.Insert(0, new PdcDeviceStatistic()
                     {
                         DeviceID = 0,
@@ -216,6 +232,9 @@ namespace openPDC.UI.DataModels
                     });
 
                     streamStatistic.StatisticMeasurementList = null;
+
+                    // We do this for later use in refreshing data.
+                    OutputStreamStatistics.Add(streamStatistic.ID, streamStatistic);
                 }
 
                 // Merge input and output stream statistics to create a realtime statistics list.
@@ -244,6 +263,11 @@ namespace openPDC.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets statistic measurements from the database for current node.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <returns>Collection of <see cref="StatisticMeasurement"/>.</returns>
         public static ObservableCollection<StatisticMeasurement> GetStatisticMeasurements(AdoDataConnection database)
         {
             bool createdConnection = false;
@@ -325,9 +349,30 @@ namespace openPDC.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Defines maximum value of statistic measurement's point id defined in the database.
+        /// </summary>
         public static int MaxPointID;
+
+        /// <summary>
+        /// Defines minimum value of statistic measurement's point id defined in the database.
+        /// </summary>
         public static int MinPointID;
+
+        /// <summary>
+        /// Defines a collection of <see cref="StatisticMeasurement"/>s defined in the database.
+        /// </summary>
         public static Dictionary<int, StatisticMeasurement> StatisticMeasurements;
+
+        /// <summary>
+        /// Defines a collection of <see cref="StreamStatistic"/> defined in the database.
+        /// </summary>
+        public static Dictionary<int, StreamStatistic> InputStreamStatistics;
+
+        /// <summary>
+        /// Defines a collection of <see cref="StreamStatistic"/> defined in the database.
+        /// </summary>
+        public static Dictionary<int, StreamStatistic> OutputStreamStatistics;
 
         #endregion
     }
@@ -476,6 +521,7 @@ namespace openPDC.UI.DataModels
 
         // Fields
         private int m_id;
+        private int m_parentId;
         private string m_acronym;
         private string m_name;
         private ObservableCollection<StatisticMeasurement> m_statisticMeasurementList;
@@ -498,6 +544,22 @@ namespace openPDC.UI.DataModels
             {
                 m_id = value;
                 OnPropertyChanged("DeviceID");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets <see cref="PdcDeviceStatistic"/>'s ParentID.
+        /// </summary>
+        public int ParentID
+        {
+            get
+            {
+                return m_parentId;
+            }
+            set
+            {
+                m_parentId = value;
+                OnPropertyChanged("ParentID");
             }
         }
 
