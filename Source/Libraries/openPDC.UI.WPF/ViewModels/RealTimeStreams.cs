@@ -22,8 +22,9 @@
 //******************************************************************************************************
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -47,8 +48,9 @@ namespace openPDC.UI.ViewModels
         // Fields
         private bool m_expanded;
         private bool m_restartConnectionCycle;
-        private ConcurrentDictionary<Guid, MeasurementInfo> m_currentSelection;
         private string m_lastRefresh;
+        private ObservableCollection<StatisticMeasurement> m_statisticMeasurements;
+        private RealTimeStatistics m_statistics;
 
         // Unsynchronized Subscription Fields.
         private DataSubscriber m_unsynchronizedSubscriber;
@@ -66,6 +68,8 @@ namespace openPDC.UI.ViewModels
             // Perform initialization here.
             InitializeUnsynchronizedSubscription();
             m_restartConnectionCycle = true;
+            StatisticMeasurements = new ObservableCollection<StatisticMeasurement>();
+            m_statistics = new RealTimeStatistics(1);
         }
 
         #endregion
@@ -130,6 +134,22 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets <see cref="RealTimeStreams"/> StatisticMeasurements.
+        /// </summary>
+        public ObservableCollection<StatisticMeasurement> StatisticMeasurements
+        {
+            get
+            {
+                return m_statisticMeasurements;
+            }
+            set
+            {
+                m_statisticMeasurements = value;
+                OnPropertyChanged("StatisticMeasurements");
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -188,9 +208,27 @@ namespace openPDC.UI.ViewModels
             }
         }
 
-        public void GetStatistics(object device)
+        public void GetStatistics(Device device)
         {
+            try
+            {
+                StatisticMeasurements.Clear();
+                ObservableCollection<StatisticMeasurement> tempMeasurements = new ObservableCollection<StatisticMeasurement>(
+                        RealTimeStatistic.GetStatisticMeasurements(null).Where(sm => sm.DeviceID == device.ID)
+                    );
 
+                foreach (StatisticMeasurement measurement in tempMeasurements)
+                {
+                    StatisticMeasurement tempMeasurement;
+                    if (RealTimeStatistic.StatisticMeasurements.TryGetValue(measurement.PointID, out tempMeasurement))
+                        StatisticMeasurements.Add(tempMeasurement);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Popup("Failed to retrieve statistics." + Environment.NewLine + ex.Message, "ERROR! Get Statistics", MessageBoxImage.Error);
+            }
         }
 
         #region [ Unsynchronized Subscription ]
@@ -209,10 +247,38 @@ namespace openPDC.UI.ViewModels
             {
                 try
                 {
+                    ObservableCollection<StatisticMeasurement> statisticMeasurements;
+                    StreamStatistic streamStatistic;
+
                     foreach (RealTimeStream stream in ItemsSource)
                     {
+                        if (stream.ID > 0 && RealTimeStatistic.InputStreamStatistics.TryGetValue(stream.ID, out streamStatistic))
+                        {
+                            stream.StatusColor = streamStatistic.StatusColor;
+                        }
+
                         foreach (RealTimeDevice device in stream.DeviceList)
                         {
+                            if (device.ID != null && device.ID > 0)
+                            {
+                                if (RealTimeStatistic.InputStreamStatistics.TryGetValue((int)device.ID, out streamStatistic))
+                                {
+                                    device.StatusColor = streamStatistic.StatusColor;
+                                }
+                                else if (RealTimeStatistic.DevicesWithStatisticMeasurements.TryGetValue((int)device.ID, out statisticMeasurements))
+                                {
+                                    device.StatusColor = "Green";
+                                    foreach (StatisticMeasurement statisticMeasurement in statisticMeasurements)
+                                    {
+                                        int value;
+                                        if (int.TryParse(statisticMeasurement.Value, out value) && value > 0)
+                                        {
+                                            device.StatusColor = "Yellow";
+                                        }
+                                    }
+                                }
+                            }
+
                             foreach (RealTimeMeasurement measurement in device.MeasurementList)
                             {
                                 foreach (IMeasurement newMeasurement in e.Argument)
@@ -223,30 +289,30 @@ namespace openPDC.UI.ViewModels
                                         measurement.TimeTag = newMeasurement.Timestamp.ToString("HH:mm:ss.fff");
                                         measurement.Value = newMeasurement.Value.ToString("0.###");
 
-                                        if (measurement.SignalAcronym == "FLAG")
-                                        {
-                                            if (stream.Enabled && stream.StatusColor != "Transparent")
-                                            {
-                                                stream.StatusColor = "Gray";
-                                                device.StatusColor = "Gray";
-                                            }
-                                        }
-                                        else if (!device.Enabled)
-                                        {
-                                            device.StatusColor = "Gray";
-                                        }
-                                        else if (stream.StatusColor == "Red")
-                                        {
-                                            device.StatusColor = "Red";
-                                        }
-                                        else if (newMeasurement.ValueQualityIsGood())
-                                        {
-                                            device.StatusColor = "Green";
-                                        }
-                                        else
-                                        {
-                                            device.StatusColor = "Yellow";
-                                        }
+                                        //if (measurement.SignalAcronym == "FLAG")
+                                        //{
+                                        //    if (stream.Enabled && stream.StatusColor != "Transparent")
+                                        //    {
+                                        //        stream.StatusColor = "Gray";
+                                        //        device.StatusColor = "Gray";
+                                        //    }
+                                        //}
+                                        //else if (!device.Enabled)
+                                        //{
+                                        //    device.StatusColor = "Gray";
+                                        //}
+                                        //else if (stream.StatusColor == "Red")
+                                        //{
+                                        //    device.StatusColor = "Red";
+                                        //}
+                                        //else if (newMeasurement.ValueQualityIsGood())
+                                        //{
+                                        //    device.StatusColor = "Green";
+                                        //}
+                                        //else
+                                        //{
+                                        //    device.StatusColor = "Yellow";
+                                        //}
                                     }
                                 }
                             }

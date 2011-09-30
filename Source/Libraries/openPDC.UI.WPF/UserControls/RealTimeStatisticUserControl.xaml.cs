@@ -47,6 +47,16 @@ namespace openPDC.UI.UserControls
         {
             InitializeComponent();
             this.Loaded += new System.Windows.RoutedEventHandler(RealTimeStatisticUserControl_Loaded);
+            this.Unloaded += new System.Windows.RoutedEventHandler(RealTimeStatisticUserControl_Unloaded);
+        }
+
+        #endregion
+
+        #region [ Methods ]
+
+        private void RealTimeStatisticUserControl_Unloaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            m_dataContext.Stop();
         }
 
         private void RealTimeStatisticUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)

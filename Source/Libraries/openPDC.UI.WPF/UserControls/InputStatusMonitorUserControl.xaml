@@ -199,7 +199,7 @@
             
             <!-- Chart -->
 
-            <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="2" Height="250" Width="510">
+            <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="2" Height="250" Width="530">
 
                 <d3:InjectedPlotter Name="PhaseAnglePlotter" SetViewportBinding="False">
                     <d3:VerticalAxis Name="PhaseAngleYAxis" Placement="Left" />
@@ -258,19 +258,18 @@
                 <TextBlock x:Name="TextBlockStatisticsRefreshInterval"/>
             </StackPanel>
                 
-            <ListBox Height="150">
+            <ListBox Height="150" x:Name="ListBoxStatistics">
                     
                 <ListBox.ItemTemplate>
                         
                     <DataTemplate>
                         
                         <StackPanel Orientation="Horizontal" ToolTip="{tsfBinding:Column Path=Description}">
-                                
-                            <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Width="125"/>
-                            <TextBlock Text="{tsfBinding:Column Path=StatisticName}" Width="150"/>
-                            <TextBlock Text="{tsfBinding:Column Path=Value}" Width="125"/>
-                            <TextBlock Text="{tsfBinding:Column Path=TimeTag}" TextAlignment="Center" Width="125"/>
-                                
+
+                            <TextBlock Text="{tsfBinding:Column Path=ID}" Width="75" FontSize="{StaticResource SmallTextSize}" TextAlignment="Left"/>                            
+                            <TextBlock Text="{tsfBinding:Column Path=StatisticName}" Width="100" FontSize="{StaticResource SmallTextSize}" TextAlignment="Left"/>                            
+                            <TextBlock Text="{tsfBinding:Column Path=Value}" FontSize="{StaticResource SmallTextSize}" Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" Width="175" TextAlignment="Center"/>
+                            <TextBlock Text="{tsfBinding:Column Path=TimeTag}" TextAlignment="Center" Width="100" FontSize="{StaticResource SmallTextSize}"/>    
                         </StackPanel>                                      
                             
                     </DataTemplate>

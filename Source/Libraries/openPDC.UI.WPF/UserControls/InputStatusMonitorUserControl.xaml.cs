@@ -129,10 +129,10 @@ namespace openPDC.UI.UserControls
             TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("InputMonitoringPoints", m_selectedSignalIDs);
         }
 
-        // <summary>
+        /// <summary>
         /// Handles loaded event.
         /// </summary>
-        // <param name="sender">Source of the event.</param>
+        /// <param name="sender">Source of the event.</param>
         /// <param name="e">Event arguments.</param>
         private void InputStatusMonitorUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -450,7 +450,12 @@ namespace openPDC.UI.UserControls
 
         private void ButtonGetStatistics_Click(object sender, RoutedEventArgs e)
         {
-
+            Device device = Device.GetDevice(null, "WHERE Acronym = '" + ((Button)sender).Content.ToString() + "'");
+            if (device != null)
+            {
+                m_dataContext.GetStatistics(device);
+                ListBoxStatistics.ItemsSource = m_dataContext.StatisticMeasurements;
+            }
         }
 
         private void ButtonEdit_Click(object sender, RoutedEventArgs e)

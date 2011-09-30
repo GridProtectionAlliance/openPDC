@@ -182,6 +182,8 @@ namespace openPDC.UI.DataModels
                     );
 
                 InputStreamStatistics = new Dictionary<int, StreamStatistic>();
+                DevicesWithStatisticMeasurements = new Dictionary<int, ObservableCollection<StatisticMeasurement>>();
+
                 foreach (StreamStatistic streamStatistic in inputStreamStatistics)
                 {
                     streamStatistic.DeviceStatisticList.Insert(0, new PdcDeviceStatistic()
@@ -192,10 +194,22 @@ namespace openPDC.UI.DataModels
                             StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(streamStatistic.StatisticMeasurementList)
                         });
 
-                    streamStatistic.StatisticMeasurementList = null;
-
                     // We do this for later use in refreshing data.
                     InputStreamStatistics.Add(streamStatistic.ID, streamStatistic);
+
+                    // We do this for use in Input Status & Monitoring screen to set proper status color.
+                    if (streamStatistic.ID > 0)
+                    {
+                        DevicesWithStatisticMeasurements.Add(streamStatistic.ID, streamStatistic.StatisticMeasurementList);
+                        foreach (PdcDeviceStatistic device in streamStatistic.DeviceStatisticList)
+                        {
+                            if (device.DeviceID > 0)
+                                DevicesWithStatisticMeasurements.Add(device.DeviceID, device.StatisticMeasurementList);
+                        }
+                    }
+
+                    streamStatistic.StatisticMeasurementList = null;
+
                 }
 
                 // Create an output stream statistics list.
@@ -373,6 +387,8 @@ namespace openPDC.UI.DataModels
         /// Defines a collection of <see cref="StreamStatistic"/> defined in the database.
         /// </summary>
         public static Dictionary<int, StreamStatistic> OutputStreamStatistics;
+
+        public static Dictionary<int, ObservableCollection<StatisticMeasurement>> DevicesWithStatisticMeasurements;
 
         #endregion
     }
