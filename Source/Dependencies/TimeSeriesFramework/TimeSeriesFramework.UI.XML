@@ -788,6 +788,14 @@
             <param name="whereClause">query string to fileter data.</param>
             <returns><see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> information.</returns>
         </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.GetNewOutputStreamMeasurements(TVA.Data.AdoDataConnection,System.Int32)">
+            <summary>
+            Retrieves unassigned measurements for output stream.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="outputStreamID">ID of the output stream to filter data.</param>
+            <returns><see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of Measurements.</returns>
+        </member>
         <member name="P:TimeSeriesFramework.UI.DataModels.Measurement.SignalID">
             <summary>
             Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/>'s Signal ID.

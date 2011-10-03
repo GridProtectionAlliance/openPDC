@@ -19,6 +19,58 @@
 
     <StackPanel Orientation="Vertical">
 
+        <Popup x:Name="PopupAddMore" Placement="Center" Height="500">
+
+            <Border CornerRadius="5" BorderThickness="2" Background="White" BorderBrush="Blue">
+
+                <StackPanel Orientation="Vertical" Margin="5">
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+
+                        <TextBox x:Name="TextBoxSearch"/>
+                        <Button Content="Search" Width="Auto" Click="ButtonSearch_Click" Margin="5,0,5,0"/>
+                        <Button Content="Show All" Width="Auto" Click="ButtonShowAll_Click"/>
+
+                    </StackPanel>
+
+                    <sdk:DataGrid x:Name="DataGridAddMeasurements" Height="420" Width="600">
+
+                        <sdk:DataGrid.Columns>
+
+                            <sdk:DataGridTemplateColumn Width="*">
+                                <sdk:DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{tsfBinding:Column Path=Enabled}" HorizontalAlignment="Center" Margin="0" />
+                                    </DataTemplate>
+                                </sdk:DataGridTemplateColumn.CellTemplate>
+                                <sdk:DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Checked="CheckBoxAddMore_Checked" Unchecked="CheckBoxAddMore_Unchecked"/>
+                                    </DataTemplate>
+                                </sdk:DataGridTemplateColumn.HeaderTemplate>
+                            </sdk:DataGridTemplateColumn>
+
+                            <sdk:DataGridTextColumn Header="ID" Width="2*" Binding="{Binding Path=ID}" IsReadOnly="True" ToolTipService.ToolTip="{Binding Path=SignalReference}"/>
+                            <sdk:DataGridTextColumn Header="Description" Width="9*" Binding="{Binding Path=Description}" IsReadOnly="True"
+                                                    ToolTipService.ToolTip="{Binding Path=Description}"/>
+
+                        </sdk:DataGrid.Columns>
+
+                    </sdk:DataGrid>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+
+                        <Button Content="Close" Width="Auto" Click="ButtonCancel_Click" Margin="5"/>
+                        <Button Content="Add Selected" Width="Auto" Click="ButtonAddMore_Click" Margin="5"/>
+
+                    </StackPanel>
+
+                </StackPanel>
+
+            </Border>
+
+        </Popup>
+
         <Grid x:Name="GridDetailView" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" DataContext="{Binding Path=CurrentItem, Mode=TwoWay}">
             <Grid.BindingGroup>
                 <BindingGroup Name="input"/>
@@ -42,11 +94,11 @@
 
             <!--Frist Row-->
             <TextBlock Text="Source Measurment" Grid.Row="0" Grid.Column="0" />
-            <Button Content=" ... " Grid.Row="0" Grid.Column="1" Width="Auto" HorizontalAlignment="Left"/>
+            <Button Content=" ... " Grid.Row="0" Grid.Column="1" Width="Auto" HorizontalAlignment="Left" Click="Button_Click"/>
 
             <!--Second Row-->
             <TextBlock Text="Historian" Grid.Row="1" Grid.Column="0"/>
-            <TextBlock Text="{Binding Path=HistorianID}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
+            <TextBlock Text="{Binding Path=HistorianAcronym}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
             <TextBlock Text="Point ID"  Grid.Row="1" Grid.Column="2"/>
             <TextBlock Text="{tsfBinding:Column Path=PointID}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left"/>
             
@@ -69,8 +121,8 @@
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTextColumn Header="Point ID" Width="*" Binding="{tsfBinding:Column Path=PointID}"/>
                 <sdk:DataGridTextColumn Header="Signal Reference" Width="*" Binding="{tsfBinding:Column Path=SignalReference}"/>
-                <sdk:DataGridTextColumn Header="Source PointTag" Width="2*" Binding="{tsfBinding:Column Path=SourcePointTag}" />
-                <sdk:DataGridTextColumn Header="Historian" Width="*" Binding="{tsfBinding:Column Path=Historian}"/>
+                <sdk:DataGridTextColumn Header="Source PointTag" Width="2*" Binding="{Binding Path=SourcePointTag}" IsReadOnly="True"/>
+                <sdk:DataGridTextColumn Header="Historian" Width="*" Binding="{Binding Path=HistorianAcronym}" IsReadOnly="True"/>
             </sdk:DataGrid.Columns>
         </sdk:DataGrid>
 

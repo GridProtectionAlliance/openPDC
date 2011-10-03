@@ -24,10 +24,14 @@
 //
 //******************************************************************************************************
 
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using openPDC.UI.DataModels;
 using openPDC.UI.ViewModels;
+using TimeSeriesFramework.UI.DataModels;
 
 namespace openPDC.UI.UserControls
 {
@@ -36,7 +40,15 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class OutputStreamMeasurementUserControl : UserControl
     {
-        #region[Constructors]
+        #region [ Members ]
+
+        private OutputStreamMeasurements m_dataContext;
+        private int m_outputStreamID;
+        private ObservableCollection<Measurement> m_newMeasurements;
+
+        #endregion
+
+        #region [ Constructors ]
 
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamMeasurementUserControl"/> class.
@@ -44,12 +56,15 @@ namespace openPDC.UI.UserControls
         public OutputStreamMeasurementUserControl(int outputStreamID)
         {
             InitializeComponent();
-            this.DataContext = new OutputStreamMeasurements(outputStreamID, 10);
+            m_outputStreamID = outputStreamID;
+            m_dataContext = new OutputStreamMeasurements(outputStreamID, 20);
+            this.DataContext = m_dataContext;
+            m_newMeasurements = new ObservableCollection<Measurement>();
         }
 
         #endregion
 
-        #region[Methods]
+        #region [ Methods ]
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -62,6 +77,76 @@ namespace openPDC.UI.UserControls
                         e.Handled = true;
                 }
             }
+        }
+
+        #region [ Popup Code]
+
+        private void LoadNewMeasurements(string filterText)
+        {
+            if (string.IsNullOrEmpty(filterText))
+            {
+                m_newMeasurements = Measurement.GetNewOutputStreamMeasurements(null, m_outputStreamID);
+            }
+            else
+            {
+                filterText = filterText.ToLower();
+                m_newMeasurements = new ObservableCollection<Measurement>(
+                        Measurement.GetNewOutputStreamMeasurements(null, m_outputStreamID).Where(m => m.Description.Contains(filterText) ||
+                                                                                                    m.SignalAcronym.Contains(filterText) ||
+                                                                                                    m.PointTag.Contains(filterText) ||
+                                                                                                    m.SignalReference.Contains(filterText))
+                    );
+            }
+
+            DataGridAddMeasurements.ItemsSource = m_newMeasurements;
+        }
+
+        private void CheckBoxAddMore_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            foreach (Measurement measurement in m_newMeasurements)
+                measurement.Enabled = true;
+        }
+
+        private void CheckBoxAddMore_Unchecked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            foreach (Measurement measurement in m_newMeasurements)
+                measurement.Enabled = false;
+        }
+
+        private void ButtonAddMore_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //OutputStreamDevice.AddDevices(null, m_outputStreamID, new ObservableCollection<Device>(m_newDevices.Where(d => d.Enabled == true)),
+            //    (bool)CheckBoxAddDigitals.IsChecked, (bool)CheckBoxAddAnalogs.IsChecked);
+
+            OutputStreamMeasurement.AddMeasurements(null, m_outputStreamID, new ObservableCollection<Measurement>(m_newMeasurements.Where(m => m.Enabled == true)));
+            m_dataContext = new OutputStreamMeasurements(m_outputStreamID, 20);
+            this.DataContext = m_dataContext;
+            PopupAddMore.IsOpen = false;
+        }
+
+        private void ButtonCancel_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            m_dataContext = new OutputStreamMeasurements(m_outputStreamID, 20);
+            this.DataContext = m_dataContext;
+            PopupAddMore.IsOpen = false;
+        }
+
+        private void ButtonSearch_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            LoadNewMeasurements(TextBoxSearch.Text.Replace("'", "").Replace("%", ""));
+        }
+
+        private void ButtonShowAll_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            LoadNewMeasurements(string.Empty);
+        }
+
+        #endregion
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            LoadNewMeasurements(string.Empty);
+            PopupAddMore.IsOpen = true;
         }
 
         #endregion

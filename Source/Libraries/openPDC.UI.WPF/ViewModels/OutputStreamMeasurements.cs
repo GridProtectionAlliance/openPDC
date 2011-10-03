@@ -71,6 +71,17 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Determines if current information can be saved by user.
+        /// </summary>
+        public override bool CanSave
+        {
+            get
+            {
+                return (base.CanSave && !IsNewRecord);
+            }
+        }
+
         #endregion
 
         #region [ Constructor ]
@@ -78,12 +89,15 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamMeasurements "/> class.
         /// </summary>
+        /// <param name="outputStreamID">ID of the output strea to filter data.</param>
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         public OutputStreamMeasurements(int outputStreamID, int itemsPerPage, bool autoSave = true)
-            : base(itemsPerPage, autoSave)
+            : base(0, autoSave)
         {
             OutputStreamID = outputStreamID;
+            ItemsPerPage = itemsPerPage;
+            Load();
         }
 
         #endregion

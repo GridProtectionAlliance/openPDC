@@ -33,6 +33,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using TimeSeriesFramework.UI;
+using TimeSeriesFramework.UI.DataModels;
 using TVA.Data;
 
 namespace openPDC.UI.DataModels
@@ -267,9 +268,9 @@ namespace openPDC.UI.DataModels
                 ObservableCollection<OutputStreamMeasurement> OutputStreamMeasurementList = new ObservableCollection<OutputStreamMeasurement>();
                 string query = database.ParameterizedQueryString("SELECT NodeID, AdapterID, ID, HistorianID, PointID, SignalReference, SourcePointTag, HistorianAcronym " +
                     "FROM OutputStreamMeasurementDetail WHERE AdapterID = {0} ORDER BY SignalReference", "outputStreamID");
-                DataTable OutputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
+                DataTable outputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
 
-                foreach (DataRow row in OutputStreamMeasurementTable.Rows)
+                foreach (DataRow row in outputStreamMeasurementTable.Rows)
                 {
                     OutputStreamMeasurementList.Add(new OutputStreamMeasurement()
                     {
@@ -278,7 +279,7 @@ namespace openPDC.UI.DataModels
                         ID = row.ConvertField<int>("ID"),
                         HistorianID = row.Field<int?>("HistorianID"),
                         PointID = row.ConvertField<int>("PointID"),
-                        SignalReference = row.Field<string>("SignalReference "),
+                        SignalReference = row.Field<string>("SignalReference"),
                         m_sourcePointTag = row.Field<string>("SourcePointTag"),
                         m_historianAcronym = row.Field<string>("HistorianAcronym")
                     });
@@ -392,6 +393,44 @@ namespace openPDC.UI.DataModels
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamMeasurement WHERE ID = {0}", "outputStreamMeasurementID"), DefaultTimeout, OutputStreamMeasurementID);
 
                 return "OutputStreamMeasurement deleted successfully";
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Creates and saves new <see cref="OutputStreamMeasurement"/> into the database.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamID">ID of the output stream.</param>
+        /// <param name="measurements">Collection of measurements to be added.</param>
+        /// <returns>String, for display use, indicating success.</returns>
+        public static string AddMeasurements(AdoDataConnection database, int outputStreamID, ObservableCollection<Measurement> measurements)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                foreach (Measurement measurement in measurements)
+                {
+                    OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement()
+                    {
+                        NodeID = (Guid)database.CurrentNodeID(),
+                        AdapterID = outputStreamID,
+                        HistorianID = measurement.HistorianID,
+                        PointID = measurement.PointID,
+                        SignalReference = measurement.SignalReference
+                    };
+
+                    Save(database, outputStreamMeasurement);
+                }
+
+                return "Output stream measurements added successfully.";
             }
             finally
             {

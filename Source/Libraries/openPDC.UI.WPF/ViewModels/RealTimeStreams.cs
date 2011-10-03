@@ -389,8 +389,14 @@ namespace openPDC.UI.ViewModels
 
             if (m_subscribedUnsynchronized && !string.IsNullOrEmpty(m_allSignalIDs))
                 m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true);
+
+            if (m_statistics == null)
+                m_statistics = new RealTimeStatistics(1);
         }
 
+        /// <summary>
+        /// Unsubscribes data from the service.
+        /// </summary>
         public void UnsubscribeUnsynchronizedData()
         {
             try
@@ -399,6 +405,11 @@ namespace openPDC.UI.ViewModels
                 {
                     m_unsynchronizedSubscriber.Unsubscribe();
                     StopUnsynchronizedSubscription();
+                    if (m_statistics != null)
+                    {
+                        m_statistics.Stop();
+                        m_statistics = null;
+                    }
                 }
             }
             catch
