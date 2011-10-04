@@ -1842,5 +1842,20 @@
             visible. The value is true for most parameters, including those which are not defined by an adapter type.
             </summary>
         </member>
+        <member name="T:TimeSeriesFramework.UI.ResizableWindow">
+            <summary>
+            Represents a resizable window.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ResizableWindow.#ctor">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.ResizableWindow"/>.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ResizableWindow.RootScale">
+            <summary>
+            Gets or sets <see cref="T:System.Windows.Media.ScaleTransform"/> associated with <see cref="T:System.Windows.Controls.Canvas"/> element.
+            </summary>
+        </member>
     </members>
 </doc>
