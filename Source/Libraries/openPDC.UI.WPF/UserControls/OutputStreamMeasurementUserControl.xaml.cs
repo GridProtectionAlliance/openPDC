@@ -57,7 +57,7 @@ namespace openPDC.UI.UserControls
         {
             InitializeComponent();
             m_outputStreamID = outputStreamID;
-            m_dataContext = new OutputStreamMeasurements(outputStreamID, 20);
+            m_dataContext = new OutputStreamMeasurements(outputStreamID, 24);
             this.DataContext = m_dataContext;
             m_newMeasurements = new ObservableCollection<Measurement>();
         }

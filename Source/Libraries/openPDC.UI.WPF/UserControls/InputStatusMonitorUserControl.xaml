@@ -181,7 +181,7 @@
             
             <!-- Measurement Tree -->
             <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" 
-                      Height="565" Width="275" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                      Height="615" Width="275" VerticalAlignment="Top" HorizontalAlignment="Left"/>
             
         </StackPanel>
 
@@ -258,7 +258,7 @@
                 <TextBlock x:Name="TextBlockStatisticsRefreshInterval"/>
             </StackPanel>
                 
-            <ListBox Height="150" x:Name="ListBoxStatistics">
+            <ListBox Height="200" x:Name="ListBoxStatistics">
                     
                 <ListBox.ItemTemplate>
                         

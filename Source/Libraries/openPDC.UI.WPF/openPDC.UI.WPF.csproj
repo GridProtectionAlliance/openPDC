@@ -204,6 +204,7 @@
     <Compile Include="UserControls\RealTimeStatisticUserControl.xaml.cs">
       <DependentUpon>RealTimeStatisticUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VersionConfigToNamespaceAssemblyObjectBinder.cs" />
     <Compile Include="ViewModels\CalculatedMeasurements.cs" />
     <Compile Include="ViewModels\Devices.cs" />
     <Compile Include="ViewModels\InputWizardDevices.cs" />

@@ -112,7 +112,7 @@
         </StackPanel>
 
         <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" 
-                      Height="570" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                      Height="610" VerticalAlignment="Top" HorizontalAlignment="Left" />
 
     </StackPanel>
     

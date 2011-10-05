@@ -45,7 +45,7 @@ namespace openPDC.UI.UserControls
         public OutputStreamDeviceUserControl(int outputStreamID)
         {
             InitializeComponent();
-            this.DataContext = new OutputStreamDevices(outputStreamID, 6);
+            this.DataContext = new OutputStreamDevices(outputStreamID, 10);
         }
 
         #endregion

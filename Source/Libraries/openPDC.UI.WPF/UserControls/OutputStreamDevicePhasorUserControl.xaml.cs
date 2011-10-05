@@ -44,7 +44,7 @@ namespace openPDC.UI.UserControls
         public OutputStreamDevicePhasorUserControl(int outputStreamDeviceID)
         {
             InitializeComponent();
-            this.DataContext = new OutputStreamDevicePhasors(outputStreamDeviceID, 10, true);
+            this.DataContext = new OutputStreamDevicePhasors(outputStreamDeviceID, 20, true);
         }
 
         #endregion

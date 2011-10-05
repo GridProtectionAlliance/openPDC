@@ -40,7 +40,7 @@ namespace openPDC.UI.UserControls
         public OutputStreamDeviceDigitalUserControl(int outputStreamDeviceID)
         {
             InitializeComponent();
-            this.DataContext = new OutputStreamDeviceDigitals(outputStreamDeviceID, 10, true);
+            this.DataContext = new OutputStreamDeviceDigitals(outputStreamDeviceID, 20, true);
         }
 
         #endregion

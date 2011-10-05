@@ -76,7 +76,7 @@
 
         </Popup>
         
-        <sdk:DataGrid x:Name="DataGridCurrentDevices" Height="560" Width="500">
+        <sdk:DataGrid x:Name="DataGridCurrentDevices" Height="600" Width="500">
             
             <sdk:DataGrid.Columns>
 
