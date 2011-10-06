@@ -223,7 +223,14 @@
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
             <TextBox Grid.Row="7" Grid.Column="1" Text="{tsfBinding:Column Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" />
-            <CheckBox Grid.Row="7" Grid.Column="3" Content="Enabled" IsChecked="{tsfBinding:Column Path=Enabled}"/>
+
+                <TextBlock Grid.Row="7" Grid.Column="2" Text="Stream Mirror Source"/>
+                <ComboBox Grid.Row="7" Grid.Column="3">
+                    <ComboBoxItem Content="Select Source For Mirroring" IsSelected="True"/>
+                    <ComboBoxItem Content="SHELBY" />
+                </ComboBox>
+
+                <CheckBox Grid.Row="8" Grid.Column="3" Content="Enabled" IsChecked="{tsfBinding:Column Path=Enabled}"/>
             
             <TextBlock Grid.Row="8" Grid.Column="0" Text="Runtime ID" />
             <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="1">

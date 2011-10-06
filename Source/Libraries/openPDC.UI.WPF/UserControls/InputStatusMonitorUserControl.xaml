@@ -199,7 +199,7 @@
             
             <!-- Chart -->
 
-            <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="2" Height="250" Width="530">
+            <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="2" Height="250" Width="555">
 
                 <d3:InjectedPlotter Name="PhaseAnglePlotter" SetViewportBinding="False">
                     <d3:VerticalAxis Name="PhaseAngleYAxis" Placement="Left" />
@@ -253,7 +253,8 @@
             <!-- Real-Time Statistics -->            
             
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Run-Time Statistics" FontWeight="Bold"/>
+                <TextBlock Text="Run-Time Statistics:" FontWeight="Bold"/>
+                <TextBlock x:Name="TextBlockDevice" Margin="0,0,25,0"/>
                 <TextBlock Text="Refresh Interval: "/>
                 <TextBlock x:Name="TextBlockStatisticsRefreshInterval"/>
             </StackPanel>

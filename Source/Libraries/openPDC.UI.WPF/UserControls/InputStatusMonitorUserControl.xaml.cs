@@ -453,6 +453,7 @@ namespace openPDC.UI.UserControls
             Device device = Device.GetDevice(null, "WHERE Acronym = '" + ((Button)sender).Content.ToString() + "'");
             if (device != null)
             {
+                TextBlockDevice.Text = device.Acronym;
                 m_dataContext.GetStatistics(device);
                 ListBoxStatistics.ItemsSource = m_dataContext.StatisticMeasurements;
             }
