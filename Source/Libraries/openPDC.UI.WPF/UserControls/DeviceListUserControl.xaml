@@ -17,12 +17,14 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <StackPanel Orientation="Vertical">
 
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBox x:Name="TextBoxSearch" Width="125"/>
+            <Button Content="Search" Command="{Binding Path=SearchCommand}" CommandParameter="{Binding ElementName=TextBoxSearch, Path=Text}" ToolTip="Search devices" Margin="2"/>
+            <Button Content="Show All" Command="{Binding Path=ShowAllCommand}" ToolTip="Show all devices" Margin="2"/>
+        </StackPanel>
+        
         <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" 
                       PreviewKeyDown="DataGrid_PreviewKeyDown" Sorting="DataGrid_Sorting">
             <sdk:DataGrid.Columns>
@@ -76,5 +78,5 @@
         <uc:DataPagerUserControl Grid.Row="1"  CurrentPageNumber="{Binding CurrentPageNumber}" PageCount="{Binding PageCount}"
                                  FirstCommand="{Binding FirstCommand}" PreviousCommand="{Binding PreviousCommand}"
                                  NextCommand="{Binding NextCommand}" LastCommand="{Binding LastCommand}" VerticalAlignment="Bottom"/>
-    </Grid>
+    </StackPanel>
 </UserControl>

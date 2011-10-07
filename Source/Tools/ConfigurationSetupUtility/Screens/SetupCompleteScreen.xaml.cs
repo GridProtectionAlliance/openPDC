@@ -212,6 +212,8 @@ namespace ConfigurationSetupUtility.Screens
                         // Always make sure that all three needed roles are available for each defined node(s) in the database.
                         ValidateSecurityRoles();
 
+                        //TODO: Figure out if user was on old db structure. If so then find out differences and load values from old db to new db format.
+
                         // If the user requested it, start or restart the openPDC service.
                         if (m_serviceStartCheckBox.IsChecked.Value)
                         {

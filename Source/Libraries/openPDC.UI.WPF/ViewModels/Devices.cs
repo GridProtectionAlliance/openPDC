@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -59,6 +60,9 @@ namespace openPDC.UI.ViewModels
         private RelayCommand m_buildConnectionStringCommand;
         private RelayCommand m_buildAlternateCommandChannelCommand;
         private string m_runtimeID;
+        private ObservableCollection<Device> m_devices;
+        private RelayCommand m_searchCommand;
+        private RelayCommand m_showAllCommand;
 
         #endregion
 
@@ -289,6 +293,9 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets <see cref="ICommand"/> to send Initialize command to backed service.
+        /// </summary>
         public ICommand InitializeCommand
         {
             get
@@ -297,6 +304,34 @@ namespace openPDC.UI.ViewModels
                     m_initializeCommand = new RelayCommand(Initialize, () => CanSave);
 
                 return m_initializeCommand;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="ICommand"/> to search within measurements.
+        /// </summary>
+        public ICommand SearchCommand
+        {
+            get
+            {
+                if (m_searchCommand == null)
+                    m_searchCommand = new RelayCommand(Search, (param) => true);
+
+                return m_searchCommand;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="ICommand"/> to show all measurements.
+        /// </summary>
+        public ICommand ShowAllCommand
+        {
+            get
+            {
+                if (m_showAllCommand == null)
+                    m_showAllCommand = new RelayCommand(ShowAll);
+
+                return m_showAllCommand;
             }
         }
 
@@ -363,7 +398,8 @@ namespace openPDC.UI.ViewModels
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
-                ItemsSource = openPDC.UI.DataModels.Device.Load(null);
+                m_devices = Device.Load(null);
+                ItemsSource = m_devices;
             }
             catch (Exception ex)
             {
@@ -541,6 +577,60 @@ namespace openPDC.UI.ViewModels
                 csb.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 csb.ShowDialog();
             }
+        }
+
+        /// <summary>
+        /// Deletes current item from the database.
+        /// </summary>
+        public override void Delete()
+        {
+            if (CurrentItem.IsConcentrator)
+            {
+                if (Confirm("Are you sure you want to delete concentrator device?" + Environment.NewLine + "Clicking yes will delete all the devices connected to: " + CurrentItem.Acronym, "Delete Device"))
+                {
+                    try
+                    {
+                        ObservableCollection<Device> deviceList = Device.Load(null, CurrentItem.ID);
+                        foreach (Device device in deviceList)
+                            Device.Delete(null, device.ID);
+
+                        base.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        Popup("Failed to delete device." + Environment.NewLine + ex.Message, "Delete Device", MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                base.Delete();
+            }
+        }
+
+        /// <summary>
+        /// Hanldes <see cref="SearchCommand"/>.
+        /// </summary>
+        /// <param name="paramter">string value to search for in measurement collection.</param>
+        public void Search(object paramter)
+        {
+            if (paramter != null && !string.IsNullOrEmpty(paramter.ToString()))
+            {
+                string searchText = paramter.ToString().ToLower();
+                ItemsSource = new ObservableCollection<Device>
+                    (m_devices.Where(d => d.Acronym.ToLower().Contains(searchText) ||
+                                     d.Name.ToLower().Contains(searchText) ||
+                                     d.CompanyAcronym.ToLower().Contains(searchText) ||
+                                     d.CompanyName.ToLower().Contains(searchText)));
+            }
+        }
+
+        /// <summary>
+        /// Handles <see cref="ShowAllCommand"/>.
+        /// </summary>
+        public void ShowAll()
+        {
+            ItemsSource = m_devices;
         }
 
         #endregion

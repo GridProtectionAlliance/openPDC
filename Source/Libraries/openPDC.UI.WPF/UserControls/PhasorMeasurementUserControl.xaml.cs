@@ -55,7 +55,7 @@ namespace openPDC.UI.UserControls
         {
             InitializeComponent();
             this.Unloaded += new RoutedEventHandler(PhasorMeasurementUserControl_Unloaded);
-            this.DataContext = new PhasorMeasurements(deviceID, 15);
+            this.DataContext = new PhasorMeasurements(deviceID, 17);
         }
 
         #endregion
