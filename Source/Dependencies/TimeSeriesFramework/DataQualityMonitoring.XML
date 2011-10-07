@@ -74,6 +74,11 @@
             Gets or sets the host name or IP address of the SMTP server used to send email notifications.
             </summary>
         </member>
+        <member name="P:DataQualityMonitoring.FlatlineTest.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
+            </summary>
+        </member>
         <member name="T:DataQualityMonitoring.RangeTest">
             <summary>
             Tests measurements to determine whether their values satisfy a range condition.
@@ -205,6 +210,11 @@
         <member name="P:DataQualityMonitoring.RangeTest.WarnInterval">
             <summary>
             Gets or sets how often the <see cref="T:DataQualityMonitoring.RangeTest"/> sends out-of-range notifications to the console.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.RangeTest.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
             </summary>
         </member>
         <member name="T:DataQualityMonitoring.Services.FlatlineService">
@@ -809,6 +819,11 @@
             Modifying this property will cause this adapter to search for an action adapter with the name
             that was supplied to the property. If one is found, it will detach from the current adapter and
             attach to the other. If one is not found, nothing will happen.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.TimestampTest.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
             </summary>
         </member>
     </members>

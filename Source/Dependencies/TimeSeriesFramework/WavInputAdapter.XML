@@ -65,5 +65,10 @@
             This returns false because this adapter does not connect asynchronously.
             </remarks>
         </member>
+        <member name="P:WavInputAdapter.WavInputAdapter.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
+            </summary>
+        </member>
     </members>
 </doc>

@@ -78,6 +78,11 @@
             uses an asynchronous connection.
             </summary>
         </member>
+        <member name="P:AdoAdapters.AdoInputAdapter.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
+            </summary>
+        </member>
         <member name="T:AdoAdapters.AdoOutputAdapter">
             <summary>
             Represents an output adapter that archives measurements to a database.

@@ -68,6 +68,11 @@
             Returns the detailed status of this <see cref="T:CsvAdapters.CsvInputAdapter"/>.
             </summary>
         </member>
+        <member name="P:CsvAdapters.CsvInputAdapter.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
+            </summary>
+        </member>
         <member name="T:CsvAdapters.CsvOutputAdapter">
             <summary>
             Represents an output adapter that writes measurements to a CSV file.

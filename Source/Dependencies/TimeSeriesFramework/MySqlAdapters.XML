@@ -69,6 +69,11 @@
             uses an asynchronous connection.
             </summary>
         </member>
+        <member name="P:MySqlAdapters.MySqlInputAdapter.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
+            </summary>
+        </member>
         <member name="T:MySqlAdapters.MySqlOutputAdapter">
             <summary>
             Represents an output adapter that archives measurements to a MySQL database table.

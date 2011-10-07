@@ -103,6 +103,11 @@
             Gets flag that determines if the data input connects asynchronously.
             </summary>
         </member>
+        <member name="P:TestingAdapters.RandomValueInputAdapter.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
+            </summary>
+        </member>
         <member name="P:TestingAdapters.RandomValueInputAdapter.Name">
             <summary>
             Gets or sets the name of this <see cref="T:TestingAdapters.RandomValueInputAdapter"/>.

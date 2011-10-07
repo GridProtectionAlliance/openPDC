@@ -78,6 +78,12 @@
             Creates a new instance of the <see cref="T:MongoAdapters.MongoInputAdapter"/> class.
             </summary>
         </member>
+        <member name="M:MongoAdapters.MongoInputAdapter.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:MongoAdapters.MongoInputAdapter"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
         <member name="M:MongoAdapters.MongoInputAdapter.Initialize">
             <summary>
             Initializes the <see cref="T:MongoAdapters.MongoInputAdapter"/> using settings from the connection string.
@@ -133,6 +139,11 @@
         <member name="P:MongoAdapters.MongoInputAdapter.UseAsyncConnect">
             <summary>
             Returns false; this adapter connects to MongoDB synchronously.
+            </summary>
+        </member>
+        <member name="P:MongoAdapters.MongoInputAdapter.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
             </summary>
         </member>
         <member name="T:MongoAdapters.MongoOutputAdapter">
