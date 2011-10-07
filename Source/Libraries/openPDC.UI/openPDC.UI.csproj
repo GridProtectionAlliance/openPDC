@@ -113,11 +113,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataModels\BasicStatisticInfo.cs" />
     <Compile Include="DataModels\CalculatedMeasurement.cs" />
     <Compile Include="DataModels\Device.cs" />
-    <Compile Include="DataModels\DeviceMeasurementData.cs" />
-    <Compile Include="DataModels\InputMonitorData.cs" />
     <Compile Include="DataModels\InputWizardDevice.cs" />
     <Compile Include="DataModels\OutputStream.cs" />
     <Compile Include="DataModels\OutputStreamDevice.cs" />
@@ -129,8 +126,6 @@
     <Compile Include="DataModels\RealTimeStream.cs" />
     <Compile Include="DataModels\RealTimeStatistic.cs" />
     <Compile Include="DataModels\Statistic.cs" />
-    <Compile Include="DataModels\TimeTaggedMeasurement.cs" />
-    <Compile Include="IsolatedStorageManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

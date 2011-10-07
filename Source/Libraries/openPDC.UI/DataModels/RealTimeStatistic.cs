@@ -388,6 +388,9 @@ namespace openPDC.UI.DataModels
         /// </summary>
         public static Dictionary<int, StreamStatistic> OutputStreamStatistics;
 
+        /// <summary>
+        /// Defines collection of device ids with associated statistical measurements.
+        /// </summary>
         public static Dictionary<int, ObservableCollection<StatisticMeasurement>> DevicesWithStatisticMeasurements;
 
         #endregion

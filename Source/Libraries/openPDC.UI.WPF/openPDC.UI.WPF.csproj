@@ -143,15 +143,8 @@
     <Compile Include="UserControls\CalculatedMeasurementUserControl.xaml.cs">
       <DependentUpon>CalculatedMeasurementUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\DeviceDetailInfoUserControl.xaml.cs">
-      <DependentUpon>DeviceDetailInfoUserControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\DeviceListUserControl.xaml.cs">
       <DependentUpon>DeviceListUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\DeviceMeasurementsUserControl.xaml.cs">
-      <DependentUpon>DeviceMeasurementsUserControl.xaml</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
     <Compile Include="UserControls\DeviceUserControl.xaml.cs">
       <DependentUpon>DeviceUserControl.xaml</DependentUpon>
@@ -159,14 +152,8 @@
     <Compile Include="UserControls\InputStatusMonitorUserControl.xaml.cs">
       <DependentUpon>InputStatusMonitorUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\InputStatusUserControl.xaml.cs">
-      <DependentUpon>InputStatusUserControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\InputWizardUserControl.xaml.cs">
       <DependentUpon>InputWizardUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\OutputStreamAddDeviceUserControl.xaml.cs">
-      <DependentUpon>OutputStreamAddDeviceUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\OutputStreamCurrentDeviceUserControl.xaml.cs">
       <DependentUpon>OutputStreamCurrentDeviceUserControl.xaml</DependentUpon>
@@ -197,9 +184,6 @@
     </Compile>
     <Compile Include="UserControls\RealTimeMeasurementUserControl.xaml.cs">
       <DependentUpon>RealTimeMeasurementUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\RealTimeStatisticsUserControl.xaml.cs">
-      <DependentUpon>RealTimeStatisticsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\RealTimeStatisticUserControl.xaml.cs">
       <DependentUpon>RealTimeStatisticUserControl.xaml</DependentUpon>
@@ -242,17 +226,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\DeviceDetailInfoUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UserControls\DeviceListUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\DeviceMeasurementsUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\DeviceUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -262,17 +238,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\InputStatusUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UserControls\InputWizardUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\OutputStreamAddDeviceUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\OutputStreamCurrentDeviceUserControl.xaml">
       <SubType>Designer</SubType>
@@ -313,10 +281,6 @@
     <Page Include="UserControls\RealTimeMeasurementUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\RealTimeStatisticsUserControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\RealTimeStatisticUserControl.xaml">
       <SubType>Designer</SubType>

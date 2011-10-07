@@ -52,7 +52,6 @@ namespace openPDCManager.UI.ViewModels
         private RelayCommand m_wizardCommand;
         private RelayCommand m_buildCommandChannelCommand;
         private RelayCommand m_buildDataChannelCommand;
-        private Dictionary<Guid, string> m_nodeLookupList;
         private string m_runtimeID;
 
         #endregion

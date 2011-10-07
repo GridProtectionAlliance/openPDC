@@ -269,8 +269,8 @@
 
                             <TextBlock Text="{tsfBinding:Column Path=ID}" Width="75" FontSize="{StaticResource SmallTextSize}" TextAlignment="Left"/>                            
                             <TextBlock Text="{tsfBinding:Column Path=StatisticName}" Width="100" FontSize="{StaticResource SmallTextSize}" TextAlignment="Left"/>                            
-                            <TextBlock Text="{tsfBinding:Column Path=Value}" FontSize="{StaticResource SmallTextSize}" Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" Width="175" TextAlignment="Center"/>
-                            <TextBlock Text="{tsfBinding:Column Path=TimeTag}" TextAlignment="Center" Width="100" FontSize="{StaticResource SmallTextSize}"/>    
+                            <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" FontSize="{StaticResource SmallTextSize}" Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" Width="175" TextAlignment="Center"/>
+                            <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" TextAlignment="Center" Width="100" FontSize="{StaticResource SmallTextSize}"/>    
                         </StackPanel>                                      
                             
                     </DataTemplate>

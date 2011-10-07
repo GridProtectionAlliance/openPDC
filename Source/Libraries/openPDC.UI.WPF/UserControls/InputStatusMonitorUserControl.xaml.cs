@@ -609,7 +609,7 @@ namespace openPDC.UI.UserControls
                     m_synchronizedSubscriber.Start();
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 //Popup("Failed to initialize subscription." + Environment.NewLine + ex.Message, "Failed to Subscribe", MessageBoxImage.Error);
             }

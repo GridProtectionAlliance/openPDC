@@ -29,11 +29,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using TimeSeriesFramework.UI;
 using TVA.Data;
-using System.ComponentModel;
 
 namespace openPDC.UI.DataModels
 {
@@ -346,6 +346,7 @@ namespace openPDC.UI.DataModels
         /// Gets a <see cref="Dictionary{T1,T2}"/> style list of <see cref="OutputStreamDevicePhasor"/> information.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamDeviceID">ID of the output stream device to filter data.</param>
         /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
         /// <returns><see cref="Dictionary{T1,T2}"/> containing ID and Label of OutputStreamDevicePhasors defined in the database.</returns>
         public static Dictionary<int, string> GetLookupList(AdoDataConnection database, int outputStreamDeviceID, bool isOptional = false)

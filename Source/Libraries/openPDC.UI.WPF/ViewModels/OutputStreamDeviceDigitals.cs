@@ -28,7 +28,7 @@ using TimeSeriesFramework.UI;
 
 namespace openPDC.UI.ViewModels
 {
-    // <summary>
+    /// <summary>
     /// Class to hold bindable <see cref="OutputStreamDeviceDigital"/> collection and selected OutputStreamDeviceDigital for UI.
     /// </summary>
     internal class OutputStreamDeviceDigitals : PagedViewModelBase<OutputStreamDeviceDigital, int>
@@ -58,7 +58,7 @@ namespace openPDC.UI.ViewModels
             {
                 return m_outputStreamDeviceID;
             }
-             set
+            set
             {
                 m_outputStreamDeviceID = value;
             }
@@ -71,6 +71,7 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamDeviceDigitals "/> class.
         /// </summary>
+        /// <param name="outputStreamDeviceID">ID of the output stream device.</param>
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         public OutputStreamDeviceDigitals(int outputStreamDeviceID, int itemsPerPage, bool autoSave = true)

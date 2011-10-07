@@ -31,7 +31,7 @@ using TimeSeriesFramework.UI;
 
 namespace openPDC.UI.ViewModels
 {
-    // <summary>
+    /// <summary>
     /// Class to hold bindable <see cref="OutputStreamDeviceAnalog"/> collection and selected OutputStreamDeviceAnalog for UI.
     /// </summary>
     internal class OutputStreamDeviceAnalogs : PagedViewModelBase<OutputStreamDeviceAnalog, int>
@@ -96,7 +96,7 @@ namespace openPDC.UI.ViewModels
             m_outputStreamDeviceID = outputStreamDeviceID;
             ItemsPerPage = itemsPerPage;
             Load();
-                        
+
             m_typeLookupList = new Dictionary<int, string>();
             m_typeLookupList.Add(0, "Single point-on-wave");
             m_typeLookupList.Add(1, "RMS of analog input");

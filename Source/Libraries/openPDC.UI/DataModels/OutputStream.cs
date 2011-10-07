@@ -936,6 +936,12 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Retrieves statistic measurements associated with output stream.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamAcronym">Acronym of the output stream to filter data.</param>
+        /// <returns>Collection of <see cref="Measurement"/>.</returns>
         public static List<Measurement> GetOutputStreamStatistics(AdoDataConnection database, string outputStreamAcronym)
         {
             try
@@ -953,7 +959,15 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
-        public static string UpdateOutputStreamStatistics(AdoDataConnection database, string oldAcronym, string newAcronym, string oldName, string newName)
+        /// <summary>
+        /// Updates statistic measurement meta data to reflect change in output stream.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="oldAcronym">Output stream original acronym.</param>
+        /// <param name="newAcronym">Output stream new acronym.</param>
+        /// <param name="oldName">Output stream old name.</param>
+        /// <param name="newName">Output stream new name.</param>        
+        public static void UpdateOutputStreamStatistics(AdoDataConnection database, string oldAcronym, string newAcronym, string oldName, string newName)
         {
             bool createdConnection = false;
 
@@ -972,8 +986,6 @@ namespace openPDCManager.UI.DataModels
                         Measurement.Save(database, measurement);
                     }
                 }
-
-                return "";
             }
             finally
             {

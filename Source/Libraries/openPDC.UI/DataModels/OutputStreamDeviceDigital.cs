@@ -307,11 +307,11 @@ namespace openPDC.UI.DataModels
             }
         }
 
-        // <summary>
+        /// <summary>
         /// Saves <see cref="OutputStreamDeviceDigital"/> information to database.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="OutputStreamDeviceDigital">Information about <see cref="OutputStreamDeviceDigital"/>.</param>        
+        /// <param name="outputStreamDeviceDigital">Information about <see cref="OutputStreamDeviceDigital"/>.</param>        
         /// <returns>String, for display use, indicating success.</returns>
         public static string Save(AdoDataConnection database, OutputStreamDeviceDigital outputStreamDeviceDigital)
         {

@@ -566,7 +566,7 @@ namespace openPDC.UI.DataModels
         // Static Methods
 
         /// <summary>
-        /// Loads <see cref="Company"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// Loads <see cref="CalculatedMeasurement"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>        
         /// <returns>Collection of <see cref="CalculatedMeasurement"/>.</returns>
@@ -626,7 +626,7 @@ namespace openPDC.UI.DataModels
         }
 
         /// <summary>
-        /// Gets a <see cref="Dictionary{T1,T2}"/> style list of <see cref="Company"/> information.
+        /// Gets a <see cref="Dictionary{T1,T2}"/> style list of <see cref="CalculatedMeasurement"/> information.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
@@ -659,7 +659,7 @@ namespace openPDC.UI.DataModels
         }
 
         /// <summary>
-        /// Saves <see cref="Company"/> information to database.
+        /// Saves <see cref="CalculatedMeasurement"/> information to database.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="calculatedMeasurement">Information about <see cref="CalculatedMeasurement"/>.</param>        
@@ -726,7 +726,7 @@ namespace openPDC.UI.DataModels
         }
 
         /// <summary>
-        /// Deletes specified <see cref="Company"/> record from database.
+        /// Deletes specified <see cref="CalculatedMeasurement"/> record from database.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="calculatedMeasurementID">ID of the record to be deleted.</param>
