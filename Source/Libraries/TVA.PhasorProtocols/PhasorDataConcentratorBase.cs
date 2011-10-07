@@ -577,6 +577,21 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Gets the flag indicating if this adapter supports temporal processing.
+        /// </summary>
+        /// <remarks>
+        /// Since the concentrator is designed to open sockets and produce data streams, it is expected
+        /// that this would not be desired in a temporal data streaming session.
+        /// </remarks>
+        public override bool SupportsTemporalProcessing
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Returns the detailed status of this <see cref="PhasorDataConcentratorBase"/>.
         /// </summary>
         public override string Status

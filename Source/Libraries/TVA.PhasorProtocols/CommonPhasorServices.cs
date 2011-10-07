@@ -353,6 +353,21 @@ namespace TVA.PhasorProtocols
             }
         }
 
+        /// <summary>
+        /// Gets the flag indicating if this adapter supports temporal processing.
+        /// </summary>
+        /// <remarks>
+        /// Since the common phasor services is designed to assist in various real-time operations,
+        /// it is expected that this would not be desired in a temporal data streaming session.
+        /// </remarks>
+        public override bool SupportsTemporalProcessing
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]

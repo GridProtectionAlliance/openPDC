@@ -478,6 +478,21 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Gets the flag indicating if this adapter supports temporal processing.
+        /// </summary>
+        /// <remarks>
+        /// Since the phasor measurement mapper is designed to open sockets and connect to data streams,
+        /// it is expected that this would not be desired in a temporal data streaming session.
+        /// </remarks>
+        public override bool SupportsTemporalProcessing
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Returns the detailed status of the data input source.
         /// </summary>
         public override string Status

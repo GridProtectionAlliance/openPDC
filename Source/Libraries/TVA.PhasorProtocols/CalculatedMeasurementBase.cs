@@ -232,6 +232,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -324,6 +325,7 @@ namespace TVA.PhasorProtocols
         private SignalType[] m_inputMeasurementKeyTypes;
         private SignalType[] m_outputMeasurementTypes;
         private string m_configurationSection;
+        private bool m_supportsTemporalProcessing;
 
         #endregion
 
@@ -343,7 +345,7 @@ namespace TVA.PhasorProtocols
                 base.InputMeasurementKeys = value;
 
                 m_inputMeasurementKeyTypes = new SignalType[value.Length];
-                
+
                 for (int i = 0; i < m_inputMeasurementKeyTypes.Length; i++)
                 {
                     m_inputMeasurementKeyTypes[i] = LookupSignalType(value[i]);
@@ -407,6 +409,17 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_configurationSection = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the flag indicating if this adapter supports temporal processing.
+        /// </summary>
+        public override bool SupportsTemporalProcessing
+        {
+            get
+            {
+                return m_supportsTemporalProcessing;
             }
         }
 
@@ -478,12 +491,20 @@ namespace TVA.PhasorProtocols
         {
             base.Initialize();
 
+            Dictionary<string, string> settings = Settings;
+            string setting;
+
             // Load optional parameters
-            if (!Settings.TryGetValue("configurationSection", out m_configurationSection))
+            if (!settings.TryGetValue("configurationSection", out m_configurationSection))
                 m_configurationSection = Name;
 
             if (string.IsNullOrEmpty(m_configurationSection))
                 m_configurationSection = Name;
+
+            if (settings.TryGetValue("supportsTemporalProcessing", out setting))
+                m_supportsTemporalProcessing = setting.ParseBoolean();
+            else
+                m_supportsTemporalProcessing = false;
         }
 
         // Lookup signal type for given measurement key
@@ -500,10 +521,10 @@ namespace TVA.PhasorProtocols
             {
                 OnProcessException(new InvalidOperationException(string.Format("Failed to lookup signal type for measurement {0}: {1}", key.ToString(), ex.Message), ex));
             }
-            
+
             return SignalType.NONE;
         }
 
-        #endregion        
+        #endregion
     }
 }

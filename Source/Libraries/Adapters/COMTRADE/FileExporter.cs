@@ -154,6 +154,17 @@ namespace Comtrade
         }
 
         /// <summary>
+        /// Gets the flag indicating if this adapter supports temporal processing.
+        /// </summary>
+        public override bool SupportsTemporalProcessing
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Returns the detailed status of the <see cref="FileExporter"/>.
         /// </summary>
         public override string Status
