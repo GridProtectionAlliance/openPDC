@@ -28,7 +28,7 @@ using TimeSeriesFramework.UI;
 using TVA.ErrorManagement;
 using TVA.Reflection;
 
-namespace TestUI
+namespace openPDCManager
 {
     /// <summary>
     /// Interaction logic for App.xaml

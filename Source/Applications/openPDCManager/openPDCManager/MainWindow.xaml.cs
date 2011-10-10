@@ -34,7 +34,7 @@ using TimeSeriesFramework.UI.DataModels;
 using TVA.IO;
 using TVA.Reflection;
 
-namespace TestUI
+namespace openPDCManager
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -118,6 +118,7 @@ namespace TestUI
         void MainWindow_Unloaded(object sender, RoutedEventArgs e)
         {
             CommonFunctions.SetRetryServiceConnection(false);
+            Properties.Settings.Default.Save();
         }
 
         /// <summary>
