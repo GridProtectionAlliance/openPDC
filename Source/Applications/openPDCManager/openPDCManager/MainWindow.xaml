@@ -10,6 +10,7 @@
         ResizeMode="CanResize"
         MinHeight="600"
         MinWidth="800"
+        xmlns:self="clr-namespace:openPDCManager"
         ForceLoginDisplay="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ForceLoginDisplay, Mode=TwoWay}"
         Height="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationHeight, Mode=TwoWay}"
         Width="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationWidth, Mode=TwoWay}"
