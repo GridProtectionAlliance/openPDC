@@ -55,6 +55,7 @@ namespace openPDC.UI.ViewModels
         private RelayCommand m_phasorCommand;
         private RelayCommand m_analogCommand;
         private RelayCommand m_digitalCommand;
+        private bool m_mirrorMode;
 
         #endregion
 
@@ -181,6 +182,17 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets a boolean flag indicating if this screen is loaded for IEEE C37.118 mirroring.
+        /// </summary>
+        public bool MirrorMode
+        {
+            get
+            {
+                return m_mirrorMode;
+            }
+        }
+
         #endregion
 
         #region [ Constructor ]
@@ -217,6 +229,8 @@ namespace openPDC.UI.ViewModels
             m_coordinateDataformatLookupList.Add("", "Select Coordinate Format");
             m_coordinateDataformatLookupList.Add("Polar", "Polar");
             m_coordinateDataformatLookupList.Add("Rectangular", "Rectangular");
+
+            bool.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MirrorMode").ToString(), out m_mirrorMode);
         }
 
         #endregion

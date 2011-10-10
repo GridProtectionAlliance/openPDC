@@ -23,6 +23,7 @@
 //******************************************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -81,5 +82,10 @@ namespace openPDC.UI.UserControls
         }
 
         #endregion
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBoxMirrorSource.SelectedItem = new KeyValuePair<string, string>(m_dataContext.CurrentItem.MirroringSourceDevice, m_dataContext.CurrentItem.MirroringSourceDevice);
+        }
     }
 }

@@ -714,10 +714,15 @@ namespace openPDCManager.UI.DataModels
             }
             set
             {
-                if (m_mirroringSourceDevice != value && MessageBox.Show("WARNING: This will replace all existing devices and measurements associated with this output stream. Do you want to continue?", "IEEE C37.118 Mirroring", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                    m_mirroringSourceDevice = value;
+                if (m_mirroringSourceDevice != value)
+                {
+                    if (MessageBox.Show("WARNING: This will replace all existing devices and measurements associated with this output stream. Do you want to continue?", "IEEE C37.118 Mirroring", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    {
+                        m_mirroringSourceDevice = value;
+                        OnPropertyChanged("MirroringSourceDevice");
+                    }
+                }
 
-                OnPropertyChanged("MirroringSourceDevice");
             }
         }
 
@@ -792,7 +797,7 @@ namespace openPDCManager.UI.DataModels
                                                                               AnalogScalingValue = Convert.ToInt32(item.Field<object>("AnalogScalingValue")),
                                                                               DigitalMaskValue = Convert.ToInt32(item.Field<object>("DigitalMaskValue")),
                                                                               PerformTimestampReasonabilityCheck = Convert.ToBoolean(item.Field<object>("PerformTimeReasonabilityCheck")),
-                                                                              MirroringSourceDevice = ""
+                                                                              m_mirroringSourceDevice = GetMirroringSource(database, Convert.ToInt32(item.Field<object>("ID")))
                                                                           });
                 return outputStreamList;
 
@@ -894,7 +899,7 @@ namespace openPDCManager.UI.DataModels
                         CommonFunctions.CurrentUser, database.UtcNow(), outputStream.ID);
                 }
 
-                if (mirrorMode && !string.IsNullOrEmpty(outputStream.MirroringSourceDevice))
+                if (mirrorMode)
                 {
                     // Get ID of the output stream if a new one was inserted above.
                     if (outputStream.ID == 0)
@@ -905,18 +910,17 @@ namespace openPDCManager.UI.DataModels
                     foreach (OutputStreamDevice outputStreamDevice in outputStreamDevices)
                         OutputStreamDevice.Delete(database, outputStream.ID, outputStreamDevice.Acronym);
 
-                    // Get list of input devices, filter by original source = outputstream.MirrorSourceDevice.
-                    ObservableCollection<Device> devices = Device.GetDevices(database, "WHERE OriginalSource = '" + outputStream.MirroringSourceDevice + "'");
+                    if (!string.IsNullOrEmpty(outputStream.MirroringSourceDevice))
+                    {
+                        // Get list of input devices, filter by original source = outputstream.MirrorSourceDevice.
+                        ObservableCollection<Device> devices = Device.GetDevices(database, "WHERE OriginalSource = '" + outputStream.MirroringSourceDevice + "'");
 
-                    // Add these above input devices as output stream devices.
-                    OutputStreamDevice.AddDevices(database, outputStream.ID, devices, true, true);
+                        // Add these above input devices as output stream devices.
+                        OutputStreamDevice.AddDevices(database, outputStream.ID, devices, true, true);
+                    }
                 }
 
                 return "Output Stream Information Saved Successfully";
-            }
-            catch (Exception ex)
-            {
-                return ex.ToString();
             }
             finally
             {

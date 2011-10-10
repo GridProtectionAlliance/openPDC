@@ -52,6 +52,9 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or set outputstream device id.
+        /// </summary>
         public int OutputStreamDeviceID
         {
             get
@@ -61,6 +64,14 @@ namespace openPDC.UI.ViewModels
             set
             {
                 m_outputStreamDeviceID = value;
+            }
+        }
+
+        public override bool CanSave
+        {
+            get
+            {
+                return (base.CanSave && !Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("MirrorMode").ToString()));
             }
         }
 

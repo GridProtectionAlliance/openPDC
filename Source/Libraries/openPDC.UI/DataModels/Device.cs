@@ -251,7 +251,7 @@ namespace openPDC.UI.DataModels
         {
             get
             {
-                return m_name;
+                return m_originalSource;
             }
         }
 
@@ -1362,7 +1362,8 @@ namespace openPDC.UI.DataModels
                     m_protocolName = row.Field<string>("ProtocolName"),
                     m_interconnectionName = row.Field<string>("InterconnectionName"),
                     m_nodeName = row.Field<string>("NodeName"),
-                    m_parentAcronym = row.Field<string>("ParentAcronym")
+                    m_parentAcronym = row.Field<string>("ParentAcronym"),
+                    m_originalSource = row.Field<string>("OriginalSource")
                 };
 
                 return device;
@@ -1439,7 +1440,8 @@ namespace openPDC.UI.DataModels
                         m_protocolName = row.Field<string>("ProtocolName"),
                         m_interconnectionName = row.Field<string>("InterconnectionName"),
                         m_nodeName = row.Field<string>("NodeName"),
-                        m_parentAcronym = row.Field<string>("ParentAcronym")
+                        m_parentAcronym = row.Field<string>("ParentAcronym"),
+                        m_originalSource = row.Field<string>("OriginalSource")
                     });
                 }
 
@@ -1588,7 +1590,8 @@ namespace openPDC.UI.DataModels
                         m_protocolName = row.Field<string>("ProtocolName"),
                         m_interconnectionName = row.Field<string>("InterconnectionName"),
                         m_nodeName = row.Field<string>("NodeName"),
-                        m_parentAcronym = row.Field<string>("ParentAcronym")
+                        m_parentAcronym = row.Field<string>("ParentAcronym"),
+                        m_originalSource = row.Field<string>("OriginalSource")
                     });
                 }
 
@@ -1623,8 +1626,7 @@ namespace openPDC.UI.DataModels
                 DataTable deviceTable;
                 string query;
 
-                //TODO: Research how to retrieve DISTINCT values from SQL, Oracle, MySQl etc.
-                query = database.ParameterizedQueryString("SELECT OriginalSource FROM Device WHERE NodeID = {0} AND OriginalSource IS NOT NULL ORDER BY Acronym", "nodeID");
+                query = database.ParameterizedQueryString("SELECT DISTINCT OriginalSource FROM Device WHERE NodeID = {0} AND OriginalSource IS NOT NULL ORDER BY OriginalSource", "nodeID");
                 deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
 
                 foreach (DataRow row in deviceTable.Rows)

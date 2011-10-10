@@ -82,6 +82,9 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets output stream device id.
+        /// </summary>
         public int OutputStreamDeviceID
         {
             get
@@ -91,6 +94,14 @@ namespace openPDC.UI.ViewModels
             set
             {
                 m_outputStreamDeviceID = value;
+            }
+        }
+
+        public override bool CanSave
+        {
+            get
+            {
+                return (base.CanSave && !Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("MirrorMode").ToString()));
             }
         }
 
@@ -110,7 +121,7 @@ namespace openPDC.UI.ViewModels
             ItemsPerPage = itemsPerPage;
             OutputStreamDeviceID = outputStreamDeviceID;
             Load();
-                        
+
             m_phaseLookupList = new Dictionary<string, string>();
             m_phaseLookupList.Add("+", "Positive Sequence");
             m_phaseLookupList.Add("-", "Negative Sequence");

@@ -270,6 +270,9 @@ namespace openPDCManager.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets list of devices to use for mirroring.
+        /// </summary>
         public Dictionary<string, string> MirroringSourceLookupList
         {
             get
@@ -288,8 +291,10 @@ namespace openPDCManager.UI.ViewModels
         #region [ Constructor ]
 
         public OutputStreams(int itemsPerPage, bool autoSave = true)
-            : base(itemsPerPage, autoSave)
+            : base(0, true)
         {
+            ItemsPerPage = itemsPerPage;
+
             m_nodelookupList = Node.GetLookupList(null);
 
             bool.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MirrorMode").ToString(), out m_mirrorMode);
@@ -314,6 +319,8 @@ namespace openPDCManager.UI.ViewModels
             m_coordinateFormatLookupList = new Dictionary<string, string>();
             m_coordinateFormatLookupList.Add("Polar", "Polar");
             m_coordinateFormatLookupList.Add("Rectangular", "Rectangular");
+
+            Load();
         }
 
         #endregion
@@ -521,7 +528,7 @@ namespace openPDCManager.UI.ViewModels
 
         protected override void m_currentItem_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "MirroringSourceID")
+            if (e.PropertyName == "MirroringSourceDevice")
             {
 
             }
@@ -534,6 +541,7 @@ namespace openPDCManager.UI.ViewModels
             try
             {
                 string result = OutputStream.Save(null, CurrentItem, m_mirrorMode);
+                CurrentItemPropertyChanged = false;
                 Popup(result, "Save " + DataModelName, MessageBoxImage.Information);
                 Load();
             }
