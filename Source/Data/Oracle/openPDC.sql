@@ -316,7 +316,7 @@ CREATE TABLE OutputStreamDeviceDigital(
     NodeID NCHAR(36) NOT NULL,
     OutputStreamDeviceID INT NOT NULL,
     ID INT NOT NULL,
-    Label VARCHAR2(200) NOT NULL,
+    Label CLOB NOT NULL,
     MaskValue INT DEFAULT 0 NOT NULL,
     LoadOrder INT DEFAULT 0 NOT NULL,
     CreatedOn DATE DEFAULT N'' NOT NULL,
@@ -1310,12 +1310,12 @@ FROM VendorDevice VD INNER JOIN Vendor V ON VD.VendorID = V.ID;
                       
 CREATE VIEW DeviceDetail
 AS
-SELECT D.NodeID, D.ID, D.ParentID, D.UniqueID, D.Acronym, COALESCE(D.Name, '') AS Name, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
+SELECT D.NodeID, D.ID, D.ParentID, D.UniqueID, D.Acronym, COALESCE(D.Name, '') AS Name, D.OriginalSource, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
     D.ProtocolID, D.Longitude, D.Latitude, D.InterconnectionID, D.ConnectionString || EMPTY_CLOB() AS ConnectionString, COALESCE(D.TimeZone, '') AS TimeZone, 
     COALESCE(D.FramesPerSecond, 30) AS FramesPerSecond, D.TimeAdjustmentTicks, D.DataLossInterval, D.ConnectOnDemand, D.ContactList || EMPTY_CLOB() AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
     AS CompanyName, COALESCE(C.Acronym, '') AS CompanyAcronym, COALESCE(C.MapAcronym, N'') AS CompanyMapAcronym, COALESCE(H.Acronym, '') 
     AS HistorianAcronym, COALESCE(VD.VendorAcronym, '') AS VendorAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(P.Name, '') 
-    AS ProtocolName, P.Type AS ProtocolType, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym, D.CreatedOn, D.AllowedParsingExceptions, 
+    AS ProtocolName, P.Type AS ProtocolType, P.Category, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym, D.CreatedOn, D.AllowedParsingExceptions, 
     D.ParsingExceptionWindow, D.DelayedConnectionInterval, D.AllowUseOfCachedConfiguration, D.AutoStartDataParsingSequence, D.SkipDisableRealTimeData, 
     D.MeasurementReportingInterval
 FROM Device D LEFT OUTER JOIN

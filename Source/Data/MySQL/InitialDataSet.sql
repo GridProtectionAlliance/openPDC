@@ -1,7 +1,7 @@
--- Script auto-generated generated from Access database openPDC.mdb method GenerateInitialDataScript
+-- Script auto-generated generated from Access database openPG.mdb method GenerateInitialDataScript
 -- 11/5/2010 4:53:57 PM
 
-USE openPDC;
+USE openPG;
 
 INSERT INTO Company(Acronym, MapAcronym, Name, LoadOrder) VALUES('AEP', 'AEP', 'American Electric Power', 1);
 INSERT INTO Company(Acronym, MapAcronym, Name, LoadOrder) VALUES('AGP', 'AGP', 'Allegheny Power', 2);

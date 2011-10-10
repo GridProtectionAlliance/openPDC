@@ -1,5 +1,5 @@
 --  ----------------------------------------------------------------------------------------------------
---  openPDC Data Structures for MySQL - Gbtc
+--  openPG Data Structures for MySQL - Gbtc
 --
 --  Copyright © 2011, Grid Protection Alliance.  All Rights Reserved.
 --
@@ -20,14 +20,14 @@
 --       Generated original version of schema.
 --  ----------------------------------------------------------------------------------------------------
 
-CREATE DATABASE openPDC CHARACTER SET = UTF8;
-USE openPDC;
+CREATE DATABASE openPG CHARACTER SET = UTF8;
+USE openPG;
 
 -- The following statements are used to create
 -- a user with access to the database.
 -- Be sure to change the username and password.
 -- CREATE USER NewUser IDENTIFIED BY 'MyPassword';
--- GRANT SELECT, UPDATE, INSERT, DELETE ON openPDC.* TO NewUser;
+-- GRANT SELECT, UPDATE, INSERT, DELETE ON openPG.* TO NewUser;
 
 CREATE TABLE ErrorLog(
     ID INT AUTO_INCREMENT NOT NULL,
@@ -239,7 +239,7 @@ CREATE TABLE OutputStreamDeviceDigital(
     NodeID NCHAR(36) NOT NULL,
     OutputStreamDeviceID INT NOT NULL,
     ID INT AUTO_INCREMENT NOT NULL,
-    Label VARCHAR(200) NOT NULL,
+    Label TEXT NOT NULL,
     MaskValue INT NOT NULL DEFAULT 0,
     LoadOrder INT NOT NULL DEFAULT 0,
     CreatedOn DATETIME NOT NULL DEFAULT N'0000-00-00 00:00:00',
@@ -1103,12 +1103,12 @@ FROM VendorDevice AS VD INNER JOIN Vendor AS V ON VD.VendorID = V.ID;
                       
 CREATE VIEW DeviceDetail
 AS
-SELECT D.NodeID, D.ID, D.ParentID, D.UniqueID, D.Acronym, COALESCE(D.Name, '') AS Name, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
+SELECT D.NodeID, D.ID, D.ParentID, D.UniqueID, D.Acronym, COALESCE(D.Name, '') AS Name, D.OriginalSource, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
     D.ProtocolID, D.Longitude, D.Latitude, D.InterconnectionID, COALESCE(D.ConnectionString, '') AS ConnectionString, COALESCE(D.TimeZone, '') AS TimeZone, 
     COALESCE(D.FramesPerSecond, 30) AS FramesPerSecond, D.TimeAdjustmentTicks, D.DataLossInterval, D.ConnectOnDemand, COALESCE(D.ContactList, '') AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
     AS CompanyName, COALESCE(C.Acronym, '') AS CompanyAcronym, COALESCE(C.MapAcronym, '') AS CompanyMapAcronym, COALESCE(H.Acronym, '') 
     AS HistorianAcronym, COALESCE(VD.VendorAcronym, '') AS VendorAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(P.Name, '') 
-    AS ProtocolName, P.Type AS ProtocolType, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym, D.CreatedOn, D.AllowedParsingExceptions, 
+    AS ProtocolName, P.Type AS ProtocolType, P.Category, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym, D.CreatedOn, D.AllowedParsingExceptions, 
     D.ParsingExceptionWindow, D.DelayedConnectionInterval, D.AllowUseOfCachedConfiguration, D.AutoStartDataParsingSequence, D.SkipDisableRealTimeData, 
     D.MeasurementReportingInterval
 FROM Device AS D LEFT OUTER JOIN
@@ -1161,10 +1161,7 @@ FROM Phasor P LEFT OUTER JOIN Phasor DP ON P.DestinationPhasorID = DP.ID
 LEFT OUTER JOIN Device D ON P.DeviceID = D.ID;
 
 CREATE VIEW StatisticMeasurement AS
-SELECT MeasurementDetail.CompanyID, MeasurementDetail.CompanyAcronym, MeasurementDetail.CompanyName, MeasurementDetail.SignalID, MeasurementDetail.HistorianID, MeasurementDetail.HistorianAcronym, MeasurementDetail.HistorianConnectionString, MeasurementDetail.PointID, MeasurementDetail.PointTag, MeasurementDetail.AlternateTag, MeasurementDetail.DeviceID, 
-    MeasurementDetail.NodeID, MeasurementDetail.DeviceAcronym, MeasurementDetail.DeviceName, MeasurementDetail.FramesPerSecond, MeasurementDetail.DeviceEnabled, MeasurementDetail.ContactList, MeasurementDetail.VendorDeviceID, MeasurementDetail.VendorDeviceName, MeasurementDetail.VendorDeviceDescription, MeasurementDetail.ProtocolID, 
-    MeasurementDetail.ProtocolAcronym, MeasurementDetail.ProtocolName, MeasurementDetail.SignalTypeID, MeasurementDetail.PhasorSourceIndex, MeasurementDetail.PhasorLabel, MeasurementDetail.PhasorType, MeasurementDetail.Phase, MeasurementDetail.SignalReference, MeasurementDetail.Adder, MeasurementDetail.Multiplier, MeasurementDetail.Description, 
-    MeasurementDetail.Subscribed, MeasurementDetail.Internal, MeasurementDetail.Enabled, MeasurementDetail.EngineeringUnits, MeasurementDetail.Source, MeasurementDetail.SignalAcronym, MeasurementDetail.SignalName, MeasurementDetail.SignalTypeSuffix, MeasurementDetail.Longitude, MeasurementDetail.Latitude, CASE WHEN LOCATE('!IS', MeasurementDetail.SignalReference) > 0 THEN 'InputStream' WHEN LOCATE('!OS', MeasurementDetail.SignalReference) > 0 THEN 'OutputStream' ELSE 'Device' END AS MeasurementSource
+SELECT MeasurementDetail.*, CASE WHEN LOCATE('!IS', MeasurementDetail.SignalReference) > 0 THEN 'InputStream' WHEN LOCATE('!OS', MeasurementDetail.SignalReference) > 0 THEN 'OutputStream' ELSE 'Device' END AS MeasurementSource
 FROM MeasurementDetail 
 WHERE MeasurementDetail.SignalAcronym = 'STAT';
 

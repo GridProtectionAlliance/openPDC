@@ -1,7 +1,7 @@
--- Script auto-generated generated from Access database openPDC.mdb method GenerateSampleDataScript
+-- Script auto-generated generated from Access database openPG.mdb method GenerateSampleDataScript
 -- 7/8/2010 1:09:58 PM
 
-USE openPDC
+USE openPG
 GO
 
 INSERT INTO Node(Name, CompanyID, Description, Settings, MenuType, MenuData, Master, LoadOrder, Enabled) 

@@ -1,4 +1,4 @@
-USE [openPDC]
+USE [openPG]
 GO
 
 CREATE PROCEDURE [dbo].[InsertIntoAuditLog] (@tableName VARCHAR(128), @primaryKeyColumn VARCHAR(128), @primaryKeyValue NVARCHAR(MAX), @deleted BIT = '0') AS	
