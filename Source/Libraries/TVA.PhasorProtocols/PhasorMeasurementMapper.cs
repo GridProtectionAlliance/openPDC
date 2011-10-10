@@ -811,6 +811,8 @@ namespace TVA.PhasorProtocols
 
             if (settings.TryGetValue("executeParseOnSeparateThread", out setting))
                 frameParser.ExecuteParseOnSeparateThread = setting.ParseBoolean();
+            else
+                frameParser.ExecuteParseOnSeparateThread = true;
 
             if (settings.TryGetValue("configurationFile", out setting))
                 LoadConfiguration(setting);
