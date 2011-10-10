@@ -195,6 +195,16 @@ namespace ConfigurationSetupUtility.Screens
             string configurationType = m_state["configurationType"].ToString();
             ClearStatusMessages();
 
+            if (m_state.ContainsKey("oldConnectionString") && !string.IsNullOrWhiteSpace(m_state["oldConnectionString"].ToString()))
+                m_oldConnectionString = m_state["oldConnectionString"].ToString();
+            else
+                m_oldConnectionString = null;
+
+            if (m_state.ContainsKey("oldDataProviderString") && !string.IsNullOrWhiteSpace(m_state["oldDataProviderString"].ToString()))
+                m_oldDataProviderString = m_state["oldDataProviderString"].ToString();
+            else
+                m_oldDataProviderString = null;
+
             // Attempt to establish crypto keys in case they do not exist
             try
             {

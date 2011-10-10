@@ -508,7 +508,7 @@ namespace Database
                             // Create a new autoinc field to hold source value
                             fldAutoInc = new Field(tblSource.Fields, fld.Name, fldLookup.Type);
                             fldAutoInc.AutoIncrementTranslations = fldLookup.AutoIncrementTranslations;
-                            break; // TODO: might not be correct. Was : Exit For
+                            break;
                         }
                     }
                 }
@@ -1073,7 +1073,7 @@ namespace Database
                             if (object.ReferenceEquals(fldLookup.ReferencedBy, FieldStack[x]))
                             {
                                 flgInStack = true;
-                                break; // TODO: might not be correct. Was : Exit For
+                                break;
                             }
                         }
 

@@ -477,7 +477,10 @@ namespace ConfigurationSetupUtility.Screens
                     {
                         // Retrieve the old data provider string from the config file.
                         if (m_oldDataProviderString == null)
+                        {
                             m_oldDataProviderString = child.Attributes["value"].Value;
+                            m_state["oldDataProviderString"] = m_oldDataProviderString;
+                        }
                     }
                     else if (child.Attributes["name"].Value == "ConnectionString")
                     {
@@ -488,6 +491,8 @@ namespace ConfigurationSetupUtility.Screens
 
                             if (Convert.ToBoolean(child.Attributes["encrypted"].Value))
                                 m_oldConnectionString = Cipher.Decrypt(m_oldConnectionString, App.CipherLookupKey, App.CryptoStrength);
+
+                            m_state["oldConnectionString"] = m_oldConnectionString;
                         }
                     }
                 }

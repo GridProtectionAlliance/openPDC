@@ -212,7 +212,7 @@ namespace ConfigurationSetupUtility.Screens
                         // Always make sure that all three needed roles are available for each defined node(s) in the database.
                         ValidateSecurityRoles();
 
-                        //TODO: Figure out if user was on old db structure. If so then find out differences and load values from old db to new db format.
+                        // TODO: Figure out if user was on old db structure. If so then find out differences and load values from old db to new db format.
 
                         // If the user requested it, start or restart the openPDC service.
                         if (m_serviceStartCheckBox.IsChecked.Value)
@@ -323,12 +323,305 @@ namespace ConfigurationSetupUtility.Screens
         {
             // For each Node in new database make sure all roles exist
             IDataReader nodeReader = null;
+            IDbConnection connection = OpenNewConnection();
+
+            if (connection != null)
+            {
+                try
+                {
+                    IDbCommand nodeCommand;
+                    string databaseType = m_state["databaseType"].ToString();
+
+                    nodeCommand = connection.CreateCommand();
+                    nodeCommand.CommandText = "SELECT ID FROM Node";
+                    nodeReader = nodeCommand.ExecuteReader();
+
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(nodeReader);
+
+                    if (nodeReader != null)
+                        nodeReader.Close();
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        string nodeID = row["ID"].ToNonNullString();
+
+                        if (databaseType == "access")
+                            nodeID = "{" + nodeID + "}";
+                        else
+                            nodeID = "'" + nodeID + "'";
+
+                        IDbCommand command = connection.CreateCommand();
+
+                        command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRole WHERE NodeID = {0} AND Name = 'Administrator'", nodeID);
+                        if (Convert.ToInt32(command.ExecuteScalar()) == 0)
+                            AddRolesForNode(connection, nodeID, "Administrator");
+                        else
+                            VerifyAdminUser(connection, nodeID); // Verify an admin user exists for the node and attached to administrator role.
+
+                        command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRole WHERE NodeID = {0} AND Name = 'Editor'", nodeID);
+                        if (Convert.ToInt32(command.ExecuteScalar()) == 0)
+                            AddRolesForNode(connection, nodeID, "Editor");
+
+                        command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRole WHERE NodeID = {0} AND Name = 'Viewer'", nodeID);
+                        if (Convert.ToInt32(command.ExecuteScalar()) == 0)
+                            AddRolesForNode(connection, nodeID, "Viewer");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to validate application roles: " + ex.Message, "Configuration Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    if (nodeReader != null)
+                        nodeReader.Close();
+
+                    if (connection != null)
+                        connection.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds role for newly added node (Administrator, Editor, Viewer).
+        /// </summary>
+        /// <param name="connection">IDbConnection to be used for database operations.</param>
+        /// <param name="nodeID">Node ID to which three roles are being assigned</param>        
+        private void AddRolesForNode(IDbConnection connection, string nodeID, string roleName)
+        {
+            IDbCommand adminCredentialCommand;
+            adminCredentialCommand = connection.CreateCommand();
+
+            if (roleName == "Administrator")
+                adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRole(Name, Description, NodeID, UpdatedBy, CreatedBy) VALUES('Administrator', 'Administrator Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+            else if (roleName == "Editor")
+                adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRole(Name, Description, NodeID, UpdatedBy, CreatedBy) VALUES('Editor', 'Editor Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+            else
+                adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRole(Name, Description, NodeID, UpdatedBy, CreatedBy) VALUES('Viewer', 'Viewer Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
+
+            adminCredentialCommand.ExecuteNonQuery();
+
+            if (roleName == "Administrator")    //verify admin user exists for the node and attached to administrator role.
+                VerifyAdminUser(connection, nodeID);
+        }
+
+        private void VerifyAdminUser(IDbConnection connection, string nodeID)
+        {
+            // Lookup administrator role ID
+            IDbCommand command = connection.CreateCommand();
+            command.CommandText = string.Format("SELECT ID FROM ApplicationRole WHERE Name = 'Administrator' AND NodeID = {0}", nodeID);
+            string adminRoleID = command.ExecuteScalar().ToNonNullString();
+            string databaseType = m_state["databaseType"].ToString();
+
+            bool databaseIsAccess = (databaseType == "access");
+
+            if (databaseIsAccess)
+                adminRoleID = adminRoleID.StartsWith("{") ? adminRoleID : "{" + adminRoleID + "}";
+            else
+                adminRoleID = adminRoleID.StartsWith("'") ? adminRoleID : "'" + adminRoleID + "'";
+
+            // Check if there is any user associated with the administrator role ID in the ApplicationRoleUserAccount table.
+            // if so that means there is atleast one user associated with that role. So we do not need to take any action.
+            // if not that means, user provided on the screen must be attached to this role. Also check if that user exists in 
+            // the UserAccount table. If so, then get the ID otherwise add user and retrieve ID.
+            command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRoleUserAccount WHERE ApplicationRoleID = {0}", adminRoleID);
+            if (Convert.ToInt32(command.ExecuteScalar()) == 0)
+            {
+                if (m_state.ContainsKey("adminUserName"))   //i.e. if security setup screen was displayed during setup.
+                {
+                    command.CommandText = string.Format("Select ID FROM UserAccount WHERE Name = '{0}'", m_state["adminUserName"].ToString());
+                    string adminUserID = command.ExecuteScalar().ToNonNullString();
+
+                    if (!string.IsNullOrEmpty(adminUserID)) //if user exists then attach it to admin role and we'll be done with it.
+                    {
+                        if (databaseIsAccess)
+                            adminUserID = adminUserID.StartsWith("{") ? adminUserID : "{" + adminUserID + "}";
+                        else
+                            adminUserID = adminUserID.StartsWith("'") ? adminUserID : "'" + adminUserID + "'";
+
+                        command.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES({0}, {1})", adminRoleID, adminUserID);
+                        command.ExecuteNonQuery();
+                    }
+                    else    //we need to add user to the UserAccount table and then attach it to admin role.
+                    {
+                        bool databaseIsOracle = (databaseType == "oracle");
+                        char paramChar = databaseIsOracle ? ':' : '@';
+
+                        // Add Administrative User.                
+                        IDbCommand adminCredentialCommand = connection.CreateCommand();
+                        if (m_state["authenticationType"].ToString() == "windows")
+                        {
+                            IDbDataParameter nameParameter = adminCredentialCommand.CreateParameter();
+                            IDbDataParameter createdByParameter = adminCredentialCommand.CreateParameter();
+                            IDbDataParameter updatedByParameter = adminCredentialCommand.CreateParameter();
+
+                            nameParameter.ParameterName = paramChar + "name";
+                            createdByParameter.ParameterName = paramChar + "createdBy";
+                            updatedByParameter.ParameterName = paramChar + "updatedBy";
+
+                            nameParameter.Value = m_state["adminUserName"].ToString();
+                            createdByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
+                            updatedByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
+
+                            adminCredentialCommand.Parameters.Add(nameParameter);
+                            adminCredentialCommand.Parameters.Add(createdByParameter);
+                            adminCredentialCommand.Parameters.Add(updatedByParameter);
+
+                            if (databaseIsOracle)
+                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, DefaultNodeID, CreatedBy, UpdatedBy) VALUES(:name, {0}, :createdBy, :updatedBy)", nodeID);
+                            else
+                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, DefaultNodeID, CreatedBy, UpdatedBy) VALUES(@name, {0}, @createdBy, @updatedBy)", nodeID);
+                        }
+                        else
+                        {
+                            IDbDataParameter nameParameter = adminCredentialCommand.CreateParameter();
+                            IDbDataParameter passwordParameter = adminCredentialCommand.CreateParameter();
+                            IDbDataParameter firstNameParameter = adminCredentialCommand.CreateParameter();
+                            IDbDataParameter lastNameParameter = adminCredentialCommand.CreateParameter();
+                            IDbDataParameter createdByParameter = adminCredentialCommand.CreateParameter();
+                            IDbDataParameter updatedByParameter = adminCredentialCommand.CreateParameter();
+
+                            nameParameter.ParameterName = paramChar + "name";
+                            passwordParameter.ParameterName = paramChar + "password";
+                            firstNameParameter.ParameterName = paramChar + "firstName";
+                            lastNameParameter.ParameterName = paramChar + "lastName";
+                            createdByParameter.ParameterName = paramChar + "createdBy";
+                            updatedByParameter.ParameterName = paramChar + "updatedBy";
+
+                            nameParameter.Value = m_state["adminUserName"].ToString();
+                            passwordParameter.Value = FormsAuthentication.HashPasswordForStoringInConfigFile(@"O3990\P78f9E66b:a35_V©6M13©6~2&[" + m_state["adminPassword"].ToString(), "SHA1");
+                            firstNameParameter.Value = m_state["adminUserFirstName"].ToString();
+                            lastNameParameter.Value = m_state["adminUserLastName"].ToString();
+                            createdByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
+                            updatedByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
+
+                            adminCredentialCommand.Parameters.Add(nameParameter);
+                            adminCredentialCommand.Parameters.Add(passwordParameter);
+                            adminCredentialCommand.Parameters.Add(firstNameParameter);
+                            adminCredentialCommand.Parameters.Add(lastNameParameter);
+                            adminCredentialCommand.Parameters.Add(createdByParameter);
+                            adminCredentialCommand.Parameters.Add(updatedByParameter);
+
+                            if (databaseIsAccess)
+                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, [Password], FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) VALUES" +
+                                    "(@name, @password, @firstName, @lastName, {0}, 0, @createdBy, @updatedBy)", nodeID);
+                            else if (databaseIsOracle)
+                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) VALUES" +
+                                    "(:name, :password, :firstName, :lastName, {0}, 0, :createdBy, :updatedBy)", nodeID);
+                            else
+                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) VALUES" +
+                                    "(@name, @password, @firstName, @lastName, {0}, 0, @createdBy, @updatedBy)", nodeID);
+                        }
+
+                        adminCredentialCommand.ExecuteNonQuery();
+
+                        // Get the admin user ID from the database.
+                        IDataReader userIdReader = null;
+                        try
+                        {
+                            IDbDataParameter nameParameter = adminCredentialCommand.CreateParameter();
+
+                            nameParameter.ParameterName = paramChar + "name";
+                            nameParameter.Value = m_state["adminUserName"].ToString();
+
+                            adminCredentialCommand.CommandText = "SELECT ID FROM UserAccount WHERE Name = " + paramChar + "name";
+                            adminCredentialCommand.Parameters.Clear();
+                            adminCredentialCommand.Parameters.Add(nameParameter);
+                            userIdReader = adminCredentialCommand.ExecuteReader();
+
+                            if (userIdReader.Read())
+                                adminUserID = userIdReader["ID"].ToNonNullString();
+                        }
+                        finally
+                        {
+                            if (userIdReader != null)
+                                userIdReader.Close();
+                        }
+
+                        // Assign Administrative User to Administrator Role.
+                        if (!string.IsNullOrEmpty(adminRoleID) && !string.IsNullOrEmpty(adminUserID))
+                        {
+                            if (databaseIsAccess)
+                                adminUserID = adminUserID.StartsWith("{") ? adminUserID : "{" + adminUserID + "}";
+                            else
+                                adminUserID = adminUserID.StartsWith("'") ? adminUserID : "'" + adminUserID + "'";
+
+                            adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES ({0}, {1})", adminRoleID, adminUserID);
+                            adminCredentialCommand.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+        }
+
+        private IDbConnection OpenOldConnection()
+        {
             IDbConnection connection = null;
+
+            try
+            {
+                string connectionString, dataProviderString;
+
+                if (m_state.ContainsKey("oldConnectionString") && !string.IsNullOrWhiteSpace(m_state["oldConnectionString"].ToString()))
+                    connectionString = m_state["oldConnectionString"].ToString();
+                else
+                    connectionString = null;
+
+                if (m_state.ContainsKey("oldDataProviderString") && !string.IsNullOrWhiteSpace(m_state["oldDataProviderString"].ToString()))
+                    dataProviderString = m_state["oldDataProviderString"].ToString();
+                else
+                    dataProviderString = null;
+
+                if (connectionString != null && dataProviderString != null)
+                {
+                    Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+                    Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
+                    string assemblyName = dataProviderSettings["AssemblyName"];
+                    string connectionTypeName = dataProviderSettings["ConnectionType"];
+                    string connectionSetting;
+
+                    Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
+                    Type connectionType = assembly.GetType(connectionTypeName);
+
+                    if (settings.TryGetValue("Provider", out connectionSetting))
+                    {
+                        // Check if provider is for Access to make sure the path is fully qualified.
+                        if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (settings.TryGetValue("Data Source", out connectionSetting))
+                            {
+                                settings["Data Source"] = FilePath.GetAbsolutePath(connectionSetting);
+                                connectionString = settings.JoinKeyValuePairs();
+                            }
+                        }
+                    }
+
+                    connection = (IDbConnection)Activator.CreateInstance(connectionType);
+                    connection.ConnectionString = connectionString;
+                    connection.Open();
+                }
+            }
+            catch
+            {
+                if (connection != null)
+                    connection.Dispose();
+                connection = null;
+            }
+
+            return connection;
+        }
+
+        private IDbConnection OpenNewConnection()
+        {
+            IDbConnection connection = null;
+
             try
             {
                 string databaseType = m_state["databaseType"].ToString();
-                string connectionString = string.Empty;
-                string dataProviderString = string.Empty;
+                string connectionString = null;
+                string dataProviderString = null;
 
                 if (databaseType == "access")
                 {
@@ -404,242 +697,19 @@ namespace ConfigurationSetupUtility.Screens
                     connection = (IDbConnection)Activator.CreateInstance(connectionType);
                     connection.ConnectionString = connectionString;
                     connection.Open();
-
-                    IDbCommand nodeCommand;
-
-                    nodeCommand = connection.CreateCommand();
-                    nodeCommand.CommandText = "SELECT ID FROM Node";
-                    nodeReader = nodeCommand.ExecuteReader();
-
-                    DataTable dataTable = new DataTable();
-                    dataTable.Load(nodeReader);
-
-                    if (nodeReader != null) nodeReader.Close();
-
-                    foreach (DataRow row in dataTable.Rows)
-                    {
-                        string nodeID = row["ID"].ToNonNullString();
-
-                        if (settings.TryGetValue("Provider", out connectionSetting))
-                        {
-                            // Check if provider is for Access since it uses braces as Guid delimeters
-                            if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                                nodeID = "{" + nodeID + "}";
-                            else
-                                nodeID = "'" + nodeID + "'";
-                        }
-                        else
-                            nodeID = "'" + nodeID + "'";
-
-                        IDbCommand command = connection.CreateCommand();
-
-                        command.CommandText = string.Format("Select Count(*) From ApplicationRole Where NodeID = {0} AND Name = 'Administrator'", nodeID);
-                        if (Convert.ToInt32(command.ExecuteScalar()) == 0)
-                            AddRolesForNode(connection, nodeID, "Administrator");
-                        else    // Verify an admin user exists for the node and attached to administrator role.
-                            VerifyAdminUser(connection, nodeID);
-
-                        command.CommandText = string.Format("Select Count(*) From ApplicationRole Where NodeID = {0} AND Name = 'Editor'", nodeID);
-                        if (Convert.ToInt32(command.ExecuteScalar()) == 0)
-                            AddRolesForNode(connection, nodeID, "Editor");
-
-                        command.CommandText = string.Format("Select Count(*) From ApplicationRole Where NodeID = {0} AND Name = 'Viewer'", nodeID);
-                        if (Convert.ToInt32(command.ExecuteScalar()) == 0)
-                            AddRolesForNode(connection, nodeID, "Viewer");
-                    }
                 }
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to Validate Application Roles for Node(s)" + Environment.NewLine + ex.Message);
-            }
-            finally
-            {
-                if (nodeReader != null)
-                    nodeReader.Close();
+                MessageBox.Show("Failed to open new database connection: " + ex.Message, "Configuration Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 if (connection != null)
                     connection.Dispose();
-            }
-        }
 
-        /// <summary>
-        /// Adds role for newly added node (Administrator, Editor, Viewer).
-        /// </summary>
-        /// <param name="connection">IDbConnection to be used for database operations.</param>
-        /// <param name="nodeID">Node ID to which three roles are being assigned</param>        
-        private void AddRolesForNode(IDbConnection connection, string nodeID, string roleName)
-        {
-            IDbCommand adminCredentialCommand;
-            adminCredentialCommand = connection.CreateCommand();
-
-            if (roleName == "Administrator")
-                adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Administrator', 'Administrator Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
-            else if (roleName == "Editor")
-                adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Editor', 'Editor Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
-            else
-                adminCredentialCommand.CommandText = string.Format("Insert Into ApplicationRole (Name, Description, NodeID, UpdatedBy, CreatedBy) Values ('Viewer', 'Viewer Role', {0}, '{1}', '{2}')", nodeID, Thread.CurrentPrincipal.Identity.Name, Thread.CurrentPrincipal.Identity.Name);
-
-            adminCredentialCommand.ExecuteNonQuery();
-
-            if (roleName == "Administrator")    //verify admin user exists for the node and attached to administrator role.
-                VerifyAdminUser(connection, nodeID);
-        }
-
-        private void VerifyAdminUser(IDbConnection connection, string nodeID)
-        {
-            // Lookup administrator role ID
-            IDbCommand command = connection.CreateCommand();
-            command.CommandText = string.Format("SELECT ID FROM ApplicationRole WHERE Name = 'Administrator' AND NodeID = {0}", nodeID);
-            string adminRoleID = command.ExecuteScalar().ToNonNullString();
-
-            bool databaseIsAccess = false;
-            Dictionary<string, string> settings = connection.ConnectionString.ParseKeyValuePairs();
-            string connectionSetting;
-            if (settings.TryGetValue("Provider", out connectionSetting))
-            {
-                if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                    databaseIsAccess = true;
+                connection = null;
             }
 
-            if (databaseIsAccess)
-                adminRoleID = adminRoleID.StartsWith("{") ? adminRoleID : "{" + adminRoleID + "}";
-            else
-                adminRoleID = adminRoleID.StartsWith("'") ? adminRoleID : "'" + adminRoleID + "'";
-
-            // Check if there is any user associated with the administrator role ID in the ApplicationRoleUserAccount table.
-            // if so that means there is atleast one user associated with that role. So we do not need to take any action.
-            // if not that means, user provided on the screen must be attached to this role. Also check if that user exists in 
-            // the UserAccount table. If so, then get the ID otherwise add user and retrieve ID.
-            command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRoleUserAccount WHERE ApplicationRoleID = {0}", adminRoleID);
-            if (Convert.ToInt32(command.ExecuteScalar()) == 0)
-            {
-                if (m_state.ContainsKey("adminUserName"))   //i.e. if security setup screen was displayed during setup.
-                {
-                    command.CommandText = string.Format("Select ID FROM UserAccount WHERE Name = '{0}'", m_state["adminUserName"].ToString());
-                    string adminUserID = command.ExecuteScalar().ToNonNullString();
-
-                    if (!string.IsNullOrEmpty(adminUserID)) //if user exists then attach it to admin role and we'll be done with it.
-                    {
-                        if (databaseIsAccess)
-                            adminUserID = adminUserID.StartsWith("{") ? adminUserID : "{" + adminUserID + "}";
-                        else
-                            adminUserID = adminUserID.StartsWith("'") ? adminUserID : "'" + adminUserID + "'";
-
-                        command.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES ({0}, {1})", adminRoleID, adminUserID);
-                        command.ExecuteNonQuery();
-                    }
-                    else    //we need to add user to the UserAccount table and then attach it to admin role.
-                    {
-                        bool oracle = connection.GetType().Name == "OracleConnection";
-                        char paramChar = oracle ? ':' : '@';
-
-                        // Add Administrative User.                
-                        IDbCommand adminCredentialCommand = connection.CreateCommand();
-                        if (m_state["authenticationType"].ToString() == "windows")
-                        {
-                            IDbDataParameter nameParameter = adminCredentialCommand.CreateParameter();
-                            IDbDataParameter createdByParameter = adminCredentialCommand.CreateParameter();
-                            IDbDataParameter updatedByParameter = adminCredentialCommand.CreateParameter();
-
-                            nameParameter.ParameterName = paramChar + "name";
-                            createdByParameter.ParameterName = paramChar + "createdBy";
-                            updatedByParameter.ParameterName = paramChar + "updatedBy";
-
-                            nameParameter.Value = m_state["adminUserName"].ToString();
-                            createdByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
-                            updatedByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
-
-                            adminCredentialCommand.Parameters.Add(nameParameter);
-                            adminCredentialCommand.Parameters.Add(createdByParameter);
-                            adminCredentialCommand.Parameters.Add(updatedByParameter);
-
-                            if (oracle)
-                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, DefaultNodeID, CreatedBy, UpdatedBy) Values (:name, {0}, :createdBy, :updatedBy)", nodeID);
-                            else
-                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, DefaultNodeID, CreatedBy, UpdatedBy) Values (@name, {0}, @createdBy, @updatedBy)", nodeID);
-                        }
-                        else
-                        {
-                            IDbDataParameter nameParameter = adminCredentialCommand.CreateParameter();
-                            IDbDataParameter passwordParameter = adminCredentialCommand.CreateParameter();
-                            IDbDataParameter firstNameParameter = adminCredentialCommand.CreateParameter();
-                            IDbDataParameter lastNameParameter = adminCredentialCommand.CreateParameter();
-                            IDbDataParameter createdByParameter = adminCredentialCommand.CreateParameter();
-                            IDbDataParameter updatedByParameter = adminCredentialCommand.CreateParameter();
-
-                            nameParameter.ParameterName = paramChar + "name";
-                            passwordParameter.ParameterName = paramChar + "password";
-                            firstNameParameter.ParameterName = paramChar + "firstName";
-                            lastNameParameter.ParameterName = paramChar + "lastName";
-                            createdByParameter.ParameterName = paramChar + "createdBy";
-                            updatedByParameter.ParameterName = paramChar + "updatedBy";
-
-                            nameParameter.Value = m_state["adminUserName"].ToString();
-                            passwordParameter.Value = FormsAuthentication.HashPasswordForStoringInConfigFile(@"O3990\P78f9E66b:a35_V©6M13©6~2&[" + m_state["adminPassword"].ToString(), "SHA1");
-                            firstNameParameter.Value = m_state["adminUserFirstName"].ToString();
-                            lastNameParameter.Value = m_state["adminUserLastName"].ToString();
-                            createdByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
-                            updatedByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
-
-                            adminCredentialCommand.Parameters.Add(nameParameter);
-                            adminCredentialCommand.Parameters.Add(passwordParameter);
-                            adminCredentialCommand.Parameters.Add(firstNameParameter);
-                            adminCredentialCommand.Parameters.Add(lastNameParameter);
-                            adminCredentialCommand.Parameters.Add(createdByParameter);
-                            adminCredentialCommand.Parameters.Add(updatedByParameter);
-
-                            if (!string.IsNullOrEmpty(connectionSetting) && connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, [Password], FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
-                                    "(@name, @password, @firstName, @lastName, {0}, 0, @createdBy, @updatedBy)", nodeID);
-                            else if (oracle)
-                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
-                                    "(:name, :password, :firstName, :lastName, {0}, 0, :createdBy, :updatedBy)", nodeID);
-                            else
-                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
-                                    "(@name, @password, @firstName, @lastName, {0}, 0, @createdBy, @updatedBy)", nodeID);
-                        }
-
-                        adminCredentialCommand.ExecuteNonQuery();
-
-                        // Get the admin user ID from the database.
-                        IDataReader userIdReader = null;
-                        try
-                        {
-                            IDbDataParameter nameParameter = adminCredentialCommand.CreateParameter();
-
-                            nameParameter.ParameterName = paramChar + "name";
-                            nameParameter.Value = m_state["adminUserName"].ToString();
-
-                            adminCredentialCommand.CommandText = "SELECT ID FROM UserAccount WHERE Name = " + paramChar + "name";
-                            adminCredentialCommand.Parameters.Clear();
-                            adminCredentialCommand.Parameters.Add(nameParameter);
-                            userIdReader = adminCredentialCommand.ExecuteReader();
-
-                            if (userIdReader.Read())
-                                adminUserID = userIdReader["ID"].ToNonNullString();
-                        }
-                        finally
-                        {
-                            if (userIdReader != null)
-                                userIdReader.Close();
-                        }
-
-                        // Assign Administrative User to Administrator Role.
-                        if (!string.IsNullOrEmpty(adminRoleID) && !string.IsNullOrEmpty(adminUserID))
-                        {
-                            if (databaseIsAccess)
-                                adminUserID = adminUserID.StartsWith("{") ? adminUserID : "{" + adminUserID + "}";
-                            else
-                                adminUserID = adminUserID.StartsWith("'") ? adminUserID : "'" + adminUserID + "'";
-
-                            adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES ({0}, {1})", adminRoleID, adminUserID);
-                            adminCredentialCommand.ExecuteNonQuery();
-                        }
-                    }
-                }
-            }
+            return connection;
         }
 
         #endregion
