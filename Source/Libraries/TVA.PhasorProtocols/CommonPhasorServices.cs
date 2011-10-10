@@ -1165,14 +1165,46 @@ namespace TVA.PhasorProtocols
                 SignalKind[] validOutputSignalKinds = { SignalKind.Angle, SignalKind.Magnitude, SignalKind.Frequency, SignalKind.DfDt, SignalKind.Status, SignalKind.Analog, SignalKind.Digital, SignalKind.Calculation };
                 List<int> measurementIDsToDelete = new List<int>();
                 SignalReference deviceSignalReference;
-                string query, acronym, signalReference, pointTag, company, vendorDevice, description;
+                string query, acronym, signalReference, pointTag, company, vendorDevice, description, protocolIDs;
                 int adapterID, signalIndex;
+                bool firstStatisticExisted;
 
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating device measurements..."));
 
-                // Make sure needed device statistic measurements exist
-                foreach (DataRow device in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE IsConcentrator = 0 AND NodeID = {0}", nodeIDQueryString)).Rows)
+                // Extract IDs for phasor protocols
+                StringBuilder protocolIDList = new StringBuilder();
+                DataTable protocols = connection.RetrieveData(adapterType, "SELECT * FROM Protocol");
+
+                if (protocols.Columns.Contains("Category"))
                 {
+                    foreach (DataRow protocol in protocols.Rows)
+                    {
+                        if (protocolIDList.Length > 0)
+                            protocolIDList.Append(", ");
+
+                        if (string.Compare(protocol.Field<string>("Category"), "Phasor", true) == 0)
+                            protocolIDList.Append(protocol.ConvertField<int>("ID"));
+                    }
+                }
+                else
+                {
+                    // Older schemas do not include protocol categories and assembly info
+                    foreach (DataRow protocol in protocols.Rows)
+                    {
+                        if (protocolIDList.Length > 0)
+                            protocolIDList.Append(", ");
+
+                        protocolIDList.Append(protocol.ConvertField<int>("ID"));
+                    }
+                }
+
+                protocolIDs = protocolIDList.ToString();
+
+                // Make sure needed device statistic measurements exist, currently statistics are only associated with phasor devices so we filter based on protocol
+                foreach (DataRow device in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE IsConcentrator = 0 AND NodeID = {0} AND ProtocolID IN ({1})", nodeIDQueryString, protocolIDs)).Rows)
+                {
+                    firstStatisticExisted = true;
+
                     foreach (DataRow statistic in deviceStatistics)
                     {
                         acronym = device.Field<string>("Acronym");
@@ -1181,6 +1213,7 @@ namespace TVA.PhasorProtocols
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1}", signalReference, statHistorianID))) == 0)
                         {
+                            firstStatisticExisted = false;
                             company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0}", device.ConvertNullableField<int>("CompanyID") ?? 0));
                             if (string.IsNullOrEmpty(company))
                                 company = configFile.Settings["systemSettings"]["CompanyAcronym"].Value.TruncateRight(3);
@@ -1198,14 +1231,22 @@ namespace TVA.PhasorProtocols
                                 command.ExecuteNonQuery();
                             }
                         }
+                        else
+                        {
+                            // To reduce time required to execute these steps, only first statistic is verfied to exist
+                            if (firstStatisticExisted)
+                                break;
+                        }
                     }
                 }
 
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating input stream measurements..."));
 
-                // Make sure needed input stream statistic measurements exist
-                foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE ((IsConcentrator <> 0) OR (IsConcentrator = 0 AND ParentID IS NULL)) AND (NodeID = {0})", nodeIDQueryString)).Rows)
+                // Make sure needed input stream statistic measurements exist, currently statistics are only associated with phasor devices so we filter based on protocol
+                foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE ((IsConcentrator <> 0) OR (IsConcentrator = 0 AND ParentID IS NULL)) AND NodeID = {0} AND ProtocolID IN ({1})", nodeIDQueryString, protocolIDs)).Rows)
                 {
+                    firstStatisticExisted = true;
+
                     foreach (DataRow statistic in inputStreamStatistics)
                     {
                         acronym = inputStream.Field<string>("Acronym") + "!IS";
@@ -1214,6 +1255,7 @@ namespace TVA.PhasorProtocols
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1}", signalReference, statHistorianID))) == 0)
                         {
+                            firstStatisticExisted = false;
                             company = (string)connection.ExecuteScalar(string.Format("SELECT MapAcronym FROM Company WHERE ID={0}", inputStream.ConvertNullableField<int>("CompanyID") ?? 0));
                             if (string.IsNullOrEmpty(company))
                                 company = configFile.Settings["systemSettings"]["CompanyAcronym"].Value.TruncateRight(3);
@@ -1231,19 +1273,38 @@ namespace TVA.PhasorProtocols
                                 command.ExecuteNonQuery();
                             }
                         }
+                        else
+                        {
+                            // To reduce time required to execute these steps, only first statistic is verfied to exist
+                            if (firstStatisticExisted)
+                                break;
+                        }
                     }
                 }
 
                 // Make sure devices associated with a concentrator do not have any extraneous input stream statistic measurements - this can happen
                 // when a device was once a direct connect device but now is part of a concentrator...
-                foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE (IsConcentrator = 0 AND ParentID IS NOT NULL) AND (NodeID = {0})", nodeIDQueryString)).Rows)
+                foreach (DataRow inputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE (IsConcentrator = 0 AND ParentID IS NOT NULL) AND NodeID = {0} AND ProtocolID IN ({1})", nodeIDQueryString, protocolIDs)).Rows)
                 {
+                    firstStatisticExisted = false;
+
                     foreach (DataRow statistic in inputStreamStatistics)
                     {
                         acronym = inputStream.Field<string>("Acronym") + "!IS";
                         signalIndex = statistic.ConvertField<int>("SignalIndex");
                         signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
+                        // To reduce time required to execute these steps, only first statistic is verfied to exist
+                        if (!firstStatisticExisted)
+                        {
+                            firstStatisticExisted = (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}'", signalReference))) == 0);
+
+                            // If the first extraneous input statistic doesn't exist, we assume no others do as well
+                            if (!firstStatisticExisted)
+                                break;
+                        }
+
+                        // Remove extraneous input statistics
                         connection.ExecuteNonQuery(string.Format("DELETE FROM Measurement WHERE SignalReference = '{0}'", signalReference));
                     }
                 }
@@ -1253,6 +1314,7 @@ namespace TVA.PhasorProtocols
                 // Make sure needed output stream statistic measurements exist
                 foreach (DataRow outputStream in connection.RetrieveData(adapterType, string.Format("SELECT * FROM OutputStream WHERE NodeID = {0}", nodeIDQueryString)).Rows)
                 {
+                    firstStatisticExisted = true;
                     adapterID = outputStream.ConvertField<int>("ID");
                     acronym = outputStream.Field<string>("Acronym") + "!OS";
 
@@ -1263,6 +1325,7 @@ namespace TVA.PhasorProtocols
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1}", signalReference, statHistorianID))) == 0)
                         {
+                            firstStatisticExisted = false;
                             if (nodeCompanyID is DBNull)
                                 company = configFile.Settings["systemSettings"]["CompanyAcronym"].Value.TruncateRight(3);
                             else
@@ -1279,6 +1342,12 @@ namespace TVA.PhasorProtocols
                             {
                                 command.ExecuteNonQuery();
                             }
+                        }
+                        else
+                        {
+                            // To reduce time required to execute these steps, only first statistic is verfied to exist
+                            if (firstStatisticExisted)
+                                break;
                         }
                     }
 
