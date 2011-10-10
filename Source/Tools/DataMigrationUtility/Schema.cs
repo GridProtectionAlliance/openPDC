@@ -29,15 +29,13 @@
 // James Ritchie Carroll - 2003
 using System;
 using System.Collections;
-using System.Data;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
-using System.Linq;
+using System.Data;
 using System.Data.OleDb;
 using System.Drawing;
+using System.Text;
 using TVA.Data;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Database
 {
@@ -1174,19 +1172,19 @@ namespace Database
         /// <summary>
         /// Get the current index of foreignkey field information
         /// </summary>
-        /// <param name="Index"></param>
+        /// <param name="index"></param>
         /// <returns></returns>
-        public ForeignKeyField this[int Index]
+        public ForeignKeyField this[int index]
         {
             get
             {
-                if (Index < 0 | Index >= m_fieldList.Count)
+                if (index < 0 | index >= m_fieldList.Count)
                 {
                     return null;
                 }
                 else
                 {
-                    return m_fieldList[Index];
+                    return m_fieldList[index];
                 }
             }
         }
@@ -1194,13 +1192,15 @@ namespace Database
         /// <summary>
         /// Get the current <see cref="ForeignKeyField"/> information by name
         /// </summary>
-        /// <param name="Name"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public ForeignKeyField this[string Name]
+        public ForeignKeyField this[string name]
         {
             get
             {
-                return m_fields[Name];
+                ForeignKeyField lookup;
+                m_fields.TryGetValue(name, out lookup);
+                return lookup;
             }
         }
 
@@ -1329,19 +1329,19 @@ namespace Database
         /// <summary>
         /// Indexer property of Field
         /// </summary>
-        /// <param name="Index"></param>
+        /// <param name="index"></param>
         /// <returns></returns>
-        public Field this[int Index]
+        public Field this[int index]
         {
             get
             {
-                if (Index < 0 | Index >= m_fieldList.Count)
+                if (index < 0 | index >= m_fieldList.Count)
                 {
                     return null;
                 }
                 else
                 {
-                    return m_fieldList[Index];
+                    return m_fieldList[index];
                 }
             }
         }
@@ -1349,13 +1349,15 @@ namespace Database
         /// <summary>
         /// Indexer property of Field by Name
         /// </summary>
-        /// <param name="Name"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public Field this[string Name]
+        public Field this[string name]
         {
             get
             {
-                return m_fields[Name];
+                Field lookup;
+                m_fields.TryGetValue(name, out lookup);
+                return lookup;
             }
         }
 
@@ -2083,7 +2085,9 @@ namespace Database
         {
             get
             {
-                return m_tables[name];
+                Table lookup;                
+                m_tables.TryGetValue(name, out lookup);
+                return lookup;
             }
         }
 
@@ -2484,10 +2488,10 @@ namespace Database
 
                     // Load all column data into the schema
                     DataTable currentTable = m_schemaConnection.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, new object[] {
-						null,
-						null,
-						tbl.Name
-					});
+                        null,
+                        null,
+                        tbl.Name
+                    });
 
                     //var _with7 = m_schemaConnection.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, new object[] {
                     //    null,
@@ -2531,10 +2535,10 @@ namespace Database
                     try
                     {
                         DataTable primaryKeyTable = m_schemaConnection.GetOleDbSchemaTable(OleDbSchemaGuid.Primary_Keys, new object[] {
-							null,
-							null,
-							tbl.Name
-						});
+                            null,
+                            null,
+                            tbl.Name
+                        });
                         for (y = 0; y <= primaryKeyTable.Rows.Count - 1; y++)
                         {
                             row = primaryKeyTable.Rows[y];
@@ -2559,10 +2563,10 @@ namespace Database
                 try
                 {
                     DataTable foreignKeyTable = m_schemaConnection.GetOleDbSchemaTable(OleDbSchemaGuid.Foreign_Keys, new object[] {
-						null,
-						null,
-						tbl.Name
-					});
+                        null,
+                        null,
+                        tbl.Name
+                    });
                     for (x = 0; x <= foreignKeyTable.Rows.Count - 1; x++)
                     {
                         row = foreignKeyTable.Rows[x];

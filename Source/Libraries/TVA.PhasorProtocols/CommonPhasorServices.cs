@@ -1169,7 +1169,7 @@ namespace TVA.PhasorProtocols
                 int adapterID, signalIndex;
                 bool firstStatisticExisted;
 
-                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating device measurements..."));
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating device protocols..."));
 
                 // Extract IDs for phasor protocols
                 StringBuilder protocolIDList = new StringBuilder();
@@ -1185,6 +1185,13 @@ namespace TVA.PhasorProtocols
                         if (string.Compare(protocol.Field<string>("Category"), "Phasor", true) == 0)
                             protocolIDList.Append(protocol.ConvertField<int>("ID"));
                     }
+
+                    // Make sure new protocol types exist
+                    if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='GatewayTransport'"))) == 0)
+                        connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('GatewayTransport', 'Gateway Transport', 'Measurement', 'Gateway', 'TimeSeriesFramework.dll', 'TimeSeriesFramework.Transport.DataSubscriber', " + (protocols.Rows.Count + 1) + ")");
+
+                    if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='WAV'"))) == 0)
+                        connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('WAV', 'Wave Form Input Adapter', 'Frame', 'Audio', 'WavInputAdapter.dll', 'WavInputAdapter.WavInputAdapter', " + (protocols.Rows.Count + 2) + ")");
                 }
                 else
                 {
@@ -1199,6 +1206,8 @@ namespace TVA.PhasorProtocols
                 }
 
                 protocolIDs = protocolIDList.ToString();
+
+                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating device measurements..."));
 
                 // Make sure needed device statistic measurements exist, currently statistics are only associated with phasor devices so we filter based on protocol
                 foreach (DataRow device in connection.RetrieveData(adapterType, string.Format("SELECT * FROM Device WHERE IsConcentrator = 0 AND NodeID = {0} AND ProtocolID IN ({1})", nodeIDQueryString, protocolIDs)).Rows)

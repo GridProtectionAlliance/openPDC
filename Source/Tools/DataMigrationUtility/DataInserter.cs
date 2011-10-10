@@ -453,9 +453,10 @@ namespace Database
 
             foreach (Field fld in FromTable.Fields)
             {
-                // Lookup field name in destination table
+                // Lookup field name in destination table                
                 fldLookup = ToTable.Fields[fld.Name];
-                if ((fldLookup != null))
+
+                if (fldLookup != null)
                 {
                     //var _with1 = fldLookup;
                     // We currently don't handle binary fields...
