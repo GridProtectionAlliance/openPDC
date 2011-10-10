@@ -68,6 +68,8 @@ namespace TestUI
 
             Version appVersion = AssemblyInfo.EntryAssembly.Version;
             m_title = AssemblyInfo.EntryAssembly.Title + " (v" + appVersion.Major + "." + appVersion.Minor + "." + appVersion.Build + ") ";
+
+            IsolatedStorageManager.WriteToIsolatedStorage("MirrorMode", false);
         }
 
         #endregion

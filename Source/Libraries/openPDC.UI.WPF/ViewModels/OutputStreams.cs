@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
 using openPDC.UI.UserControls;
 using openPDCManager.UI.DataModels;
@@ -44,6 +45,7 @@ namespace openPDCManager.UI.ViewModels
         private Dictionary<string, string> m_dataFormatLookupList;
         private Dictionary<string, string> m_coordinateFormatLookupList;
         private Dictionary<int, string> m_typeLookupList;
+        private Dictionary<string, string> m_mirroringSourceLookupList;
         private RelayCommand m_initializeCommand;
         private RelayCommand m_copyCommand;
         private RelayCommand m_updateConfigurationCommand;
@@ -53,6 +55,7 @@ namespace openPDCManager.UI.ViewModels
         private RelayCommand m_buildCommandChannelCommand;
         private RelayCommand m_buildDataChannelCommand;
         private string m_runtimeID;
+        private bool m_mirrorMode;
 
         #endregion
 
@@ -256,6 +259,30 @@ namespace openPDCManager.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets a boolean flag indicating if this screen is loaded for IEEE C37.118 mirroring.
+        /// </summary>
+        public bool MirrorMode
+        {
+            get
+            {
+                return m_mirrorMode;
+            }
+        }
+
+        public Dictionary<string, string> MirroringSourceLookupList
+        {
+            get
+            {
+                return m_mirroringSourceLookupList;
+            }
+            set
+            {
+                m_mirroringSourceLookupList = value;
+                OnPropertyChanged("MirroringSourceLookupList");
+            }
+        }
+
         #endregion
 
         #region [ Constructor ]
@@ -264,6 +291,11 @@ namespace openPDCManager.UI.ViewModels
             : base(itemsPerPage, autoSave)
         {
             m_nodelookupList = Node.GetLookupList(null);
+
+            bool.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MirrorMode").ToString(), out m_mirrorMode);
+
+            if (m_mirrorMode)
+                MirroringSourceLookupList = Device.GetDevicesForMirroringOutputStream(null);
 
             m_typeLookupList = new Dictionary<int, string>();
             m_typeLookupList.Add(0, "IEEE C37.118");
@@ -484,6 +516,37 @@ namespace openPDCManager.UI.ViewModels
                     RuntimeID = string.Empty;
                 else
                     RuntimeID = TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("OutputStream", CurrentItem.ID);
+            }
+        }
+
+        protected override void m_currentItem_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "MirroringSourceID")
+            {
+
+            }
+            base.m_currentItem_PropertyChanged(sender, e);
+        }
+
+        public override void Save()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            try
+            {
+                string result = OutputStream.Save(null, CurrentItem, m_mirrorMode);
+                Popup(result, "Save " + DataModelName, MessageBoxImage.Information);
+                Load();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Save " + DataModelName + " Exception:", MessageBoxImage.Error);
+                else
+                    Popup(ex.Message, "Save " + DataModelName + " Exception:", MessageBoxImage.Error);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
             }
         }
 

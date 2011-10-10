@@ -31,6 +31,8 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
+using System.Windows;
+using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.DataModels;
 using TVA.Data;
@@ -80,6 +82,7 @@ namespace openPDCManager.UI.DataModels
         private string m_createdBy;
         private DateTime m_updatedOn;
         private string m_updatedBy;
+        private string m_mirroringSourceDevice = "";
 
         #endregion
 
@@ -700,6 +703,24 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets id of the device used for mirroring output stream.
+        /// </summary>  
+        public string MirroringSourceDevice
+        {
+            get
+            {
+                return m_mirroringSourceDevice;
+            }
+            set
+            {
+                if (m_mirroringSourceDevice != value && MessageBox.Show("WARNING: This will replace all existing devices and measurements associated with this output stream. Do you want to continue?", "IEEE C37.118 Mirroring", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    m_mirroringSourceDevice = value;
+
+                OnPropertyChanged("MirroringSourceDevice");
+            }
+        }
+
         #endregion
 
         #region [ Static ]
@@ -770,10 +791,41 @@ namespace openPDCManager.UI.DataModels
                                                                               VoltageScalingValue = Convert.ToInt32(item.Field<object>("VoltageScalingValue")),
                                                                               AnalogScalingValue = Convert.ToInt32(item.Field<object>("AnalogScalingValue")),
                                                                               DigitalMaskValue = Convert.ToInt32(item.Field<object>("DigitalMaskValue")),
-                                                                              PerformTimestampReasonabilityCheck = Convert.ToBoolean(item.Field<object>("PerformTimeReasonabilityCheck"))
+                                                                              PerformTimestampReasonabilityCheck = Convert.ToBoolean(item.Field<object>("PerformTimeReasonabilityCheck")),
+                                                                              MirroringSourceDevice = ""
                                                                           });
                 return outputStreamList;
 
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        private static string GetMirroringSource(AdoDataConnection database, int outputStreamID)
+        {
+            bool createdConnection = false;
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                // Get first output stream device.
+                ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.Load(database, outputStreamID);
+
+                if (outputStreamDevices.Count == 0)
+                    return "";
+
+                OutputStreamDevice outputStreamDevice = outputStreamDevices[0];
+
+                // Get OriginalSource value for the above outputstreamdevice from the input Device table.
+                Device device = Device.GetDevice(database, " WHERE Acronym = '" + outputStreamDevice.Acronym + "'");
+
+                if (device == null)
+                    return "";
+
+                return device.OriginalSource;
             }
             finally
             {
@@ -788,7 +840,7 @@ namespace openPDCManager.UI.DataModels
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="outputStream">Information about <see cref="OutputStream"/>.</param>        
         /// <returns>String, for display use, indicating success.</returns>
-        public static string Save(AdoDataConnection database, OutputStream outputStream)
+        public static string Save(AdoDataConnection database, OutputStream outputStream, bool mirrorMode)
         {
             bool createdConnection = false;
             string query;
@@ -841,6 +893,25 @@ namespace openPDCManager.UI.DataModels
                         outputStream.CurrentScalingValue, outputStream.VoltageScalingValue, outputStream.AnalogScalingValue, outputStream.DigitalMaskValue, database.Bool(outputStream.PerformTimestampReasonabilityCheck),
                         CommonFunctions.CurrentUser, database.UtcNow(), outputStream.ID);
                 }
+
+                if (mirrorMode && !string.IsNullOrEmpty(outputStream.MirroringSourceDevice))
+                {
+                    // Get ID of the output stream if a new one was inserted above.
+                    if (outputStream.ID == 0)
+                        outputStream.ID = GetOutputStreamByAcronym(database, outputStream.Acronym).ID;
+
+                    // Get all existing devices associated with output stream and delete them.
+                    ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.Load(database, outputStream.ID);
+                    foreach (OutputStreamDevice outputStreamDevice in outputStreamDevices)
+                        OutputStreamDevice.Delete(database, outputStream.ID, outputStreamDevice.Acronym);
+
+                    // Get list of input devices, filter by original source = outputstream.MirrorSourceDevice.
+                    ObservableCollection<Device> devices = Device.GetDevices(database, "WHERE OriginalSource = '" + outputStream.MirroringSourceDevice + "'");
+
+                    // Add these above input devices as output stream devices.
+                    OutputStreamDevice.AddDevices(database, outputStream.ID, devices, true, true);
+                }
+
                 return "Output Stream Information Saved Successfully";
             }
             catch (Exception ex)

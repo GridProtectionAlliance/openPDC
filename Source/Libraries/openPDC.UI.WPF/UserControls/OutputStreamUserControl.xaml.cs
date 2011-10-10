@@ -37,6 +37,12 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class OutputStreamUserControl : UserControl
     {
+        #region [ Members ]
+
+        private OutputStreams m_dataContext;
+
+        #endregion
+
         #region [ Constructor ]
 
         /// <summary>
@@ -45,7 +51,8 @@ namespace openPDC.UI.UserControls
         public OutputStreamUserControl()
         {
             InitializeComponent();
-            this.DataContext = new OutputStreams(7);
+            m_dataContext = new OutputStreams(7, true);
+            this.DataContext = m_dataContext;
         }
 
         #endregion

@@ -160,7 +160,7 @@
                         <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}"/>
                         <Button Content="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics"
                                 Height="20" Width="Auto" Click="ButtonGetStatistics_Click"/>
-                        <Button Content="Edit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Height="20" Width="Auto" Click="ButtonEdit_Click"
+                        <Button Content="Edit" Tag="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Height="20" Width="Auto" Click="ButtonEdit_Click"
                                 Visibility="{tsfBinding:Column Path=ID, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                     </StackPanel>
                     

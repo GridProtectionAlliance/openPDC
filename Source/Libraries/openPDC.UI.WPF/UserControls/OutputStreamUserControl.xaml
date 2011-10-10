@@ -25,6 +25,7 @@
             <CollectionViewSource Source="{Binding Path=DownSamplingMethodLookupList}" x:Key="DownSamplingMethodLookupList"/>
             <CollectionViewSource Source="{Binding Path=DataFormatLookupList}" x:Key="DataFormatLookupList"/>
             <CollectionViewSource Source="{Binding Path=CoordinateFormatLookupList}" x:Key="CoordinateFormatLookupList"/>
+            <CollectionViewSource Source="{Binding Path=MirroringSourceLookupList}" x:Key="MirroringSourceLookupList"/>
         </StackPanel.Resources>
         
         <ScrollViewer Height="360">
@@ -224,12 +225,10 @@
             </StackPanel>
             <TextBox Grid.Row="7" Grid.Column="1" Text="{tsfBinding:Column Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" />
 
-                <TextBlock Grid.Row="7" Grid.Column="2" Text="Stream Mirror Source"/>
-                <ComboBox Grid.Row="7" Grid.Column="3">
-                    <ComboBoxItem Content="Select Source For Mirroring" IsSelected="True"/>
-                    <ComboBoxItem Content="SHELBY" />
-                </ComboBox>
-
+                <TextBlock Grid.Row="7" Grid.Column="2" Text="Stream Mirror Source" Visibility="{Binding Path=DataContext.MirrorMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl,AncestorLevel=1}, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                <ComboBox Grid.Row="7" Grid.Column="3" ItemsSource="{Binding Source={StaticResource MirroringSourceLookupList}}" DisplayMemberPath="Value" 
+                      SelectedItem="{tsfBinding:Column Path=MirroringSourceID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource MirroringSourceLookupList}}" 
+                          Visibility="{Binding Path=DataContext.MirrorMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl,AncestorLevel=1}, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <CheckBox Grid.Row="8" Grid.Column="3" Content="Enabled" IsChecked="{tsfBinding:Column Path=Enabled}"/>
             
             <TextBlock Grid.Row="8" Grid.Column="0" Text="Runtime ID" />
@@ -264,7 +263,8 @@
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Measurements" Width="Auto"
-                                    Command="{tsfBinding:GridButtonCommand Path=DataContext.MeasurementCommand}"/>
+                                    Command="{tsfBinding:GridButtonCommand Path=DataContext.MeasurementCommand}"
+                                    Visibility="{Binding Path=DataContext.MirrorMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                         </DataTemplate>
                     </sdk:DataGridTemplateColumn.CellTemplate>
                 </sdk:DataGridTemplateColumn>
@@ -272,7 +272,8 @@
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Device Wizard" Width="Auto"
-                                    Command="{tsfBinding:GridButtonCommand Path=DataContext.WizardCommand}"/>
+                                    Command="{tsfBinding:GridButtonCommand Path=DataContext.WizardCommand}"
+                                    Visibility="{Binding Path=DataContext.MirrorMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                         </DataTemplate>
                     </sdk:DataGridTemplateColumn.CellTemplate>
                 </sdk:DataGridTemplateColumn>

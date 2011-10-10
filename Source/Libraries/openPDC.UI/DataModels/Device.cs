@@ -96,6 +96,7 @@ namespace openPDC.UI.DataModels
         private Guid m_uniqueID;
         private string m_acronym;
         private string m_name;
+        private string m_originalSource;
         private bool m_isConcentrator;
         private int? m_companyID;
         private int? m_historianID;
@@ -240,6 +241,17 @@ namespace openPDC.UI.DataModels
             {
                 m_name = value;
                 OnPropertyChanged("Name");
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="Device"/> Original Source.
+        /// </summary>        
+        public string OriginalSource
+        {
+            get
+            {
+                return m_name;
             }
         }
 
@@ -958,7 +970,8 @@ namespace openPDC.UI.DataModels
                         m_protocolName = row.Field<string>("ProtocolName"),
                         m_interconnectionName = row.Field<string>("InterconnectionName"),
                         m_nodeName = row.Field<string>("NodeName"),
-                        m_parentAcronym = row.Field<string>("ParentAcronym")
+                        m_parentAcronym = row.Field<string>("ParentAcronym"),
+                        m_originalSource = row.Field<string>("OriginalSource")
                     });
                 }
 
@@ -1362,6 +1375,84 @@ namespace openPDC.UI.DataModels
         }
 
         /// <summary>
+        /// Retrieves <see cref="ObservableCollection{T}"/> type list of <see cref="Device"/> infomration from the database based on query string filter.
+        /// </summary>
+        /// <param name="database"></param>
+        /// <param name="whereClause"></param>
+        /// <returns></returns>
+        public static ObservableCollection<Device> GetDevices(AdoDataConnection database, string whereClause)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+                DataTable deviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT * FROM DeviceDetail " + whereClause);
+
+                if (deviceTable.Rows.Count == 0)
+                    return null;
+
+                ObservableCollection<Device> deviceList = new ObservableCollection<Device>();
+                foreach (DataRow row in deviceTable.Rows)
+                {
+                    deviceList.Add(new Device()
+                    {
+                        NodeID = database.Guid(row, "NodeID"),
+                        ID = row.ConvertField<int>("ID"),
+                        ParentID = row.ConvertNullableField<int>("ParentID"),
+                        UniqueID = database.Guid(row, "UniqueID"),
+                        Acronym = row.Field<string>("Acronym"),
+                        Name = row.Field<string>("Name"),
+                        IsConcentrator = Convert.ToBoolean(row.Field<object>("IsConcentrator")),
+                        CompanyID = row.ConvertNullableField<int>("CompanyID"),
+                        HistorianID = row.ConvertNullableField<int>("HistorianID"),
+                        AccessID = row.ConvertField<int>("AccessID"),
+                        VendorDeviceID = row.ConvertNullableField<int>("VendorDeviceID"),
+                        ProtocolID = row.ConvertNullableField<int>("ProtocolID"),
+                        Longitude = row.ConvertNullableField<decimal>("Longitude"),
+                        Latitude = row.ConvertNullableField<decimal>("Latitude"),
+                        InterconnectionID = row.ConvertNullableField<int>("InterconnectionID"),
+                        ConnectionString = ParseConnectionString(row.Field<string>("ConnectionString")),
+                        AlternateCommandChannel = ParseAlternateCommand(row.Field<string>("ConnectionString")),
+                        TimeZone = row.Field<string>("TimeZone"),
+                        FramesPerSecond = Convert.ToInt32(row.Field<object>("FramesPerSecond") ?? 30),
+                        TimeAdjustmentTicks = Convert.ToInt64(row.Field<object>("TimeAdjustmentTicks")),
+                        DataLossInterval = row.ConvertField<double>("DataLossInterval"),
+                        ContactList = row.Field<string>("ContactList"),
+                        MeasuredLines = row.ConvertNullableField<int>("MeasuredLines"),
+                        LoadOrder = row.ConvertField<int>("LoadOrder"),
+                        Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
+                        CreatedOn = row.Field<DateTime>("CreatedOn"),
+                        AllowedParsingExceptions = Convert.ToInt32(row.Field<object>("AllowedParsingExceptions")),
+                        ParsingExceptionWindow = row.ConvertField<double>("ParsingExceptionWindow"),
+                        DelayedConnectionInterval = row.ConvertField<double>("DelayedConnectionInterval"),
+                        AllowUseOfCachedConfiguration = Convert.ToBoolean(row.Field<object>("AllowUseOfCachedConfiguration")),
+                        AutoStartDataParsingSequence = Convert.ToBoolean(row.Field<object>("AutoStartDataParsingSequence")),
+                        SkipDisableRealTimeData = Convert.ToBoolean(row.Field<object>("SkipDisableRealTimeData")),
+                        MeasurementReportingInterval = Convert.ToInt32(row.Field<object>("MeasurementReportingInterval")),
+                        ConnectOnDemand = Convert.ToBoolean(row.Field<object>("ConnectOnDemand")),
+                        m_companyName = row.Field<string>("CompanyName"),
+                        m_companyAcronym = row.Field<string>("CompanyAcronym"),
+                        m_historianAcronym = row.Field<string>("HistorianAcronym"),
+                        m_vendorDeviceName = row.Field<string>("VendorDeviceName"),
+                        m_vendorAcronym = row.Field<string>("VendorAcronym"),
+                        m_protocolName = row.Field<string>("ProtocolName"),
+                        m_interconnectionName = row.Field<string>("InterconnectionName"),
+                        m_nodeName = row.Field<string>("NodeName"),
+                        m_parentAcronym = row.Field<string>("ParentAcronym")
+                    });
+                }
+
+                return deviceList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Sends required commands to backend service to notify that <see cref="Device"/> configuration has changed.
         /// </summary>
         /// <param name="device"><see cref="Device"/> whose configuration has changed.</param>
@@ -1500,6 +1591,44 @@ namespace openPDC.UI.DataModels
                         m_parentAcronym = row.Field<string>("ParentAcronym")
                     });
                 }
+
+                return deviceList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a collection of devices where original source is not null for mirroring output stream.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="isOptional">Boolean flag indicating if selection is optional on the UI.</param>
+        /// <returns><see cref="Dictionary{T1,T2}"/> type collection of Devices.</returns>
+        public static Dictionary<string, string> GetDevicesForMirroringOutputStream(AdoDataConnection database, bool isOptional = true)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                Dictionary<string, string> deviceList = new Dictionary<string, string>();
+
+                if (isOptional)
+                    deviceList.Add("", "Select Mirroring Source");
+
+                DataTable deviceTable;
+                string query;
+
+                //TODO: Research how to retrieve DISTINCT values from SQL, Oracle, MySQl etc.
+                query = database.ParameterizedQueryString("SELECT OriginalSource FROM Device WHERE NodeID = {0} AND OriginalSource IS NOT NULL ORDER BY Acronym", "nodeID");
+                deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
+
+                foreach (DataRow row in deviceTable.Rows)
+                    deviceList[row.ConvertField<string>("OriginalSource")] = row.Field<string>("OriginalSource");
 
                 return deviceList;
             }

@@ -173,6 +173,14 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        public override bool CanSave
+        {
+            get
+            {
+                return (base.CanSave && !Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("MirrorMode").ToString()));
+            }
+        }
+
         #endregion
 
         #region [ Constructor ]
