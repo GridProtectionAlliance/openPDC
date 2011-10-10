@@ -88,6 +88,10 @@ namespace TVA.PhasorProtocols
     public enum PhasorProtocol
     {
         /// <summary>
+        /// IEEE C37.118-2011, R2 protocol.
+        /// </summary>
+        IeeeC37_118V2,
+        /// <summary>
         /// IEEE C37.118-2005 protocol.
         /// </summary>
         IeeeC37_118V1,

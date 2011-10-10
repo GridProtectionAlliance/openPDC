@@ -362,6 +362,8 @@ namespace TVA.PhasorProtocols
         {
             switch (protocol)
             {
+                case PhasorProtocol.IeeeC37_118V2:
+                    return "IEEE C37.118-2011, R2"; // TODO: Update later
                 case PhasorProtocol.IeeeC37_118V1:
                     return "IEEE C37.118-2005";
                 case PhasorProtocol.IeeeC37_118D6:
