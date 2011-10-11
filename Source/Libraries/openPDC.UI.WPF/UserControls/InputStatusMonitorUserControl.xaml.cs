@@ -712,7 +712,7 @@ namespace openPDC.UI.UserControls
 
             PopupSettings.IsOpen = false;
 
-            CommonFunctions.LoadUserControl(new InputStatusMonitorUserControl(), "Input Status &amp; Monitoring");
+            CommonFunctions.LoadUserControl(new InputStatusMonitorUserControl(), "Input Status Monitoring");
         }
 
         private void PopulateSettings()

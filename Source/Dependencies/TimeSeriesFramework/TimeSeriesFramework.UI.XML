@@ -1733,7 +1733,7 @@
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
             <returns>string, url to web service.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ServiceConnectionString(TVA.Data.AdoDataConnection)">
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ServiceConnectionString(TVA.Data.AdoDataConnection,System.Boolean)">
             <summary>
             Retrieves connection string information to connect to backed windows service from UI.
             </summary>
@@ -1822,7 +1822,7 @@
             </summary>
             <returns><see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ConnectWindowsServiceClient">
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ConnectWindowsServiceClient(System.Boolean)">
             <summary>
             Connects to backend windows service.
             </summary>
@@ -1887,6 +1887,11 @@
             </summary>
             <param name="userControl">User control to be loaded.</param>
             <param name="title">Title of the user control to be loaded.</param>
+        </member>
+        <member name="E:TimeSeriesFramework.UI.CommonFunctions.ServiceConntectionRefreshed">
+            <summary>
+            Used to notify main window that connection to service has changed.
+            </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.Converters.StringToStatusColorConverter">
             <summary>

@@ -419,22 +419,10 @@
             Saves CurrentItem information into the database.
             </summary>
         </member>
-        <member name="E:TimeSeriesFramework.UI.ViewModels.Nodes.NodeChanged">
-            <summary>
-            Raises an event when node information is saved.
-            </summary>
-        </member>
         <member name="P:TimeSeriesFramework.UI.ViewModels.Nodes.IsNewRecord">
             <summary>
             Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
             </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.ViewModels.Nodes.OnNodeChanged">
-            <summary>
-            Method signature for a function that handles NodeCollectionChanged event.
-            </summary>
-            <param name="sender">Source of an event.</param>
-            <param name="e">Event arguments.</param>
         </member>
         <member name="T:TimeSeriesFramework.UI.UserControls.CustomActionAdapterUserControl">
             <summary>
@@ -492,13 +480,6 @@
             Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.HomeUserControl"/>.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.CommonClickHandler(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles click event of the buttons on the screen.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Event arguments.</param>
-        </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.GetMenuDataItem(System.Collections.ObjectModel.ObservableCollection{TimeSeriesFramework.UI.MenuDataItem},System.String,TimeSeriesFramework.UI.MenuDataItem@)">
             <summary>
             Recursively finds menu item to navigate to when a button is clicked on the UI.
@@ -506,6 +487,13 @@
             <param name="items">Collection of menu items.</param>
             <param name="stringToMatch">Item to search for in menu items collection.</param>
             <param name="item">Returns a menu item.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.Button_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handles click event of the buttons on the screen.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Event arguments.</param>
         </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.HomeUserControl.InitializeComponent">
             <summary>
