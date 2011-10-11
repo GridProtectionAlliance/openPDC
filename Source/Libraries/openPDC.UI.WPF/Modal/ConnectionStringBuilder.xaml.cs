@@ -234,7 +234,7 @@ namespace openPDC.UI.Modal
             ComboboxBaudRate.Items.Add(1200);
             ComboboxBaudRate.SelectedIndex = 0;
 
-            //CheckboxForceIPv4.IsChecked = IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4") == null ? true : Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4"));
+            CheckboxForceIPv4.IsChecked = IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4") == null ? true : Convert.ToBoolean(IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4"));
 
             // populate connection info	if already provided from the parent window
             ParseConnectionString();
