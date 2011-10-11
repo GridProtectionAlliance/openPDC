@@ -1,5 +1,5 @@
 --  ----------------------------------------------------------------------------------------------------
---  openPG Data Structures for SQLite - Gbtc
+--  openPDC Data Structures for SQLite - Gbtc
 --
 --  Copyright © 2011, Grid Protection Alliance.  All Rights Reserved.
 --

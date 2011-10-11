@@ -43,8 +43,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Access", "Access", "{F0072CE5-12A6-4713-BBD0-B57966ED2339}"
 	ProjectSection(SolutionItems) = preProject
-		Data\Access\openPDC-InitialDataSet.mdb = Data\Access\openPDC-InitialDataSet.mdb
-		Data\Access\openPDC-SampleDataSet.mdb = Data\Access\openPDC-SampleDataSet.mdb
 		Data\Access\openPDC.mdb = Data\Access\openPDC.mdb
 	EndProjectSection
 EndProject
@@ -239,7 +237,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{53255B
 		Data\SQLite\InitialDataSet.sql = Data\SQLite\InitialDataSet.sql
 		Data\SQLite\openPDC-InitialDataSet.db = Data\SQLite\openPDC-InitialDataSet.db
 		Data\SQLite\openPDC-SampleDataSet.db = Data\SQLite\openPDC-SampleDataSet.db
-		Data\SQLite\openPDC.db = Data\SQLite\openPDC.db
 		Data\SQLite\openPDC.sql = Data\SQLite\openPDC.sql
 		Data\SQLite\SampleDataSet.sql = Data\SQLite\SampleDataSet.sql
 		Data\SQLite\sqlite3.exe = Data\SQLite\sqlite3.exe

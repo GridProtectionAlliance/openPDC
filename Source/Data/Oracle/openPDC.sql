@@ -1,5 +1,5 @@
 --  ----------------------------------------------------------------------------------------------------
---  openPG Data Structures for MySQL - Gbtc
+--  openPDC Data Structures for MySQL - Gbtc
 --
 --  Copyright © 2011, Grid Protection Alliance.  All Rights Reserved.
 --
@@ -22,11 +22,11 @@
 
 -- The following statements are used to create a tablespace, user, and schema.
 -- Be sure to change the password.
--- CREATE TABLESPACE openPG_TS DATAFILE 'openPG.dbf' SIZE 20M AUTOEXTEND ON;
--- CREATE USER openPG IDENTIFIED BY MyPassword DEFAULT TABLESPACE openPG_TS;
--- GRANT UNLIMITED TABLESPACE TO openPG;
--- GRANT CREATE SESSION TO openPG;
--- ALTER SESSION SET CURRENT_SCHEMA = openPG;
+-- CREATE TABLESPACE openPDC_TS DATAFILE 'openPDC.dbf' SIZE 20M AUTOEXTEND ON;
+-- CREATE USER openPDC IDENTIFIED BY MyPassword DEFAULT TABLESPACE openPDC_TS;
+-- GRANT UNLIMITED TABLESPACE TO openPDC;
+-- GRANT CREATE SESSION TO openPDC;
+-- ALTER SESSION SET CURRENT_SCHEMA = openPDC;
 
 CREATE TABLE ErrorLog(
     ID INT NOT NULL,

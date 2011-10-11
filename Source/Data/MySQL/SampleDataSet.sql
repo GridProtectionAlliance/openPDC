@@ -1,7 +1,7 @@
--- Script auto-generated generated from Access database openPG.mdb method GenerateSampleDataScript
+-- Script auto-generated generated from Access database openPDC.mdb method GenerateSampleDataScript
 -- 7/8/2010 1:07:40 PM
 
-USE openPG;
+USE openPDC;
 
 INSERT INTO Node(Name, CompanyID, Description, Settings, MenuType, MenuData, Master, LoadOrder, Enabled) 
 	VALUES('Default', NULL, 'Default node', 'RemoteStatusServerConnectionString={server=localhost:8505};datapublisherport=6170;RealTimeStatisticServiceUrl=http://localhost:6054/historian', 
