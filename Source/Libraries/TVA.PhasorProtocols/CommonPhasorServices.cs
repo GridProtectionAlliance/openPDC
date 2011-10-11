@@ -1177,6 +1177,16 @@ namespace TVA.PhasorProtocols
 
                 if (protocols.Columns.Contains("Category"))
                 {
+                    // Make sure new protocol types exist
+                    if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='GatewayTransport'"))) == 0)
+                        connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('GatewayTransport', 'Gateway Transport', 'Measurement', 'Gateway', 'TimeSeriesFramework.dll', 'TimeSeriesFramework.Transport.DataSubscriber', " + (protocols.Rows.Count + 1) + ")");
+
+                    if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='WAV'"))) == 0)
+                        connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('WAV', 'Wave Form Input Adapter', 'Frame', 'Audio', 'WavInputAdapter.dll', 'WavInputAdapter.WavInputAdapter', " + (protocols.Rows.Count + 2) + ")");
+
+                    if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='IeeeC37_118V2'"))) == 0)
+                        connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('IeeeC37_118V2', 'IEEE C37.118-2011, R2', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', " + (protocols.Rows.Count + 3) + ")");
+
                     foreach (DataRow protocol in protocols.Rows)
                     {
                         if (protocolIDList.Length > 0)
@@ -1185,13 +1195,6 @@ namespace TVA.PhasorProtocols
                         if (string.Compare(protocol.Field<string>("Category"), "Phasor", true) == 0)
                             protocolIDList.Append(protocol.ConvertField<int>("ID"));
                     }
-
-                    // Make sure new protocol types exist
-                    if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='GatewayTransport'"))) == 0)
-                        connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('GatewayTransport', 'Gateway Transport', 'Measurement', 'Gateway', 'TimeSeriesFramework.dll', 'TimeSeriesFramework.Transport.DataSubscriber', " + (protocols.Rows.Count + 1) + ")");
-
-                    if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='WAV'"))) == 0)
-                        connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('WAV', 'Wave Form Input Adapter', 'Frame', 'Audio', 'WavInputAdapter.dll', 'WavInputAdapter.WavInputAdapter', " + (protocols.Rows.Count + 2) + ")");
                 }
                 else
                 {

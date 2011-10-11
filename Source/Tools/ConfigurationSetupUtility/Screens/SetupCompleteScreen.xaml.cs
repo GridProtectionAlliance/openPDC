@@ -209,12 +209,13 @@ namespace ConfigurationSetupUtility.Screens
                             }
                         }
 
-                        // Always make sure that all three needed roles are available for each defined node(s) in the database.
+                        // Always make sure that all three needed roles are available for each defined node(s) in the database
                         ValidateSecurityRoles();
 
-                        // TODO: Figure out if user was on old db structure. If so then find out differences and load values from old db to new db format.
+                        // Convert node table to new format (i.e., columns to connection settings string), if nedded
+                        ConvertNodeTableFormat();
 
-                        // If the user requested it, start or restart the openPDC service.
+                        // If the user requested it, start or restart the openPDC service
                         if (m_serviceStartCheckBox.IsChecked.Value)
                         {
                             try
@@ -553,6 +554,93 @@ namespace ConfigurationSetupUtility.Screens
                         }
                     }
                 }
+            }
+        }
+
+        private void ConvertNodeTableFormat()
+        {
+            IDbConnection oldConnection = OpenOldConnection();
+
+            if (oldConnection != null)
+            {
+                Dictionary<string, string> settings = m_state["oldConnectionString"].ToString().ParseKeyValuePairs();
+                IDbCommand nodeCommand;
+                string oldDatabaseType = "undetermined";
+
+                switch (oldConnection.GetType().Name)
+                {
+                    case "SqlConnection":
+                        oldDatabaseType = "sql server";
+                        break;
+                    case "MySqlConnection":
+                        oldDatabaseType = "mysql";
+                        break;
+                    case "OracleConnection":
+                        oldDatabaseType = "oracle";
+                        break;
+                    case "SQLiteConnection":
+                        oldDatabaseType = "sqlite";
+                        break;
+                    case "OleDbConnection":
+                        string connectionSetting;
+                        if (settings.TryGetValue("Provider", out connectionSetting) && connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                            oldDatabaseType = "access";
+                        break;
+                }
+
+                bool oldDatabaseIsAccess = (oldDatabaseType == "access");
+
+                nodeCommand = oldConnection.CreateCommand();
+                nodeCommand.CommandText = "SELECT * FROM Node";
+                IDataReader nodeReader = nodeCommand.ExecuteReader();
+
+                DataTable dataTable = new DataTable();
+                dataTable.Load(nodeReader);
+
+                if (nodeReader != null)
+                    nodeReader.Close();
+
+                // See if old database contains old column names
+                if (dataTable.Columns.Contains("TimeSeriesDataServiceUrl"))
+                {
+                    IDbConnection newConnection = OpenNewConnection();
+
+                    if (newConnection != null)
+                    {
+                        // Convert original columns into connection settings format
+                        foreach (DataRow row in dataTable.Rows)
+                        {
+                            string nodeID = row["ID"].ToNonNullString();
+
+                            if (oldDatabaseType == "access")
+                                nodeID = "{" + nodeID + "}";
+                            else
+                                nodeID = "'" + nodeID + "'";
+
+                            string remoteStatusServer = row["RemoteStatusServiceUrl"].ToNonNullString();
+                            string realTimeStatisticServiceUrl = row["RealTimeStatisticServiceUrl"].ToNonNullString();
+
+                            // Make sure remote status server contains a data publisher port
+                            Dictionary<string, string> remoteStatusServerSettings = remoteStatusServer.ParseKeyValuePairs();
+
+                            if (!remoteStatusServerSettings.ContainsKey("dataPublisherPort"))
+                            {
+                                remoteStatusServerSettings["dataPublisherPort"] = "6165";
+                                remoteStatusServer = remoteStatusServerSettings.JoinKeyValuePairs();
+                            }
+
+                            string connectionSettings = string.Format("RemoteStatusServerConnectionString={{{0}}}; RealTimeStatisticServiceUrl={1}", remoteStatusServer, realTimeStatisticServiceUrl);
+
+                            IDbCommand command = newConnection.CreateCommand();
+                            command.CommandText = string.Format("UPDATE Node SET Settings = '{0}' WHERE NodeID = {1}", connectionSettings, nodeID);
+                            command.ExecuteNonQuery();
+                        }
+
+                        newConnection.Dispose();
+                    }
+                }
+
+                oldConnection.Dispose();
             }
         }
 

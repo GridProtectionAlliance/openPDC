@@ -118,7 +118,6 @@ namespace openPDCManager
         void MainWindow_Unloaded(object sender, RoutedEventArgs e)
         {
             CommonFunctions.SetRetryServiceConnection(false);
-            Properties.Settings.Default.Save();
         }
 
         /// <summary>

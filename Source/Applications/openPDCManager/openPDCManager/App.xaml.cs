@@ -24,6 +24,7 @@
 using System;
 using System.Security.Principal;
 using System.Windows;
+using System.Windows.Controls;
 using TimeSeriesFramework.UI;
 using TVA.ErrorManagement;
 using TVA.Reflection;
@@ -106,6 +107,11 @@ namespace openPDCManager
         #endregion
 
         #region [ Methods ]
+
+        private void Application_SessionEnding(object sender, SessionEndingCancelEventArgs e)
+        {
+            global::openPDCManager.Properties.Settings.Default.Save();
+        }
 
         private string ErrorText()
         {

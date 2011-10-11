@@ -72,6 +72,9 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>openPDCManager.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
@@ -177,6 +180,12 @@
     <Resource Include="openPDCManager.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>IF EXIST "$(TargetDir)..\openPDC" COPY "$(TargetPath)" "$(TargetDir)..\openPDC"
+IF EXIST "$(TargetDir)..\openPDC" COPY "$(TargetDir)$(TargetFileName).config" "$(TargetDir)..\openPDC"
+IF EXIST "$(TargetDir)..\openPDC" COPY "$(TargetDir)*.dll" "$(TargetDir)..\openPDC"
+IF EXIST "$(TargetDir)..\openPDC" COPY "$(TargetDir)Menu.xml" "$(TargetDir)..\openPDC"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
