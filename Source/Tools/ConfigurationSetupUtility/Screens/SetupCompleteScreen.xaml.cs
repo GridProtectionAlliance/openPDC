@@ -632,7 +632,7 @@ namespace ConfigurationSetupUtility.Screens
                             string connectionSettings = string.Format("RemoteStatusServerConnectionString={{{0}}}; RealTimeStatisticServiceUrl={1}", remoteStatusServer, realTimeStatisticServiceUrl);
 
                             IDbCommand command = newConnection.CreateCommand();
-                            command.CommandText = string.Format("UPDATE Node SET Settings = '{0}' WHERE NodeID = {1}", connectionSettings, nodeID);
+                            command.CommandText = string.Format("UPDATE Node SET Settings = '{0}' WHERE ID = {1}", connectionSettings, nodeID);
                             command.ExecuteNonQuery();
                         }
 
