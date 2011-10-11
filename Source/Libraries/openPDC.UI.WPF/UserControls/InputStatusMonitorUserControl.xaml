@@ -135,7 +135,7 @@
                 <HierarchicalDataTemplate x:Key="MeasurementNodeTemplate">
                     
                     <StackPanel Orientation="Horizontal" Margin="-10,0,0,0">
-                        <CheckBox IsChecked="{tsfBinding:Column Path=Selected}" Content="{tsfBinding:Column Path=SignalReference}" ToolTip="{tsfBinding:Column Path=Description}" Width="100" Height="20" 
+                        <CheckBox IsChecked="{tsfBinding:Column Path=Selected}" IsEnabled="{tsfBinding:Column Path=Selectable}" Content="{tsfBinding:Column Path=SignalReference}" ToolTip="{tsfBinding:Column Path=Description}" Width="100" Height="20" 
                                   FontSize="{StaticResource SmallTextSize}" Foreground="{tsfBinding:Column Path=Foreground}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
                         <TextBlock Text="{tsfBinding:Column Path=Value}" FontSize="{StaticResource SmallTextSize}" Width="60"
                                    Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" ToolTip="{tsfBinding:Column Path=TimeTag}"/>

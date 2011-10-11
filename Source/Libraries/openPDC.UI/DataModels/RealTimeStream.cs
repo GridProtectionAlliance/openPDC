@@ -289,6 +289,7 @@ namespace openPDC.UI.DataModels
                                                     EngineeringUnit = measurement.Field<string>("EngineeringUnits"),
                                                     Expanded = false,
                                                     Selected = false,
+                                                    Selectable = measurement.Field<string>("SignalAcronym") == "IPHM" ? true : measurement.Field<string>("SignalAcronym") == "IPHA" ? true : measurement.Field<string>("SignalAcronym") == "VPHM" ? true : measurement.Field<string>("SignalAcronym") == "VPHA" ? true : measurement.Field<string>("SignalAcronym") == "FREQ" ? true : false,
                                                     TimeTag = "N/A",
                                                     Value = "--",
                                                     Quality = "N/A",
@@ -555,6 +556,7 @@ namespace openPDC.UI.DataModels
         private string m_engineeringUnit;
         private bool m_expanded;
         private bool m_selected;
+        private bool m_selectable;
         private string m_timeTag;
         private string m_value;
         private string m_quality;
@@ -753,6 +755,22 @@ namespace openPDC.UI.DataModels
             {
                 m_selected = value;
                 OnPropertyChanged("Selected");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a flag if <see cref="RealTimeMeasurement"/> can be selected on UI or not.
+        /// </summary>
+        public bool Selectable
+        {
+            get
+            {
+                return m_selectable;
+            }
+            set
+            {
+                m_selectable = value;
+                OnPropertyChanged("Selectable");
             }
         }
 
