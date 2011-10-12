@@ -27,6 +27,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using System.Xml;
 using System.Xml.Serialization;
 using TimeSeriesFramework.UI;
@@ -46,6 +47,9 @@ namespace openPDCManager
         // Fields
         private ObservableCollection<MenuDataItem> m_menuDataItems;
         private WindowsServiceClient m_windowsServiceClient;
+        private LinkedList<TextBlock> m_navigationList;
+        private LinkedListNode<TextBlock> m_currentNode;
+        private bool m_navigationProcessed;
 
         #endregion
 
@@ -80,6 +84,9 @@ namespace openPDCManager
 
             CommonFunctions.SetRetryServiceConnection(true);
             CommonFunctions.ServiceConntectionRefreshed += new EventHandler(CommonFunctions_ServiceConntectionRefreshed);
+            m_navigationProcessed = false;
+            m_navigationList = new LinkedList<TextBlock>();
+            FrameContent.Navigated += new NavigatedEventHandler(FrameContent_Navigated);
         }
 
         #endregion
@@ -199,16 +206,50 @@ namespace openPDCManager
             });
         }
 
+        private void FrameContent_Navigated(object sender, NavigationEventArgs e)
+        {
+            try
+            {
+                if (!m_navigationProcessed)
+                {
+                    if (m_currentNode != null)
+                    {
+                        while (m_currentNode.Next != null)
+                            m_navigationList.Remove(m_currentNode.Next.Value);
+                    }
+                    m_navigationList.AddLast((TextBlock)GroupBoxMain.Header);
+                    m_currentNode = m_navigationList.Last;
+                }
+            }
+            catch { }
+            finally
+            {
+                m_navigationProcessed = false;
+            }
+        }
+
         private void ButtonBack_Click(object sender, RoutedEventArgs e)
         {
             if (FrameContent.CanGoBack)
+            {
+                m_currentNode = m_currentNode.Previous;
+                m_navigationProcessed = true;
                 FrameContent.GoBack();
+                if (m_currentNode != null)
+                    GroupBoxMain.Header = m_currentNode.Value;
+            }
         }
 
         private void ButtonForward_Click(object sender, RoutedEventArgs e)
         {
             if (FrameContent.CanGoForward)
+            {
+                m_currentNode = m_currentNode.Next;
+                m_navigationProcessed = true;
                 FrameContent.GoForward();
+                if (m_currentNode != null)
+                    GroupBoxMain.Header = m_currentNode.Value;
+            }
         }
 
         #endregion
