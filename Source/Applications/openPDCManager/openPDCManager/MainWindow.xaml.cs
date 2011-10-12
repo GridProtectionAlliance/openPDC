@@ -74,7 +74,6 @@ namespace openPDCManager
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
-            this.Unloaded += new RoutedEventHandler(MainWindow_Unloaded);
             this.Closing += new System.ComponentModel.CancelEventHandler(MainWindow_Closing);
             Title = ((App)Application.Current).Title;
             TextBoxTitle.Text = AssemblyInfo.EntryAssembly.Title;
@@ -125,17 +124,6 @@ namespace openPDCManager
         }
 
         /// <summary>
-        /// Method to handle window unloaded event.
-        /// </summary>
-        /// <param name="sender">Source of the event.</param>
-        /// <param name="e">Event arguments.</param>
-        void MainWindow_Unloaded(object sender, RoutedEventArgs e)
-        {
-            CommonFunctions.SetRetryServiceConnection(false);
-            Application.Current.Shutdown();
-        }
-
-        /// <summary>
         /// Handles windows closing event.
         /// </summary>
         /// <param name="sender">Source of the event.</param>
@@ -143,6 +131,8 @@ namespace openPDCManager
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Properties.Settings.Default.Save();
+            CommonFunctions.SetRetryServiceConnection(false);
+            Application.Current.Shutdown();
         }
 
         /// <summary>
