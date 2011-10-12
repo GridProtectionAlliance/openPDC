@@ -4,444 +4,39 @@
         <name>TimeSeriesFramework.UI</name>
     </assembly>
     <members>
-        <member name="T:TimeSeriesFramework.UI.AuthenticationRequest">
+        <member name="T:TimeSeriesFramework.UI.DataModels.AdapterType">
             <summary>
-            Represents a subscriber authentication request.
+            AdapterType method enumeration.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.Acronym">
+        <member name="F:TimeSeriesFramework.UI.DataModels.AdapterType.Action">
             <summary>
-            Gets or sets the suggested subscriber acronym.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.Name">
-            <summary>
-            Gets or sets the suggested subscriber name.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.SharedSecret">
-            <summary>
-            Gets or sets the shared secret for the subscriber.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.AuthenticationID">
-            <summary>
-            Gets or sets the authentication ID for the subscriber.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.ValidIPAddresses">
-            <summary>
-            Gets or sets the list of valid IP addresses for the subscriber.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.Key">
-            <summary>
-            Gets or sets the cryptographic key for the subscriber.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.IV">
-            <summary>
-            Gets or sets the cryptographic initialization vector for the subscriber.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.Binding.Column">
-            <summary>
-            Represents a custom <see cref="N:TimeSeriesFramework.UI.Binding"/> class.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Binding.Column.#ctor">
-            <summary>
-            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.Binding.Column"/> class.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.Binding.DataOperation">
-            <summary>
-            Represents a custom <see cref="N:TimeSeriesFramework.UI.Binding"/> class.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Binding.DataOperation.#ctor">
-            <summary>
-            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.Binding.DataOperation"/> class.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Binding.DataOperation.#ctor(System.String)">
-            <summary>
-            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.Binding.DataOperation"/> class.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.Binding.GridButtonCommand">
-            <summary>
-            Represents a custom <see cref="N:TimeSeriesFramework.UI.Binding"/> class.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Binding.GridButtonCommand.#ctor">
-            <summary>
-            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.Binding.Column"/> class.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.CommonFunctions">
-            <summary>
-            Represents a static class containing common methods.
-            </summary>
-        </member>
-        <member name="F:TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory">
-            <summary>
-            Defines the default settings category for TimeSeriesFramework data connections.
-            </summary>
-        </member>
-        <member name="F:TimeSeriesFramework.UI.CommonFunctions.CurrentUser">
-            <summary>
-            Defines the current user name as defined in the Thread.CurrentPrincipal.Identity.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(TVA.Data.AdoDataConnection)">
-            <summary>
-            Sets the current user context for the database.
+            Action Adapter.
             </summary>
             <remarks>
-            Purpose of this method is to supply current user information from the UI to DELETE trigger for change logging.
-            This method must be called before any delete operation on the database in order to log who deleted this record.
-            For SQL server it sets user name into CONTEXT_INFO().
-            For MySQL server it sets user name into session variable @context.
-            For Oracle server it sets user name into context package.
-            MS Access is not supported for change logging.
-            For any other database in the future, such as Oracle, this logic must be extended to support change log in the database.
+            Use this option to process the incoming data.
             </remarks>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> used to set user context before any delete operation.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.RealTimeStatisticServiceUrl(TVA.Data.AdoDataConnection)">
+        <member name="F:TimeSeriesFramework.UI.DataModels.AdapterType.Input">
             <summary>
-            Retrieves web service url to query real time statistics values.
+            Input Adapter.
             </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
-            <returns>string, url to web service.</returns>
+            <remarks>
+            Use this option to collect stream data and assign incoming measurements an ID.
+            </remarks>
         </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.TimeSeriesDataServiceUrl(TVA.Data.AdoDataConnection)">
+        <member name="F:TimeSeriesFramework.UI.DataModels.AdapterType.Output">
             <summary>
-            Retrieves web serivce url to query real time data.
+            Output Adapter.
             </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
-            <returns>string, url to web service.</returns>
+            <remarks>
+            Use this option to queue up data for archival.
+            </remarks>
         </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ServiceConnectionString(TVA.Data.AdoDataConnection,System.Boolean)">
+        <member name="T:TimeSeriesFramework.UI.DataModels.Adapter">
             <summary>
-            Retrieves connection string information to connect to backed windows service from UI.
+            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Adapter"/> information as defined in the database.
             </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
-            <returns>Connection string to connect to backend windows service.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.DataPublisherConnectionString(TVA.Data.AdoDataConnection)">
-            <summary>
-            Retrieves connection string to subscribe data from data published hosted by the backend windows service.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
-            <returns>Connection string to subscribe from data publisher.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetNodeSettings(TVA.Data.AdoDataConnection)">
-            <summary>
-            Method to parse Settings field value for current node defined in the database and extract various parameters to communicate with backend windows service.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.CurrentNodeID(TVA.Data.AdoDataConnection)">
-            <summary>
-            Returns current node id <see cref="T:System.Guid"/> UI is connected to.
-            </summary>
-            <param name="database">Connected <see cref="T:TVA.Data.AdoDataConnection"/></param>
-            <returns>Proper <see cref="T:System.Guid"/> implementation for current node id.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.SetAsCurrentNodeID(System.Guid)">
-            <summary>
-            Assigns <see cref="M:TimeSeriesFramework.UI.CommonFunctions.CurrentNodeID(TVA.Data.AdoDataConnection)"/> based ID of currently active node.
-            </summary>
-            <param name="nodeID">Current node ID <see cref="M:TimeSeriesFramework.UI.CommonFunctions.CurrentNodeID(TVA.Data.AdoDataConnection)"/> to assign.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ToNotNull(System.Object)">
-            <summary>
-            Returns <see cref="T:System.DBNull"/> if given <paramref name="value"/> is <c>null</c>.
-            </summary>
-            <param name="value">Value to test for null.</param>
-            <returns><see cref="T:System.DBNull"/> if <paramref name="value"/> is <c>null</c>; otherwise <paramref name="value"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetDownsamplingMethodLookupList">
-            <summary>
-            Returns a collection of down sampling methods.
-            </summary>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of down sampling methods.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetTimeZones(System.Boolean)">
-            <summary>
-            Returns a collection of system time zones.
-            </summary>
-            <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of system time zones.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetChildren(System.Windows.UIElement,System.Type,System.Collections.Generic.List{System.Windows.UIElement}@)">
-            <summary>
-            Retrieves children of an UIElement based on type.
-            </summary>
-            <param name="parent">Parent UIElement.</param>
-            <param name="targetType">Type of child UIElement looking for within parent UIElement.</param>
-            <param name="children">Reference paramter to return child collection.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(System.Windows.UIElement,System.Type,System.Windows.UIElement@)">
-            <summary>
-            Retrieves first child of an UIElement based on type.
-            </summary>
-            <param name="parent">Parent UIElement</param>
-            <param name="targetType">Type of the child UIElement.</param>
-            <param name="element">Reference parameter to return UIElement.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID(System.String,System.Int32)">
-            <summary>
-            Retrieves runtime id for an object.
-            </summary>
-            <param name="sourceTable">Table where object has been defined.</param>
-            <param name="sourceID">ID of an object in source table.</param>
-            <returns>string, id of an object in Runtime table.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.SetRetryServiceConnection(System.Boolean)">
-            <summary>
-            Sets a boolean flag indicating if connection cycle should be continued.
-            </summary>
-            <param name="retry"></param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetWindowsServiceClient">
-            <summary>
-            Retrieves <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object.
-            </summary>
-            <returns><see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ConnectWindowsServiceClient(System.Boolean)">
-            <summary>
-            Connects to backend windows service.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ConnectAsync(System.Object)">
-            <summary>
-            Connects asynchronously to backend windows service.
-            </summary>
-            <param name="state">paramter used.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.DisconnectWindowsServiceClient">
-            <summary>
-            Disconnects from backend windows service.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.SendCommandToService(System.String)">
-            <summary>
-            Sends command to backend windows service via <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object.
-            </summary>
-            <param name="command">command to be sent.</param>
-            <returns>string, indicating success.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetStopBits">
-            <summary>
-            Retrieves a list of <see cref="T:System.IO.Ports.StopBits"/>.
-            </summary>
-            <returns>Collection of <see cref="T:System.IO.Ports.StopBits"/> as a <see cref="T:System.Collections.Generic.List`1"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetParities">
-            <summary>
-            Retrieves a list of <see cref="T:System.IO.Ports.Parity"/>.
-            </summary>
-            <returns>Collection of <see cref="T:System.IO.Ports.Parity"/> as a <see cref="T:System.Collections.Generic.List`1"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ConvertValueToType(System.String,System.String)">
-            <summary>
-            Converts xml element to datatype
-            </summary>
-            <param name="xmlValue"></param>
-            <param name="xmlDataType"></param>
-            <returns></returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetMinMaxPointIDs(TVA.Data.AdoDataConnection,System.Guid)">
-            <summary>
-            
-            </summary>
-            <param name="connection"></param>
-            <param name="nodeID"></param>
-            <returns></returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.LogException(TVA.Data.AdoDataConnection,System.String,System.Exception)">
-            <summary>
-            Stores exception in the database
-            </summary>
-            <param name="connection"><see cref="T:TVA.Data.AdoDataConnection"/> object to connect to database</param>
-            <param name="source">Source of exception</param>
-            <param name="ex">Exception to be logged</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.LoadUserControl(System.Object,System.String)">
-            <summary>
-            Loads provided user control into the frame control inside main window.
-            </summary>
-            <param name="userControl">User control to be loaded.</param>
-            <param name="title">Title of the user control to be loaded.</param>
-        </member>
-        <member name="E:TimeSeriesFramework.UI.CommonFunctions.ServiceConntectionRefreshed">
-            <summary>
-            Used to notify main window that connection to service has changed.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.Converters.DictionaryToKeyValuePairConverter">
-            <summary>
-            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes <see cref="T:System.Collections.Generic.Dictionary`2"/> collection and returns <see cref="T:System.Collections.Generic.KeyValuePair`2"/>    
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.DictionaryToKeyValuePairConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Method to return KeyValuePair{T1,T2} from <see cref="T:System.Collections.Generic.Dictionary`2"/> collection.
-            </summary>
-            <param name="value">object to be used as key to search from collection.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter of type <see cref="T:System.Collections.Generic.Dictionary`2"/> to use.</param>
-            <param name="culture">The culture to use in the converter.</param>
-            <returns>KeyValuePair{T1,T2} value.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.DictionaryToKeyValuePairConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Method to return Key from KeyValuePair{T1,T2}.
-            </summary>
-            <param name="value">KeyValuePair{T1,T2} from which key needs to be returned.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use.</param>
-            <param name="culture">The culture to use in the converter.</param>
-            <returns>Integer, to bind to UI object.</returns>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.Converters.NotConverter">
-            <summary>
-            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> to invert boolean value.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.NotConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Inverts value of boolean object.
-            </summary>
-            <param name="value">Boolean object to be inverted.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use.</param>
-            <param name="culture">The culture to use in the converter.</param>
-            <returns>Boolean value for UI use.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.NotConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Inverts value of boolean object.
-            </summary>
-            <param name="value">Boolean object to be inverted.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use.</param>
-            <param name="culture">The culture to use in the converter.</param>
-            <returns>Boolean value for UI use.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.NotConverter.InvertBoolean(System.Object)">
-            <summary>
-            Inverts value of boolean object.
-            </summary>
-            <param name="value">boolean value to be inverted.</param>
-            <returns></returns>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.Converters.ObjectToVisibilityConverter">
-            <summary>
-            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes object value and converts to <see cref="T:System.Windows.Visibility"/> enumeration.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.ObjectToVisibilityConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Converts object value to <see cref="T:System.Windows.Visibility"/> enumeration.
-            </summary>
-            <param name="value">Object value to be converted.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use in conversion.</param>
-            <param name="culture">The culture to use in conversion.</param>
-            <returns><see cref="T:System.Windows.Visibility"/> enumeration.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.ObjectToVisibilityConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Converts <see cref="T:System.Windows.Visibility"/> to object.
-            </summary>
-            <param name="value"><see cref="T:System.Windows.Visibility"/> value to be converted.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use in conversion.</param>
-            <param name="culture">The culture to use in conversion.</param>
-            <returns>object value.</returns>
-            <remarks>This method has not been implemented.</remarks>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.Converters.RoleBasedVisibilityConverter">
-            <summary>
-            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> to convert role to Visibility.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.RoleBasedVisibilityConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Converts string value to visibility.
-            </summary>
-            <param name="value">Value to be converted to visibility.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use.</param>
-            <param name="culture">The culture to use in the converter.</param>
-            <returns>One of the visibility enummeration</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.RoleBasedVisibilityConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Converts visibility to string, not implemented.
-            </summary>
-            <param name="value">Visibility value to be converted to string.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use.</param>
-            <param name="culture">The culture to use in the converter.</param>
-            <returns>String, for UI use.</returns>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.Converters.StringToBooleanConverter">
-            <summary>
-            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes string value and converts it to boolean.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.StringToBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Converts string to boolean value.
-            </summary>
-            <param name="value">String value to be converted.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use in conversion.</param>
-            <param name="culture">The culture to use in conversion.</param>
-            <returns>Boolean value.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.StringToBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Converts boolean value to string.
-            </summary>
-            <param name="value">Boolean value to be converted.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use in conversion.</param>
-            <param name="culture">The culture to use in conversion.</param>
-            <returns>String value.</returns>
-            <remarks>This method has not been implemented.</remarks>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.Converters.StringToStatusColorConverter">
-            <summary>
-            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes string value and returns <see cref="T:System.Windows.Media.Brush"/> object.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.StringToStatusColorConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Converts string value to <see cref="T:System.Windows.Media.Brush"/> object.
-            </summary>
-            <param name="value">string value to be converted.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use in the conversion.</param>
-            <param name="culture">The culture to use in the conversion.</param>
-            <returns>Brush object.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.Converters.StringToStatusColorConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            Converts <see cref="T:System.Windows.Media.Brush"/> object to string value.
-            </summary>
-            <param name="value"><see cref="T:System.Windows.Media.Brush"/> object to be converted.</param>
-            <param name="targetType">The type of the binding target property.</param>
-            <param name="parameter">The converter parameter to use in the conversion.</param>
-            <param name="culture">The culture to use in the conversion.</param>
-            <returns>string value.</returns>
-            <remarks>This method is not implemented.</remarks>
         </member>
         <member name="T:TimeSeriesFramework.UI.DataModelBase">
             <summary>
@@ -581,40 +176,6 @@
             Value defaults to <c><see cref="F:System.Reflection.BindingFlags.Public"/> | <see cref="F:System.Reflection.BindingFlags.Instance"/> | <see cref="F:System.Reflection.BindingFlags.DeclaredOnly"/></c>.
             </remarks>
         </member>
-        <member name="T:TimeSeriesFramework.UI.DataModels.AdapterType">
-            <summary>
-            AdapterType method enumeration.
-            </summary>
-        </member>
-        <member name="F:TimeSeriesFramework.UI.DataModels.AdapterType.Action">
-            <summary>
-            Action Adapter.
-            </summary>
-            <remarks>
-            Use this option to process the incoming data.
-            </remarks>
-        </member>
-        <member name="F:TimeSeriesFramework.UI.DataModels.AdapterType.Input">
-            <summary>
-            Input Adapter.
-            </summary>
-            <remarks>
-            Use this option to collect stream data and assign incoming measurements an ID.
-            </remarks>
-        </member>
-        <member name="F:TimeSeriesFramework.UI.DataModels.AdapterType.Output">
-            <summary>
-            Output Adapter.
-            </summary>
-            <remarks>
-            Use this option to queue up data for archival.
-            </remarks>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.DataModels.Adapter">
-            <summary>
-            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Adapter"/> information as defined in the database.
-            </summary>
-        </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Adapter.Load(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.AdapterType)">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Adapter"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
@@ -719,284 +280,199 @@
             Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Adapter"/> UpdatedBy.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.DataModels.ApplicationRole">
+        <member name="T:TimeSeriesFramework.UI.DataModels.Protocol">
             <summary>
-             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> information as defined in the database.
+            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.Load(TVA.Data.AdoDataConnection)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Protocol.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
             <summary>
-            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.GetCurrentUsers(TVA.Data.AdoDataConnection,System.Guid)">
-            <summary>
-            Retrieves collection of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>s assigned to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="roleID">ID of the <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to search for.</param>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.GetPossibleUsers(TVA.Data.AdoDataConnection,System.Guid)">
-            <summary>
-            Retrieves collection of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>s NOT assigned to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="roleID">ID of the <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to search for.</param>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.GetCurrentGroups(TVA.Data.AdoDataConnection,System.Guid)">
-            <summary>
-            Retrieves collection of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>s assigned to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="roleID">ID of the <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to search for.</param>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.GetPossibleGroups(TVA.Data.AdoDataConnection,System.Guid)">
-            <summary>
-            Retrieves collection of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>s NOT assigned to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="roleID">ID of the <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to search for.</param>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.AddUsers(TVA.Data.AdoDataConnection,System.Guid,System.Collections.Generic.List{System.Guid})">
-            <summary>
-            Adds <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="roleID">ID of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to which <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>s are being added.</param>
-            <param name="usersToBeAdded">List of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> IDs to be added.</param>
-            <returns>string, for display use, indicating success.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.RemoveUsers(TVA.Data.AdoDataConnection,System.Guid,System.Collections.Generic.List{System.Guid})">
-            <summary>
-            Deletes <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> from <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="roleID">ID of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> from which <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>s are being deleted.</param>
-            <param name="usersToBeDeleted">List of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> IDs to be deleted.</param>
-            <returns>string, for display use, indicating success.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.AddGroups(TVA.Data.AdoDataConnection,System.Guid,System.Collections.Generic.List{System.Guid})">
-            <summary>
-            Adds <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="roleID">ID of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to which <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>s are being added.</param>
-            <param name="groupsToBeAdded">List of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> IDs to be added.</param>
-            <returns>string, for display use, indicating success.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.RemoveGroups(TVA.Data.AdoDataConnection,System.Guid,System.Collections.Generic.List{System.Guid})">
-            <summary>
-            Deletes <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> from <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="roleID">ID of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> from which <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>s are being deleted.</param>
-            <param name="groupsToBeDeleted">List of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> IDs to be deleted.</param>
-            <returns>string, for display use, indicating success.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
-            <summary>
-            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> information.
+            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> information.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
             <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of application roles defined in the database.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.Save(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.ApplicationRole)">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.ID">
             <summary>
-            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> information to database.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> ID.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.Acronym">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> Acronym.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.Name">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> Name.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.Type">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> Type.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.Category">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> Category.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.AssemblyName">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> AssemblyName.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.TypeName">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> TypeName.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.LoadOrder">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> LoadOrder.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.DataModels.Node">
+            <summary>
+            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information as defined in the database.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Node.Load(TVA.Data.AdoDataConnection)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>        
+            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Node.GetCurrentNode(TVA.Data.AdoDataConnection)">
+            <summary>
+            Retrieves a <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> defined in the database.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="applicationRole">Information about <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.</param>        
-            <returns>String, for display use, indicating success.</returns>
+            <returns><see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.Delete(TVA.Data.AdoDataConnection,System.Guid)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Node.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
             <summary>
-            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> record from database.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="applicationRoleID">ID of the record to be deleted.</param>
-            <returns>String, for display use, indicating success.</returns>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.ID">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> ID.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.NodeID">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> NodeID.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.Name">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> Name.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.Description">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> Description.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.CreatedOn">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> CreatedOn.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.CreatedBy">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> CreatedBy.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.UpdatedOn">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> UpdatedOn.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.UpdatedBy">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> UpdatedBy.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.CurrentGroups">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> CurrentRoleGroups.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.PossibleGroups">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> PossibleRoleGroups.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.CurrentUsers">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> CurrentRoleUsers.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.PossibleUsers">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> PossibleRoleUsers.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.DataModels.Company">
-            <summary>
-            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> information as defined in the database.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Company.Load(TVA.Data.AdoDataConnection)">
-            <summary>
-            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Company.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
-            <summary>
-            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> information.
+            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
             <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of companies defined in the database.</returns>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of nodes defined in the database.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Company.Save(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.Company)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Node.Save(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.Node)">
             <summary>
-            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> information to database.
+            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information to database.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="company">Information about <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/>.</param>        
+            <param name="node">Information about <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>.</param>        
             <returns>String, for display use, indicating success.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Company.Delete(TVA.Data.AdoDataConnection,System.Int32)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Node.Delete(TVA.Data.AdoDataConnection,System.Guid)">
             <summary>
-            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> record from database.
+            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> record from database.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="companyID">ID of the record to be deleted.</param>
+            <param name="nodeID">ID of the record to be deleted.</param>
             <returns>String, for display use, indicating success.</returns>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Company.ID">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.ID">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> ID.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s ID.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Company.Acronym">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Name">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> acronym.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Name.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Company.MapAcronym">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.CompanyID">
             <summary>
-            Gets or sets map acronym used by <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/>.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Comapny ID.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Company.Name">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Longitude">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> name.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Longitude.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Company.URL">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Latitude">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> URL.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Latitude.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Company.LoadOrder">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Description">
             <summary>
-            Gets or sets desired load order of <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> record.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Description.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Company.CreatedOn">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.ImagePath">
             <summary>
-            Gets or sets when the current <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> was created.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Image.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Company.CreatedBy">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Settings">
             <summary>
-            Gets or sets who the current <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> was created by.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Settings.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Company.UpdatedOn">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.MenuType">
             <summary>
-            Gets or sets when the current <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> was updated.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s MenuType.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Company.UpdatedBy">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.MenuData">
             <summary>
-            Gets or sets who the current <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> was updated by.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s MenuData.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.DataModels.ErrorLog">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Master">
             <summary>
-            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> information as defined in the database.
+            Gets or sets whether the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> is the master <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ErrorLog.ID">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.LoadOrder">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> ID.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Load Order.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ErrorLog.Source">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Enabled">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> Source.
+            Gets or sets whether the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> is enabled.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ErrorLog.Message">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.RemoteStatusServiceUrl">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> Message.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Remote Status Service URL.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ErrorLog.Detail">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.RealTimeStatisticServiceUrl">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> Detail.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Real Time Statistic Service URL.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.ErrorLog.CreatedOn">
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.CompanyName">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> CreatedOn.
+            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Company Name.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.CreatedOn">
+            <summary>
+            Gets or sets the Date or Time the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> was created on.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.CreatedBy">
+            <summary>
+            Gets or sets who the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> was created by.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.UpdatedOn">
+            <summary>
+            Gets or sets the Date or Time when the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> was updated on.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.UpdatedBy">
+            <summary>
+            Gets or sets who the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> was updated by.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.DataModels.Historian">
@@ -1129,44 +605,49 @@
             Gets or sets who the current <see cref="T:TimeSeriesFramework.UI.DataModels.Historian"/> was updated by.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.DataModels.IaonTree">
+        <member name="T:TimeSeriesFramework.UI.DataModels.ErrorLog">
             <summary>
-            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> information as defined in the database.
+            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.IaonTree.Load(TVA.Data.AdoDataConnection)">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ErrorLog.ID">
             <summary>
-            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
-            </summary>        
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>     
-            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.IaonTree.GetLookupList">
-            <summary>
-            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> information.
-            </summary>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of adapters defined in the database.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.IaonTree.Save">
-            <summary>
-            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> information to database.
-            </summary>    
-            <returns>String, for display use, indicating success.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.IaonTree.Delete">
-            <summary>
-            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> record from database.
-            </summary>
-            <returns>String, for display use, indicating success.</returns>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.IaonTree.AdapterType">
-            <summary>
-            Gets the adapter type.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> ID.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.IaonTree.AdapterList">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ErrorLog.Source">
             <summary>
-            Gets the list of adapters associated with this Iaon tree.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> Source.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.ErrorLog.Message">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> Message.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.ErrorLog.Detail">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> Detail.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.ErrorLog.CreatedOn">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> CreatedOn.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.Binding.DataOperation">
+            <summary>
+            Represents a custom <see cref="N:TimeSeriesFramework.UI.Binding"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Binding.DataOperation.#ctor">
+            <summary>
+            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.Binding.DataOperation"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Binding.DataOperation.#ctor(System.String)">
+            <summary>
+            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.Binding.DataOperation"/> class.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.DataModels.Interconnection">
@@ -1199,6 +680,42 @@
         <member name="P:TimeSeriesFramework.UI.DataModels.Interconnection.LoadOrder">
             <summary>
             Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Interconnection"/> LoadOrder.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.Converters.ObjectToVisibilityConverter">
+            <summary>
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes object value and converts to <see cref="T:System.Windows.Visibility"/> enumeration.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Converters.ObjectToVisibilityConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts object value to <see cref="T:System.Windows.Visibility"/> enumeration.
+            </summary>
+            <param name="value">Object value to be converted.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use in conversion.</param>
+            <param name="culture">The culture to use in conversion.</param>
+            <returns><see cref="T:System.Windows.Visibility"/> enumeration.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Converters.ObjectToVisibilityConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts <see cref="T:System.Windows.Visibility"/> to object.
+            </summary>
+            <param name="value"><see cref="T:System.Windows.Visibility"/> value to be converted.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use in conversion.</param>
+            <param name="culture">The culture to use in conversion.</param>
+            <returns>object value.</returns>
+            <remarks>This method has not been implemented.</remarks>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.Binding.Column">
+            <summary>
+            Represents a custom <see cref="N:TimeSeriesFramework.UI.Binding"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Binding.Column.#ctor">
+            <summary>
+            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.Binding.Column"/> class.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.DataModels.Measurement">
@@ -1429,199 +946,434 @@
             Gets or sets selected flag for <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/>.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.DataModels.Node">
+        <member name="T:TimeSeriesFramework.UI.DataModels.SignalType">
             <summary>
-            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information as defined in the database.
+            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Node.Load(TVA.Data.AdoDataConnection)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.SignalType.Load(TVA.Data.AdoDataConnection,System.String,System.String)">
             <summary>
-            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>        
-            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Node.GetCurrentNode(TVA.Data.AdoDataConnection)">
-            <summary>
-            Retrieves a <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> defined in the database.
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <returns><see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information.</returns>
+            <param name="source">Type if source to filter data.</param>
+            <param name="phasorType">Type of phasor type to filter data.</param>
+            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/>.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Node.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.SignalType.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
             <summary>
-            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of nodes defined in the database.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Node.Save(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.Node)">
-            <summary>
-            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information to database.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="node">Information about <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>.</param>        
-            <returns>String, for display use, indicating success.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Node.Delete(TVA.Data.AdoDataConnection,System.Guid)">
-            <summary>
-            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> record from database.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="nodeID">ID of the record to be deleted.</param>
-            <returns>String, for display use, indicating success.</returns>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.ID">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s ID.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Name">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Name.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.CompanyID">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Comapny ID.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Longitude">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Longitude.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Latitude">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Latitude.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Description">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Description.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.ImagePath">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Image.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Settings">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Settings.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.MenuType">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s MenuType.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.MenuData">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s MenuData.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Master">
-            <summary>
-            Gets or sets whether the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> is the master <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.LoadOrder">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Load Order.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.Enabled">
-            <summary>
-            Gets or sets whether the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> is enabled.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.RemoteStatusServiceUrl">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Remote Status Service URL.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.RealTimeStatisticServiceUrl">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Real Time Statistic Service URL.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.CompanyName">
-            <summary>
-            Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Company Name.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.CreatedOn">
-            <summary>
-            Gets or sets the Date or Time the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> was created on.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.CreatedBy">
-            <summary>
-            Gets or sets who the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> was created by.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.UpdatedOn">
-            <summary>
-            Gets or sets the Date or Time when the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> was updated on.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Node.UpdatedBy">
-            <summary>
-            Gets or sets who the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> was updated by.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.DataModels.Protocol">
-            <summary>
-            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> information as defined in the database.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Protocol.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
-            <summary>
-            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> information.
+            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> information.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
             <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.ID">
+        <member name="M:TimeSeriesFramework.UI.DataModels.SignalType.GetPmuSignalTypes">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> ID.
+            Method to return signal types for PMU device.
+            </summary>
+            <returns>Returns <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of signal types.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.SignalType.GetVoltagePhasorSignalTypes">
+            <summary>
+            Method to return signal types for voltage phasor.
+            </summary>
+            <returns>Returns <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of signal types.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.SignalType.GetCurrentPhasorSignalTypes">
+            <summary>
+            Method to return signal types for current phasor.
+            </summary>
+            <returns>Returns <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of signal types.</returns>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.ID">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> ID.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.Acronym">
+        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.Acronym">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> Acronym.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> Acronym.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.Name">
+        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.Name">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> Name.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> Name.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.Type">
+        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.Suffix">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> Type.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> Suffix.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.Category">
+        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.Abbreviation">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> Category.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> Abbreviation.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.AssemblyName">
+        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.Source">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> AssemblyName.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> Source.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.TypeName">
+        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.EngineeringUnits">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> TypeName.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> EngineeringUnits.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.LoadOrder">
+        <member name="T:TimeSeriesFramework.UI.DataModels.IaonTree">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> LoadOrder.
+            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> information as defined in the database.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.IaonTree.Load(TVA.Data.AdoDataConnection)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
+            </summary>        
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>     
+            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.IaonTree.GetLookupList">
+            <summary>
+            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> information.
+            </summary>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of adapters defined in the database.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.IaonTree.Save">
+            <summary>
+            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> information to database.
+            </summary>    
+            <returns>String, for display use, indicating success.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.IaonTree.Delete">
+            <summary>
+            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.IaonTree"/> record from database.
+            </summary>
+            <returns>String, for display use, indicating success.</returns>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.IaonTree.AdapterType">
+            <summary>
+            Gets the adapter type.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.IaonTree.AdapterList">
+            <summary>
+            Gets the list of adapters associated with this Iaon tree.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.DataModels.UserAccount">
+            <summary>
+             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> information as defined in the database.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.UserAccount.Load(TVA.Data.AdoDataConnection)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> information as an OberservableCollection{T}"/&gt; style list.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/></returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.UserAccount.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
+            <summary>
+            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> information.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of user accounts defined in the database.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.UserAccount.Save(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.UserAccount)">
+            <summary>
+            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> information to database.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="userAccount">Information about <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>.</param>        
+            <returns>String, for display use, indicating success.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.UserAccount.Delete(TVA.Data.AdoDataConnection,System.Guid)">
+            <summary>
+            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> record from database.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="userAccountID">ID of the record to be deleted.</param>
+            <returns>String, for display use, indicating success.</returns>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.ID">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> ID.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.Name">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> Name.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.Password">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> Password.
+            </summary>  
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.FirstName">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> FirstName.
+            </summary>       
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.LastName">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> LastName.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.DefaultNodeID">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> DefaultNodeID.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.Phone">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> Phone
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.Email">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> Email
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.LockedOut">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> LockedOut.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.UseADAuthentication">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> UseADAuthentication.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.ChangePasswordOn">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> ChangePasswordOn.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.CreatedOn">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> CreatedOn
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.CreatedBy">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> CreatedBy
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.UpdatedOn">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> UpdatedOn
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.UpdatedBy">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> UpdatedBy
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.WindowsServiceClient">
+            <summary>
+            Class to connect and communicate with windows service.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.WindowsServiceClient.#ctor(System.String)">
+            <summary>
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/>.
+            </summary>
+            <param name="connectionString">Connection information such as server ip address and port where windows service is running.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.WindowsServiceClient.Finalize">
+            <summary>
+            Releases the unmanaged resources before the <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object is reclaimed by <see cref="T:System.GC"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.WindowsServiceClient.Dispose">
+            <summary>
+            Releases all the resources used by the <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.WindowsServiceClient.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.WindowsServiceClient.ClientHelper_ReceivedServiceUpdate(System.Object,TVA.EventArgs{TVA.UpdateType,System.String})">
+            <summary>
+            Handles ReceivedServiceUpdate event of ClientHelper.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.WindowsServiceClient.Helper">
+            <summary>
+            Gets reference to ClientHelper object.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.WindowsServiceClient.CachedStatus">
+            <summary>
+            Gets chached status information to display upon successful connection to windows service.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.DataModels.Vendor">
+            <summary>
+             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> information as defined in the database.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.Load(TVA.Data.AdoDataConnection)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
+            <summary>
+            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> information.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of vendors defined in the database.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.Save(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.Vendor)">
+            <summary>
+            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> information to database.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="vendor">Information about <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/>.</param>        
+            <returns>String, for display use, indicating success.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.Delete(TVA.Data.AdoDataConnection,System.Int32)">
+            <summary>
+            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> record from database.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="vendorID">ID of the record to be deleted.</param>
+            <returns>String, for display use, indicating success.</returns>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.ID">
+            <summary>
+            Gets or sets the <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> ID.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.Acronym">
+            <summary>
+            Gets or sets the <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> Acronym.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.Name">
+            <summary>
+            Gets or sets the <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> Name.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.PhoneNumber">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> Phone Number.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.ContactEmail">
+            <summary>
+            Gets or sets the <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> Contact Email.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.URL">
+            <summary>
+            Gets or sets the <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> URL.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.CreatedOn">
+            <summary>
+            Gets or sets the Date or Time this <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> was created on.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.CreatedBy">
+            <summary>
+            Gets or sets who this <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> was created by.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.UpdatedOn">
+            <summary>
+            Gets or sets the Date Time this <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> was updated on.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.UpdatedBy">
+            <summary>
+            Gets or sets who this <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> was updated by.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.Converters.DictionaryToKeyValuePairConverter">
+            <summary>
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes <see cref="T:System.Collections.Generic.Dictionary`2"/> collection and returns <see cref="T:System.Collections.Generic.KeyValuePair`2"/>    
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Converters.DictionaryToKeyValuePairConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Method to return KeyValuePair{T1,T2} from <see cref="T:System.Collections.Generic.Dictionary`2"/> collection.
+            </summary>
+            <param name="value">object to be used as key to search from collection.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter of type <see cref="T:System.Collections.Generic.Dictionary`2"/> to use.</param>
+            <param name="culture">The culture to use in the converter.</param>
+            <returns>KeyValuePair{T1,T2} value.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Converters.DictionaryToKeyValuePairConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Method to return Key from KeyValuePair{T1,T2}.
+            </summary>
+            <param name="value">KeyValuePair{T1,T2} from which key needs to be returned.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use.</param>
+            <param name="culture">The culture to use in the converter.</param>
+            <returns>Integer, to bind to UI object.</returns>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.Binding.GridButtonCommand">
+            <summary>
+            Represents a custom <see cref="N:TimeSeriesFramework.UI.Binding"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Binding.GridButtonCommand.#ctor">
+            <summary>
+            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.Binding.Column"/> class.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.AuthenticationRequest">
+            <summary>
+            Represents a subscriber authentication request.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.Acronym">
+            <summary>
+            Gets or sets the suggested subscriber acronym.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.Name">
+            <summary>
+            Gets or sets the suggested subscriber name.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.SharedSecret">
+            <summary>
+            Gets or sets the shared secret for the subscriber.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.AuthenticationID">
+            <summary>
+            Gets or sets the authentication ID for the subscriber.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.ValidIPAddresses">
+            <summary>
+            Gets or sets the list of valid IP addresses for the subscriber.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.Key">
+            <summary>
+            Gets or sets the cryptographic key for the subscriber.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.AuthenticationRequest.IV">
+            <summary>
+            Gets or sets the cryptographic initialization vector for the subscriber.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.DataModels.SecurityGroup">
@@ -1739,276 +1491,458 @@
             Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>'s PossibleGroupUsers.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.DataModels.SignalType">
+        <member name="T:TimeSeriesFramework.UI.PanAndZoom">
             <summary>
-            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> information as defined in the database.
+            <see cref="T:System.Windows.Controls.ContentControl"/> class which allows deep zoom composoer type functionalities in WPF apps.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.SignalType.Load(TVA.Data.AdoDataConnection,System.String,System.String)">
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.#ctor">
             <summary>
-            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="source">Type if source to filter data.</param>
-            <param name="phasorType">Type of phasor type to filter data.</param>
-            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/>.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.SignalType.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
-            <summary>
-            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> information.
-            </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.SignalType.GetPmuSignalTypes">
-            <summary>
-            Method to return signal types for PMU device.
-            </summary>
-            <returns>Returns <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of signal types.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.SignalType.GetVoltagePhasorSignalTypes">
-            <summary>
-            Method to return signal types for voltage phasor.
-            </summary>
-            <returns>Returns <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of signal types.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.SignalType.GetCurrentPhasorSignalTypes">
-            <summary>
-            Method to return signal types for current phasor.
-            </summary>
-            <returns>Returns <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of signal types.</returns>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.ID">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> ID.
+            Creates an instance of <see cref="T:TimeSeriesFramework.UI.PanAndZoom"/> class.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.Acronym">
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.OnApplyTemplate">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> Acronym.
+            Overrides OnApplyTemplate method from <see cref="T:System.Windows.Controls.ContentControl"/> class.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.Name">
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.CreatePanAnimation(System.Double)">
+            <summary>Helper to create the panning animation for x,y coordinates.</summary>
+            <param name="toValue">New value of the coordinate.</param>
+            <returns>Double animation</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.CreateZoomAnimation(System.Double)">
+            <summary>Helper to create the zoom double animation for scaling.</summary>
+            <param name="toValue">Value to animate to.</param>
+            <returns>Double animation.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.DoZoom(System.Double,System.Windows.Point,System.Windows.Point)">
+            <summary>Zoom into or out of the content.</summary>
+            <param name="deltaZoom">Factor to mutliply the zoom level by. </param>
+            <param name="mousePosition">Logical mouse position relative to the original content.</param>
+            <param name="physicalPosition">Actual mouse position on the screen (relative to the parent window)</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.PanAndZoom.Reset">
+            <summary>Reset to default zoom level and centered content.</summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.DataModels.ApplicationRole">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> Name.
+             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> information as defined in the database.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.Suffix">
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.Load(TVA.Data.AdoDataConnection)">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> Suffix.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.Abbreviation">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> Abbreviation.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.Source">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> Source.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.SignalType.EngineeringUnits">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.SignalType"/> EngineeringUnits.
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.DataModels.UserAccount">
-            <summary>
-             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> information as defined in the database.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.UserAccount.Load(TVA.Data.AdoDataConnection)">
-            <summary>
-            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> information as an OberservableCollection{T}"/&gt; style list.
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/></returns>
+            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.UserAccount.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.GetCurrentUsers(TVA.Data.AdoDataConnection,System.Guid)">
             <summary>
-            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> information.
+            Retrieves collection of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>s assigned to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of user accounts defined in the database.</returns>
+            <param name="roleID">ID of the <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to search for.</param>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.UserAccount.Save(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.UserAccount)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.GetPossibleUsers(TVA.Data.AdoDataConnection,System.Guid)">
             <summary>
-            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> information to database.
+            Retrieves collection of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>s NOT assigned to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="userAccount">Information about <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>.</param>        
-            <returns>String, for display use, indicating success.</returns>
+            <param name="roleID">ID of the <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to search for.</param>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.UserAccount.Delete(TVA.Data.AdoDataConnection,System.Guid)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.GetCurrentGroups(TVA.Data.AdoDataConnection,System.Guid)">
             <summary>
-            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> record from database.
+            Retrieves collection of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>s assigned to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="userAccountID">ID of the record to be deleted.</param>
-            <returns>String, for display use, indicating success.</returns>
+            <param name="roleID">ID of the <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to search for.</param>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</returns>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.ID">
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.GetPossibleGroups(TVA.Data.AdoDataConnection,System.Guid)">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> ID.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.Name">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> Name.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.Password">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> Password.
-            </summary>  
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.FirstName">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> FirstName.
-            </summary>       
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.LastName">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> LastName.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.DefaultNodeID">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> DefaultNodeID.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.Phone">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> Phone
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.Email">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> Email
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.LockedOut">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> LockedOut.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.UseADAuthentication">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> UseADAuthentication.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.ChangePasswordOn">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> ChangePasswordOn.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.CreatedOn">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> CreatedOn
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.CreatedBy">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> CreatedBy
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.UpdatedOn">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> UpdatedOn
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.UserAccount.UpdatedBy">
-            <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> UpdatedBy
-            </summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.DataModels.Vendor">
-            <summary>
-             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> information as defined in the database.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.Load(TVA.Data.AdoDataConnection)">
-            <summary>
-            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
+            Retrieves collection of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>s NOT assigned to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/>.</returns>
+            <param name="roleID">ID of the <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to search for.</param>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.AddUsers(TVA.Data.AdoDataConnection,System.Guid,System.Collections.Generic.List{System.Guid})">
             <summary>
-            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> information.
+            Adds <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="roleID">ID of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to which <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>s are being added.</param>
+            <param name="usersToBeAdded">List of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> IDs to be added.</param>
+            <returns>string, for display use, indicating success.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.RemoveUsers(TVA.Data.AdoDataConnection,System.Guid,System.Collections.Generic.List{System.Guid})">
+            <summary>
+            Deletes <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> from <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="roleID">ID of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> from which <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/>s are being deleted.</param>
+            <param name="usersToBeDeleted">List of <see cref="T:TimeSeriesFramework.UI.DataModels.UserAccount"/> IDs to be deleted.</param>
+            <returns>string, for display use, indicating success.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.AddGroups(TVA.Data.AdoDataConnection,System.Guid,System.Collections.Generic.List{System.Guid})">
+            <summary>
+            Adds <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> to <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="roleID">ID of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> to which <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>s are being added.</param>
+            <param name="groupsToBeAdded">List of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> IDs to be added.</param>
+            <returns>string, for display use, indicating success.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.RemoveGroups(TVA.Data.AdoDataConnection,System.Guid,System.Collections.Generic.List{System.Guid})">
+            <summary>
+            Deletes <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> from <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="roleID">ID of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> from which <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/>s are being deleted.</param>
+            <param name="groupsToBeDeleted">List of <see cref="T:TimeSeriesFramework.UI.DataModels.SecurityGroup"/> IDs to be deleted.</param>
+            <returns>string, for display use, indicating success.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
+            <summary>
+            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> information.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
             <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
-            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of vendors defined in the database.</returns>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of application roles defined in the database.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.Save(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.Vendor)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.Save(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.ApplicationRole)">
             <summary>
-            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> information to database.
+            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> information to database.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="vendor">Information about <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/>.</param>        
+            <param name="applicationRole">Information about <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/>.</param>        
             <returns>String, for display use, indicating success.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.Delete(TVA.Data.AdoDataConnection,System.Int32)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.ApplicationRole.Delete(TVA.Data.AdoDataConnection,System.Guid)">
             <summary>
-            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> record from database.
+            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> record from database.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="vendorID">ID of the record to be deleted.</param>
+            <param name="applicationRoleID">ID of the record to be deleted.</param>
             <returns>String, for display use, indicating success.</returns>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.ID">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.ID">
             <summary>
-            Gets or sets the <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> ID.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> ID.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.Acronym">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.NodeID">
             <summary>
-            Gets or sets the <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> Acronym.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> NodeID.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.Name">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.Name">
             <summary>
-            Gets or sets the <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> Name.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> Name.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.PhoneNumber">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.Description">
             <summary>
-            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> Phone Number.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> Description.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.ContactEmail">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.CreatedOn">
             <summary>
-            Gets or sets the <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> Contact Email.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> CreatedOn.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.URL">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.CreatedBy">
             <summary>
-            Gets or sets the <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> URL.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> CreatedBy.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.CreatedOn">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.UpdatedOn">
             <summary>
-            Gets or sets the Date or Time this <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> was created on.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> UpdatedOn.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.CreatedBy">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.UpdatedBy">
             <summary>
-            Gets or sets who this <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> was created by.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> UpdatedBy.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.UpdatedOn">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.CurrentGroups">
             <summary>
-            Gets or sets the Date Time this <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> was updated on.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> CurrentRoleGroups.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.DataModels.Vendor.UpdatedBy">
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.PossibleGroups">
             <summary>
-            Gets or sets who this <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> was updated by.
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> PossibleRoleGroups.
             </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.CurrentUsers">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> CurrentRoleUsers.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.ApplicationRole.PossibleUsers">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> PossibleRoleUsers.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.CommonFunctions">
+            <summary>
+            Represents a static class containing common methods.
+            </summary>
+        </member>
+        <member name="F:TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory">
+            <summary>
+            Defines the default settings category for TimeSeriesFramework data connections.
+            </summary>
+        </member>
+        <member name="F:TimeSeriesFramework.UI.CommonFunctions.CurrentUser">
+            <summary>
+            Defines the current user name as defined in the Thread.CurrentPrincipal.Identity.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(TVA.Data.AdoDataConnection)">
+            <summary>
+            Sets the current user context for the database.
+            </summary>
+            <remarks>
+            Purpose of this method is to supply current user information from the UI to DELETE trigger for change logging.
+            This method must be called before any delete operation on the database in order to log who deleted this record.
+            For SQL server it sets user name into CONTEXT_INFO().
+            For MySQL server it sets user name into session variable @context.
+            For Oracle server it sets user name into context package.
+            MS Access is not supported for change logging.
+            For any other database in the future, such as Oracle, this logic must be extended to support change log in the database.
+            </remarks>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> used to set user context before any delete operation.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.RealTimeStatisticServiceUrl(TVA.Data.AdoDataConnection)">
+            <summary>
+            Retrieves web service url to query real time statistics values.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
+            <returns>string, url to web service.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.TimeSeriesDataServiceUrl(TVA.Data.AdoDataConnection)">
+            <summary>
+            Retrieves web serivce url to query real time data.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
+            <returns>string, url to web service.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ServiceConnectionString(TVA.Data.AdoDataConnection,System.Boolean)">
+            <summary>
+            Retrieves connection string information to connect to backed windows service from UI.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
+            <returns>Connection string to connect to backend windows service.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.DataPublisherConnectionString(TVA.Data.AdoDataConnection)">
+            <summary>
+            Retrieves connection string to subscribe data from data published hosted by the backend windows service.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
+            <returns>Connection string to subscribe from data publisher.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetNodeSettings(TVA.Data.AdoDataConnection)">
+            <summary>
+            Method to parse Settings field value for current node defined in the database and extract various parameters to communicate with backend windows service.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.CurrentNodeID(TVA.Data.AdoDataConnection)">
+            <summary>
+            Returns current node id <see cref="T:System.Guid"/> UI is connected to.
+            </summary>
+            <param name="database">Connected <see cref="T:TVA.Data.AdoDataConnection"/></param>
+            <returns>Proper <see cref="T:System.Guid"/> implementation for current node id.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.SetAsCurrentNodeID(System.Guid)">
+            <summary>
+            Assigns <see cref="M:TimeSeriesFramework.UI.CommonFunctions.CurrentNodeID(TVA.Data.AdoDataConnection)"/> based ID of currently active node.
+            </summary>
+            <param name="nodeID">Current node ID <see cref="M:TimeSeriesFramework.UI.CommonFunctions.CurrentNodeID(TVA.Data.AdoDataConnection)"/> to assign.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ToNotNull(System.Object)">
+            <summary>
+            Returns <see cref="T:System.DBNull"/> if given <paramref name="value"/> is <c>null</c>.
+            </summary>
+            <param name="value">Value to test for null.</param>
+            <returns><see cref="T:System.DBNull"/> if <paramref name="value"/> is <c>null</c>; otherwise <paramref name="value"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetDownsamplingMethodLookupList">
+            <summary>
+            Returns a collection of down sampling methods.
+            </summary>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of down sampling methods.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetTimeZones(System.Boolean)">
+            <summary>
+            Returns a collection of system time zones.
+            </summary>
+            <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of system time zones.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetChildren(System.Windows.UIElement,System.Type,System.Collections.Generic.List{System.Windows.UIElement}@)">
+            <summary>
+            Retrieves children of an UIElement based on type.
+            </summary>
+            <param name="parent">Parent UIElement.</param>
+            <param name="targetType">Type of child UIElement looking for within parent UIElement.</param>
+            <param name="children">Reference paramter to return child collection.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetFirstChild(System.Windows.UIElement,System.Type,System.Windows.UIElement@)">
+            <summary>
+            Retrieves first child of an UIElement based on type.
+            </summary>
+            <param name="parent">Parent UIElement</param>
+            <param name="targetType">Type of the child UIElement.</param>
+            <param name="element">Reference parameter to return UIElement.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID(System.String,System.Int32)">
+            <summary>
+            Retrieves runtime id for an object.
+            </summary>
+            <param name="sourceTable">Table where object has been defined.</param>
+            <param name="sourceID">ID of an object in source table.</param>
+            <returns>string, id of an object in Runtime table.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.SetRetryServiceConnection(System.Boolean)">
+            <summary>
+            Sets a boolean flag indicating if connection cycle should be continued.
+            </summary>
+            <param name="retry"></param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetWindowsServiceClient">
+            <summary>
+            Retrieves <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object.
+            </summary>
+            <returns><see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ConnectWindowsServiceClient(System.Boolean)">
+            <summary>
+            Connects to backend windows service.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ConnectAsync(System.Object)">
+            <summary>
+            Connects asynchronously to backend windows service.
+            </summary>
+            <param name="state">paramter used.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.DisconnectWindowsServiceClient">
+            <summary>
+            Disconnects from backend windows service.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.SendCommandToService(System.String)">
+            <summary>
+            Sends command to backend windows service via <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object.
+            </summary>
+            <param name="command">command to be sent.</param>
+            <returns>string, indicating success.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetStopBits">
+            <summary>
+            Retrieves a list of <see cref="T:System.IO.Ports.StopBits"/>.
+            </summary>
+            <returns>Collection of <see cref="T:System.IO.Ports.StopBits"/> as a <see cref="T:System.Collections.Generic.List`1"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetParities">
+            <summary>
+            Retrieves a list of <see cref="T:System.IO.Ports.Parity"/>.
+            </summary>
+            <returns>Collection of <see cref="T:System.IO.Ports.Parity"/> as a <see cref="T:System.Collections.Generic.List`1"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.ConvertValueToType(System.String,System.String)">
+            <summary>
+            Converts xml element to datatype
+            </summary>
+            <param name="xmlValue"></param>
+            <param name="xmlDataType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetMinMaxPointIDs(TVA.Data.AdoDataConnection,System.Guid)">
+            <summary>
+            
+            </summary>
+            <param name="connection"></param>
+            <param name="nodeID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.LogException(TVA.Data.AdoDataConnection,System.String,System.Exception)">
+            <summary>
+            Stores exception in the database
+            </summary>
+            <param name="connection"><see cref="T:TVA.Data.AdoDataConnection"/> object to connect to database</param>
+            <param name="source">Source of exception</param>
+            <param name="ex">Exception to be logged</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.LoadUserControl(System.Object,System.String)">
+            <summary>
+            Loads provided user control into the frame control inside main window.
+            </summary>
+            <param name="userControl">User control to be loaded.</param>
+            <param name="title">Title of the user control to be loaded.</param>
+        </member>
+        <member name="E:TimeSeriesFramework.UI.CommonFunctions.ServiceConntectionRefreshed">
+            <summary>
+            Used to notify main window that connection to service has changed.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.Converters.StringToStatusColorConverter">
+            <summary>
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes string value and returns <see cref="T:System.Windows.Media.Brush"/> object.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Converters.StringToStatusColorConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts string value to <see cref="T:System.Windows.Media.Brush"/> object.
+            </summary>
+            <param name="value">string value to be converted.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use in the conversion.</param>
+            <param name="culture">The culture to use in the conversion.</param>
+            <returns>Brush object.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Converters.StringToStatusColorConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts <see cref="T:System.Windows.Media.Brush"/> object to string value.
+            </summary>
+            <param name="value"><see cref="T:System.Windows.Media.Brush"/> object to be converted.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use in the conversion.</param>
+            <param name="culture">The culture to use in the conversion.</param>
+            <returns>string value.</returns>
+            <remarks>This method is not implemented.</remarks>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.Converters.RoleBasedVisibilityConverter">
+            <summary>
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> to convert role to Visibility.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Converters.RoleBasedVisibilityConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts string value to visibility.
+            </summary>
+            <param name="value">Value to be converted to visibility.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use.</param>
+            <param name="culture">The culture to use in the converter.</param>
+            <returns>One of the visibility enummeration</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Converters.RoleBasedVisibilityConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts visibility to string, not implemented.
+            </summary>
+            <param name="value">Visibility value to be converted to string.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use.</param>
+            <param name="culture">The culture to use in the converter.</param>
+            <returns>String, for UI use.</returns>
         </member>
         <member name="T:TimeSeriesFramework.UI.DataModels.VendorDevice">
             <summary>
@@ -2096,32 +2030,6 @@
             Gets or sets who this VenderDevice was updated by.
             </summary>
         </member>
-        <member name="T:TimeSeriesFramework.UI.EntityPropertyAttribute">
-            <summary>
-            Represents an attribute that determines if a property in a class derived from
-            <see cref="T:TimeSeriesFramework.UI.DataModelBase"/> should be included as a field in the data model.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.EntityPropertyAttribute.#ctor">
-            <summary>
-            Creates a new <see cref="T:TimeSeriesFramework.UI.EntityPropertyAttribute"/>; defaults to <c><see cref="P:TimeSeriesFramework.UI.EntityPropertyAttribute.Include"/> = true</c>.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.EntityPropertyAttribute.#ctor(System.Boolean)">
-            <summary>
-            Creates a new <see cref="T:TimeSeriesFramework.UI.EntityPropertyAttribute"/> with the specified <paramref name="include"/> value.
-            </summary>
-            <param name="include">
-            Assigns flag that determines if the property this <see cref="T:TimeSeriesFramework.UI.EntityPropertyAttribute"/>
-            modifies should be included as a field in the data model.
-            </param>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.EntityPropertyAttribute.Include">
-            <summary>
-            Gets or sets flag that determines if the property this <see cref="T:TimeSeriesFramework.UI.EntityPropertyAttribute"/>
-            modifies should be included as a field in the data model.
-            </summary>
-        </member>
         <member name="T:TimeSeriesFramework.UI.IsolatedStorageManager">
             <summary>
             Static class to read/write data from/to IsolatedStorage.
@@ -2154,83 +2062,175 @@
             </summary>
             <param name="overWriteExisting">Boolean flag indicating if existing values should be reset to default value.</param>
         </member>
-        <member name="T:TimeSeriesFramework.UI.PanAndZoom">
+        <member name="T:TimeSeriesFramework.UI.EntityPropertyAttribute">
             <summary>
-            <see cref="T:System.Windows.Controls.ContentControl"/> class which allows deep zoom composoer type functionalities in WPF apps.
+            Represents an attribute that determines if a property in a class derived from
+            <see cref="T:TimeSeriesFramework.UI.DataModelBase"/> should be included as a field in the data model.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.PanAndZoom.#ctor">
+        <member name="M:TimeSeriesFramework.UI.EntityPropertyAttribute.#ctor">
             <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.PanAndZoom"/> class.
+            Creates a new <see cref="T:TimeSeriesFramework.UI.EntityPropertyAttribute"/>; defaults to <c><see cref="P:TimeSeriesFramework.UI.EntityPropertyAttribute.Include"/> = true</c>.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.PanAndZoom.OnApplyTemplate">
+        <member name="M:TimeSeriesFramework.UI.EntityPropertyAttribute.#ctor(System.Boolean)">
             <summary>
-            Overrides OnApplyTemplate method from <see cref="T:System.Windows.Controls.ContentControl"/> class.
+            Creates a new <see cref="T:TimeSeriesFramework.UI.EntityPropertyAttribute"/> with the specified <paramref name="include"/> value.
+            </summary>
+            <param name="include">
+            Assigns flag that determines if the property this <see cref="T:TimeSeriesFramework.UI.EntityPropertyAttribute"/>
+            modifies should be included as a field in the data model.
+            </param>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.EntityPropertyAttribute.Include">
+            <summary>
+            Gets or sets flag that determines if the property this <see cref="T:TimeSeriesFramework.UI.EntityPropertyAttribute"/>
+            modifies should be included as a field in the data model.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.PanAndZoom.CreatePanAnimation(System.Double)">
-            <summary>Helper to create the panning animation for x,y coordinates.</summary>
-            <param name="toValue">New value of the coordinate.</param>
-            <returns>Double animation</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.PanAndZoom.CreateZoomAnimation(System.Double)">
-            <summary>Helper to create the zoom double animation for scaling.</summary>
-            <param name="toValue">Value to animate to.</param>
-            <returns>Double animation.</returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.PanAndZoom.DoZoom(System.Double,System.Windows.Point,System.Windows.Point)">
-            <summary>Zoom into or out of the content.</summary>
-            <param name="deltaZoom">Factor to mutliply the zoom level by. </param>
-            <param name="mousePosition">Logical mouse position relative to the original content.</param>
-            <param name="physicalPosition">Actual mouse position on the screen (relative to the parent window)</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.PanAndZoom.Reset">
-            <summary>Reset to default zoom level and centered content.</summary>
-        </member>
-        <member name="T:TimeSeriesFramework.UI.WindowsServiceClient">
+        <member name="T:TimeSeriesFramework.UI.Converters.NotConverter">
             <summary>
-            Class to connect and communicate with windows service.
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> to invert boolean value.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.WindowsServiceClient.#ctor(System.String)">
+        <member name="M:TimeSeriesFramework.UI.Converters.NotConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
             <summary>
-            Creates an instance of <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/>.
+            Inverts value of boolean object.
             </summary>
-            <param name="connectionString">Connection information such as server ip address and port where windows service is running.</param>
+            <param name="value">Boolean object to be inverted.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use.</param>
+            <param name="culture">The culture to use in the converter.</param>
+            <returns>Boolean value for UI use.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.WindowsServiceClient.Finalize">
+        <member name="M:TimeSeriesFramework.UI.Converters.NotConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
             <summary>
-            Releases the unmanaged resources before the <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object is reclaimed by <see cref="T:System.GC"/>.
+            Inverts value of boolean object.
             </summary>
+            <param name="value">Boolean object to be inverted.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use.</param>
+            <param name="culture">The culture to use in the converter.</param>
+            <returns>Boolean value for UI use.</returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.WindowsServiceClient.Dispose">
+        <member name="M:TimeSeriesFramework.UI.Converters.NotConverter.InvertBoolean(System.Object)">
             <summary>
-            Releases all the resources used by the <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object.
+            Inverts value of boolean object.
             </summary>
+            <param name="value">boolean value to be inverted.</param>
+            <returns></returns>
         </member>
-        <member name="M:TimeSeriesFramework.UI.WindowsServiceClient.Dispose(System.Boolean)">
+        <member name="T:TimeSeriesFramework.UI.DataModels.Company">
             <summary>
-            Releases the unmanaged resources used by the <see cref="T:TimeSeriesFramework.UI.WindowsServiceClient"/> object and optionally releases the managed resources.
-            </summary>
-            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.WindowsServiceClient.ClientHelper_ReceivedServiceUpdate(System.Object,TVA.EventArgs{TVA.UpdateType,System.String})">
-            <summary>
-            Handles ReceivedServiceUpdate event of ClientHelper.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Event arguments.</param>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.WindowsServiceClient.Helper">
-            <summary>
-            Gets reference to ClientHelper object.
+            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> information as defined in the database.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.WindowsServiceClient.CachedStatus">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Company.Load(TVA.Data.AdoDataConnection)">
             <summary>
-            Gets chached status information to display upon successful connection to windows service.
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Company.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
+            <summary>
+            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> information.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and Name of companies defined in the database.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Company.Save(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.Company)">
+            <summary>
+            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> information to database.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="company">Information about <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/>.</param>        
+            <returns>String, for display use, indicating success.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Company.Delete(TVA.Data.AdoDataConnection,System.Int32)">
+            <summary>
+            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> record from database.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="companyID">ID of the record to be deleted.</param>
+            <returns>String, for display use, indicating success.</returns>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Company.ID">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> ID.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Company.Acronym">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> acronym.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Company.MapAcronym">
+            <summary>
+            Gets or sets map acronym used by <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/>.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Company.Name">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> name.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Company.URL">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> URL.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Company.LoadOrder">
+            <summary>
+            Gets or sets desired load order of <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> record.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Company.CreatedOn">
+            <summary>
+            Gets or sets when the current <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> was created.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Company.CreatedBy">
+            <summary>
+            Gets or sets who the current <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> was created by.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Company.UpdatedOn">
+            <summary>
+            Gets or sets when the current <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> was updated.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Company.UpdatedBy">
+            <summary>
+            Gets or sets who the current <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> was updated by.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.Converters.StringToBooleanConverter">
+            <summary>
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes string value and converts it to boolean.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Converters.StringToBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts string to boolean value.
+            </summary>
+            <param name="value">String value to be converted.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use in conversion.</param>
+            <param name="culture">The culture to use in conversion.</param>
+            <returns>Boolean value.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Converters.StringToBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts boolean value to string.
+            </summary>
+            <param name="value">Boolean value to be converted.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use in conversion.</param>
+            <param name="culture">The culture to use in conversion.</param>
+            <returns>String value.</returns>
+            <remarks>This method has not been implemented.</remarks>
         </member>
     </members>
 </doc>

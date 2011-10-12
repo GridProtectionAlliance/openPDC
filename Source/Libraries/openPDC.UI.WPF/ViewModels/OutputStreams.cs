@@ -542,7 +542,9 @@ namespace openPDCManager.UI.ViewModels
             {
                 string result = OutputStream.Save(null, CurrentItem, m_mirrorMode);
                 CurrentItemPropertyChanged = false;
-                Popup(result, "Save " + DataModelName, MessageBoxImage.Information);
+                if (!DisplayStatusMessage(result))
+                    Popup(result, "Save " + DataModelName, MessageBoxImage.Information);
+
                 Load();
             }
             catch (Exception ex)
