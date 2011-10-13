@@ -1189,11 +1189,16 @@ namespace TVA.PhasorProtocols
 
                     foreach (DataRow protocol in protocols.Rows)
                     {
-                        if (protocolIDList.Length > 0)
-                            protocolIDList.Append(", ");
+                        //if (protocolIDList.Length > 0)
+                        //    protocolIDList.Append(", ");
 
                         if (string.Compare(protocol.Field<string>("Category"), "Phasor", true) == 0)
+                        {
+                            if (protocolIDList.Length > 0)
+                                protocolIDList.Append(", ");
+
                             protocolIDList.Append(protocol.ConvertField<int>("ID"));
+                        }
                     }
                 }
                 else
