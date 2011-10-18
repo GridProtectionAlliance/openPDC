@@ -1,5 +1,5 @@
 --  ----------------------------------------------------------------------------------------------------
---  openPG Data Structures for MySQL - Gbtc
+--  openPDC Data Structures for MySQL - Gbtc
 --
 --  Copyright © 2011, Grid Protection Alliance.  All Rights Reserved.
 --
@@ -20,14 +20,14 @@
 --       Generated original version of schema.
 --  ----------------------------------------------------------------------------------------------------
 
-CREATE DATABASE openPG CHARACTER SET = UTF8;
-USE openPG;
+CREATE DATABASE openPDC CHARACTER SET = UTF8;
+USE openPDC;
 
 -- The following statements are used to create
 -- a user with access to the database.
 -- Be sure to change the username and password.
 -- CREATE USER NewUser IDENTIFIED BY 'MyPassword';
--- GRANT SELECT, UPDATE, INSERT, DELETE ON openPG.* TO NewUser;
+-- GRANT SELECT, UPDATE, INSERT, DELETE ON openPDC.* TO NewUser;
 
 CREATE TABLE ErrorLog(
     ID INT AUTO_INCREMENT NOT NULL,

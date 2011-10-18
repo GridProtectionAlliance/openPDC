@@ -1,4 +1,4 @@
-USE openPG;
+USE openPDC;
 
 DELIMITER $$
 
