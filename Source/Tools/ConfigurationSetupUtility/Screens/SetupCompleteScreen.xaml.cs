@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
@@ -230,6 +231,8 @@ namespace ConfigurationSetupUtility.Screens
 
                             // Data publisher categories are now always lower case (such that code references are case insensitive)
                             openPDCConfig.Settings.Remove("dataPublisher");
+
+                            openPDCConfig.Save(ConfigurationSaveMode.Full);
                         }
                         catch
                         {

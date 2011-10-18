@@ -4,22 +4,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:tsfconv="clr-namespace:TimeSeriesFramework.UI.Converters;assembly=TimeSeriesFramework.UI"
         xmlns:tsf="clr-namespace:TimeSeriesFramework.UI;assembly=TimeSeriesFramework.UI.WPF"
+        xmlns:self="clr-namespace:openPDCManager"
         Background="{StaticResource MainBackgroundBrush}"
         Title="openPDC Manager"
         WindowStyle="SingleBorderWindow"
         ResizeMode="CanResize"
         MinHeight="600"
         MinWidth="800"
-        xmlns:self="clr-namespace:openPDCManager"
         ForceLoginDisplay="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ForceLoginDisplay, Mode=TwoWay}"
         Height="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationHeight, Mode=TwoWay}"
         Width="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationWidth, Mode=TwoWay}"
         Left="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationLeft, Mode=TwoWay}"
         Top="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationTop, Mode=TwoWay}"
         ResourceAccessiblity="AlwaysIncluded"
-        IncludedRoles="Administrator, Editor, Viewer"
-        Icon="openPDCManager.ico">
-
+        IncludedRoles="Administrator, Editor, Viewer">
     <Window.Resources>
         <tsfconv:RoleBasedVisibilityConverter x:Key="roleBasedVisibilityConverter" />
         <HierarchicalDataTemplate DataType="{x:Type tsf:MenuDataItem}" ItemsSource="{Binding Path=SubMenuItems}">
