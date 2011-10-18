@@ -196,7 +196,7 @@ namespace ConfigurationSetupUtility.Screens
                             }
                             catch
                             {
-                                // Nothing to if we failt to minimize...
+                                // Nothing to do if we fail to minimize...
                             }
 
                             // Run the DataMigrationUtility.
@@ -214,6 +214,27 @@ namespace ConfigurationSetupUtility.Screens
 
                         // Convert node table to new format (i.e., columns to connection settings string), if nedded
                         ConvertNodeTableFormat();
+
+                        // Remove old configuration file settings
+                        try
+                        {
+                            ConfigurationFile openPDCConfig = ConfigurationFile.Open("openPDC.exe.config");
+
+                            // Some of the crypto settings elements were renamed for consistency, remove the old ones
+                            CategorizedSettingsElementCollection cryptoSection = openPDCConfig.Settings["cryptographyServices"];
+                            cryptoSection.Remove("RetryDelayInterval");
+                            cryptoSection.Remove("MaximumRetryAttempts");
+
+                            // Example connection settings are updated between builds - remove the section and openPDC will add back the latest
+                            openPDCConfig.Settings.Remove("exampleConnectionSettings");
+
+                            // Data publisher categories are now always lower case (such that code references are case insensitive)
+                            openPDCConfig.Settings.Remove("dataPublisher");
+                        }
+                        catch
+                        {
+                            // Just continue on errors with removal of old settings - this is not critical
+                        }
 
                         // If the user requested it, start or restart the openPDC service
                         if (m_serviceStartCheckBox.IsChecked.Value)
