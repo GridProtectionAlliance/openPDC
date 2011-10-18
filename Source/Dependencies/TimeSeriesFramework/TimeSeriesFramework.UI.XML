@@ -128,6 +128,7 @@
             Retrieves connection string information to connect to backed windows service from UI.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to database.</param>
+            <param name="overwrite">Flag that determines if cached connection string should be overwritten.</param>
             <returns>Connection string to connect to backend windows service.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.CommonFunctions.DataPublisherConnectionString(TVA.Data.AdoDataConnection)">
@@ -1510,6 +1511,11 @@
         <member name="P:TimeSeriesFramework.UI.DataModels.Node.Settings">
             <summary>
             Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>'s Settings.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Node.SettingsUpdated">
+            <summary>
+            Gets flag that determines if settings have been updated.
             </summary>
         </member>
         <member name="P:TimeSeriesFramework.UI.DataModels.Node.MenuType">
