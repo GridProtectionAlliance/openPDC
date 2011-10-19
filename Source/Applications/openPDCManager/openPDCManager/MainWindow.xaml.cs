@@ -94,7 +94,19 @@ namespace openPDCManager
 
         private void CommonFunctions_ServiceConntectionRefreshed(object sender, EventArgs e)
         {
-            ConnectToService();
+            try
+            {
+                KeyValuePair<Guid, string> currentNode = (KeyValuePair<Guid, string>)ComboboxNode.SelectedItem;
+                ComboboxNode.ItemsSource = Node.GetLookupList(null);
+                if (ComboboxNode.Items.Count > 0)
+                {
+                    ComboboxNode.SelectedItem = currentNode;
+                }
+            }
+            finally
+            {
+                ConnectToService();
+            }
         }
 
         /// <summary>
