@@ -51,6 +51,7 @@ namespace openPDC.UI.DataModels
         private bool m_addDigitals;
         private bool m_addAnalogs;
         private bool m_existing;
+        private string m_statusColor;
         private ObservableCollection<InputWizardDevicePhasor> m_phasorList;
 
         #endregion
@@ -267,6 +268,26 @@ namespace openPDC.UI.DataModels
             {
                 m_existing = value;
                 OnPropertyChanged("Existing");
+                if (m_existing)
+                    StatusColor = "green";
+                else
+                    StatusColor = "transparent";
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets <see cref="InputWizardDevice"/> status color based on existing flag.
+        /// </summary>
+        public string StatusColor
+        {
+            get
+            {
+                return m_statusColor;
+            }
+            set
+            {
+                m_statusColor = value;
+                OnPropertyChanged("StatusColor");
             }
         }
 

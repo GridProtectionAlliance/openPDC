@@ -223,7 +223,7 @@
                     <sdk:DataGridTemplateColumn Header="Acronym" Width="3*">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" Background="{tsfBinding:Column Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}">
                                     <TextBox Text="{tsfBinding:Column Path=Acronym}" Margin="0"/>
                                     <TextBlock Style="{StaticResource RequiredMarker}" Margin="0"
                                                Visibility="{tsfBinding:Column Path=Existing, Converter={StaticResource ObjectToVisibilityConverter}}"/>
