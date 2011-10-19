@@ -52,7 +52,13 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-                    <Image Source="/TimeSeriesFramework.UI;component/images/GPALock.png" ToolTip="Grid Protection Alliance"/>
+                    <Button ToolTip="Grid Protection Alliance" Width="Auto" Padding="0" Click="ButtonLogo_Click">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image Source="/TimeSeriesFramework.UI;component/images/GPALock.png" Height="29" Width="29" />
+                            </ControlTemplate>
+                        </Button.Template>                        
+                    </Button>
                     <TextBlock x:Name="TextBoxTitle"  Style="{StaticResource MainTitleStyle}" Margin="5,-10,0,0"/>
                 </StackPanel>
 

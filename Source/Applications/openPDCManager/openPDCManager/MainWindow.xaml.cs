@@ -34,6 +34,7 @@ using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.DataModels;
 using TVA.IO;
 using TVA.Reflection;
+using System.Diagnostics;
 
 namespace openPDCManager
 {
@@ -94,19 +95,7 @@ namespace openPDCManager
 
         private void CommonFunctions_ServiceConntectionRefreshed(object sender, EventArgs e)
         {
-            try
-            {
-                KeyValuePair<Guid, string> currentNode = (KeyValuePair<Guid, string>)ComboboxNode.SelectedItem;
-                ComboboxNode.ItemsSource = Node.GetLookupList(null);
-                if (ComboboxNode.Items.Count > 0)
-                {
-                    ComboboxNode.SelectedItem = currentNode;
-                }
-            }
-            finally
-            {
-                ConnectToService();
-            }
+            ConnectToService();
         }
 
         /// <summary>
@@ -255,5 +244,10 @@ namespace openPDCManager
         }
 
         #endregion
+
+        private void ButtonLogo_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("http://www.gridprotectionalliance.org/");
+        }
     }
 }
