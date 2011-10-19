@@ -119,7 +119,8 @@ namespace openPDC.UI.ViewModels
                 Mouse.OverrideCursor = Cursors.Wait;
                 try
                 {
-                    ItemsSource = TimeSeriesFramework.UI.DataModels.Measurement.Load(null, m_deviceID);
+                    AllMeasurements = TimeSeriesFramework.UI.DataModels.Measurement.Load(null, m_deviceID);
+                    ItemsSource = AllMeasurements;
                     PhasorLookupList = Phasor.GetLookupList(null, CurrentItem.DeviceID == null ? 0 : (int)CurrentItem.DeviceID);
                 }
                 catch (Exception ex)
