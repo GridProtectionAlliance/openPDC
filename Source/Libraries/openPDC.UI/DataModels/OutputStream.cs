@@ -868,7 +868,7 @@ namespace openPDCManager.UI.DataModels
                         "performTimeReasonabilityCheck", "updatedBy", "updatedOn", "createdBy", "createdOn");
 
                     database.Connection.ExecuteNonQuery(query,
-                        database.Guid(outputStream.NodeID), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name, outputStream.Type, outputStream.ConnectionString.ToNotNull(),
+                        database.Guid(outputStream.NodeID), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name.ToNotNull(), outputStream.Type, outputStream.ConnectionString.ToNotNull(),
                         outputStream.IDCode, outputStream.CommandChannel.ToNotNull(), outputStream.DataChannel.ToNotNull(), database.Bool(outputStream.AutoPublishConfigFrame), database.Bool(outputStream.AutoStartDataChannel),
                         outputStream.NominalFrequency, outputStream.FramesPerSecond, outputStream.LagTime, outputStream.LeadTime, database.Bool(outputStream.UseLocalClockAsRealTime), database.Bool(outputStream.AllowSortsByArrival),
                         outputStream.LoadOrder, database.Bool(outputStream.Enabled), database.Bool(outputStream.IgnoreBadTimeStamps), outputStream.TimeResolution, database.Bool(outputStream.AllowPreemptivePublishing),
@@ -890,7 +890,7 @@ namespace openPDCManager.UI.DataModels
                         "analogScalingValue", "digitalMaskValue", "performTimeReasonabilityCheck", "updatedBy", "updatedOn", "id");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout,
-                        database.Guid(outputStream.NodeID), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name, outputStream.Type, outputStream.ConnectionString.ToNotNull(),
+                        database.Guid(outputStream.NodeID), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name.ToNotNull(), outputStream.Type, outputStream.ConnectionString.ToNotNull(),
                         outputStream.IDCode, outputStream.CommandChannel.ToNotNull(), outputStream.DataChannel.ToNotNull(), database.Bool(outputStream.AutoPublishConfigFrame), database.Bool(outputStream.AutoStartDataChannel),
                         outputStream.NominalFrequency, outputStream.FramesPerSecond, outputStream.LagTime, outputStream.LeadTime, database.Bool(outputStream.UseLocalClockAsRealTime),
                         database.Bool(outputStream.AllowSortsByArrival), outputStream.LoadOrder, database.Bool(outputStream.Enabled), database.Bool(outputStream.IgnoreBadTimeStamps), outputStream.TimeResolution,
