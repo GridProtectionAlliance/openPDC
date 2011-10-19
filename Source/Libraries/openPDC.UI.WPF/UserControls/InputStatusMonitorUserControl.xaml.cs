@@ -32,6 +32,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -112,6 +113,7 @@ namespace openPDC.UI.UserControls
             Initialize();
             this.Loaded += new System.Windows.RoutedEventHandler(InputStatusMonitorUserControl_Loaded);
             this.Unloaded += new RoutedEventHandler(InputStatusMonitorUserControl_Unloaded);
+            this.KeyUp += new System.Windows.Input.KeyEventHandler(InputStatusMonitorUserControl_KeyUp);
         }
 
         #endregion
@@ -119,6 +121,12 @@ namespace openPDC.UI.UserControls
         #region [ Methods ]
 
         #region [ Controls Event Handlers ]
+
+        private void InputStatusMonitorUserControl_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape && PopupSettings.IsOpen)
+                PopupSettings.IsOpen = false;
+        }
 
         private void InputStatusMonitorUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -678,6 +686,7 @@ namespace openPDC.UI.UserControls
             PanAndZoomViewer viewer = new PanAndZoomViewer(new BitmapImage(new Uri(@"/openPDC.UI;component/Images/" + ((Button)sender).Tag.ToString(), UriKind.Relative)), "Help Me Choose");
             viewer.Owner = Window.GetWindow(this);
             viewer.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            viewer.Topmost = true;
             viewer.ShowDialog();
         }
 
@@ -718,6 +727,7 @@ namespace openPDC.UI.UserControls
         private void PopulateSettings()
         {
             // Populate settings popup control.
+            TextBoxLastSelectedMeasurements.Text = m_selectedSignalIDs;
             TextBoxNumberOFDataPointsToPlot.Text = m_numberOfDataPointsToPlot.ToString();
             TextBoxDataResolution.Text = m_framesPerSecond.ToString();
             TextBoxChartRefreshInterval.Text = m_chartRefreshInterval.ToString();
@@ -741,6 +751,11 @@ namespace openPDC.UI.UserControls
         {
             PopupSettings.Placement = PlacementMode.Center;
             PopupSettings.IsOpen = true;
+        }
+
+        private void ButtonCancel_Click(object sender, RoutedEventArgs e)
+        {
+            PopupSettings.IsOpen = false;
         }
 
         #endregion

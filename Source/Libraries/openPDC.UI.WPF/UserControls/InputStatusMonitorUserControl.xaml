@@ -91,7 +91,7 @@
                     <TextBlock Text="Statistic Data Refresh Interval (in seconds)" Grid.Row="5" Grid.Column="2"/>
                     <TextBox x:Name="TextBoxStatisticDataRefreshInterval" Grid.Row="5" Grid.Column="3" Width="50"/>
 
-                    <TextBlock Text="Measurement Data Refersh Interval (in seconds)" Grid.Row="6" Grid.Column="0"/>
+                    <TextBlock Text="Measurement Data Refresh Interval (in seconds)" Grid.Row="6" Grid.Column="0"/>
                     <TextBox x:Name="TextBoxMeasurementDataRefreshInterval" Grid.Row="6" Grid.Column="1" Width="50"/>
                     <CheckBox x:Name="CheckBoxForceIPv4" Content="Force IPv4" Grid.Row="6" Grid.Column="2"/>
 
@@ -117,6 +117,7 @@
 
                     <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Right">
                         <Button Content="Restore Default" Margin="0,0,5,0" Click="ButtonRestoreSettings_Click" Width="Auto"/>
+                        <Button Content="Cancel" Margin="0,0,5,0" Click="ButtonCancel_Click" IsCancel="True"/>
                         <Button Content="Save" Click="ButtonSaveSettings_Click"/>
                     </StackPanel>
 
