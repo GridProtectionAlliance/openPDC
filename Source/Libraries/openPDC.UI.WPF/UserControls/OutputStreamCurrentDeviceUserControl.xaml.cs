@@ -27,6 +27,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using openPDC.UI.DataModels;
+using System.Windows.Input;
 
 namespace openPDC.UI.UserControls
 {
@@ -59,16 +60,25 @@ namespace openPDC.UI.UserControls
             m_currentDevices = new ObservableCollection<OutputStreamDevice>();
             m_newDevices = new ObservableCollection<Device>();
             this.Loaded += new System.Windows.RoutedEventHandler(OutputStreamCurrentDeviceUserControl_Loaded);
+            this.KeyUp += new System.Windows.Input.KeyEventHandler(OutputStreamCurrentDeviceUserControl_KeyUp);    
         }
 
         #endregion
 
         #region [ Methods ]
 
+        private void OutputStreamCurrentDeviceUserControl_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape && PopupAddMore.IsOpen)
+                PopupAddMore.IsOpen = false;
+        }
+
         private void LoadCurrentDevices()
         {
             m_currentDevices = OutputStreamDevice.Load(null, m_outputStreamID);
             DataGridCurrentDevices.ItemsSource = m_currentDevices;
+            if (m_currentDevices.Count == 0)
+                PopupAddMore.IsOpen = true;
         }
 
         private void OutputStreamCurrentDeviceUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
