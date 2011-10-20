@@ -44,7 +44,7 @@
                         <DataTemplate>
                             <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Phasors" 
                                     Command="{tsfBinding:GridButtonCommand Path=DataContext.PhasorCommand}" 
-                                    CommandParameter="{tsfBinding:GridButtonCommand Path=DataContext.CurrentItem}" Width="Auto"/>
+                                     Width="Auto"/>
                         </DataTemplate>
                     </sdk:DataGridTemplateColumn.CellTemplate>
                 </sdk:DataGridTemplateColumn>
@@ -53,7 +53,7 @@
                         <DataTemplate>
                             <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Measurements" 
                                     Command="{tsfBinding:GridButtonCommand Path=DataContext.MeasurementCommand}" 
-                                    CommandParameter="{tsfBinding:GridButtonCommand Path=DataContext.CurrentItem}" Width="Auto"/>
+                                    Width="Auto"/>
                         </DataTemplate>
                     </sdk:DataGridTemplateColumn.CellTemplate>
                 </sdk:DataGridTemplateColumn>

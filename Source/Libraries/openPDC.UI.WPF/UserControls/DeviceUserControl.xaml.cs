@@ -70,6 +70,6 @@ namespace openPDC.UI.UserControls
             (this.DataContext as Devices).ProcessPropertyChange();
         }
 
-        #endregion
+        #endregion              
     }
 }

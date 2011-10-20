@@ -87,7 +87,10 @@ namespace openPDC.UI.ViewModels
             m_timezoneLookupList = TimeSeriesFramework.UI.CommonFunctions.GetTimeZones(true);
 
             if (device != null)     // i.e. user wants to edit existing device's configuration. So we will load that by default.
+            {
                 CurrentItem = device;
+                OnPropertyChanged("CanGoToPhasorOrMeasurement");
+            }
         }
 
         #endregion
@@ -273,9 +276,20 @@ namespace openPDC.UI.ViewModels
             get
             {
                 if (m_phasorCommand == null)
-                    m_phasorCommand = new RelayCommand(GoToPhasors);
+                    m_phasorCommand = new RelayCommand(GoToPhasors, () => CanGoToPhasorOrMeasurement);
 
                 return m_phasorCommand;
+            }
+        }
+
+        /// <summary>
+        /// Gets a boolean flag indicating if Phasors and Measurements button are visible or not.
+        /// </summary>
+        public bool CanGoToPhasorOrMeasurement
+        {
+            get
+            {
+                return CurrentItem.ID > 0;
             }
         }
 
@@ -287,7 +301,7 @@ namespace openPDC.UI.ViewModels
             get
             {
                 if (m_measurementCommand == null)
-                    m_measurementCommand = new RelayCommand(GoToMeasurements);
+                    m_measurementCommand = new RelayCommand(GoToMeasurements, () => CanGoToPhasorOrMeasurement);
 
                 return m_measurementCommand;
             }
@@ -489,23 +503,21 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Handles <see cref="MeasurementCommand"/>.
         /// </summary>
-        /// <param name="parameter">Parameter to use for the command provided by commandparameter from UI.</param>
-        private void GoToMeasurements(object parameter)
+        private void GoToMeasurements()
         {
-            openPDC.UI.DataModels.Device device = (openPDC.UI.DataModels.Device)parameter;
-            MeasurementUserControl measurementUserControl = new MeasurementUserControl(device.ID);
-            CommonFunctions.LoadUserControl(measurementUserControl, "Manage Measurements for " + device.Acronym);
+            //openPDC.UI.DataModels.Device device = (openPDC.UI.DataModels.Device)parameter;
+            MeasurementUserControl measurementUserControl = new MeasurementUserControl(CurrentItem.ID);
+            CommonFunctions.LoadUserControl(measurementUserControl, "Manage Measurements for " + CurrentItem.Acronym);
         }
 
         /// <summary>
         /// Handles <see cref="PhasorCommand"/>.
-        /// </summary>
-        /// <param name="parameter">Parameter to use for the command provided by commandparameter from UI.</param>
-        private void GoToPhasors(object parameter)
+        /// </summary>        
+        private void GoToPhasors()
         {
-            openPDC.UI.DataModels.Device device = (openPDC.UI.DataModels.Device)parameter;
-            openPDC.UI.UserControls.PhasorUserControl phasorUserControl = new openPDC.UI.UserControls.PhasorUserControl(device.ID);
-            CommonFunctions.LoadUserControl(phasorUserControl, "Manage Phasors for " + device.Acronym);
+            //openPDC.UI.DataModels.Device device = (openPDC.UI.DataModels.Device)parameter;
+            openPDC.UI.UserControls.PhasorUserControl phasorUserControl = new openPDC.UI.UserControls.PhasorUserControl(CurrentItem.ID);
+            CommonFunctions.LoadUserControl(phasorUserControl, "Manage Phasors for " + CurrentItem.Acronym);
         }
 
         protected override void OnPropertyChanged(string propertyName)
