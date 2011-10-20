@@ -244,6 +244,7 @@ namespace openPDC.UI.UserControls
 
         private void Initialize()
         {
+            m_dataContext = new RealTimeStreams(1);
             m_timeStampList = new ConcurrentQueue<string>();
             m_yAxisDataCollection = new ConcurrentDictionary<Guid, ConcurrentQueue<double>>();
             m_yAxisBindingCollection = new ConcurrentDictionary<Guid, EnumerableDataSource<double>>();
@@ -260,9 +261,9 @@ namespace openPDC.UI.UserControls
 
         private void InitializeUserControl()
         {
-            m_dataContext = new RealTimeStreams(1);
             this.DataContext = m_dataContext;
-            ListBoxCurrentValues.ItemsSource = m_displayedMeasurement;
+            //ListBoxCurrentValues.ItemsSource = m_displayedMeasurement;
+            DataGridCurrentValues.ItemsSource = m_displayedMeasurement;
 
             // Initialize Chart Properties.
             InitializeColors();
@@ -273,6 +274,26 @@ namespace openPDC.UI.UserControls
             AutoSelectMeasurements(signalIDs);
 
             PopulateSettings();
+
+            foreach (RealTimeStream stream in m_dataContext.ItemsSource)
+            {
+                if (stream.ID > 0)
+                {
+                    GetStatistics(stream.Acronym);
+                    break;
+                }
+                else
+                {
+                    foreach (RealTimeDevice device in stream.DeviceList)
+                    {
+                        if (device.ID > 0)
+                        {
+                            GetStatistics(device.Acronym);
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         private void InitializeColors()
@@ -458,12 +479,18 @@ namespace openPDC.UI.UserControls
 
         private void ButtonGetStatistics_Click(object sender, RoutedEventArgs e)
         {
-            Device device = Device.GetDevice(null, "WHERE Acronym = '" + ((Button)sender).Content.ToString() + "'");
+            GetStatistics(((Button)sender).Content.ToString());
+        }
+
+        private void GetStatistics(string acronym)
+        {
+            Device device = Device.GetDevice(null, "WHERE Acronym = '" + acronym + "'");
             if (device != null)
             {
                 TextBlockDevice.Text = device.Acronym;
                 m_dataContext.GetStatistics(device);
-                ListBoxStatistics.ItemsSource = m_dataContext.StatisticMeasurements;
+                //ListBoxStatistics.ItemsSource = m_dataContext.StatisticMeasurements;
+                DataGridStatistics.ItemsSource = m_dataContext.StatisticMeasurements;
             }
         }
 

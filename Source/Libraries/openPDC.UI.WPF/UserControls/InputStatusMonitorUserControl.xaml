@@ -229,7 +229,34 @@
 
             <!-- Real-Time Data -->
             
-            <ListBox x:Name="ListBoxCurrentValues" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="125">
+            <sdk:DataGrid x:Name="DataGridCurrentValues" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="125">
+                
+                <sdk:DataGrid.Columns>
+
+                    <sdk:DataGridTextColumn Header="ID" IsReadOnly="True" Width="100" Binding="{tsfBinding:Column Path=ID}" ToolTipService.ToolTip="{tsfBinding:Column Path=Description}"/>
+                    <sdk:DataGridTemplateColumn Header="Signal Reference" Width="125">
+                        <sdk:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Foreground="{tsfBinding:Column Path=Foreground}" HorizontalAlignment="Left" ToolTipService.ToolTip="{tsfBinding:Column Path=Description}"/>
+                            </DataTemplate>
+                        </sdk:DataGridTemplateColumn.CellTemplate>
+                    </sdk:DataGridTemplateColumn>                    
+                    <sdk:DataGridTextColumn Header="Time Tag" IsReadOnly="True" Width="100" Binding="{tsfBinding:Column Path=TimeTag}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                    <sdk:DataGridTextColumn Header="Value" IsReadOnly="True" Width="90" Binding="{tsfBinding:Column Path=Value}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                    <sdk:DataGridTextColumn Header="Unit" IsReadOnly="True" Width="75" Binding="{tsfBinding:Column Path=EngineeringUnit}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                    <sdk:DataGridTemplateColumn Header="Quality" Width="60">
+                        <sdk:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{tsfBinding:Column Path=Quality}" Foreground="{Binding Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </sdk:DataGridTemplateColumn.CellTemplate>
+                    </sdk:DataGridTemplateColumn>                    
+                    
+                </sdk:DataGrid.Columns>
+                
+            </sdk:DataGrid>
+            
+            <!--<ListBox x:Name="ListBoxCurrentValues" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="125">
                 
                 <ListBox.ItemTemplate>
                     
@@ -249,18 +276,45 @@
                     
                 </ListBox.ItemTemplate>
                 
-            </ListBox>
+            </ListBox>-->
             
             <!-- Real-Time Statistics -->            
             
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Run-Time Statistics:" FontWeight="Bold"/>
                 <TextBlock x:Name="TextBlockDevice" Margin="0,0,25,0"/>
-                <TextBlock Text="Refresh Interval: "/>
+                <TextBlock Text="Refresh Interval (sec): "/>
                 <TextBlock x:Name="TextBlockStatisticsRefreshInterval"/>
             </StackPanel>
-                
-            <ListBox Height="200" x:Name="ListBoxStatistics">
+
+            <sdk:DataGrid x:Name="DataGridStatistics" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="200" FontSize="{StaticResource SmallTextSize}">
+
+                <sdk:DataGrid.Columns>
+
+                    <sdk:DataGridTextColumn Header="ID" IsReadOnly="True" Width="75" Binding="{tsfBinding:Column Path=ID}" />
+                    
+                    <sdk:DataGridTemplateColumn Header="Statistic" Width="200" IsReadOnly="True">
+                        <sdk:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{tsfBinding:Column Path=StatisticName}" HorizontalAlignment="Left" ToolTipService.ToolTip="{tsfBinding:Column Path=StatisticDescription}"/>
+                            </DataTemplate>
+                        </sdk:DataGridTemplateColumn.CellTemplate>
+                    </sdk:DataGridTemplateColumn>
+
+                    <sdk:DataGridTemplateColumn Header="Value" Width="175" IsReadOnly="True">
+                        <sdk:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{tsfBinding:Column Path=Value}" Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </sdk:DataGridTemplateColumn.CellTemplate>
+                    </sdk:DataGridTemplateColumn>
+                    <sdk:DataGridTextColumn Header="TimeTag" IsReadOnly="True" Width="100" Binding="{tsfBinding:Column Path=TimeTag}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                    
+                </sdk:DataGrid.Columns>
+
+            </sdk:DataGrid>
+
+            <!--<ListBox Height="200" x:Name="ListBoxStatistics">
                     
                 <ListBox.ItemTemplate>
                         
@@ -278,7 +332,7 @@
                         
                 </ListBox.ItemTemplate>
                     
-            </ListBox>
+            </ListBox>-->
            
         </StackPanel>
 

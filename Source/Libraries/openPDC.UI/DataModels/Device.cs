@@ -1083,9 +1083,9 @@ namespace openPDC.UI.DataModels
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="device">Information about <see cref="Device"/>.</param>        
         /// <returns>String, for display use, indicating success.</returns>
-        public static string Save(AdoDataConnection database, Device device, bool notifyService = true)
+        public static string Save(AdoDataConnection database, Device device)
         {
-            return SaveWithAnalogsDigitals(database, device, notifyService, 0, 0);
+            return SaveWithAnalogsDigitals(database, device, true, 0, 0);
         }
 
         /// <summary>

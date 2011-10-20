@@ -17,7 +17,7 @@
         Left="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationLeft, Mode=TwoWay}"
         Top="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationTop, Mode=TwoWay}"
         ResourceAccessiblity="AlwaysIncluded"
-        IncludedRoles="Administrator, Editor, Viewer">
+        IncludedRoles="Administrator, Editor, Viewer" FontSize="{StaticResource SmallTextSize}">
     <Window.Resources>
         <tsfconv:RoleBasedVisibilityConverter x:Key="roleBasedVisibilityConverter" />
         <HierarchicalDataTemplate DataType="{x:Type tsf:MenuDataItem}" ItemsSource="{Binding Path=SubMenuItems}">

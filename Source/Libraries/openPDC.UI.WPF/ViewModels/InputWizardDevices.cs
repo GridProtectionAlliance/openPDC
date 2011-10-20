@@ -1122,7 +1122,7 @@ namespace openPDC.UI.ViewModels
                     device.SkipDisableRealTimeData = SkipDisableRealTimeData;
                     device.ConnectionString = GenerateConnectionString();
                     device.Enabled = true;
-                    Device.Save(null, device, false);
+                    Device.SaveWithAnalogsDigitals(null, device, false, 0, 0);
 
                     device = Device.GetDevice(null, "WHERE Acronym = '" + PdcAcronym.ToUpper() + "'");
                     PdcID = device.ID;

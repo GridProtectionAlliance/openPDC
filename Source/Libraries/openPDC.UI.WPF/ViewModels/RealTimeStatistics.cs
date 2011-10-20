@@ -122,12 +122,12 @@ namespace openPDC.UI.ViewModels
             }
 
             m_refreshTimer.Start();
+            GetStatisticData();
         }
 
         private void m_refreshTimer_Tick(object sender, EventArgs e)
         {
             GetStatisticData();
-            LastRefresh = "Last Refresh: " + DateTime.Now.ToString("HH:mm:ss.fff");
         }
 
         private void GetStatisticData()
@@ -183,6 +183,7 @@ namespace openPDC.UI.ViewModels
             {
                 Popup("Failed to Retrieve Statistic Data: " + Environment.NewLine + ex.Message, "ERROR - Get Statistic Data", MessageBoxImage.Error);
             }
+            LastRefresh = "Last Refresh: " + DateTime.Now.ToString("HH:mm:ss.fff");
         }
 
         private object ConvertValueToType(string xmlValue, string xmlDataType)
