@@ -213,7 +213,7 @@ namespace openPDC.UI.DataModels
         /// </summary>
         [Required(ErrorMessage = "Device acronym is a required field, please provide value.")]
         [StringLength(200, ErrorMessage = "Device Acronym cannot exceed 200 characters.")]
-        [RegularExpression("^[A-Z0-9-'!'_]+$", ErrorMessage = "Only upper case letters, numbers, '!', '-' and '_' are allowed.")]
+        [RegularExpression("^[A-Z0-9-'!'_@#]+$", ErrorMessage = "Only upper case letters, numbers, '!', '-', '@', '#' and '_' are allowed.")]
         public string Acronym
         {
             get
