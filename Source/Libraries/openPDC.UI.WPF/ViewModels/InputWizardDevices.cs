@@ -89,6 +89,7 @@ namespace openPDC.UI.ViewModels
         private IConfigurationFrame m_configurationFrame;
         private string m_requestConfigurationError;
         private object m_requestConfigurationAttachment;
+        private Device m_pdcDevice;
 
         #endregion
 
@@ -353,7 +354,7 @@ namespace openPDC.UI.ViewModels
 
                 // Everytime acronym changes, check in the database to see if it already exists.
                 PdcMessage = "";
-                openPDC.UI.DataModels.Device device = openPDC.UI.DataModels.Device.GetDevice(null, " WHERE Acronym = '" + m_pdcAcronym.ToUpper() + "'");
+                Device device = Device.GetDevice(null, " WHERE Acronym = '" + m_pdcAcronym.ToUpper() + "'");
                 if (device != null)
                 {
                     if (device.IsConcentrator)
@@ -828,7 +829,7 @@ namespace openPDC.UI.ViewModels
             {
                 foreach (IConfigurationCell cell in m_configurationFrame.Cells)
                 {
-                    openPDC.UI.DataModels.Device existingDevice = openPDC.UI.DataModels.Device.GetDevice(null, "WHERE Acronym = '" + cell.StationName.Replace(" ", "").ToUpper() + "'");
+                    Device existingDevice = Device.GetDevice(null, "WHERE Acronym = '" + cell.StationName.Replace(" ", "").ToUpper() + "'");
 
                     wizardDeviceList.Add(new openPDC.UI.DataModels.InputWizardDevice()
                     {
@@ -1107,7 +1108,7 @@ namespace openPDC.UI.ViewModels
             {
                 if (ConnectToConcentrator && (PdcID == null || PdcID == 0))
                 {
-                    openPDC.UI.DataModels.Device device = new openPDC.UI.DataModels.Device();
+                    Device device = new Device();
                     device.IsConcentrator = true;
                     device.Acronym = PdcAcronym.ToUpper();
                     device.Name = PdcName;
@@ -1121,10 +1122,11 @@ namespace openPDC.UI.ViewModels
                     device.SkipDisableRealTimeData = SkipDisableRealTimeData;
                     device.ConnectionString = GenerateConnectionString();
                     device.Enabled = true;
-                    openPDC.UI.DataModels.Device.Save(null, device);
+                    Device.Save(null, device, false);
 
-                    device = openPDC.UI.DataModels.Device.GetDevice(null, "WHERE Acronym = '" + PdcAcronym.ToUpper() + "'");
+                    device = Device.GetDevice(null, "WHERE Acronym = '" + PdcAcronym.ToUpper() + "'");
                     PdcID = device.ID;
+                    m_pdcDevice = device;
                 }
             }
             catch (Exception ex)
@@ -1151,10 +1153,10 @@ namespace openPDC.UI.ViewModels
                 {
                     if (inputWizardDevice.Include)
                     {
-                        openPDC.UI.DataModels.Device device = openPDC.UI.DataModels.Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "'");
+                        Device device = Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "'");
                         if (device == null)
                         {
-                            device = new openPDC.UI.DataModels.Device();
+                            device = new Device();
                             device.Acronym = inputWizardDevice.Acronym.ToUpper();
                         }
 
@@ -1171,13 +1173,6 @@ namespace openPDC.UI.ViewModels
 
                         device.IsConcentrator = false;
                         device.LoadOrder = deviceCount;
-                        if (ConnectToConcentrator && PdcID != null && PdcID > 0)
-                        {
-                            device.ParentID = PdcID;
-                            device.ConnectionString = string.Empty;
-                        }
-                        else
-                            device.ConnectionString = GenerateConnectionString();
 
                         if (!inputWizardDevice.AddAnalogs)
                             inputWizardDevice.AnalogCount = 0;
@@ -1185,10 +1180,22 @@ namespace openPDC.UI.ViewModels
                         if (!inputWizardDevice.AddDigitals)
                             inputWizardDevice.DigitalCount = 0;
 
-                        openPDC.UI.DataModels.Device.SaveWithAnalogsDigitals(database, device, inputWizardDevice.DigitalCount, inputWizardDevice.AnalogCount);
+                        if (ConnectToConcentrator && PdcID != null && PdcID > 0)
+                        {
+                            device.ParentID = PdcID;
+                            device.ConnectionString = string.Empty;
+                            // IF it is connected to concentrator then do not send initialize command when device is saved.
+                            Device.SaveWithAnalogsDigitals(database, device, false, inputWizardDevice.DigitalCount, inputWizardDevice.AnalogCount);
+                        }
+                        else
+                        {
+                            device.ConnectionString = GenerateConnectionString();
+                            //If device is direct connected then notify service about it and hence send initialize.
+                            Device.SaveWithAnalogsDigitals(database, device, true, inputWizardDevice.DigitalCount, inputWizardDevice.AnalogCount);
+                        }
 
                         if (device.ID == 0)
-                            device.ID = openPDC.UI.DataModels.Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "'").ID;
+                            device.ID = Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "'").ID;
 
                         int phasorCount = 1;
                         foreach (openPDC.UI.DataModels.InputWizardDevicePhasor inputWizardDevicePhasor in inputWizardDevice.PhasorList)
@@ -1214,6 +1221,16 @@ namespace openPDC.UI.ViewModels
                 }
 
                 Popup("Configuration information saved successfully.", "Input Wizard Configuration", MessageBoxImage.Information);
+
+                // if configuration was set against a PDC then when all devices are added successfully, notify service about it.
+                if (ConnectToConcentrator && PdcID != null && PdcID > 0)
+                {
+                    if (m_pdcDevice == null)
+                        m_pdcDevice = Device.GetDevice(database, "WHERE ID = " + PdcID.ToString());
+
+                    if (m_pdcDevice != null)
+                        Device.NotifyService(m_pdcDevice);
+                }
 
             }
             catch (Exception ex)

@@ -1083,9 +1083,9 @@ namespace openPDC.UI.DataModels
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="device">Information about <see cref="Device"/>.</param>        
         /// <returns>String, for display use, indicating success.</returns>
-        public static string Save(AdoDataConnection database, Device device)
+        public static string Save(AdoDataConnection database, Device device, bool notifyService = true)
         {
-            return SaveWithAnalogsDigitals(database, device, 0, 0);
+            return SaveWithAnalogsDigitals(database, device, notifyService, 0, 0);
         }
 
         /// <summary>
@@ -1096,7 +1096,7 @@ namespace openPDC.UI.DataModels
         /// <param name="digitalCount">Number of digital measurements to add.</param>
         /// <param name="analogCount">Number of analog measurements to add.</param>
         /// <returns>String, for display use, indicating success.</returns>
-        public static string SaveWithAnalogsDigitals(AdoDataConnection database, Device device, int digitalCount, int analogCount)
+        public static string SaveWithAnalogsDigitals(AdoDataConnection database, Device device, bool notifyService, int digitalCount, int analogCount)
         {
             bool createdConnection = false;
             string query;
@@ -1163,7 +1163,9 @@ namespace openPDC.UI.DataModels
                 // If device is concentrator then we do not want to create default measurements for it. So exit function.                                
                 if (device.IsConcentrator)
                 {
-                    NotifyService(savedDevice);
+                    if (notifyService)
+                        NotifyService(savedDevice);
+
                     return "Device information saved successfully";
                 }
 
@@ -1254,8 +1256,9 @@ namespace openPDC.UI.DataModels
 
                 try
                 {
-                    // Notify service about configuration changes made here.                 
-                    NotifyService(savedDevice);
+                    // Notify service about configuration changes made here.              
+                    if (notifyService)
+                        NotifyService(savedDevice);
                 }
                 catch (Exception ex)
                 {
@@ -1460,28 +1463,31 @@ namespace openPDC.UI.DataModels
         /// <param name="device"><see cref="Device"/> whose configuration has changed.</param>
         public static void NotifyService(Device device)
         {
-            if (device.Enabled)
+            if (device != null)
             {
-                if (device.ParentID == null)
-                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Device", device.ID));
+                if (device.Enabled)
+                {
+                    if (device.ParentID == null)
+                        TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Device", device.ID));
+                    else
+                        TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Device", (int)device.ParentID));
+                }
                 else
-                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Device", (int)device.ParentID));
+                {
+                    //we do this to make sure all statistical measurements are in the system.
+                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                }
+
+                if (device.HistorianID != null)
+                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID) + " RefreshMetadata");
+
+                Historian statHistorian = Historian.GetHistorian(null, "WHERE Acronym = 'STAT'");
+                if (statHistorian != null)
+                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", statHistorian.ID) + " RefreshMetadata");
+
+                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
+                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("RefreshRoutes");
             }
-            else
-            {
-                //we do this to make sure all statistical measurements are in the system.
-                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
-            }
-
-            if (device.HistorianID != null)
-                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID) + " RefreshMetadata");
-
-            Historian statHistorian = Historian.GetHistorian(null, "WHERE Acronym = 'STAT'");
-            if (statHistorian != null)
-                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", statHistorian.ID) + " RefreshMetadata");
-
-            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
-            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("RefreshRoutes");
         }
 
         private static string ParseConnectionString(string connectionString)

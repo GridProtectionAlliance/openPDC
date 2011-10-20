@@ -191,15 +191,14 @@
         <Expander x:Name="ExpanderStep3" IsExpanded="False" Expanded="ExpanderStep3_Expanded">
             
             <Expander.HeaderTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                <DataTemplate>                    
+                    <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Step 3: Select Devices to Configure" Margin="0,0,250,0" />
-                        <TextBlock Grid.Column="1" Foreground="Red"  Text="* - Device acronym already exists in the database." HorizontalAlignment="Right"/>
-                    </Grid>
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding ElementName=ExpanderStep3, Path=IsExpanded, Converter={StaticResource ObjectToVisibilityConverter}}">
+                            <TextBlock Background="#FF2EB30D" Foreground="White" Text="*" FontWeight="Bold" TextAlignment="Center" Width="20"/>
+                            <TextBlock Foreground="Red" Text=" Device acronym already exists in the database." />
+                        </StackPanel>
+                    </StackPanel>                    
                 </DataTemplate>
             </Expander.HeaderTemplate>
 
@@ -225,7 +224,7 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Background="{tsfBinding:Column Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}">
                                     <TextBox Text="{tsfBinding:Column Path=Acronym}" Margin="0"/>
-                                    <TextBlock Style="{StaticResource RequiredMarker}" Margin="0"
+                                    <TextBlock Text="*" Foreground="White" FontWeight="Bold" Margin="2"
                                                Visibility="{tsfBinding:Column Path=Existing, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                                 </StackPanel>
                             </DataTemplate>
