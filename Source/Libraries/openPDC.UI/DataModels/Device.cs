@@ -1103,6 +1103,8 @@ namespace openPDC.UI.DataModels
 
             try
             {
+                Device oldDevice = null;
+
                 createdConnection = CreateConnection(ref database);
 
                 object nodeID;
@@ -1135,6 +1137,8 @@ namespace openPDC.UI.DataModels
                 }
                 else
                 {
+                    oldDevice = GetDevice(database, " WHERE ID = " + device.ID);
+
                     query = database.ParameterizedQueryString("UPDATE Device SET NodeID = {0}, ParentID = {1}, UniqueID = {2}, Acronym = {3}, Name = {4}, " +
                         "IsConcentrator = {5}, CompanyID = {6}, HistorianID = {7}, AccessID = {8}, VendorDeviceID = {9}, ProtocolID = {10}, Longitude = {11}, " +
                         "Latitude = {12}, InterconnectionID = {13}, ConnectionString = {14}, TimeZone = {15}, FramesPerSecond = {16}, TimeAdjustmentTicks = {17}, " +
@@ -1251,6 +1255,18 @@ namespace openPDC.UI.DataModels
                     foreach (Phasor phasor in Phasor.Load(database, device.ID))
                     {
                         Phasor.Save(database, phasor);
+                    }
+
+                    // Also update statistic measurements to reflect any changes in the acronym of the device.
+                    if (oldDevice != null && savedDevice.Acronym != oldDevice.Acronym)
+                    {
+                        foreach (Measurement measurement in Measurement.GetInputStatisticMeasurements(database, oldDevice.ID))
+                        {
+                            measurement.SignalReference.Replace(oldDevice.Acronym, savedDevice.Acronym);
+                            measurement.PointTag.Replace(oldDevice.Acronym, savedDevice.Acronym);
+                            measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldDevice.Name, savedDevice.Name, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                            Measurement.Save(database, measurement);
+                        }
                     }
                 }
 

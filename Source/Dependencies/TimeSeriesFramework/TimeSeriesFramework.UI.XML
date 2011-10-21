@@ -801,6 +801,22 @@
             <param name="outputStreamID">ID of the output stream to filter data.</param>
             <returns><see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of Measurements.</returns>
         </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.GetInputStatisticMeasurements(TVA.Data.AdoDataConnection,System.Int32)">
+            <summary>
+            Retrieves statistic measurements for a device.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="deviceID">ID of the device to filter data.</param>
+            <returns><see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of Measurement.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.GetOutputStatisticMeasurements(TVA.Data.AdoDataConnection,System.String)">
+            <summary>
+            Retrieves statistic measurements for output stream.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="outputStreamID">ID of the output stream to filter data.</param>
+            <returns><see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of Measurement.</returns>
+        </member>
         <member name="P:TimeSeriesFramework.UI.DataModels.Measurement.SignalID">
             <summary>
             Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/>'s Signal ID.

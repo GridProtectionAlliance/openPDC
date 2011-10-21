@@ -428,7 +428,7 @@ namespace openPDCManager.UI.ViewModels
                         newOutputStream.Acronym = originalAcronym + i.ToString();
                         i++;
                     }
-                    while (OutputStream.GetOutputStreamByAcronym(null, newOutputStream.Acronym) != null);
+                    while (OutputStream.GetOutputStream(null, " WHERE Acronym = '" + newOutputStream.Acronym + "'") != null);
 
                     CurrentItem = newOutputStream;
                 }

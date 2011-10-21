@@ -30,7 +30,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Linq;
 using System.Windows;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
@@ -852,6 +851,7 @@ namespace openPDCManager.UI.DataModels
 
             try
             {
+                OutputStream oldOutputStream = null;
                 createdConnection = CreateConnection(ref database);
 
                 if (outputStream.ID == 0)
@@ -878,6 +878,8 @@ namespace openPDCManager.UI.DataModels
                 }
                 else
                 {
+                    oldOutputStream = GetOutputStream(database, " WHERE ID = " + outputStream.ID);
+
                     query = database.ParameterizedQueryString("UPDATE OutputStream SET NodeID = {0}, Acronym = {1}, Name = {2}, Type = {3}, ConnectionString = {4}, " +
                         "IDCode = {5}, CommandChannel = {6}, DataChannel = {7}, AutoPublishConfigFrame = {8}, AutoStartDataChannel = {9}, NominalFrequency = {10}, " +
                         "FramesPerSecond = {11}, LagTime = {12}, LeadTime = {13}, UseLocalClockAsRealTime = {14}, AllowSortsByArrival = {15}, LoadOrder = {16}, " +
@@ -897,13 +899,25 @@ namespace openPDCManager.UI.DataModels
                         database.Bool(outputStream.AllowPreemptivePublishing), outputStream.DownSamplingMethod.ToNotNull(), outputStream.DataFormat.ToNotNull(), outputStream.CoordinateFormat.ToNotNull(),
                         outputStream.CurrentScalingValue, outputStream.VoltageScalingValue, outputStream.AnalogScalingValue, outputStream.DigitalMaskValue, database.Bool(outputStream.PerformTimestampReasonabilityCheck),
                         CommonFunctions.CurrentUser, database.UtcNow(), outputStream.ID);
+
+                    if (oldOutputStream != null && oldOutputStream.Acronym != outputStream.Acronym.Replace(" ", "").ToUpper())
+                    {
+                        ObservableCollection<Measurement> measurementList = Measurement.GetOutputStatisticMeasurements(database, oldOutputStream.Acronym);
+                        foreach (Measurement measurement in measurementList)
+                        {
+                            measurement.SignalReference = measurement.SignalReference.Replace(oldOutputStream.Acronym, outputStream.Acronym.Replace(" ", "").ToUpper());
+                            measurement.PointTag = measurement.PointTag.Replace(oldOutputStream.Acronym, outputStream.Acronym.Replace(" ", "").ToUpper());
+                            measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldOutputStream.Name, outputStream.Name ?? outputStream.Acronym.Replace(" ", "").ToUpper(), System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                            Measurement.Save(database, measurement);
+                        }
+                    }
                 }
 
                 if (mirrorMode)
                 {
                     // Get ID of the output stream if a new one was inserted above.
                     if (outputStream.ID == 0)
-                        outputStream.ID = GetOutputStreamByAcronym(database, outputStream.Acronym).ID;
+                        outputStream.ID = GetOutputStream(database, " WHERE Acronym = '" + outputStream.Acronym.Replace(" ", "").ToUpper() + "'").ID;
 
                     // Get all existing devices associated with output stream and delete them.
                     ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.Load(database, outputStream.ID);
@@ -984,83 +998,56 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
-        /// <summary>
-        /// Retrieves <see cref="OutputStream"/> information based on acronym provided.
-        /// </summary>
-        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="acronym"><see cref="OutputStream"/> acronym to filter data.</param>
-        /// <returns><see cref="OutputStream"/> information.</returns>
-        public static OutputStream GetOutputStreamByAcronym(AdoDataConnection database, string acronym)
-        {
-            try
-            {
-                List<OutputStream> outputStreamList = new List<OutputStream>();
-                outputStreamList = (from item in Load(database, false)
-                                    where item.Acronym.ToUpper() == acronym.ToUpper()
-                                    select item).ToList();
-
-                if (outputStreamList.Count > 0)
-                    return outputStreamList[0];
-                else
-                    return null;
-            }
-            catch (Exception ex)
-            {
-                CommonFunctions.LogException(database, "GetOutputStreamByAcronym", ex);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Retrieves statistic measurements associated with output stream.
-        /// </summary>
-        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="outputStreamAcronym">Acronym of the output stream to filter data.</param>
-        /// <returns>Collection of <see cref="Measurement"/>.</returns>
-        public static List<Measurement> GetOutputStreamStatistics(AdoDataConnection database, string outputStreamAcronym)
-        {
-            try
-            {
-                List<Measurement> measurementList = new List<Measurement>();
-                measurementList = (from item in Measurement.Load(database)
-                                   where item.SignalReference.StartsWith(outputStreamAcronym + "!OS")
-                                   select item).ToList();
-                return measurementList;
-            }
-            catch (Exception ex)
-            {
-                CommonFunctions.LogException(database, "GetOutputStreamStatistics", ex);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Updates statistic measurement meta data to reflect change in output stream.
-        /// </summary>
-        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="oldAcronym">Output stream original acronym.</param>
-        /// <param name="newAcronym">Output stream new acronym.</param>
-        /// <param name="oldName">Output stream old name.</param>
-        /// <param name="newName">Output stream new name.</param>        
-        public static void UpdateOutputStreamStatistics(AdoDataConnection database, string oldAcronym, string newAcronym, string oldName, string newName)
+        public static OutputStream GetOutputStream(AdoDataConnection database, string whereClause)
         {
             bool createdConnection = false;
 
             try
             {
                 createdConnection = CreateConnection(ref database);
+                DataTable outputStreamTable = database.Connection.RetrieveData(database.AdapterType, "SELECT * FROM OutputStreamDetail " + whereClause);
 
-                if (!string.IsNullOrEmpty(oldAcronym) && oldAcronym != newAcronym)
+                if (outputStreamTable.Rows.Count == 0)
+                    return null;
+
+                DataRow row = outputStreamTable.Rows[0];
+                OutputStream outputStream = new OutputStream()
                 {
-                    List<Measurement> measurementList = GetOutputStreamStatistics(database, oldAcronym);
-                    foreach (Measurement measurement in measurementList)
-                    {
-                        measurement.SignalReference = measurement.SignalReference.Replace(oldAcronym, newAcronym);
-                        measurement.PointTag = measurement.PointTag.Replace(oldAcronym, newAcronym);
-                        measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldName, newName, System.Text.RegularExpressions.RegexOptions.IgnoreCase);      //measurement.Description.Replace(oldAcronym, newAcronym);
-                        Measurement.Save(database, measurement);
-                    }
-                }
+                    NodeID = database.Guid(row, "NodeID"),
+                    ID = Convert.ToInt32(row.Field<object>("ID")),
+                    Acronym = row.Field<string>("Acronym"),
+                    Name = row.Field<string>("Name"),
+                    Type = Convert.ToInt32(row.Field<object>("Type")),
+                    ConnectionString = row.Field<string>("ConnectionString"),
+                    IDCode = Convert.ToInt32(row.Field<object>("IDCode")),
+                    CommandChannel = row.Field<string>("CommandChannel"),
+                    DataChannel = row.Field<string>("DataChannel"),
+                    AutoPublishConfigFrame = Convert.ToBoolean(row.Field<object>("AutoPublishConfigFrame")),
+                    AutoStartDataChannel = Convert.ToBoolean(row.Field<object>("AutoStartDataChannel")),
+                    NominalFrequency = Convert.ToInt32(row.Field<object>("NominalFrequency")),
+                    FramesPerSecond = Convert.ToInt32(row.Field<object>("FramesPerSecond") ?? 30),
+                    LagTime = row.Field<double>("LagTime"),
+                    LeadTime = row.Field<double>("LeadTime"),
+                    UseLocalClockAsRealTime = Convert.ToBoolean(row.Field<object>("UseLocalClockAsRealTime")),
+                    AllowSortsByArrival = Convert.ToBoolean(row.Field<object>("AllowSortsByArrival")),
+                    LoadOrder = Convert.ToInt32(row.Field<object>("LoadOrder")),
+                    Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
+                    m_nodeName = row.Field<string>("NodeName"),
+                    m_typeName = Convert.ToInt32(row.Field<object>("Type")) == 0 ? "IEEE C37.118" : "BPA",
+                    IgnoreBadTimeStamps = Convert.ToBoolean(row.Field<object>("IgnoreBadTimeStamps")),
+                    TimeResolution = Convert.ToInt32(row.Field<object>("TimeResolution")),
+                    AllowPreemptivePublishing = Convert.ToBoolean(row.Field<object>("AllowPreemptivePublishing")),
+                    DownSamplingMethod = row.Field<string>("DownsamplingMethod"),
+                    DataFormat = row.Field<string>("DataFormat"),
+                    CoordinateFormat = row.Field<string>("CoordinateFormat"),
+                    CurrentScalingValue = Convert.ToInt32(row.Field<object>("CurrentScalingValue")),
+                    VoltageScalingValue = Convert.ToInt32(row.Field<object>("VoltageScalingValue")),
+                    AnalogScalingValue = Convert.ToInt32(row.Field<object>("AnalogScalingValue")),
+                    DigitalMaskValue = Convert.ToInt32(row.Field<object>("DigitalMaskValue")),
+                    PerformTimestampReasonabilityCheck = Convert.ToBoolean(row.Field<object>("PerformTimeReasonabilityCheck"))
+                };
+
+                return outputStream;
             }
             finally
             {
