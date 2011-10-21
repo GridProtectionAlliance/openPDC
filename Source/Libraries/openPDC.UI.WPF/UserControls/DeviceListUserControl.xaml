@@ -37,7 +37,7 @@
                         </DataTemplate>
                     </sdk:DataGridTemplateColumn.CellTemplate>
                 </sdk:DataGridTemplateColumn>
-                <sdk:DataGridCheckBoxColumn Header="Concentrator" Width="2*" Binding="{tsfBinding:Column Path=IsConcentrator}" CellStyle="{StaticResource CenterAlignCellStyle}" />
+                <sdk:DataGridCheckBoxColumn Header="Concentrator" Width="2*" Binding="{tsfBinding:Column Path=IsConcentrator}" CellStyle="{StaticResource CenterAlignCellStyle}" IsReadOnly="True"/>
                 <sdk:DataGridCheckBoxColumn Header="Enabled" Width="*" Binding="{tsfBinding:Column Path=Enabled}" CellStyle="{StaticResource CenterAlignCellStyle}" />
                 <sdk:DataGridTemplateColumn Header="" Width="*">
                     <sdk:DataGridTemplateColumn.CellTemplate>
