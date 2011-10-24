@@ -89,6 +89,7 @@ namespace openPDC.UI.ViewModels
             if (device != null)     // i.e. user wants to edit existing device's configuration. So we will load that by default.
             {
                 CurrentItem = device;
+                OnPropertyChanged("IsNewRecord");
                 OnPropertyChanged("CanGoToPhasorOrMeasurement");
             }
         }

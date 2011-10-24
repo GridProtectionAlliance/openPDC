@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="openPDC.UI.UserControls.DeviceUserControl"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -64,10 +65,24 @@
             
             <!--First row-->
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right">
-                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Phasors" Command="{tsfBinding:GridButtonCommand Path=DataContext.PhasorCommand}" 
-                                   Visibility="{tsfBinding:Column Path=IsNewRecord, Converter={StaticResource ObjectToVisibilityConverter}}" ></Button>
-                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Measurements" Command="{tsfBinding:GridButtonCommand Path=DataContext.MeasurementCommand}" 
-                                     Width="Auto"></Button>
+                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Phasors" Command="{tsfBinding:GridButtonCommand Path=DataContext.PhasorCommand, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                    <Button.Visibility>
+                        <Binding Path="DataContext.IsNewRecord" RelativeSource="{RelativeSource AncestorType=UserControl}" Converter="{StaticResource ObjectToVisibilityConverter}">
+                            <Binding.ConverterParameter>
+                                <sys:Boolean>True</sys:Boolean>
+                            </Binding.ConverterParameter>
+                        </Binding>
+                    </Button.Visibility>
+                </Button>
+                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Measurements" Command="{tsfBinding:GridButtonCommand Path=DataContext.MeasurementCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" Width="Auto">
+                    <Button.Visibility>
+                        <Binding Path="DataContext.IsNewRecord" RelativeSource="{RelativeSource AncestorType=UserControl}" Converter="{StaticResource ObjectToVisibilityConverter}">
+                            <Binding.ConverterParameter>
+                                <sys:Boolean>True</sys:Boolean>
+                            </Binding.ConverterParameter>
+                        </Binding>
+                    </Button.Visibility>
+                </Button>
             </StackPanel>
 
             <TextBlock Text="Node" Grid.Row="1" Grid.Column="0" />
