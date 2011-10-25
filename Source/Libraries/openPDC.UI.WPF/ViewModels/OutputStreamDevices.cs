@@ -34,6 +34,7 @@ using openPDC.UI.DataModels;
 using openPDC.UI.UserControls;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
+using openPDCManager.UI.DataModels;
 
 namespace openPDC.UI.ViewModels
 {
@@ -53,6 +54,7 @@ namespace openPDC.UI.ViewModels
         private Dictionary<string, string> m_analogDataformatLookupList;
         private Dictionary<string, string> m_coordinateDataformatLookupList;
         private RelayCommand m_phasorCommand;
+        private RelayCommand m_deviceWizardCommand;
         private RelayCommand m_analogCommand;
         private RelayCommand m_digitalCommand;
         private bool m_mirrorMode;
@@ -132,6 +134,31 @@ namespace openPDC.UI.ViewModels
                     m_phasorCommand = new RelayCommand(GoToPhasors);
 
                 return m_phasorCommand;
+            }
+        }
+
+        /// <summary>
+        /// Gets <see cref="ICommand"/> object to go to Device Wizard screen.
+        /// </summary>
+        public ICommand DeviceWizardCommand
+        {
+            get
+            {
+                if (m_deviceWizardCommand == null)
+                    m_deviceWizardCommand = new RelayCommand(GoToDeviceWizard, () => CanGoToDeviceWizard);
+
+                return m_deviceWizardCommand;
+            }
+        }
+
+        /// <summary>
+        /// Gets a boolean flag indicating if Phasors and Measurements button are visible or not.
+        /// </summary>
+        public bool CanGoToDeviceWizard
+        {
+            get
+            {
+                return m_outputStreamID > 0;
             }
         }
 
@@ -230,8 +257,9 @@ namespace openPDC.UI.ViewModels
             m_coordinateDataformatLookupList.Add("Polar", "Polar");
             m_coordinateDataformatLookupList.Add("Rectangular", "Rectangular");
 
-            bool.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MirrorMode").ToString(), out m_mirrorMode);
+            bool.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MirrorMode").ToString(), out m_mirrorMode);        
         }
+
 
         #endregion
 
@@ -318,6 +346,16 @@ namespace openPDC.UI.ViewModels
         {
             OutputStreamDevicePhasorUserControl outputStreamDevicePhasorUserControl = new OutputStreamDevicePhasorUserControl(CurrentItem.ID);
             CommonFunctions.LoadUserControl(outputStreamDevicePhasorUserControl, "Manage Phasors for " + CurrentItem.Acronym);
+        }
+
+        /// <summary>
+        /// Handles <see cref="DeviceWizardCommand"/>.
+        /// </summary>        
+        private void GoToDeviceWizard()
+        {
+            OutputStream outputStream = OutputStream.GetOutputStream(null, " WHERE ID = " + m_outputStreamID);
+            openPDC.UI.UserControls.OutputStreamCurrentDeviceUserControl outputStreamCurrentDeviceUserControl = new OutputStreamCurrentDeviceUserControl(m_outputStreamID, outputStream.Acronym);
+            CommonFunctions.LoadUserControl(outputStreamCurrentDeviceUserControl, "Manage Devices for " + outputStream.Acronym);
         }
 
         private void GoToAnalogs()
