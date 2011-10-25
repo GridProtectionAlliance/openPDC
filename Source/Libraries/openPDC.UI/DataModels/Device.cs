@@ -1262,8 +1262,17 @@ namespace openPDC.UI.DataModels
                     {
                         foreach (Measurement measurement in Measurement.GetInputStatisticMeasurements(database, oldDevice.ID))
                         {
-                            measurement.SignalReference.Replace(oldDevice.Acronym, savedDevice.Acronym);
-                            measurement.PointTag.Replace(oldDevice.Acronym, savedDevice.Acronym);
+                            measurement.SignalReference = measurement.SignalReference.Replace(oldDevice.Acronym, savedDevice.Acronym);
+                            measurement.PointTag = measurement.PointTag.Replace(oldDevice.Acronym, savedDevice.Acronym);
+                            measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldDevice.Name, savedDevice.Name, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                            Measurement.Save(database, measurement);
+                        }
+
+                        // Also make sure if any digital or analogs are left out from update then update them now.
+                        foreach (Measurement measurement in Measurement.GetMeasurements(database, " WHERE SignalTypeSuffix IN ('DV', 'AV', 'CV')"))
+                        {
+                            measurement.SignalReference = measurement.SignalReference.Replace(oldDevice.Acronym, savedDevice.Acronym);
+                            measurement.PointTag = measurement.PointTag.Replace(oldDevice.Acronym, savedDevice.Acronym);
                             measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldDevice.Name, savedDevice.Name, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
                             Measurement.Save(database, measurement);
                         }

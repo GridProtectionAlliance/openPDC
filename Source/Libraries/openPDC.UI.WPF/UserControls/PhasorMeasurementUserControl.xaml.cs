@@ -37,6 +37,12 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class PhasorMeasurementUserControl : UserControl
     {
+        #region [ Members ]
+
+        private PhasorMeasurements m_dataContext;
+
+        #endregion
+
         #region [ Constructor ]
 
         /// <summary>
@@ -55,7 +61,8 @@ namespace openPDC.UI.UserControls
         {
             InitializeComponent();
             this.Unloaded += new RoutedEventHandler(PhasorMeasurementUserControl_Unloaded);
-            this.DataContext = new PhasorMeasurements(deviceID, 17);
+            m_dataContext = new PhasorMeasurements(deviceID, 17);
+            this.DataContext = m_dataContext;
         }
 
         #endregion
@@ -69,7 +76,7 @@ namespace openPDC.UI.UserControls
         /// <param name="e">Arguments of the event.</param>
         void PhasorMeasurementUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            (this.DataContext as PhasorMeasurements).ProcessPropertyChange();
+            m_dataContext.ProcessPropertyChange();
         }
 
         /// <summary>
@@ -88,6 +95,11 @@ namespace openPDC.UI.UserControls
                         e.Handled = true;
                 }
             }
+        }
+
+        private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            m_dataContext.SortData(e.Column.SortMemberPath);
         }
 
         #endregion

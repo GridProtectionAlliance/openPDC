@@ -33,6 +33,12 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class OutputStreamDeviceAnalogUserControl : UserControl
     {
+        #region [ Members ]
+
+        private OutputStreamDeviceAnalogs m_dataContext;
+
+        #endregion
+
         #region[Constructor]
 
         /// <summary>
@@ -41,7 +47,8 @@ namespace openPDC.UI.UserControls
         public OutputStreamDeviceAnalogUserControl(int outputStreamDeviceID)
         {
             InitializeComponent();
-            this.DataContext = new OutputStreamDeviceAnalogs(outputStreamDeviceID, 20, true);
+            m_dataContext = new OutputStreamDeviceAnalogs(outputStreamDeviceID, 20, true);
+            this.DataContext = m_dataContext;
         }
 
         #endregion
@@ -61,7 +68,11 @@ namespace openPDC.UI.UserControls
             }
         }
 
-        #endregion
+        private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            m_dataContext.SortData(e.Column.SortMemberPath);
+        }
 
+        #endregion
     }
 }

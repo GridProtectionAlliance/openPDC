@@ -33,6 +33,12 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class DeviceListUserControl : UserControl
     {
+        #region [ Members ]
+
+        private Devices m_dataContext;
+
+        #endregion
+
         #region [ Constructor ]
 
         /// <summary>
@@ -41,7 +47,8 @@ namespace openPDC.UI.UserControls
         public DeviceListUserControl()
         {
             InitializeComponent();
-            this.DataContext = new Devices(16);
+            m_dataContext = new Devices(16);
+            this.DataContext = m_dataContext;
         }
 
         #endregion
@@ -66,11 +73,11 @@ namespace openPDC.UI.UserControls
             }
         }
 
-        #endregion
-
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
-
+            m_dataContext.SortData(e.Column.SortMemberPath);
         }
+
+        #endregion
     }
 }

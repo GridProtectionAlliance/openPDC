@@ -32,6 +32,12 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class OutputStreamDeviceDigitalUserControl : UserControl
     {
+        #region [ Members ]
+
+        private OutputStreamDeviceDigitals m_dataContext;
+
+        #endregion
+
         #region[Constructor]
 
         /// <summary>
@@ -40,7 +46,8 @@ namespace openPDC.UI.UserControls
         public OutputStreamDeviceDigitalUserControl(int outputStreamDeviceID)
         {
             InitializeComponent();
-            this.DataContext = new OutputStreamDeviceDigitals(outputStreamDeviceID, 20, true);
+            m_dataContext = new OutputStreamDeviceDigitals(outputStreamDeviceID, 20, true);
+            this.DataContext = m_dataContext;
         }
 
         #endregion
@@ -60,7 +67,11 @@ namespace openPDC.UI.UserControls
             }
         }
 
-        #endregion
+        private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            m_dataContext.SortData(e.Column.SortMemberPath);
+        }
 
+        #endregion
     }
 }

@@ -149,6 +149,11 @@ namespace openPDC.UI.UserControls
             PopupAddMore.IsOpen = true;
         }
 
+        private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            m_dataContext.SortData(e.Column.SortMemberPath);
+        }
+
         #endregion
     }
 }

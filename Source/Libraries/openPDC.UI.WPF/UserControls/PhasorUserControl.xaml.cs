@@ -35,6 +35,12 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class PhasorUserControl : UserControl
     {
+        #region [ Members ]
+
+        private Phasors m_dataContext;
+
+        #endregion
+
         #region [ Constructor ]
         /// <summary>
         /// Creates an instance of <see cref="PhasorUserControl"/> class.
@@ -44,7 +50,8 @@ namespace openPDC.UI.UserControls
         {
             InitializeComponent();
             this.Unloaded += new RoutedEventHandler(PhasorUserControl_Unloaded);
-            this.DataContext = new Phasors(deviceID, 18);
+            m_dataContext = new Phasors(deviceID, 18);
+            this.DataContext = m_dataContext;
         }
 
         #endregion
@@ -79,6 +86,12 @@ namespace openPDC.UI.UserControls
             }
         }
 
+        private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            m_dataContext.SortData(e.Column.SortMemberPath);
+        }
+
         #endregion
+
     }
 }

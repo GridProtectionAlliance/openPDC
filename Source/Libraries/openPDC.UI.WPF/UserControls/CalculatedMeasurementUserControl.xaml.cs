@@ -33,6 +33,14 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class CalculatedMeasurementUserControl : UserControl
     {
+        #region [ Members ]
+
+        private CalculatedMeasurements m_dataContext;
+
+        #endregion
+
+        #region [ Constructor ]
+
         /// <summary>
         /// Creates an instance of <see cref="CalculatedMeasurementUserControl"/> class.
         /// </summary>
@@ -40,12 +48,17 @@ namespace openPDC.UI.UserControls
         {
             InitializeComponent();
             this.Unloaded += new RoutedEventHandler(CalculatedMeasurementUserControl_Unloaded);
-            this.DataContext = new CalculatedMeasurements(5);
+            m_dataContext = new CalculatedMeasurements(5);
+            this.DataContext = m_dataContext;
         }
 
-        void CalculatedMeasurementUserControl_Unloaded(object sender, RoutedEventArgs e)
+        #endregion
+
+        #region [ Methods ]
+
+        private void CalculatedMeasurementUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            (this.DataContext as CalculatedMeasurements).ProcessPropertyChange();
+            m_dataContext.ProcessPropertyChange();
         }
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -60,5 +73,12 @@ namespace openPDC.UI.UserControls
                 }
             }
         }
+
+        private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            m_dataContext.SortData(e.Column.SortMemberPath);
+        }
+
+        #endregion
     }
 }

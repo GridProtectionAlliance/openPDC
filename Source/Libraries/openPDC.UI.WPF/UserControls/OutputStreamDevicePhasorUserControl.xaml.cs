@@ -36,6 +36,12 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class OutputStreamDevicePhasorUserControl : UserControl
     {
+        #region [ Members ]
+
+        private OutputStreamDevicePhasors m_dataContext;
+
+        #endregion
+
         #region [ Constructor ]
 
         /// <summary>
@@ -44,7 +50,8 @@ namespace openPDC.UI.UserControls
         public OutputStreamDevicePhasorUserControl(int outputStreamDeviceID)
         {
             InitializeComponent();
-            this.DataContext = new OutputStreamDevicePhasors(outputStreamDeviceID, 20, true);
+            m_dataContext = new OutputStreamDevicePhasors(outputStreamDeviceID, 20, true);
+            this.DataContext = m_dataContext;
         }
 
         #endregion
@@ -62,6 +69,11 @@ namespace openPDC.UI.UserControls
                         e.Handled = true;
                 }
             }
+        }
+
+        private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            m_dataContext.SortData(e.Column.SortMemberPath);
         }
 
         #endregion

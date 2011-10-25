@@ -790,8 +790,16 @@
             Retrieves a <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> information from the database based on query string filter.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="whereClause">query string to fileter data.</param>
+            <param name="whereClause"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
             <returns><see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> information.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.GetMeasurements(TVA.Data.AdoDataConnection,System.String)">
+            <summary>
+            Retrieves <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> based on the whereClause.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="whereClause"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <returns><see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/>.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.GetNewOutputStreamMeasurements(TVA.Data.AdoDataConnection,System.Int32)">
             <summary>
@@ -814,7 +822,7 @@
             Retrieves statistic measurements for output stream.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="outputStreamID">ID of the output stream to filter data.</param>
+            <param name="outputStreamAcronym">Acronym of the output stream to filter data.</param>
             <returns><see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> type collection of Measurement.</returns>
         </member>
         <member name="P:TimeSeriesFramework.UI.DataModels.Measurement.SignalID">
