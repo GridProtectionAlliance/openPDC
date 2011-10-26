@@ -1909,5 +1909,20 @@
             visible. The value is true for most parameters, including those which are not defined by an adapter type.
             </summary>
         </member>
+        <member name="T:TimeSeriesFramework.UI.TsfPopup">
+            <summary>
+            Represents a non-topmost <see cref="T:System.Windows.Controls.Primitives.Popup"/> window.
+            </summary>
+        </member>
+        <member name="F:TimeSeriesFramework.UI.TsfPopup.TopmostProperty">
+            <summary>
+            Dependency property to define zorder of the <see cref="T:TimeSeriesFramework.UI.TsfPopup"/>.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.TsfPopup.Topmost">
+            <summary>
+            Gets or sets Topmost flag for <see cref="T:TimeSeriesFramework.UI.TsfPopup"/>.
+            </summary>
+        </member>
     </members>
 </doc>
