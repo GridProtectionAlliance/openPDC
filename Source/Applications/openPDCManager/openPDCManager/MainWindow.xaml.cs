@@ -24,6 +24,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -34,7 +36,6 @@ using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.DataModels;
 using TVA.IO;
 using TVA.Reflection;
-using System.Diagnostics;
 
 namespace openPDCManager
 {
@@ -243,11 +244,28 @@ namespace openPDCManager
             }
         }
 
-        #endregion
-
         private void ButtonLogo_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("http://www.gridprotectionalliance.org/");
         }
+
+        private void ButtonHelp_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Check for internet connectivity.
+                Dns.GetHostEntry("openpdc.codeplex.com");
+
+                // Launch the help page available on web.
+                Process.Start("http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration");
+            }
+            catch
+            {
+                // Launch the offline copy of the help page.
+                Process.Start("openPDCManagerHelp.mht");
+            }
+        }
+
+        #endregion
     }
 }

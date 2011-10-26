@@ -84,8 +84,24 @@
 
                 <Border Background="{StaticResource MenuBackgroundBrush}" BorderThickness="0" CornerRadius="5" VerticalAlignment="Top" 
                     Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,5,0" Width="875" Height="32">
-                    <Menu x:Name="MenuMain" ItemsSource="{Binding}" Style="{StaticResource MenuStyle}" ItemContainerStyleSelector="{StaticResource MenuItemStyleSelector}"
-                      HorizontalAlignment="Left"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                    
+                        <Menu x:Name="MenuMain" ItemsSource="{Binding}" Style="{StaticResource MenuStyle}" ItemContainerStyleSelector="{StaticResource MenuItemStyleSelector}"
+                            HorizontalAlignment="Left"/>
+
+                        <Button ToolTip="Click for Help" Width="Auto" Padding="0" HorizontalAlignment="Right" Click="ButtonHelp_Click">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Image Source="/TimeSeriesFramework.UI;component/images/Help.png" Height="20" Width="20" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                    </Grid>
                 </Border>
 
             </Grid>
