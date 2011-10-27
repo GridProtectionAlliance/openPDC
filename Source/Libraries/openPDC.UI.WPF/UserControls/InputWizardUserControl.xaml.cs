@@ -21,9 +21,11 @@
 //
 //******************************************************************************************************
 
+using System.Collections.Generic;
 using System.Windows.Controls;
 using openPDC.UI.DataModels;
 using openPDC.UI.ViewModels;
+using TVA;
 
 namespace openPDC.UI.UserControls
 {
@@ -50,6 +52,42 @@ namespace openPDC.UI.UserControls
             this.Loaded += new System.Windows.RoutedEventHandler(InputWizardUserControl_Loaded);
             m_dataContext = new InputWizardDevices(1);
             StackPanelRoot.DataContext = m_dataContext;
+        }
+
+        public InputWizardUserControl(Device device)
+            : this()
+        {
+            if (device != null)
+            {
+                m_dataContext.SkipDisableRealTimeData = device.SkipDisableRealTimeData;
+
+                Dictionary<string, string> connectionSettings = device.ConnectionString.ToLower().ParseKeyValuePairs();
+                if (connectionSettings.ContainsKey("commandchannel"))
+                {
+                    m_dataContext.AlternateCommandChannel = connectionSettings["commandchannel"].Replace("{", "").Replace("}", "");
+                    connectionSettings.Remove("commandchannel");
+                    m_dataContext.ConnectionString = connectionSettings.JoinKeyValuePairs();
+                }
+                else
+                {
+                    m_dataContext.ConnectionString = device.ConnectionString;
+                }
+
+                m_dataContext.AccessID = device.AccessID;
+                m_dataContext.ProtocolID = device.ProtocolID ?? 0;
+                m_dataContext.CompanyID = device.CompanyID ?? 0;
+                m_dataContext.HistorianID = device.HistorianID ?? 0;
+                m_dataContext.InterconnectionID = device.InterconnectionID ?? 0;
+
+                if (device.IsConcentrator)
+                {
+                    m_dataContext.ConnectToConcentrator = true;
+                    m_dataContext.PdcAcronym = device.Acronym;
+                    m_dataContext.PdcName = device.Name;
+                    m_dataContext.PdcVendorDeviceID = device.VendorDeviceID ?? 0;
+                }
+                ExpanderStep2.IsExpanded = true;
+            }
         }
 
         #endregion

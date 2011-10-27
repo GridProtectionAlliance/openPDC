@@ -29,6 +29,7 @@ using System.Windows;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
+using openPDC.UI.UserControls;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
 using TimeSeriesFramework.UI.DataModels;
@@ -59,6 +60,7 @@ namespace openPDC.UI.ViewModels
         private RelayCommand m_initializeCommand;
         private RelayCommand m_buildConnectionStringCommand;
         private RelayCommand m_buildAlternateCommandChannelCommand;
+        private RelayCommand m_updateConfigurationCommand;
         private string m_runtimeID;
         private ObservableCollection<Device> m_devices;
         private RelayCommand m_searchCommand;
@@ -270,6 +272,20 @@ namespace openPDC.UI.ViewModels
         }
 
         /// <summary>
+        /// Gets <see cref="ICommand"/> for updating configuration.
+        /// </summary>
+        public ICommand UpdateConfigurationCommand
+        {
+            get
+            {
+                if (m_updateConfigurationCommand == null)
+                    m_updateConfigurationCommand = new RelayCommand(UpdateConfiguration);
+
+                return m_updateConfigurationCommand;
+            }
+        }
+
+        /// <summary>
         /// Gets <see cref="ICommand"/> to go to phasors configuration.
         /// </summary>
         public ICommand PhasorCommand
@@ -469,8 +485,7 @@ namespace openPDC.UI.ViewModels
         /// <param name="parameter">Parameter to use for the command provided by commandparameter from UI.</param>
         private void MakeCopy(object parameter)
         {
-            openPDC.UI.DataModels.Device deviceToCopy = new openPDC.UI.DataModels.Device();
-            deviceToCopy = (openPDC.UI.DataModels.Device)parameter;
+            Device deviceToCopy = (openPDC.UI.DataModels.Device)parameter;
             string newAcronym; ;
             int i = 1;
             do  // Find unique acronym.
@@ -486,8 +501,15 @@ namespace openPDC.UI.ViewModels
             ItemsPerPage = 0; // Set this so that on Save() user will be sent back to list screen.
 
             // Go to edit screen.
-            openPDC.UI.UserControls.DeviceUserControl deviceUserControl = new openPDC.UI.UserControls.DeviceUserControl(deviceToCopy);
+            DeviceUserControl deviceUserControl = new DeviceUserControl(deviceToCopy);
             CommonFunctions.LoadUserControl(deviceUserControl, "Manage Device Configuration");
+        }
+
+        private void UpdateConfiguration(object parameter)
+        {
+            Device device = (openPDC.UI.DataModels.Device)parameter;
+            InputWizardUserControl inputWizardUserControl = new InputWizardUserControl(device);
+            CommonFunctions.LoadUserControl(inputWizardUserControl, "Input Device Configuration Wizard");
         }
 
         private bool DeviceExists(string acronym)

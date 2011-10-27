@@ -1,5 +1,6 @@
 ﻿<UserControl x:Class="openPDC.UI.UserControls.DeviceListUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
@@ -61,8 +62,19 @@
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button ToolTip="Update Configuration" Width="Auto" Margin="0,0,5,0" >
+                                <Button ToolTip="Update Configuration" Command="{tsfBinding:GridButtonCommand Path=DataContext.UpdateConfigurationCommand}" 
+                                    CommandParameter="{tsfBinding:GridButtonCommand Path=DataContext.CurrentItem}" Width="Auto" Margin="0,0,5,0" >
+
+                                    <Button.Visibility>
+                                        <Binding Path="ParentID" Converter="{StaticResource ObjectToVisibilityConverter}">
+                                            <Binding.ConverterParameter>
+                                                <sys:Boolean>True</sys:Boolean>
+                                            </Binding.ConverterParameter>
+                                        </Binding>
+                                    </Button.Visibility>
+
                                     <Image Source="/TimeSeriesFramework.UI;component/images/EditConfiguration.png" Height="16" Width="16" />
+                                    
                                 </Button>
                                 <Button ToolTip="Make Copy" Command="{tsfBinding:GridButtonCommand Path=DataContext.CopyCommand}" 
                                     CommandParameter="{tsfBinding:GridButtonCommand Path=DataContext.CurrentItem}" Width="Auto" >
