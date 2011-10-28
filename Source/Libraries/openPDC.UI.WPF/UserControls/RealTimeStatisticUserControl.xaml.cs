@@ -68,5 +68,25 @@ namespace openPDC.UI.UserControls
         }
 
         #endregion
+
+        private void ButtonDisplaySettings_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            PopupSettings.IsOpen = true;
+        }
+
+        private void ButtonSave_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+
+        private void ButtonRestore_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            PopupSettings.IsOpen = false;
+        }
+
+        private void ButtonCancel_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            PopupSettings.IsOpen = false;
+        }
     }
 }
