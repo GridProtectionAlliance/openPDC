@@ -18,16 +18,16 @@
 
     <StackPanel x:Name="StackPanelRoot" Orientation="Vertical">
 
-        <StackPanel.Resources>                        
+        <StackPanel.Resources>
             <CollectionViewSource Source="{Binding Path=CompanyLookupList}" x:Key="CompanyLookupList"/>
             <CollectionViewSource Source="{Binding Path=HistorianLookupList}" x:Key="HistorianLookupList"/>
             <CollectionViewSource Source="{Binding Path=InterconnectionLookupList}" x:Key="InterconnectionLookupList"/>
             <CollectionViewSource Source="{Binding Path=ProtocolLookupList}" x:Key="ProtocolLookupList"/>
-            <CollectionViewSource Source="{Binding Path=VendorDeviceLookupList}" x:Key="VendorDeviceLookupList"/>            
+            <CollectionViewSource Source="{Binding Path=VendorDeviceLookupList}" x:Key="VendorDeviceLookupList"/>
         </StackPanel.Resources>
 
         <Expander x:Name="ExpanderStep1" IsExpanded="True" Header="Step 1: Configure Connection Settings" Expanded="ExpanderStep1_Expanded">
-            <Grid HorizontalAlignment="Center">                
+            <Grid HorizontalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="3*" />
@@ -83,7 +83,7 @@
                 <TextBlock Grid.Row="7" Grid.Column="0" Text="Device Protocol" />
                 <ComboBox Grid.Row="7" Grid.Column="1" ItemsSource="{Binding Source={StaticResource ProtocolLookupList}}" DisplayMemberPath="Value"
                       SelectedItem="{tsfBinding:Column Path=ProtocolID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource ProtocolLookupList}}"/>
-                
+
                 <TextBlock Grid.Row="8" Grid.Column="0" Text="Select INI File"
                            Visibility="{Binding Path=DataContext.ProtocolIsBpaPdcStream, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="1"
@@ -96,7 +96,7 @@
         </Expander>
 
         <Expander x:Name="ExpanderStep2" IsExpanded="False" Header="Step 2: Select Device Configuration Settings" Expanded="ExpanderStep2_Expanded">
-            <Grid HorizontalAlignment="Center">                
+            <Grid HorizontalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
@@ -131,7 +131,7 @@
                 <TextBlock Text="OR" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="{StaticResource LargeTextSize}" HorizontalAlignment="Center" Margin="0"/>
 
                 <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Text="Select XML Configuration File (from PMU Connection Tester)" HorizontalAlignment="Left"/>
-                
+
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Configuration File" />
                 <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3">
                     <TextBox Text="{tsfBinding:Column Path=DataContext.ConfigurationFileName, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"  Width="{StaticResource XXXLargeItemSize}" />
@@ -171,11 +171,11 @@
                       SelectedItem="{tsfBinding:Column Path=DataContext.PdcVendorDeviceID, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource VendorDeviceLookupList}}"/>
 
                 <Border Grid.Row="12" Grid.Column="1" Grid.ColumnSpan="3" BorderThickness="1" Margin="2" BorderBrush="#FF333333" />
-                
+
                 <TextBlock Grid.Row="13" Grid.Column="0" Text="Company"/>
                 <ComboBox Grid.Row="13" Grid.Column="1" ItemsSource="{Binding Source={StaticResource CompanyLookupList}}" DisplayMemberPath="Value"
                       SelectedItem="{tsfBinding:Column Path=DataContext.CompanyID, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource CompanyLookupList}}"/>
-                
+
                 <TextBlock Grid.Row="13" Grid.Column="2" Text="Historian"/>
                 <ComboBox Grid.Row="13" Grid.Column="3" ItemsSource="{Binding Source={StaticResource HistorianLookupList}}" DisplayMemberPath="Value"
                       SelectedItem="{tsfBinding:Column Path=DataContext.HistorianID, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1},
@@ -189,21 +189,25 @@
         </Expander>
 
         <Expander x:Name="ExpanderStep3" IsExpanded="False" Expanded="ExpanderStep3_Expanded">
-            
+
             <Expander.HeaderTemplate>
-                <DataTemplate>                    
+                <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Step 3: Select Devices to Configure" Margin="0,0,250,0" />
                         <StackPanel Orientation="Horizontal" Visibility="{Binding ElementName=ExpanderStep3, Path=IsExpanded, Converter={StaticResource ObjectToVisibilityConverter}}">
                             <TextBlock Background="#FF2EB30D" Foreground="White" Text="*" FontWeight="Bold" TextAlignment="Center" Width="20"/>
                             <TextBlock Foreground="Red" Text=" Device acronym already exists in the database." />
                         </StackPanel>
-                    </StackPanel>                    
+                    </StackPanel>
                 </DataTemplate>
             </Expander.HeaderTemplate>
 
-            <sdk:DataGrid x:Name="DataGridDevices" ItemsSource="{tsfBinding:Column Path=DataContext.ItemsSource, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}}"
+
+            <ScrollViewer Height="290">
+                
+                <sdk:DataGrid x:Name="DataGridDevices" ItemsSource="{tsfBinding:Column Path=DataContext.ItemsSource, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}}"
                           RowDetailsVisibilityMode="VisibleWhenSelected"  Height="500" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Auto">
+                
 
                 <sdk:DataGrid.Columns>
                     <sdk:DataGridTemplateColumn Width="*">
@@ -218,7 +222,7 @@
                             </DataTemplate>
                         </sdk:DataGridTemplateColumn.HeaderTemplate>
                     </sdk:DataGridTemplateColumn>
-                    
+
                     <sdk:DataGridTemplateColumn Header="Acronym" Width="3*">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -228,8 +232,8 @@
                                                Visibility="{tsfBinding:Column Path=Existing, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                                 </StackPanel>
                             </DataTemplate>
-                        </sdk:DataGridTemplateColumn.CellTemplate>                        
-                    </sdk:DataGridTemplateColumn>                    
+                        </sdk:DataGridTemplateColumn.CellTemplate>
+                    </sdk:DataGridTemplateColumn>
                     <sdk:DataGridTextColumn Header="Name" Binding="{tsfBinding:Column Path=Name}" Width="2*" />
                     <sdk:DataGridTextColumn Header="Longitude" Binding="{tsfBinding:Column Path=Longitude}" Width="*"/>
                     <sdk:DataGridTextColumn Header="Latitude" Binding="{tsfBinding:Column Path=Latitude}" Width="*"/>
@@ -248,11 +252,11 @@
                         </sdk:DataGridTemplateColumn.CellTemplate>
                     </sdk:DataGridTemplateColumn>
                 </sdk:DataGrid.Columns>
-                
+
                 <sdk:DataGrid.RowDetailsTemplate>
-                    <DataTemplate>                        
+                    <DataTemplate>
                         <sdk:DataGrid ItemsSource="{tsfBinding:Column Path=PhasorList}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden"
-                                      Height="Auto" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=sdk:DataGrid}}">                            
+                                      Height="Auto" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=sdk:DataGrid}}">
                             <sdk:DataGrid.Columns>
                                 <sdk:DataGridTemplateColumn Width="*">
                                     <sdk:DataGridTemplateColumn.CellTemplate>
@@ -264,24 +268,27 @@
                                 <sdk:DataGridTextColumn Header="Label" Binding="{tsfBinding:Column Path=Label}" Width="3*"/>
                                 <sdk:DataGridTextColumn Header="Type" Binding="{tsfBinding:Column Path=Type}" Width="*" />
                                 <sdk:DataGridTextColumn Header="Phase" Binding="{tsfBinding:Column Path=Phase}" Width="*"/>
-                            </sdk:DataGrid.Columns>                            
-                        </sdk:DataGrid>                        
+                            </sdk:DataGrid.Columns>
+                        </sdk:DataGrid>
                     </DataTemplate>
                 </sdk:DataGrid.RowDetailsTemplate>
 
             </sdk:DataGrid>
+
+            </ScrollViewer>
             
         </Expander>
-        
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
+
             <Button x:Name="ButtonPrevious" Content="Previous" Click="ButtonPrevious_Click" HorizontalAlignment="Left"/>
             <Button x:Name="ButtonNext" Content="Next" Grid.Column="1" Click="ButtonNext_Click" HorizontalAlignment="Right"/>
         </Grid>
+
         
     </StackPanel>
     
