@@ -140,7 +140,7 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="ButtonDisplaySettings" Content="Display Settings" Template="{StaticResource HyperlinkStyleButtonTemplate}" 
-                    Margin="0,8,5,0"  Width="Auto" Click="ButtonDisplaySettings_Click"/>
+                     Width="Auto" Click="ButtonDisplaySettings_Click"/>
             <TextBlock Text="Refresh Interval (sec): " FontSize="{StaticResource SmallTextSize}"/>
             <TextBlock x:Name="TextBlockMeasurementRefreshInterval" FontSize="{StaticResource SmallTextSize}" Width="Auto"/>
             <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" FontSize="{StaticResource SmallTextSize}" />

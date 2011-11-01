@@ -21,8 +21,10 @@
 //
 //******************************************************************************************************
 
+using System.Windows;
 using System.Windows.Controls;
 using openPDC.UI.ViewModels;
+using TimeSeriesFramework.UI;
 
 namespace openPDC.UI.UserControls
 {
@@ -61,9 +63,9 @@ namespace openPDC.UI.UserControls
 
         private void RealTimeStatisticUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
+            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StreamStatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
             TextBlockMeasurementRefreshInterval.Text = m_statisticDataRefreshInterval.ToString();
-            m_dataContext = new RealTimeStatistics(1);
+            m_dataContext = new RealTimeStatistics(1, m_statisticDataRefreshInterval);
             this.DataContext = m_dataContext;
         }
 
@@ -76,12 +78,30 @@ namespace openPDC.UI.UserControls
 
         private void ButtonSave_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-
+            if (int.TryParse(TextBoxRefreshInterval.Text, out m_statisticDataRefreshInterval))
+            {
+                m_dataContext.Stop();
+                IsolatedStorageManager.WriteToIsolatedStorage("StreamStatisticsDataRefreshInterval", m_statisticDataRefreshInterval);
+                int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StreamStatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
+                TextBlockMeasurementRefreshInterval.Text = m_statisticDataRefreshInterval.ToString();
+                PopupSettings.IsOpen = false;
+                CommonFunctions.LoadUserControl(new RealTimeStatisticUserControl(), "Real-Time Stream Statistics");
+            }
+            else
+            {
+                MessageBox.Show("Please provide integer value.", "ERROR: Invalid Value", MessageBoxButton.OK);
+            }
         }
 
         private void ButtonRestore_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            m_dataContext.Stop();
+            IsolatedStorageManager.InitializeStorageForStreamStatistics(true);
+            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StreamStatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
+            TextBlockMeasurementRefreshInterval.Text = m_statisticDataRefreshInterval.ToString();
+            TextBoxRefreshInterval.Text = m_statisticDataRefreshInterval.ToString();
             PopupSettings.IsOpen = false;
+            CommonFunctions.LoadUserControl(new RealTimeStatisticUserControl(), "Real-Time Stream Statistics");
         }
 
         private void ButtonCancel_Click(object sender, System.Windows.RoutedEventArgs e)

@@ -192,7 +192,7 @@
             <!-- Top Buttons -->
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Manage Display Settings" Width="Auto" Click="ButtonManageSettings_Click"/>
+                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Display Settings" Width="Auto" Click="ButtonManageSettings_Click"/>
                 <TextBlock Text="|"/>
                 <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Save Display Settings" Width="Auto" Click="ButtonSave_Click"/>
                 <TextBlock Text="|"/>

@@ -51,25 +51,35 @@ namespace openPDC.UI.ViewModels
         private string m_lastRefresh;
         private ObservableCollection<StatisticMeasurement> m_statisticMeasurements;
         private RealTimeStatistics m_statistics;
+        private int m_statisticRefreshInterval = 10;
 
         // Unsynchronized Subscription Fields.
         private DataSubscriber m_unsynchronizedSubscriber;
         private bool m_subscribedUnsynchronized;
         private string m_allSignalIDs;  // string of GUIDs used for subscription.
         private int m_processingUnsynchronizedMeasurements = 0;
+        private int m_refreshInterval = 10;
 
         #endregion
 
         #region [ Constructors ]
 
-        public RealTimeStreams(int itemsPerPage, bool autoSave = false)
+        /// <summary>
+        /// Creates an instance of <see cref="RealTimeStreams"/>.
+        /// </summary>
+        /// <param name="itemsPerPage"></param>
+        /// <param name="autoSave"></param>        
+        public RealTimeStreams(int itemsPerPage, int refreshInterval, bool autoSave = false)
             : base(itemsPerPage, autoSave)
         {
-            // Perform initialization here.
+            // Perform initialization here. 
+            m_refreshInterval = refreshInterval;
             InitializeUnsynchronizedSubscription();
             m_restartConnectionCycle = true;
             StatisticMeasurements = new ObservableCollection<StatisticMeasurement>();
-            m_statistics = new RealTimeStatistics(1);
+
+            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticRefreshInterval);
+            m_statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
         }
 
         #endregion
@@ -388,10 +398,10 @@ namespace openPDC.UI.ViewModels
                 InitializeUnsynchronizedSubscription();
 
             if (m_subscribedUnsynchronized && !string.IsNullOrEmpty(m_allSignalIDs))
-                m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true);
+                m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true, m_refreshInterval);
 
             if (m_statistics == null)
-                m_statistics = new RealTimeStatistics(1);
+                m_statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
         }
 
         /// <summary>

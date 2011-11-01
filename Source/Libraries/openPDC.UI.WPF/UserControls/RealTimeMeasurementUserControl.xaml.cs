@@ -68,7 +68,8 @@ namespace openPDC.UI.UserControls
         {
             int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("RealtimeMeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
             TextBlockMeasurementRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString();
-            m_dataContext = new RealTimeStreams(1);
+            TextBoxRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString();
+            m_dataContext = new RealTimeStreams(1, m_measurementsDataRefreshInterval);
             this.DataContext = m_dataContext;
         }
 
@@ -88,7 +89,19 @@ namespace openPDC.UI.UserControls
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-
+            if (int.TryParse(TextBoxRefreshInterval.Text, out m_measurementsDataRefreshInterval))
+            {
+                m_dataContext.RestartConnectionCycle = false;
+                m_dataContext.UnsubscribeUnsynchronizedData();
+                IsolatedStorageManager.WriteToIsolatedStorage("RealtimeMeasurementsDataRefreshInterval", m_measurementsDataRefreshInterval);
+                int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("RealtimeMeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
+                PopupSettings.IsOpen = false;
+                CommonFunctions.LoadUserControl(new RealTimeMeasurementUserControl(), "Real-Time Device Measurements");
+            }
+            else
+            {
+                MessageBox.Show("Please provide integer value.", "ERROR: Invalid Value", MessageBoxButton.OK);
+            }
         }
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
@@ -98,9 +111,12 @@ namespace openPDC.UI.UserControls
 
         private void ButtonRestore_Click(object sender, RoutedEventArgs e)
         {
-           // TextBoxRefreshInterval = "10";
-
+            m_dataContext.RestartConnectionCycle = false;
+            m_dataContext.UnsubscribeUnsynchronizedData();
+            IsolatedStorageManager.InitializeStorageForRealTimeMeasurements(true);
+            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("RealtimeMeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
             PopupSettings.IsOpen = false;
+            CommonFunctions.LoadUserControl(new RealTimeMeasurementUserControl(), "Real-Time Device Measurements");
         }
     }
 }

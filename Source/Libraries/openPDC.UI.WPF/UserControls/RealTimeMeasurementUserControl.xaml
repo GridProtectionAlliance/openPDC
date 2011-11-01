@@ -92,6 +92,7 @@
         </StackPanel.Resources>
 
         <StackPanel Orientation="Vertical">
+            
             <tsf:TsfPopup x:Name="PopupSettings" Topmost="False" Placement="Center">
                 
                 <Border CornerRadius="5" BorderThickness="1" Background="White" BorderBrush="Blue">
@@ -112,9 +113,9 @@
                         <TextBox x:Name="TextBoxRefreshInterval" Grid.Row="0" Grid.Column="1" Width="50"/>
 
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right">
-                            <Button x:Name="ButtonRestore" Content="Restore Default" Margin="2" Width="Auto" Click="ButtonRestore_Click"/>
+                            <Button Content="Restore Default" Margin="2" Width="Auto" Click="ButtonRestore_Click"/>
                             <Button Content="Cancel" Margin="2" Click="ButtonCancel_Click"/>
-                            <Button x:Name="ButtonSave" Content="Save" Margin="2" IsDefault="True" Click="ButtonSave_Click"/>
+                            <Button Content="Save" Margin="2" IsDefault="True" Click="ButtonSave_Click"/>
                         </StackPanel>
 
                     </Grid>
@@ -125,7 +126,7 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="ButtonDisplaySettings" Content="Display Settings" Template="{StaticResource HyperlinkStyleButtonTemplate}" 
-                    Margin="0,8,5,0"  Width="Auto" Click="ButtonDisplaySettings_Click"/>
+                    Width="Auto" Click="ButtonDisplaySettings_Click"/>
                 <TextBlock Text="Refresh Interval (sec): " FontSize="{StaticResource SmallTextSize}"/>
                 <TextBlock x:Name="TextBlockMeasurementRefreshInterval" FontSize="{StaticResource SmallTextSize}" Width="Auto"/>
                 <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" FontSize="{StaticResource SmallTextSize}" />

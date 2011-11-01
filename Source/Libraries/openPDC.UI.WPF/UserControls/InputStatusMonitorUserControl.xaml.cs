@@ -244,7 +244,8 @@ namespace openPDC.UI.UserControls
 
         private void Initialize()
         {
-            m_dataContext = new RealTimeStreams(1);
+            RetrieveSettingsFromIsolatedStorage();
+            m_dataContext = new RealTimeStreams(1, m_measurementsDataRefreshInterval);
             m_timeStampList = new ConcurrentQueue<string>();
             m_yAxisDataCollection = new ConcurrentDictionary<Guid, ConcurrentQueue<double>>();
             m_yAxisBindingCollection = new ConcurrentDictionary<Guid, EnumerableDataSource<double>>();
@@ -252,7 +253,6 @@ namespace openPDC.UI.UserControls
             m_selectedMeasurements = new ConcurrentDictionary<Guid, RealTimeMeasurement>();
             m_displayedMeasurement = new ObservableCollection<RealTimeMeasurement>();
             m_restartConnectionCycle = true;
-            RetrieveSettingsFromIsolatedStorage();
             m_xAxisDataCollection = new int[m_numberOfDataPointsToPlot];
             m_refreshRate = Ticks.FromMilliseconds(m_chartRefreshInterval);
             TextBlockMeasurementRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString();
@@ -314,7 +314,12 @@ namespace openPDC.UI.UserControls
         private void InitializeChart()
         {
             ((HorizontalAxis)ChartPlotterDynamic.MainHorizontalAxis).LabelProvider.LabelStringFormat = "";
-            ChartPlotterDynamic.LegendVisibility = Visibility.Collapsed;
+
+            //Remove legend on the right.
+            Panel legendParent = (Panel)ChartPlotterDynamic.Legend.ContentGrid.Parent;
+            legendParent.Children.Remove(ChartPlotterDynamic.Legend.ContentGrid);
+
+            ChartPlotterDynamic.NewLegendVisible = m_displayLegend;
             ChartPlotterDynamic.MainVerticalAxisVisibility = FrequencyAxisTitle.Visibility = m_displayFrequencyYAxis ? Visibility.Visible : Visibility.Collapsed;
             ChartPlotterDynamic.MainHorizontalAxisVisibility = m_displayXAxis ? Visibility.Visible : Visibility.Collapsed;
             PhaseAngleYAxis.Visibility = PhaseAngleAxisTitle.Visibility = m_displayPhaseAngleYAxis ? Visibility.Visible : Visibility.Collapsed;
@@ -719,7 +724,13 @@ namespace openPDC.UI.UserControls
 
         private void ButtonRestoreSettings_Click(object sender, RoutedEventArgs e)
         {
-            TimeSeriesFramework.UI.IsolatedStorageManager.InitializeIsolatedStorage(true);
+            m_restartConnectionCycle = false;
+            m_dataContext.RestartConnectionCycle = false;
+            UnsubscribeSynchronizedData();
+            m_dataContext.UnsubscribeUnsynchronizedData();
+            TimeSeriesFramework.UI.IsolatedStorageManager.InitializeStorageForInputStatusMonitor(true);
+            RetrieveSettingsFromIsolatedStorage();
+            PopulateSettings();
             PopupSettings.IsOpen = false;
             CommonFunctions.LoadUserControl(new InputStatusMonitorUserControl(), "Input Status &amp; Monitoring");
         }
@@ -745,6 +756,8 @@ namespace openPDC.UI.UserControls
             TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("FrequencyRangeMin", TextBoxFrequencyRangeMin.Text);
             TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("FrequencyRangeMax", TextBoxFrequencyRangeMax.Text);
             TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayLegend", (bool)CheckBoxDisplayLegend.IsChecked);
+            RetrieveSettingsFromIsolatedStorage();
+            PopulateSettings();
 
             PopupSettings.IsOpen = false;
 

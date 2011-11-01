@@ -76,10 +76,10 @@ namespace openPDC.UI.ViewModels
 
         #region [ Constructors ]
 
-        public RealTimeStatistics(int itemsPerPage, bool autoSave = false)
+        public RealTimeStatistics(int itemsPerPage, int refreshInterval, bool autoSave = false)
             : base(0, autoSave)
         {
-            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
+            m_statisticDataRefreshInterval = refreshInterval;
             m_refreshTimer = new DispatcherTimer();
             m_refreshTimer.Interval = TimeSpan.FromSeconds(m_statisticDataRefreshInterval);
             m_refreshTimer.Tick += new EventHandler(m_refreshTimer_Tick);
