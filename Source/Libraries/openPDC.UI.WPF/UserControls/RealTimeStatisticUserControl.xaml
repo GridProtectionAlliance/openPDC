@@ -106,10 +106,10 @@
 
         </StackPanel.Resources>
 
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" >
             <tsf:TsfPopup x:Name="PopupSettings" Topmost="False" Placement="Center">
 
-                <Border CornerRadius="5" BorderThickness="1" Background="White" BorderBrush="Blue">
+                <Border CornerRadius="5" BorderThickness="1" Background="White" BorderBrush="Blue" >
 
                     <Grid>
 
@@ -147,7 +147,7 @@
         </StackPanel>
 
         <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" 
-                      Height="610" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                      Height="610" VerticalAlignment="Top" HorizontalAlignment="Left" Width="845" />
 
       </StackPanel>
 
