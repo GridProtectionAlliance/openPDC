@@ -123,7 +123,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Text="Static Data Refresh Interval(In Seconds)" Grid.Column="0" Grid.Row="0"/>
+                        <TextBlock Text="Statisticc Data Refresh Interval (in seconds)" Grid.Column="0" Grid.Row="0"/>
                         <TextBox x:Name="TextBoxRefreshInterval" Grid.Row="0" Grid.Column="1" Width="50"/>
 
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right">

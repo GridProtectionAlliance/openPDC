@@ -23,6 +23,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using openPDC.UI.DataModels;
 using openPDC.UI.ViewModels;
 using TimeSeriesFramework.UI;
@@ -71,6 +72,13 @@ namespace openPDC.UI.UserControls
             TextBoxRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString();
             m_dataContext = new RealTimeStreams(1, m_measurementsDataRefreshInterval);
             this.DataContext = m_dataContext;
+            this.KeyUp += new System.Windows.Input.KeyEventHandler(RealTimeMeasurementUserControl_KeyUp);
+        }
+
+        private void RealTimeMeasurementUserControl_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape && PopupSettings.IsOpen)
+                PopupSettings.IsOpen = false;
         }
 
         private void ButtonEdit_Click(object sender, RoutedEventArgs e)
