@@ -68,6 +68,13 @@ namespace openPDC.UI.UserControls
         private void RealTimeMeasurementUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("RealtimeMeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
+
+            if (m_measurementsDataRefreshInterval == 0)
+            {
+                m_measurementsDataRefreshInterval = 10;
+                IsolatedStorageManager.InitializeStorageForRealTimeMeasurements(true);
+            }
+
             TextBlockMeasurementRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString();
             TextBoxRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString();
             m_dataContext = new RealTimeStreams(1, m_measurementsDataRefreshInterval);

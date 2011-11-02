@@ -36,7 +36,8 @@ namespace openPDC.UI.UserControls
     {
         #region [ Members ]
 
-        private int m_statisticDataRefreshInterval;
+        // Fields
+        private int m_statisticDataRefreshInterval = 10;
         private RealTimeStatistics m_dataContext;
 
         #endregion
@@ -65,6 +66,13 @@ namespace openPDC.UI.UserControls
         private void RealTimeStatisticUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StreamStatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
+
+            if (m_statisticDataRefreshInterval == 0)
+            {
+                m_statisticDataRefreshInterval = 10;
+                IsolatedStorageManager.InitializeStorageForStreamStatistics(true);
+            }
+
             TextBlockMeasurementRefreshInterval.Text = m_statisticDataRefreshInterval.ToString();
             TextBoxRefreshInterval.Text = m_statisticDataRefreshInterval.ToString();
             m_dataContext = new RealTimeStatistics(1, m_statisticDataRefreshInterval);
