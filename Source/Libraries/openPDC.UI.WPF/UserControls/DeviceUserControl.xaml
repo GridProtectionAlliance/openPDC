@@ -91,7 +91,8 @@
 
             <TextBlock Text="Concentrator" Grid.Row="1" Grid.Column="2" />            
             <ComboBox Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Source={StaticResource ConcentratorDeviceLookupList}}" DisplayMemberPath="Value"
-                      SelectedItem="{tsfBinding:Column Path=ParentID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource ConcentratorDeviceLookupList}}"/>
+                      SelectedItem="{tsfBinding:Column Path=ParentID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource ConcentratorDeviceLookupList}}"
+                      IsEnabled="{Binding ElementName=CheckBoxConcentrator, Path=IsChecked, Converter={StaticResource NotConverter}}"/>
 
             <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Acronym" Style="{StaticResource RequiredLabel}" />
@@ -195,7 +196,7 @@
                 <CheckBox Content="Skip Disable Real-Time Data" IsChecked="{tsfBinding:Column Path=SkipDisableRealTimeData}"/>
                 <CheckBox Content="Allow Use Of Cached Configuration" IsChecked="{tsfBinding:Column Path=AllowUseOfCachedConfiguration}"/>
                 <CheckBox Content="Auto Start Data Parsing Sequence" IsChecked="{tsfBinding:Column Path=AutoStartDataParsingSequence}"/>
-                <CheckBox Content="Concentrator" IsChecked="{tsfBinding:Column Path=IsConcentrator}"/>                
+                <CheckBox x:Name="CheckBoxConcentrator" Content="Concentrator" IsChecked="{tsfBinding:Column Path=IsConcentrator}"/>                
             </StackPanel>
 
             <TextBlock Text="Runtime ID" Grid.Row="13" Grid.Column="0" />

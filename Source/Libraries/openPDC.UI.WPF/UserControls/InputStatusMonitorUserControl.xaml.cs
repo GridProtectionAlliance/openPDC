@@ -252,11 +252,21 @@ namespace openPDC.UI.UserControls
             m_lineGraphCollection = new ConcurrentDictionary<Guid, LineGraph>();
             m_selectedMeasurements = new ConcurrentDictionary<Guid, RealTimeMeasurement>();
             m_displayedMeasurement = new ObservableCollection<RealTimeMeasurement>();
+            m_displayedMeasurement.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(m_displayedMeasurement_CollectionChanged);
             m_restartConnectionCycle = true;
             m_xAxisDataCollection = new int[m_numberOfDataPointsToPlot];
             m_refreshRate = Ticks.FromMilliseconds(m_chartRefreshInterval);
             TextBlockMeasurementRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString();
             TextBlockStatisticsRefreshInterval.Text = m_statisticsDataRefershInterval.ToString();
+        }
+
+        private void m_displayedMeasurement_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            {
+                foreach (object item in e.OldItems)
+                    ((RealTimeMeasurement)item).Selected = false;
+            }
         }
 
         private void InitializeUserControl()
@@ -506,6 +516,14 @@ namespace openPDC.UI.UserControls
             CommonFunctions.LoadUserControl(deviceUserControl, "Manage Device Configuration");
         }
 
+        private void ButtonMeasurement_Click(object sender, RoutedEventArgs e)
+        {
+            TimeSeriesFramework.UI.DataModels.Measurement measurement = TimeSeriesFramework.UI.DataModels.Measurement.GetMeasurement(null, "WHERE SignalReference = '" + ((Button)sender).Content.ToString() + "'");
+            PhasorMeasurementUserControl phasorMeasurementUserControl = new PhasorMeasurementUserControl((int)measurement.DeviceID);
+            ((PhasorMeasurements)phasorMeasurementUserControl.DataContext).CurrentItem = measurement;
+            CommonFunctions.LoadUserControl(phasorMeasurementUserControl, "Manage Measurements for " + measurement.DeviceAcronym);
+        }
+
         #region [ Synchronized Subscription ]
 
         private void m_synchronizedSubscriber_ConnectionTerminated(object sender, EventArgs e)
@@ -672,6 +690,11 @@ namespace openPDC.UI.UserControls
 
         private void SubscribeSynchronizedData()
         {
+            SubscribeSynchronizedData(false);
+        }
+
+        private void SubscribeSynchronizedData(bool historical)
+        {
             if (m_selectedMeasurements.Count == 0)
             {
                 UnsubscribeSynchronizedData();
@@ -682,12 +705,17 @@ namespace openPDC.UI.UserControls
                     InitializeSynchronizedSubscription();
 
                 if (m_subscribedSynchronized && !string.IsNullOrEmpty(m_selectedSignalIDs))
-                    m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
+                {
+                    if (!historical)
+                        m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
+                    else
+                        m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps, startTime: TextBoxStartTime.Text, stopTime: TextBoxStopTime.Text, processingInterval: (int)SliderProcessInterval.Value);
+                }
 
                 ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
-                    {
-                        StartRefreshTimer();
-                    });
+                {
+                    StartRefreshTimer();
+                });
             }
         }
 
@@ -800,8 +828,38 @@ namespace openPDC.UI.UserControls
 
         #endregion
 
+        private void Expander_Collapsed(object sender, RoutedEventArgs e)
+        {
+            if (ExpanderHistoricalPlayback.IsVisible)
+                DataGridStatistics.Height = 165;
+            else
+                DataGridStatistics.Height = 190;
+        }
+
+        private void Expander_Expanded(object sender, RoutedEventArgs e)
+        {
+            DataGridStatistics.Height = 80;
+        }
+
+        private void ButtonStartPlayback_Click(object sender, RoutedEventArgs e)
+        {
+            SubscribeSynchronizedData(true);
+        }
+
+        private void ButtonReturnToRealtime_Click(object sender, RoutedEventArgs e)
+        {
+            SubscribeSynchronizedData();
+        }
+
+        private void ButtonRemove_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ((RealTimeMeasurement)((Button)sender).DataContext).Selected = false;
+            }
+            catch { }
+        }
+
         #endregion
-
     }
-
 }

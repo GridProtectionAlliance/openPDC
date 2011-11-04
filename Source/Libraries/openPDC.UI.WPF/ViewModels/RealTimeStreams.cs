@@ -35,6 +35,7 @@ using TimeSeriesFramework.Transport;
 using TimeSeriesFramework.UI;
 using TVA;
 using TVA.Data;
+using TVA.ServiceProcess;
 
 namespace openPDC.UI.ViewModels
 {
@@ -52,6 +53,9 @@ namespace openPDC.UI.ViewModels
         private ObservableCollection<StatisticMeasurement> m_statisticMeasurements;
         private RealTimeStatistics m_statistics;
         private int m_statisticRefreshInterval = 10;
+        private bool m_temporalSupportEnabled;
+        private string m_startTime = "*-10m";
+        private string m_stopTime = "*";
 
         // Unsynchronized Subscription Fields.
         private DataSubscriber m_unsynchronizedSubscriber;
@@ -68,6 +72,7 @@ namespace openPDC.UI.ViewModels
         /// Creates an instance of <see cref="RealTimeStreams"/>.
         /// </summary>
         /// <param name="itemsPerPage"></param>
+        /// <param name="refreshInterval">Interval to refresh measurement in a tree.</param>
         /// <param name="autoSave"></param>        
         public RealTimeStreams(int itemsPerPage, int refreshInterval, bool autoSave = false)
             : base(itemsPerPage, autoSave)
@@ -80,11 +85,50 @@ namespace openPDC.UI.ViewModels
 
             int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticRefreshInterval);
             m_statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
+
+            CheckTemporalSupport();
         }
 
         #endregion
 
         #region [ Properties ]
+
+        public string StartTime
+        {
+            get
+            {
+                return m_startTime;
+            }
+            set
+            {
+                m_startTime = value;
+            }
+        }
+
+        public string StopTime
+        {
+            get
+            {
+                return m_stopTime;
+            }
+            set
+            {
+                m_stopTime = value;
+            }
+        }
+
+        public bool TemporalSupportEnabled
+        {
+            get
+            {
+                return m_temporalSupportEnabled;
+            }
+            set
+            {
+                m_temporalSupportEnabled = value;
+                OnPropertyChanged("TemporalSupportEnabled");
+            }
+        }
 
         /// <summary>
         /// Gets flag that determines if <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/> is a new record.
@@ -394,11 +438,21 @@ namespace openPDC.UI.ViewModels
 
         private void SubscribeUnsynchronizedData()
         {
+            SubscribeUnsynchronizedData(false);
+        }
+
+        public void SubscribeUnsynchronizedData(bool historical)
+        {
             if (m_unsynchronizedSubscriber == null)
                 InitializeUnsynchronizedSubscription();
 
             if (m_subscribedUnsynchronized && !string.IsNullOrEmpty(m_allSignalIDs))
-                m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true, m_refreshInterval);
+            {
+                if (!historical)
+                    m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true, m_refreshInterval);
+                else
+                    m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true, m_refreshInterval, startTime: StartTime, stopTime: StopTime, processingInterval: m_refreshInterval * 1000);
+            }
 
             if (m_statistics == null)
                 m_statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
@@ -429,6 +483,72 @@ namespace openPDC.UI.ViewModels
         }
 
         #endregion
+
+        private void CheckTemporalSupport()
+        {
+            WindowsServiceClient windowsServiceClient = null;
+            try
+            {
+                s_responseWaitHandle = new ManualResetEvent(false);
+
+                windowsServiceClient = TimeSeriesFramework.UI.CommonFunctions.GetWindowsServiceClient();
+                if (windowsServiceClient != null && windowsServiceClient.Helper != null &&
+                   windowsServiceClient.Helper.RemotingClient != null && windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                {
+                    windowsServiceClient.Helper.ReceivedServiceResponse += Helper_ReceivedServiceResponse;
+
+                    windowsServiceClient.Helper.SendRequest("TemporalSupport -system");
+
+                    if (!s_responseWaitHandle.WaitOne(10000))
+                    {
+                        throw new ApplicationException("Response timeout occured. Waited 10 seconds for response.");
+                    }
+                }
+                else
+                {
+                    throw new ApplicationException("Connection timeout occured. Tried 10 times to connect to windows service.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Popup("ERROR: " + ex.Message, "Request Configuration", MessageBoxImage.Error);
+            }
+            finally
+            {
+                if (windowsServiceClient != null)
+                {
+                    windowsServiceClient.Helper.ReceivedServiceResponse -= Helper_ReceivedServiceResponse;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles ReceivedServiceResponse event.
+        /// </summary>
+        /// <param name="sender">Source of the event.</param>
+        /// <param name="e">Event arguments.</param>
+        private void Helper_ReceivedServiceResponse(object sender, EventArgs<ServiceResponse> e)
+        {
+            bool temporalSupportEnabled = false;
+            string sourceCommand;
+            bool responseSuccess;
+
+            if (ClientHelper.TryParseActionableResponse(e.Argument, out sourceCommand, out responseSuccess))
+            {
+                if (responseSuccess && bool.TryParse(e.Argument.Attachments[0].ToString(), out temporalSupportEnabled))
+                    TemporalSupportEnabled = temporalSupportEnabled;
+
+                s_responseWaitHandle.Set();
+            }
+        }
+
+        #endregion
+
+        #region [ Static ]
+
+        // Fields
+
+        private static ManualResetEvent s_responseWaitHandle;
 
         #endregion
     }

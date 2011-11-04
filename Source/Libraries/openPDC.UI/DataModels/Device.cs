@@ -269,6 +269,7 @@ namespace openPDC.UI.DataModels
             {
                 m_isConcentrator = value;
                 OnPropertyChanged("IsConcentrator");
+                ParentID = null;
             }
         }
 

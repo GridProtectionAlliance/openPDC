@@ -9,7 +9,7 @@
              xmlns:tsf="clr-namespace:TimeSeriesFramework.UI;assembly=TimeSeriesFramework.UI.WPF"
              xmlns:tsfBinding="clr-namespace:TimeSeriesFramework.UI.Binding;assembly=TimeSeriesFramework.UI"
              xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
-             Background="Transparent">
+             Background="Transparent" >
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,6 +20,22 @@
     </UserControl.Resources>
 
     <Grid>
+        
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="TextAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Padding" Value="0"/>                
+            </Style>
+
+            <Style TargetType="{x:Type CheckBox}">
+                <Setter Property="Width" Value="Auto"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>                
+            </Style>
+                        
+        </Grid.Resources>
         
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>            
@@ -136,12 +152,14 @@
                 
                 <HierarchicalDataTemplate x:Key="MeasurementNodeTemplate">
                     
-                    <StackPanel Orientation="Horizontal" Margin="-10,0,0,0">
-                        <CheckBox IsChecked="{tsfBinding:Column Path=Selected}" IsEnabled="{tsfBinding:Column Path=Selectable}" Content="{tsfBinding:Column Path=SignalReference}" ToolTip="{tsfBinding:Column Path=Description}" Width="100" Height="20" 
-                                  FontSize="{StaticResource SmallTextSize}" Foreground="{tsfBinding:Column Path=Foreground}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
-                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontSize="{StaticResource SmallTextSize}" Width="60"
+                    <StackPanel Orientation="Horizontal" Margin="-25,0,0,0" VerticalAlignment="Center">                        
+                        <CheckBox IsChecked="{tsfBinding:Column Path=Selected}" IsEnabled="{tsfBinding:Column Path=Selectable}" ToolTip="{tsfBinding:Column Path=Description}" Height="Auto" 
+                                  Foreground="{tsfBinding:Column Path=Foreground}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" VerticalAlignment="Center"/>
+                        <Button Content="{tsfBinding:Column Path=SignalReference}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="{tsfBinding:Column Path=Description}" Height="Auto" Width="Auto"
+                                Click="ButtonMeasurement_Click"/>
+                        <TextBlock Text="{tsfBinding:Column Path=Value}" Width="60"
                                    Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" ToolTip="{tsfBinding:Column Path=TimeTag}"/>
-                        <TextBlock Text="{tsfBinding:Column Path=EngineeringUnit}" FontSize="{StaticResource SmallTextSize}"/>
+                        <TextBlock Text="{tsfBinding:Column Path=EngineeringUnit}"/>
                     </StackPanel>
                     
                 </HierarchicalDataTemplate>
@@ -150,9 +168,9 @@
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}"/>
                         <Button Content="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics"
-                                Height="20" Width="Auto" Click="ButtonGetStatistics_Click"/>
-                        <Button Content="Edit" Tag="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Height="20" Width="Auto" Click="ButtonEdit_Click"
-                                />
+                                Height="Auto" Width="Auto" Click="ButtonGetStatistics_Click"/>
+                        <Button Content="Edit" Tag="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Height="Auto" Width="Auto" Click="ButtonEdit_Click"
+                               />
                     </StackPanel>
                 </HierarchicalDataTemplate>
                 
@@ -161,8 +179,8 @@
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}"/>
                         <Button Content="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="Click Here to Get Real-Time Statistics"
-                                Height="20" Width="Auto" Click="ButtonGetStatistics_Click"/>
-                        <Button Content="Edit" Tag="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Height="20" Width="Auto" Click="ButtonEdit_Click"
+                                Height="Auto" Width="Auto" Click="ButtonGetStatistics_Click"/>
+                        <Button Content="Edit" Tag="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Height="Auto" Width="Auto" Click="ButtonEdit_Click"
                                 Visibility="{tsfBinding:Column Path=ID, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                     </StackPanel>
                     
@@ -175,22 +193,22 @@
             </StackPanel.Resources>
          
             <StackPanel Orientation="Horizontal" >
-                <TextBlock Text="Refresh Interval: " FontSize="{StaticResource SmallTextSize}"/>
-                <TextBlock x:Name="TextBlockMeasurementRefreshInterval" FontSize="{StaticResource SmallTextSize}" />
-                <TextBlock Text=" sec" FontSize="{StaticResource SmallTextSize}"/>
-                <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" FontSize="{StaticResource SmallTextSize}" />
+                <TextBlock Text="Refresh Interval: " />
+                <TextBlock x:Name="TextBlockMeasurementRefreshInterval" />
+                <TextBlock Text=" sec" />
+                <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" />
             </StackPanel>
             
             <!-- Measurement Tree -->
             <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" 
-                      Height="615" Width="275" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                      Height="615" Width="275" VerticalAlignment="Top" HorizontalAlignment="Left" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
             
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Margin="2">
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" Margin="2">
 
             <!-- Top Buttons -->
-            
+
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Display Settings" Width="Auto" Click="ButtonManageSettings_Click"/>
                 <TextBlock Text="|"/>
@@ -198,89 +216,115 @@
                 <TextBlock Text="|"/>
                 <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Load Display Settings" Width="Auto" Click="ButtonLoad_Click"/>
             </StackPanel>
-            
+
             <!-- Chart -->
 
             <d3:ChartPlotter Name="ChartPlotterDynamic" Margin="2" Height="250" Width="555">
 
                 <d3:InjectedPlotter Name="PhaseAnglePlotter" SetViewportBinding="False">
                     <d3:VerticalAxis Name="PhaseAngleYAxis" Placement="Left" />
-                    <d3:VerticalAxisTitle Name="PhaseAngleAxisTitle" Content="Phase Angle" Placement="Left" FontSize="{StaticResource SmallTextSize}"/>
+                    <d3:VerticalAxisTitle Name="PhaseAngleAxisTitle" Content="Phase Angle" Placement="Left" />
                 </d3:InjectedPlotter>
 
                 <d3:InjectedPlotter Name="VoltagePlotter" SetViewportBinding="False">
                     <d3:VerticalAxis Name="VoltageYAxis" Placement="Right"/>
-                    <d3:VerticalAxisTitle Name="VoltageAxisTitle" Content="Voltage" Placement="Right" FontSize="{StaticResource SmallTextSize}"/>
+                    <d3:VerticalAxisTitle Name="VoltageAxisTitle" Content="Voltage" Placement="Right" />
                 </d3:InjectedPlotter>
 
                 <d3:InjectedPlotter Name="CurrentPlotter" SetViewportBinding="False">
                     <d3:VerticalAxis Name="CurrentYAxis" Placement="Right"/>
-                    <d3:VerticalAxisTitle Name="CurrentAxisTitle" Content="Current" Placement="Right" FontSize="{StaticResource SmallTextSize}"/>
+                    <d3:VerticalAxisTitle Name="CurrentAxisTitle" Content="Current" Placement="Right" />
                 </d3:InjectedPlotter>
 
                 <d3:AxisNavigation Placement="Bottom"/>
                 <d3:AxisNavigation Placement="Right"/>
-                
-                <d3:VerticalAxisTitle Name="FrequencyAxisTitle" Content="Frequency" FontSize="{StaticResource SmallTextSize}"/>
+
+                <d3:VerticalAxisTitle Name="FrequencyAxisTitle" Content="Frequency" />
 
                 <TextBlock x:Name="TextBlockLeft" Canvas.Left="2" Canvas.Bottom="0" />
                 <TextBlock x:Name="TextBlockRight" Canvas.Right="2" Canvas.Bottom="0" />
-                
+
             </d3:ChartPlotter>
 
+            <!-- Historical Playback -->
+            <Expander x:Name="ExpanderHistoricalPlayback" Header="Historical Playback" Visibility="{Binding Path=TemporalSupportEnabled, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}"
+                      IsExpanded="{Binding Path=TemporalSupportEnabled, Mode=OneWay}" Collapsed="Expander_Collapsed" Expanded="Expander_Expanded">
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Start Time" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
+                    <TextBox x:Name="TextBoxStartTime" Text="{tsfBinding:Column Path=HistoricStartTime}" Grid.Row="0" Grid.Column="1" Width="150"/>
+                    <TextBlock Text="Stop Time" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right"/>
+                    <TextBox x:Name="TextBoxStopTime" Text="{tsfBinding:Column Path=HistoricStopTime}" Grid.Row="0" Grid.Column="3" Width="150"/>
+                    <TextBlock Text="Process Interval" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3">
+                        <Slider x:Name="SliderProcessInterval" Margin="5,0,5,0" Minimum="0" Maximum="1000" IsSnapToTickEnabled="True" Width="400"/>
+                        <TextBlock Text="{Binding ElementName=SliderProcessInterval, Path=Value}" Width="50" VerticalAlignment="Center" TextAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right">
+                        <Button x:Name="ButtonStartPlayback" Content="Start Playback" Width="Auto" Click="ButtonStartPlayback_Click" Margin="0,0,5,0"/>    
+                        <Button x:Name="ButtonReturnToRealtime" Content="Return to Real-time" Width="Auto" Click="ButtonReturnToRealtime_Click" Margin="0,0,5,0"/>
+                    </StackPanel>
+
+                </Grid>
+
+            </Expander>
+
             <!-- Real-Time Data -->
-            
-            <sdk:DataGrid x:Name="DataGridCurrentValues" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="125">
-                
+
+            <sdk:DataGrid x:Name="DataGridCurrentValues" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="125" HorizontalScrollBarVisibility="Auto">
+
                 <sdk:DataGrid.Columns>
 
-                    <sdk:DataGridTextColumn Header="ID" IsReadOnly="True" Width="100" Binding="{tsfBinding:Column Path=ID}" ToolTipService.ToolTip="{tsfBinding:Column Path=Description}"/>
-                    <sdk:DataGridTemplateColumn Header="Signal Reference" Width="125">
+                    <sdk:DataGridTextColumn Header="ID" IsReadOnly="True" Width="80" Binding="{tsfBinding:Column Path=ID}" ToolTipService.ToolTip="{tsfBinding:Column Path=Description}"/>
+                    <sdk:DataGridTemplateColumn Header="Signal Reference" Width="150">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Foreground="{tsfBinding:Column Path=Foreground}" HorizontalAlignment="Left" ToolTipService.ToolTip="{tsfBinding:Column Path=Description}"/>
+                                <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Foreground="{tsfBinding:Column Path=Foreground}" ToolTipService.ToolTip="{tsfBinding:Column Path=Description}" HorizontalAlignment="Left"/>
                             </DataTemplate>
                         </sdk:DataGridTemplateColumn.CellTemplate>
-                    </sdk:DataGridTemplateColumn>                    
+                    </sdk:DataGridTemplateColumn>
                     <sdk:DataGridTextColumn Header="Time Tag" IsReadOnly="True" Width="100" Binding="{tsfBinding:Column Path=TimeTag}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
-                    <sdk:DataGridTextColumn Header="Value" IsReadOnly="True" Width="90" Binding="{tsfBinding:Column Path=Value}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
-                    <sdk:DataGridTextColumn Header="Unit" IsReadOnly="True" Width="75" Binding="{tsfBinding:Column Path=EngineeringUnit}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
-                    <sdk:DataGridTemplateColumn Header="Quality" Width="60">
+                    <!--<sdk:DataGridTextColumn Header="Value" IsReadOnly="True" Width="90" Binding="{tsfBinding:Column Path=Value}" CellStyle="{StaticResource CenterAlignCellStyle}"
+                                            Foreground="{Binding Quality, Converter={StaticResource StringToStatusColorConverter}}" />-->
+                    
+                    <sdk:DataGridTemplateColumn Header="Value" Width="95">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{tsfBinding:Column Path=Quality}" Foreground="{Binding Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{tsfBinding:Column Path=Value}" Foreground="{Binding Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center"/>
                             </DataTemplate>
                         </sdk:DataGridTemplateColumn.CellTemplate>
-                    </sdk:DataGridTemplateColumn>                    
-                    
+                    </sdk:DataGridTemplateColumn>
+
+                    <sdk:DataGridTextColumn Header="Unit" IsReadOnly="True" Width="65" Binding="{tsfBinding:Column Path=EngineeringUnit}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+
+                    <sdk:DataGridTemplateColumn Header="" Width="60">
+                        <sdk:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Remove" Click="ButtonRemove_Click"
+                                    Width="Auto" />
+                            </DataTemplate>
+                        </sdk:DataGridTemplateColumn.CellTemplate>
+                    </sdk:DataGridTemplateColumn>
                 </sdk:DataGrid.Columns>
-                
+
             </sdk:DataGrid>
-            
-            <!--<ListBox x:Name="ListBoxCurrentValues" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="125">
-                
-                <ListBox.ItemTemplate>
-                    
-                    <DataTemplate>
-                        
-                        <StackPanel Orientation="Horizontal" ToolTip="{tsfBinding:Column Path=Description}">
-                            
-                            <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Foreground="{tsfBinding:Column Path=Foreground}" Width="140" TextAlignment="Left"/>
-                            <TextBlock Text="{tsfBinding:Column Path=TimeTag}" Width="100"/>
-                            <TextBlock Text="{tsfBinding:Column Path=Value}" TextAlignment="Center" Width="100"/>
-                            <TextBlock Text="{tsfBinding:Column Path=EngineeringUnit}" Width="75"/>
-                            <TextBlock Text="{tsfBinding:Column Path=Quality}" Width="75" Foreground="{Binding Quality, Converter={StaticResource StringToStatusColorConverter}}"/>
-                            
-                        </StackPanel>
-                        
-                    </DataTemplate>
-                    
-                </ListBox.ItemTemplate>
-                
-            </ListBox>-->
-            
-            <!-- Real-Time Statistics -->            
-            
+
+            <!-- Real-Time Statistics -->
+
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Run-Time Statistics:" FontWeight="Bold"/>
                 <TextBlock x:Name="TextBlockDevice" Margin="0,0,25,0"/>
@@ -288,16 +332,16 @@
                 <TextBlock x:Name="TextBlockStatisticsRefreshInterval"/>
             </StackPanel>
 
-            <sdk:DataGrid x:Name="DataGridStatistics" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="200" FontSize="{StaticResource SmallTextSize}">
+            <sdk:DataGrid x:Name="DataGridStatistics" Margin="2" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" HorizontalAlignment="Left" Height="190">
 
                 <sdk:DataGrid.Columns>
 
                     <sdk:DataGridTextColumn Header="ID" IsReadOnly="True" Width="75" Binding="{tsfBinding:Column Path=ID}" />
-                    
+
                     <sdk:DataGridTemplateColumn Header="Statistic" Width="200" IsReadOnly="True">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{tsfBinding:Column Path=StatisticName}" HorizontalAlignment="Left" ToolTipService.ToolTip="{tsfBinding:Column Path=StatisticDescription}"/>
+                                <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTipService.ToolTip="{tsfBinding:Column Path=StatisticDescription}" HorizontalAlignment="Left"/>
                             </DataTemplate>
                         </sdk:DataGridTemplateColumn.CellTemplate>
                     </sdk:DataGridTemplateColumn>
@@ -310,33 +354,13 @@
                         </sdk:DataGridTemplateColumn.CellTemplate>
                     </sdk:DataGridTemplateColumn>
                     <sdk:DataGridTextColumn Header="TimeTag" IsReadOnly="True" Width="100" Binding="{tsfBinding:Column Path=TimeTag}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
-                    
+
                 </sdk:DataGrid.Columns>
 
             </sdk:DataGrid>
 
-            <!--<ListBox Height="200" x:Name="ListBoxStatistics">
-                    
-                <ListBox.ItemTemplate>
-                        
-                    <DataTemplate>
-                        
-                        <StackPanel Orientation="Horizontal" ToolTip="{tsfBinding:Column Path=Description}">
-
-                            <TextBlock Text="{tsfBinding:Column Path=ID}" Width="75" FontSize="{StaticResource SmallTextSize}" TextAlignment="Left"/>                            
-                            <TextBlock Text="{tsfBinding:Column Path=StatisticName}" Width="100" FontSize="{StaticResource SmallTextSize}" TextAlignment="Left"/>                            
-                            <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" FontSize="{StaticResource SmallTextSize}" Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" Width="175" TextAlignment="Center"/>
-                            <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" TextAlignment="Center" Width="100" FontSize="{StaticResource SmallTextSize}"/>    
-                        </StackPanel>                                      
-                            
-                    </DataTemplate>
-                        
-                </ListBox.ItemTemplate>
-                    
-            </ListBox>-->
-           
         </StackPanel>
-
+        
     </Grid>
     
 </UserControl>

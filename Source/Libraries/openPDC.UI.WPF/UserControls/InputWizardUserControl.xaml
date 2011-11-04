@@ -152,7 +152,7 @@
 
                 <Border Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3" BorderThickness="1" Margin="2" BorderBrush="#FF333333" />
 
-                <CheckBox x:Name="CheckBoxConnectToConcentrator" IsChecked="{tsfBinding:Column Path=DataContext.ConnectToConcentrator, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}}"  Content="Connection is to Concentrator" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="3" />
+                <CheckBox x:Name="CheckBoxConnectToConcentrator" IsChecked="{tsfBinding:Column Path=DataContext.ConnectToConcentrator, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}}"  Content="Connection is to Concentrator" FontWeight="Bold" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="3" />
 
                 <TextBlock Grid.Row="9" Grid.Column="0" Text="PDC Acronym" Visibility="{Binding ElementName=CheckBoxConnectToConcentrator, Path=IsChecked, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2"

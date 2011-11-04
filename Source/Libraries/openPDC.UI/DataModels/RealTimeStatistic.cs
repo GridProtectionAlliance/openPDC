@@ -353,7 +353,7 @@ namespace openPDC.UI.DataModels
                         };
                     };
 
-                return new ObservableCollection<StatisticMeasurement>(statisticMeasurements.Rows.Cast<DataRow>().Select(mapFunction).OrderBy(pair => pair.Value).Select(selectFunction));
+                return new ObservableCollection<StatisticMeasurement>(statisticMeasurements.Rows.Cast<DataRow>().Select(mapFunction).OrderBy(pair => pair.Value).Select(selectFunction).OrderBy(s => s.LoadOrder));
 
             }
             finally

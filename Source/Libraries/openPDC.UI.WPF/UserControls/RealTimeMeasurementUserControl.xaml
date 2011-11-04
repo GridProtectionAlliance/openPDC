@@ -35,12 +35,12 @@
                             </Style>
                         </StackPanel.Resources>
 
-                        <TextBlock Text="{tsfBinding:Column Path=ID}" FontSize="{StaticResource SmallTextSize}" Width="100"/>
-                        <TextBlock Text="{tsfBinding:Column Path=Description}" FontSize="{StaticResource SmallTextSize}" Width="350" TextWrapping="Wrap"/>
-                        <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontSize="{StaticResource SmallTextSize}" FontWeight="Bold" Width="100" HorizontalAlignment="Center" TextAlignment="Center"/>
-                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontSize="{StaticResource SmallTextSize}" FontWeight="Bold" Width="75"
+                        <TextBlock Text="{tsfBinding:Column Path=ID}" Width="100"/>
+                        <TextBlock Text="{tsfBinding:Column Path=Description}" Width="350" TextWrapping="Wrap"/>
+                        <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" Width="100" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" Width="75"
                                    Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center" TextAlignment="Center"/>
-                        <TextBlock Text="{tsfBinding:Column Path=EngineeringUnit}" FontSize="{StaticResource SmallTextSize}" Width="50" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <TextBlock Text="{tsfBinding:Column Path=EngineeringUnit}" Width="50" HorizontalAlignment="Center" TextAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </HierarchicalDataTemplate>
@@ -56,11 +56,11 @@
                         </Style>
                     </StackPanel.Resources>
 
-                    <TextBlock Text="{tsfBinding:Column Path=Acronym}" FontSize="{StaticResource SmallTextSize}" Width="150" FontWeight="Bold"/>
-                    <TextBlock Text="{tsfBinding:Column Path=Name}" FontSize="{StaticResource SmallTextSize}" Width="250" FontWeight="Bold"/>
-                    <TextBlock Text="{tsfBinding:Column Path=ProtocolName}" FontSize="{StaticResource SmallTextSize}" Width="125" FontWeight="Bold"/>
-                    <TextBlock Text="{tsfBinding:Column Path=VendorDeviceName}" FontSize="{StaticResource SmallTextSize}" Width="125" FontWeight="Bold"/>
-                    <Button Content="Edit" Tag="{tsfBinding:Column Path=Acronym}" FontSize="{StaticResource SmallTextSize}" Template="{StaticResource HyperlinkStyleButtonTemplate}" 
+                    <TextBlock Text="{tsfBinding:Column Path=Acronym}" Width="150" FontWeight="Bold"/>
+                    <TextBlock Text="{tsfBinding:Column Path=Name}" Width="250" FontWeight="Bold"/>
+                    <TextBlock Text="{tsfBinding:Column Path=ProtocolName}" Width="125" FontWeight="Bold"/>
+                    <TextBlock Text="{tsfBinding:Column Path=VendorDeviceName}" Width="125" FontWeight="Bold"/>
+                    <Button Content="Edit" Tag="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" 
                             Width="50" Click="ButtonEdit_Click"  />
                 </StackPanel>
             </HierarchicalDataTemplate>
@@ -77,9 +77,9 @@
                         </Style>
                     </StackPanel.Resources>
 
-                    <TextBlock Text="{tsfBinding:Column Path=Acronym}" FontSize="{StaticResource SmallTextSize}" Width="125" FontWeight="Bold"/>
-                    <TextBlock Text="{tsfBinding:Column Path=Name}" FontSize="{StaticResource SmallTextSize}" Width="600" FontWeight="Bold"/>
-                    <Button Content="Edit" Template="{StaticResource HyperlinkStyleButtonTemplate}" FontSize="{StaticResource SmallTextSize}" Width="50" Click="ButtonEdit_Click"
+                    <TextBlock Text="{tsfBinding:Column Path=Acronym}" Width="125" FontWeight="Bold"/>
+                    <TextBlock Text="{tsfBinding:Column Path=Name}" Width="600" FontWeight="Bold"/>
+                    <Button Content="Edit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Width="50" Click="ButtonEdit_Click"
                                 Visibility="{tsfBinding:Column Path=ID, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 </StackPanel>
 
@@ -127,9 +127,9 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="ButtonDisplaySettings" Content="Display Settings" Template="{StaticResource HyperlinkStyleButtonTemplate}" 
                     Width="Auto" Click="ButtonDisplaySettings_Click"/>
-                <TextBlock Text="Refresh Interval (sec): " FontSize="{StaticResource SmallTextSize}"/>
-                <TextBlock x:Name="TextBlockMeasurementRefreshInterval" FontSize="{StaticResource SmallTextSize}" Width="Auto"/>
-                <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" FontSize="{StaticResource SmallTextSize}" />
+                <TextBlock Text="Refresh Interval (sec): " />
+                <TextBlock x:Name="TextBlockMeasurementRefreshInterval" Width="Auto"/>
+                <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" />
             </StackPanel>
 
             <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" 
