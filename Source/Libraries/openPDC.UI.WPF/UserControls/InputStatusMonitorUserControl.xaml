@@ -157,9 +157,9 @@
                                   Foreground="{tsfBinding:Column Path=Foreground}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" VerticalAlignment="Center"/>
                         <Button Content="{tsfBinding:Column Path=SignalReference}" Template="{StaticResource HyperlinkStyleButtonTemplate}" ToolTip="{tsfBinding:Column Path=Description}" Height="Auto" Width="Auto"
                                 Click="ButtonMeasurement_Click"/>
-                        <TextBlock Text="{tsfBinding:Column Path=Value}" Width="60"
-                                   Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" ToolTip="{tsfBinding:Column Path=TimeTag}"/>
-                        <TextBlock Text="{tsfBinding:Column Path=EngineeringUnit}"/>
+                        <TextBlock Text="{tsfBinding:Column Path=Value}" Width="Auto"
+                                   Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" ToolTip="{tsfBinding:Column Path=TimeTag}" HorizontalAlignment="Left" Margin="5,0,5,0"/>
+                        <TextBlock Text="{tsfBinding:Column Path=EngineeringUnit}" Width="Auto"/>
                     </StackPanel>
                     
                 </HierarchicalDataTemplate>
@@ -266,7 +266,10 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Start Time" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
-                    <TextBox x:Name="TextBoxStartTime" Text="{tsfBinding:Column Path=HistoricStartTime}" Grid.Row="0" Grid.Column="1" Width="150"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" AllowDrop="True">
+                        <TextBox x:Name="TextBoxStartTime" Text="{tsfBinding:Column Path=HistoricStartTime}"  Width="10"/>
+                        <DatePicker Height="25" Name="datePicker1" Width="115" />
+                    </StackPanel>                    
                     <TextBlock Text="Stop Time" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right"/>
                     <TextBox x:Name="TextBoxStopTime" Text="{tsfBinding:Column Path=HistoricStopTime}" Grid.Row="0" Grid.Column="3" Width="150"/>
                     <TextBlock Text="Process Interval" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
@@ -285,12 +288,13 @@
 
             <!-- Real-Time Data -->
 
-            <sdk:DataGrid x:Name="DataGridCurrentValues" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="125" HorizontalScrollBarVisibility="Auto">
+            <sdk:DataGrid x:Name="DataGridCurrentValues" Margin="2" HorizontalAlignment="Left" Height="125" HorizontalScrollBarVisibility="Auto">
 
                 <sdk:DataGrid.Columns>
 
-                    <sdk:DataGridTextColumn Header="ID" IsReadOnly="True" Width="80" Binding="{tsfBinding:Column Path=ID}" ToolTipService.ToolTip="{tsfBinding:Column Path=Description}"/>
-                    <sdk:DataGridTemplateColumn Header="Signal Reference" Width="150">
+                    <sdk:DataGridTextColumn Header="ID" IsReadOnly="True" Width="85" Binding="{tsfBinding:Column Path=ID}" ToolTipService.ToolTip="{tsfBinding:Column Path=Description}"
+                                           CellStyle="{StaticResource CenterAlignCellStyle}" />
+                    <sdk:DataGridTemplateColumn Header="Signal Reference" Width="144">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Foreground="{tsfBinding:Column Path=Foreground}" ToolTipService.ToolTip="{tsfBinding:Column Path=Description}" HorizontalAlignment="Left"/>
@@ -314,8 +318,13 @@
                     <sdk:DataGridTemplateColumn Header="" Width="60">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Remove" Click="ButtonRemove_Click"
-                                    Width="Auto" />
+                                <Button ToolTip="Remove Selected Measurement" Width="Auto" Padding="0" Click="ButtonRemove_Click">
+                                    <Button.Template>
+                                        <ControlTemplate>
+                                            <Image Source="/TimeSeriesFramework.UI;component/images/Delete.png" Height="16" Width="16" />
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
                             </DataTemplate>
                         </sdk:DataGridTemplateColumn.CellTemplate>
                     </sdk:DataGridTemplateColumn>
@@ -326,19 +335,19 @@
             <!-- Real-Time Statistics -->
 
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Run-Time Statistics:" FontWeight="Bold"/>
+                <TextBlock Text="Run-Time Statistics: " FontWeight="Bold"/>
                 <TextBlock x:Name="TextBlockDevice" Margin="0,0,25,0"/>
                 <TextBlock Text="Refresh Interval (sec): "/>
                 <TextBlock x:Name="TextBlockStatisticsRefreshInterval"/>
             </StackPanel>
 
-            <sdk:DataGrid x:Name="DataGridStatistics" Margin="2" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" HorizontalAlignment="Left" Height="190">
+            <sdk:DataGrid x:Name="DataGridStatistics" Margin="2" HorizontalScrollBarVisibility="Auto" HorizontalAlignment="Left" Height="190">
 
                 <sdk:DataGrid.Columns>
 
-                    <sdk:DataGridTextColumn Header="ID" IsReadOnly="True" Width="75" Binding="{tsfBinding:Column Path=ID}" />
+                    <sdk:DataGridTextColumn Header="ID" IsReadOnly="True" Width="75" Binding="{tsfBinding:Column Path=ID}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
 
-                    <sdk:DataGridTemplateColumn Header="Statistic" Width="200" IsReadOnly="True">
+                    <sdk:DataGridTemplateColumn Header="Statistic" Width="180" IsReadOnly="True">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTipService.ToolTip="{tsfBinding:Column Path=StatisticDescription}" HorizontalAlignment="Left"/>

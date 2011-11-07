@@ -327,7 +327,8 @@ namespace openPDC.UI.UserControls
 
             //Remove legend on the right.
             Panel legendParent = (Panel)ChartPlotterDynamic.Legend.ContentGrid.Parent;
-            legendParent.Children.Remove(ChartPlotterDynamic.Legend.ContentGrid);
+            if (legendParent != null)
+                legendParent.Children.Remove(ChartPlotterDynamic.Legend.ContentGrid);
 
             ChartPlotterDynamic.NewLegendVisible = m_displayLegend;
             ChartPlotterDynamic.MainVerticalAxisVisibility = FrequencyAxisTitle.Visibility = m_displayFrequencyYAxis ? Visibility.Visible : Visibility.Collapsed;
