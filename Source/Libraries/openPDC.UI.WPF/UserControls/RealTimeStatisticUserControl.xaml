@@ -35,11 +35,11 @@
                             </Style>
                         </StackPanel.Resources>
 
-                        <TextBlock Text="{tsfBinding:Column Path=ID}" Width="100"/>
-                        <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Width="150"/>
-                        <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTip="{tsfBinding:Column Path=StatisticDescription}" Width="150" TextWrapping="Wrap"/>
-                        <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" Width="75" HorizontalAlignment="Center" TextAlignment="Center"/>
-                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" Width="150"
+                        <TextBlock Text="{tsfBinding:Column Path=ID}" Width="120"/>
+                        <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Width="140"/>
+                        <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTip="{tsfBinding:Column Path=StatisticDescription}" Width="250" TextWrapping="Wrap"/>
+                        <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" Width="90" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" Width="170"
                                    Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center" TextAlignment="Center"/>
                     </StackPanel>
                 </Border>
@@ -57,7 +57,7 @@
                         </Style>
                     </StackPanel.Resources>
 
-                    <TextBlock Text="{tsfBinding:Column Path=DeviceAcronym}" Width="125" FontWeight="Bold"/>
+                    <TextBlock Text="{tsfBinding:Column Path=DeviceAcronym}" Width="145" FontWeight="Bold"/>
                     <TextBlock Text="{tsfBinding:Column Path=DeviceName}" Width="550" FontWeight="Bold"/>                    
                 </StackPanel>
             </HierarchicalDataTemplate>
@@ -75,7 +75,7 @@
                     </StackPanel.Resources>
 
                     <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}" Margin="0,0,5,0"/>
-                    <TextBlock Text="{tsfBinding:Column Path=Acronym}" Width="125" FontWeight="Bold"/>
+                    <TextBlock Text="{tsfBinding:Column Path=Acronym}" Width="145" FontWeight="Bold"/>
                     <TextBlock Text="{tsfBinding:Column Path=Name}" Width="575" FontWeight="Bold"/>
                     
                 </StackPanel>
@@ -94,7 +94,7 @@
                         </Style>
                     </StackPanel.Resources>
 
-                    <TextBlock Text="{tsfBinding:Column Path=SourceType}" Width="725" FontWeight="Bold"/>
+                    <TextBlock Text="{tsfBinding:Column Path=SourceType}" Width="755" FontWeight="Bold"/>
                     
                 </StackPanel>
 
