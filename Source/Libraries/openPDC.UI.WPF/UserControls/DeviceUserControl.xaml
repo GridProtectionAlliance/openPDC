@@ -193,7 +193,7 @@
                       SelectedItem="{tsfBinding:Column Path=TimeZone, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource TimezoneLookupList}}"/>
             
             <StackPanel Orientation="Horizontal" Grid.Row="12" Grid.ColumnSpan="4">
-                <CheckBox Content="Skip Disable Real-Time Data" IsChecked="{tsfBinding:Column Path=SkipDisableRealTimeData}"/>
+                <CheckBox Content="Skip Disable Real-time Data" IsChecked="{tsfBinding:Column Path=SkipDisableRealTimeData}" Checked="CheckBox_Checked" />
                 <CheckBox Content="Allow Use Of Cached Configuration" IsChecked="{tsfBinding:Column Path=AllowUseOfCachedConfiguration}"/>
                 <CheckBox Content="Auto Start Data Parsing Sequence" IsChecked="{tsfBinding:Column Path=AutoStartDataParsingSequence}"/>
                 <CheckBox x:Name="CheckBoxConcentrator" Content="Concentrator" IsChecked="{tsfBinding:Column Path=IsConcentrator}"/>                

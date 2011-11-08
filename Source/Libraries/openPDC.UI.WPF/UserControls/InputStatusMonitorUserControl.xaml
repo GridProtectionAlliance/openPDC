@@ -113,7 +113,7 @@
                     <CheckBox x:Name="CheckBoxForceIPv4" Content="Force IPv4" Grid.Row="6" Grid.Column="2"/>
 
                     <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2">
-                        <CheckBox x:Name="CheckBoxUseLocalClockAsRealTime" Content="Use Local Clock as Real-Time"/>
+                        <CheckBox x:Name="CheckBoxUseLocalClockAsRealTime" Content="Use Local Clock as Real-time"/>
                         <Button Content="?" Tag="HMC - Use Local Clock as RealTime.png" ToolTipService.ToolTip="Click here for help on Use Local Clock as Real-time" 
                                     Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}" Click="ButtonHelp_Click"/>
                     </StackPanel>

@@ -619,7 +619,7 @@ namespace openPDC.UI.DataModels
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets parent <see cref="RealTimeDeivce"/>.
+        /// Gets or sets parent <see cref="RealTimeDevice"/>.
         /// </summary>
         public RealTimeDevice Parent
         {
