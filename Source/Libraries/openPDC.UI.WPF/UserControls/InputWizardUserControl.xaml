@@ -53,7 +53,13 @@
                     <TextBox Text="{tsfBinding:Column Path=DataContext.ConnectionFileName, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}" 
                              Width="{StaticResource XXXLargeItemSize}" />
                     <Button Command="{Binding Path=DataContext.BrowseConnectionFileCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}" 
-                            Content=" ... " ToolTip="Browse to connection file" Width="Auto" />
+                            ToolTip="Browse to connection file" Width="Auto">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image Source="/TimeSeriesFramework.UI;component/images/Folder.png" Height="24" Width="24" />
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
                 </StackPanel>
 
                 <TextBlock Text="OR" Grid.Row="2" Grid.Column="1" FontWeight="Bold" FontSize="{StaticResource LargeTextSize}" HorizontalAlignment="Center" />
@@ -63,7 +69,13 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBox Text="{tsfBinding:Column Path=DataContext.ConnectionString, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=3}}"  Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap" />
                         <Button Command="{Binding Path=DataContext.BuildConnectionStringCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"
-                            Content=" + " VerticalAlignment="Top" ToolTip="Build connection string" Width="Auto"/>
+                            VerticalAlignment="Top" ToolTip="Build connection string" Width="Auto">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Image Source="/TimeSeriesFramework.UI;component/images/Plus.png" Height="24" Width="24" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
                     </StackPanel>
                     <TextBlock Text="Connection information is relative to the openPDC node." FontStyle="Italic" HorizontalAlignment="Left" />
                 </StackPanel>
@@ -72,7 +84,13 @@
                 <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1">
                     <TextBox Text="{tsfBinding:Column Path=DataContext.AlternateCommandChannel, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"  Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap" />
                     <Button Command="{Binding Path=DataContext.BuildAlternateCommandChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"
-                            Content=" + " VerticalAlignment="Top" ToolTip="Build alternate command channel" Width="Auto"/>
+                            VerticalAlignment="Top" ToolTip="Build alternate command channel" Width="Auto">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image Source="/TimeSeriesFramework.UI;component/images/Plus.png" Height="24" Width="24" />
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
                 </StackPanel>
 
                 <Border Grid.Row="5" Grid.Column="1" BorderThickness="1" Margin="2,20,2,20" BorderBrush="#FF333333" />
@@ -136,7 +154,13 @@
                 <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3">
                     <TextBox Text="{tsfBinding:Column Path=DataContext.ConfigurationFileName, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"  Width="{StaticResource XXXLargeItemSize}" />
                     <Button Command="{Binding Path=DataContext.BrowseConfigurationFileCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"
-                            Content=" ... " ToolTip="Browse to configuration file" Width="Auto" />
+                            ToolTip="Browse to configuration file" Width="Auto">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image Source="/TimeSeriesFramework.UI;component/images/Folder.png" Height="24" Width="24" />
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
                 </StackPanel>
 
                 <TextBlock Text="OR" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="{StaticResource LargeTextSize}" HorizontalAlignment="Center" Margin="0"/>

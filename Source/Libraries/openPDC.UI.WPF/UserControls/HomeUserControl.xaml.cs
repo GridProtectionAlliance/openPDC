@@ -3,10 +3,14 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 using TimeSeriesFramework.UI;
+using TVA;
+using TVA.Data;
 using TVA.IO;
+using TVA.ServiceProcess;
 
 namespace openPDC.UI.UserControls
 {
@@ -19,7 +23,9 @@ namespace openPDC.UI.UserControls
 
         // Fields
         private ObservableCollection<MenuDataItem> m_menuDataItems;
-        private WindowsServiceClient m_windowsServiceClient;
+        private WindowsServiceClient m_windowsServiceClient = null;
+        private DispatcherTimer m_refreshTimer;
+        private static ManualResetEvent s_responseWaitHandle;
 
         #endregion
 
@@ -32,6 +38,7 @@ namespace openPDC.UI.UserControls
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(HomeUserControl_Loaded);
+            this.Unloaded += new RoutedEventHandler(HomeUserControl_Unloaded);
             // Load Menu
             XmlRootAttribute xmlRootAttribute = new XmlRootAttribute("MenuDataItems");
             XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<MenuDataItem>), xmlRootAttribute);
@@ -40,6 +47,21 @@ namespace openPDC.UI.UserControls
             {
                 m_menuDataItems = (ObservableCollection<MenuDataItem>)serializer.Deserialize(reader);
             }
+        }
+
+        void HomeUserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (m_windowsServiceClient != null)
+                {
+                    m_windowsServiceClient.Helper.ReceivedServiceResponse -= Helper_ReceivedServiceResponse;
+                }
+
+                if (m_refreshTimer != null)
+                    m_refreshTimer.Stop();
+            }
+            catch { }
         }
 
         #endregion
@@ -52,6 +74,41 @@ namespace openPDC.UI.UserControls
 
             if (m_windowsServiceClient == null || m_windowsServiceClient.Helper.RemotingClient.CurrentState != TVA.Communication.ClientState.Connected || !Thread.CurrentPrincipal.IsInRole("Administrator"))
                 ButtonRestart.IsEnabled = false;
+            else
+            {
+                m_windowsServiceClient.Helper.ReceivedServiceResponse += new EventHandler<EventArgs<ServiceResponse>>(Helper_ReceivedServiceResponse);
+                m_windowsServiceClient.Helper.SendRequest("Health -actionable");
+                m_windowsServiceClient.Helper.SendRequest("version -actionable");
+                m_windowsServiceClient.Helper.SendRequest("status -actionable");
+                m_refreshTimer = new DispatcherTimer();
+                m_refreshTimer.Interval = TimeSpan.FromSeconds(60);
+                m_refreshTimer.Tick += new EventHandler(m_refreshTimer_Tick);
+                m_refreshTimer.Start();
+            }
+
+            if (IntPtr.Size == 8)
+                TextBlockInstance.Text = "64-bit";
+            else
+                TextBlockInstance.Text = "32-bit";
+
+            using (AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory))
+            {
+                TextBlockDatabaseType.Text = database.DatabaseType.ToString();
+                TextBlockDatabaseName.Text = database.Connection.Database;
+            }
+
+            TextBlockUser.Text = CommonFunctions.CurrentUser;
+        }
+
+        void m_refreshTimer_Tick(object sender, EventArgs e)
+        {
+            if (m_windowsServiceClient != null && m_windowsServiceClient.Helper != null &&
+                   m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+            {
+                m_windowsServiceClient.Helper.SendRequest("Health -actionable");
+                if (PopupStatus.IsOpen)
+                    m_windowsServiceClient.Helper.SendRequest("Status -actionable");
+            }
         }
 
         private void ButtonQuickLink_Click(object sender, RoutedEventArgs e)
@@ -116,6 +173,57 @@ namespace openPDC.UI.UserControls
                     MessageBox.Show("Failed sent RESTART command to openPDC service." + Environment.NewLine + "openPDC service is either offline or disconnected.", "Restart openPDC Service", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+        }
+
+        /// <summary>
+        /// Handles ReceivedServiceResponse event.
+        /// </summary>
+        /// <param name="sender">Source of the event.</param>
+        /// <param name="e">Event arguments.</param>
+        private void Helper_ReceivedServiceResponse(object sender, EventArgs<ServiceResponse> e)
+        {
+            string sourceCommand;
+            bool responseSuccess;
+
+            if (ClientHelper.TryParseActionableResponse(e.Argument, out sourceCommand, out responseSuccess))
+            {
+                if (sourceCommand.ToLower() == "health")
+                {
+                    this.Dispatcher.BeginInvoke((Action)delegate()
+                    {
+                        TextBlockSystemHealth.Text = e.Argument.Message.TrimEnd();
+                        GroupBoxSystemHealth.Header = "System Health (Last Refreshed: " + DateTime.Now.ToString("HH:mm:ss.fff") + ")";
+                    });
+                }
+                else if (sourceCommand.ToLower() == "status")
+                {
+                    this.Dispatcher.BeginInvoke((Action)delegate()
+                    {
+                        GroupBoxStatus.Header = "System Status (Last Refreshed: " + DateTime.Now.ToString("HH:mm:ss.fff") + ")";
+                        TextBlockStatus.Text = e.Argument.Message.TrimEnd();
+                    });
+                }
+                else if (sourceCommand.ToLower() == "version")
+                {
+                    this.Dispatcher.BeginInvoke((Action)delegate()
+                    {
+                        TextBlockVersion.Text = e.Argument.Message.Substring(e.Argument.Message.ToLower().LastIndexOf("version:") + 8).Trim();
+                    });
+                }
+            }
+        }
+
+        private void ButtonStatus_Click(object sender, RoutedEventArgs e)
+        {
+            PopupStatus.IsOpen = true;
+            if (m_windowsServiceClient != null && m_windowsServiceClient.Helper != null &&
+                   m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                m_windowsServiceClient.Helper.SendRequest("Status -actionable");
+        }
+
+        private void ButtonClose_Click(object sender, RoutedEventArgs e)
+        {
+            PopupStatus.IsOpen = false;
         }
 
         #endregion

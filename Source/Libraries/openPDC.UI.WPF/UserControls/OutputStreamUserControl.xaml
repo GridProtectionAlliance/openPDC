@@ -83,15 +83,27 @@
             <TextBlock Grid.Row="3" Grid.Column="0" Text="TCP Channel" VerticalAlignment="Top"/>
             <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" VerticalAlignment="Top">
                 <TextBox Text="{tsfBinding:Column Path=CommandChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap"/>
-                <Button Content=" + " ToolTipService.ToolTip="Build Command Channel String" Width="Auto" VerticalAlignment="Top"
-                        Command="{Binding Path=DataContext.BuildCommandChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
-            </StackPanel>
+                    <Button ToolTipService.ToolTip="Build Command Channel String" Width="Auto" VerticalAlignment="Top"
+                        Command="{Binding Path=DataContext.BuildCommandChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image Source="/TimeSeriesFramework.UI;component/images/Plus.png" Height="24" Width="24" />
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
             <TextBlock Grid.Row="3" Grid.Column="2" Text="UDP Channel"  VerticalAlignment="Top"/>
             <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3" VerticalAlignment="Top">
                 <TextBox Text="{tsfBinding:Column Path=DataChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap"/>
-                <Button Content=" + " ToolTipService.ToolTip="Build Data Channel String" Width="Auto" VerticalAlignment="Top"
-                        Command="{Binding Path=DataContext.BuildDataChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"/>
-            </StackPanel>
+                    <Button Content=" + " ToolTipService.ToolTip="Build Data Channel String" Width="Auto" VerticalAlignment="Top"
+                        Command="{Binding Path=DataContext.BuildDataChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image Source="/TimeSeriesFramework.UI;component/images/Plus.png" Height="24" Width="24" />
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
             
             <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Nominal Frequency" Style="{StaticResource RequiredLabel}" />
