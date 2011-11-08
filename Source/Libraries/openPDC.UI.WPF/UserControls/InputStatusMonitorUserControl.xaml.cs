@@ -56,14 +56,13 @@ namespace openPDC.UI.UserControls
     /// </summary>
     public partial class InputStatusMonitorUserControl : UserControl
     {
-
         #region [ Members ]
 
         // Fields
         private RealTimeStreams m_dataContext;
         private List<Color> m_lineColors;
 
-        // Synchronized Subscription Fields.
+        // Synchronized subscription fields
         private bool m_restartConnectionCycle;
         private DataSubscriber m_synchronizedSubscriber;
         private bool m_subscribedSynchronized;
@@ -71,17 +70,17 @@ namespace openPDC.UI.UserControls
         private string m_selectedSignalIDs;
         private int m_processingSynchronizedMeasurements = 0;
 
-        private int[] m_xAxisDataCollection;    //contains source data for the binding collection.
-        private EnumerableDataSource<int> m_xAxisBindingCollection;     //contains values plotted on X-Axis.
+        private int[] m_xAxisDataCollection;                                                            // Source data for the binding collection.
+        private EnumerableDataSource<int> m_xAxisBindingCollection;                                     // Values plotted on X-Axis.
         private ConcurrentQueue<string> m_timeStampList;
-        private ConcurrentDictionary<Guid, ConcurrentQueue<double>> m_yAxisDataCollection;            //contains source data for the binding collection. Format is <signalID, collection of values from subscription API>.
-        private ConcurrentDictionary<Guid, EnumerableDataSource<double>> m_yAxisBindingCollection;    //contains values plotted on Y-Axis.
-        private ConcurrentDictionary<Guid, LineGraph> m_lineGraphCollection;                          //contains list of graphs plotted on the chart.
-        private ConcurrentDictionary<Guid, RealTimeMeasurement> m_selectedMeasurements;                  //measurements user have selected to plot.
+        private ConcurrentDictionary<Guid, ConcurrentQueue<double>> m_yAxisDataCollection;              // Source data for the binding collection. Format is <signalID, collection of values from subscription API>.
+        private ConcurrentDictionary<Guid, EnumerableDataSource<double>> m_yAxisBindingCollection;      // Values plotted on Y-Axis.
+        private ConcurrentDictionary<Guid, LineGraph> m_lineGraphCollection;                            // List of graphs plotted on the chart.
+        private ConcurrentDictionary<Guid, RealTimeMeasurement> m_selectedMeasurements;                 // Measurements user have selected to plot.
         private ObservableCollection<RealTimeMeasurement> m_displayedMeasurement;
 
         private int m_numberOfDataPointsToPlot = 30;
-        private int m_framesPerSecond = 30;     //sample rate of the data from subscription API/Data Resolution
+        private int m_framesPerSecond = 30;                                                             // Sample rate of the data from subscription API/Data Resolution
         private double m_leadTime = 1.0;
         private double m_lagTime = 3.0;
         private bool m_useLocalClockAsRealtime;
@@ -97,7 +96,7 @@ namespace openPDC.UI.UserControls
         private bool m_displayCurrentYAxis;
         private bool m_displayXAxis;
         private bool m_displayLegend;
-        private long m_refreshRate = Ticks.FromMilliseconds(500); // This is used to refresh real-time values below chart.
+        private long m_refreshRate = Ticks.FromMilliseconds(500);                                       // This is used to refresh real-time values below chart.
         private long m_lastRefreshTime;
 
         #endregion

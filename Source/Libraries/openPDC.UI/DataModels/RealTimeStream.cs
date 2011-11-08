@@ -25,6 +25,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Globalization;
+using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using TimeSeriesFramework.UI;
 using TVA.Data;
@@ -301,6 +304,18 @@ namespace openPDC.UI.DataModels
                         }
                     );
 
+                // Assign parent references for real-time measurements
+                foreach (RealTimeStream stream in realTimeStreamList)
+                {
+                    foreach (RealTimeDevice device in stream.DeviceList)
+                    {
+                        foreach (RealTimeMeasurement measurement in device.MeasurementList)
+                        {
+                            measurement.Parent = device;
+                        }
+                    }
+                }
+
                 return realTimeStreamList;
             }
             finally
@@ -308,6 +323,21 @@ namespace openPDC.UI.DataModels
                 if (createdConnection && database != null)
                     database.Dispose();
             }
+        }
+
+        // Calculate text width
+        internal static double GetTextWidth(string text)
+        {
+            // Just making some assumptions about font and size here for rough assertion on size - would be more accurate to pass in actual font info
+            Typeface tf = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+            FormattedText ft = new FormattedText(text, CultureInfo.InvariantCulture, System.Windows.FlowDirection.LeftToRight, tf, 14.0D, System.Windows.Media.Brushes.Black, null, TextFormattingMode.Display);
+            return ft.WidthIncludingTrailingWhitespace;
+
+            // Try this for Silverlight if prior doesn't work:
+            //TextBlock txtMeasure = new TextBlock();
+            //txtMeasure.FontSize = fontSize;
+            //txtMeasure.Text = text ?? "";
+            //return txtMeasure.ActualWidth;
         }
 
         /// <summary>
@@ -366,6 +396,7 @@ namespace openPDC.UI.DataModels
         private bool m_expanded;
         private string m_statusColor;
         private bool m_enabled;
+        private double m_maximumSignalReferenceWidth = double.NaN;
         private ObservableCollection<RealTimeMeasurement> m_measurementList;
 
         #endregion
@@ -528,7 +559,27 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_measurementList = value;
+                m_maximumSignalReferenceWidth = double.NaN;
                 OnPropertyChanged("MeasurementList");
+            }
+        }
+
+        /// <summary>
+        /// Gets maximum with of signal reference column.
+        /// </summary>
+        public double MaximumSignalReferenceWidth
+        {
+            get
+            {
+                if (double.IsNaN(m_maximumSignalReferenceWidth) && m_measurementList != null)
+                    m_maximumSignalReferenceWidth = m_measurementList.Max(rtm => RealTimeStream.GetTextWidth(rtm.SignalReference));
+
+                return m_maximumSignalReferenceWidth;
+            }
+            set
+            {
+                m_maximumSignalReferenceWidth = value;
+                OnPropertyChanged("MaximumSignalReferenceWidth");
             }
         }
 
@@ -561,10 +612,50 @@ namespace openPDC.UI.DataModels
         private string m_value;
         private string m_quality;
         private SolidColorBrush m_foreground;
+        private RealTimeDevice m_parent;
 
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets parent <see cref="RealTimeDeivce"/>.
+        /// </summary>
+        public RealTimeDevice Parent
+        {
+            get
+            {
+                return m_parent;
+            }
+            set
+            {
+                m_parent = value;
+                OnPropertyChanged("MaximumSignalReferenceWidth");
+            }
+        }
+
+        /// <summary>
+        /// Gets maximum with of signal reference column.
+        /// </summary>
+        public string MaximumSignalReferenceWidth
+        {
+            get
+            {
+                if (m_parent == null)
+                    return "Auto";
+
+                double width = m_parent.MaximumSignalReferenceWidth;
+
+                if (double.IsNaN(width))
+                    return "Auto";
+
+                return width.ToString();
+            }
+            set
+            {
+
+            }
+        }
 
         /// <summary>
         /// Gets or sets DeviceID for <see cref="RealTimeMeasurement"/>.

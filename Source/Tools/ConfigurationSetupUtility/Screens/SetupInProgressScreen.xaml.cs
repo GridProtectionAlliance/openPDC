@@ -1412,7 +1412,7 @@ namespace ConfigurationSetupUtility.Screens
             XmlDocument configFile = new XmlDocument();
             configFile.Load(configFileName);
             XmlNode categorizedSettings = configFile.SelectSingleNode("configuration/categorizedSettings");
-            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
+            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings/add");
 
             if (encrypted)
                 connectionString = Cipher.Encrypt(connectionString, App.CipherLookupKey, App.CryptoStrength);
@@ -1462,8 +1462,8 @@ namespace ConfigurationSetupUtility.Screens
 
             foreach (XmlNode section in adoProviderSections)
             {
-                XmlNode connectionNode = section.ChildNodes.Cast<XmlNode>().SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == "ConnectionString");
-                XmlNode dataProviderNode = section.ChildNodes.Cast<XmlNode>().SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == "DataProviderString");
+                XmlNode connectionNode = section.ChildNodes.Cast<XmlNode>().SingleOrDefault(node => node.Name == "add" && node.Attributes != null && node.Attributes["name"].Value == "ConnectionString");
+                XmlNode dataProviderNode = section.ChildNodes.Cast<XmlNode>().SingleOrDefault(node => node.Name == "add" && node.Attributes != null && node.Attributes["name"].Value == "DataProviderString");
 
                 if (connectionNode != null && dataProviderNode != null)
                 {

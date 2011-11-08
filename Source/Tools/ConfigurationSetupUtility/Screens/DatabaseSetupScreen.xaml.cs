@@ -467,7 +467,7 @@ namespace ConfigurationSetupUtility.Screens
             configFile.Load(configFileName);
 
             XmlNode categorizedSettings = configFile.SelectSingleNode("configuration/categorizedSettings");
-            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
+            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings/add");
 
             foreach (XmlNode child in systemSettings.ChildNodes)
             {
