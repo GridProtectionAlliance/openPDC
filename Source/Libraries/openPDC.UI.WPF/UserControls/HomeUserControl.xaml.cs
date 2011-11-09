@@ -1,11 +1,44 @@
-﻿using System;
+﻿//******************************************************************************************************
+//  HomeUserControl.xaml.cs - Gbtc
+//
+//  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
+//
+//  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
+//  the NOTICE file distributed with this work for additional information regarding copyright ownership.
+//  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+//  not use this file except in compliance with the License. You may obtain a copy of the License at:
+//
+//      http://www.opensource.org/licenses/eclipse-1.0.php
+//
+//  Unless agreed to in writing, the subject software distributed under the License is distributed on an
+//  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
+//  License for the specific language governing permissions and limitations.
+//
+//  Code Modification History:
+//  ----------------------------------------------------------------------------------------------------
+//  11/09/2011 - Mehulbhai P Thakkar
+//       Generated original version of source code.
+//
+//******************************************************************************************************
+
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
+using Microsoft.Research.DynamicDataDisplay;
+using Microsoft.Research.DynamicDataDisplay.Charts;
+using Microsoft.Research.DynamicDataDisplay.DataSources;
+using openPDC.UI.DataModels;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Transport;
 using TimeSeriesFramework.UI;
 using TVA;
 using TVA.Data;
@@ -25,7 +58,19 @@ namespace openPDC.UI.UserControls
         private ObservableCollection<MenuDataItem> m_menuDataItems;
         private WindowsServiceClient m_windowsServiceClient = null;
         private DispatcherTimer m_refreshTimer;
-        private static ManualResetEvent s_responseWaitHandle;
+
+        // Subscription fields
+        private DataSubscriber m_unsynchronizedSubscriber;
+        private bool m_subscribedUnsynchronized;
+        private string m_signalID;
+        private int m_processingUnsynchronizedMeasurements = 0;
+        private int m_refreshInterval = 1;
+        private bool m_restartConnectionCycle = true;
+        private int[] m_xAxisDataCollection;                                                            // Source data for the binding collection.
+        private EnumerableDataSource<int> m_xAxisBindingCollection;                                     // Values plotted on X-Axis.        
+        private ConcurrentQueue<double> m_yAxisDataCollection;              // Source data for the binding collection. Format is <signalID, collection of values from subscription API>.
+        private EnumerableDataSource<double> m_yAxisBindingCollection;      // Values plotted on Y-Axis.
+        private LineGraph m_lineGraph;
 
         #endregion
 
@@ -98,6 +143,25 @@ namespace openPDC.UI.UserControls
             }
 
             TextBlockUser.Text = CommonFunctions.CurrentUser;
+
+            ((HorizontalAxis)ChartPlotterDynamic.MainHorizontalAxis).LabelProvider.LabelStringFormat = "";
+
+            //Remove legend on the right.
+            Panel legendParent = (Panel)ChartPlotterDynamic.Legend.ContentGrid.Parent;
+            if (legendParent != null)
+                legendParent.Children.Remove(ChartPlotterDynamic.Legend.ContentGrid);
+
+            ChartPlotterDynamic.NewLegendVisible = false;
+
+            m_xAxisDataCollection = new int[150];
+            for (int i = 0; i < 150; i++)
+                m_xAxisDataCollection[i] = i;
+            m_xAxisBindingCollection = new EnumerableDataSource<int>(m_xAxisDataCollection);
+            m_xAxisBindingCollection.SetXMapping(x => x);
+
+            ComboBoxDevice.ItemsSource = Device.GetLookupList(null);
+            if (ComboBoxDevice.Items.Count > 0)
+                ComboBoxDevice.SelectedIndex = 0;
         }
 
         void m_refreshTimer_Tick(object sender, EventArgs e)
@@ -225,6 +289,175 @@ namespace openPDC.UI.UserControls
         {
             PopupStatus.IsOpen = false;
         }
+
+        private void ComboBoxMeasurement_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboBoxMeasurement.Items.Count > 0)
+            {
+                TimeSeriesFramework.UI.DataModels.Measurement selectedMeasurement = (TimeSeriesFramework.UI.DataModels.Measurement)ComboBoxMeasurement.SelectedItem;
+                m_signalID = selectedMeasurement.SignalID.ToString();
+
+                if (selectedMeasurement.SignalSuffix == "PA")
+                    ChartPlotterDynamic.Visible = DataRect.Create(0, -180, 150, 180);
+                else if (selectedMeasurement.SignalSuffix == "FQ")
+                    ChartPlotterDynamic.Visible = DataRect.Create(0, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin")), 150, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax")));
+            }
+            else
+                m_signalID = string.Empty;
+
+            SubscribeUnsynchronizedData();
+        }
+
+        private void ComboBoxDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement> measurements = TimeSeriesFramework.UI.DataModels.Measurement.Load(null, ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
+            ComboBoxMeasurement.ItemsSource = new ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement>(measurements.Where(m => m.SignalSuffix == "PM" || m.SignalSuffix == "PA" || m.SignalSuffix == "FQ"));
+            if (ComboBoxMeasurement.Items.Count > 0)
+                ComboBoxMeasurement.SelectedIndex = 0;
+        }
+
+        #region [ Unsynchronized Subscription ]
+
+        private void m_unsynchronizedSubscriber_ConnectionTerminated(object sender, EventArgs e)
+        {
+            m_subscribedUnsynchronized = false;
+            UnsubscribeUnsynchronizedData();
+            if (m_restartConnectionCycle)
+                InitializeUnsynchronizedSubscription();
+        }
+
+        private void m_unsynchronizedSubscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
+        {
+            if (0 == Interlocked.Exchange(ref m_processingUnsynchronizedMeasurements, 1))
+            {
+                try
+                {
+                    foreach (IMeasurement measurement in e.Argument)
+                    {
+                        double tempValue = measurement.Value;
+
+                        if (!double.IsNaN(tempValue) && !double.IsInfinity(tempValue)) // Process data only if it is not NaN or infinity.
+                        {
+                            ChartPlotterDynamic.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate()
+                                {
+                                    if (m_yAxisDataCollection.Count == 0)
+                                    {
+                                        for (int i = 0; i < 150; i++)
+                                            m_yAxisDataCollection.Enqueue(tempValue);
+
+                                        m_yAxisBindingCollection = new EnumerableDataSource<double>(m_yAxisDataCollection);
+                                        m_yAxisBindingCollection.SetYMapping(y => y);
+
+                                        m_lineGraph = ChartPlotterDynamic.AddLineGraph(new CompositeDataSource(m_xAxisBindingCollection, m_yAxisBindingCollection), Color.FromArgb(255, 25, 25, 200), 1, "");
+
+                                    }
+                                    else
+                                    {
+                                        double oldValue;
+                                        if (m_yAxisDataCollection.TryDequeue(out oldValue))
+                                            m_yAxisDataCollection.Enqueue(tempValue);
+                                    }
+                                    m_yAxisBindingCollection.RaiseDataChanged();
+                                });
+                        }
+                    }
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref m_processingUnsynchronizedMeasurements, 0);
+                }
+            }
+        }
+
+        private void m_unsynchronizedSubscriber_ConnectionEstablished(object sender, EventArgs e)
+        {
+            m_subscribedUnsynchronized = true;
+            SubscribeUnsynchronizedData();
+        }
+
+        private void m_unsynchronizedSubscriber_ProcessException(object sender, EventArgs<Exception> e)
+        {
+
+        }
+
+        private void m_unsynchronizedSubscriber_StatusMessage(object sender, EventArgs<string> e)
+        {
+
+        }
+
+        private void InitializeUnsynchronizedSubscription()
+        {
+            try
+            {
+                using (AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory))
+                {
+                    m_unsynchronizedSubscriber = new DataSubscriber();
+                    m_unsynchronizedSubscriber.StatusMessage += m_unsynchronizedSubscriber_StatusMessage;
+                    m_unsynchronizedSubscriber.ProcessException += m_unsynchronizedSubscriber_ProcessException;
+                    m_unsynchronizedSubscriber.ConnectionEstablished += m_unsynchronizedSubscriber_ConnectionEstablished;
+                    m_unsynchronizedSubscriber.NewMeasurements += m_unsynchronizedSubscriber_NewMeasurements;
+                    m_unsynchronizedSubscriber.ConnectionTerminated += m_unsynchronizedSubscriber_ConnectionTerminated;
+                    m_unsynchronizedSubscriber.ConnectionString = database.DataPublisherConnectionString();
+                    m_unsynchronizedSubscriber.Initialize();
+                    m_unsynchronizedSubscriber.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to initialize subscription." + Environment.NewLine + ex.Message, "Failed to Subscribe", MessageBoxButton.OK);
+            }
+        }
+
+        private void StopUnsynchronizedSubscription()
+        {
+            if (m_unsynchronizedSubscriber != null)
+            {
+                m_unsynchronizedSubscriber.StatusMessage -= m_unsynchronizedSubscriber_StatusMessage;
+                m_unsynchronizedSubscriber.ProcessException -= m_unsynchronizedSubscriber_ProcessException;
+                m_unsynchronizedSubscriber.ConnectionEstablished -= m_unsynchronizedSubscriber_ConnectionEstablished;
+                m_unsynchronizedSubscriber.NewMeasurements -= m_unsynchronizedSubscriber_NewMeasurements;
+                m_unsynchronizedSubscriber.ConnectionTerminated -= m_unsynchronizedSubscriber_ConnectionTerminated;
+                m_unsynchronizedSubscriber.Stop();
+                m_unsynchronizedSubscriber.Dispose();
+                m_unsynchronizedSubscriber = null;
+            }
+        }
+
+        private void SubscribeUnsynchronizedData()
+        {
+            if (m_unsynchronizedSubscriber == null)
+                InitializeUnsynchronizedSubscription();
+            try
+            {
+                ChartPlotterDynamic.Children.Remove((IPlotterElement)m_lineGraph);
+            }
+            catch { }
+            m_yAxisDataCollection = new ConcurrentQueue<double>();
+
+            if (m_subscribedUnsynchronized && !string.IsNullOrEmpty(m_signalID))
+                m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_signalID, null, true, m_refreshInterval);
+        }
+
+        /// <summary>
+        /// Unsubscribes data from the service.
+        /// </summary>
+        public void UnsubscribeUnsynchronizedData()
+        {
+            try
+            {
+                if (m_unsynchronizedSubscriber != null)
+                {
+                    m_unsynchronizedSubscriber.Unsubscribe();
+                    StopUnsynchronizedSubscription();
+                }
+            }
+            catch
+            {
+                m_unsynchronizedSubscriber = null;
+            }
+        }
+
+        #endregion
 
         #endregion
     }
