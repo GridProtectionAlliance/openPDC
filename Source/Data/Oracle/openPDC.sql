@@ -715,7 +715,6 @@ CREATE TABLE AccessLog (
     ID NUMBER(11, 0) NOT NULL,
     UserName VARCHAR2(200) NOT NULL,
     AccessGranted NUMBER(3,0) NOT NULL,
-    "Comment" CLOB,
     CreatedOn DATE DEFAULT N'' NOT NULL
 );
 
