@@ -391,6 +391,31 @@
             Gets the descriptive status of the <see cref="T:TVA.Historian.DataListener"/>.
             </summary>
         </member>
+        <member name="T:TVA.Historian.DataServices.SerializableReadRequestData">
+            <summary>
+            Represents a container for JSON serialized time-series data read request.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.DataServices.SerializableReadRequestData.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TVA.Historian.DataServices.SerializableReadRequestData"/> class.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableReadRequestData.idArray">
+            <summary>
+            XML array of integer historian ID's.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableReadRequestData.startTime">
+            <summary>
+            Start time.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.DataServices.SerializableReadRequestData.endTime">
+            <summary>
+            End time.
+            </summary>
+        </member>
         <member name="T:TVA.Historian.Exporters.CsvExporter">
             <summary>
             Represents an exporter that can export the current time-series data in CSV format to a file.
@@ -1755,6 +1780,11 @@
             Gets or sets the <see cref="P:TVA.Historian.IDataPoint.Quality"/> of the time-series data point.
             </summary>
         </member>
+        <member name="P:TVA.Historian.IDataPoint.Metadata">
+            <summary>
+            Gets or sets associated <see cref="T:TVA.Historian.Files.MetadataRecord"/> of the time-series data point.
+            </summary>
+        </member>
         <member name="F:TVA.Historian.Files.ArchiveDataPoint.ByteCount">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.
@@ -1897,6 +1927,11 @@
             Gets or sets the <see cref="P:TVA.Historian.Files.ArchiveDataPoint.Quality"/> of <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.
             </summary>
         </member>
+        <member name="P:TVA.Historian.Files.ArchiveDataPoint.Metadata">
+            <summary>
+            Gets or sets the associated <see cref="T:TVA.Historian.Files.MetadataRecord"/> with this <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.
+            </summary>
+        </member>
         <member name="P:TVA.Historian.Files.ArchiveDataPoint.IsEmpty">
             <summary>
             Gets a boolean value that indicates whether <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> contains any data.
@@ -1929,7 +1964,7 @@
             Time in seconds after which the block is considered inactive if no reads or writes were performed.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Files.ArchiveDataBlock.#ctor(TVA.Historian.Files.ArchiveFile,System.Int32,System.Int32,System.Boolean)">
+        <member name="M:TVA.Historian.Files.ArchiveDataBlock.#ctor(TVA.Historian.Files.ArchiveFile,System.Int32,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> class. 
             </summary>
@@ -1937,6 +1972,7 @@
             <param name="index">0-based index of the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>.</param>
             <param name="historianID">Historian identifier whose <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> is stored in the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>.</param>
             <param name="reset">true if the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> is to be <see cref="M:TVA.Historian.Files.ArchiveDataBlock.Reset"/>; otherwise false.</param>
+            <param name="preRead">true to pre-read data to locate write cursor.</param>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveDataBlock.Read">
             <summary>
@@ -2025,6 +2061,13 @@
             <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
             <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
         </member>
+        <member name="M:TVA.Historian.Files.ArchiveDataBlockPointer.GetDataBlock(System.Boolean)">
+            <summary>
+            Gets the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> associated with this <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.
+            </summary>
+            <param name="preRead">true to pre-read data to locate write cursor.</param>
+            <returns>The <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> associated with this <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.</returns>
+        </member>
         <member name="M:TVA.Historian.Files.ArchiveDataBlockPointer.Reset">
             <summary>
             Deallocates the <see cref="P:TVA.Historian.Files.ArchiveDataBlockPointer.DataBlock"/> to store new <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.
@@ -2106,6 +2149,21 @@
             Gets the binary representation of <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.
             </summary>
         </member>
+        <member name="T:TVA.Historian.Files.ArchiveDataBlockPointerExtensions">
+            <summary>
+            Extension methods for the <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveDataBlockPointerExtensions.Matches(TVA.Historian.Files.ArchiveDataBlockPointer,System.Int32,TVA.Historian.TimeTag,TVA.Historian.TimeTag)">
+            <summary>
+            Tests if the <paramref name="dataBlockPointer"/> matches the specified search criteria.
+            </summary>
+            <param name="dataBlockPointer"><see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/> to test.</param>
+            <param name="historianID">Desired historian ID.</param>
+            <param name="startTime">Desired start time.</param>
+            <param name="endTime">Desired end time.</param>
+            <returns><c>true</c> if the specified <paramref name="dataBlockPointer"/> is for <paramref name="historianID"/> and falls within the <paramref name="startTime"/> and <paramref name="endTime"/>; otherwise <c>false</c>.</returns>
+        </member>
         <member name="T:TVA.Historian.Files.ArchiveFileType">
             <summary>
             Indicates the type of <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
@@ -2174,8 +2232,17 @@
             Reads time-series data from the repository.
             </summary>
             <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.IDataPoint"/>s are to be read.</param>
-            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in GMT) of the timespan for which <see cref="T:TVA.Historian.IDataPoint"/>s are to be read.</param>
-            <param name="endTime"><see cref="T:System.String"/> representation of the end time (in GMT) of the timespan for which <see cref="T:TVA.Historian.IDataPoint"/>s are to be read.</param>
+            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in UTC) of the timespan for which <see cref="T:TVA.Historian.IDataPoint"/>s are to be read.</param>
+            <param name="endTime"><see cref="T:System.String"/> representation of the end time (in UTC) of the timespan for which <see cref="T:TVA.Historian.IDataPoint"/>s are to be read.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.IDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.IArchive.ReadData(System.Collections.Generic.IEnumerable{System.Int32},System.String,System.String)">
+            <summary>
+            Reads time-series data from the repository.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.IDataPoint"/>s are to be read.</param>
+            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in UTC) of the timespan for which <see cref="T:TVA.Historian.IDataPoint"/>s are to be read.</param>
+            <param name="endTime"><see cref="T:System.String"/> representation of the end time (in UTC) of the timespan for which <see cref="T:TVA.Historian.IDataPoint"/>s are to be read.</param>
             <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.IDataPoint"/>s.</returns>
         </member>
         <member name="M:TVA.Historian.IArchive.ReadMetaData(System.Int32)">
@@ -2406,9 +2473,16 @@
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Int32)">
             <summary>
-            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            Reads all <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/> for the specified <paramref name="historianID"/>.
             </summary>
             <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Reads all <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/> for the specified <paramref name="historianIDs"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
             <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Int32,System.String)">
@@ -2416,7 +2490,15 @@
             Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
             </summary>
             <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
-            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in GMT) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Collections.Generic.IEnumerable{System.Int32},System.String)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
             <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Int32,System.String,System.String)">
@@ -2424,8 +2506,17 @@
             Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
             </summary>
             <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
-            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in GMT) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
-            <param name="endTime"><see cref="T:System.String"/> representation of the end time (in GMT) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime"><see cref="T:System.String"/> representation of the end time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Collections.Generic.IEnumerable{System.Int32},System.String,System.String)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime"><see cref="T:System.String"/> representation of the end time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
             <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Int32,System.DateTime)">
@@ -2433,7 +2524,15 @@
             Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
             </summary>
             <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
-            <param name="startTime">Start <see cref="T:System.DateTime"/> (in GMT) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Collections.Generic.IEnumerable{System.Int32},System.DateTime)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
             <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Int32,System.DateTime,System.DateTime)">
@@ -2441,8 +2540,17 @@
             Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
             </summary>
             <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
-            <param name="startTime">Start <see cref="T:System.DateTime"/> (in GMT) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
-            <param name="endTime">End <see cref="T:System.DateTime"/> (in GMT) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime">End <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Collections.Generic.IEnumerable{System.Int32},System.DateTime,System.DateTime)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime">End <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
             <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Int32,TVA.Historian.TimeTag)">
@@ -2450,7 +2558,15 @@
             Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
             </summary>
             <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
-            <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/> (in GMT) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Collections.Generic.IEnumerable{System.Int32},TVA.Historian.TimeTag)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
             <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Int32,TVA.Historian.TimeTag,TVA.Historian.TimeTag)">
@@ -2458,8 +2574,17 @@
             Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
             </summary>
             <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
-            <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/> (in GMT) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
-            <param name="endTime">End <see cref="T:TVA.Historian.TimeTag"/> (in GMT) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime">End <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Collections.Generic.IEnumerable{System.Int32},TVA.Historian.TimeTag,TVA.Historian.TimeTag)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime">End <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
             <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadMetaData(System.Int32)">
@@ -2976,57 +3101,57 @@
             </summary>
             <param name="dataBlocksToAdd">Number of <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s to add to the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FindDataBlock(System.Int32)">
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FindDataBlock(System.Int32,System.Boolean)">
             <summary>
             Returns the first <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> in the <see cref="T:TVA.Historian.Files.ArchiveFile"/> for the specified <paramref name="historianID"/>.
             </summary>
             <param name="historianID">Historian identifier whose <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> is to be retrieved.</param>
+            <param name="preRead">true to pre-read data to locate write cursor.</param>
             <returns><see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> object if a match is found; otherwise null.</returns>
         </member>
-        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FindLastDataBlock(System.Int32)">
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FindLastDataBlock(System.Int32,System.Boolean)">
             <summary>
             Returns the last <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> in the <see cref="T:TVA.Historian.Files.ArchiveFile"/> for the specified <paramref name="historianID"/>.
             </summary>
             <param name="historianID">Historian identifier.</param>
+            <param name="preRead">true to pre-read data to locate write cursor.</param>
             <returns><see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> object if a match is found; otherwise null.</returns>
         </member>
-        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FindDataBlocks(System.Int32)">
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FindDataBlocks(System.Int32,System.Boolean)">
             <summary>
             Returns all <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s in the <see cref="T:TVA.Historian.Files.ArchiveFile"/> for the specified <paramref name="historianID"/>.
             </summary>
             <param name="historianID">Historian identifier.</param>
+            <param name="preRead">true to pre-read data to locate write cursor.</param>
             <returns>A collection of <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s.</returns>
         </member>
-        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FindDataBlocks(System.Int32,TVA.Historian.TimeTag)">
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FindDataBlocks(System.Int32,TVA.Historian.TimeTag,System.Boolean)">
             <summary>
             Returns all <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s in the <see cref="T:TVA.Historian.Files.ArchiveFile"/> for the specified <paramref name="historianID"/> with <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> points later than the specified <paramref name="startTime"/>.
             </summary>
             <param name="historianID">Historian identifier.</param>
             <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/>.</param>
+            <param name="preRead">true to pre-read data to locate write cursor.</param>
             <returns>A collection of <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s.</returns>
         </member>
-        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FindDataBlocks(System.Int32,TVA.Historian.TimeTag,TVA.Historian.TimeTag)">
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FindDataBlocks(System.Int32,TVA.Historian.TimeTag,TVA.Historian.TimeTag,System.Boolean)">
             <summary>
             Returns all <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s in the <see cref="T:TVA.Historian.Files.ArchiveFile"/> for the specified <paramref name="historianID"/> with <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s between the specified <paramref name="startTime"/> and <paramref name="endTime"/>.
             </summary>
             <param name="historianID">Historian identifier.</param>
             <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/>.</param>
             <param name="endTime">End <see cref="T:TVA.Historian.TimeTag"/>.</param>
+            <param name="preRead">true to pre-read data to locate write cursor.</param>
             <returns>A collection of <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.RequestDataBlock(System.Int32,TVA.Historian.TimeTag,System.Int32)">
             <summary>
-            Returns an <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> for writting <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s for the specified <paramref name="historianID"/>.
+            Returns an <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> for writing <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s for the specified <paramref name="historianID"/>.
             </summary>
             <param name="historianID">Historian identifier for which the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> is being requested.</param>
             <param name="dataTime"><see cref="T:TVA.Historian.TimeTag"/> of the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> to be written to the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>.</param>
             <param name="blockIndex"><see cref="P:TVA.Historian.Files.ArchiveDataBlock.Index"/> of the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> last used for writting <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s for the <paramref name="historianID"/>.</param>
             <returns><see cref="T:TVA.Historian.Files.ArchiveDataBlock"/> object if available; otherwise null if all <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s have been allocated.</returns>
-        </member>
-        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FindDataBlockPointer(TVA.Historian.Files.ArchiveDataBlockPointer)">
-            <summary>
-            Finds <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/> that match the search criteria that is determined by member variables.
-            </summary>
         </member>
         <member name="P:TVA.Historian.Files.ArchiveFileAllocationTable.FileStartTime">
             <summary>
@@ -4210,6 +4335,48 @@
             <summary>
             Contains classes used for manipulating archive files.
             </summary>
+        </member>
+        <member name="T:TVA.Historian.Files.TimeSortedDataPointScanner">
+            <summary>
+            Reads a series of data points from an <see cref="T:TVA.Historian.Files.ArchiveFile"/> in sorted order.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.TimeSortedDataPointScanner.#ctor(TVA.Historian.Files.ArchiveFileAllocationTable,System.Collections.Generic.IEnumerable{System.Int32},TVA.Historian.TimeTag,TVA.Historian.TimeTag,System.EventHandler{TVA.EventArgs{System.Exception}})">
+            <summary>
+            Creates a new instance of the <see cref="T:TVA.Historian.Files.TimeSortedDataPointScanner"/>. 
+            </summary>
+            <param name="dataBlockAllocationTable"><see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/> for the file to be scanned.</param>
+            <param name="historianIDs">Historian ID's to scan.</param>
+            <param name="startTime">Desired start time.</param>
+            <param name="endTime">Desired end time.</param>
+            <param name="dataReadExceptionHandler">Read exception handler.</param>
+        </member>
+        <member name="M:TVA.Historian.Files.TimeSortedDataPointScanner.Read">
+            <summary>
+            Reads all <see cref="T:TVA.Historian.IDataPoint"/>s in time sorted order for the specified historian IDs.
+            </summary>
+            <returns>Each <see cref="T:TVA.Historian.IDataPoint"/> for the specified historian IDs.</returns>
+        </member>
+        <member name="T:TVA.Historian.Files.TimeSortedDataPointScanner.DataPointScanner">
+            <summary>
+            Individual data point scanner.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.TimeSortedDataPointScanner.DataPointScanner.#ctor(TVA.Historian.Files.ArchiveFileAllocationTable,System.Int32,TVA.Historian.TimeTag,TVA.Historian.TimeTag,System.EventHandler{TVA.EventArgs{System.Exception}})">
+            <summary>
+            Creates a new <see cref="T:TVA.Historian.Files.TimeSortedDataPointScanner.DataPointScanner"/> instance.
+            </summary>
+            <param name="dataBlockAllocationTable"><see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/> for the file to be scanned.</param>
+            <param name="historianID">Historian ID to scan for.</param>
+            <param name="startTime">Desired start time.</param>
+            <param name="endTime">Desired end time.</param>
+            <param name="dataReadExceptionHandler">Read exception handler.</param>
+        </member>
+        <member name="M:TVA.Historian.Files.TimeSortedDataPointScanner.DataPointScanner.Read">
+            <summary>
+            Reads all <see cref="T:TVA.Historian.IDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s.
+            </summary>
+            <returns>Each <see cref="T:TVA.Historian.IDataPoint"/> read from the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s.</returns>
         </member>
         <member name="T:TVA.Historian.Files.StateFile">
             <summary>
@@ -6353,6 +6520,13 @@
             <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
             <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
         </member>
+        <member name="M:TVA.Historian.DataServices.ITimeSeriesDataService.ReadSelectHistoricTimeSeriesDataAsJsonPost(TVA.Historian.DataServices.SerializableReadRequestData)">
+            <summary>
+            Reads historic time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <param name="data">JSON serialized post request.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
+        </member>
         <member name="T:TVA.Historian.DataServices.MetadataService">
             <summary>
             Represents a REST web service for historian metadata.
@@ -7247,6 +7421,13 @@
             <param name="endTime">End time in <see cref="T:System.String"/> format of the timespan for which historic time-series data is to be read.</param>
             <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
         </member>
+        <member name="M:TVA.Historian.DataServices.TimeSeriesDataService.ReadSelectHistoricTimeSeriesDataAsJsonPost(TVA.Historian.DataServices.SerializableReadRequestData)">
+            <summary>
+            Reads historic time-series data from the <see cref="P:TVA.Historian.DataServices.DataService.Archive"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <param name="data">JSON serialized post request.</param>
+            <returns>An <see cref="T:TVA.Historian.DataServices.SerializableTimeSeriesData"/> object.</returns>
+        </member>
         <member name="T:TVA.Historian.TimeTag">
             <summary>
             Represents a historian time tag as number of seconds from the <see cref="F:TVA.Historian.TimeTag.BaseDate"/>.
@@ -7275,6 +7456,17 @@
             Returns the default text representation of <see cref="T:TVA.Historian.TimeTag"/>.
             </summary>
             <returns><see cref="T:System.String"/> that represents <see cref="T:TVA.Historian.TimeTag"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.TimeTag.CompareTo(TVA.Historian.TimeTag)">
+            <summary>
+            Compares this time tag instance to another time tag instance and returns an integer that indicates whether the value of this instance
+            is less than, equal to, or greater than the value of the other time tag.
+            </summary>
+            <param name="other">A <see cref="T:TVA.Historian.TimeTag"/> instance to compare.</param>
+            <returns>A signed number indicating the relative values of this instance and the other value.</returns>
+            <remarks>
+            Time tags are compared by their value.
+            </remarks>
         </member>
         <member name="F:TVA.Historian.TimeTag.MinValue">
             <summary>
