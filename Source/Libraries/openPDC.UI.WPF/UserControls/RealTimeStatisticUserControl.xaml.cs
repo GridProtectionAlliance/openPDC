@@ -73,7 +73,7 @@ namespace openPDC.UI.UserControls
                 IsolatedStorageManager.InitializeStorageForStreamStatistics(true);
             }
 
-            TextBlockMeasurementRefreshInterval.Text = m_statisticDataRefreshInterval.ToString();
+            TextBlockMeasurementRefreshInterval.Text = m_statisticDataRefreshInterval.ToString() + " sec";
             TextBoxRefreshInterval.Text = m_statisticDataRefreshInterval.ToString();
             m_dataContext = new RealTimeStatistics(1, m_statisticDataRefreshInterval);
             this.DataContext = m_dataContext;

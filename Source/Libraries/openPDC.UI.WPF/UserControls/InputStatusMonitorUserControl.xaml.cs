@@ -244,7 +244,6 @@ namespace openPDC.UI.UserControls
         private void Initialize()
         {
             RetrieveSettingsFromIsolatedStorage();
-            m_dataContext = new RealTimeStreams(1, m_measurementsDataRefreshInterval);
             m_timeStampList = new ConcurrentQueue<string>();
             m_yAxisDataCollection = new ConcurrentDictionary<Guid, ConcurrentQueue<double>>();
             m_yAxisBindingCollection = new ConcurrentDictionary<Guid, EnumerableDataSource<double>>();
@@ -270,6 +269,7 @@ namespace openPDC.UI.UserControls
 
         private void InitializeUserControl()
         {
+            m_dataContext = new RealTimeStreams(1, m_measurementsDataRefreshInterval);
             this.DataContext = m_dataContext;
             //ListBoxCurrentValues.ItemsSource = m_displayedMeasurement;
             DataGridCurrentValues.ItemsSource = m_displayedMeasurement;

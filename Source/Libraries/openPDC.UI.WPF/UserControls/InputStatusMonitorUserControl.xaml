@@ -195,7 +195,7 @@
             <StackPanel Orientation="Horizontal" >
                 <TextBlock Text="Refresh Interval: " />
                 <TextBlock x:Name="TextBlockMeasurementRefreshInterval" />
-                <TextBlock Text=" sec" />
+                <TextBlock Text=" sec " />
                 <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" />
             </StackPanel>
             
@@ -315,7 +315,7 @@
 
                     <sdk:DataGridTextColumn Header="Unit" IsReadOnly="True" Width="65" Binding="{tsfBinding:Column Path=EngineeringUnit}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
 
-                    <sdk:DataGridTemplateColumn Header="" Width="60">
+                    <sdk:DataGridTemplateColumn Header="" Width="40">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button ToolTip="Remove Selected Measurement" Width="Auto" Padding="0" Click="ButtonRemove_Click">
@@ -335,10 +335,11 @@
             <!-- Real-Time Statistics -->
 
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Run-Time Statistics: " FontWeight="Bold"/>
+                <TextBlock Text="Run-time Statistics: " FontWeight="Bold"/>
                 <TextBlock x:Name="TextBlockDevice" Margin="0,0,25,0"/>
-                <TextBlock Text="Refresh Interval (sec): "/>
-                <TextBlock x:Name="TextBlockStatisticsRefreshInterval"/>
+                <TextBlock Text="Refresh Interval: " Width="Auto"/>
+                <TextBlock x:Name="TextBlockStatisticsRefreshInterval" Width="Auto"/>
+                <TextBlock Text=" sec" Width="Auto"/>
             </StackPanel>
 
             <sdk:DataGrid x:Name="DataGridStatistics" Margin="2" HorizontalScrollBarVisibility="Auto" HorizontalAlignment="Left" Height="190">
