@@ -42,10 +42,10 @@ using TVA.Historian;
 namespace HistorianAdapters
 {
     /// <summary>
-    /// Represents an input adapters that listens for time-series data from TVA Historian.
+    /// Represents an input adapters that listens for time-series data from a remote Historian.
     /// </summary>
-    [Description("Historian Listener: listens for time-series data from a TVA Historian.")]
-    public class InputAdapter : InputAdapterBase
+    [Description("Historian Listener: listens for time-series data from a a remote historian.")]
+    public class RemoteInputAdapter : InputAdapterBase
     {
         #region [ Members ]
 
@@ -58,9 +58,9 @@ namespace HistorianAdapters
         #region [ Constructors ]
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InputAdapter"/> class.
+        /// Initializes a new instance of the <see cref="RemoteInputAdapter"/> class.
         /// </summary>
-        public InputAdapter()
+        public RemoteInputAdapter()
             : base()
         {
             m_historianDataListener = new DataListener();
@@ -155,7 +155,7 @@ namespace HistorianAdapters
         }
 
         /// <summary>
-        /// Gets flag that determines if this <see cref="InputAdapter"/> uses an asynchronous connection.
+        /// Gets flag that determines if this <see cref="RemoteInputAdapter"/> uses an asynchronous connection.
         /// </summary>
         protected override bool UseAsyncConnect
         {
@@ -172,7 +172,7 @@ namespace HistorianAdapters
         {
             get
             {
-                return true;
+                return false;
             }
         }
 
@@ -181,7 +181,7 @@ namespace HistorianAdapters
         #region [ Methods ]
 
         /// <summary>
-        /// Initializes this <see cref="InputAdapter"/>.
+        /// Initializes this <see cref="RemoteInputAdapter"/>.
         /// </summary>
         /// <exception cref="ArgumentException"><b>HistorianID</b>, <b>Server</b>, <b>Port</b>, <b>Protocol</b>, or <b>InitiateConnection</b> is missing from the <see cref="AdapterBase.Settings"/>.</exception>
         public override void Initialize()
@@ -226,7 +226,7 @@ namespace HistorianAdapters
         }
 
         /// <summary>
-        /// Gets a short one-line status of this <see cref="InputAdapter"/>.
+        /// Gets a short one-line status of this <see cref="RemoteInputAdapter"/>.
         /// </summary>
         /// <param name="maxLength">Maximum length of the status message.</param>
         /// <returns>Text of the status message.</returns>
@@ -236,7 +236,7 @@ namespace HistorianAdapters
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by this <see cref="InputAdapter"/> and optionally releases the managed resources.
+        /// Releases the unmanaged resources used by this <see cref="RemoteInputAdapter"/> and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
@@ -271,7 +271,7 @@ namespace HistorianAdapters
         }
 
         /// <summary>
-        /// Attempts to connect to this <see cref="InputAdapter"/>.
+        /// Attempts to connect to this <see cref="RemoteInputAdapter"/>.
         /// </summary>
         protected override void AttemptConnection()
         {
@@ -279,7 +279,7 @@ namespace HistorianAdapters
         }
 
         /// <summary>
-        /// Attempts to disconnect from this <see cref="InputAdapter"/>.
+        /// Attempts to disconnect from this <see cref="RemoteInputAdapter"/>.
         /// </summary>
         protected override void AttemptDisconnection()
         {
@@ -295,7 +295,9 @@ namespace HistorianAdapters
                 {
                     measurements.Add(new Measurement()
                     {
-                        Key = new MeasurementKey(Guid.Empty, (uint)dataPoint.HistorianID, m_historianDataListener.ID), Value = dataPoint.Value, Timestamp = dataPoint.Time
+                        Key = new MeasurementKey(Guid.Empty, (uint)dataPoint.HistorianID, m_historianDataListener.ID),
+                        Value = dataPoint.Value,
+                        Timestamp = dataPoint.Time
                     });
                 }
                 OnNewMeasurements(measurements);

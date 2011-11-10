@@ -120,6 +120,9 @@ namespace HistorianAdapters
         /// <summary>
         /// Gets or sets instance name defined for this <see cref="LocalOutputAdapter"/>.
         /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the instance name for the archive. Leave this value blank to default to the adapter name."),
+        DefaultValue("")]
         public string InstanceName
         {
             get

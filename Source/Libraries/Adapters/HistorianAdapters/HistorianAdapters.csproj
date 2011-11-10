@@ -142,7 +142,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InputAdapter.cs" />
+    <Compile Include="LocalInputAdapter.cs" />
+    <Compile Include="RemoteInputAdapter.cs" />
     <Compile Include="LocalOutputAdapter.cs" />
     <Compile Include="RemoteOutputAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
