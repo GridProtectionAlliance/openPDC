@@ -94,7 +94,7 @@ namespace openPDC.UI.UserControls
             }
         }
 
-        void HomeUserControl_Unloaded(object sender, RoutedEventArgs e)
+        private void HomeUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -105,8 +105,14 @@ namespace openPDC.UI.UserControls
 
                 if (m_refreshTimer != null)
                     m_refreshTimer.Stop();
+
+                UnsubscribeUnsynchronizedData();
             }
-            catch { }
+            finally
+            {
+                m_refreshTimer = null;
+                m_unsynchronizedSubscriber = null;
+            }
         }
 
         #endregion
