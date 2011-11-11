@@ -150,7 +150,7 @@
 
             <StackPanel.Resources>
                 
-                <HierarchicalDataTemplate x:Key="MeasurementNodeTemplate">
+                <HierarchicalDataTemplate x:Key="MeasurementNodeTemplate">                    
                     
                     <StackPanel Orientation="Horizontal" Margin="-25,0,0,0" VerticalAlignment="Center">                        
                         <CheckBox IsChecked="{tsfBinding:Column Path=Selected}" IsEnabled="{tsfBinding:Column Path=Selectable}" ToolTip="{tsfBinding:Column Path=Description}" Height="Auto" 
@@ -188,6 +188,11 @@
                 
                 <Style x:Key="ExpandedItemStyle" TargetType="TreeViewItem">
                     <Setter Property="IsExpanded" Value="{tsfBinding:Column Path=Expanded}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
                 
             </StackPanel.Resources>
@@ -201,7 +206,11 @@
             
             <!-- Measurement Tree -->
             <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" ItemContainerStyle="{StaticResource ExpandedItemStyle}" 
-                      Height="615" Width="275" VerticalAlignment="Top" HorizontalAlignment="Left" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                      Height="615" Width="275" VerticalAlignment="Top" HorizontalAlignment="Left" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <TreeView.Resources>
+                    <SolidColorBrush Color="White" x:Key="{x:Static SystemColors.HighlightBrushKey}"/>
+                </TreeView.Resources>
+            </TreeView>
             
         </StackPanel>
 
