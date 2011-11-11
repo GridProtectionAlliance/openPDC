@@ -68,8 +68,8 @@
                       Sorting="DataGrid_Sorting">
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTextColumn Header="Label" Width="*" Binding="{tsfBinding:Column Path=Label}"/>
-                <sdk:DataGridTextColumn Header="Type" Width="*" Binding="{tsfBinding:Column Path=Type}" CellStyle="{StaticResource CenterAlignCellStyle}" />
-                <sdk:DataGridTextColumn Header="Phase" Width="*" Binding="{tsfBinding:Column Path=Phase}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                <sdk:DataGridTextColumn Header="Type" Width="*" Binding="{tsfBinding:Column Path=Type}" CellStyle="{StaticResource CenterAlignCellStyle}" IsReadOnly="True"/>
+                <sdk:DataGridTextColumn Header="Phase" Width="*" Binding="{tsfBinding:Column Path=Phase}" CellStyle="{StaticResource CenterAlignCellStyle}" IsReadOnly="True"/>
                 <sdk:DataGridTextColumn Header="Source Index" Width="*" Binding="{tsfBinding:Column Path=SourceIndex}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
             </sdk:DataGrid.Columns>
         </sdk:DataGrid>

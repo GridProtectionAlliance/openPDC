@@ -267,8 +267,7 @@
 
                     <TextBlock Text="Start Time" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" AllowDrop="True">
-                        <TextBox x:Name="TextBoxStartTime" Text="{tsfBinding:Column Path=HistoricStartTime}"  Width="10"/>
-                        <DatePicker Height="25" Name="datePicker1" Width="115" />
+                        <TextBox x:Name="TextBoxStartTime" Text="{tsfBinding:Column Path=HistoricStartTime}"  Width="10"/>                        
                     </StackPanel>                    
                     <TextBlock Text="Stop Time" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right"/>
                     <TextBox x:Name="TextBoxStopTime" Text="{tsfBinding:Column Path=HistoricStopTime}" Grid.Row="0" Grid.Column="3" Width="150"/>

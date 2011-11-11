@@ -265,7 +265,7 @@
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
                 <sdk:DataGridTextColumn Header="Name" Width="*" Binding="{tsfBinding:Column Path=Name}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
-                <sdk:DataGridTextColumn Header="Type" Width="*" Binding="{Binding Path=TypeName}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                <sdk:DataGridTextColumn Header="Type" Width="*" Binding="{Binding Path=TypeName}" CellStyle="{StaticResource CenterAlignCellStyle}" IsReadOnly="True"/>
                 <sdk:DataGridCheckBoxColumn Header="Enabled" Width="*" Binding="{tsfBinding:Column Path=Enabled}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
                 <sdk:DataGridTemplateColumn Header="" Width="*">
                     <sdk:DataGridTemplateColumn.CellTemplate>

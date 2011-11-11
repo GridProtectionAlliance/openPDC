@@ -34,23 +34,17 @@
 
                     </StackPanel>
 
-                    <sdk:DataGrid x:Name="DataGridAddMeasurements" Height="420" Width="600">
+                    <sdk:DataGrid x:Name="DataGridAddMeasurements" Height="420" Width="600" SelectionUnit="Cell">
 
                         <sdk:DataGrid.Columns>
 
-                            <sdk:DataGridTemplateColumn Width="*">
-                                <sdk:DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <CheckBox IsChecked="{tsfBinding:Column Path=Enabled}" HorizontalAlignment="Center" Margin="0" />
-                                    </DataTemplate>
-                                </sdk:DataGridTemplateColumn.CellTemplate>
-                                <sdk:DataGridTemplateColumn.HeaderTemplate>
+                            <sdk:DataGridCheckBoxColumn Width="*" Binding="{tsfBinding:Column Path=Enabled}" CellStyle="{StaticResource CenterAlignCellStyle}">
+                                <sdk:DataGridCheckBoxColumn.HeaderTemplate>
                                     <DataTemplate>
                                         <CheckBox Checked="CheckBoxAddMore_Checked" Unchecked="CheckBoxAddMore_Unchecked"/>
                                     </DataTemplate>
-                                </sdk:DataGridTemplateColumn.HeaderTemplate>
-                            </sdk:DataGridTemplateColumn>
-
+                                </sdk:DataGridCheckBoxColumn.HeaderTemplate>
+                            </sdk:DataGridCheckBoxColumn>
                             <sdk:DataGridTextColumn Header="ID" Width="2*" Binding="{Binding Path=ID}" IsReadOnly="True" ToolTipService.ToolTip="{Binding Path=SignalReference}"/>
                             <sdk:DataGridTextColumn Header="Description" Width="9*" Binding="{Binding Path=Description}" IsReadOnly="True"
                                                     ToolTipService.ToolTip="{Binding Path=Description}"/>
@@ -120,7 +114,7 @@
         <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="550"
                         PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Sorting="DataGrid_Sorting">
             <sdk:DataGrid.Columns>
-                <sdk:DataGridTextColumn Header="Point ID" Width="*" Binding="{tsfBinding:Column Path=PointID}"/>
+                <sdk:DataGridTextColumn Header="Point ID" Width="*" Binding="{tsfBinding:Column Path=PointID}" IsReadOnly="True"/>
                 <sdk:DataGridTextColumn Header="Signal Reference" Width="*" Binding="{tsfBinding:Column Path=SignalReference}"/>
                 <sdk:DataGridTextColumn Header="Source PointTag" Width="2*" Binding="{Binding Path=SourcePointTag}" IsReadOnly="True"/>
                 <sdk:DataGridTextColumn Header="Historian" Width="*" Binding="{Binding Path=HistorianAcronym}" IsReadOnly="True"/>

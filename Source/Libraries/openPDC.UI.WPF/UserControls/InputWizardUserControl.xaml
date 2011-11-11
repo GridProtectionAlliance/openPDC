@@ -230,10 +230,11 @@
             <ScrollViewer Height="290">
                 
                 <sdk:DataGrid x:Name="DataGridDevices" ItemsSource="{tsfBinding:Column Path=DataContext.ItemsSource, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}}"
-                          RowDetailsVisibilityMode="VisibleWhenSelected"  Height="500" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Auto">
+                          RowDetailsVisibilityMode="VisibleWhenSelected"  Height="500" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Auto" SelectionUnit="Cell">
                 
 
                 <sdk:DataGrid.Columns>
+                        <!--<sdk:DataGridCheckBoxColumn Width="*" Binding="{tsfBinding:Column Path=Include}" CellStyle="{StaticResource CenterAlignCellStyle}"--> 
                     <sdk:DataGridTemplateColumn Width="*">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -280,15 +281,9 @@
                 <sdk:DataGrid.RowDetailsTemplate>
                     <DataTemplate>
                         <sdk:DataGrid ItemsSource="{tsfBinding:Column Path=PhasorList}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden"
-                                      Height="Auto" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=sdk:DataGrid}}">
+                                     Height="Auto" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=sdk:DataGrid}}">
                             <sdk:DataGrid.Columns>
-                                <sdk:DataGridTemplateColumn Width="*">
-                                    <sdk:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <CheckBox IsChecked="{tsfBinding:Column Path=Include}" HorizontalAlignment="Center" Margin="0" />
-                                        </DataTemplate>
-                                    </sdk:DataGridTemplateColumn.CellTemplate>
-                                </sdk:DataGridTemplateColumn>
+                                <sdk:DataGridCheckBoxColumn Width="*" Binding="{tsfBinding:Column Path=Include}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
                                 <sdk:DataGridTextColumn Header="Label" Binding="{tsfBinding:Column Path=Label}" Width="3*"/>
                                 <sdk:DataGridTextColumn Header="Type" Binding="{tsfBinding:Column Path=Type}" Width="*" />
                                 <sdk:DataGridTextColumn Header="Phase" Binding="{tsfBinding:Column Path=Phase}" Width="*"/>

@@ -119,14 +119,14 @@ namespace openPDC.UI.UserControls
             //    (bool)CheckBoxAddDigitals.IsChecked, (bool)CheckBoxAddAnalogs.IsChecked);
 
             OutputStreamMeasurement.AddMeasurements(null, m_outputStreamID, new ObservableCollection<Measurement>(m_newMeasurements.Where(m => m.Enabled == true)));
-            m_dataContext = new OutputStreamMeasurements(m_outputStreamID, 20);
+            m_dataContext = new OutputStreamMeasurements(m_outputStreamID, 24);
             this.DataContext = m_dataContext;
             PopupAddMore.IsOpen = false;
         }
 
         private void ButtonCancel_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            m_dataContext = new OutputStreamMeasurements(m_outputStreamID, 20);
+            m_dataContext = new OutputStreamMeasurements(m_outputStreamID, 24);
             this.DataContext = m_dataContext;
             PopupAddMore.IsOpen = false;
         }

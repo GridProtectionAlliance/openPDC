@@ -495,10 +495,10 @@ namespace openPDC.UI.ViewModels
             } while (DeviceExists(newAcronym));
 
             deviceToCopy.Acronym = newAcronym; // Change acronym of the device before going to edit screen.
-            deviceToCopy.Name = "Copy of " + deviceToCopy.Name; // Change name of the device before going to edit screen.
-            deviceToCopy.Enabled = false; // Always set enabled to false for copied device.
+            deviceToCopy.Name = "Copy of " + deviceToCopy.Name; // Change name of the device before going to edit screen.            
             deviceToCopy.ID = 0;    // Set id to zero so that it will be added as a new device.
             ItemsPerPage = 0; // Set this so that on Save() user will be sent back to list screen.
+            deviceToCopy.Enabled = false; // Always set enabled to false for copied device.
 
             // Go to edit screen.
             DeviceUserControl deviceUserControl = new DeviceUserControl(deviceToCopy);

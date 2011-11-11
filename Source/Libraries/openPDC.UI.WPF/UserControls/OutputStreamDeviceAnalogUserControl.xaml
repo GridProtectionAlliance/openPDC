@@ -75,7 +75,7 @@
             PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Sorting="DataGrid_Sorting">
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTextColumn Header="Label" Width="*" Binding="{tsfBinding:Column Path=Label}"/>
-                <sdk:DataGridTextColumn Header=" Type" Width="*" Binding="{tsfBinding:Column Path=Type}" />
+                <sdk:DataGridTextColumn Header=" Type" Width="*" Binding="{tsfBinding:Column Path=Type}" IsReadOnly="True"/>
                 <sdk:DataGridTextColumn Header="Load Order" Width="2*" Binding="{tsfBinding:Column Path=LoadOrder}" />
             </sdk:DataGrid.Columns>
         </sdk:DataGrid>

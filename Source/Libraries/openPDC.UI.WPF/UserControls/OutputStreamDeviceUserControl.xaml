@@ -112,7 +112,13 @@
                 <sdk:DataGrid.Columns>
                     <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}"/>
                     <sdk:DataGridTextColumn Header=" Name" Width="*" Binding="{tsfBinding:Column Path=Name}" />
-                    <sdk:DataGridTextColumn Header="Enabled" Width="2*" Binding="{tsfBinding:Column Path=Enabled}" />
+                    <sdk:DataGridTemplateColumn Header="Enabled" Width="*">
+                        <sdk:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{tsfBinding:Column Path=Enabled}" HorizontalAlignment="Center" Margin="0" />
+                            </DataTemplate>
+                        </sdk:DataGridTemplateColumn.CellTemplate>
+                    </sdk:DataGridTemplateColumn>
                     <sdk:DataGridTemplateColumn Header="" Width="*">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
