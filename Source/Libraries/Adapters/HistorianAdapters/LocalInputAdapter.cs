@@ -39,10 +39,13 @@ namespace HistorianAdapters
     /// <summary>
     /// Represents an output adapter that publishes measurements to TVA Historian for archival.
     /// </summary>
-    [Description("Local Historian: reads data from local openHistorian for replay.")]
+    [Description("Local Historian Reader: reads data from local openHistorian for replay.")]
     public class LocalInputAdapter : InputAdapterBase
     {
         #region [ Members ]
+
+        // Constants
+        private const long DefaultPublicationInterval = 333333;
 
         // Fields
         private System.Timers.Timer m_readTimer;
@@ -50,14 +53,26 @@ namespace HistorianAdapters
         private ArchiveFile m_archiveFile;
         private IEnumerator<IDataPoint> m_dataReader;
         private string m_instanceName;
+        private long m_publicationInterval;
+        private long m_publicationTime;
         private bool m_disposed;
 
         #endregion
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="LocalInputAdapter"/>.
+        /// </summary>
+        public LocalInputAdapter()
+        {
+            // Setup a read timer
+            m_readTimer = new System.Timers.Timer();
+            m_readTimer.Elapsed += m_readTimer_Elapsed;
+        }
+
         #region [ Properties ]
 
         /// <summary>
-        /// Gets or sets instance name defined for this <see cref="LocalOutputAdapter"/>.
+        /// Gets or sets instance name defined for this <see cref="LocalInputAdapter"/>.
         /// </summary>
         [ConnectionStringParameter,
         Description("Define the instance name the archive to read. Leave this value blank to default to the adapter name."),
@@ -78,7 +93,7 @@ namespace HistorianAdapters
         }
 
         /// <summary>
-        /// Gets or sets archive path for this <see cref="LocalOutputAdapter"/>.
+        /// Gets or sets archive path for this <see cref="LocalInputAdapter"/>.
         /// </summary>
         [ConnectionStringParameter,
         Description("Define the archive location (i.e., the file system path) of the historical data.")]
@@ -94,6 +109,39 @@ namespace HistorianAdapters
                     throw new ArgumentNullException("archiveLocation", "The archiveLocation setting must be specified.");
 
                 m_archiveLocation = FilePath.GetDirectoryName(m_archiveLocation);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the publication interval for this <see cref="LocalInputAdapter"/>.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the publication time interval in 100-nanosecond tick intervals for reading historical data."),
+        DefaultValue(DefaultPublicationInterval)]
+        public long PublicationInterval
+        {
+            get
+            {
+                return m_publicationInterval;
+            }
+            set
+            {
+                m_publicationInterval = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets output measurement keys that are requested by other adapters based on what adapter says it can provide.
+        /// </summary>
+        public override MeasurementKey[] RequestedOutputMeasurementKeys
+        {
+            get
+            {
+                return base.RequestedOutputMeasurementKeys;
+            }
+            set
+            {
+                base.RequestedOutputMeasurementKeys = value;
             }
         }
 
@@ -128,6 +176,10 @@ namespace HistorianAdapters
             {
                 StringBuilder status = new StringBuilder();
                 status.Append(base.Status);
+
+                status.AppendFormat("             Instance name: {0}\r\n", m_instanceName);
+                status.AppendFormat("          Archive location: {0}\r\n", FilePath.TrimFileName(m_archiveLocation, 51));
+                status.AppendFormat("      Publication interval: {0}\r\n", m_publicationInterval);
 
                 if (m_archiveFile != null)
                     status.Append(m_archiveFile.Status);
@@ -184,7 +236,7 @@ namespace HistorianAdapters
             base.Initialize();
 
             Dictionary<string, string> settings = Settings;
-            string errorMessage = "{0} is missing from settings - Example: instanceName=PPA; archiveLocation=C:\\Program Files\\openPDC\\Archive\\";
+            string setting, errorMessage = "{0} is missing from settings - Example: instanceName=PPA; archiveLocation=C:\\Program Files\\openPDC\\Archive\\; publicationInterval=333333";
 
             // Validate settings.
             if (!settings.TryGetValue("instanceName", out m_instanceName))
@@ -192,6 +244,9 @@ namespace HistorianAdapters
 
             if (!settings.TryGetValue("archiveLocation", out m_archiveLocation))
                 throw new ArgumentException(string.Format(errorMessage, "archiveLocation"));
+
+            if (!(settings.TryGetValue("publicationInterval", out setting) && long.TryParse(setting, out m_publicationInterval)))
+                m_publicationInterval = DefaultPublicationInterval;
 
             // Define output measurements this input adapter can support based on the instance name
             OutputSourceIDs = new string[] { m_instanceName };
@@ -207,7 +262,10 @@ namespace HistorianAdapters
         /// <returns>Text of the status message.</returns>
         public override string GetShortStatus(int maxLength)
         {
-            return ""; // string.Format("Received {0} bytes in {1} packets.", m_historianDataListener.TotalBytesReceived, m_historianDataListener.TotalPacketsReceived).CenterText(maxLength);
+            if (Enabled && m_publicationTime > 0)
+                return string.Format("Publishing data for {0}...", (new DateTime(m_publicationTime)).ToString("yyyy-MM-dd HH:mm:ss.fff")).CenterText(maxLength);
+
+            return "Not currently publishing data".CenterText(maxLength);
         }
 
         /// <summary>
@@ -215,18 +273,16 @@ namespace HistorianAdapters
         /// </summary>
         protected override void AttemptConnection()
         {
-            // This adapter is only engaged for history, so we don't process any data unless a temporal constraint is definecd
+            // This adapter is only engaged for history, so we don't process any data unless a temporal constraint is defined
             if (this.TemporalConstraintIsDefined())
             {
-                // Setup a read timer
-                if (m_readTimer == null)
-                {
-                    m_readTimer = new System.Timers.Timer();
-                    m_readTimer.Elapsed += m_readTimer_Elapsed;
-                }
+                int processingInterval = ProcessingInterval;
+
+                if (processingInterval <= 0)
+                    processingInterval = 1;
 
                 m_readTimer.Enabled = false;
-                m_readTimer.Interval = ProcessingInterval;
+                m_readTimer.Interval = processingInterval;
 
                 // Attempt to open historian files
                 const string StateFileName = "{0}{1}_startup.dat";
@@ -284,7 +340,14 @@ namespace HistorianAdapters
         protected override void AttemptDisconnection()
         {
             if (m_readTimer != null)
+            {
                 m_readTimer.Enabled = false;
+
+                lock (m_readTimer)
+                {
+                    m_dataReader = null;
+                }
+            }
 
             if (m_archiveFile != null)
             {
@@ -292,39 +355,98 @@ namespace HistorianAdapters
                 m_archiveFile.Dispose();
             }
             m_archiveFile = null;
-
-            m_dataReader = null;
         }
 
         // Kick start read process for historian
         private void StartDataReader()
         {
-            MeasurementKey[] inputMeasurementKeys = InputMeasurementKeys;
+            // This adapter is only engaged for history, so we don't start reading data unless a temporal constraint is defined
+            if (this.TemporalConstraintIsDefined())
+            {
+                MeasurementKey[] requestedKeys = RequestedOutputMeasurementKeys;
 
-            if (inputMeasurementKeys != null && inputMeasurementKeys.Length > 0)
-            {
-                OnStatusMessage("Starting historical data read...");
-                IEnumerable<int> historianIDs = inputMeasurementKeys.Select(key => unchecked((int)key.ID));
-                m_dataReader = m_archiveFile.ReadData(historianIDs, StartTimeConstraint, StopTimeConstraint).GetEnumerator();
-                m_readTimer.Enabled = true;
-            }
-            else
-            {
-                OnStatusMessage("No measurement keys have been requested for reading, historian reader is idle.");
+                if (Enabled && m_archiveFile != null && requestedKeys != null && requestedKeys.Length > 0)
+                {
+                    OnStatusMessage("Starting historical data read...");
+
+                    IEnumerable<int> historianIDs = requestedKeys.Select(key => unchecked((int)key.ID));
+                    m_publicationTime = 0;
+
+                    // Start data read from historian
+                    lock (m_readTimer)
+                    {
+                        m_dataReader = m_archiveFile.ReadData(historianIDs, StartTimeConstraint, StopTimeConstraint).GetEnumerator();
+                        m_readTimer.Enabled = m_dataReader.MoveNext();
+                    }
+                }
+                else
+                {
+                    m_readTimer.Enabled = false;
+                    OnStatusMessage("No measurement keys have been requested for reading, historian reader is idle.");
+                }
             }
         }
 
         // Process next data read
         private void m_readTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (m_dataReader != null && m_dataReader.MoveNext())
-            {
+            List<IMeasurement> measurements = new List<IMeasurement>();
 
-            }
-            else
+            lock (m_readTimer)
             {
-                m_readTimer.Enabled = false;
+                if (m_dataReader != null)
+                {
+                    IDataPoint currentValue = m_dataReader.Current;
+                    long timestamp = currentValue.Time.ToDateTime().Ticks;
+                    MeasurementKey key;
+
+                    if (m_publicationTime == 0)
+                        m_publicationTime = timestamp;
+
+                    // Set next resonable publication time
+                    while (timestamp > m_publicationTime)
+                        m_publicationTime += m_publicationInterval;
+
+                    do
+                    {
+                        // Lookup measurement key for this point
+                        key = new MeasurementKey(Guid.Empty, unchecked((uint)currentValue.HistorianID), m_instanceName);
+
+                        // Add current measurement to the collection for publication
+                        measurements.Add(new Measurement()
+                        {
+                            ID = key.SignalID,
+                            Key = key,
+                            Timestamp = timestamp,
+                            Value = currentValue.Value
+                        });
+
+                        // Attempt to move to next record
+                        if (m_dataReader.MoveNext())
+                        {
+                            // Read record value
+                            currentValue = m_dataReader.Current;
+                            timestamp = currentValue.Time.ToDateTime().Ticks;
+                        }
+                        else
+                        {
+                            // Finished reading all available data
+                            m_readTimer.Enabled = false;
+                            break;
+                        }
+                    }
+                    while (timestamp <= m_publicationTime);
+                }
+                else
+                {
+                    m_readTimer.Enabled = false;
+                    OnStatusMessage("Completed historical data read.");
+                }
             }
+
+            // Publish all measurements for this time interval
+            if (measurements.Count > 0)
+                OnNewMeasurements(measurements);
         }
 
         private void m_archiveFile_DataReadException(object sender, EventArgs<Exception> e)
@@ -344,10 +466,8 @@ namespace HistorianAdapters
 
         private void m_archiveFile_HistoricFileListBuildComplete(object sender, EventArgs e)
         {
-            OnStatusMessage("Completed building list of historic archive files, starting data reader...");
-
-            if (!m_readTimer.Enabled)
-                StartDataReader();
+            OnStatusMessage("Completed building list of historic archive files.");
+            StartDataReader();
         }
 
         #endregion
