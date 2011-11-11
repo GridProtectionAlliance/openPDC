@@ -132,14 +132,26 @@
             <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1">
                 <TextBox Text="{tsfBinding:Column Path=ConnectionString}" Height="50" TextWrapping="Wrap"/>
                 <Button Command="{Binding Path=DataContext.BuildConnectionStringCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"
-                            Content=" + " VerticalAlignment="Top" ToolTip="Build connection string" Width="Auto"/>
+                             VerticalAlignment="Top" ToolTip="Build connection string" Width="Auto">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Source="/TimeSeriesFramework.UI;component/images/Plus.png" Height="24" Width="24" />
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </StackPanel>
             
             <TextBlock Text="Alternate Command Channel" Grid.Row="6" Grid.Column="2"/>
             <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="3">
                 <TextBox Text="{tsfBinding:Column Path=AlternateCommandChannel}" Height="50" TextWrapping="Wrap"/>
                 <Button Command="{Binding Path=DataContext.BuildAlternateCommandChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"
-                            Content=" + " VerticalAlignment="Top" ToolTip="Build alternate command channel" Width="Auto"/>
+                             VerticalAlignment="Top" ToolTip="Build alternate command channel" Width="Auto">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Source="/TimeSeriesFramework.UI;component/images/Plus.png" Height="24" Width="24" />
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </StackPanel>            
 
             <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0" HorizontalAlignment="Right">

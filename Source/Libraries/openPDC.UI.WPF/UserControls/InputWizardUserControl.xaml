@@ -169,9 +169,9 @@
                        Command="{Binding Path=DataContext.ManualConfigurationCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" />
 
                 <StackPanel Orientation="Horizontal" x:Name="StackPanelSummary" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3">
-                    <TextBlock Text="{tsfBinding:Column Path=DataContext.ConfigurationSummary, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}" Foreground="#FF095188" Width="Auto"/>
-                    <Button Content="Save Configuration" Width="Auto"
+                    <Button Content="Save Configuration" Width="175" HorizontalAlignment="Left"
                             Command="{Binding Path=DataContext.SaveConfigurationFileCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"/>
+                    <TextBlock Text="{tsfBinding:Column Path=DataContext.ConfigurationSummary, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}" Foreground="#FF095188" Width="Auto" Height="Auto"/>
                 </StackPanel>
 
                 <Border Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3" BorderThickness="1" Margin="2" BorderBrush="#FF333333" />
