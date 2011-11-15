@@ -1412,14 +1412,14 @@ namespace ConfigurationSetupUtility.Screens
             XmlDocument configFile = new XmlDocument();
             configFile.Load(configFileName);
             XmlNode categorizedSettings = configFile.SelectSingleNode("configuration/categorizedSettings");
-            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings/add");
+            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
 
             if (encrypted)
                 connectionString = Cipher.Encrypt(connectionString, App.CipherLookupKey, App.CryptoStrength);
 
-            foreach (XmlNode child in systemSettings.ChildNodes)
+            foreach (XmlNode child in systemSettings.ChildNodes)  
             {
-                if (child.Attributes != null)
+                if (child.Attributes != null && child.Attributes["name"] != null ) 
                 {
                     if (child.Attributes["name"].Value == "DataProviderString")
                     {
