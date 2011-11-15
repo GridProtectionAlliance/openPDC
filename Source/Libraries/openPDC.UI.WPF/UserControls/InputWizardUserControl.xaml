@@ -227,7 +227,7 @@
             </Expander.HeaderTemplate>
 
 
-            <ScrollViewer Height="290">
+            <ScrollViewer Height="400">
                 
                 <sdk:DataGrid x:Name="DataGridDevices" ItemsSource="{tsfBinding:Column Path=DataContext.ItemsSource, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}}"
                           RowDetailsVisibilityMode="VisibleWhenSelected"  Height="500" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Auto">

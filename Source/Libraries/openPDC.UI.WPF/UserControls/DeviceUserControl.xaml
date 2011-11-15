@@ -89,10 +89,20 @@
             <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Source={StaticResource NodeLookupList}}" DisplayMemberPath="Value"
                       SelectedItem="{tsfBinding:Column Path=NodeID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource NodeLookupList}}"/>
 
-            <TextBlock Text="Concentrator" Grid.Row="1" Grid.Column="2" />            
-            <ComboBox Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Source={StaticResource ConcentratorDeviceLookupList}}" DisplayMemberPath="Value"
+            <TextBlock Text="Concentrator" Grid.Row="1" Grid.Column="2" />
+            <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
+                <ComboBox x:Name="ComboBoxConcentrator" ItemsSource="{Binding Source={StaticResource ConcentratorDeviceLookupList}}" DisplayMemberPath="Value"
                       SelectedItem="{tsfBinding:Column Path=ParentID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource ConcentratorDeviceLookupList}}"
                       IsEnabled="{Binding ElementName=CheckBoxConcentrator, Path=IsChecked, Converter={StaticResource NotConverter}}"/>
+                <Button ToolTip="View Concentrator Configuration" Width="Auto" Visibility="{Binding ElementName=ComboBoxConcentrator, Path=SelectedIndex, Converter={StaticResource ObjectToVisibilityConverter}}"
+                        Command="{Binding Path=DataContext.ConfigureConcentratorCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Source="/TimeSeriesFramework.UI;component/images/EditConfiguration.png" Height="16" Width="16" />
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Acronym" Style="{StaticResource RequiredLabel}" />
@@ -226,17 +236,13 @@
         <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
                 SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
 
-        <!--<sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" 
-                      PreviewKeyDown="DataGrid_PreviewKeyDown">
+        <sdk:DataGrid ItemsSource="{tsfBinding:Column Path=PdcDevices}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" 
+                      Visibility="{Binding Path=CurrentItem.IsConcentrator, Converter={StaticResource ObjectToVisibilityConverter}}" Height="125">
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path= Acronym}"/>
-                <sdk:DataGridTextColumn Header="Name" Width="2*" Binding="{tsfBinding:Column Path= Name}" />
-                <sdk:DataGridTextColumn Header="URL" Width="3*" Binding="{tsfBinding:Column Path= URL}" />
+                <sdk:DataGridTextColumn Header="Name" Width="2*" Binding="{tsfBinding:Column Path= Name}" />                
             </sdk:DataGrid.Columns>
         </sdk:DataGrid>
 
-        <uc:DataPagerUserControl CurrentPageNumber="{Binding CurrentPageNumber}" PageCount="{Binding PageCount}"
-                                 FirstCommand="{Binding FirstCommand}" PreviousCommand="{Binding PreviousCommand}"
-                                 NextCommand="{Binding NextCommand}" LastCommand="{Binding LastCommand}"/>-->
     </StackPanel>
 </UserControl>

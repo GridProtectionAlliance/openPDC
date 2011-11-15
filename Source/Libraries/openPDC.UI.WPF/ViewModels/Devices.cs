@@ -61,10 +61,13 @@ namespace openPDC.UI.ViewModels
         private RelayCommand m_buildConnectionStringCommand;
         private RelayCommand m_buildAlternateCommandChannelCommand;
         private RelayCommand m_updateConfigurationCommand;
+        private RelayCommand m_configureConcentratorCommand;
         private string m_runtimeID;
         private ObservableCollection<Device> m_devices;
         private RelayCommand m_searchCommand;
         private RelayCommand m_showAllCommand;
+        private bool m_stayOnConfigurationScreen;
+        private ObservableCollection<Device> m_pdcDevices;
 
         #endregion
 
@@ -93,6 +96,8 @@ namespace openPDC.UI.ViewModels
                 CurrentItem = device;
                 OnPropertyChanged("IsNewRecord");
                 OnPropertyChanged("CanGoToPhasorOrMeasurement");
+                if (device.IsConcentrator)
+                    PdcDevices = Device.GetDevices(null, "WHERE ParentID = " + device.ID);
             }
         }
 
@@ -366,6 +371,30 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        public ICommand ConfigureConcentratorCommand
+        {
+            get
+            {
+                if (m_configureConcentratorCommand == null)
+                    m_configureConcentratorCommand = new RelayCommand(ConfigureConcentrator);
+
+                return m_configureConcentratorCommand;
+            }
+        }
+
+        public ObservableCollection<Device> PdcDevices
+        {
+            get
+            {
+                return m_pdcDevices;
+            }
+            set
+            {
+                m_pdcDevices = value;
+                OnPropertyChanged("PdcDevices");
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -454,8 +483,12 @@ namespace openPDC.UI.ViewModels
 
                 if (ItemsPerPage == 0) // i.e. if user is on form page then go back to list page after save.
                 {
-                    openPDC.UI.UserControls.DeviceListUserControl deviceListUserControl = new openPDC.UI.UserControls.DeviceListUserControl();
-                    CommonFunctions.LoadUserControl(deviceListUserControl, "Browse Devices");
+                    if (!m_stayOnConfigurationScreen)
+                    {
+                        openPDC.UI.UserControls.DeviceListUserControl deviceListUserControl = new openPDC.UI.UserControls.DeviceListUserControl();
+                        CommonFunctions.LoadUserControl(deviceListUserControl, "Browse Devices");
+                    }
+                    //m_stayOnConfigurationScreen = false;
                 }
             }
             catch (Exception ex)
@@ -672,8 +705,20 @@ namespace openPDC.UI.ViewModels
         {
             base.m_currentItem_PropertyChanged(sender, e);
             if (ItemsPerPage > 0 && string.Compare(e.PropertyName, "Enabled", true) == 0)
-            {
                 ProcessPropertyChange();
+        }
+
+        private void ConfigureConcentrator()
+        {
+            if (CurrentItem.ParentID != null && CurrentItem.ParentID > 0)
+            {
+                m_stayOnConfigurationScreen = true;
+                Device device = Device.GetDevice(null, "WHERE ID = " + CurrentItem.ParentID);
+                if (device != null)
+                {
+                    PdcDevices = Device.GetDevices(null, "WHERE ParentID = " + CurrentItem.ParentID);
+                    CurrentItem = device;
+                }
             }
         }
 
