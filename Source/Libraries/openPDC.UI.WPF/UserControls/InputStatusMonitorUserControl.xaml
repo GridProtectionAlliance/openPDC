@@ -275,19 +275,17 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Start Time" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
-                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" AllowDrop="True">
-                        <TextBox x:Name="TextBoxStartTime" Text="{tsfBinding:Column Path=HistoricStartTime}"  Width="10"/>                        
-                    </StackPanel>                    
+                    <TextBox x:Name="TextBoxStartTime" Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=HistoricStartTime}"  Width="150"/>                 
                     <TextBlock Text="Stop Time" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right"/>
-                    <TextBox x:Name="TextBoxStopTime" Text="{tsfBinding:Column Path=HistoricStopTime}" Grid.Row="0" Grid.Column="3" Width="150"/>
+                    <TextBox x:Name="TextBoxStopTime" Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=HistoricStopTime}" Width="150"/>
                     <TextBlock Text="Process Interval" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3">
                         <Slider x:Name="SliderProcessInterval" Margin="5,0,5,0" Minimum="0" Maximum="1000" IsSnapToTickEnabled="True" Width="400"/>
                         <TextBlock Text="{Binding ElementName=SliderProcessInterval, Path=Value}" Width="50" VerticalAlignment="Center" TextAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right">
-                        <Button x:Name="ButtonStartPlayback" Content="Start Playback" Width="Auto" Click="ButtonStartPlayback_Click" Margin="0,0,5,0"/>    
-                        <Button x:Name="ButtonReturnToRealtime" Content="Return to Real-time" Width="Auto" Click="ButtonReturnToRealtime_Click" Margin="0,0,5,0"/>
+                        <Button x:Name="ButtonStartPlayback" Content="Start Playback" Width="115" Click="ButtonStartPlayback_Click" Margin="0,0,5,0"/>    
+                        <Button x:Name="ButtonReturnToRealtime" Content="Return to Real-time" Width="115" Click="ButtonReturnToRealtime_Click" Margin="0,0,5,0"/>
                     </StackPanel>
 
                 </Grid>
