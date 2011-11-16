@@ -413,7 +413,7 @@ namespace openPDC.UI.DataModels
                 {
                     OutputStreamDeviceList.Add(new OutputStreamDevice()
                     {
-                        NodeID = row.Field<Guid>("NodeID"),
+                        NodeID = database.Guid(row, "NodeID"),
                         AdapterID = row.ConvertField<int>("AdapterID"),
                         ID = row.ConvertField<int>("ID"),
                         IDCode = row.ConvertField<int>("IDCode"),
