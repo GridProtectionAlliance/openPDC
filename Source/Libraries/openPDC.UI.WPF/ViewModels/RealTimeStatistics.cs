@@ -110,19 +110,35 @@ namespace openPDC.UI.ViewModels
 
         public override void Load()
         {
-            base.Load();
-
-            using (AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory))
+            try
             {
-                m_url = database.RealTimeStatisticServiceUrl();
-                if (!m_url.EndsWith("/"))
-                    m_url = m_url + "/";
+                base.Load();
 
-                m_url = m_url + "timeseriesdata/read/current/" + RealTimeStatistic.MinPointID.ToString() + "-" + RealTimeStatistic.MaxPointID.ToString() + "/XML";
+                using (AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory))
+                {
+                    m_url = database.RealTimeStatisticServiceUrl();
+                    if (!m_url.EndsWith("/"))
+                        m_url = m_url + "/";
+
+                    m_url = m_url + "timeseriesdata/read/current/" + RealTimeStatistic.MinPointID.ToString() + "-" + RealTimeStatistic.MaxPointID.ToString() + "/XML";
+                }
+
+                m_refreshTimer.Start();
+                GetStatisticData();
             }
-
-            m_refreshTimer.Start();
-            GetStatisticData();
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Load " + DataModelName, ex.InnerException);
+                }
+                else
+                {
+                    Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Load " + DataModelName, ex);
+                }
+            }
         }
 
         private void m_refreshTimer_Tick(object sender, EventArgs e)

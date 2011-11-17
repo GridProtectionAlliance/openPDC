@@ -463,7 +463,16 @@ namespace openPDC.UI.ViewModels
             }
             catch (Exception ex)
             {
-                Popup("ERROR: " + ex.Message, "Load Devices", MessageBoxImage.Error);
+                if (ex.InnerException != null)
+                {
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load Devices Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Load Devices", ex.InnerException);
+                }
+                else
+                {
+                    Popup(ex.Message, "Load Devices Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Load Devices", ex);
+                }
             }
             finally
             {
@@ -493,7 +502,16 @@ namespace openPDC.UI.ViewModels
             }
             catch (Exception ex)
             {
-                Popup("ERROR: " + ex.Message, "Save Device", MessageBoxImage.Error);
+                if (ex.InnerException != null)
+                {
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Save Device Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Save Device", ex.InnerException);
+                }
+                else
+                {
+                    Popup(ex.Message, "Save Device Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Save Device", ex);
+                }
             }
             finally
             {
@@ -666,7 +684,16 @@ namespace openPDC.UI.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        Popup("Failed to delete device." + Environment.NewLine + ex.Message, "Delete Device", MessageBoxImage.Error);
+                        if (ex.InnerException != null)
+                        {
+                            Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Delete Device Exception:", MessageBoxImage.Error);
+                            CommonFunctions.LogException(null, "Delete Device", ex.InnerException);
+                        }
+                        else
+                        {
+                            Popup(ex.Message, "Delete Device Exception:", MessageBoxImage.Error);
+                            CommonFunctions.LogException(null, "Delete Device", ex);
+                        }
                     }
                 }
             }

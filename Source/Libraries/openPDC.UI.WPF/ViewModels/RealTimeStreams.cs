@@ -256,6 +256,19 @@ namespace openPDC.UI.ViewModels
                 if (m_allSignalIDs.Length > 0)
                     m_allSignalIDs = m_allSignalIDs.Substring(0, m_allSignalIDs.Length - 1);
             }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Load " + DataModelName, ex.InnerException);
+                }
+                else
+                {
+                    Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Load " + DataModelName, ex);
+                }
+            }
             finally
             {
                 Mouse.OverrideCursor = null;

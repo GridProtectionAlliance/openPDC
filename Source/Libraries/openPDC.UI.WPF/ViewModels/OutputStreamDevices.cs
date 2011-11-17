@@ -32,9 +32,9 @@ using System.Windows;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
 using openPDC.UI.UserControls;
+using openPDCManager.UI.DataModels;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
-using openPDCManager.UI.DataModels;
 
 namespace openPDC.UI.ViewModels
 {
@@ -257,7 +257,7 @@ namespace openPDC.UI.ViewModels
             m_coordinateDataformatLookupList.Add("Polar", "Polar");
             m_coordinateDataformatLookupList.Add("Rectangular", "Rectangular");
 
-            bool.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MirrorMode").ToString(), out m_mirrorMode);        
+            bool.TryParse(IsolatedStorageManager.ReadFromIsolatedStorage("MirrorMode").ToString(), out m_mirrorMode);
         }
 
 
@@ -278,9 +278,15 @@ namespace openPDC.UI.ViewModels
             catch (Exception ex)
             {
                 if (ex.InnerException != null)
+                {
                     Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Load " + DataModelName, ex.InnerException);
+                }
                 else
+                {
                     Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Load " + DataModelName, ex);
+                }
             }
         }
 
@@ -317,9 +323,15 @@ namespace openPDC.UI.ViewModels
                 catch (Exception ex)
                 {
                     if (ex.InnerException != null)
+                    {
                         Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Delete " + DataModelName + " Exception:", MessageBoxImage.Error);
+                        CommonFunctions.LogException(null, "Delete " + DataModelName, ex.InnerException);
+                    }
                     else
+                    {
                         Popup(ex.Message, "Delete " + DataModelName + " Exception:", MessageBoxImage.Error);
+                        CommonFunctions.LogException(null, "Delete " + DataModelName, ex);
+                    }
                 }
             }
         }

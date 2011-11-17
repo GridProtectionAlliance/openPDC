@@ -23,7 +23,9 @@
 //
 //******************************************************************************************************
 
+using System;
 using System.Collections.Generic;
+using System.Windows;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 
@@ -135,8 +137,24 @@ namespace openPDC.UI.ViewModels
         /// </summary>
         public override void Load()
         {
-            if (m_deviceID > 0)
-                ItemsSource = Phasor.Load(null, m_deviceID);
+            try
+            {
+                if (m_deviceID > 0)
+                    ItemsSource = Phasor.Load(null, m_deviceID);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Load " + DataModelName, ex.InnerException);
+                }
+                else
+                {
+                    Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Load " + DataModelName, ex);
+                }
+            }
         }
 
         /// <summary>
