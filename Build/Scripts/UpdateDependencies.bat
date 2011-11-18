@@ -68,7 +68,7 @@ ECHO Checking in dependencies...
 %tfs% checkin "%sourcetools%ConfigCrypter.exe" /noprompt /comment:"Synchrophasor: Updated code library tool: ConfigCrypter."
 %tfs% checkin "%sourcetools%ConfigurationEditor.exe" /noprompt /comment:"Synchrophasor: Updated code library tools: ConfigurationEditor."
 %tfs% checkin "%sourcetools%HistorianPlaybackUtility.exe" /noprompt /comment:"Synchrophasor: Updated openHistorian playback / export tool: HistorianPlaybackUtility."
-%tfs% checkin "%sourcetools%HistorianView.exe" /noprompt /comment:"Synchrophasor: Updated openHistorian viewer tool: HistorianPlaybackUtility."
+%tfs% checkin "%sourcetools%HistorianView.exe" /noprompt /comment:"Synchrophasor: Updated openHistorian trending tool: HistorianView."
 
 :Finalize
 ECHO.
