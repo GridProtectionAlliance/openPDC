@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TVA;
@@ -392,55 +393,62 @@ namespace HistorianAdapters
         {
             List<IMeasurement> measurements = new List<IMeasurement>();
 
-            lock (m_readTimer)
+            if (Monitor.TryEnter(m_readTimer))
             {
-                if (m_dataReader != null)
+                try
                 {
-                    IDataPoint currentValue = m_dataReader.Current;
-                    long timestamp = currentValue.Time.ToDateTime().Ticks;
-                    MeasurementKey key;
-
-                    if (m_publicationTime == 0)
-                        m_publicationTime = timestamp;
-
-                    // Set next resonable publication time
-                    while (timestamp > m_publicationTime)
-                        m_publicationTime += m_publicationInterval;
-
-                    do
+                    if (m_dataReader != null)
                     {
-                        // Lookup measurement key for this point
-                        key = new MeasurementKey(Guid.Empty, unchecked((uint)currentValue.HistorianID), m_instanceName);
+                        IDataPoint currentValue = m_dataReader.Current;
+                        long timestamp = currentValue.Time.ToDateTime().Ticks;
+                        MeasurementKey key;
 
-                        // Add current measurement to the collection for publication
-                        measurements.Add(new Measurement()
-                        {
-                            ID = key.SignalID,
-                            Key = key,
-                            Timestamp = timestamp,
-                            Value = currentValue.Value
-                        });
+                        if (m_publicationTime == 0)
+                            m_publicationTime = timestamp;
 
-                        // Attempt to move to next record
-                        if (m_dataReader.MoveNext())
+                        // Set next resonable publication time
+                        while (timestamp > m_publicationTime)
+                            m_publicationTime += m_publicationInterval;
+
+                        do
                         {
-                            // Read record value
-                            currentValue = m_dataReader.Current;
-                            timestamp = currentValue.Time.ToDateTime().Ticks;
+                            // Lookup measurement key for this point
+                            key = new MeasurementKey(Guid.Empty, unchecked((uint)currentValue.HistorianID), m_instanceName);
+
+                            // Add current measurement to the collection for publication
+                            measurements.Add(new Measurement()
+                            {
+                                ID = key.SignalID,
+                                Key = key,
+                                Timestamp = timestamp,
+                                Value = currentValue.Value
+                            });
+
+                            // Attempt to move to next record
+                            if (m_dataReader.MoveNext())
+                            {
+                                // Read record value
+                                currentValue = m_dataReader.Current;
+                                timestamp = currentValue.Time.ToDateTime().Ticks;
+                            }
+                            else
+                            {
+                                // Finished reading all available data
+                                m_readTimer.Enabled = false;
+                                break;
+                            }
                         }
-                        else
-                        {
-                            // Finished reading all available data
-                            m_readTimer.Enabled = false;
-                            break;
-                        }
+                        while (timestamp <= m_publicationTime);
                     }
-                    while (timestamp <= m_publicationTime);
+                    else
+                    {
+                        m_readTimer.Enabled = false;
+                        OnStatusMessage("Completed historical data read.");
+                    }
                 }
-                else
+                finally
                 {
-                    m_readTimer.Enabled = false;
-                    OnStatusMessage("Completed historical data read.");
+                    Monitor.Exit(m_readTimer);
                 }
             }
 

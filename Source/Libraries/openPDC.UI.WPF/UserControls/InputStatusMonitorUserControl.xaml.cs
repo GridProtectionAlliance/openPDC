@@ -707,9 +707,11 @@ namespace openPDC.UI.UserControls
                 if (m_subscribedSynchronized && !string.IsNullOrEmpty(m_selectedSignalIDs))
                 {
                     if (!historical)
-                        m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
+                        //m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
+                        m_synchronizedSubscriber.UnsynchronizedSubscribe(false, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime);
                     else
-                        m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps, startTime: TextBoxStartTime.Text, stopTime: TextBoxStopTime.Text, processingInterval: (int)SliderProcessInterval.Value);
+                        //m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps, startTime: TextBoxStartTime.Text, stopTime: TextBoxStopTime.Text, processingInterval: (int)SliderProcessInterval.Value);
+                        m_synchronizedSubscriber.UnsynchronizedSubscribe(false, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime, startTime: TextBoxStartTime.Text, stopTime: TextBoxStopTime.Text, processingInterval: (int)SliderProcessInterval.Value);
                 }
 
                 ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
