@@ -1387,26 +1387,26 @@ namespace ConfigurationSetupUtility.Screens
             configFile = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
 
             if (applyChangesToService && File.Exists(configFile))
-                ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted);
+                ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted, true);
 
             configFile = Directory.GetCurrentDirectory() + "\\openPDCManager.exe.config";
 
             if (applyChangesToLocalManager && File.Exists(configFile))
-                ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted);
+                ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted, false);
 
             if (webManagerDir != null)
             {
                 configFile = webManagerDir.ToString() + "\\Web.config";
 
                 if (applyChangesToWebManager && File.Exists(configFile))
-                    ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted);
+                    ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted, false);
             }
 
             AppendStatusMessage("Modification of configuration files was successful.");
         }
 
         // Modifies the configuration file with the given file name to contain the given connection string and data provider string.
-        private void ModifyConfigFile(string configFileName, string connectionString, string dataProviderString, bool encrypted)
+        private void ModifyConfigFile(string configFileName, string connectionString, string dataProviderString, bool encrypted, bool addGCServerSettings)
         {
             // Modify system settings.
             XmlDocument configFile = new XmlDocument();
@@ -1417,9 +1417,9 @@ namespace ConfigurationSetupUtility.Screens
             if (encrypted)
                 connectionString = Cipher.Encrypt(connectionString, App.CipherLookupKey, App.CryptoStrength);
 
-            foreach (XmlNode child in systemSettings.ChildNodes)  
+            foreach (XmlNode child in systemSettings.ChildNodes)
             {
-                if (child.Attributes != null && child.Attributes["name"] != null ) 
+                if (child.Attributes != null && child.Attributes["name"] != null)
                 {
                     if (child.Attributes["name"].Value == "DataProviderString")
                     {
@@ -1454,6 +1454,48 @@ namespace ConfigurationSetupUtility.Screens
                             child.Attributes["value"].Value = selectedNodeId;
                         }
                     }
+                }
+
+                // Make sure desired run-time garbage collection settings exist
+                if (addGCServerSettings)
+                {
+                    XmlNode runtime = configFile.SelectSingleNode("configuration/runtime");
+                    bool updated = false;
+
+                    if (runtime == null)
+                    {
+                        // Add runtime section
+                        runtime = configFile.CreateElement("runtime");
+                        configFile.SelectSingleNode("configuration").AppendChild(runtime);
+                        updated = true;
+                    }
+
+                    // Make sure settings exist
+                    XmlNode gcConcurrent = runtime.SelectSingleNode("gcConcurrent");
+                    XmlNode gcServer = runtime.SelectSingleNode("gcServer");
+
+                    if (gcConcurrent == null)
+                    {
+                        XmlElement elem = configFile.CreateElement("gcConcurrent");
+                        XmlAttribute attrib = configFile.CreateAttribute("enabled");
+                        attrib.Value = "false";
+                        elem.Attributes.Append(attrib);
+                        runtime.AppendChild(elem);
+                        updated = true;
+                    }
+
+                    if (gcServer == null)
+                    {
+                        XmlElement elem = configFile.CreateElement("gcServer");
+                        XmlAttribute attrib = configFile.CreateAttribute("enabled");
+                        attrib.Value = "true";
+                        elem.Attributes.Append(attrib);
+                        runtime.AppendChild(elem);
+                        updated = true;
+                    }
+
+                    if (updated)
+                        configFile.Save(configFileName);
                 }
             }
 
