@@ -1179,19 +1179,21 @@ namespace TVA.PhasorProtocols
                 {
                     // Make sure new protocol types exist
                     if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='GatewayTransport'"))) == 0)
+                    {
                         connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('GatewayTransport', 'Gateway Transport', 'Measurement', 'Gateway', 'TimeSeriesFramework.dll', 'TimeSeriesFramework.Transport.DataSubscriber', " + (protocols.Rows.Count + 1) + ")");
 
-                    if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='WAV'"))) == 0)
-                        connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('WAV', 'Wave Form Input Adapter', 'Frame', 'Audio', 'WavInputAdapter.dll', 'WavInputAdapter.WavInputAdapter', " + (protocols.Rows.Count + 2) + ")");
+                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='WAV'"))) == 0)
+                            connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('WAV', 'Wave Form Input Adapter', 'Frame', 'Audio', 'WavInputAdapter.dll', 'WavInputAdapter.WavInputAdapter', " + (protocols.Rows.Count + 2) + ")");
 
-                    if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='IeeeC37_118V2'"))) == 0)
-                        connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('IeeeC37_118V2', 'IEEE C37.118-2011, R2', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', " + (protocols.Rows.Count + 3) + ")");
+                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='IeeeC37_118V2'"))) == 0)
+                            connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('IeeeC37_118V2', 'IEEE C37.118.2-2011', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', 2)");
+
+                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='VirtualInput'"))) == 0)
+                            connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('VirtualInput', 'Virtual Device', 'Frame', 'Virtual', 'TestingAdapters.dll', 'TestingAdapters.VirtualInputAdapter', " + (protocols.Rows.Count + 4) + ")");
+                    }
 
                     foreach (DataRow protocol in protocols.Rows)
                     {
-                        //if (protocolIDList.Length > 0)
-                        //    protocolIDList.Append(", ");
-
                         if (string.Compare(protocol.Field<string>("Category"), "Phasor", true) == 0)
                         {
                             if (protocolIDList.Length > 0)
@@ -1496,14 +1498,17 @@ namespace TVA.PhasorProtocols
             if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM Protocol")) == 0)
             {
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Loading default records for Protocol..."));
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('BpaPdcStream', 'BPA PDCstream')");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('OPC', 'OPC')");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('Ieee1344', 'IEEE 1344-1995')");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('IeeeC37_118D6', 'IEEE C37.118 Draft 6')");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('IeeeC37_118V1', 'IEEE C37.118-2005')");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('FNet', 'Virginia Tech FNET')");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('SelFastMessage', 'SEL Fast Message')");
-                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name) VALUES('Macrodyne', 'Macrodyne')");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('IeeeC37_118V1', 'IEEE C37.118-2005', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', 1)");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('IeeeC37_118D6', 'IEEE C37.118 Draft 6', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', 3)");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('Ieee1344', 'IEEE 1344-1995', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', 4)");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('BpaPdcStream', 'BPA PDCstream', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', 5)");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('FNet', 'Virginia Tech FNET', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', 6)");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('SelFastMessage', 'SEL Fast Message', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', 7)");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('Macrodyne', 'Macrodyne', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', 8)");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('GatewayTransport', 'Gateway Transport', 'Measurement', 'Gateway', 'TimeSeriesFramework.dll', 'TimeSeriesFramework.Transport.DataSubscriber', 9)");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('IeeeC37_118V2', 'IEEE C37.118.2-2011', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', 2)");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('WAV', 'Wave Form Input Adapter', 'Frame', 'Audio', 'WavInputAdapter.dll', 'WavInputAdapter.WavInputAdapter', 10)");
+                connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('VirtualInput', 'Virtual Device', 'Frame', 'Virtual', 'TestingAdapters.dll', 'TestingAdapters.VirtualInputAdapter', 11)");
             }
         }
 
