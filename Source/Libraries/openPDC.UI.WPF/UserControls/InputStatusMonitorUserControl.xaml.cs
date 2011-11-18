@@ -845,11 +845,17 @@ namespace openPDC.UI.UserControls
 
         private void ButtonStartPlayback_Click(object sender, RoutedEventArgs e)
         {
+            UnsubscribeSynchronizedData();
+            ChartPlotterDynamic.Background = new SolidColorBrush(Color.FromArgb(255, 225, 225, 225));
+            m_timeStampList = new ConcurrentQueue<string>();
             SubscribeSynchronizedData(true);
         }
 
         private void ButtonReturnToRealtime_Click(object sender, RoutedEventArgs e)
         {
+            UnsubscribeSynchronizedData();
+            ChartPlotterDynamic.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+            m_timeStampList = new ConcurrentQueue<string>();
             SubscribeSynchronizedData();
         }
 
