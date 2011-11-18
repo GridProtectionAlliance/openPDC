@@ -128,6 +128,36 @@
             Returns the detailed status of the data input source.
             </summary>
         </member>
+        <member name="T:TestingAdapters.VirtualInputAdapter">
+            <summary>
+            Represents a virtual input adapter used for testing purposes - no data gets produced.
+            </summary>
+        </member>
+        <member name="M:TestingAdapters.VirtualInputAdapter.GetShortStatus(System.Int32)">
+            <summary>
+            Gets a short one-line status of this <see cref="T:TestingAdapters.VirtualInputAdapter"/>.
+            </summary>
+        </member>
+        <member name="M:TestingAdapters.VirtualInputAdapter.AttemptConnection">
+            <summary>
+            Attempts to connect to this <see cref="T:TestingAdapters.VirtualInputAdapter"/>.
+            </summary>
+        </member>
+        <member name="M:TestingAdapters.VirtualInputAdapter.AttemptDisconnection">
+            <summary>
+            Attempts to disconnect to this <see cref="T:TestingAdapters.VirtualInputAdapter"/>.
+            </summary>
+        </member>
+        <member name="P:TestingAdapters.VirtualInputAdapter.UseAsyncConnect">
+            <summary>
+            Gets flag that determines if this <see cref="T:TestingAdapters.VirtualInputAdapter"/> uses an asynchronous connection.
+            </summary>
+        </member>
+        <member name="P:TestingAdapters.VirtualInputAdapter.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
+            </summary>
+        </member>
         <member name="T:TestingAdapters.VirtualOutputAdapter">
             <summary>
             Represents a virtual historian output adapter used for testing purposes - no data gets archived.
