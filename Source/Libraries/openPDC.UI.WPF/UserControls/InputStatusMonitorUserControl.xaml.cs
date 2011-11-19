@@ -64,7 +64,7 @@ namespace openPDC.UI.UserControls
 
         // Synchronized subscription fields
         private bool m_restartConnectionCycle;
-        private DataSubscriber m_synchronizedSubscriber;
+        private DataSubscriber m_subscriber;
         private bool m_subscribedSynchronized;
         private DispatcherTimer m_refreshTimer;
         private string m_selectedSignalIDs;
@@ -98,6 +98,7 @@ namespace openPDC.UI.UserControls
         private bool m_displayLegend;
         private long m_refreshRate = Ticks.FromMilliseconds(500);                                       // This is used to refresh real-time values below chart.
         private long m_lastRefreshTime;
+        private bool m_historicalPlayback;
 
         #endregion
 
@@ -131,7 +132,7 @@ namespace openPDC.UI.UserControls
         {
             m_restartConnectionCycle = false;
             m_dataContext.RestartConnectionCycle = false;
-            UnsubscribeSynchronizedData();
+            Unsubscribe();
             m_dataContext.UnsubscribeUnsynchronizedData();
             TimeSeriesFramework.UI.IsolatedStorageManager.WriteToIsolatedStorage("InputMonitoringPoints", m_selectedSignalIDs);
         }
@@ -256,6 +257,7 @@ namespace openPDC.UI.UserControls
             m_refreshRate = Ticks.FromMilliseconds(m_chartRefreshInterval);
             TextBlockMeasurementRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString();
             TextBlockStatisticsRefreshInterval.Text = m_statisticsDataRefershInterval.ToString();
+            TextBoxProcessInterval.Text = "33";
         }
 
         private void m_displayedMeasurement_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -401,7 +403,7 @@ namespace openPDC.UI.UserControls
                 }
 
                 if (m_selectedMeasurements.Count > 0)
-                    SubscribeSynchronizedData();
+                    Subscribe();
             }
         }
 
@@ -420,7 +422,7 @@ namespace openPDC.UI.UserControls
                 m_selectedSignalIDs = m_selectedSignalIDs.Substring(0, m_selectedSignalIDs.Length - 1);
 
             // once user has changed selection, resubscribe with new values.
-            SubscribeSynchronizedData();
+            Subscribe();
         }
 
         private void StartRefreshTimer()
@@ -526,15 +528,15 @@ namespace openPDC.UI.UserControls
 
         #region [ Synchronized Subscription ]
 
-        private void m_synchronizedSubscriber_ConnectionTerminated(object sender, EventArgs e)
+        private void m_subscriber_ConnectionTerminated(object sender, EventArgs e)
         {
             m_subscribedSynchronized = false;
-            UnsubscribeSynchronizedData();
+            Unsubscribe();
             if (m_restartConnectionCycle)
-                InitializeSynchronizedSubscription();
+                InitializeSubscription();
         }
 
-        private void m_synchronizedSubscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
+        private void m_subscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
         {
             if (0 == Interlocked.Exchange(ref m_processingSynchronizedMeasurements, 1))
             {
@@ -633,38 +635,38 @@ namespace openPDC.UI.UserControls
             }
         }
 
-        private void m_synchronizedSubscriber_ConnectionEstablished(object sender, EventArgs e)
+        private void m_subscriber_ConnectionEstablished(object sender, EventArgs e)
         {
             m_subscribedSynchronized = true;
-            SubscribeSynchronizedData();
+            Subscribe();
         }
 
-        private void m_synchronizedSubscriber_ProcessException(object sender, EventArgs<Exception> e)
+        private void m_subscriber_ProcessException(object sender, EventArgs<Exception> e)
         {
 
         }
 
-        private void m_synchronizedSubscriber_StatusMessage(object sender, EventArgs<string> e)
+        private void m_subscriber_StatusMessage(object sender, EventArgs<string> e)
         {
 
         }
 
-        private void InitializeSynchronizedSubscription()
+        private void InitializeSubscription()
         {
             try
             {
                 using (AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory))
                 {
 
-                    m_synchronizedSubscriber = new DataSubscriber();
-                    m_synchronizedSubscriber.StatusMessage += m_synchronizedSubscriber_StatusMessage;
-                    m_synchronizedSubscriber.ProcessException += m_synchronizedSubscriber_ProcessException;
-                    m_synchronizedSubscriber.ConnectionEstablished += m_synchronizedSubscriber_ConnectionEstablished;
-                    m_synchronizedSubscriber.NewMeasurements += m_synchronizedSubscriber_NewMeasurements;
-                    m_synchronizedSubscriber.ConnectionTerminated += m_synchronizedSubscriber_ConnectionTerminated;
-                    m_synchronizedSubscriber.ConnectionString = database.DataPublisherConnectionString();
-                    m_synchronizedSubscriber.Initialize();
-                    m_synchronizedSubscriber.Start();
+                    m_subscriber = new DataSubscriber();
+                    m_subscriber.StatusMessage += m_subscriber_StatusMessage;
+                    m_subscriber.ProcessException += m_subscriber_ProcessException;
+                    m_subscriber.ConnectionEstablished += m_subscriber_ConnectionEstablished;
+                    m_subscriber.NewMeasurements += m_subscriber_NewMeasurements;
+                    m_subscriber.ConnectionTerminated += m_subscriber_ConnectionTerminated;
+                    m_subscriber.ConnectionString = database.DataPublisherConnectionString();
+                    m_subscriber.Initialize();
+                    m_subscriber.Start();
                 }
             }
             catch
@@ -673,67 +675,79 @@ namespace openPDC.UI.UserControls
             }
         }
 
-        private void StopSynchronizedSubscription()
+        private void DisposeSubscription()
         {
-            if (m_synchronizedSubscriber != null)
+            if (m_subscriber != null)
             {
-                m_synchronizedSubscriber.StatusMessage -= m_synchronizedSubscriber_StatusMessage;
-                m_synchronizedSubscriber.ProcessException -= m_synchronizedSubscriber_ProcessException;
-                m_synchronizedSubscriber.ConnectionEstablished -= m_synchronizedSubscriber_ConnectionEstablished;
-                m_synchronizedSubscriber.NewMeasurements -= m_synchronizedSubscriber_NewMeasurements;
-                m_synchronizedSubscriber.ConnectionTerminated -= m_synchronizedSubscriber_ConnectionTerminated;
-                m_synchronizedSubscriber.Stop();
-                m_synchronizedSubscriber.Dispose();
-                m_synchronizedSubscriber = null;
+                m_subscriber.StatusMessage -= m_subscriber_StatusMessage;
+                m_subscriber.ProcessException -= m_subscriber_ProcessException;
+                m_subscriber.ConnectionEstablished -= m_subscriber_ConnectionEstablished;
+                m_subscriber.NewMeasurements -= m_subscriber_NewMeasurements;
+                m_subscriber.ConnectionTerminated -= m_subscriber_ConnectionTerminated;
+                m_subscriber.Stop();
+                m_subscriber.Dispose();
+                m_subscriber = null;
             }
         }
 
-        private void SubscribeSynchronizedData()
-        {
-            SubscribeSynchronizedData(false);
-        }
-
-        private void SubscribeSynchronizedData(bool historical)
+        private void Subscribe()
         {
             if (m_selectedMeasurements.Count == 0)
             {
-                UnsubscribeSynchronizedData();
+                Unsubscribe();
             }
             else
             {
-                if (m_synchronizedSubscriber == null)
-                    InitializeSynchronizedSubscription();
-
-                if (m_subscribedSynchronized && !string.IsNullOrEmpty(m_selectedSignalIDs))
+                if (m_subscriber == null)
                 {
-                    if (!historical)
-                        //m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
-                        m_synchronizedSubscriber.UnsynchronizedSubscribe(false, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime);
-                    else
-                        //m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps, startTime: TextBoxStartTime.Text, stopTime: TextBoxStopTime.Text, processingInterval: (int)SliderProcessInterval.Value);
-                        m_synchronizedSubscriber.UnsynchronizedSubscribe(false, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime, startTime: TextBoxStartTime.Text, stopTime: TextBoxStopTime.Text, processingInterval: (int)SliderProcessInterval.Value);
+                    InitializeSubscription();
                 }
-
-                ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
+                else
                 {
-                    StartRefreshTimer();
-                });
+                    if (m_subscribedSynchronized && !string.IsNullOrEmpty(m_selectedSignalIDs))
+                    {
+                        m_subscriber.Unsubscribe();
+
+                        if (m_historicalPlayback)
+                        {
+                            Dispatcher.BeginInvoke(new Action(delegate()
+                            {
+                                string startTime = TextBoxStartTime.Text;
+                                string stopTime = TextBoxStopTime.Text;
+                                int processingInterval = int.Parse(TextBoxProcessInterval.Text);
+
+                                //m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps, startTime: TextBoxStartTime.Text, stopTime: TextBoxStopTime.Text, processingInterval: (int)SliderProcessInterval.Value);
+                                m_subscriber.UnsynchronizedSubscribe(false, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime, startTime, stopTime, null, processingInterval);
+                            }));
+                        }
+                        else
+                        {
+                            //m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
+                            m_subscriber.UnsynchronizedSubscribe(false, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime);
+                        }
+                    }
+
+                    ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
+                    {
+                        StartRefreshTimer();
+                    });
+                }
             }
         }
 
-        private void UnsubscribeSynchronizedData()
+        private void Unsubscribe()
         {
             try
             {
-                if (m_synchronizedSubscriber != null)
+                if (m_subscriber != null)
                 {
-                    m_synchronizedSubscriber.Unsubscribe();
-                    StopSynchronizedSubscription();
+                    m_subscriber.Unsubscribe();
+                    DisposeSubscription();
                 }
             }
             catch
             {
-                m_synchronizedSubscriber = null;
+                m_subscriber = null;
             }
 
             StopRefreshTimer();
@@ -756,7 +770,7 @@ namespace openPDC.UI.UserControls
         {
             m_restartConnectionCycle = false;
             m_dataContext.RestartConnectionCycle = false;
-            UnsubscribeSynchronizedData();
+            Unsubscribe();
             m_dataContext.UnsubscribeUnsynchronizedData();
             TimeSeriesFramework.UI.IsolatedStorageManager.InitializeStorageForInputStatusMonitor(true);
             RetrieveSettingsFromIsolatedStorage();
@@ -833,30 +847,30 @@ namespace openPDC.UI.UserControls
         private void Expander_Collapsed(object sender, RoutedEventArgs e)
         {
             if (ExpanderHistoricalPlayback.IsVisible)
-                DataGridStatistics.Height = 165;
+                DataGridStatistics.Height = 170;
             else
                 DataGridStatistics.Height = 190;
         }
 
         private void Expander_Expanded(object sender, RoutedEventArgs e)
         {
-            DataGridStatistics.Height = 80;
+            DataGridStatistics.Height = 110;
         }
 
         private void ButtonStartPlayback_Click(object sender, RoutedEventArgs e)
         {
-            UnsubscribeSynchronizedData();
             ChartPlotterDynamic.Background = new SolidColorBrush(Color.FromArgb(255, 225, 225, 225));
             m_timeStampList = new ConcurrentQueue<string>();
-            SubscribeSynchronizedData(true);
+            m_historicalPlayback = true;
+            Subscribe();
         }
 
         private void ButtonReturnToRealtime_Click(object sender, RoutedEventArgs e)
         {
-            UnsubscribeSynchronizedData();
             ChartPlotterDynamic.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
             m_timeStampList = new ConcurrentQueue<string>();
-            SubscribeSynchronizedData();
+            m_historicalPlayback = false;
+            Subscribe();
         }
 
         private void ButtonRemove_Click(object sender, RoutedEventArgs e)
@@ -865,7 +879,9 @@ namespace openPDC.UI.UserControls
             {
                 ((RealTimeMeasurement)((Button)sender).DataContext).Selected = false;
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         #endregion

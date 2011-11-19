@@ -359,7 +359,7 @@ namespace HistorianAdapters
         }
 
         // Kick start read process for historian
-        private void StartDataReader()
+        private void StartDataReader(object state)
         {
             // This adapter is only engaged for history, so we don't start reading data unless a temporal constraint is defined
             if (this.TemporalConstraintIsDefined())
@@ -368,16 +368,19 @@ namespace HistorianAdapters
 
                 if (Enabled && m_archiveFile != null && requestedKeys != null && requestedKeys.Length > 0)
                 {
-                    OnStatusMessage("Starting historical data read...");
-
                     IEnumerable<int> historianIDs = requestedKeys.Select(key => unchecked((int)key.ID));
                     m_publicationTime = 0;
 
                     // Start data read from historian
                     lock (m_readTimer)
                     {
-                        m_dataReader = m_archiveFile.ReadData(historianIDs, StartTimeConstraint, StopTimeConstraint).GetEnumerator();
+                        m_dataReader = m_archiveFile.ReadData(historianIDs, new TimeTag(StartTimeConstraint), new TimeTag(StopTimeConstraint)).GetEnumerator();
                         m_readTimer.Enabled = m_dataReader.MoveNext();
+
+                        if (m_readTimer.Enabled)
+                            OnStatusMessage("Starting historical data read...");
+                        else
+                            OnStatusMessage("No historical data was available to read for given timeframe.");
                     }
                 }
                 else
@@ -475,7 +478,9 @@ namespace HistorianAdapters
         private void m_archiveFile_HistoricFileListBuildComplete(object sender, EventArgs e)
         {
             OnStatusMessage("Completed building list of historic archive files.");
-            StartDataReader();
+
+            if (!m_readTimer.Enabled)
+                ThreadPool.QueueUserWorkItem(StartDataReader);
         }
 
         #endregion

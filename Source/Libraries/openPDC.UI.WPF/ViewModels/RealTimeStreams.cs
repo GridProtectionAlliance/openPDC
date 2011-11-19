@@ -93,6 +93,9 @@ namespace openPDC.UI.ViewModels
 
         #region [ Properties ]
 
+        /// <summary>
+        /// Gets or sets start time for this <see cref="RealTimeStream"/>.
+        /// </summary>
         public string StartTime
         {
             get
@@ -105,6 +108,9 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets stop for this <see cref="RealTimeStream"/>.
+        /// </summary>
         public string StopTime
         {
             get
@@ -117,6 +123,9 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets flag that determines if temporal support is enabled.
+        /// </summary>
         public bool TemporalSupportEnabled
         {
             get
