@@ -132,21 +132,6 @@ namespace HistorianAdapters
         }
 
         /// <summary>
-        /// Gets or sets output measurement keys that are requested by other adapters based on what adapter says it can provide.
-        /// </summary>
-        public override MeasurementKey[] RequestedOutputMeasurementKeys
-        {
-            get
-            {
-                return base.RequestedOutputMeasurementKeys;
-            }
-            set
-            {
-                base.RequestedOutputMeasurementKeys = value;
-            }
-        }
-
-        /// <summary>
         /// Gets the flag indicating if this adapter supports temporal processing.
         /// </summary>
         public override bool SupportsTemporalProcessing
@@ -154,6 +139,29 @@ namespace HistorianAdapters
             get
             {
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the desired processing interval, in milliseconds, for the adapter.
+        /// </summary>
+        /// <remarks>
+        /// With the exception of the values of -1 and 0, this value specifies the desired processing interval for data, i.e.,
+        /// basically a delay, or timer interval, overwhich to process data. A value of -1 means to use the default processing
+        /// interval while a value of 0 means to process data as fast as possible.
+        /// </remarks>
+        public override int ProcessingInterval
+        {
+            get
+            {
+                return base.ProcessingInterval;
+            }
+            set
+            {
+                base.ProcessingInterval = value;
+
+                // Set read timer interval to the requested processing interval
+                m_readTimer.Interval = value <= 0 ? 1 : value;
             }
         }
 
@@ -277,13 +285,8 @@ namespace HistorianAdapters
             // This adapter is only engaged for history, so we don't process any data unless a temporal constraint is defined
             if (this.TemporalConstraintIsDefined())
             {
-                int processingInterval = ProcessingInterval;
-
-                if (processingInterval <= 0)
-                    processingInterval = 1;
-
+                // Turn off read timer if it's active
                 m_readTimer.Enabled = false;
-                m_readTimer.Interval = processingInterval;
 
                 // Attempt to open historian files
                 const string StateFileName = "{0}{1}_startup.dat";
@@ -326,6 +329,9 @@ namespace HistorianAdapters
 
                         // Open the active archive
                         m_archiveFile.Open();
+
+                        // Start the data reader on its own thread so connection attempt can complete in a timely fashion...
+                        ThreadPool.QueueUserWorkItem(StartDataReader);
                     }
                 }
                 else
@@ -361,33 +367,37 @@ namespace HistorianAdapters
         // Kick start read process for historian
         private void StartDataReader(object state)
         {
-            // This adapter is only engaged for history, so we don't start reading data unless a temporal constraint is defined
-            if (this.TemporalConstraintIsDefined())
+            MeasurementKey[] requestedKeys = RequestedOutputMeasurementKeys;
+
+            if (Enabled && m_archiveFile != null && requestedKeys != null && requestedKeys.Length > 0)
             {
-                MeasurementKey[] requestedKeys = RequestedOutputMeasurementKeys;
+                IEnumerable<int> historianIDs = requestedKeys.Select(key => unchecked((int)key.ID));
+                m_publicationTime = 0;
 
-                if (Enabled && m_archiveFile != null && requestedKeys != null && requestedKeys.Length > 0)
+                // Start data read from historian
+                lock (m_readTimer)
                 {
-                    IEnumerable<int> historianIDs = requestedKeys.Select(key => unchecked((int)key.ID));
-                    m_publicationTime = 0;
+                    TimeTag startTime = StartTimeConstraint < TimeTag.MinValue ? TimeTag.MinValue : StartTimeConstraint > TimeTag.MaxValue ? TimeTag.MaxValue : new TimeTag(StartTimeConstraint);
+                    TimeTag stopTime = StopTimeConstraint < TimeTag.MinValue ? TimeTag.MinValue : StopTimeConstraint > TimeTag.MaxValue ? TimeTag.MaxValue : new TimeTag(StopTimeConstraint);
 
-                    // Start data read from historian
-                    lock (m_readTimer)
+                    m_dataReader = m_archiveFile.ReadData(historianIDs, startTime, stopTime).GetEnumerator();
+                    m_readTimer.Enabled = m_dataReader.MoveNext();
+
+                    if (m_readTimer.Enabled)
                     {
-                        m_dataReader = m_archiveFile.ReadData(historianIDs, new TimeTag(StartTimeConstraint), new TimeTag(StopTimeConstraint)).GetEnumerator();
-                        m_readTimer.Enabled = m_dataReader.MoveNext();
-
-                        if (m_readTimer.Enabled)
-                            OnStatusMessage("Starting historical data read...");
-                        else
-                            OnStatusMessage("No historical data was available to read for given timeframe.");
+                        OnStatusMessage("Starting historical data read...");
+                    }
+                    else
+                    {
+                        OnStatusMessage("No historical data was available to read for given timeframe.");
+                        OnProcessingComplete();
                     }
                 }
-                else
-                {
-                    m_readTimer.Enabled = false;
-                    OnStatusMessage("No measurement keys have been requested for reading, historian reader is idle.");
-                }
+            }
+            else
+            {
+                m_readTimer.Enabled = false;
+                OnStatusMessage("No measurement keys have been requested for reading, historian reader is idle.");
             }
         }
 
@@ -400,54 +410,52 @@ namespace HistorianAdapters
             {
                 try
                 {
-                    if (m_dataReader != null)
+                    IDataPoint currentPoint = m_dataReader.Current;
+                    long timestamp = currentPoint.Time.ToDateTime().Ticks;
+                    MeasurementKey key;
+
+                    if (m_publicationTime == 0)
+                        m_publicationTime = timestamp;
+
+                    // Set next reasonable publication time
+                    while (timestamp > m_publicationTime)
+                        m_publicationTime += m_publicationInterval;
+
+                    do
                     {
-                        IDataPoint currentValue = m_dataReader.Current;
-                        long timestamp = currentValue.Time.ToDateTime().Ticks;
-                        MeasurementKey key;
+                        // Lookup measurement key for this point
+                        key = new MeasurementKey(Guid.Empty, unchecked((uint)currentPoint.HistorianID), m_instanceName);
 
-                        if (m_publicationTime == 0)
-                            m_publicationTime = timestamp;
-
-                        // Set next resonable publication time
-                        while (timestamp > m_publicationTime)
-                            m_publicationTime += m_publicationInterval;
-
-                        do
+                        // Add current measurement to the collection for publication
+                        measurements.Add(new Measurement()
                         {
-                            // Lookup measurement key for this point
-                            key = new MeasurementKey(Guid.Empty, unchecked((uint)currentValue.HistorianID), m_instanceName);
+                            ID = key.SignalID,
+                            Key = key,
+                            Timestamp = timestamp,
+                            Value = currentPoint.Value
+                        });
 
-                            // Add current measurement to the collection for publication
-                            measurements.Add(new Measurement()
-                            {
-                                ID = key.SignalID,
-                                Key = key,
-                                Timestamp = timestamp,
-                                Value = currentValue.Value
-                            });
-
-                            // Attempt to move to next record
-                            if (m_dataReader.MoveNext())
-                            {
-                                // Read record value
-                                currentValue = m_dataReader.Current;
-                                timestamp = currentValue.Time.ToDateTime().Ticks;
-                            }
-                            else
-                            {
-                                // Finished reading all available data
-                                m_readTimer.Enabled = false;
-                                break;
-                            }
+                        // Attempt to move to next record
+                        if (m_dataReader.MoveNext())
+                        {
+                            // Read record value
+                            currentPoint = m_dataReader.Current;
+                            timestamp = currentPoint.Time.ToDateTime().Ticks;
                         }
-                        while (timestamp <= m_publicationTime);
+                        else
+                        {
+                            // Finished reading all available data
+                            m_readTimer.Enabled = false;
+                            OnProcessingComplete();
+                            break;
+                        }
                     }
-                    else
-                    {
-                        m_readTimer.Enabled = false;
-                        OnStatusMessage("Completed historical data read.");
-                    }
+                    while (timestamp <= m_publicationTime);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Pooled timer thread executed after last read, verify timer has stopped
+                    m_readTimer.Enabled = false;
                 }
                 finally
                 {
@@ -478,9 +486,6 @@ namespace HistorianAdapters
         private void m_archiveFile_HistoricFileListBuildComplete(object sender, EventArgs e)
         {
             OnStatusMessage("Completed building list of historic archive files.");
-
-            if (!m_readTimer.Enabled)
-                ThreadPool.QueueUserWorkItem(StartDataReader);
         }
 
         #endregion

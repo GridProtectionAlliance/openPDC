@@ -24,8 +24,9 @@
 using System;
 using System.Security.Principal;
 using System.Windows;
-using System.Windows.Controls;
+using TimeSeriesFramework;
 using TimeSeriesFramework.UI;
+using TVA.Data;
 using TVA.ErrorManagement;
 using TVA.Reflection;
 
@@ -67,8 +68,29 @@ namespace openPDCManager
             m_errorLogger.LogToUI = true;
             m_errorLogger.Initialize();
 
-            Version appVersion = AssemblyInfo.EntryAssembly.Version;
-            m_title = AssemblyInfo.EntryAssembly.Title + " (v" + appVersion.Major + "." + appVersion.Minor + "." + appVersion.Build + ") ";
+            //Version appVersion = AssemblyInfo.EntryAssembly.Version;
+            // (v" + appVersion.Major + "." + appVersion.Minor + "." + appVersion.Build + ") ";
+
+            m_title = AssemblyInfo.EntryAssembly.Title;
+
+            // Setup default cache for measurement keys and associated Guid based signal ID's
+            AdoDataConnection database = null;
+
+            try
+            {
+                database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
+                MeasurementKey.EstablishDefaultCache(database.Connection, database.AdapterType);
+            }
+            catch (Exception ex)
+            {
+                // Log and display error, then exit application - manager must connect to database to continue
+                m_errorLogger.Log(new InvalidOperationException(string.Format("{0} cannot connect to database: {1}", m_title, ex.Message), ex), true);
+            }
+            finally
+            {
+                if (database != null)
+                    database.Dispose();
+            }
 
             IsolatedStorageManager.WriteToIsolatedStorage("MirrorMode", false);
         }

@@ -252,6 +252,7 @@
 
                 <TextBlock x:Name="TextBlockLeft" Canvas.Left="2" Canvas.Bottom="0" />
                 <TextBlock x:Name="TextBlockRight" Canvas.Right="2" Canvas.Bottom="0" />
+                <TextBlock x:Name="ModeMessage" Canvas.Right="2" Canvas.Top="0" Text="Real-time" Visibility="{Binding Path=TemporalSupportEnabled, Mode=OneWay, Converter={StaticResource ObjectToVisibilityConverter}}" />
 
             </d3:ChartPlotter>
 
@@ -279,8 +280,9 @@
                     <TextBox x:Name="TextBoxStopTime" Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=StopTime}" Width="150"/>
                     <TextBlock Text="Process Interval" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="5,0,0,0">
-                        <Slider x:Name="SliderProcessInterval" Value="{Binding ElementName=TextBoxProcessInterval, Path=Text, Mode=TwoWay}" Margin="10,5,5,5" Minimum="0" Maximum="1000" IsSnapToTickEnabled="True" Width="110"/>
-                        <TextBox x:Name="TextBoxProcessInterval" Text="{Binding ElementName=SliderProcessInterval, Path=Value, Mode=TwoWay}" Width="50" VerticalAlignment="Center" TextAlignment="Center"/>
+                        <Slider x:Name="SliderProcessInterval" Interval="250" Value="{Binding ElementName=TextBoxProcessInterval, Path=Text, Mode=TwoWay}" Margin="10,5,5,5" Minimum="0" Maximum="1000" TickFrequency="50" IsSnapToTickEnabled="True" Width="90"/>
+                        <TextBox x:Name="TextBoxProcessInterval" Text="{Binding ElementName=SliderProcessInterval, Path=Value, Mode=TwoWay}" Width="50" VerticalAlignment="Center" TextAlignment="Center" TextChanged="TextBoxProcessInterval_TextChanged" />
+                        <TextBlock Text="ms" Margin="0" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Right">
                         <Button x:Name="ButtonStartPlayback" Content="Start Playback" Width="125" Click="ButtonStartPlayback_Click" Margin="0,0,5,0"/>    

@@ -85,7 +85,7 @@ namespace openPDC.UI.UserControls
         private double m_lagTime = 3.0;
         private bool m_useLocalClockAsRealtime;
         private bool m_ignoreBadTimestamps;
-        private int m_chartRefreshInterval = 250;
+        private int m_chartRefreshInterval = 66;
         private int m_statisticsDataRefershInterval = 10;
         private int m_measurementsDataRefreshInterval = 10;
         private double m_frequencyRangeMin = 59.95;
@@ -99,6 +99,7 @@ namespace openPDC.UI.UserControls
         private long m_refreshRate = Ticks.FromMilliseconds(500);                                       // This is used to refresh real-time values below chart.
         private long m_lastRefreshTime;
         private bool m_historicalPlayback;
+        private bool m_waitingForData;
 
         #endregion
 
@@ -119,8 +120,6 @@ namespace openPDC.UI.UserControls
         #endregion
 
         #region [ Methods ]
-
-        #region [ Controls Event Handlers ]
 
         private void InputStatusMonitorUserControl_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -180,6 +179,7 @@ namespace openPDC.UI.UserControls
             }
             catch (Exception)
             {
+                // TODO: Turn this into popup error
                 //System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
         }
@@ -204,6 +204,7 @@ namespace openPDC.UI.UserControls
             }
             catch (Exception)
             {
+                // TODO: Turn this into popup error
                 //System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
         }
@@ -239,8 +240,6 @@ namespace openPDC.UI.UserControls
             if (removeMeasurement)
                 m_displayedMeasurement.Remove(measurement);
         }
-
-        #endregion
 
         private void Initialize()
         {
@@ -343,6 +342,7 @@ namespace openPDC.UI.UserControls
 
             for (int i = 0; i < m_numberOfDataPointsToPlot; i++)
                 m_xAxisDataCollection[i] = i;
+
             m_xAxisBindingCollection = new EnumerableDataSource<int>(m_xAxisDataCollection);
             m_xAxisBindingCollection.SetXMapping(x => x);
         }
@@ -526,8 +526,6 @@ namespace openPDC.UI.UserControls
             CommonFunctions.LoadUserControl(phasorMeasurementUserControl, "Manage Measurements for " + measurement.DeviceAcronym);
         }
 
-        #region [ Synchronized Subscription ]
-
         private void m_subscriber_ConnectionTerminated(object sender, EventArgs e)
         {
             m_subscribedSynchronized = false;
@@ -542,6 +540,16 @@ namespace openPDC.UI.UserControls
             {
                 try
                 {
+                    if (m_historicalPlayback && m_waitingForData)
+                    {
+                        m_waitingForData = false;
+
+                        Dispatcher.BeginInvoke(new Action(delegate()
+                        {
+                            ModeMessage.Text = "Historical";
+                        }));
+                    }
+
                     bool processedTimestamp = false;
                     bool refreshMeasurementValueBelowChart = false;
                     if (DateTime.UtcNow.Ticks - m_lastRefreshTime > m_refreshRate)
@@ -651,19 +659,27 @@ namespace openPDC.UI.UserControls
 
         }
 
+        private void m_subscriber_ProcessingComplete(object sender, EventArgs<string> e)
+        {
+            Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                ButtonReturnToRealtime_Click(null, null);
+            }));
+        }
+
         private void InitializeSubscription()
         {
             try
             {
                 using (AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory))
                 {
-
                     m_subscriber = new DataSubscriber();
                     m_subscriber.StatusMessage += m_subscriber_StatusMessage;
                     m_subscriber.ProcessException += m_subscriber_ProcessException;
                     m_subscriber.ConnectionEstablished += m_subscriber_ConnectionEstablished;
                     m_subscriber.NewMeasurements += m_subscriber_NewMeasurements;
                     m_subscriber.ConnectionTerminated += m_subscriber_ConnectionTerminated;
+                    m_subscriber.ProcessingComplete += m_subscriber_ProcessingComplete;
                     m_subscriber.ConnectionString = database.DataPublisherConnectionString();
                     m_subscriber.Initialize();
                     m_subscriber.Start();
@@ -671,6 +687,7 @@ namespace openPDC.UI.UserControls
             }
             catch
             {
+                // TODO: show error in popup window
                 //Popup("Failed to initialize subscription." + Environment.NewLine + ex.Message, "Failed to Subscribe", MessageBoxImage.Error);
             }
         }
@@ -684,6 +701,7 @@ namespace openPDC.UI.UserControls
                 m_subscriber.ConnectionEstablished -= m_subscriber_ConnectionEstablished;
                 m_subscriber.NewMeasurements -= m_subscriber_NewMeasurements;
                 m_subscriber.ConnectionTerminated -= m_subscriber_ConnectionTerminated;
+                m_subscriber.ProcessingComplete -= m_subscriber_ProcessingComplete;
                 m_subscriber.Stop();
                 m_subscriber.Dispose();
                 m_subscriber = null;
@@ -717,13 +735,14 @@ namespace openPDC.UI.UserControls
                                 int processingInterval = int.Parse(TextBoxProcessInterval.Text);
 
                                 //m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps, startTime: TextBoxStartTime.Text, stopTime: TextBoxStopTime.Text, processingInterval: (int)SliderProcessInterval.Value);
-                                m_subscriber.UnsynchronizedSubscribe(false, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime, startTime, stopTime, null, processingInterval);
+                                m_subscriber.UnsynchronizedSubscribe(true, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime, startTime, stopTime, null, processingInterval);
+                                m_waitingForData = true;
                             }));
                         }
                         else
                         {
                             //m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps);
-                            m_subscriber.UnsynchronizedSubscribe(false, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime);
+                            m_subscriber.UnsynchronizedSubscribe(true, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime);
                         }
                     }
 
@@ -752,10 +771,6 @@ namespace openPDC.UI.UserControls
 
             StopRefreshTimer();
         }
-
-        #endregion
-
-        #region [ Isolated Storage Management ]
 
         private void ButtonHelp_Click(object sender, RoutedEventArgs e)
         {
@@ -842,8 +857,6 @@ namespace openPDC.UI.UserControls
             PopupSettings.IsOpen = false;
         }
 
-        #endregion
-
         private void Expander_Collapsed(object sender, RoutedEventArgs e)
         {
             if (ExpanderHistoricalPlayback.IsVisible)
@@ -859,18 +872,34 @@ namespace openPDC.UI.UserControls
 
         private void ButtonStartPlayback_Click(object sender, RoutedEventArgs e)
         {
+            ModeMessage.Text = "Initializing historical playback...";
             ChartPlotterDynamic.Background = new SolidColorBrush(Color.FromArgb(255, 225, 225, 225));
             m_timeStampList = new ConcurrentQueue<string>();
             m_historicalPlayback = true;
+            m_waitingForData = false;
             Subscribe();
         }
 
         private void ButtonReturnToRealtime_Click(object sender, RoutedEventArgs e)
         {
+            ModeMessage.Text = "Real-time";
             ChartPlotterDynamic.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
             m_timeStampList = new ConcurrentQueue<string>();
             m_historicalPlayback = false;
+            m_waitingForData = false;
             Subscribe();
+        }
+
+        private void TextBoxProcessInterval_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Allow dynamic updates to processing interval during operation
+            if (m_historicalPlayback && !m_waitingForData && m_subscriber != null && m_subscriber.IsConnected)
+            {
+                int processingInterval;
+
+                if (int.TryParse(TextBoxProcessInterval.Text, out processingInterval))
+                    m_subscriber.ProcessingInterval = processingInterval;
+            }
         }
 
         private void ButtonRemove_Click(object sender, RoutedEventArgs e)
