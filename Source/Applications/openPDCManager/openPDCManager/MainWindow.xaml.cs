@@ -81,7 +81,7 @@ namespace openPDCManager
             TextBoxTitle.Text = AssemblyInfo.EntryAssembly.Title;
 
             if (!string.IsNullOrEmpty(CommonFunctions.CurrentUser))
-                Title += " Current User: " + CommonFunctions.CurrentUser;
+                Title += " - " + CommonFunctions.CurrentUser;
 
             CommonFunctions.SetRetryServiceConnection(true);
             CommonFunctions.ServiceConntectionRefreshed += new EventHandler(CommonFunctions_ServiceConntectionRefreshed);

@@ -64,7 +64,7 @@
                 <ComboBox x:Name="ComboBoxMeasurement" Margin="0,0,5,0" SelectionChanged="ComboBoxMeasurement_SelectionChanged" DisplayMemberPath="PointTag" SelectedValuePath="SignalID"/>                
             </StackPanel>
 
-            <d3:ChartPlotter Name="ChartPlotterDynamic" Grid.Row="1" Margin="2" Height="225" Width="585">
+            <d3:ChartPlotter Name="ChartPlotterDynamic" Grid.Row="1" Margin="2" Height="225" Width="590">
                 <d3:ChartPlotter.MainVerticalAxis>
                     <d3:VerticalAxis Margin="0,7,0,0"/>
                 </d3:ChartPlotter.MainVerticalAxis>
@@ -78,10 +78,14 @@
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="1.6*"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -94,20 +98,31 @@
                 <TextBlock Text="Instance Type" FontWeight="Bold"/>
                 <TextBlock x:Name="TextBlockInstance" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"/>
 
-                <TextBlock Text="Version" Grid.Row="1" Grid.Column="0" FontWeight="Bold"/>
-                <TextBlock x:Name="TextBlockVersion" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
+                <TextBlock Text="Server Time" Grid.Row="1" Grid.Column="0" FontWeight="Bold"/>
+                <TextBlock x:Name="TextBlockServerTime" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
 
-                <TextBlock Text="Current User:" Grid.Row="2" Grid.Column="0" FontWeight="Bold"/>
-                <TextBlock x:Name="TextBlockUser" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap"/>
+                <TextBlock Text="Local Time" Grid.Row="2" Grid.Column="0" FontWeight="Bold"/>
+                <TextBlock x:Name="TextBlockLocalTime" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"/>
 
-                <TextBlock Text="Database Information" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" FontWeight="Bold"/>
-                <TextBlock Text="Type" Grid.Row="4" Grid.Column="0" FontWeight="Bold"/>
-                <TextBlock x:Name="TextBlockDatabaseType" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap"/>
+                <TextBlock Text="Current User" Grid.Row="3" Grid.Column="0" FontWeight="Bold"/>
+                <TextBlock x:Name="TextBlockUser" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap"/>
+                
+                <TextBlock Text="Version Information" Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Left" FontWeight="Bold"/>
+                
+                <TextBlock Text="Server" Grid.Row="5" Grid.Column="0" FontWeight="Bold"/>
+                <TextBlock x:Name="TextBlockVersion" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left"/>
 
-                <TextBlock Text="Name" Grid.Row="5" Grid.Column="0" FontWeight="Bold"/>
-                <TextBlock x:Name="TextBlockDatabaseName" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap"/>
+                <TextBlock Text="Manager" Grid.Row="6" Grid.Column="0" FontWeight="Bold"/>
+                <TextBlock x:Name="TextBlockManagerVersion" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Left"/>
 
-                <Button Content="System Status" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Width="160" Height="32" FontWeight="Bold" VerticalAlignment="Bottom"
+                <TextBlock Text="Database Information" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" FontWeight="Bold"/>
+                <TextBlock Text="Type" Grid.Row="8" Grid.Column="0" FontWeight="Bold"/>
+                <TextBlock x:Name="TextBlockDatabaseType" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap"/>
+
+                <TextBlock Text="Name" Grid.Row="9" Grid.Column="0" FontWeight="Bold"/>
+                <TextBlock x:Name="TextBlockDatabaseName" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap"/>
+
+                <Button Content="System Status" Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Width="160" Height="32" FontWeight="Bold" VerticalAlignment="Bottom"
                         Click="ButtonStatus_Click"/>
 
             </Grid>

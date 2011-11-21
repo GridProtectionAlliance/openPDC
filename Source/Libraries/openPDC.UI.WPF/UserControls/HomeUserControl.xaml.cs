@@ -26,6 +26,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -43,6 +44,7 @@ using TimeSeriesFramework.UI;
 using TVA;
 using TVA.Data;
 using TVA.IO;
+using TVA.Reflection;
 using TVA.ServiceProcess;
 
 namespace openPDC.UI.UserControls
@@ -64,13 +66,14 @@ namespace openPDC.UI.UserControls
         private bool m_subscribedUnsynchronized;
         private string m_signalID;
         private int m_processingUnsynchronizedMeasurements = 0;
-        private int m_refreshInterval = 1;
+        private double m_refreshInterval = 0.25;
         private bool m_restartConnectionCycle = true;
         private int[] m_xAxisDataCollection;                                                            // Source data for the binding collection.
         private EnumerableDataSource<int> m_xAxisBindingCollection;                                     // Values plotted on X-Axis.        
         private ConcurrentQueue<double> m_yAxisDataCollection;              // Source data for the binding collection. Format is <signalID, collection of values from subscription API>.
         private EnumerableDataSource<double> m_yAxisBindingCollection;      // Values plotted on Y-Axis.
         private LineGraph m_lineGraph;
+        private int m_numberOfPointsToPlot = 60;
 
         #endregion
 
@@ -131,8 +134,9 @@ namespace openPDC.UI.UserControls
                 m_windowsServiceClient.Helper.SendRequest("Health -actionable");
                 m_windowsServiceClient.Helper.SendRequest("version -actionable");
                 m_windowsServiceClient.Helper.SendRequest("status -actionable");
+                m_windowsServiceClient.Helper.SendRequest("time -actionable");
                 m_refreshTimer = new DispatcherTimer();
-                m_refreshTimer.Interval = TimeSpan.FromSeconds(60);
+                m_refreshTimer.Interval = TimeSpan.FromSeconds(10);
                 m_refreshTimer.Tick += new EventHandler(m_refreshTimer_Tick);
                 m_refreshTimer.Start();
             }
@@ -141,6 +145,11 @@ namespace openPDC.UI.UserControls
                 TextBlockInstance.Text = "64-bit";
             else
                 TextBlockInstance.Text = "32-bit";
+
+            TextBlockLocalTime.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
+            Version appVersion = AssemblyInfo.EntryAssembly.Version;
+            TextBlockManagerVersion.Text = appVersion.Major + "." + appVersion.Minor + "." + appVersion.Build + ".0";
 
             using (AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory))
             {
@@ -159,8 +168,8 @@ namespace openPDC.UI.UserControls
 
             ChartPlotterDynamic.NewLegendVisible = false;
 
-            m_xAxisDataCollection = new int[150];
-            for (int i = 0; i < 150; i++)
+            m_xAxisDataCollection = new int[m_numberOfPointsToPlot];
+            for (int i = 0; i < m_numberOfPointsToPlot; i++)
                 m_xAxisDataCollection[i] = i;
             m_xAxisBindingCollection = new EnumerableDataSource<int>(m_xAxisDataCollection);
             m_xAxisBindingCollection.SetXMapping(x => x);
@@ -176,9 +185,11 @@ namespace openPDC.UI.UserControls
                    m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
             {
                 m_windowsServiceClient.Helper.SendRequest("Health -actionable");
+                m_windowsServiceClient.Helper.SendRequest("Time -actionable");
                 if (PopupStatus.IsOpen)
                     m_windowsServiceClient.Helper.SendRequest("Status -actionable");
             }
+            TextBlockLocalTime.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
         }
 
         private void ButtonQuickLink_Click(object sender, RoutedEventArgs e)
@@ -280,6 +291,19 @@ namespace openPDC.UI.UserControls
                         TextBlockVersion.Text = e.Argument.Message.Substring(e.Argument.Message.ToLower().LastIndexOf("version:") + 8).Trim();
                     });
                 }
+                else if (sourceCommand.ToLower() == "time")
+                {
+                    this.Dispatcher.BeginInvoke((Action)delegate()
+                    {
+                        string[] times = Regex.Split(e.Argument.Message, "\r\n");
+                        if (times.Count() > 0)
+                        {
+                            string[] currentTimes = Regex.Split(times[0], ",");
+                            if (currentTimes.Count() > 0)
+                                TextBlockServerTime.Text = currentTimes[0].Substring(currentTimes[0].ToLower().LastIndexOf("system time:") + 12).Trim();
+                        }
+                    });
+                }
             }
         }
 
@@ -306,9 +330,9 @@ namespace openPDC.UI.UserControls
                     m_signalID = selectedMeasurement.SignalID.ToString();
 
                     if (selectedMeasurement.SignalSuffix == "PA")
-                        ChartPlotterDynamic.Visible = DataRect.Create(0, -180, 150, 180);
+                        ChartPlotterDynamic.Visible = DataRect.Create(0, -180, m_numberOfPointsToPlot, 180);
                     else if (selectedMeasurement.SignalSuffix == "FQ")
-                        ChartPlotterDynamic.Visible = DataRect.Create(0, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin")), 150, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax")));
+                        ChartPlotterDynamic.Visible = DataRect.Create(0, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin")), m_numberOfPointsToPlot, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax")));
                 }
             }
             else
@@ -320,7 +344,7 @@ namespace openPDC.UI.UserControls
         private void ComboBoxDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement> measurements = TimeSeriesFramework.UI.DataModels.Measurement.Load(null, ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
-            ComboBoxMeasurement.ItemsSource = new ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement>(measurements.Where(m => m.SignalSuffix == "PM" || m.SignalSuffix == "PA" || m.SignalSuffix == "FQ"));
+            ComboBoxMeasurement.ItemsSource = new ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement>(measurements.Where(m => m.SignalSuffix == "PA" || m.SignalSuffix == "FQ"));
             if (ComboBoxMeasurement.Items.Count > 0)
                 ComboBoxMeasurement.SelectedIndex = 0;
         }
@@ -351,7 +375,7 @@ namespace openPDC.UI.UserControls
                                 {
                                     if (m_yAxisDataCollection.Count == 0)
                                     {
-                                        for (int i = 0; i < 150; i++)
+                                        for (int i = 0; i < m_numberOfPointsToPlot; i++)
                                             m_yAxisDataCollection.Enqueue(tempValue);
 
                                         m_yAxisBindingCollection = new EnumerableDataSource<double>(m_yAxisDataCollection);
