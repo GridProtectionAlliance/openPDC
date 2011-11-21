@@ -65,7 +65,9 @@
             </StackPanel>
 
             <d3:ChartPlotter Name="ChartPlotterDynamic" Grid.Row="1" Margin="2" Height="225" Width="585">
-                    
+                <d3:ChartPlotter.MainVerticalAxis>
+                    <d3:VerticalAxis Margin="0,7,0,0"/>
+                </d3:ChartPlotter.MainVerticalAxis>
             </d3:ChartPlotter>          
 
         </Grid>

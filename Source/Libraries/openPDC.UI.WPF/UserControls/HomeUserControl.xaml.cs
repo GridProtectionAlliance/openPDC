@@ -301,12 +301,15 @@ namespace openPDC.UI.UserControls
             if (ComboBoxMeasurement.Items.Count > 0)
             {
                 TimeSeriesFramework.UI.DataModels.Measurement selectedMeasurement = (TimeSeriesFramework.UI.DataModels.Measurement)ComboBoxMeasurement.SelectedItem;
-                m_signalID = selectedMeasurement.SignalID.ToString();
+                if (selectedMeasurement != null)
+                {
+                    m_signalID = selectedMeasurement.SignalID.ToString();
 
-                if (selectedMeasurement.SignalSuffix == "PA")
-                    ChartPlotterDynamic.Visible = DataRect.Create(0, -180, 150, 180);
-                else if (selectedMeasurement.SignalSuffix == "FQ")
-                    ChartPlotterDynamic.Visible = DataRect.Create(0, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin")), 150, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax")));
+                    if (selectedMeasurement.SignalSuffix == "PA")
+                        ChartPlotterDynamic.Visible = DataRect.Create(0, -180, 150, 180);
+                    else if (selectedMeasurement.SignalSuffix == "FQ")
+                        ChartPlotterDynamic.Visible = DataRect.Create(0, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin")), 150, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax")));
+                }
             }
             else
                 m_signalID = string.Empty;
