@@ -101,7 +101,7 @@ namespace openPDC.UI.UserControls
         {
             try
             {
-                if (m_windowsServiceClient != null)
+                if (m_windowsServiceClient != null && m_windowsServiceClient.Helper != null)
                 {
                     m_windowsServiceClient.Helper.ReceivedServiceResponse -= Helper_ReceivedServiceResponse;
                 }
