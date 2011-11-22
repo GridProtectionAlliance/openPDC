@@ -979,7 +979,7 @@ namespace openPDCManager.UI.DataModels
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="outputStreamID">ID of the record to be deleted.</param>
         /// <returns>String, for display use, indicating success.</returns>
-        public static string DeleteOutputStream(AdoDataConnection database, int outputStreamID)
+        public static string Delete(AdoDataConnection database, int outputStreamID)
         {
             bool createdConnection = false;
 
