@@ -64,10 +64,7 @@
                 <ComboBox x:Name="ComboBoxMeasurement" Margin="0,0,5,0" SelectionChanged="ComboBoxMeasurement_SelectionChanged" DisplayMemberPath="PointTag" SelectedValuePath="SignalID"/>                
             </StackPanel>
 
-            <d3:ChartPlotter Name="ChartPlotterDynamic" Grid.Row="1" Margin="2" Height="225" Width="590">
-                <d3:ChartPlotter.MainVerticalAxis>
-                    <d3:VerticalAxis Margin="0,7,0,0"/>
-                </d3:ChartPlotter.MainVerticalAxis>
+            <d3:ChartPlotter Name="ChartPlotterDynamic" Grid.Row="1" Margin="2" Height="225" Width="590" MainHorizontalAxisVisibility="Collapsed">                
             </d3:ChartPlotter>          
 
         </Grid>

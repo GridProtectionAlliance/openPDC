@@ -728,6 +728,7 @@ namespace openPDC.UI.UserControls
 
                         if (m_historicalPlayback)
                         {
+                            ModeMessage.Text = "Initializing historical playback...";
                             Dispatcher.BeginInvoke(new Action(delegate()
                             {
                                 string startTime = TextBoxStartTime.Text;
