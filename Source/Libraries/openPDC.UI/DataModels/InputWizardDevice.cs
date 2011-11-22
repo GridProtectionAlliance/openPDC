@@ -72,7 +72,7 @@ namespace openPDC.UI.DataModels
             }
             set
             {
-                m_acronym = value;
+                m_acronym = value.Replace("'", "").ToUpper();
                 OnPropertyChanged("Acronym");
                 Existing = (Device.GetDevice(null, "WHERE Acronym = '" + m_acronym.ToUpper() + "'") != null);
             }

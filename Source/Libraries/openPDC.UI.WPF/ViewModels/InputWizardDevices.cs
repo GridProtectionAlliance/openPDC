@@ -829,11 +829,11 @@ namespace openPDC.UI.ViewModels
             {
                 foreach (IConfigurationCell cell in m_configurationFrame.Cells)
                 {
-                    Device existingDevice = Device.GetDevice(null, "WHERE Acronym = '" + cell.StationName.Replace(" ", "").ToUpper() + "'");
+                    Device existingDevice = Device.GetDevice(null, "WHERE Acronym = '" + cell.StationName.Replace(" ", "").Replace("'", "").ToUpper() + "'");
 
                     wizardDeviceList.Add(new openPDC.UI.DataModels.InputWizardDevice()
                     {
-                        Acronym = cell.StationName.Replace(" ", "").ToUpper(),
+                        Acronym = cell.StationName.Replace(" ", "").Replace("'", "").ToUpper(),
                         Name = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(cell.StationName.ToLower()),
                         Longitude = existingDevice == null ? -98.6m : existingDevice.Longitude == null ? -98.6m : (decimal)existingDevice.Longitude,
                         Latitude = existingDevice == null ? 37.5m : existingDevice.Latitude == null ? 37.5m : (decimal)existingDevice.Latitude,
