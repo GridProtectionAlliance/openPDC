@@ -274,10 +274,10 @@ namespace openPDC.UI.DataModels
                 {
                     OutputStreamMeasurementList.Add(new OutputStreamMeasurement()
                     {
-                        NodeID = row.Field<Guid>("NodeID"),
+                        NodeID = database.Guid(row, "NodeID"),
                         AdapterID = row.ConvertField<int>("AdapterID"),
                         ID = row.ConvertField<int>("ID"),
-                        HistorianID = row.Field<int?>("HistorianID"),
+                        HistorianID = row["HistorianID"] == null ? (int?)null : row.ConvertField<int>("HistorianID"),
                         PointID = row.ConvertField<int>("PointID"),
                         SignalReference = row.Field<string>("SignalReference"),
                         m_sourcePointTag = row.Field<string>("SourcePointTag"),

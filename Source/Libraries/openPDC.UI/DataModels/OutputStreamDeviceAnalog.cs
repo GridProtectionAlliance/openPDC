@@ -284,12 +284,12 @@ namespace openPDC.UI.DataModels
                 {
                     OutputStreamDeviceAnalogList.Add(new OutputStreamDeviceAnalog()
                     {
-                        NodeID = row.Field<Guid>("NodeID"),
+                        NodeID = database.Guid(row, "NodeID"),
                         OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
                         ID = row.ConvertField<int>("ID"),
                         Label = row.Field<string>("Label"),
                         Type = row.ConvertField<int>("Type"),
-                        ScalingValue = row.Field<int>("ScalingValue"),
+                        ScalingValue = row.ConvertField<int>("ScalingValue"),
                         LoadOrder = row.ConvertField<int>("LoadOrder"),
                         m_typeName = row.ConvertField<int>("Type") == 0 ? "Single point-on-wave" : row.ConvertField<int>("Type") == 1 ? "RMS of analog input" : "Peak of analog input"
                     });
