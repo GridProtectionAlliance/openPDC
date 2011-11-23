@@ -111,8 +111,8 @@
         <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
                       SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
 
-        <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="550"
-                        PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Sorting="DataGrid_Sorting">
+        <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="835"
+                        PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4"  Sorting="DataGrid_Sorting">
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTextColumn Header="Point ID" Width="*" Binding="{tsfBinding:Column Path=PointID}" IsReadOnly="True"/>
                 <sdk:DataGridTextColumn Header="Signal Reference" Width="*" Binding="{tsfBinding:Column Path=SignalReference}"/>
