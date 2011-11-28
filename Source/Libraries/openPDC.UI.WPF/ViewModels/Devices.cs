@@ -488,7 +488,39 @@ namespace openPDC.UI.ViewModels
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
+                Device originalDevice = null;
+                if (CurrentItem.ID > 0) // if it is an existing device being modified, then we need to make necessary changes in the output stream if this device exists there.
+                {
+                    originalDevice = Device.GetDevice(null, "WHERE ID = " + CurrentItem.ID);
+                }
+
                 base.Save();
+
+                try
+                {
+                    if (originalDevice != null && CurrentItem.Acronym != originalDevice.Acronym) // if acronym was modified then make changes to output stream devices.
+                    {
+                        ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.GetOutputStreamDevices(null, "WHERE Acronym = '" + originalDevice.Acronym + "'");
+                        foreach (OutputStreamDevice device in outputStreamDevices)
+                        {
+                            device.Acronym = CurrentItem.Acronym;
+                            OutputStreamDevice.Save(null, device);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException != null)
+                    {
+                        Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Update Output Stream Devices:", MessageBoxImage.Error);
+                        CommonFunctions.LogException(null, "Update Output Stream Devices", ex.InnerException);
+                    }
+                    else
+                    {
+                        Popup(ex.Message, "Update Output Stream Devices Exception:", MessageBoxImage.Error);
+                        CommonFunctions.LogException(null, "Update Output Stream Devices", ex);
+                    }
+                }
 
                 if (ItemsPerPage == 0) // i.e. if user is on form page then go back to list page after save.
                 {

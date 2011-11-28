@@ -403,15 +403,15 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                ObservableCollection<OutputStreamDevice> OutputStreamDeviceList = new ObservableCollection<OutputStreamDevice>();
+                ObservableCollection<OutputStreamDevice> outputStreamDeviceList = new ObservableCollection<OutputStreamDevice>();
                 string query = database.ParameterizedQueryString("SELECT NodeID, AdapterID, ID, IDCode, Acronym, BpaAcronym, " +
                     "Name, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, LoadOrder, Enabled, Virtual " +
                     "FROM OutputStreamDeviceDetail WHERE AdapterID = {0} ORDER BY LoadOrder", "outputStreamID");
-                DataTable OutputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
+                DataTable outputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
 
-                foreach (DataRow row in OutputStreamDeviceTable.Rows)
+                foreach (DataRow row in outputStreamDeviceTable.Rows)
                 {
-                    OutputStreamDeviceList.Add(new OutputStreamDevice()
+                    outputStreamDeviceList.Add(new OutputStreamDevice()
                     {
                         NodeID = database.Guid(row, "NodeID"),
                         AdapterID = row.ConvertField<int>("AdapterID"),
@@ -430,7 +430,7 @@ namespace openPDC.UI.DataModels
                     });
                 }
 
-                return OutputStreamDeviceList;
+                return outputStreamDeviceList;
             }
             finally
             {
@@ -698,6 +698,47 @@ namespace openPDC.UI.DataModels
 
                 return device;
 
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        public static ObservableCollection<OutputStreamDevice> GetOutputStreamDevices(AdoDataConnection database, string whereClause)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                ObservableCollection<OutputStreamDevice> outputStreamDeviceList = new ObservableCollection<OutputStreamDevice>();
+                DataTable outputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, "SELECT * FROM OutputStreamDeviceDetail " + whereClause);
+
+                foreach (DataRow row in outputStreamDeviceTable.Rows)
+                {
+                    outputStreamDeviceList.Add(new OutputStreamDevice()
+                    {
+                        NodeID = database.Guid(row, "NodeID"),
+                        AdapterID = row.ConvertField<int>("AdapterID"),
+                        ID = row.ConvertField<int>("ID"),
+                        IDCode = row.ConvertField<int>("IDCode"),
+                        Acronym = row.Field<string>("Acronym"),
+                        BpaAcronym = row.Field<string>("BpaAcronym"),
+                        Name = row.Field<string>("Name"),
+                        PhasorDataFormat = row.Field<string>("PhasorDataFormat"),
+                        FrequencyDataFormat = row.Field<string>("FrequencyDataFormat"),
+                        AnalogDataFormat = row.Field<string>("AnalogDataFormat"),
+                        CoordinateFormat = row.Field<string>("CoordinateFormat"),
+                        LoadOrder = row.ConvertField<int>("LoadOrder"),
+                        Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
+                        m_virtual = Convert.ToBoolean(row.Field<object>("Virtual"))
+                    });
+                }
+
+                return outputStreamDeviceList;
             }
             finally
             {
