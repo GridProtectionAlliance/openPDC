@@ -498,7 +498,7 @@ namespace openPDC.UI.ViewModels
 
                 try
                 {
-                    if (originalDevice != null && CurrentItem.Acronym != originalDevice.Acronym) // if acronym was modified then make changes to output stream devices.
+                    if (originalDevice != null && CurrentItem.Acronym != originalDevice.Acronym && Confirm("Do you want to update corresponding output stream device?", "Update Output Stream Device")) // if acronym was modified then make changes to output stream devices.
                     {
                         ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.GetOutputStreamDevices(null, "WHERE Acronym = '" + originalDevice.Acronym + "'");
                         foreach (OutputStreamDevice device in outputStreamDevices)
