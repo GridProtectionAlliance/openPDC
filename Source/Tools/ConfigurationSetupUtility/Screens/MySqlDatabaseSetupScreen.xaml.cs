@@ -34,6 +34,7 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -385,6 +386,12 @@ namespace ConfigurationSetupUtility.Screens
         private void DatabaseNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             m_mySqlSetup.DatabaseName = m_databaseNameTextBox.Text;
+        }
+
+        // Removes invalid characters from database name
+        private void DatabaseNameTextbox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            m_databaseNameTextBox.Text = Regex.Replace(m_databaseNameTextBox.Text, @"[\W]", "");
         }
 
         // Occurs when the user changes the administrator user name.
