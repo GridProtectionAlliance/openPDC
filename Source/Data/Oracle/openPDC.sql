@@ -29,127 +29,146 @@
 -- ALTER SESSION SET CURRENT_SCHEMA = openPDC;
 
 CREATE TABLE ErrorLog(
-    ID INT NOT NULL,
+    ID NUMBER NOT NULL,
     Source VARCHAR2(200) NOT NULL,
-    Message CLOB NOT NULL,
-    Detail CLOB NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL
+    Message VARCHAR2(4000) NOT NULL,
+    Detail VARCHAR2(4000) NULL,
+    CreatedOn DATE NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_ErrorLog_ID ON ErrorLog (ID ASC);
+CREATE UNIQUE INDEX IX_ErrorLog_ID ON ErrorLog (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE ErrorLog ADD CONSTRAINT PK_ErrorLog PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_ErrorLog START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_ErrorLog BEFORE INSERT ON ErrorLog
-	FOR EACH ROW BEGIN SELECT SEQ_ErrorLog.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_ErrorLog.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE Runtime(
-    ID INT NOT NULL,
-    SourceID INT NOT NULL,
+    ID NUMBER NOT NULL,
+    SourceID NUMBER NOT NULL,
     SourceTable VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Runtime_Source ON Runtime (SourceID ASC, SourceTable ASC);
-CREATE UNIQUE INDEX IX_Runtime_ID ON Runtime (ID ASC);
+CREATE UNIQUE INDEX IX_Runtime_Source ON Runtime (SourceID ASC, SourceTable ASC) TABLESPACE OPDC_INDEX;
+
+CREATE UNIQUE INDEX IX_Runtime_ID ON Runtime (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Runtime ADD CONSTRAINT PK_Runtime PRIMARY KEY (SourceID, SourceTable);
+
 CREATE SEQUENCE SEQ_Runtime START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_Runtime BEFORE INSERT ON Runtime
-	FOR EACH ROW BEGIN SELECT SEQ_Runtime.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_Runtime.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE AuditLog(
-    ID INT NOT NULL,
+    ID NUMBER NOT NULL,
     TableName VARCHAR2(200) NOT NULL,
     PrimaryKeyColumn VARCHAR2(200) NOT NULL,
-    PrimaryKeyValue CLOB NOT NULL,
+    PrimaryKeyValue VARCHAR2(4000) NOT NULL,
     ColumnName VARCHAR2(200) NOT NULL,
-    OriginalValue CLOB,
-    NewValue CLOB,
-    Deleted NUMBER(3,0) DEFAULT 0 NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
+    OriginalValue VARCHAR2(4000),
+    NewValue VARCHAR2(4000),
+    Deleted NUMBER DEFAULT 0 NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
     PRIMARY KEY (ID)
 );
 
 CREATE SEQUENCE SEQ_AuditLog START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_AuditLog BEFORE INSERT ON AuditLog
-	FOR EACH ROW BEGIN SELECT SEQ_AuditLog.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_AuditLog.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE Company(
-    ID INT NOT NULL,
+    ID NUMBER NOT NULL,
+    COMPANYPARENTID  NUMBER,
+    REGIONID         NUMBER,
     Acronym VARCHAR2(200) NOT NULL,
-    MapAcronym NCHAR(10) NOT NULL,
+    MapAcronym VARCHAR2(10) NOT NULL,
     Name VARCHAR2(200) NOT NULL,
-    URL CLOB NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    URL VARCHAR2(4000) NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Company_ID ON Company (ID ASC);
+CREATE UNIQUE INDEX IX_Company_ID ON Company (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Company ADD CONSTRAINT PK_Company PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_Company START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_Company BEFORE INSERT ON Company
-	FOR EACH ROW BEGIN SELECT SEQ_Company.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_Company.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE ConfigurationEntity(
     SourceName VARCHAR2(200) NOT NULL,
     RuntimeName VARCHAR2(200) NOT NULL,
-    Description CLOB NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL
+    Description VARCHAR2(4000) NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE Vendor(
-    ID INT NOT NULL,
+    ID NUMBER NOT NULL,
     Acronym VARCHAR2(200) NULL,
     Name VARCHAR2(200) NOT NULL,
     PhoneNumber VARCHAR2(200) NULL,
     ContactEmail VARCHAR2(200) NULL,
-    URL CLOB NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    URL VARCHAR2(4000) NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Vendor_ID ON Vendor (ID ASC);
+CREATE UNIQUE INDEX IX_Vendor_ID ON Vendor (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Vendor ADD CONSTRAINT PK_Vendor PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_Vendor START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_Vendor BEFORE INSERT ON Vendor
-	FOR EACH ROW BEGIN SELECT SEQ_Vendor.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_Vendor.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE Protocol(
-    ID INT NOT NULL,
+    ID NUMBER NOT NULL,
     Acronym VARCHAR2(200) NOT NULL,
     Name VARCHAR2(200) NOT NULL,
-    Type VARCHAR2(200) DEFAULT N'Frame' NOT NULL,
-    Category VARCHAR2(200) DEFAULT N'Phasor' NOT NULL,
-    AssemblyName VARCHAR2(1024) DEFAULT N'TVA.PhasorProtocols.dll' NOT NULL,
-    TypeName VARCHAR2(200) DEFAULT N'TVA.PhasorProtocols.PhasorMeasurementMapper' NOT NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL
+    Type VARCHAR2(200) DEFAULT 'Frame' NOT NULL,
+    Category VARCHAR2(200) DEFAULT 'Phasor' NOT NULL,
+    AssemblyName VARCHAR2(1024) DEFAULT 'TVA.PhasorProtocols.dll' NOT NULL,
+    TypeName VARCHAR2(200) DEFAULT 'TVA.PhasorProtocols.PhasorMeasurementMapper' NOT NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Protocol_ID ON Protocol (ID ASC);
+CREATE UNIQUE INDEX IX_Protocol_ID ON Protocol (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Protocol ADD CONSTRAINT PK_Protocol PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_Protocol START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_Protocol BEFORE INSERT ON Protocol
-	FOR EACH ROW BEGIN SELECT SEQ_Protocol.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_Protocol.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE SignalType(
-    ID INT NOT NULL,
+    ID NUMBER NOT NULL,
     Name VARCHAR2(200) NOT NULL,
     Acronym VARCHAR2(4) NOT NULL,
     Suffix VARCHAR2(2) NOT NULL,
@@ -158,335 +177,375 @@ CREATE TABLE SignalType(
     EngineeringUnits VARCHAR2(10) NULL
 );
 
-CREATE UNIQUE INDEX IX_SignalType_ID ON SignalType (ID ASC);
+CREATE UNIQUE INDEX IX_SignalType_ID ON SignalType (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE SignalType ADD CONSTRAINT PK_SignalType PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_SignalType START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_SignalType BEFORE INSERT ON SignalType
-	FOR EACH ROW BEGIN SELECT SEQ_SignalType.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_SignalType.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE Interconnection(
-    ID INT NOT NULL,
+    ID NUMBER NOT NULL,
     Acronym VARCHAR2(200) NOT NULL,
     Name VARCHAR2(200) NOT NULL,
-    LoadOrder INT DEFAULT 0 NULL
+    LoadOrder NUMBER DEFAULT 0 NULL
 );
 
-CREATE UNIQUE INDEX IX_Interconnection_ID ON Interconnection (ID ASC);
+CREATE UNIQUE INDEX IX_Interconnection_ID ON Interconnection (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Interconnection ADD CONSTRAINT PK_Interconnection PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_Interconnection START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_Interconnection BEFORE INSERT ON Interconnection
-	FOR EACH ROW BEGIN SELECT SEQ_Interconnection.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_Interconnection.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE Node(
-    ID NCHAR(36) NULL,
+    ID VARCHAR2(36) NULL,
     Name VARCHAR2(200) NOT NULL,
-    CompanyID INT NULL,
-    Longitude DECIMAL(9, 6) NULL,
-    Latitude DECIMAL(9, 6) NULL,
-    Description CLOB NULL,
-    ImagePath CLOB NULL,
-    Settings CLOB NULL,
-    MenuType VARCHAR2(200) DEFAULT N'File' NOT NULL,
-    MenuData CLOB NOT NULL,
-    Master NUMBER(3,0) DEFAULT 0 NOT NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    CompanyID NUMBER NULL,
+    Longitude NUMBER(9, 6) NULL,
+    Latitude NUMBER(9, 6) NULL,
+    Description VARCHAR2(4000) NULL,
+    ImagePath VARCHAR2(4000) NULL,
+    Settings VARCHAR2(4000) NULL,
+    MenuType VARCHAR2(200) DEFAULT 'File' NOT NULL,
+    MenuData VARCHAR2(4000) NOT NULL,
+    Master NUMBER DEFAULT 0 NOT NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Node_ID ON Node (ID ASC);
+CREATE UNIQUE INDEX IX_Node_ID ON Node (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Node ADD CONSTRAINT PK_Node PRIMARY KEY (ID);
 
 CREATE TABLE DataOperation(
-    NodeID NCHAR(36) NULL,
-    Description CLOB NULL,
-    AssemblyName CLOB NOT NULL,
-    TypeName CLOB NOT NULL,
+    NodeID VARCHAR2(36) NULL,
+    Description VARCHAR2(4000) NULL,
+    AssemblyName VARCHAR2(4000) NOT NULL,
+    TypeName VARCHAR2(4000) NOT NULL,
     MethodName VARCHAR2(200) NOT NULL,
-    Arguments CLOB NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL
+    Arguments VARCHAR2(4000) NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE OtherDevice(
-    ID INT NOT NULL,
+    ID NUMBER NOT NULL,
     Acronym VARCHAR2(200) NOT NULL,
     Name VARCHAR2(200) NULL,
-    IsConcentrator NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CompanyID INT NULL,
-    VendorDeviceID INT NULL,
-    Longitude DECIMAL(9, 6) NULL,
-    Latitude DECIMAL(9, 6) NULL,
-    InterconnectionID INT NULL,
-    Planned NUMBER(3,0) DEFAULT 0 NOT NULL,
-    Desired NUMBER(3,0) DEFAULT 0 NOT NULL,
-    InProgress NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    IsConcentrator NUMBER DEFAULT 0 NOT NULL,
+    CompanyID NUMBER NULL,
+    VendorDeviceID NUMBER NULL,
+    Longitude NUMBER(9, 6) NULL,
+    Latitude NUMBER(9, 6) NULL,
+    InterconnectionID NUMBER NULL,
+    Planned NUMBER DEFAULT 0 NOT NULL,
+    Desired NUMBER DEFAULT 0 NOT NULL,
+    InProgress NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_OtherDevice_ID ON OtherDevice (ID ASC);
+CREATE UNIQUE INDEX IX_OtherDevice_ID ON OtherDevice (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE OtherDevice ADD CONSTRAINT PK_OtherDevice PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_OtherDevice START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_OtherDevice BEFORE INSERT ON OtherDevice
-	FOR EACH ROW BEGIN SELECT SEQ_OtherDevice.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_OtherDevice.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE Device(
-    NodeID NCHAR(36) NOT NULL,
-    ID INT NOT NULL,
-    ParentID INT NULL,
-    UniqueID NCHAR(36) NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    ID NUMBER NOT NULL,
+    ParentID NUMBER NULL,
+    UniqueID VARCHAR2(36) NULL,
     Acronym VARCHAR2(200) NOT NULL,
     Name VARCHAR2(200) NULL,
-	OriginalSource VARCHAR2(200) NULL,
-    IsConcentrator NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CompanyID INT NULL,
-    HistorianID INT NULL,
-    AccessID INT DEFAULT 0 NOT NULL,
-    VendorDeviceID INT NULL,
-    ProtocolID INT NULL,
-    Longitude DECIMAL(9, 6) NULL,
-    Latitude DECIMAL(9, 6) NULL,
-    InterconnectionID INT NULL,
-    ConnectionString CLOB NULL,
+    OriginalSource VARCHAR2(200) NULL,
+    IsConcentrator NUMBER DEFAULT 0 NOT NULL,
+    CompanyID NUMBER NULL,
+    HistorianID NUMBER NULL,
+    AccessID NUMBER DEFAULT 0 NOT NULL,
+    VendorDeviceID NUMBER NULL,
+    ProtocolID NUMBER NULL,
+    Longitude NUMBER(9, 6) NULL,
+    Latitude NUMBER(9, 6) NULL,
+    InterconnectionID NUMBER NULL,
+    ConnectionString VARCHAR2(4000) NULL,
     TimeZone VARCHAR2(200) NULL,
-    FramesPerSecond INT DEFAULT 30 NULL,
+    FramesPerSecond NUMBER DEFAULT 30 NULL,
     TimeAdjustmentTicks NUMBER(19,0) DEFAULT 0 NOT NULL,
-    DataLossInterval FLOAT(24) DEFAULT 5 NOT NULL,
-    AllowedParsingExceptions INT DEFAULT 10 NOT NULL,
-    ParsingExceptionWindow FLOAT(24) DEFAULT 5 NOT NULL,
-    DelayedConnectionInterval FLOAT(24) DEFAULT 5 NOT NULL,
-    AllowUseOfCachedConfiguration NUMBER(3,0) DEFAULT 1 NOT NULL,
-    AutoStartDataParsingSequence NUMBER(3,0) DEFAULT 1 NOT NULL,
-    SkipDisableRealTimeData NUMBER(3,0) DEFAULT 0 NOT NULL,
-    MeasurementReportingInterval INT DEFAULT 100000 NOT NULL,
-    ConnectOnDemand NUMBER(3,0) DEFAULT 1 NOT NULL,
-    ContactList CLOB NULL,
-    MeasuredLines INT NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,	
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    DataLossInterval NUMBER DEFAULT 5 NOT NULL,
+    AllowedParsingExceptions NUMBER DEFAULT 10 NOT NULL,
+    ParsingExceptionWindow NUMBER DEFAULT 5 NOT NULL,
+    DelayedConnectionInterval NUMBER DEFAULT 5 NOT NULL,
+    AllowUseOfCachedConfiguration NUMBER DEFAULT 1 NOT NULL,
+    AutoStartDataParsingSequence NUMBER DEFAULT 1 NOT NULL,
+    SkipDisableRealTimeData NUMBER DEFAULT 0 NOT NULL,
+    MeasurementReportingInterval NUMBER DEFAULT 100000 NOT NULL,
+    ConnectOnDemand NUMBER DEFAULT 1 NOT NULL,
+    ContactList VARCHAR2(4000) NULL,
+    MeasuredLines NUMBER NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,    
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Device_ID ON Device (ID ASC);
-CREATE UNIQUE INDEX IX_Device_UniqueID ON Device (UniqueID ASC);
-CREATE UNIQUE INDEX IX_Device_NodeID_Acronym ON Device (NodeID ASC, Acronym ASC);
+CREATE UNIQUE INDEX IX_Device_ID ON Device (ID ASC) TABLESPACE OPDC_INDEX;
+
+CREATE UNIQUE INDEX IX_Device_UniqueID ON Device (UniqueID ASC) TABLESPACE OPDC_INDEX;
+
+CREATE UNIQUE INDEX IX_Device_NodeID_Acronym ON Device (NodeID ASC, Acronym ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Device ADD CONSTRAINT PK_Device PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_Device START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_Device BEFORE INSERT ON Device
-	FOR EACH ROW BEGIN SELECT SEQ_Device.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_Device.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE VendorDevice(
-    ID INT NOT NULL,
-    VendorID INT DEFAULT 10 NOT NULL,
+    ID NUMBER NOT NULL,
+    VendorID NUMBER DEFAULT 10 NOT NULL,
     Name VARCHAR2(200) NOT NULL,
-    Description CLOB NULL,
-    URL CLOB NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    Description VARCHAR2(4000) NULL,
+    URL VARCHAR2(4000) NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_VendorDevice_ID ON VendorDevice (ID ASC);
+CREATE UNIQUE INDEX IX_VendorDevice_ID ON VendorDevice (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE VendorDevice ADD CONSTRAINT PK_VendorDevice PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_VendorDevice START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_VendorDevice BEFORE INSERT ON VendorDevice
-	FOR EACH ROW BEGIN SELECT SEQ_VendorDevice.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_VendorDevice.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE OutputStreamDeviceDigital(
-    NodeID NCHAR(36) NOT NULL,
-    OutputStreamDeviceID INT NOT NULL,
-    ID INT NOT NULL,
-    Label CLOB NOT NULL,
-    MaskValue INT DEFAULT 0 NOT NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    NodeID VARCHAR2(36) NOT NULL,
+    OutputStreamDeviceID NUMBER NOT NULL,
+    ID NUMBER NOT NULL,
+    Label VARCHAR2(200) NOT NULL,
+    MaskValue NUMBER DEFAULT 0 NOT NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_OutStreamDevDigital_ID ON OutputStreamDeviceDigital (ID ASC);
+CREATE UNIQUE INDEX IX_OutStreamDevDigital_ID ON OutputStreamDeviceDigital (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE OutputStreamDeviceDigital ADD CONSTRAINT PK_OutStreamDevDigital PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_OutStreamDevDigital START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_OutStreamDevDigital BEFORE INSERT ON OutputStreamDeviceDigital
-	FOR EACH ROW BEGIN SELECT SEQ_OutStreamDevDigital.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_OutStreamDevDigital.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE OutputStreamDevicePhasor(
-    NodeID NCHAR(36) NOT NULL,
-    OutputStreamDeviceID INT NOT NULL,
-    ID INT NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    OutputStreamDeviceID NUMBER NOT NULL,
+    ID NUMBER NOT NULL,
     Label VARCHAR2(200) NOT NULL,
-    Type NCHAR(1) DEFAULT N'V' NOT NULL,
-    Phase NCHAR(1) DEFAULT N'+' NOT NULL,
-    ScalingValue INT DEFAULT 0 NOT NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    Type VARCHAR2(1) DEFAULT 'V' NOT NULL,
+    Phase VARCHAR2(1) DEFAULT '+' NOT NULL,
+    ScalingValue NUMBER DEFAULT 0 NOT NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_OutStreamDevPhasor ON OutputStreamDevicePhasor (ID ASC);
+CREATE UNIQUE INDEX IX_OutStreamDevPhasor ON OutputStreamDevicePhasor (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE OutputStreamDevicePhasor ADD CONSTRAINT PK_OutStreamDevPhasor PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_OutStreamDevPhasor START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_OutStreamDevPhasor BEFORE INSERT ON OutputStreamDevicePhasor
-	FOR EACH ROW BEGIN SELECT SEQ_OutStreamDevPhasor.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_OutStreamDevPhasor.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE OutputStreamDeviceAnalog(
-    NodeID NCHAR(36) NOT NULL,
-    OutputStreamDeviceID INT NOT NULL,
-    ID INT NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    OutputStreamDeviceID NUMBER NOT NULL,
+    ID NUMBER NOT NULL,
     Label VARCHAR2(16) NOT NULL,
-    Type INT DEFAULT 0 NOT NULL,
-    ScalingValue INT DEFAULT 0 NOT NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    Type NUMBER DEFAULT 0 NOT NULL,
+    ScalingValue NUMBER DEFAULT 0 NOT NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_OutStreamDevAnalog ON OutputStreamDeviceAnalog (ID ASC);
+
+CREATE UNIQUE INDEX IX_OutStreamDevAnalog ON OutputStreamDeviceAnalog (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE OutputStreamDeviceAnalog ADD CONSTRAINT PK_OutStreamDevAnalog PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_OutStreamDevAnalog START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_OutStreamDevAnalog BEFORE INSERT ON OutputStreamDeviceAnalog
-	FOR EACH ROW BEGIN SELECT SEQ_OutStreamDevAnalog.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_OutStreamDevAnalog.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE Measurement(
-    PointID INT NOT NULL,
-    SignalID NCHAR(36) NULL,
-    HistorianID INT NULL,
-    DeviceID INT NULL,
+    PointID NUMBER NOT NULL,
+    SignalID VARCHAR2(36) NULL,
+    HistorianID NUMBER NULL,
+    DeviceID NUMBER NULL,
     PointTag VARCHAR2(200) NOT NULL,
     AlternateTag VARCHAR2(200) NULL,
-    SignalTypeID INT NOT NULL,
-    PhasorSourceIndex INT NULL,
+    SignalTypeID NUMBER NOT NULL,
+    PhasorSourceIndex NUMBER NULL,
     SignalReference VARCHAR2(200) NOT NULL,
-    Adder FLOAT(24) DEFAULT 0.0 NOT NULL,
-    Multiplier FLOAT(24) DEFAULT 1.0 NOT NULL,
-    Description CLOB NULL,
-    Subscribed NUMBER(3,0) DEFAULT 0 NOT NULL,
-    Internal NUMBER(3,0) DEFAULT 1 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    Adder NUMBER DEFAULT 0.0 NOT NULL,
+    Multiplier NUMBER DEFAULT 1.0 NOT NULL,
+    Description VARCHAR2(4000) NULL,
+    Subscribed NUMBER DEFAULT 0 NOT NULL,
+    Internal NUMBER DEFAULT 1 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Measurement_SignalID ON Measurement (SignalID ASC);
-CREATE UNIQUE INDEX IX_Measurement_PointID ON Measurement (PointID ASC);
+CREATE UNIQUE INDEX IX_Measurement_SignalID ON Measurement (SignalID ASC) TABLESPACE OPDC_INDEX;
+
+CREATE UNIQUE INDEX IX_Measurement_PointID ON Measurement (PointID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Measurement ADD CONSTRAINT PK_Measurement PRIMARY KEY (SignalID);
+
 ALTER TABLE Measurement ADD CONSTRAINT UQ_Measurement_PointID UNIQUE (PointID);
+
 CREATE SEQUENCE SEQ_Measurement START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_Measurement BEFORE INSERT ON Measurement
-	FOR EACH ROW BEGIN SELECT SEQ_Measurement.nextval INTO :NEW.PointID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_Measurement.nextval INTO :NEW.PointID FROM dual;
 END;
 /
 
 CREATE TABLE ImportedMeasurement(
-    NodeID NCHAR(36) NULL,
-    SourceNodeID NCHAR(36) NULL,
-    SignalID NCHAR(36) NULL,
+    NodeID VARCHAR2(36) NULL,
+    SourceNodeID VARCHAR2(36) NULL,
+    SignalID VARCHAR2(36) NULL,
     Source VARCHAR2(200) NOT NULL,
-    PointID INT NOT NULL,
+    PointID NUMBER NOT NULL,
     PointTag VARCHAR2(200) NOT NULL,
     AlternateTag VARCHAR2(200) NULL,
     SignalTypeAcronym VARCHAR2(4) NULL,
-    SignalReference CLOB NOT NULL,
-    FramesPerSecond INT NULL,
+    SignalReference VARCHAR2(4000) NOT NULL,
+    FramesPerSecond NUMBER NULL,
     ProtocolAcronym VARCHAR2(200) NULL,
     ProtocolType VARCHAR2(200) DEFAULT 'Frame' NOT NULL,
-    PhasorID INT NULL,
-    PhasorType NCHAR(1) NULL,
-    Phase NCHAR(1) NULL,
-    Adder FLOAT(24) DEFAULT 0.0 NOT NULL,
-    Multiplier FLOAT(24) DEFAULT 1.0 NOT NULL,
+    PhasorID NUMBER NULL,
+    PhasorType VARCHAR2(1) NULL,
+    Phase VARCHAR2(1) NULL,
+    Adder NUMBER DEFAULT 0.0 NOT NULL,
+    Multiplier NUMBER DEFAULT 1.0 NOT NULL,
     CompanyAcronym VARCHAR2(200) NULL,
-    Longitude DECIMAL(9, 6) NULL,
-    Latitude DECIMAL(9, 6) NULL,
-    Description CLOB NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL
+    Longitude NUMBER(9, 6) NULL,
+    Latitude NUMBER(9, 6) NULL,
+    Description VARCHAR2(4000) NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE Statistic(
-    ID INT NOT NULL,
+    ID NUMBER NOT NULL,
     Source VARCHAR2(20) NOT NULL,
-    SignalIndex INT NOT NULL,
+    SignalIndex NUMBER NOT NULL,
     Name VARCHAR2(200) NOT NULL,
-    Description CLOB NULL,
-    AssemblyName CLOB NOT NULL,
-    TypeName CLOB NOT NULL,
+    Description VARCHAR2(4000) NULL,
+    AssemblyName VARCHAR2(4000) NOT NULL,
+    TypeName VARCHAR2(4000) NOT NULL,
     MethodName VARCHAR2(200) NOT NULL,
-    Arguments CLOB NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,
+    Arguments VARCHAR2(4000) NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,
     DataType VARCHAR2(200) NULL,
     DisplayFormat VARCHAR2(200) NULL,
-    IsConnectedState NUMBER(3,0) DEFAULT 0 NOT NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL
+    IsConnectedState NUMBER DEFAULT 0 NOT NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Statistic_ID ON Statistic (ID ASC);
-CREATE UNIQUE INDEX IX_Statistic_Source_SigIndex ON Statistic (Source ASC, SignalIndex ASC);
+CREATE UNIQUE INDEX IX_Statistic_ID ON Statistic (ID ASC) TABLESPACE OPDC_INDEX;
+
+CREATE UNIQUE INDEX IX_Statistic_Source_SigIndex ON Statistic (Source ASC, SignalIndex ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Statistic ADD CONSTRAINT PK_Statistic PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_Statistic START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_Statistic BEFORE INSERT ON Statistic
-	FOR EACH ROW BEGIN SELECT SEQ_Statistic.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_Statistic.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE OutputStreamMeasurement(
-    NodeID NCHAR(36) NOT NULL,
-    AdapterID INT NOT NULL,
-    ID INT NOT NULL,
-    HistorianID INT NULL,
-    PointID INT NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    AdapterID NUMBER NOT NULL,
+    ID NUMBER NOT NULL,
+    HistorianID NUMBER NULL,
+    PointID NUMBER NOT NULL,
     SignalReference VARCHAR2(200) NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_OutputStreamMeasurement_ID ON OutputStreamMeasurement (ID ASC);
+CREATE UNIQUE INDEX IX_OutputStreamMeasurement_ID ON OutputStreamMeasurement (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE OutputStreamMeasurement ADD CONSTRAINT PK_OutputStreamMeasurement PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_OutputStreamMeasurement START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_OutputStreamMeasurement BEFORE INSERT ON OutputStreamMeasurement
-	FOR EACH ROW BEGIN SELECT SEQ_OutputStreamMeasurement.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_OutputStreamMeasurement.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE OutputStreamDevice(
-    NodeID NCHAR(36) NOT NULL,
-    AdapterID INT NOT NULL,
-    ID INT NOT NULL,
-    IDCode INT DEFAULT 0 NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    AdapterID NUMBER NOT NULL,
+    ID NUMBER NOT NULL,
+    IDCode NUMBER DEFAULT 0 NOT NULL,
     Acronym VARCHAR2(200) NOT NULL,
     BpaAcronym VARCHAR2(4) NULL,
     Name VARCHAR2(200) NOT NULL,
@@ -494,380 +553,417 @@ CREATE TABLE OutputStreamDevice(
     FrequencyDataFormat VARCHAR2(15) NULL,
     AnalogDataFormat VARCHAR2(15) NULL,
     CoordinateFormat VARCHAR2(15) NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_OutputStreamDevice_ID ON OutputStreamDevice (ID ASC);
+CREATE UNIQUE INDEX IX_OutputStreamDevice_ID ON OutputStreamDevice (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE OutputStreamDevice ADD CONSTRAINT PK_OutputStreamDevice PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_OutputStreamDevice START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_OutputStreamDevice BEFORE INSERT ON OutputStreamDevice
-	FOR EACH ROW BEGIN SELECT SEQ_OutputStreamDevice.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_OutputStreamDevice.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE Phasor(
-    ID INT NOT NULL,
-    DeviceID INT NOT NULL,
+    ID NUMBER NOT NULL,
+    DeviceID NUMBER NOT NULL,
     Label VARCHAR2(200) NOT NULL,
-    Type NCHAR(1) DEFAULT N'V' NOT NULL,
-    Phase NCHAR(1) DEFAULT N'+' NOT NULL,
-    DestinationPhasorID INT NULL,
-    SourceIndex INT DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    Type VARCHAR2(1) DEFAULT 'V' NOT NULL,
+    Phase VARCHAR2(1) DEFAULT '+' NOT NULL,
+    DestinationPhasorID NUMBER NULL,
+    SourceIndex NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Phasor_ID ON Phasor (ID ASC);
+CREATE UNIQUE INDEX IX_Phasor_ID ON Phasor (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Phasor ADD CONSTRAINT PK_Phasor PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_Phasor START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_Phasor BEFORE INSERT ON Phasor
-	FOR EACH ROW BEGIN SELECT SEQ_Phasor.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_Phasor.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE CalculatedMeasurement(
-    NodeID NCHAR(36) NOT NULL,
-    ID INT NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    ID NUMBER NOT NULL,
     Acronym VARCHAR2(200) NOT NULL,
     Name VARCHAR2(200) NULL,
-    AssemblyName CLOB NOT NULL,
-    TypeName CLOB NOT NULL,
-    ConnectionString CLOB NULL,
+    AssemblyName VARCHAR2(4000) NOT NULL,
+    TypeName VARCHAR2(4000) NOT NULL,
+    ConnectionString VARCHAR2(4000) NULL,
     ConfigSection VARCHAR2(200) NULL,
-    InputMeasurements CLOB NULL,
-    OutputMeasurements CLOB NULL,
-    MinimumMeasurementsToUse INT DEFAULT -1 NOT NULL,
-    FramesPerSecond INT DEFAULT 30 NOT NULL,
-    LagTime FLOAT(24) DEFAULT 3.0 NOT NULL,
-    LeadTime FLOAT(24) DEFAULT 1.0 NOT NULL,
-    UseLocalClockAsRealTime NUMBER(3,0) DEFAULT 0 NOT NULL,
-    AllowSortsByArrival NUMBER(3,0) DEFAULT 1 NOT NULL,
-    IgnoreBadTimeStamps NUMBER(3,0) DEFAULT 0 NOT NULL,
-    TimeResolution INT DEFAULT 10000 NOT NULL,
-    AllowPreemptivePublishing NUMBER(3,0) DEFAULT 1 NOT NULL,
-    PerformTimeReasonabilityCheck NUMBER(3,0) DEFAULT 1 NOT NULL,
-    DownsamplingMethod VARCHAR2(15) DEFAULT N'LastReceived' NOT NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    InputMeasurements VARCHAR2(4000) NULL,
+    OutputMeasurements VARCHAR2(4000) NULL,
+    MinimumMeasurementsToUse NUMBER DEFAULT -1 NOT NULL,
+    FramesPerSecond NUMBER DEFAULT 30 NOT NULL,
+    LagTime NUMBER DEFAULT 3.0 NOT NULL,
+    LeadTime NUMBER DEFAULT 1.0 NOT NULL,
+    UseLocalClockAsRealTime NUMBER DEFAULT 0 NOT NULL,
+    AllowSortsByArrival NUMBER DEFAULT 1 NOT NULL,
+    IgnoreBadTimeStamps NUMBER DEFAULT 0 NOT NULL,
+    TimeResolution NUMBER DEFAULT 10000 NOT NULL,
+    AllowPreemptivePublishing NUMBER DEFAULT 1 NOT NULL,
+    PerformTimeReasonabilityCheck NUMBER DEFAULT 1 NOT NULL,
+    DownsamplingMethod VARCHAR2(15) DEFAULT 'LastReceived' NOT NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_CalculatedMeasurement_ID ON CalculatedMeasurement (ID ASC);
+CREATE UNIQUE INDEX IX_CalculatedMeasurement_ID ON CalculatedMeasurement (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE CalculatedMeasurement ADD CONSTRAINT PK_CalculatedMeasurement PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_CalculatedMeasurement START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_CalculatedMeasurement BEFORE INSERT ON CalculatedMeasurement
-	FOR EACH ROW BEGIN SELECT SEQ_CalculatedMeasurement.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_CalculatedMeasurement.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE CustomActionAdapter(
-    NodeID NCHAR(36) NOT NULL,
-    ID INT NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    ID NUMBER NOT NULL,
     AdapterName VARCHAR2(200) NOT NULL,
-    AssemblyName CLOB NOT NULL,
-    TypeName CLOB NOT NULL,
-    ConnectionString CLOB NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    AssemblyName VARCHAR2(4000) NOT NULL,
+    TypeName VARCHAR2(4000) NOT NULL,
+    ConnectionString VARCHAR2(4000) NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_CustomActionAdapter_ID ON CustomActionAdapter (ID ASC);
+CREATE UNIQUE INDEX IX_CustomActionAdapter_ID ON CustomActionAdapter (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE CustomActionAdapter ADD CONSTRAINT PK_CustomActionAdapter PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_CustomActionAdapter START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_CustomActionAdapter BEFORE INSERT ON CustomActionAdapter
-	FOR EACH ROW BEGIN SELECT SEQ_CustomActionAdapter.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_CustomActionAdapter.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE Historian(
-    NodeID NCHAR(36) NOT NULL,
-    ID INT NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    ID NUMBER NOT NULL,
     Acronym VARCHAR2(200) NOT NULL,
     Name VARCHAR2(200) NULL,
-    AssemblyName CLOB NULL,
-    TypeName CLOB NULL,
-    ConnectionString CLOB NULL,
-    IsLocal NUMBER(3,0) DEFAULT 1 NOT NULL,
-    MeasurementReportingInterval INT DEFAULT 100000 NOT NULL,
-    Description CLOB NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    AssemblyName VARCHAR2(4000) NULL,
+    TypeName VARCHAR2(4000) NULL,
+    ConnectionString VARCHAR2(4000) NULL,
+    IsLocal NUMBER DEFAULT 1 NOT NULL,
+    MeasurementReportingInterval NUMBER DEFAULT 100000 NOT NULL,
+    Description VARCHAR2(4000) NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Historian_ID ON Historian (ID ASC);
+CREATE UNIQUE INDEX IX_Historian_ID ON Historian (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Historian ADD CONSTRAINT PK_Historian PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_Historian START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_Historian BEFORE INSERT ON Historian
-	FOR EACH ROW BEGIN SELECT SEQ_Historian.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_Historian.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE CustomInputAdapter(
-    NodeID NCHAR(36) NOT NULL,
-    ID INT NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    ID NUMBER NOT NULL,
     AdapterName VARCHAR2(200) NOT NULL,
-    AssemblyName CLOB NOT NULL,
-    TypeName CLOB NOT NULL,
-    ConnectionString CLOB NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    AssemblyName VARCHAR2(4000) NOT NULL,
+    TypeName VARCHAR2(4000) NOT NULL,
+    ConnectionString VARCHAR2(4000) NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_CustomInputAdapter ON CustomInputAdapter (ID ASC);
+CREATE UNIQUE INDEX IX_CustomInputAdapter ON CustomInputAdapter (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE CustomInputAdapter ADD CONSTRAINT PK_CustomInputAdapter PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_CustomInputAdapter START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_CustomInputAdapter BEFORE INSERT ON CustomInputAdapter
-	FOR EACH ROW BEGIN SELECT SEQ_CustomInputAdapter.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_CustomInputAdapter.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE OutputStream(
-    NodeID NCHAR(36) NOT NULL,
-    ID INT NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    ID NUMBER NOT NULL,
     Acronym VARCHAR2(200) NOT NULL,
     Name VARCHAR2(200) NULL,
-    Type INT DEFAULT 0 NOT NULL,
-    ConnectionString CLOB NULL,
-    DataChannel CLOB NULL,
-    CommandChannel CLOB NULL,
-    IDCode INT DEFAULT 0 NOT NULL,
-    AutoPublishConfigFrame NUMBER(3,0) DEFAULT 0 NOT NULL,
-    AutoStartDataChannel NUMBER(3,0) DEFAULT 1 NOT NULL,
-    NominalFrequency INT DEFAULT 60 NOT NULL,
-    FramesPerSecond INT DEFAULT 30 NOT NULL,
-    LagTime FLOAT(24) DEFAULT 3.0 NOT NULL,
-    LeadTime FLOAT(24) DEFAULT 1.0 NOT NULL,
-    UseLocalClockAsRealTime NUMBER(3,0) DEFAULT 0 NOT NULL,
-    AllowSortsByArrival NUMBER(3,0) DEFAULT 1 NOT NULL,
-    IgnoreBadTimeStamps NUMBER(3,0) DEFAULT 0 NOT NULL,
-    TimeResolution INT DEFAULT 330000 NOT NULL,
-    AllowPreemptivePublishing NUMBER(3,0) DEFAULT 1 NOT NULL,
-    PerformTimeReasonabilityCheck NUMBER(3,0) DEFAULT 1 NOT NULL,
-    DownsamplingMethod VARCHAR2(15) DEFAULT N'LastReceived' NOT NULL,
-    DataFormat VARCHAR2(15) DEFAULT N'FloatingPoint' NOT NULL,
-    CoordinateFormat VARCHAR2(15) DEFAULT N'Polar' NOT NULL,
-    CurrentScalingValue INT DEFAULT 2423 NOT NULL,
-    VoltageScalingValue INT DEFAULT 2725785 NOT NULL,
-    AnalogScalingValue INT DEFAULT 1373291 NOT NULL,
-    DigitalMaskValue INT DEFAULT -65536 NOT NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    Type NUMBER DEFAULT 0 NOT NULL,
+    ConnectionString VARCHAR2(4000) NULL,
+    DataChannel VARCHAR2(4000) NULL,
+    CommandChannel VARCHAR2(4000) NULL,
+    IDCode NUMBER DEFAULT 0 NOT NULL,
+    AutoPublishConfigFrame NUMBER DEFAULT 0 NOT NULL,
+    AutoStartDataChannel NUMBER DEFAULT 1 NOT NULL,
+    NominalFrequency NUMBER DEFAULT 60 NOT NULL,
+    FramesPerSecond NUMBER DEFAULT 30 NOT NULL,
+    LagTime NUMBER DEFAULT 3.0 NOT NULL,
+    LeadTime NUMBER DEFAULT 1.0 NOT NULL,
+    UseLocalClockAsRealTime NUMBER DEFAULT 0 NOT NULL,
+    AllowSortsByArrival NUMBER DEFAULT 1 NOT NULL,
+    IgnoreBadTimeStamps NUMBER DEFAULT 0 NOT NULL,
+    TimeResolution NUMBER DEFAULT 330000 NOT NULL,
+    AllowPreemptivePublishing NUMBER DEFAULT 1 NOT NULL,
+    PerformTimeReasonabilityCheck NUMBER DEFAULT 1 NOT NULL,
+    DownsamplingMethod VARCHAR2(15) DEFAULT 'LastReceived' NOT NULL,
+    DataFormat VARCHAR2(15) DEFAULT 'FloatingPoint' NOT NULL,
+    CoordinateFormat VARCHAR2(15) DEFAULT 'Polar' NOT NULL,
+    CurrentScalingValue NUMBER DEFAULT 2423 NOT NULL,
+    VoltageScalingValue NUMBER DEFAULT 2725785 NOT NULL,
+    AnalogScalingValue NUMBER DEFAULT 1373291 NOT NULL,
+    DigitalMaskValue NUMBER DEFAULT -65536 NOT NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_OutputStream_ID ON OutputStream (ID ASC);
+CREATE UNIQUE INDEX IX_OutputStream_ID ON OutputStream (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE OutputStream ADD CONSTRAINT PK_OutputStream PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_OutputStream START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_OutputStream BEFORE INSERT ON OutputStream
-	FOR EACH ROW BEGIN SELECT SEQ_OutputStream.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_OutputStream.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE CustomOutputAdapter(
-    NodeID NCHAR(36) NOT NULL,
-    ID INT NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    ID NUMBER NOT NULL,
     AdapterName VARCHAR2(200) NOT NULL,
-    AssemblyName CLOB NOT NULL,
-    TypeName CLOB NOT NULL,
-    ConnectionString CLOB NULL,
-    LoadOrder INT DEFAULT 0 NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    AssemblyName VARCHAR2(4000) NOT NULL,
+    TypeName VARCHAR2(4000) NOT NULL,
+    ConnectionString VARCHAR2(4000) NULL,
+    LoadOrder NUMBER DEFAULT 0 NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_CustomOutputAdapter_ID ON CustomOutputAdapter (ID ASC);
+CREATE UNIQUE INDEX IX_CustomOutputAdapter_ID ON CustomOutputAdapter (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE CustomOutputAdapter ADD CONSTRAINT PK_CustomOutputAdapter PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_CustomOutputAdapter START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_CustomOutputAdapter BEFORE INSERT ON CustomOutputAdapter
-	FOR EACH ROW BEGIN SELECT SEQ_CustomOutputAdapter.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_CustomOutputAdapter.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE AccessLog (
-    ID NUMBER(11, 0) NOT NULL,
+    ID NUMBER NOT NULL,
     UserName VARCHAR2(200) NOT NULL,
-    AccessGranted NUMBER(3,0) NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL
+    AccessGranted NUMBER NOT NULL,
+    "Comment" VARCHAR2(4000),
+    CreatedOn DATE NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_AccessLog_ID ON AccessLog (ID ASC);
+CREATE UNIQUE INDEX IX_AccessLog_ID ON AccessLog (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE AccessLog ADD CONSTRAINT PK_AccessLog PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_AccessLog START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_AccessLog BEFORE INSERT ON AccessLog
-	FOR EACH ROW BEGIN SELECT SEQ_AccessLog.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_AccessLog.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE UserAccount (
-    ID NCHAR(36) DEFAULT N'' NOT NULL,
+    ID VARCHAR2(36) NOT NULL,
     Name VARCHAR2(200) NOT NULL,
-    Password VARCHAR2(200) DEFAULT NULL,
-    FirstName VARCHAR2(200) DEFAULT NULL,
-    LastName VARCHAR2(200) DEFAULT NULL,
-    DefaultNodeID NCHAR(36) NOT NULL,
-    Phone VARCHAR2(200) DEFAULT NULL,
-    Email VARCHAR2(200) DEFAULT NULL,
-    LockedOut NUMBER(3,0) DEFAULT 0 NOT NULL,
-    UseADAuthentication NUMBER(3,0) DEFAULT 1 NOT NULL,
-    ChangePasswordOn DATE DEFAULT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    Password VARCHAR2(200) DEFAULT ULL,
+    FirstName VARCHAR2(200) DEFAULT ULL,
+    LastName VARCHAR2(200) DEFAULT ULL,
+    DefaultNodeID VARCHAR2(36) NOT NULL,
+    Phone VARCHAR2(200) DEFAULT ULL,
+    Email VARCHAR2(200) DEFAULT ULL,
+    LockedOut NUMBER DEFAULT 0 NOT NULL,
+    UseADAuthentication NUMBER DEFAULT 1 NOT NULL,
+    ChangePasswordOn DATE DEFAULT ULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_UserAccount_ID ON UserAccount (ID ASC);
+CREATE UNIQUE INDEX IX_UserAccount_ID ON UserAccount (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE UserAccount ADD CONSTRAINT PK_UserAccount PRIMARY KEY (ID);
 
 CREATE TABLE SecurityGroup (
-    ID NCHAR(36) DEFAULT N'' NOT NULL,
+    ID VARCHAR2(36) NOT NULL,
     Name VARCHAR2(200) NOT NULL,
-    Description CLOB,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    Description VARCHAR2(4000),
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_SecurityGroup_ID ON SecurityGroup (ID ASC);
+CREATE UNIQUE INDEX IX_SecurityGroup_ID ON SecurityGroup (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE SecurityGroup ADD CONSTRAINT PK_SecurityGroup PRIMARY KEY (ID);
 
 CREATE TABLE ApplicationRole (
-    ID NCHAR(36) DEFAULT N'' NOT NULL,
+    ID VARCHAR2(36) NOT NULL,
     Name VARCHAR2(200) NOT NULL,
-    Description CLOB,
-    NodeID NCHAR(36) NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    Description VARCHAR2(4000),
+    NodeID VARCHAR2(36) NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_ApplicationRole ON ApplicationRole (ID ASC);
+CREATE UNIQUE INDEX IX_ApplicationRole ON ApplicationRole (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE ApplicationRole ADD CONSTRAINT PK_ApplicationRole PRIMARY KEY (ID);
 
 CREATE TABLE ApplicationRoleSecurityGroup (
-    ApplicationRoleID NCHAR(36) NOT NULL,
-    SecurityGroupID NCHAR(36) NOT NULL  
+    ApplicationRoleID VARCHAR2(36) NOT NULL,
+    SecurityGroupID VARCHAR2(36) NOT NULL  
 );
 
 CREATE TABLE ApplicationRoleUserAccount (
-    ApplicationRoleID NCHAR(36) NOT NULL,
-    UserAccountID NCHAR(36) NOT NULL  
+    ApplicationRoleID VARCHAR2(36) NOT NULL,
+    UserAccountID VARCHAR2(36) NOT NULL  
 );
 
 CREATE TABLE SecurityGroupUserAccount (
-    SecurityGroupID NCHAR(36) NOT NULL,
-    UserAccountID NCHAR(36) NOT NULL  
+    SecurityGroupID VARCHAR2(36) NOT NULL,
+    UserAccountID VARCHAR2(36) NOT NULL  
 );
 
--- ----------------------------------------------------------------------------
-
 CREATE TABLE Subscriber (
-    NodeID NCHAR(36) NOT NULL,
-    ID NCHAR(36) DEFAULT N'' NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    ID VARCHAR2(36) NOT NULL,
     Acronym VARCHAR2(200) NOT NULL,
     Name VARCHAR2(200) NULL,
     SharedSecret VARCHAR2(200) NOT NULL,
-    AuthKey CLOB NOT NULL,
-    ValidIPAddresses CLOB NOT NULL,
-    Enabled NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    AuthKey VARCHAR2(4000) NOT NULL,
+    ValidIPAddresses VARCHAR2(4000) NOT NULL,
+    Enabled NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Subscriber_NodeID_ID ON Subscriber (NodeID ASC, ID ASC);
-CREATE UNIQUE INDEX IX_Subscriber_NodeID_Acronym ON Subscriber (NodeID ASC, Acronym ASC);
+CREATE UNIQUE INDEX IX_Subscriber_NodeID_ID ON Subscriber (NodeID ASC, ID ASC) TABLESPACE OPDC_INDEX;
+
+CREATE UNIQUE INDEX IX_Subscriber_NodeID_Acronym ON Subscriber (NodeID ASC, Acronym ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE Subscriber ADD CONSTRAINT PK_Subscriber PRIMARY KEY (NodeID, ID);
 
 CREATE TABLE SubscriberMeasurement(
-    NodeID NCHAR(36) NOT NULL,
-    SubscriberID NCHAR(36) NOT NULL,
-    SignalID NCHAR(36) NOT NULL,
-    Allowed NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    NodeID VARCHAR2(36) NOT NULL,
+    SubscriberID VARCHAR2(36) NOT NULL,
+    SignalID VARCHAR2(36) NOT NULL,
+    Allowed NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_SubscriberMeasurement ON SubscriberMeasurement (NodeID ASC, SubscriberID ASC, SignalID ASC);
+CREATE UNIQUE INDEX IX_SubscriberMeasurement ON SubscriberMeasurement (NodeID ASC, SubscriberID ASC, SignalID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE SubscriberMeasurement ADD CONSTRAINT PK_SubscriberMeasurement PRIMARY KEY (NodeID, SubscriberID, SignalID);
 
 CREATE TABLE SubscriberMeasurementGroup (
-    NodeID NCHAR(36) NOT NULL,
-    SubscriberID NCHAR(36) NOT NULL,
-    MeasurementGroupID INT NOT NULL,
-    Allowed NUMBER(3,0) DEFAULT 0 NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    NodeID VARCHAR2(36) NOT NULL,
+    SubscriberID VARCHAR2(36) NOT NULL,
+    MeasurementGroupID NUMBER NOT NULL,
+    Allowed NUMBER DEFAULT 0 NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_SubscriberMeasurementGroup ON SubscriberMeasurementGroup (NodeID ASC, SubscriberID ASC, MeasurementGroupID ASC);
+CREATE UNIQUE INDEX IX_SubscriberMeasurementGroup ON SubscriberMeasurementGroup (NodeID ASC, SubscriberID ASC, MeasurementGroupID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE SubscriberMeasurementGroup ADD CONSTRAINT PK_SubscriberMeasurementGroup PRIMARY KEY (NodeID, SubscriberID, MeasurementGroupID);
 
 CREATE TABLE MeasurementGroup (
-    NodeID NCHAR(36) NOT NULL,
-    ID INT NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
+    ID NUMBER NOT NULL,
     Name VARCHAR2(200) NOT NULL,
-    Description CLOB,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    Description VARCHAR2(4000),
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_MeasurementGroup_ID ON MeasurementGroup (ID ASC);
+CREATE UNIQUE INDEX IX_MeasurementGroup_ID ON MeasurementGroup (ID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE MeasurementGroup ADD CONSTRAINT PK_MeasurementGroup PRIMARY KEY (ID);
+
 CREATE SEQUENCE SEQ_MeasurementGroup START WITH 1 INCREMENT BY 1;
+
 CREATE TRIGGER AI_MeasurementGroup BEFORE INSERT ON MeasurementGroup
-	FOR EACH ROW BEGIN SELECT SEQ_MeasurementGroup.nextval INTO :NEW.ID FROM dual;
+    FOR EACH ROW BEGIN SELECT SEQ_MeasurementGroup.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
 CREATE TABLE MeasurementGroupMeasurement (
-    NodeID NCHAR(36) NOT NULL,
-    MeasurementGroupID INT NOT NULL,
-    SignalID NCHAR(36) NOT NULL,
-    CreatedOn DATE DEFAULT N'' NOT NULL,
-    CreatedBy VARCHAR2(200) DEFAULT N'' NOT NULL,
-    UpdatedOn DATE DEFAULT N'' NOT NULL,
-    UpdatedBy VARCHAR2(200) DEFAULT N'' NOT NULL
+    NodeID VARCHAR2(36) NOT NULL,
+    MeasurementGroupID NUMBER NOT NULL,
+    SignalID VARCHAR2(36) NOT NULL,
+    CreatedOn DATE NOT NULL,
+    CreatedBy VARCHAR2(200) NOT NULL,
+    UpdatedOn DATE NOT NULL,
+    UpdatedBy VARCHAR2(200) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_MeasurementGroupMeasurement ON MeasurementGroupMeasurement (NodeID ASC, MeasurementGroupID ASC, SignalID ASC);
+CREATE UNIQUE INDEX IX_MeasurementGroupMeasurement ON MeasurementGroupMeasurement (NodeID ASC, MeasurementGroupID ASC, SignalID ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT PK_MeasurementGroupMeasurement PRIMARY KEY (NodeID, MeasurementGroupID, SignalID);
 
 ALTER TABLE Subscriber ADD CONSTRAINT FK_Subscriber_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
@@ -891,8 +987,6 @@ ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT FK_MeasureGrpMeasure_Node
 ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT FK_MeasureGrpMeasure_Measure FOREIGN KEY(SignalID) REFERENCES Measurement (SignalID);
 
 ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT FK_MeasurGrpMeasur_MeasurGrp FOREIGN KEY(MeasurementGroupID) REFERENCES MeasurementGroup (ID);
-
--- ----------------------------------------------------------------------------
 
 ALTER TABLE Node ADD CONSTRAINT FK_Node_Company FOREIGN KEY(CompanyID) REFERENCES Company (ID);
 
@@ -984,48 +1078,50 @@ ALTER TABLE SecurityGroupUserAccount ADD CONSTRAINT FK_SecurityGrpUsrAcct_UsrAcc
 
 ALTER TABLE SecurityGroupUserAccount ADD CONSTRAINT FK_SecurGrpUsrAcct_SecurGrp FOREIGN KEY (SecurityGroupID) REFERENCES securitygroup (ID) ON DELETE CASCADE;
 
+-- VIEWS
+
 CREATE VIEW RuntimeOutputStreamMeasurement
 AS
 SELECT OutputStreamMeasurement.NodeID, Runtime.ID AS AdapterID, Historian.Acronym AS Historian, 
     OutputStreamMeasurement.PointID, OutputStreamMeasurement.SignalReference
 FROM OutputStreamMeasurement LEFT OUTER JOIN
     Historian ON OutputStreamMeasurement.HistorianID = Historian.ID LEFT OUTER JOIN
-    Runtime ON OutputStreamMeasurement.AdapterID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
+    Runtime ON OutputStreamMeasurement.AdapterID = Runtime.SourceID AND Runtime.SourceTable = 'OutputStream'
 ORDER BY OutputStreamMeasurement.HistorianID, OutputStreamMeasurement.PointID;
 
 CREATE VIEW RuntimeHistorian
 AS
 SELECT Historian.NodeID, Runtime.ID, Historian.Acronym AS AdapterName,
-    CASE DBMS_LOB.COMPARE(TRIM(Historian.AssemblyName || EMPTY_CLOB()), EMPTY_CLOB()) WHEN 0 THEN TO_CLOB(N'HistorianAdapters.dll') ELSE Historian.AssemblyName END AS AssemblyName,
-    CASE DBMS_LOB.COMPARE(TRIM(Historian.TypeName || EMPTY_CLOB()), EMPTY_CLOB()) WHEN 0 THEN (CASE IsLocal WHEN 1 THEN TO_CLOB(N'HistorianAdapters.LocalOutputAdapter') ELSE TO_CLOB(N'HistorianAdapters.RemoteOutputAdapter') END) ELSE Historian.TypeName END AS TypeName,
-    (Historian.ConnectionString || N';' ||
-	(N'instanceName=' || Historian.Acronym) || (N'sourceids=' || Historian.Acronym) || N';' ||
-    N'measurementReportingInterval=' || Historian.MeasurementReportingInterval) AS ConnectionString
+    CASE TRIM(Historian.AssemblyName) WHEN 0 THEN 'HistorianAdapters.dll' ELSE Historian.AssemblyName END AS AssemblyName,
+    CASE TRIM(Historian.TypeName) WHEN 0 THEN (CASE IsLocal WHEN 1 THEN 'HistorianAdapters.LocalOutputAdapter' ELSE 'HistorianAdapters.RemoteOutputAdapter' END) ELSE Historian.TypeName END AS TypeName,
+    (Historian.ConnectionString || ';' ||
+    ('instanceName=' || Historian.Acronym) || ('sourceids=' || Historian.Acronym) || ';' ||
+    'measurementReportingInterval=' || Historian.MeasurementReportingInterval) AS ConnectionString
 FROM Historian LEFT OUTER JOIN
-    Runtime ON Historian.ID = Runtime.SourceID AND Runtime.SourceTable = N'Historian'
+    Runtime ON Historian.ID = Runtime.SourceID AND Runtime.SourceTable = 'Historian'
 WHERE (Historian.Enabled <> 0)
 ORDER BY Historian.LoadOrder;
 
 CREATE VIEW RuntimeDevice
 AS
-SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, TO_CLOB(Protocol.AssemblyName) AS AssemblyName, TO_CLOB(Protocol.TypeName) AS TypeName,
-    Device.ConnectionString || N';' ||
-	N'isConcentrator=' || Device.IsConcentrator || N';' ||
-    N'accessID=' || Device.AccessID || N';' ||
-    NVL2(Device.TimeZone, N'timeZone=' || Device.TimeZone, N'') || N';' ||
-    N'timeAdjustmentTicks=' || Device.TimeAdjustmentTicks || N';' ||
-    NVL2(Protocol.Acronym, N'phasorProtocol=' || Protocol.Acronym, N'') || N';' ||
-    N'dataLossInterval=' || Device.DataLossInterval || N';' ||
-    N'allowedParsingExceptions=' || Device.AllowedParsingExceptions || N';' ||
-    N'parsingExceptionWindow=' || Device.ParsingExceptionWindow || N';' ||
-    N'delayedConnectionInterval=' || Device.DelayedConnectionInterval || N';' ||
-    N'allowUseOfCachedConfiguration=' || Device.AllowUseOfCachedConfiguration || N';' ||
-    N'autoStartDataParsingSequence=' || Device.AutoStartDataParsingSequence || N';' ||
-    N'skipDisableRealTimeData=' || Device.SkipDisableRealTimeData || N';' ||
-    N'measurementReportingInterval=' || Device.MeasurementReportingInterval AS ConnectionString
+SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, Protocol.AssemblyName AS AssemblyName, Protocol.TypeName AS TypeName,
+    Device.ConnectionString || ';' ||
+    'isConcentrator=' || Device.IsConcentrator || ';' ||
+    'accessID=' || Device.AccessID || ';' ||
+    NVL2(Device.TimeZone, 'timeZone=' || Device.TimeZone, '') || ';' ||
+    'timeAdjustmentTicks=' || Device.TimeAdjustmentTicks || ';' ||
+    NVL2(Protocol.Acronym, 'phasorProtocol=' || Protocol.Acronym, '') || ';' ||
+    'dataLossInterval=' || Device.DataLossInterval || ';' ||
+    'allowedParsingExceptions=' || Device.AllowedParsingExceptions || ';' ||
+    'parsingExceptionWindow=' || Device.ParsingExceptionWindow || ';' ||
+    'delayedConnectionInterval=' || Device.DelayedConnectionInterval || ';' ||
+    'allowUseOfCachedConfiguration=' || Device.AllowUseOfCachedConfiguration || ';' ||
+    'autoStartDataParsingSequence=' || Device.AutoStartDataParsingSequence || ';' ||
+    'skipDisableRealTimeData=' || Device.SkipDisableRealTimeData || ';' ||
+    'measurementReportingInterval=' || Device.MeasurementReportingInterval AS ConnectionString
 FROM Device LEFT OUTER JOIN
     Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
-    Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device'
+    Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = 'Device'
 WHERE (Device.Enabled <> 0 AND Device.ParentID IS NULL)
 ORDER BY Device.LoadOrder;
 
@@ -1034,7 +1130,7 @@ AS
 SELECT CustomOutputAdapter.NodeID, Runtime.ID, CustomOutputAdapter.AdapterName, 
     TRIM(CustomOutputAdapter.AssemblyName) AS AssemblyName, TRIM(CustomOutputAdapter.TypeName) AS TypeName, CustomOutputAdapter.ConnectionString
 FROM CustomOutputAdapter LEFT OUTER JOIN
-    Runtime ON CustomOutputAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = N'CustomOutputAdapter'
+    Runtime ON CustomOutputAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = 'CustomOutputAdapter'
 WHERE (CustomOutputAdapter.Enabled <> 0)
 ORDER BY CustomOutputAdapter.LoadOrder;
 
@@ -1042,8 +1138,8 @@ CREATE VIEW RuntimeInputStreamDevice
 AS
 SELECT Device.NodeID, Runtime_P.ID AS ParentID, Runtime.ID, Device.Acronym, Device.Name, Device.AccessID
 FROM Device LEFT OUTER JOIN
-    Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device' LEFT OUTER JOIN
-    Runtime Runtime_P ON Device.ParentID = Runtime_P.SourceID AND Runtime_P.SourceTable = N'Device'
+    Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = 'Device' LEFT OUTER JOIN
+    Runtime Runtime_P ON Device.ParentID = Runtime_P.SourceID AND Runtime_P.SourceTable = 'Device'
 WHERE (Device.IsConcentrator = 0) AND (Device.Enabled <> 0) AND (Device.ParentID IS NOT NULL)
 ORDER BY Device.LoadOrder;
 
@@ -1052,7 +1148,7 @@ AS
 SELECT CustomInputAdapter.NodeID, Runtime.ID, CustomInputAdapter.AdapterName, 
     TRIM(CustomInputAdapter.AssemblyName) AS AssemblyName, TRIM(CustomInputAdapter.TypeName) AS TypeName, CustomInputAdapter.ConnectionString
 FROM CustomInputAdapter LEFT OUTER JOIN
-    Runtime ON CustomInputAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = N'CustomInputAdapter'
+    Runtime ON CustomInputAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = 'CustomInputAdapter'
 WHERE (CustomInputAdapter.Enabled <> 0)
 ORDER BY CustomInputAdapter.LoadOrder;
 
@@ -1062,40 +1158,40 @@ SELECT OutputStreamDevice.NodeID, Runtime.ID AS ParentID, OutputStreamDevice.ID,
     OutputStreamDevice.BpaAcronym, OutputStreamDevice.Name, NULLIF(OutputStreamDevice.PhasorDataFormat, '') AS PhasorDataFormat, NULLIF(OutputStreamDevice.FrequencyDataFormat, '') AS FrequencyDataFormat,
     NULLIF(OutputStreamDevice.AnalogDataFormat, '') AS AnalogDataFormat, NULLIF(OutputStreamDevice.CoordinateFormat, '') AS CoordinateFormat, OutputStreamDevice.LoadOrder
 FROM OutputStreamDevice LEFT OUTER JOIN
-    Runtime ON OutputStreamDevice.AdapterID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
+    Runtime ON OutputStreamDevice.AdapterID = Runtime.SourceID AND Runtime.SourceTable = 'OutputStream'
 WHERE (OutputStreamDevice.Enabled <> 0)
 ORDER BY OutputStreamDevice.LoadOrder;
 
 CREATE VIEW RuntimeOutputStream
 AS
 SELECT OutputStream.NodeID, Runtime.ID, OutputStream.Acronym AS AdapterName, 
-    TO_CLOB(N'TVA.PhasorProtocols.dll') AS AssemblyName, 
-    CASE Type WHEN 1 THEN TO_CLOB(N'TVA.PhasorProtocols.BpaPdcStream.Concentrator') ELSE TO_CLOB(N'TVA.PhasorProtocols.IeeeC37_118.Concentrator') END AS TypeName,
-    OutputStream.ConnectionString || N';' ||
-    NVL2(OutputStream.DataChannel, N'dataChannel={' || OutputStream.DataChannel || N'}', N'') || N';' ||
-    NVL2(OutputStream.CommandChannel, N'commandChannel={' || OutputStream.CommandChannel || N'}', N'') || N';' ||
-    N'idCode=' || OutputStream.IDCode || N';' ||
-    N'autoPublishConfigFrame=' || OutputStream.AutoPublishConfigFrame || N';' ||
-    N'autoStartDataChannel=' || OutputStream.AutoStartDataChannel || N';' ||
-    N'nominalFrequency=' || OutputStream.NominalFrequency || N';' ||
-    N'lagTime=' || OutputStream.LagTime || N';' ||
-    N'leadTime=' || OutputStream.LeadTime || N';' ||
-    N'framesPerSecond=' || OutputStream.FramesPerSecond || N';' ||
-    N'useLocalClockAsRealTime=' || OutputStream.UseLocalClockAsRealTime || N';' ||
-    N'allowSortsByArrival=' || OutputStream.AllowSortsByArrival || N';' ||
-    N'ignoreBadTimestamps=' || OutputStream.IgnoreBadTimeStamps || N';' ||
-    N'timeResolution=' || OutputStream.TimeResolution || N';' ||
-    N'allowPreemptivePublishing=' || OutputStream.AllowPreemptivePublishing || N';' ||
-    N'downsamplingMethod=' || OutputStream.DownsamplingMethod || N';' ||
-    N'dataFormat=' || OutputStream.DataFormat || N';' ||
-    N'coordinateFormat=' || OutputStream.CoordinateFormat || N';' ||
-    N'currentScalingValue=' || OutputStream.CurrentScalingValue || N';' ||
-    N'voltageScalingValue=' || OutputStream.VoltageScalingValue || N';' ||
-    N'analogScalingValue=' || OutputStream.AnalogScalingValue || N';' ||
-    N'performTimestampReasonabilityCheck=' || OutputStream.PerformTimeReasonabilityCheck || N';' ||
-    N'digitalMaskValue=' || OutputStream.DigitalMaskValue AS ConnectionString
+    'TVA.PhasorProtocols.dll' AS AssemblyName, 
+    CASE Type WHEN 1 THEN 'TVA.PhasorProtocols.BpaPdcStream.Concentrator' ELSE 'TVA.PhasorProtocols.IeeeC37_118.Concentrator' END AS TypeName,
+    OutputStream.ConnectionString || ';' ||
+    NVL2(OutputStream.DataChannel, 'dataChannel={' || OutputStream.DataChannel || '}', '') || ';' ||
+    NVL2(OutputStream.CommandChannel, 'commandChannel={' || OutputStream.CommandChannel || '}', '') || ';' ||
+    'idCode=' || OutputStream.IDCode || ';' ||
+    'autoPublishConfigFrame=' || OutputStream.AutoPublishConfigFrame || ';' ||
+    'autoStartDataChannel=' || OutputStream.AutoStartDataChannel || ';' ||
+    'nominalFrequency=' || OutputStream.NominalFrequency || ';' ||
+    'lagTime=' || OutputStream.LagTime || ';' ||
+    'leadTime=' || OutputStream.LeadTime || ';' ||
+    'framesPerSecond=' || OutputStream.FramesPerSecond || ';' ||
+    'useLocalClockAsRealTime=' || OutputStream.UseLocalClockAsRealTime || ';' ||
+    'allowSortsByArrival=' || OutputStream.AllowSortsByArrival || ';' ||
+    'ignoreBadTimestamps=' || OutputStream.IgnoreBadTimeStamps || ';' ||
+    'timeResolution=' || OutputStream.TimeResolution || ';' ||
+    'allowPreemptivePublishing=' || OutputStream.AllowPreemptivePublishing || ';' ||
+    'downsamplingMethod=' || OutputStream.DownsamplingMethod || ';' ||
+    'dataFormat=' || OutputStream.DataFormat || ';' ||
+    'coordinateFormat=' || OutputStream.CoordinateFormat || ';' ||
+    'currentScalingValue=' || OutputStream.CurrentScalingValue || ';' ||
+    'voltageScalingValue=' || OutputStream.VoltageScalingValue || ';' ||
+    'analogScalingValue=' || OutputStream.AnalogScalingValue || ';' ||
+    'performTimestampReasonabilityCheck=' || OutputStream.PerformTimeReasonabilityCheck || ';' ||
+    'digitalMaskValue=' || OutputStream.DigitalMaskValue AS ConnectionString
 FROM OutputStream LEFT OUTER JOIN
-    Runtime ON OutputStream.ID = Runtime.SourceID AND Runtime.SourceTable = N'OutputStream'
+    Runtime ON OutputStream.ID = Runtime.SourceID AND Runtime.SourceTable = 'OutputStream'
 WHERE (OutputStream.Enabled <> 0)
 ORDER BY OutputStream.LoadOrder;
 
@@ -1104,7 +1200,7 @@ AS
 SELECT CustomActionAdapter.NodeID, Runtime.ID, CustomActionAdapter.AdapterName, 
     TRIM(CustomActionAdapter.AssemblyName) AS AssemblyName, TRIM(CustomActionAdapter.TypeName) AS TypeName, CustomActionAdapter.ConnectionString
 FROM CustomActionAdapter LEFT OUTER JOIN
-    Runtime ON CustomActionAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = N'CustomActionAdapter'
+    Runtime ON CustomActionAdapter.ID = Runtime.SourceID AND Runtime.SourceTable = 'CustomActionAdapter'
 WHERE (CustomActionAdapter.Enabled <> 0)
 ORDER BY CustomActionAdapter.LoadOrder;
 
@@ -1112,29 +1208,29 @@ CREATE VIEW RuntimeCalculatedMeasurement
 AS
 SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym AS AdapterName, 
     TRIM(CalculatedMeasurement.AssemblyName) AS AssemblyName, TRIM(CalculatedMeasurement.TypeName) AS TypeName,
-    CalculatedMeasurement.ConnectionString || N';' ||
-	NVL2(ConfigSection, N'configurationSection=' || ConfigSection, N'') || N';' ||
-    N'minimumMeasurementsToUse=' || CalculatedMeasurement.MinimumMeasurementsToUse || N';' ||
-    N'framesPerSecond=' || CalculatedMeasurement.FramesPerSecond || N';' ||
-    N'lagTime=' || CalculatedMeasurement.LagTime || N';' ||
-    N'leadTime=' || CalculatedMeasurement.LeadTime || N';' ||
-    NVL2(InputMeasurements, N'inputMeasurementKeys={' || InputMeasurements || N'}', N'') || N';' ||
-    NVL2(OutputMeasurements, N'outputMeasurements={' || OutputMeasurements || N'}', N'') || N';' ||
-    N'ignoreBadTimestamps=' || CalculatedMeasurement.IgnoreBadTimeStamps || N';' ||
-    N'timeResolution=' || CalculatedMeasurement.TimeResolution || N';' ||
-    N'allowPreemptivePublishing=' || CalculatedMeasurement.AllowPreemptivePublishing || N';' ||
-    N'performTimestampReasonabilityCheck=' || CalculatedMeasurement.PerformTimeReasonabilityCheck || N';' ||
-    N'downsamplingMethod=' || CalculatedMeasurement.DownsamplingMethod || N';' ||
-    N'useLocalClockAsRealTime=' || CalculatedMeasurement.UseLocalClockAsRealTime AS ConnectionString
+    CalculatedMeasurement.ConnectionString || ';' ||
+    NVL2(ConfigSection, 'configurationSection=' || ConfigSection, '') || ';' ||
+    'minimumMeasurementsToUse=' || CalculatedMeasurement.MinimumMeasurementsToUse || ';' ||
+    'framesPerSecond=' || CalculatedMeasurement.FramesPerSecond || ';' ||
+    'lagTime=' || CalculatedMeasurement.LagTime || ';' ||
+    'leadTime=' || CalculatedMeasurement.LeadTime || ';' ||
+    NVL2(InputMeasurements, 'inputMeasurementKeys={' || InputMeasurements || '}', '') || ';' ||
+    NVL2(OutputMeasurements, 'outputMeasurements={' || OutputMeasurements || '}', '') || ';' ||
+    'ignoreBadTimestamps=' || CalculatedMeasurement.IgnoreBadTimeStamps || ';' ||
+    'timeResolution=' || CalculatedMeasurement.TimeResolution || ';' ||
+    'allowPreemptivePublishing=' || CalculatedMeasurement.AllowPreemptivePublishing || ';' ||
+    'performTimestampReasonabilityCheck=' || CalculatedMeasurement.PerformTimeReasonabilityCheck || ';' ||
+    'downsamplingMethod=' || CalculatedMeasurement.DownsamplingMethod || ';' ||
+    'useLocalClockAsRealTime=' || CalculatedMeasurement.UseLocalClockAsRealTime AS ConnectionString
 FROM CalculatedMeasurement LEFT OUTER JOIN
-    Runtime ON CalculatedMeasurement.ID = Runtime.SourceID AND Runtime.SourceTable = N'CalculatedMeasurement'
+    Runtime ON CalculatedMeasurement.ID = Runtime.SourceID AND Runtime.SourceTable = 'CalculatedMeasurement'
 WHERE (CalculatedMeasurement.Enabled <> 0)
 ORDER BY CalculatedMeasurement.LoadOrder;
 
 CREATE VIEW ActiveMeasurement
 AS
 SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID, COALESCE(Device.NodeID, Historian.NodeID) AS SourceNodeID, COALESCE(Historian.Acronym, Device.Acronym, '__') || ':' ||
-    Measurement.PointID AS ID, Measurement.SignalID, Measurement.PointTag, Measurement.AlternateTag, TO_CLOB(Measurement.SignalReference) AS SignalReference, Measurement.Internal, Measurement.Subscribed,
+    Measurement.PointID AS ID, Measurement.SignalID, Measurement.PointTag, Measurement.AlternateTag, Measurement.SignalReference AS SignalReference, Measurement.Internal, Measurement.Subscribed,
     Device.Acronym AS Device, CASE WHEN Device.IsConcentrator = 0 AND Device.ParentID IS NOT NULL THEN RuntimeP.ID ELSE Runtime.ID END AS DeviceID, COALESCE(Device.FramesPerSecond, 30) AS FramesPerSecond, 
     Protocol.Acronym AS Protocol, Protocol.Type AS ProtocolType, SignalType.Acronym AS SignalType, Phasor.ID AS PhasorID, Phasor.Type AS PhasorType, Phasor.Phase, Measurement.Adder, 
     Measurement.Multiplier, Company.Acronym AS Company, Device.Longitude, Device.Latitude, Measurement.Description
@@ -1146,8 +1242,8 @@ FROM Company RIGHT OUTER JOIN
     Measurement.PhasorSourceIndex = Phasor.SourceIndex LEFT OUTER JOIN
     Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
     Historian ON Measurement.HistorianID = Historian.ID LEFT OUTER JOIN
-    Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device' LEFT OUTER JOIN
-    Runtime RuntimeP ON RuntimeP.SourceID = Device.ParentID AND RuntimeP.SourceTable = N'Device'
+    Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = 'Device' LEFT OUTER JOIN
+    Runtime RuntimeP ON RuntimeP.SourceID = Device.ParentID AND RuntimeP.SourceTable = 'Device'
 WHERE (Device.Enabled <> 0 OR Device.Enabled IS NULL) AND (Measurement.Enabled <> 0)
 UNION ALL
 SELECT NodeID, SourceNodeID, Source || ':' || PointID AS ID, SignalID, PointTag,
@@ -1181,7 +1277,7 @@ FROM RuntimeCustomInputAdapter;
 
 CREATE VIEW IaonActionAdapter
 AS
-SELECT Node.ID AS NodeID, 0 AS ID, 'PHASOR!SERVICES' AS AdapterName, TO_CLOB(N'TVA.PhasorProtocols.dll') AS AssemblyName, TO_CLOB(N'TVA.PhasorProtocols.CommonPhasorServices') AS TypeName, TO_CLOB(N'') AS ConnectionString
+SELECT Node.ID AS NodeID, 0 AS ID, 'PHASOR!SERVICES' AS AdapterName, 'TVA.PhasorProtocols.dll' AS AssemblyName, 'TVA.PhasorProtocols.CommonPhasorServices' AS TypeName, '' AS ConnectionString
 FROM Node
 UNION ALL
 SELECT NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString
@@ -1219,7 +1315,7 @@ FROM Company RIGHT OUTER JOIN
 CREATE VIEW HistorianMetadata
 AS
 SELECT PointID AS HistorianID, CASE SignalAcronym WHEN 'DIGI' THEN 1 ELSE 0 END AS DataType, PointTag AS Name, SignalReference AS Synonym1, 
-    SignalAcronym AS Synonym2, AlternateTag AS Synonym3, Description, VendorDeviceDescription AS HardwareInfo, N'' AS Remarks, 
+    SignalAcronym AS Synonym2, AlternateTag AS Synonym3, Description, VendorDeviceDescription AS HardwareInfo, '' AS Remarks, 
     HistorianAcronym AS PlantCode, 1 AS UnitNumber, DeviceAcronym AS SystemName, ProtocolID AS SourceID, Enabled, 1 / FramesPerSecond AS ScanRate, 
     0 AS CompressionMinTime, 0 AS CompressionMaxTime, EngineeringUnits,
     CASE SignalAcronym WHEN 'FREQ' THEN 59.95 WHEN 'VPHM' THEN 475000 WHEN 'IPHM' THEN 0 WHEN 'VPHA' THEN -181 WHEN 'IPHA' THEN -181 ELSE 0 END AS LowWarning,
@@ -1228,15 +1324,15 @@ SELECT PointID AS HistorianID, CASE SignalAcronym WHEN 'DIGI' THEN 1 ELSE 0 END 
     CASE SignalAcronym WHEN 'FREQ' THEN 60.10 WHEN 'VPHM' THEN 550000 WHEN 'IPHM' THEN 3300 WHEN 'VPHA' THEN 181 WHEN 'IPHA' THEN 181 ELSE 0 END AS HighAlarm,
     CASE SignalAcronym WHEN 'FREQ' THEN 59.95 WHEN 'VPHM' THEN 475000 WHEN 'IPHM' THEN 0 WHEN 'VPHA' THEN -180 WHEN 'IPHA' THEN -180 ELSE 0 END AS LowRange,
     CASE SignalAcronym WHEN 'FREQ' THEN 60.05 WHEN 'VPHM' THEN 525000 WHEN 'IPHM' THEN 3000 WHEN 'VPHA' THEN 180 WHEN 'IPHA' THEN 180 ELSE 0 END AS HighRange,
-    0.0 AS CompressionLimit, 0.0 AS ExceptionLimit, CASE SignalAcronym WHEN 'DIGI' THEN 0 ELSE 7 END AS DisplayDigits, N'' AS SetDescription,
+    0.0 AS CompressionLimit, 0.0 AS ExceptionLimit, CASE SignalAcronym WHEN 'DIGI' THEN 0 ELSE 7 END AS DisplayDigits, '' AS SetDescription,
     '' AS ClearDescription, 0 AS AlarmState, 5 AS ChangeSecurity, 0 AS AccessSecurity, 0 AS StepCheck, 0 AS AlarmEnabled, 0 AS AlarmFlags, 0 AS AlarmDelay,
-    0 AS AlarmToFile, 0 AS AlarmByEmail, 0 AS AlarmByPager, 0 AS AlarmByPhone, ContactList AS AlarmEmails, N'' AS AlarmPagers, N'' AS AlarmPhones
+    0 AS AlarmToFile, 0 AS AlarmByEmail, 0 AS AlarmByPager, 0 AS AlarmByPhone, ContactList AS AlarmEmails, '' AS AlarmPagers, '' AS AlarmPhones
 FROM MeasurementDetail;
 
 CREATE VIEW CalculatedMeasurementDetail
 AS
-SELECT CM.NodeID, CM.ID, CM.Acronym, COALESCE(CM.Name, '') AS Name, CM.AssemblyName, CM.TypeName, CM.ConnectionString || EMPTY_CLOB() AS ConnectionString,
-    COALESCE(CM.ConfigSection, '') AS ConfigSection, CM.InputMeasurements || EMPTY_CLOB() AS InputMeasurements, CM.OutputMeasurements || EMPTY_CLOB() AS OutputMeasurements,
+SELECT CM.NodeID, CM.ID, CM.Acronym, COALESCE(CM.Name, '') AS Name, CM.AssemblyName, CM.TypeName, CM.ConnectionString AS ConnectionString,
+    COALESCE(CM.ConfigSection, '') AS ConfigSection, CM.InputMeasurements AS InputMeasurements, CM.OutputMeasurements AS OutputMeasurements,
     CM.MinimumMeasurementsToUse, CM.FramesPerSecond, CM.LagTime, CM.LeadTime, CM.UseLocalClockAsRealTime, CM.AllowSortsByArrival, CM.LoadOrder, CM.Enabled,
     N.Name AS NodeName, CM.IgnoreBadTimeStamps, CM.TimeResolution, CM.AllowPreemptivePublishing, COALESCE(CM.DownsamplingMethod, '') AS DownsamplingMethod, CM.PerformTimeReasonabilityCheck
 FROM CalculatedMeasurement CM, Node N
@@ -1244,51 +1340,51 @@ WHERE CM.NodeID = N.ID;
 
 CREATE VIEW HistorianDetail
 AS
-SELECT H.NodeID, H.ID, H.Acronym, COALESCE(H.Name, '') AS Name, H.AssemblyName || EMPTY_CLOB() AS AssemblyName, H.TypeName || EMPTY_CLOB() AS TypeName, 
-    H.ConnectionString || EMPTY_CLOB() AS ConnectionString, H.IsLocal, H.Description || EMPTY_CLOB() AS Description, H.LoadOrder, H.Enabled, N.Name AS NodeName, H.MeasurementReportingInterval 
+SELECT H.NodeID, H.ID, H.Acronym, COALESCE(H.Name, '') AS Name, H.AssemblyName AS AssemblyName, H.TypeName AS TypeName, 
+    H.ConnectionString AS ConnectionString, H.IsLocal, H.Description AS Description, H.LoadOrder, H.Enabled, N.Name AS NodeName, H.MeasurementReportingInterval 
 FROM Historian H INNER JOIN Node N ON H.NodeID = N.ID;
 
 CREATE VIEW NodeDetail
 AS
 SELECT N.ID, N.Name, N.CompanyID AS CompanyID, COALESCE(N.Longitude, 0) AS Longitude, COALESCE(N.Latitude, 0) AS Latitude, 
-    N.Description || EMPTY_CLOB() AS Description, N.ImagePath || EMPTY_CLOB() AS ImagePath, N.Settings || EMPTY_CLOB() AS Settings, N.MenuType, N.MenuData, N.Master, N.LoadOrder, N.Enabled, COALESCE(C.Name, '') AS CompanyName
+    N.Description AS Description, N.ImagePath AS ImagePath, N.Settings AS Settings, N.MenuType, N.MenuData, N.Master, N.LoadOrder, N.Enabled, COALESCE(C.Name, '') AS CompanyName
 FROM Node N LEFT JOIN Company C 
 ON N.CompanyID = C.ID;
 
 CREATE VIEW VendorDetail
 AS
-SELECT ID, COALESCE(Acronym, '') AS Acronym, Name, COALESCE(PhoneNumber, '') AS PhoneNumber, COALESCE(ContactEmail, '') AS ContactEmail, URL || EMPTY_CLOB() AS URL 
+SELECT ID, COALESCE(Acronym, '') AS Acronym, Name, COALESCE(PhoneNumber, '') AS PhoneNumber, COALESCE(ContactEmail, '') AS ContactEmail, URL AS URL 
 FROM Vendor;
 
 CREATE VIEW CustomActionAdapterDetail AS
-SELECT CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, CA.ConnectionString || EMPTY_CLOB() AS ConnectionString, CA.LoadOrder, 
+SELECT CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, CA.ConnectionString AS ConnectionString, CA.LoadOrder, 
     CA.Enabled, N.Name AS NodeName
 FROM CustomActionAdapter CA INNER JOIN Node N ON CA.NodeID = N.ID;
  
 CREATE VIEW CustomInputAdapterDetail AS
-SELECT CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, CA.ConnectionString || EMPTY_CLOB() AS ConnectionString, CA.LoadOrder, 
+SELECT CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, CA.ConnectionString AS ConnectionString, CA.LoadOrder, 
     CA.Enabled, N.Name AS NodeName
 FROM CustomInputAdapter CA INNER JOIN Node N ON CA.NodeID = N.ID;
  
 CREATE VIEW CustomOutputAdapterDetail AS
-SELECT CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, CA.ConnectionString || EMPTY_CLOB() AS ConnectionString, CA.LoadOrder, 
+SELECT CA.NodeID, CA.ID, CA.AdapterName, CA.AssemblyName, CA.TypeName, CA.ConnectionString AS ConnectionString, CA.LoadOrder, 
     CA.Enabled, N.Name AS NodeName
 FROM CustomOutputAdapter CA INNER JOIN Node N ON CA.NodeID = N.ID;
  
 CREATE VIEW IaonTreeView AS
-SELECT 'Action Adapters' AS AdapterType, NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString || EMPTY_CLOB() AS ConnectionString
+SELECT 'Action Adapters' AS AdapterType, NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString AS ConnectionString
 FROM IaonActionAdapter
 UNION ALL
-SELECT 'Input Adapters' AS AdapterType, NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString || EMPTY_CLOB() AS ConnectionString
+SELECT 'Input Adapters' AS AdapterType, NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString AS ConnectionString
 FROM IaonInputAdapter
 UNION ALL
-SELECT 'Output Adapters' AS AdapterType, NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString || EMPTY_CLOB() AS ConnectionString
+SELECT 'Output Adapters' AS AdapterType, NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString AS ConnectionString
 FROM IaonOutputAdapter;
  
 CREATE VIEW OtherDeviceDetail AS
 SELECT OD.ID, OD.Acronym, COALESCE(OD.Name, '') AS Name, OD.IsConcentrator, OD.CompanyID, OD.VendorDeviceID, OD.Longitude, OD.Latitude, 
     OD.InterconnectionID, OD.Planned, OD.Desired, OD.InProgress, COALESCE(C.Name, '') AS CompanyName, COALESCE(C.Acronym, '') AS CompanyAcronym, 
-    COALESCE(C.MapAcronym, N'') AS CompanyMapAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(I.Name, '') AS InterconnectionName
+    COALESCE(C.MapAcronym, '') AS CompanyMapAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(I.Name, '') AS InterconnectionName
 FROM OtherDevice OD LEFT OUTER JOIN
     Company C ON OD.CompanyID = C.ID LEFT OUTER JOIN
     VendorDevice VD ON OD.VendorDeviceID = VD.ID LEFT OUTER JOIN
@@ -1303,18 +1399,18 @@ GROUP BY Device.NodeID, Vendor.Name;
 
 CREATE VIEW VendorDeviceDetail
 AS
-SELECT VD.ID, VD.VendorID, VD.Name, VD.Description || EMPTY_CLOB() AS Description, VD.URL || EMPTY_CLOB() AS URL, V.Name AS VendorName, 
+SELECT VD.ID, VD.VendorID, VD.Name, VD.Description AS Description, VD.URL AS URL, V.Name AS VendorName, 
     V.Acronym AS VendorAcronym
 FROM VendorDevice VD INNER JOIN Vendor V ON VD.VendorID = V.ID;
                       
 CREATE VIEW DeviceDetail
 AS
-SELECT D.NodeID, D.ID, D.ParentID, D.UniqueID, D.Acronym, COALESCE(D.Name, '') AS Name, D.OriginalSource, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
-    D.ProtocolID, D.Longitude, D.Latitude, D.InterconnectionID, D.ConnectionString || EMPTY_CLOB() AS ConnectionString, COALESCE(D.TimeZone, '') AS TimeZone, 
-    COALESCE(D.FramesPerSecond, 30) AS FramesPerSecond, D.TimeAdjustmentTicks, D.DataLossInterval, D.ConnectOnDemand, D.ContactList || EMPTY_CLOB() AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
-    AS CompanyName, COALESCE(C.Acronym, '') AS CompanyAcronym, COALESCE(C.MapAcronym, N'') AS CompanyMapAcronym, COALESCE(H.Acronym, '') 
+SELECT D.NodeID, D.ID, D.ParentID, D.UniqueID, D.Acronym, COALESCE(D.Name, '') AS Name, D.IsConcentrator, D.CompanyID, D.HistorianID, D.AccessID, D.VendorDeviceID, 
+    D.ProtocolID, D.Longitude, D.Latitude, D.InterconnectionID, D.ConnectionString AS ConnectionString, COALESCE(D.TimeZone, '') AS TimeZone, 
+    COALESCE(D.FramesPerSecond, 30) AS FramesPerSecond, D.TimeAdjustmentTicks, D.DataLossInterval, D.ConnectOnDemand, D.ContactList AS ContactList, D.MeasuredLines, D.LoadOrder, D.Enabled, COALESCE(C.Name, '') 
+    AS CompanyName, COALESCE(C.Acronym, '') AS CompanyAcronym, COALESCE(C.MapAcronym, '') AS CompanyMapAcronym, COALESCE(H.Acronym, '') 
     AS HistorianAcronym, COALESCE(VD.VendorAcronym, '') AS VendorAcronym, COALESCE(VD.Name, '') AS VendorDeviceName, COALESCE(P.Name, '') 
-    AS ProtocolName, P.Type AS ProtocolType, P.Category, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym, D.CreatedOn, D.AllowedParsingExceptions, 
+    AS ProtocolName, P.Type AS ProtocolType, COALESCE(I.Name, '') AS InterconnectionName, N.Name AS NodeName, COALESCE(PD.Acronym, '') AS ParentAcronym, D.CreatedOn, D.AllowedParsingExceptions, 
     D.ParsingExceptionWindow, D.DelayedConnectionInterval, D.AllowUseOfCachedConfiguration, D.AutoStartDataParsingSequence, D.SkipDisableRealTimeData, 
     D.MeasurementReportingInterval
 FROM Device D LEFT OUTER JOIN
@@ -1336,8 +1432,8 @@ SELECT 'OtherDevice' AS DeviceType, NULL AS NodeID, ID, Acronym, COALESCE(Name, 
 FROM OtherDeviceDetail OD;
 
 CREATE VIEW OutputStreamDetail AS
-SELECT OS.NodeID, OS.ID, OS.Acronym, COALESCE(OS.Name, '') AS Name, OS.Type, OS.ConnectionString || EMPTY_CLOB() AS ConnectionString, OS.IDCode, 
-    OS.CommandChannel || EMPTY_CLOB() AS CommandChannel, OS.DataChannel || EMPTY_CLOB() AS DataChannel, OS.AutoPublishConfigFrame, 
+SELECT OS.NodeID, OS.ID, OS.Acronym, COALESCE(OS.Name, '') AS Name, OS.Type, OS.ConnectionString AS ConnectionString, OS.IDCode, 
+    OS.CommandChannel AS CommandChannel, OS.DataChannel AS DataChannel, OS.AutoPublishConfigFrame, 
     OS.AutoStartDataChannel, OS.NominalFrequency, OS.FramesPerSecond, OS.LagTime, OS.LeadTime, OS.UseLocalClockAsRealTime, 
     OS.AllowSortsByArrival, OS.LoadOrder, OS.Enabled, N.Name AS NodeName, OS.DigitalMaskValue, OS.AnalogScalingValue, 
     OS.VoltageScalingValue, OS.CurrentScalingValue, OS.CoordinateFormat, OS.DataFormat, OS.DownsamplingMethod, 
@@ -1403,396 +1499,316 @@ MeasurementGroupMeasurement.SignalID AS SignalID, Measurement.PointID AS PointID
 FROM ((MeasurementGroupMeasurement JOIN MeasurementGroup ON (MeasurementGroupMeasurement.MeasurementGroupID = MeasurementGroup.ID)) JOIN Measurement ON (MeasurementGroupMeasurement.SignalID = Measurement.SignalID));
 
 CREATE FUNCTION NEW_GUID RETURN NCHAR AS
-	guid NVARCHAR2(36);
+    guid NVARCHAR2(36);
 BEGIN
-	SELECT SYS_GUID() INTO guid FROM dual;
-	
-	guid :=
+    SELECT SYS_GUID() INTO guid FROM dual;
+    
+    guid :=
         SUBSTR(guid,  1, 8) || '-' ||
         SUBSTR(guid,  9, 4) || '-' ||
         SUBSTR(guid, 13, 4) || '-' ||
         SUBSTR(guid, 17, 4) || '-' ||
         SUBSTR(guid, 21);
-		
-	RETURN guid;
+        
+    RETURN guid;
 END;
 /
 
 CREATE TRIGGER CustActAdaptr_RuntimSync_Insrt AFTER INSERT ON CustomActionAdapter
-	FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, 'CustomActionAdapter');
+    FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, 'CustomActionAdapter');
 END;
 /
 
 CREATE TRIGGER CustActAdaptr_RuntimeSync_Del BEFORE DELETE ON CustomActionAdapter
-	FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = N'CustomActionAdapter';
+    FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = 'CustomActionAdapter';
 END;
 /
 
 CREATE TRIGGER CustInAdaptr_RuntimeSync_Insrt AFTER INSERT ON CustomInputAdapter
-	FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, N'CustomInputAdapter');
+    FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, 'CustomInputAdapter');
 END;
 /
 
 CREATE TRIGGER CustInAdaptr_RuntimeSync_Del BEFORE DELETE ON CustomInputAdapter
-	FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = N'CustomInputAdapter';
+    FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = 'CustomInputAdapter';
 END;
 /
 
 CREATE TRIGGER CustOutAdaptr_RuntimSync_Insrt AFTER INSERT ON CustomOutputAdapter
-	FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, N'CustomOutputAdapter');
+    FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, 'CustomOutputAdapter');
 END;
 /
 
 CREATE TRIGGER CustOutAdaptr_RuntimeSync_Del BEFORE DELETE ON CustomOutputAdapter
-	FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = N'CustomOutputAdapter';
+    FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = 'CustomOutputAdapter';
 END;
 /
 
 CREATE TRIGGER Device_RuntimeSync_Insert AFTER INSERT ON Device
-	FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, N'Device');
+    FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, 'Device');
 END;
 /
 
 CREATE TRIGGER Device_RuntimeSync_Delete BEFORE DELETE ON Device
-	FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = N'Device';
+    FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = 'Device';
 END;
 /
 
 CREATE TRIGGER CalcMeasure_RuntimeSync_Insrt AFTER INSERT ON CalculatedMeasurement
-	FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, N'CalculatedMeasurement');
+    FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, 'CalculatedMeasurement');
 END;
 /
 
 CREATE TRIGGER CalcMeasure_RuntimeSync_Del BEFORE DELETE ON CalculatedMeasurement
-	FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = N'CalculatedMeasurement';
+    FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = 'CalculatedMeasurement';
 END;
 /
 
 CREATE TRIGGER OutputStream_RuntimeSync_Insrt AFTER INSERT ON OutputStream
-	FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, N'OutputStream');
+    FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, 'OutputStream');
 END;
 /
 
 CREATE TRIGGER OutputStream_RuntimeSync_Del BEFORE DELETE ON OutputStream
-	FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = N'OutputStream';
+    FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = 'OutputStream';
 END;
 /
 
 CREATE TRIGGER Historian_RuntimeSync_Insert AFTER INSERT ON Historian
-	FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, N'Historian');
+    FOR EACH ROW BEGIN INSERT INTO Runtime (SourceID, SourceTable) VALUES(:NEW.ID, 'Historian');
 END;
 /
 
 CREATE TRIGGER Historian_RuntimeSync_Delete BEFORE DELETE ON Historian
-	FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = N'Historian';
+    FOR EACH ROW BEGIN DELETE FROM Runtime WHERE SourceID = :OLD.ID AND SourceTable = 'Historian';
 END;
 /
 
 CREATE TRIGGER AccessLog_InsertDefault BEFORE INSERT ON AccessLog 
-	FOR EACH ROW BEGIN SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    FOR EACH ROW BEGIN SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER ApplicationRole_InsertDefault BEFORE INSERT ON ApplicationRole FOR EACH ROW BEGIN
-	SELECT NEW_GUID() INTO :NEW.ID FROM dual;
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT NEW_GUID() INTO :NEW.ID FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER SecurityGroup_InsertDefault BEFORE INSERT ON SecurityGroup FOR EACH ROW BEGIN
-	SELECT NEW_GUID() INTO :NEW.ID FROM dual;
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT NEW_GUID() INTO :NEW.ID FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER UserAccount_InsertDefault BEFORE INSERT ON UserAccount FOR EACH ROW BEGIN
-	SELECT NEW_GUID() INTO :NEW.ID FROM dual;
-	SELECT SYSDATE + 90 INTO :NEW.ChangePasswordOn FROM dual;
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT NEW_GUID() INTO :NEW.ID FROM dual;
+    SELECT SYSDATE + 90 INTO :NEW.ChangePasswordOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER CalcMeasurement_InsertDefault BEFORE INSERT ON CalculatedMeasurement FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER Company_InsertDefault BEFORE INSERT ON Company FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER CustomActAdapter_InsertDefault BEFORE INSERT ON CustomActionAdapter FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER CustInputAdapter_InsertDefault BEFORE INSERT ON CustomInputAdapter FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER CustomOutAdapter_InsertDefault BEFORE INSERT ON CustomOutputAdapter FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER Device_InsertDefault BEFORE INSERT ON Device FOR EACH ROW BEGIN
-	SELECT NEW_GUID() INTO :NEW.UniqueID FROM dual;
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT NEW_GUID() INTO :NEW.UniqueID FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER Historian_InsertDefault BEFORE INSERT ON Historian FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER Subscriber_InsertDefault BEFORE INSERT ON Subscriber FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER Measurement_InsertDefault BEFORE INSERT ON Measurement FOR EACH ROW BEGIN
-	SELECT NEW_GUID() INTO :NEW.SignalID FROM dual;
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT NEW_GUID() INTO :NEW.SignalID FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER Node_InsertDefault BEFORE INSERT ON Node FOR EACH ROW BEGIN
-	SELECT NEW_GUID() INTO :NEW.ID FROM dual;
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT NEW_GUID() INTO :NEW.ID FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER OtherDevice_InsertDefault BEFORE INSERT ON OtherDevice FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER OutputStream_InsertDefault BEFORE INSERT ON OutputStream FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER OutStreamDevice_InsertDefault BEFORE INSERT ON OutputStreamDevice FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER OutStrDevAnalog_InsrtDefault BEFORE INSERT ON OutputStreamDeviceAnalog FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER OutStrDevDigital_InsrtDefault BEFORE INSERT ON OutputStreamDeviceDigital FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER OutStrDevPhasor_InsrtDefault BEFORE INSERT ON OutputStreamDevicePhasor FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER OutStrMeasurement_InsrtDefault BEFORE INSERT ON OutputStreamMeasurement FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER Phasor_InsertDefault BEFORE INSERT ON Phasor FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER Vendor_InsertDefault BEFORE INSERT ON Vendor FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER VendorDevice_InsertDefault BEFORE INSERT ON VendorDevice FOR EACH ROW BEGIN
-	SELECT USER INTO :NEW.CreatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
-	SELECT USER INTO :NEW.UpdatedBy FROM dual;
-	SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    SELECT USER INTO :NEW.CreatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    SELECT USER INTO :NEW.UpdatedBy FROM dual;
+    SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER ErrorLog_InsertDefault BEFORE INSERT ON ErrorLog
-	FOR EACH ROW BEGIN SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+    FOR EACH ROW BEGIN SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
 END;
 /
 
 CREATE TRIGGER AuditLog_InsertDefault BEFORE INSERT ON AuditLog
-	FOR EACH ROW BEGIN SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
+    FOR EACH ROW BEGIN SELECT SYSDATE INTO :NEW.UpdatedOn FROM dual;
 END;
 /
 
 CREATE PACKAGE context AS
-	PROCEDURE set_current_user(
-		new_current_user IN VARCHAR2);
-	FUNCTION get_current_user RETURN VARCHAR2;
+    PROCEDURE set_current_user(
+        new_current_user IN VARCHAR2);
+    FUNCTION get_current_user RETURN VARCHAR2;
 END;
 /
 
 CREATE PACKAGE BODY context AS
-	current_user VARCHAR2(200);
-	
-	PROCEDURE set_current_user(new_current_user IN VARCHAR2) IS
-	BEGIN
-		current_user := new_current_user;
-	END;
-	
-	FUNCTION get_current_user RETURN VARCHAR2 IS
-	BEGIN
-		RETURN current_user;
-	END;
+    current_user VARCHAR2(200);
+    
+    PROCEDURE set_current_user(new_current_user IN VARCHAR2) IS
+    BEGIN
+        current_user := new_current_user;
+    END;
+    
+    FUNCTION get_current_user RETURN VARCHAR2 IS
+    BEGIN
+        RETURN current_user;
+    END;
 END;
 /
 
-/*
-CREATE FUNCTION StringToGuid(str CHAR(36)) RETURNS BINARY(16)
-RETURN CONCAT(UNHEX(LEFT(str, 8)), UNHEX(MID(str, 10, 4)), UNHEX(MID(str, 15, 4)), UNHEX(MID(str, 20, 4)), UNHEX(RIGHT(str, 12)));
-
-CREATE FUNCTION GuidToString(guid BINARY(16)) RETURNS CHAR(36) 
-RETURN CONCAT(HEX(LEFT(guid, 4)), '-', HEX(MID(guid, 5, 2)), '-', HEX(MID(guid, 7, 2)), '-', HEX(MID(guid, 9, 2)), '-', HEX(RIGHT(guid, 6)));
-
-CREATE FUNCTION NewGuid() RETURNS BINARY(16) 
-RETURN StringToGuid(UUID());
-
-DELIMITER $$
-CREATE PROCEDURE GetFormattedMeasurements(measurementSql CLOB, includeAdjustments NUMBER(3,0), OUT measurements CLOB)
-BEGIN
-    DECLARE done INT DEFAULT 0;
-    DECLARE measurementID INT;
-    DECLARE archiveSource VARCHAR2(50);
-    DECLARE adder FLOAT DEFAULT 0.0;
-    DECLARE multiplier FLOAT DEFAULT 1.1;	
-    DECLARE selectedMeasurements CURSOR FOR SELECT * FROM temp;
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-
-    CREATE TEMPORARY TABLE temp
-    (
-        MeasurementID INT,
-        ArchiveSource VARCHAR2(50),
-        Adder FLOAT,
-        Multiplier FLOAT
-    )
-    TABLESPACE MEMORY;
-    
-    SET @insertSQL = CONCAT('INSERT INTO temp ', measurementSql);
-    PREPARE stmt FROM @insertSQL;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
-
-    OPEN selectedMeasurements;	
-    SET measurements = '';
-    
-    -- Step through selected measurements
-    REPEAT
-        -- Get next row from measurements SQL
-        FETCH selectedMeasurements INTO measurementID, archiveSource, adder, multiplier;
-
-        IF NOT done THEN
-            IF LENGTH(measurements) > 0 THEN
-                SET measurements = CONCAT(measurements, ';');
-            END IF;
-            
-            IF includeAdjustments <> 0 AND (adder <> 0.0 OR multiplier <> 1.0) THEN
-                SET measurements = CONCAT(measurements, archiveSource, ':', measurementID, ',', adder, ',', multiplier);
-            ELSE
-                SET measurements = CONCAT(measurements, archiveSource, ':', measurementID);
-            END IF;
-
-        END IF;
-    UNTIL done END REPEAT;
-
-    CLOSE selectedMeasurements;
-    DROP TABLE temp;
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE FUNCTION FormatMeasurements(measurementSql CLOB, includeAdjustments NUMBER(3,0))
-RETURNS CLOB 
-BEGIN
-  DECLARE measurements CLOB; 
-
-    CALL GetFormattedMeasurements(measurementSql, includeAdjustments, measurements);
-
-    IF LENGTH(measurements) > 0 THEN
-        SET measurements = CONCAT('{', measurements, '}');
-    ELSE
-        SET measurements = NULL;
-    END IF;
-        
-    RETURN measurements;
-END$$
-DELIMITER ;
-*/
