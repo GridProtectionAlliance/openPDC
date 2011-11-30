@@ -503,6 +503,8 @@ namespace openPDC.UI.DataModels
                 }
                 else
                 {
+                    OutputStreamDevice originalDevice = GetOutputStreamDevice(database, "WHERE ID = " + outputStreamDevice.ID);
+
                     query = database.ParameterizedQueryString("UPDATE OutputStreamDevice SET NodeID = {0}, AdapterID = {1}, IDCode = {2}, Acronym = {3}, BpaAcronym = {4}, " +
                         "Name = {5}, PhasorDataFormat = {6}, FrequencyDataFormat = {7}, AnalogDataFormat = {8}, CoordinateFormat = {9}, LoadOrder = {10}, Enabled = {11}, " +
                         " UpdatedBy = {12}, UpdatedOn = {13} WHERE ID = {14}", "nodeID", "adapterID", "idCode", "acronym", "bpaAcronym", "name",
@@ -513,6 +515,15 @@ namespace openPDC.UI.DataModels
                         outputStreamDevice.FrequencyDataFormat.ToNotNull(), outputStreamDevice.AnalogDataFormat.ToNotNull(), outputStreamDevice.CoordinateFormat.ToNotNull(),
                         outputStreamDevice.LoadOrder, database.Bool(outputStreamDevice.Enabled), CommonFunctions.CurrentUser,
                         database.UtcNow(), outputStreamDevice.ID);
+
+                    if (originalDevice != null && originalDevice.Acronym != outputStreamDevice.Acronym)
+                    {
+                        foreach (OutputStreamMeasurement measurement in OutputStreamMeasurement.Load(database, originalDevice.AdapterID))
+                        {
+                            measurement.SignalReference = measurement.SignalReference.Replace(originalDevice.Acronym + "-", outputStreamDevice.Acronym + "-");
+                            OutputStreamMeasurement.Save(database, measurement);
+                        }
+                    }
                 }
 
                 return "OutputStreamDevice information saved successfully";
