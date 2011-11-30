@@ -50,6 +50,8 @@
 //       Added automatic URL namespace reservation for built-in web services.
 //  11/07/2010 - Pinal C. Patel
 //       Modified namespace reservation logic to handle the changed URI format in SelfHostingService.
+//  11/21/2011 - J. Ritchie Carroll
+//       Modified historian optimization procedure to dyanmically add reading adapters.
 //
 //******************************************************************************************************
 
@@ -60,6 +62,7 @@ using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -710,8 +713,10 @@ namespace HistorianAdapters
 
                 // Load the defined local system historians
                 IEnumerable<DataRow> historians = connection.RetrieveData(adapterType, string.Format("SELECT AdapterName FROM RuntimeHistorian WHERE NodeID = {0} AND TypeName = 'HistorianAdapters.LocalOutputAdapter'", nodeIDQueryString)).AsEnumerable();
+                IEnumerable<DataRow> readers = connection.RetrieveData(adapterType, string.Format("SELECT * FROM CustomInputAdapter WHERE NodeID = {0} AND TypeName = 'HistorianAdapters.LocalInputAdapter'", nodeIDQueryString)).AsEnumerable();
+
                 List<string> validHistorians = new List<string>();
-                string name, acronym, currentPath, archivePath, fileName, defaultFileName;
+                string name, acronym, currentPath, archivePath, fileName, defaultFileName, instanceName;
 
                 // Get current execution path
                 currentPath = FilePath.AddPathSuffix(FilePath.GetAbsolutePath(""));
@@ -822,6 +827,28 @@ namespace HistorianAdapters
                                     File.Move(archiveFileName, defaultFileName);
                             }
                         }
+
+                        // Lookup matching reader record (i.e., LocalInputAdapter with instance name of the current historian)
+                        DataRow match = readers.FirstOrDefault(inputRow =>
+                        {
+                            if (inputRow["ConnectionString"].ToNonNullString().ParseKeyValuePairs().TryGetValue("instanceName", out instanceName))
+                                return string.Compare(instanceName, acronym, true) == 0;
+
+                            return false;
+                        });
+
+                        // If no match was found, add record for associated historical data reader
+                        if ((object)match == null)
+                        {
+                            instanceName = acronym.ToUpper().Trim();
+                            settings = configFile.Settings[string.Format("{0}ArchiveFile", acronym)];
+                            string archiveLocation = FilePath.GetDirectoryName(settings["FileName"].Value);
+                            string adapterName = string.Format("{0}READER", instanceName);
+                            string connectionString = string.Format("archiveLocation={0}; instanceName={1}; sourceIDs={1}; publicationInterval=333333;", archiveLocation, instanceName);
+                            string query = string.Format("INSERT INTO CustomInputAdapter(NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled) " +
+                                "VALUES({0}, '{1}', 'HistorianAdapters.dll', 'HistorianAdapters.LocalInputAdapter', '{2}', 0, 1)", nodeIDQueryString, adapterName, connectionString);
+                            connection.ExecuteNonQuery(query);
+                        }
                     }
                 }
 
@@ -878,6 +905,22 @@ namespace HistorianAdapters
                 // Save any applied changes
                 configFile.Save();
             }
+        }
+
+        /// <summary>
+        /// Creates a parameterized query string for the underlying database type 
+        /// based on the given format string and the parameter names.
+        /// </summary>
+        /// <param name="adapterType">The adapter type used to determine the underlying database type.</param>
+        /// <param name="format">A composite format string.</param>
+        /// <param name="parameterNames">A string array that contains zero or more parameter names to format.</param>
+        /// <returns>A parameterized query string based on the given format and parameter names.</returns>
+        private static string ParameterizedQueryString(Type adapterType, string format, params string[] parameterNames)
+        {
+            bool oracle = adapterType.Name == "OracleDataAdapter";
+            char paramChar = oracle ? ':' : '@';
+            object[] parameters = parameterNames.Select(name => paramChar + name).ToArray();
+            return string.Format(format, parameters);
         }
 
         // Create an http namespace reservation
