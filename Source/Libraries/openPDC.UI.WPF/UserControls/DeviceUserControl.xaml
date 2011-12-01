@@ -30,7 +30,7 @@
             <CollectionViewSource Source="{Binding Path=TimezoneLookupList}" x:Key="TimezoneLookupList"/>
         </StackPanel.Resources>
 
-        <Grid x:Name="GridDetailView" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" DataContext="{Binding Path=CurrentItem, Mode=TwoWay}">
+        <Grid x:Name="GridDetailView" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" DataContext="{Binding Path=CurrentItem, Mode=TwoWay}" DataContextChanged="GridDetailView_DataContextChanged">
             <Grid.BindingGroup >
                 <BindingGroup Name="input"/>
             </Grid.BindingGroup>
@@ -233,10 +233,10 @@
 
         </Grid>
 
-        <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
+        <uc:DetailViewFooterUserControl x:Name="UserControlDetailViewFooter" DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
                 SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
 
-        <sdk:DataGrid ItemsSource="{tsfBinding:Column Path=PdcDevices}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" 
+        <sdk:DataGrid x:Name="DataGridList" ItemsSource="{tsfBinding:Column Path=PdcDevices}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" 
                       Visibility="{Binding Path=CurrentItem.IsConcentrator, Converter={StaticResource ObjectToVisibilityConverter}}" Height="125">
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path= Acronym}"/>

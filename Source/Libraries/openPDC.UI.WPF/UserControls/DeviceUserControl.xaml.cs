@@ -70,7 +70,12 @@ namespace openPDC.UI.UserControls
             (this.DataContext as Devices).ProcessPropertyChange();
         }
 
-        #endregion              
+        private void GridDetailView_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            if ((this.DataContext as Devices).IsNewRecord)
+                DataGridList.SelectedIndex = -1;
+        }
 
+        #endregion
     }
 }

@@ -79,6 +79,12 @@ namespace openPDC.UI.UserControls
             m_dataContext.SortData(e.Column.SortMemberPath);
         }
 
+        private void GridDetailView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (m_dataContext.IsNewRecord)
+                DataGridList.SelectedIndex = -1;
+        }
+
         #endregion
     }
 }

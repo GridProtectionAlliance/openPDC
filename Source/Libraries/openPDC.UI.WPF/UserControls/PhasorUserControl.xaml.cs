@@ -65,7 +65,7 @@ namespace openPDC.UI.UserControls
         /// <param name="e">Arguments of the event.</param>
         void PhasorUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            (this.DataContext as Phasors).ProcessPropertyChange();
+            m_dataContext.ProcessPropertyChange();
         }
 
         /// <summary>
@@ -91,7 +91,12 @@ namespace openPDC.UI.UserControls
             m_dataContext.SortData(e.Column.SortMemberPath);
         }
 
-        #endregion
+        private void GridDetailView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (m_dataContext.IsNewRecord)
+                DataGridList.SelectedIndex = -1;
+        }
 
+        #endregion
     }
 }
