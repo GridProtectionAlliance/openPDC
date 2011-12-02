@@ -2143,58 +2143,70 @@ namespace TVA.PhasorProtocols
         // Starts data parsing sequence.
         private void StartDataParsingSequence(object state)
         {
-            // This thread pool delegate is used to start streaming data on a remote device.
-            int attempts = 0;
-
-            // Some devices will only send a config frame once data streaming has been disabled, so
-            // we use this code to disable real-time data and wait for data to stop streaming...
             try
             {
-                if (!m_skipDisableRealTimeData)
+                // This thread pool delegate is used to start streaming data on a remote device.
+                int attempts = 0;
+
+                // Some devices will only send a config frame once data streaming has been disabled, so
+                // we use this code to disable real-time data and wait for data to stop streaming...
+                try
                 {
-                    // Make sure data stream is disabled
-                    WaitHandle handle = SendDeviceCommand(DeviceCommand.DisableRealTimeData);
-                    if (handle != null)
-                        handle.WaitOne();
-
-                    // Allow device time to receive and process command before sending another
-                    Thread.Sleep(1000);
-
-                    // Wait for real-time data stream to cease for up to two seconds
-                    while (m_initialBytesReceived > 0)
+                    if (!m_skipDisableRealTimeData)
                     {
-                        m_initialBytesReceived = 0;
-                        Thread.Sleep(100);
+                        // Make sure data stream is disabled
+                        WaitHandle handle = SendDeviceCommand(DeviceCommand.DisableRealTimeData);
+                        if (handle != null)
+                            handle.WaitOne();
 
-                        attempts++;
-                        if (attempts >= 20)
-                            break;
+                        // Allow device time to receive and process command before sending another
+                        Thread.Sleep(1000);
+
+                        // Wait for real-time data stream to cease for up to two seconds
+                        while (m_initialBytesReceived > 0)
+                        {
+                            m_initialBytesReceived = 0;
+                            Thread.Sleep(100);
+
+                            attempts++;
+                            if (attempts >= 20)
+                                break;
+                        }
                     }
                 }
-            }
-            finally
-            {
-                m_initiatingDataStream = false;
-            }
+                finally
+                {
+                    m_initiatingDataStream = false;
+                }
 
-            // Request configuration frame once real-time data has been disabled. Note that data stream
-            // will be enabled when we receive a configuration frame. 
-            switch (m_phasorProtocol)
+                // Request configuration frame once real-time data has been disabled. Note that data stream
+                // will be enabled when we receive a configuration frame. 
+                switch (m_phasorProtocol)
+                {
+                    case PhasorProtocol.SelFastMessage:
+                        // SEL Fast Message doesn't define a binary configuration frame so we skip
+                        // requesting one and jump straight to enabling the data stream.
+                        SendDeviceCommand(DeviceCommand.EnableRealTimeData);
+                        break;
+                    case PhasorProtocol.Macrodyne:
+                        // We collect the station name (i.e. the unit ID) from the Macrodyne
+                        // protocol as a header frame before we get the configuration frame
+                        SendDeviceCommand(DeviceCommand.SendHeaderFrame);
+                        break;
+                    default:
+                        // Otherwise we just rquest the configuration frame
+                        SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);
+                        break;
+                }
+            }
+            catch (ThreadAbortException)
             {
-                case PhasorProtocol.SelFastMessage:
-                    // SEL Fast Message doesn't define a binary configuration frame so we skip
-                    // requesting one and jump straight to enabling the data stream.
-                    SendDeviceCommand(DeviceCommand.EnableRealTimeData);
-                    break;
-                case PhasorProtocol.Macrodyne:
-                    // We collect the station name (i.e. the unit ID) from the Macrodyne
-                    // protocol as a header frame before we get the configuration frame
-                    SendDeviceCommand(DeviceCommand.SendHeaderFrame);
-                    break;
-                default:
-                    // Otherwise we just rquest the configuration frame
-                    SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);
-                    break;
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (!(ex is ObjectDisposedException))
+                    OnParsingException(ex);
             }
         }
 
