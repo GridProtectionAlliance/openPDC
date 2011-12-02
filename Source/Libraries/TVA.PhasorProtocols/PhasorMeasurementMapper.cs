@@ -1048,7 +1048,27 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Attempts to load the last known good configuration.
+        /// Attempts to delete the last known good (i.e., cached) configuration.
+        /// </summary>
+        [AdapterCommand("Attempts to delete the last known good configuration.")]
+        public void DeleteCachedConfiguration()
+        {
+            try
+            {
+                ConfigurationFrame.DeleteCachedConfiguration(Name);
+                m_frameParser.ConfigurationFrame = null;
+                m_receivedConfigFrame = false;
+                OnStatusMessage("Cached configuration file \"{0}\" was deleted.", ConfigurationCacheFileName);
+                SendCommand(DeviceCommand.SendConfigurationFrame2);
+            }
+            catch (Exception ex)
+            {
+                OnProcessException(new InvalidOperationException(string.Format("Failed to delete cached configuration \"{0}\": {1}", ConfigurationCacheFileName, ex.Message), ex));
+            }
+        }
+
+        /// <summary>
+        /// Attempts to load the last known good (i.e., cached) configuration.
         /// </summary>
         [AdapterCommand("Attempts to load the last known good configuration.")]
         public void LoadCachedConfiguration()

@@ -375,7 +375,7 @@ namespace TVA.PhasorProtocols.Anonymous
                     SoapFormatter xmlSerializer = new SoapFormatter();
                     xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
                     xmlSerializer.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-                    
+
                     configFile = File.Create(GetConfigurationCacheFileName(configurationName));
                     xmlSerializer.Serialize(configFile, configurationFrame);
                 }
@@ -399,6 +399,18 @@ namespace TVA.PhasorProtocols.Anonymous
         public static string GetConfigurationCacheFileName(string configurationName)
         {
             return string.Format("{0}{1}.configuration.xml", ConfigurationCachePath, configurationName.ReplaceCharacters('_', c => Path.GetInvalidFileNameChars().Contains(c)));
+        }
+
+        /// <summary>
+        /// Deletes the cached configuration, if defined.
+        /// </summary>
+        /// <param name="configurationName">Name of the configuration to delete.</param>
+        public static void DeleteCachedConfiguration(string configurationName)
+        {
+            string configFileName = GetConfigurationCacheFileName(configurationName);
+
+            if (File.Exists(configFileName))
+                File.Delete(configFileName);
         }
 
         /// <summary>
