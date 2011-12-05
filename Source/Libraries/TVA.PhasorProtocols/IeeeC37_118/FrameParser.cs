@@ -414,11 +414,23 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             m_unexpectedCommandFrames = 0;
 
             // We narrow down parsing types to just those needed...
-            if (m_draftRevision == DraftRevision.Draft7)
-                base.Start(new Type[] { typeof(DataFrame), typeof(ConfigurationFrame1), typeof(ConfigurationFrame2), typeof(HeaderFrame) });
-            else
-                base.Start(new Type[] { typeof(DataFrame), typeof(ConfigurationFrame1Draft6), typeof(ConfigurationFrame2Draft6), typeof(HeaderFrame) });
+            switch (m_draftRevision)
+            {
+                case DraftRevision.Draft6:
+                    base.Start(new Type[] { typeof(DataFrame), typeof(ConfigurationFrame1Draft6), typeof(ConfigurationFrame2Draft6), typeof(HeaderFrame) });
+                    break;
+                case DraftRevision.Draft7:
+                    base.Start(new Type[] { typeof(DataFrame), typeof(ConfigurationFrame1), typeof(ConfigurationFrame2), typeof(HeaderFrame) });
+                    break;
+                case DraftRevision.Draft8:
+                    base.Start(new Type[] { typeof(DataFrame), typeof(ConfigurationFrame1), typeof(ConfigurationFrame2), typeof(ConfigurationFrame3), typeof(HeaderFrame) });
+                    break;
+                default:
+                    break;
+            }
         }
+
+
 
         /// <summary>
         /// Parses a common header instance that implements <see cref="ICommonHeader{TTypeIdentifier}"/> for the output type represented
@@ -468,6 +480,9 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                             // Assign configuration frame parsing state
                             parsedFrameHeader.State = new ConfigurationFrameParsingState(parsedFrameHeader.FrameLength, ConfigurationCell.CreateNewCell);
                             break;
+                        case FrameType.ConfigurationFrame3:
+                            // parsedFrameHeader.State = new ConfigurationFrameParsingState(parsedFrameHeader.FrameLength, ConfigurationCell3.CreateNewCell);
+                            break;
                         case FrameType.HeaderFrame:
                             // Assign header frame parsing state
                             parsedFrameHeader.State = new HeaderFrameParsingState(parsedFrameHeader.FrameLength, parsedFrameHeader.DataLength);
@@ -495,6 +510,8 @@ namespace TVA.PhasorProtocols.IeeeC37_118
 
             if (configurationFrame2 != null)
                 m_configurationFrame2 = configurationFrame2;
+            //FIXME: Add cf3
+
         }
 
         /// <summary>

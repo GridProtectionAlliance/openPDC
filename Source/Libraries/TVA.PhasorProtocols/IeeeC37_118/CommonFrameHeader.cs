@@ -561,6 +561,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                         return FundamentalFrameType.DataFrame;
                     case IeeeC37_118.FrameType.ConfigurationFrame1:
                     case IeeeC37_118.FrameType.ConfigurationFrame2:
+                    case IeeeC37_118.FrameType.ConfigurationFrame3:
                         return FundamentalFrameType.ConfigurationFrame;
                     case IeeeC37_118.FrameType.HeaderFrame:
                         return FundamentalFrameType.HeaderFrame;

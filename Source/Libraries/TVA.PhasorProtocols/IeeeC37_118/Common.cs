@@ -260,6 +260,10 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// </summary>
         ConfigurationFrame2 = (ushort)(Bits.Bit04 | Bits.Bit05),
         /// <summary>
+        /// 101 Configuration frame 3.
+        /// </summary>
+        ConfigurationFrame3 = (ushort)(Bits.Bit06 | Bits.Bit04),
+        /// <summary>
         /// 100 Command frame.
         /// </summary>
         CommandFrame = (ushort)Bits.Bit06,
@@ -286,7 +290,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Draft 7.0 (Version 1.0).
         /// </summary>
-        Draft7 = 1
+        Draft7 = 1,
+        /// <summary>
+        /// Draft 8.0 (Version 8.0).
+        /// </summary>
+        Draft8 = 2
     }
 
     /// <summary>

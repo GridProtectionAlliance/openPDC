@@ -218,6 +218,8 @@
     <Compile Include="IDigitalValue.cs" />
     <Compile Include="Ieee1344\NamespaceDoc.cs" />
     <Compile Include="IeeeC37_118\Concentrator.cs" />
+    <Compile Include="IeeeC37_118\ConfigurationCell3.cs" />
+    <Compile Include="IeeeC37_118\ConfigurationFrame3.cs" />
     <Compile Include="IeeeC37_118\NamespaceDoc.cs" />
     <Compile Include="IFrameParser.cs" />
     <Compile Include="IFrequencyDefinition.cs" />

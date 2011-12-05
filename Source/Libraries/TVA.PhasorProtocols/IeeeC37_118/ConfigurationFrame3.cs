@@ -1,17 +1,7 @@
 //*******************************************************************************************************
-//  IConfigurationCellParsingState.cs - Gbtc
-//
-//  Tennessee Valley Authority, 2009
-//  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
+//  ConfigurationFrame3.cs - Gbtc
 //
 //  This software is made freely available under the TVA Open Source Agreement (see below).
-//
-//  Code Modification History:
-//  -----------------------------------------------------------------------------------------------------
-//  04/16/2005 - J. Ritchie Carroll
-//       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
-//       Added new header and license agreement.
 //
 //*******************************************************************************************************
 
@@ -231,106 +221,89 @@
 */
 #endregion
 
-namespace TVA.PhasorProtocols
+using System;
+using System.ComponentModel;
+using System.Runtime.Serialization;
+using TVA.Parsing;
+
+namespace TVA.PhasorProtocols.IeeeC37_118
 {
     /// <summary>
-    /// Defines function signature for creating new <see cref="IChannelDefinition"/> objects.
+    /// Represents the IEEE C37.118 implementation of a <see cref="IConfigurationFrame"/>, type 3, that can be sent or received.
     /// </summary>
-    /// <param name="parent">Reference to parent <see cref="IConfigurationCell"/>.</param>
-    /// <param name="binaryImage">Binary image to parse <see cref="IChannelDefinition"/> from.</param>
-    /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-    /// <param name="parsedLength">Returns the total number of bytes parsed from <paramref name="binaryImage"/>.</param>
-    /// <returns>New <see cref="IChannelDefinition"/> object.</returns>
-    /// <typeparam name="T">Specific <see cref="IChannelDefinition"/> type of object that the <see cref="CreateNewDefinitionFunction{T}"/> creates.</typeparam>
-    public delegate T CreateNewDefinitionFunction<T>(IConfigurationCell parent, byte[] binaryImage, int startIndex, out int parsedLength)
-        where T : IChannelDefinition;
-
-    /// <summary>
-    /// Represents a protocol independent interface representation of the parsing state of any kind of <see cref="IConfigurationCell"/>.
-    /// </summary>
-    public interface IConfigurationCellParsingState : IChannelCellParsingState
+    [Serializable()]
+    public class ConfigurationFrame3 : ConfigurationFrame1
     {
-        /// <summary>
-        /// Gets reference to <see cref="CreateNewDefinitionFunction{T}"/> delegate used to create new <see cref="IPhasorDefinition"/> objects.
-        /// </summary>
-        CreateNewDefinitionFunction<IPhasorDefinition> CreateNewPhasorDefinition { get; }
+        #region [ Constructors ]
 
         /// <summary>
-        /// Gets reference to <see cref="CreateNewDefinitionFunction{T}"/> delegate used to create new <see cref="IFrequencyDefinition"/> objects.
+        /// Creates a new <see cref="ConfigurationFrame3"/>.
         /// </summary>
-        CreateNewDefinitionFunction<IFrequencyDefinition> CreateNewFrequencyDefinition { get; }
+        /// <remarks>
+        /// This constructor is used by <see cref="FrameImageParserBase{TTypeIdentifier,TOutputType}"/> to parse an IEEE C37.118 configuration frame, type 3.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ConfigurationFrame3()
+        {
+        }
 
         /// <summary>
-        /// Gets reference to <see cref="CreateNewDefinitionFunction{T}"/> delegate used to create new <see cref="IAnalogDefinition"/> objects.
+        /// Creates a new <see cref="ConfigurationFrame3"/> from specified parameters.
         /// </summary>
-        CreateNewDefinitionFunction<IAnalogDefinition> CreateNewAnalogDefinition { get; }
+        /// <param name="timebase">Timebase to use for fraction second resolution.</param>
+        /// <param name="idCode">The ID code of this <see cref="ConfigurationFrame3"/>.</param>
+        /// <param name="timestamp">The exact timestamp, in <see cref="Ticks"/>, of the data represented by this <see cref="ConfigurationFrame3"/>.</param>
+        /// <param name="frameRate">The defined frame rate of this <see cref="ConfigurationFrame3"/>.</param>
+        /// <remarks>
+        /// This constructor is used by a consumer to generate an IEEE C37.118 configuration frame, type 3.
+        /// </remarks>
+        public ConfigurationFrame3(uint timebase, ushort idCode, Ticks timestamp, ushort frameRate)
+            : base(timebase, idCode, timestamp, frameRate)
+        {
+        }
 
         /// <summary>
-        /// Gets reference to <see cref="CreateNewDefinitionFunction{T}"/> delegate used to create new <see cref="IDigitalDefinition"/> objects.
+        /// Creates a new <see cref="ConfigurationFrame"/> from serialization parameters.
         /// </summary>
-        CreateNewDefinitionFunction<IDigitalDefinition> CreateNewDigitalDefinition { get; }
+        /// <param name="info">The <see cref="SerializationInfo"/> with populated with data.</param>
+        /// <param name="context">The source <see cref="StreamingContext"/> for this deserialization.</param>
+        protected ConfigurationFrame3(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
 
-        // below here; new items needed for ConfigFrame3 
+        #endregion
+
+        #region [ Methods ]
+
         /*
-        /// <summary>
-        /// Gets or sets the GUID of the PMU associated with the <see cref="IConfigurationCell"/> being parsed.
-        /// </summary>
-        System.Guid G_PMU_ID { get; set; }
+        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        {
+            // Skip past header that was already parsed...
+            startIndex += CommonFrameHeader.FixedLength;
+            // State.CONT_IDX = EndianOrder.BigEndian.ToInt16(binaryImage, startIndex); FIXME: For now, this is completely ignored
+            m_timebase = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 2) & ~Common.TimeQualityFlagsMask;
+            State.CellCount = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 6);
 
-        /// <summary>
-        /// Gets or sets the phasor and channel names (CHNAM) associated with the <see cref="IConfigurationCell"/> being parsed.
-        /// </summary>
-        string ChannelName { get; set; }
-
-        string[] PhasorName { get; set; }
-        string[] AnalogName { get; set; }
-        string[] DigitalName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the conversions factor for phasor channels (PHSCALE) associated with the <see cref="IConfigurationCell"/> being parsed.
-        /// </summary>
-        byte[][] PhasorScale { get; set; }
-
-        /// <summary>
-        /// Gets or sets the latitude of the device (PMU_LAT) associated with the <see cref="IConfigurationCell"/> being parsed.
-        /// </summary>
-        float DeviceLatitude { get; set; }
-
-        /// <summary>
-        /// Gets or sets the longitude of the device (PMU_LON) associated with the <see cref="IConfigurationCell"/> being parsed.
-        /// </summary>
-        float DeviceLongitude { get; set; }
-
-        /// <summary>
-        /// Gets or sets the elevation of the divice (PMU_ELEV) associated with the <see cref="IConfigurationCell"/> being parsed.
-        /// </summary>
-        float DeviceElevation { get; set; }
-
-        /// <summary>
-        /// Gets or sets the service class (SVC_CLASS) associated with the <see cref="IConfigurationCell"/> being parsed.
-        /// </summary>
-        char ServiceClass { get; set; }
-
-        /// <summary>
-        /// Gets or sets the phasor measurement window (WINDOW) associated with the <see cref="IConfigurationCell"/> being parsed.
-        /// </summary>
-        int MeasurementWindow { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the phasor measurement group delay (GRP_DLY) associated with the <see cref="IConfigurationCell"/> being parsed.
-        /// </summary>
-        int GroupDelay { get; set; }
-
-        /// <summary>
-        /// Gets or sets the nominal line frequency code and flags (FNOM) associated with the <see cref="IConfigurationCell"/> being parsed.
-        /// </summary>
-        ushort FNOM { get; set; }
-
-        ushort CFGCNT { get; set; }
-
-        byte[][] ANSCALE { get; set; }
-
-        byte[][] DigitalStatus { get; set; }
+            return FixedHeaderLength;
+        }
         */
+
+        #endregion
+
+        #region [ Properties ]
+
+        /// <summary>
+        /// Gets the <see cref="FrameType"/> of this <see cref="ConfigurationFrame3"/>.
+        /// </summary>
+        public override FrameType TypeID
+        {
+            get
+            {
+                return IeeeC37_118.FrameType.ConfigurationFrame3;
+            }
+        }
+
+        #endregion
     }
 }
