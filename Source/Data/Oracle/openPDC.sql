@@ -1,5 +1,5 @@
 --  ----------------------------------------------------------------------------------------------------
---  openPDC Data Structures for MySQL - Gbtc
+--  openPDC Data Structures for Oracle - Gbtc
 --
 --  Copyright © 2011, Grid Protection Alliance.  All Rights Reserved.
 --
@@ -227,6 +227,8 @@ CREATE TABLE Node(
 );
 
 CREATE UNIQUE INDEX IX_Node_ID ON Node (ID ASC) TABLESPACE OPDC_INDEX;
+
+CREATE UNIQUE INDEX IX_Node_Name ON Node (Name ASC) TABLESPACE OPDC_INDEX;
 
 ALTER TABLE Node ADD CONSTRAINT PK_Node PRIMARY KEY (ID);
 
@@ -759,6 +761,8 @@ CREATE TABLE OutputStream(
 
 CREATE UNIQUE INDEX IX_OutputStream_ID ON OutputStream (ID ASC) TABLESPACE OPDC_INDEX;
 
+CREATE UNIQUE INDEX IX_OutputStream_NodeID_Acronym ON OutputStream (NodeID ASC, Acronym ASC) TABLESPACE OPDC_INDEX;
+
 ALTER TABLE OutputStream ADD CONSTRAINT PK_OutputStream PRIMARY KEY (ID);
 
 CREATE SEQUENCE SEQ_OutputStream START WITH 1 INCREMENT BY 1;
@@ -966,7 +970,7 @@ CREATE UNIQUE INDEX IX_MeasurementGroupMeasurement ON MeasurementGroupMeasuremen
 
 ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT PK_MeasurementGroupMeasurement PRIMARY KEY (NodeID, MeasurementGroupID, SignalID);
 
-ALTER TABLE Subscriber ADD CONSTRAINT FK_Subscriber_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+ALTER TABLE Subscriber ADD CONSTRAINT FK_Subscriber_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
 ALTER TABLE SubscriberMeasurement ADD CONSTRAINT FK_SubscriberMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
 
@@ -980,7 +984,7 @@ ALTER TABLE SubscriberMeasurementGroup ADD CONSTRAINT FK_SubscribMeasureGrp_Subs
 
 ALTER TABLE SubscriberMeasurementGroup ADD CONSTRAINT FK_SubscribMeasurGrp_MeasurGrp FOREIGN KEY(MeasurementGroupID) REFERENCES MeasurementGroup (ID);
 
-ALTER TABLE MeasurementGroup ADD CONSTRAINT FK_MeasurementGroup_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+ALTER TABLE MeasurementGroup ADD CONSTRAINT FK_MeasurementGroup_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
 ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT FK_MeasureGrpMeasure_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
 
@@ -990,7 +994,7 @@ ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT FK_MeasurGrpMeasur_Measur
 
 ALTER TABLE Node ADD CONSTRAINT FK_Node_Company FOREIGN KEY(CompanyID) REFERENCES Company (ID);
 
-ALTER TABLE DataOperation ADD CONSTRAINT FK_DataOperation_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+ALTER TABLE DataOperation ADD CONSTRAINT FK_DataOperation_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
 ALTER TABLE OtherDevice ADD CONSTRAINT FK_OtherDevice_Company FOREIGN KEY(CompanyID) REFERENCES Company (ID);
 
@@ -1032,7 +1036,7 @@ ALTER TABLE Measurement ADD CONSTRAINT FK_Measurement_Historian FOREIGN KEY(Hist
 
 ALTER TABLE Measurement ADD CONSTRAINT FK_Measurement_SignalType FOREIGN KEY(SignalTypeID) REFERENCES SignalType (ID);
 
-ALTER TABLE ImportedMeasurement ADD CONSTRAINT FK_ImportedMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+ALTER TABLE ImportedMeasurement ADD CONSTRAINT FK_ImportedMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
 ALTER TABLE OutputStreamMeasurement ADD CONSTRAINT FK_OutStrMeasurement_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID);
 
@@ -1050,17 +1054,17 @@ ALTER TABLE Phasor ADD CONSTRAINT FK_Phasor_Device FOREIGN KEY(DeviceID) REFEREN
 
 ALTER TABLE Phasor ADD CONSTRAINT FK_Phasor_Phasor FOREIGN KEY(DestinationPhasorID) REFERENCES Phasor (ID);
 
-ALTER TABLE CalculatedMeasurement ADD CONSTRAINT FK_CalculatedMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+ALTER TABLE CalculatedMeasurement ADD CONSTRAINT FK_CalculatedMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
-ALTER TABLE CustomActionAdapter ADD CONSTRAINT FK_CustomActionAdapter_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+ALTER TABLE CustomActionAdapter ADD CONSTRAINT FK_CustomActionAdapter_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
-ALTER TABLE Historian ADD CONSTRAINT FK_Historian_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+ALTER TABLE Historian ADD CONSTRAINT FK_Historian_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
-ALTER TABLE CustomInputAdapter ADD CONSTRAINT FK_CustomInputAdapter_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+ALTER TABLE CustomInputAdapter ADD CONSTRAINT FK_CustomInputAdapter_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
-ALTER TABLE OutputStream ADD CONSTRAINT FK_OutputStream_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+ALTER TABLE OutputStream ADD CONSTRAINT FK_OutputStream_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
-ALTER TABLE CustomOutputAdapter ADD CONSTRAINT FK_CustomOutputAdapter_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+ALTER TABLE CustomOutputAdapter ADD CONSTRAINT FK_CustomOutputAdapter_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
 ALTER TABLE ApplicationRoleSecurityGroup ADD CONSTRAINT FK_AppRoleSecurityGrp_AppRole FOREIGN KEY (ApplicationRoleID) REFERENCES applicationrole (ID) ON DELETE CASCADE;
 
