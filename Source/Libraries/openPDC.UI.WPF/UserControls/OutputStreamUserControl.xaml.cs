@@ -52,7 +52,7 @@ namespace openPDC.UI.UserControls
         public OutputStreamUserControl()
         {
             InitializeComponent();
-            m_dataContext = new OutputStreams(7, true);
+            m_dataContext = new OutputStreams(7, false);
             this.DataContext = m_dataContext;
         }
 
