@@ -18,7 +18,7 @@
 //  ----------------------------------------------------------------------------------------------------
 //  06/01/2009 - J. Ritchie Carroll
 //       Generated original version of source code.
-//  09/15/2009 - Stephen C. Wills
+//  09/15/2009 - Stephen C. Will
 //       Added new header and license agreement.
 //  09/22/2009 - Pinal C. Patel
 //       Re-wrote the adapter to utilize new components.
@@ -43,6 +43,7 @@ using TimeSeriesFramework.Adapters;
 using TVA;
 using TVA.Communication;
 using TVA.Historian.Packets;
+using TVA.Parsing;
 
 namespace HistorianAdapters
 {
@@ -305,7 +306,7 @@ namespace HistorianAdapters
             else
             {
                 m_publisherDelegate = TransmitPacketType1;
-                m_publisherBuffer = new byte[m_samplesPerTransmission * PacketType1.ByteCount];
+                m_publisherBuffer = new byte[m_samplesPerTransmission * PacketType1.FixedLength];
             }
             
             // Initialize publiser socket.
@@ -465,8 +466,7 @@ namespace HistorianAdapters
             int bufferIndex = 0;
             for (int i = startIndex; i <= endIndex; i++)
             {
-                Buffer.BlockCopy(new PacketType1(measurements[i]).BinaryImage, 0, m_publisherBuffer, bufferIndex, PacketType1.ByteCount);
-                bufferIndex += PacketType1.ByteCount;
+                bufferIndex += new PacketType1(measurements[i]).GenerateBinaryImage(m_publisherBuffer, bufferIndex);
             }
             m_historianPublisher.SendAsync(m_publisherBuffer, 0, bufferIndex);
         }
@@ -479,7 +479,7 @@ namespace HistorianAdapters
                 packet.Data.Add(new PacketType101DataPoint(measurements[i]));
             }
 
-            m_historianPublisher.SendAsync(packet.BinaryImage);
+            m_historianPublisher.SendAsync(packet.BinaryImage());
         }
 
         #endregion
