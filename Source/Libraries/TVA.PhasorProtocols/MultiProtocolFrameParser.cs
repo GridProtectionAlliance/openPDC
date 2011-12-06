@@ -75,6 +75,7 @@ using System.Threading;
 using TimeSeriesFramework;
 using TVA.Communication;
 using TVA.IO;
+using TVA.Parsing;
 using TVA.Units;
 
 namespace TVA.PhasorProtocols
@@ -669,9 +670,10 @@ namespace TVA.PhasorProtocols
         private bool m_deviceSupportsCommands;
         private int m_allowedParsingExceptions;
         private Ticks m_parsingExceptionWindow;
-        private bool m_enabled;
         private IConnectionParameters m_connectionParameters;
+        private SpinLock m_writeLock;
         private int m_connectionAttempts;
+        private bool m_enabled;
         private bool m_disposed;
 
 #if RawDataCapture
@@ -695,6 +697,7 @@ namespace TVA.PhasorProtocols
             m_allowedParsingExceptions = DefaultAllowedParsingExceptions;
             m_parsingExceptionWindow = DefaultParsingExceptionWindow;
             m_rateCalcTimer = new System.Timers.Timer();
+            m_writeLock = new SpinLock();
 
             m_phasorProtocol = PhasorProtocol.IeeeC37_118V1;
             m_transportProtocol = TransportProtocol.Tcp;
@@ -1709,9 +1712,9 @@ namespace TVA.PhasorProtocols
             m_commandChannel.ConnectionAttempt += m_commandChannel_ConnectionAttempt;
             m_commandChannel.ConnectionException += m_commandChannel_ConnectionException;
             m_commandChannel.ConnectionTerminated += m_commandChannel_ConnectionTerminated;
+            m_commandChannel.ReceiveData += m_commandChannel_ReceiveData;
 
             // Attempt connection to device over command channel
-            m_commandChannel.ReceiveDataHandler = Write;
             m_commandChannel.ReceiveBufferSize = m_bufferSize;
             m_commandChannel.MaxConnectionAttempts = m_maximumConnectionAttempts;
             m_commandChannel.Handshake = false;
@@ -1779,12 +1782,12 @@ namespace TVA.PhasorProtocols
                 m_dataChannel.ConnectionAttempt += m_dataChannel_ConnectionAttempt;
                 m_dataChannel.ConnectionException += m_dataChannel_ConnectionException;
                 m_dataChannel.ConnectionTerminated += m_dataChannel_ConnectionTerminated;
+                m_dataChannel.ReceiveData += m_dataChannel_ReceiveData;
                 m_dataChannel.ReceiveDataException += m_dataChannel_ReceiveDataException;
                 m_dataChannel.ReceiveDataTimeout += m_dataChannel_ReceiveDataTimeout;
                 m_dataChannel.SendDataException += m_dataChannel_SendDataException;
 
                 // Attempt connection to device
-                m_dataChannel.ReceiveDataHandler = Write;
                 m_dataChannel.ReceiveBufferSize = m_bufferSize;
                 m_dataChannel.ConnectionString = m_connectionString;
                 m_dataChannel.MaxConnectionAttempts = m_maximumConnectionAttempts;
@@ -1798,12 +1801,12 @@ namespace TVA.PhasorProtocols
                 m_serverBasedDataChannel.ClientDisconnected += m_serverBasedDataChannel_ClientDisconnected;
                 m_serverBasedDataChannel.ServerStarted += m_serverBasedDataChannel_ServerStarted;
                 m_serverBasedDataChannel.ServerStopped += m_serverBasedDataChannel_ServerStopped;
+                m_serverBasedDataChannel.ReceiveClientData += m_serverBasedDataChannel_ReceiveClientData;
                 m_serverBasedDataChannel.ReceiveClientDataException += m_serverBasedDataChannel_ReceiveClientDataException;
                 m_serverBasedDataChannel.ReceiveClientDataTimeout += m_serverBasedDataChannel_ReceiveClientDataTimeout;
                 m_serverBasedDataChannel.SendClientDataException += m_serverBasedDataChannel_SendClientDataException;
 
                 // Listen for device connection
-                m_serverBasedDataChannel.ReceiveClientDataHandler = Write;
                 m_serverBasedDataChannel.ReceiveBufferSize = m_bufferSize;
                 m_serverBasedDataChannel.ConfigurationString = m_connectionString;
                 m_serverBasedDataChannel.MaxClientConnections = 1;
@@ -1839,11 +1842,14 @@ namespace TVA.PhasorProtocols
                 }
                 finally
                 {
-                    m_dataChannel.ReceiveDataHandler = null;
                     m_dataChannel.ConnectionEstablished -= m_dataChannel_ConnectionEstablished;
                     m_dataChannel.ConnectionAttempt -= m_dataChannel_ConnectionAttempt;
                     m_dataChannel.ConnectionException -= m_dataChannel_ConnectionException;
                     m_dataChannel.ConnectionTerminated -= m_dataChannel_ConnectionTerminated;
+                    m_dataChannel.ReceiveData -= m_dataChannel_ReceiveData;
+                    m_dataChannel.ReceiveDataException -= m_dataChannel_ReceiveDataException;
+                    m_dataChannel.ReceiveDataTimeout -= m_dataChannel_ReceiveDataTimeout;
+                    m_dataChannel.SendDataException -= m_dataChannel_SendDataException;
                     m_dataChannel.Dispose();
                 }
             }
@@ -1861,11 +1867,14 @@ namespace TVA.PhasorProtocols
                 }
                 finally
                 {
-                    m_serverBasedDataChannel.ReceiveClientDataHandler = null;
                     m_serverBasedDataChannel.ClientConnected -= m_serverBasedDataChannel_ClientConnected;
                     m_serverBasedDataChannel.ClientDisconnected -= m_serverBasedDataChannel_ClientDisconnected;
                     m_serverBasedDataChannel.ServerStarted -= m_serverBasedDataChannel_ServerStarted;
                     m_serverBasedDataChannel.ServerStopped -= m_serverBasedDataChannel_ServerStopped;
+                    m_serverBasedDataChannel.ReceiveClientData -= m_serverBasedDataChannel_ReceiveClientData;
+                    m_serverBasedDataChannel.ReceiveClientDataException -= m_serverBasedDataChannel_ReceiveClientDataException;
+                    m_serverBasedDataChannel.ReceiveClientDataTimeout -= m_serverBasedDataChannel_ReceiveClientDataTimeout;
+                    m_serverBasedDataChannel.SendClientDataException -= m_serverBasedDataChannel_SendClientDataException;
                     m_serverBasedDataChannel.Dispose();
                 }
             }
@@ -1883,11 +1892,11 @@ namespace TVA.PhasorProtocols
                 }
                 finally
                 {
-                    m_commandChannel.ReceiveDataHandler = null;
                     m_commandChannel.ConnectionEstablished -= m_commandChannel_ConnectionEstablished;
                     m_commandChannel.ConnectionAttempt -= m_commandChannel_ConnectionAttempt;
                     m_commandChannel.ConnectionException -= m_commandChannel_ConnectionException;
                     m_commandChannel.ConnectionTerminated -= m_commandChannel_ConnectionTerminated;
+                    m_commandChannel.ReceiveData -= m_commandChannel_ReceiveData;
                     m_commandChannel.Dispose();
                 }
             }
@@ -1973,7 +1982,7 @@ namespace TVA.PhasorProtocols
 
                     if (commandFrame != null)
                     {
-                        byte[] buffer = commandFrame.BinaryImage;
+                        byte[] buffer = commandFrame.BinaryImage();
 
                         // Send command over appropriate communications channel - command channel, if defined,
                         // will take precedence over other communications channels for command traffic...
@@ -2006,16 +2015,18 @@ namespace TVA.PhasorProtocols
         /// Writes data directly to the frame parsing engine buffer.
         /// </summary>
         /// <remarks>
-        /// This method allows consumer to "manually send extra data" to the parsing engine to be parsed, if desired.
+        /// This method is public to allow consumer to "manually send extra data" to the parsing engine to be parsed, if desired.
         /// </remarks>
         /// <param name="buffer">Buffer containing data to be parsed.</param>
         /// <param name="offset">Offset into buffer where data begins.</param>
         /// <param name="count">Length of data in buffer to be parsed.</param>
         public void Write(byte[] buffer, int offset, int count)
         {
-            // This is the delegate implementation used by the communication source for reception
-            // of data directly from the socket (i.e., ReceiveDataHandler) that is used for a
-            // speed boost in communications processing...
+            bool lockTaken = false;
+
+            try
+            {
+                m_writeLock.Enter(ref lockTaken);
 
 #if RawDataCapture
             if (m_rawDataCapture == null)
@@ -2023,20 +2034,19 @@ namespace TVA.PhasorProtocols
             m_rawDataCapture.Write(buffer, offset, count);
 #endif
 
-            // Pass data from communications client into protocol specific frame parser
-            m_frameParser.Write(buffer, offset, count);
+                // Pass data from communications client into protocol specific frame parser
+                m_frameParser.Write(buffer, offset, count);
 
-            m_byteRateTotal += count;
+                m_byteRateTotal += count;
 
-            if (m_initiatingDataStream)
-                m_initialBytesReceived += count;
-        }
-
-        // Data received from a server will include a client ID - since in our case
-        // the server will only host a single device, we ignore this ID
-        private void Write(Guid clientID, byte[] buffer, int offset, int count)
-        {
-            Write(buffer, offset, count);
+                if (m_initiatingDataStream)
+                    m_initialBytesReceived += count;
+            }
+            finally
+            {
+                if (lockTaken)
+                    m_writeLock.Exit(false);
+            }
         }
 
         /// <summary>
@@ -2376,6 +2386,23 @@ namespace TVA.PhasorProtocols
 
         #region [ Data Channel Event Handlers ]
 
+        private void m_dataChannel_ReceiveData(object sender, EventArgs<int> e)
+        {
+            int length = e.Argument;
+            byte[] buffer = BufferPool.TakeBuffer(length);
+
+            try
+            {
+                length = m_dataChannel.Read(buffer, 0, length);
+                Write(buffer, 0, length);
+            }
+            finally
+            {
+                if (buffer != null)
+                    BufferPool.ReturnBuffer(buffer);
+            }
+        }
+
         private void m_dataChannel_ConnectionEstablished(object sender, EventArgs e)
         {
             // Only handle client connection from data channel when command channel is undefined
@@ -2425,6 +2452,24 @@ namespace TVA.PhasorProtocols
 
         #region [ Server Based Data Channel Event Handlers ]
 
+        private void m_serverBasedDataChannel_ReceiveClientData(object sender, EventArgs<Guid, int> e)
+        {
+            Guid clientID = e.Argument1;
+            int length = e.Argument2;
+            byte[] buffer = BufferPool.TakeBuffer(length);
+
+            try
+            {
+                length = m_serverBasedDataChannel.Read(clientID, buffer, 0, length);
+                Write(buffer, 0, length);
+            }
+            finally
+            {
+                if (buffer != null)
+                    BufferPool.ReturnBuffer(buffer);
+            }
+        }
+
         private void m_serverBasedDataChannel_ClientConnected(object sender, EventArgs<Guid> e)
         {
             ClientConnectedHandler();
@@ -2466,6 +2511,23 @@ namespace TVA.PhasorProtocols
         #endregion
 
         #region [ Command Channel Event Handlers ]
+
+        private void m_commandChannel_ReceiveData(object sender, EventArgs<int> e)
+        {
+            int length = e.Argument;
+            byte[] buffer = BufferPool.TakeBuffer(length);
+
+            try
+            {
+                length = m_commandChannel.Read(buffer, 0, length);
+                Write(buffer, 0, length);
+            }
+            finally
+            {
+                if (buffer != null)
+                    BufferPool.ReturnBuffer(buffer);
+            }
+        }
 
         private void m_commandChannel_ConnectionEstablished(object sender, EventArgs e)
         {
@@ -2651,7 +2713,7 @@ namespace TVA.PhasorProtocols
                         if (fileClient.CurrentState != ClientState.Connected)
                             break;
 
-                        fileClient.ReceiveData();
+                        fileClient.ReadNextBuffer();
                     }
                 }
             }

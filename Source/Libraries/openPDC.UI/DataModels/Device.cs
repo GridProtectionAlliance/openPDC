@@ -1108,6 +1108,7 @@ namespace openPDC.UI.DataModels
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="device">Information about <see cref="Device"/>.</param>
+        /// <param name="notifyService">Boolean value to notify service if needed.</param>
         /// <param name="digitalCount">Number of digital measurements to add.</param>
         /// <param name="analogCount">Number of analog measurements to add.</param>
         /// <returns>String, for display use, indicating success.</returns>

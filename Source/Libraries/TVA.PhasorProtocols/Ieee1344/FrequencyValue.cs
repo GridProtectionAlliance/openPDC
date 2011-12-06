@@ -376,15 +376,15 @@ namespace TVA.PhasorProtocols.Ieee1344
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// The IEEE 1344 protocol provides frequency and df/dt as optional data measurements, so we override
         /// the default behavior to account for this change in operation.
         /// </remarks>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             FrequencyDefinition definition = Definition;
             int parsedLength = 0;
@@ -394,14 +394,14 @@ namespace TVA.PhasorProtocols.Ieee1344
                 // Note that IEEE 1344 only supports scaled integers (no need to worry about floating points)
                 if (definition.FrequencyIsAvailable)
                 {
-                    UnscaledFrequency = EndianOrder.BigEndian.ToInt16(binaryImage, startIndex);
+                    UnscaledFrequency = EndianOrder.BigEndian.ToInt16(buffer, startIndex);
                     startIndex += 2;
                     parsedLength += 2;
                 }
 
                 if (definition.DfDtIsAvailable)
                 {
-                    UnscaledDfDt = EndianOrder.BigEndian.ToInt16(binaryImage, startIndex);
+                    UnscaledDfDt = EndianOrder.BigEndian.ToInt16(buffer, startIndex);
                     parsedLength += 2;
                 }
             }
@@ -416,11 +416,11 @@ namespace TVA.PhasorProtocols.Ieee1344
         // Static Methods
 
         // Delegate handler to create a new IEEE 1344 frequency value
-        internal static IFrequencyValue CreateNewValue(IDataCell parent, IFrequencyDefinition definition, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IFrequencyValue CreateNewValue(IDataCell parent, IFrequencyDefinition definition, byte[] buffer, int startIndex, out int parsedLength)
         {
             IFrequencyValue frequency = new FrequencyValue(parent, definition);
 
-            parsedLength = frequency.Initialize(binaryImage, startIndex, 0);
+            parsedLength = frequency.ParseBinaryImage(buffer, startIndex, 0);
 
             return frequency;
         }

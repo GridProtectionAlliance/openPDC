@@ -517,25 +517,25 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             IConfigurationCellParsingState state = State;
             int index = startIndex;
 
             // Parse out station name
-            index += base.ParseHeaderImage(binaryImage, startIndex, length);
+            index += base.ParseHeaderImage(buffer, startIndex, length);
 
-            IDCode = EndianOrder.BigEndian.ToUInt16(binaryImage, index);
-            m_formatFlags = (FormatFlags)EndianOrder.BigEndian.ToUInt16(binaryImage, index + 2);
+            IDCode = EndianOrder.BigEndian.ToUInt16(buffer, index);
+            m_formatFlags = (FormatFlags)EndianOrder.BigEndian.ToUInt16(buffer, index + 2);
 
             // Parse out total phasors, analogs and digitals defined for this device
-            state.PhasorCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 4);
-            state.AnalogCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 6);
-            state.DigitalCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 8);
+            state.PhasorCount = EndianOrder.BigEndian.ToUInt16(buffer, index + 4);
+            state.AnalogCount = EndianOrder.BigEndian.ToUInt16(buffer, index + 6);
+            state.DigitalCount = EndianOrder.BigEndian.ToUInt16(buffer, index + 8);
             index += 10;
 
             return (index - startIndex);
@@ -544,11 +544,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Parses the binary footer image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseFooterImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseFooterImage(byte[] buffer, int startIndex, int length)
         {
             PhasorDefinition phasorDefinition;
             AnalogDefinition analogDefinition;
@@ -561,7 +561,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 phasorDefinition = PhasorDefinitions[x] as PhasorDefinition;
 
                 if (phasorDefinition != null)
-                    index += phasorDefinition.ParseConversionFactor(binaryImage, index);
+                    index += phasorDefinition.ParseConversionFactor(buffer, index);
             }
 
             for (x = 0; x < AnalogDefinitions.Count; x++)
@@ -569,7 +569,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 analogDefinition = AnalogDefinitions[x] as AnalogDefinition;
 
                 if (analogDefinition != null)
-                    index += analogDefinition.ParseConversionFactor(binaryImage, index);
+                    index += analogDefinition.ParseConversionFactor(buffer, index);
             }
 
             for (x = 0; x < DigitalDefinitions.Count; x++)
@@ -577,16 +577,16 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 digitalDefinition = DigitalDefinitions[x] as DigitalDefinition;
 
                 if (digitalDefinition != null)
-                    index += digitalDefinition.ParseConversionFactor(binaryImage, index);
+                    index += digitalDefinition.ParseConversionFactor(buffer, index);
             }
 
             // Parse nominal frequency
-            index += base.ParseFooterImage(binaryImage, index, length);
+            index += base.ParseFooterImage(buffer, index, length);
 
             // Parse out configuration count (new for version 7.0)
             if (Parent.DraftRevision > DraftRevision.Draft6)
             {
-                RevisionCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index);
+                RevisionCount = EndianOrder.BigEndian.ToUInt16(buffer, index);
                 index += 2;
             }
 
@@ -613,11 +613,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         // Static Methods
 
         // Delegate handler to create a new IEEE C37.118 configuration cell
-        internal static IConfigurationCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IConfigurationCell> state, int index, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IConfigurationCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IConfigurationCell> state, int index, byte[] buffer, int startIndex, out int parsedLength)
         {
             ConfigurationCell configCell = new ConfigurationCell(parent as IConfigurationFrame);
 
-            parsedLength = configCell.Initialize(binaryImage, startIndex, 0);
+            parsedLength = configCell.ParseBinaryImage(buffer, startIndex, 0);
 
             return configCell;
         }

@@ -328,16 +328,16 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             if (DraftRevision == DraftRevision.Draft6)
             {
                 // Handle single label the standard way (parsing out null value)
-                return base.ParseBodyImage(binaryImage, startIndex, length);
+                return base.ParseBodyImage(buffer, startIndex, length);
             }
             else
             {
@@ -346,25 +346,25 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 // For "multiple" labels - we just replace null's with spaces
                 for (int x = startIndex; x < startIndex + parseLength; x++)
                 {
-                    if (binaryImage[x] == 0)
-                        binaryImage[x] = 32;
+                    if (buffer[x] == 0)
+                        buffer[x] = 32;
                 }
 
-                Label = Encoding.ASCII.GetString(binaryImage, startIndex, parseLength);
+                Label = Encoding.ASCII.GetString(buffer, startIndex, parseLength);
 
                 return parseLength;
             }
         }
 
         /// <summary>
-        /// Parses conversion factor image from the specified <paramref name="binaryImage"/>.
+        /// Parses conversion factor image from the specified <paramref name="buffer"/>.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        internal int ParseConversionFactor(byte[] binaryImage, int startIndex)
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        internal int ParseConversionFactor(byte[] buffer, int startIndex)
         {
-            m_normalStatus = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex);
-            m_validInputs = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 2);
+            m_normalStatus = EndianOrder.BigEndian.ToUInt16(buffer, startIndex);
+            m_validInputs = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 2);
 
             return ConversionFactorLength;
         }
@@ -391,15 +391,15 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         // Static Methods
 
         // Delegate handler to create a new IEEE C37.118 digital definition
-        internal static IDigitalDefinition CreateNewDefinition(IConfigurationCell parent, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IDigitalDefinition CreateNewDefinition(IConfigurationCell parent, byte[] buffer, int startIndex, out int parsedLength)
         {
             IDigitalDefinition digitalDefinition = new DigitalDefinition(parent);
 
-            parsedLength = digitalDefinition.Initialize(binaryImage, startIndex, 0);
+            parsedLength = digitalDefinition.ParseBinaryImage(buffer, startIndex, 0);
 
             return digitalDefinition;
         }
 
-        #endregion        
+        #endregion
     }
 }

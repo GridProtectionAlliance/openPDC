@@ -299,7 +299,7 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets the length of the <see cref="ChannelCollectionBase{T}.BinaryImage"/>.
+        /// Gets the length of the <see cref="ChannelCollectionBase{T}"/>.
         /// </summary>
         /// <remarks>
         /// The length of the <see cref="ChannelCellCollectionBase{T}"/> binary image is the combined length of all the items in the collection.

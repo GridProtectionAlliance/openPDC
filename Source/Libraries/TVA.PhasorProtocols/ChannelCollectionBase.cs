@@ -138,7 +138,7 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets the length of the <see cref="BinaryImage"/>.
+        /// Gets the length of the <see cref="ChannelCollectionBase{T}"/>.
         /// </summary>
         /// <remarks>
         /// The length of the <see cref="ChannelCollectionBase{T}"/> binary image is the combined length of all the items in the collection.<br/>
@@ -155,30 +155,6 @@ namespace TVA.PhasorProtocols
                     return this[0].BinaryLength * count;
                 else
                     return 0;
-            }
-        }
-
-        /// <summary>
-        /// Gets the binary image of this <see cref="ChannelCollectionBase{T}"/>.
-        /// </summary>
-        /// <remarks>
-        /// The binary image of the <see cref="ChannelCollectionBase{T}"/> is the combined images of all the items in the collection.
-        /// </remarks>
-        public virtual byte[] BinaryImage
-        {
-            get
-            {
-                // Create a buffer large enough to hold all images
-                byte[] buffer = new byte[BinaryLength];
-                int index = 0;
-
-                // Copy in each element's binary inage
-                for (int x = 0; x < Count; x++)
-                {
-                    this[x].CopyImage(buffer, ref index);
-                }
-
-                return buffer;
             }
         }
 
@@ -222,6 +198,38 @@ namespace TVA.PhasorProtocols
         #endregion
 
         #region [ Methods ]
+
+        /// <summary>
+        /// Generates binary image of the object and copies it into the given buffer, for <see cref="ISupportBinaryImage.BinaryLength"/> bytes.
+        /// </summary>
+        /// <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+        /// <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+        /// <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="startIndex"/> or <see cref="BinaryLength"/> is less than 0 -or- 
+        /// <paramref name="startIndex"/> and <see cref="BinaryLength"/> will exceed <paramref name="buffer"/> length.
+        /// </exception>
+        public virtual int GenerateBinaryImage(byte[] buffer, int startIndex)
+        {
+            buffer.ValidateParameters(startIndex, BinaryLength);
+
+            int index = startIndex;
+
+            // Copy in each element's binary inage
+            for (int x = 0; x < Count; x++)
+            {
+                this[x].CopyImage(buffer, ref index);
+            }
+
+            return (index - startIndex);
+        }
+
+        // Collections are not designed to parse binary images
+        int ISupportBinaryImage.ParseBinaryImage(byte[] buffer, int startIndex, int length)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Adds the elements of the specified collection to the end of the <see cref="ChannelCollectionBase{T}"/>.
@@ -321,12 +329,6 @@ namespace TVA.PhasorProtocols
         {
             if (CollectionChanged != null)
                 CollectionChanged(this, e);
-        }
-
-        // Collections are not designed to parse binary images
-        int ISupportBinaryImage.Initialize(byte[] binaryImage, int startIndex, int length)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

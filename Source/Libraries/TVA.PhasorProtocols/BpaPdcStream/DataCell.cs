@@ -29,7 +29,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using TVA.Parsing;
 
 namespace TVA.PhasorProtocols.BpaPdcStream
 {
@@ -466,7 +465,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         }
 
         /// <summary>
-        /// Gets the length of the <see cref="ISupportBinaryImage.BinaryImage"/>.
+        /// Gets the length of the <see cref="DataCell"/>.
         /// </summary>
         /// <remarks>
         /// This property is overriden to extend length evenly at 4-byte intervals.
@@ -553,27 +552,27 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <summary>
         /// Parses the binary image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// This property is overriden to extend parsed length evenly at 4-byte intervals.
         /// </remarks>
-        public override int Initialize(byte[] binaryImage, int startIndex, int length)
+        public override int ParseBinaryImage(byte[] buffer, int startIndex, int length)
         {
             // We align data cells on 32-bit word boundaries (accounts for phantom digital)
-            return base.Initialize(binaryImage, startIndex, length).AlignDoubleWord();
+            return base.ParseBinaryImage(buffer, startIndex, length).AlignDoubleWord();
         }
 
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             DataFrame parentFrame = Parent;
             DataFrameParsingState frameState = parentFrame.State;
@@ -585,13 +584,13 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             // Read data buffer if using phasor data file format
             if (UsePhasorDataFileFormat && frameState.RemainingPdcBlockPmus == 0)
             {
-                m_dataBuffer = EndianOrder.BigEndian.ToUInt32(binaryImage, index);
+                m_dataBuffer = EndianOrder.BigEndian.ToUInt32(buffer, index);
                 index += 4;
             }
 
             // Get data cell flags
-            m_channelFlags = (ChannelFlags)binaryImage[index];
-            analogs = binaryImage[index + 1];
+            m_channelFlags = (ChannelFlags)buffer[index];
+            analogs = buffer[index + 1];
             index += 2;
 
             // Parse PDCstream specific header image
@@ -624,8 +623,8 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             else
             {
                 // Parse number of digitals and phasors for normal PMU cells
-                digitals = binaryImage[index];
-                phasors = binaryImage[index + 1];
+                digitals = buffer[index];
+                phasors = buffer[index + 1];
                 index += 2;
 
                 if (revision >= RevisionNumber.Revision2)
@@ -649,16 +648,16 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                     phasors = 2;
                     analogs = 0;
                     digitals = 1;
-                    
+
                     // Get data cell flags for PDC block PMU
-                    m_channelFlags = (ChannelFlags)binaryImage[index];
+                    m_channelFlags = (ChannelFlags)buffer[index];
                     UsingPdcExchangeFormat = true;
                     index += 2;
                 }
                 else
                 {
                     // Parse PMU's sample number
-                    m_sampleNumber = EndianOrder.BigEndian.ToUInt16(binaryImage, index);
+                    m_sampleNumber = EndianOrder.BigEndian.ToUInt16(buffer, index);
                     index += 2;
                 }
             }
@@ -684,8 +683,8 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             // At least this number of phasors should be already defined in BPA PDCstream configuration file
             if (phasors > ConfigurationCell.PhasorDefinitions.Count)
                 throw new InvalidOperationException(
-                    "Stream/Config File Mismatch: Phasor value count in stream (" + phasors + 
-                    ") does not match defined count in configuration file (" + ConfigurationCell.PhasorDefinitions.Count + 
+                    "Stream/Config File Mismatch: Phasor value count in stream (" + phasors +
+                    ") does not match defined count in configuration file (" + ConfigurationCell.PhasorDefinitions.Count +
                     ") for " + ConfigurationCell.IDLabel);
 
             // If analog values get a clear definition in INI file at some point, we can validate the number in the
@@ -744,11 +743,11 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         // Static Methods
 
         // Delegate handler to create a new BPA PDCstream data cell
-        internal static IDataCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IDataCell> state, int index, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IDataCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IDataCell> state, int index, byte[] buffer, int startIndex, out int parsedLength)
         {
             DataCell dataCell = new DataCell(parent as IDataFrame, (state as IDataFrameParsingState).ConfigurationFrame.Cells[index]);
 
-            parsedLength = dataCell.Initialize(binaryImage, startIndex, 0);
+            parsedLength = dataCell.ParseBinaryImage(buffer, startIndex, 0);
 
             return dataCell;
         }

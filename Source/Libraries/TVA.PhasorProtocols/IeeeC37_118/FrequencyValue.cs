@@ -317,11 +317,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         // Static Methods
 
         // Delegate handler to create a new IEEE C37.118 frequency value
-        internal static IFrequencyValue CreateNewValue(IDataCell parent, IFrequencyDefinition definition, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IFrequencyValue CreateNewValue(IDataCell parent, IFrequencyDefinition definition, byte[] buffer, int startIndex, out int parsedLength)
         {
             IFrequencyValue frequency = new FrequencyValue(parent, definition);
 
-            parsedLength = frequency.Initialize(binaryImage, startIndex, 0);
+            parsedLength = frequency.ParseBinaryImage(buffer, startIndex, 0);
 
             return frequency;
         }

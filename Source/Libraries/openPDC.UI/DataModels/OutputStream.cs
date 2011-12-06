@@ -843,6 +843,7 @@ namespace openPDCManager.UI.DataModels
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="outputStream">Information about <see cref="OutputStream"/>.</param>        
+        /// <param name="mirrorMode">Boolean value to use mirror mode when saving output stream.</param>
         /// <returns>String, for display use, indicating success.</returns>
         public static string Save(AdoDataConnection database, OutputStream outputStream, bool mirrorMode)
         {
@@ -998,6 +999,12 @@ namespace openPDCManager.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets output stream.
+        /// </summary>
+        /// <param name="database">Source database connection.</param>
+        /// <param name="whereClause">Where filter clause.</param>
+        /// <returns>Output stream.</returns>
         public static OutputStream GetOutputStream(AdoDataConnection database, string whereClause)
         {
             bool createdConnection = false;

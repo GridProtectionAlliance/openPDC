@@ -483,11 +483,11 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             // Length is validated at a frame level well in advance so that low level parsing routines do not have
             // to re-validate that enough length is available to parse needed information as an optimization...
@@ -498,7 +498,7 @@ namespace TVA.PhasorProtocols
             IDigitalValue digitalValue;
             int x, parsedLength, index = startIndex;
 
-            StatusFlags = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex);
+            StatusFlags = EndianOrder.BigEndian.ToUInt16(buffer, startIndex);
             index += 2;
 
             // By the very nature of the major phasor protocols supporting the same order of phasors, frequency, df/dt, analog and digitals
@@ -507,19 +507,19 @@ namespace TVA.PhasorProtocols
             // Parse out phasor values
             for (x = 0; x < parsingState.PhasorCount; x++)
             {
-                phasorValue = parsingState.CreateNewPhasorValue(this, m_configurationCell.PhasorDefinitions[x], binaryImage, index, out parsedLength);
+                phasorValue = parsingState.CreateNewPhasorValue(this, m_configurationCell.PhasorDefinitions[x], buffer, index, out parsedLength);
                 m_phasorValues.Add(phasorValue);
                 index += parsedLength;
             }
 
             // Parse out frequency and df/dt values
-            m_frequencyValue = parsingState.CreateNewFrequencyValue(this, m_configurationCell.FrequencyDefinition, binaryImage, index, out parsedLength);
+            m_frequencyValue = parsingState.CreateNewFrequencyValue(this, m_configurationCell.FrequencyDefinition, buffer, index, out parsedLength);
             index += parsedLength;
 
             // Parse out analog values
             for (x = 0; x < parsingState.AnalogCount; x++)
             {
-                analogValue = parsingState.CreateNewAnalogValue(this, m_configurationCell.AnalogDefinitions[x], binaryImage, index, out parsedLength);
+                analogValue = parsingState.CreateNewAnalogValue(this, m_configurationCell.AnalogDefinitions[x], buffer, index, out parsedLength);
                 m_analogValues.Add(analogValue);
                 index += parsedLength;
             }
@@ -527,7 +527,7 @@ namespace TVA.PhasorProtocols
             // Parse out digital values
             for (x = 0; x < parsingState.DigitalCount; x++)
             {
-                digitalValue = parsingState.CreateNewDigitalValue(this, m_configurationCell.DigitalDefinitions[x], binaryImage, index, out parsedLength);
+                digitalValue = parsingState.CreateNewDigitalValue(this, m_configurationCell.DigitalDefinitions[x], buffer, index, out parsedLength);
                 m_digitalValues.Add(digitalValue);
                 index += parsedLength;
             }

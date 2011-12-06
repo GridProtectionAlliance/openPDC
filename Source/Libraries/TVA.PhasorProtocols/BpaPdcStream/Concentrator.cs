@@ -251,7 +251,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         // Fields
         private ConfigurationFrame m_configurationFrame;
         private string m_iniFileName;
-		
+
         #endregion
 
         #region [ Properties ]
@@ -326,7 +326,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         {
             ConfigurationCell newCell;
             int count = 0;
-            
+
             // Fix ID labels to use BPA PDCstream 4 character label
             foreach (TVA.PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
             {
@@ -341,7 +341,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
 
                     if (string.IsNullOrEmpty(stationName))
                         stationName = "PMU";
-                    
+
                     baseCell.IDLabel = stationName.Substring(0, 4 - pmuID.Length).ToUpper() + pmuID;
                 }
 

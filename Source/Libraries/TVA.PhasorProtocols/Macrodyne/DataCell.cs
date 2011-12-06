@@ -551,11 +551,11 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             ConfigurationCell configCell = ConfigurationCell;
             ConfigurationFrame configFrame = configCell.Parent;
@@ -563,13 +563,13 @@ namespace TVA.PhasorProtocols.Macrodyne
             IDigitalValue digitalValue;
             int x, parsedLength, index = startIndex;
 
-            m_status1Flags = binaryImage[index];
+            m_status1Flags = buffer[index];
             index++;
 
             // Parse out status 2 flags
             if (configFrame.Status2Included)
             {
-                m_status2Flags = binaryImage[index];
+                m_status2Flags = buffer[index];
                 index++;
             }
             else
@@ -580,15 +580,15 @@ namespace TVA.PhasorProtocols.Macrodyne
             // Parse out time tag
             if (configFrame.TimestampIncluded)
             {
-                m_clockStatusFlags = (ClockStatusFlags)binaryImage[index];
+                m_clockStatusFlags = (ClockStatusFlags)buffer[index];
                 index += 1;
 
-                ushort day = BinaryCodedDecimal.Decode(EndianOrder.BigEndian.ToUInt16(binaryImage, index));
-                byte hours = BinaryCodedDecimal.Decode(binaryImage[index + 2]);
-                byte minutes = BinaryCodedDecimal.Decode(binaryImage[index + 3]);
-                byte seconds = BinaryCodedDecimal.Decode(binaryImage[index + 4]);
+                ushort day = BinaryCodedDecimal.Decode(EndianOrder.BigEndian.ToUInt16(buffer, index));
+                byte hours = BinaryCodedDecimal.Decode(buffer[index + 2]);
+                byte minutes = BinaryCodedDecimal.Decode(buffer[index + 3]);
+                byte seconds = BinaryCodedDecimal.Decode(buffer[index + 4]);
 
-                m_sampleNumber = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 5);
+                m_sampleNumber = EndianOrder.BigEndian.ToUInt16(buffer, index + 5);
                 index += 7;
 
                 // TODO: Think about how to handle year change with floating clock...
@@ -600,20 +600,20 @@ namespace TVA.PhasorProtocols.Macrodyne
                 Parent.Timestamp = DateTime.UtcNow.Ticks;
                 SynchronizationIsValid = false;  // TODO: Handle "assigned value" - change flags?
 
-                m_sampleNumber = EndianOrder.BigEndian.ToUInt16(binaryImage, index);
+                m_sampleNumber = EndianOrder.BigEndian.ToUInt16(buffer, index);
                 index += 2;
             }
 
             // Parse out first five phasor values
             for (x = 0; x < TVA.Common.Min(configCell.PhasorDefinitions.Count, 5); x++)
             {
-                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[x], binaryImage, index, out parsedLength);
+                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[x], buffer, index, out parsedLength);
                 PhasorValues.Add(phasorValue);
                 index += parsedLength;
             }
 
             // Parse out frequency value
-            FrequencyValue = Macrodyne.FrequencyValue.CreateNewValue(this, configCell.FrequencyDefinition, binaryImage, index, out parsedLength);
+            FrequencyValue = Macrodyne.FrequencyValue.CreateNewValue(this, configCell.FrequencyDefinition, buffer, index, out parsedLength);
             index += parsedLength;
 
             if (configFrame.ReferenceIncluded)
@@ -624,7 +624,7 @@ namespace TVA.PhasorProtocols.Macrodyne
 
             if (configFrame.Digital1Included)
             {
-                digitalValue = DigitalValue.CreateNewValue(this, configCell.DigitalDefinitions[0], binaryImage, index, out parsedLength);
+                digitalValue = DigitalValue.CreateNewValue(this, configCell.DigitalDefinitions[0], buffer, index, out parsedLength);
                 DigitalValues.Add(digitalValue);
                 index += parsedLength;
             }
@@ -632,14 +632,14 @@ namespace TVA.PhasorProtocols.Macrodyne
             // Parse out next five phasor values
             for (x = 5; x < configCell.PhasorDefinitions.Count; x++)
             {
-                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[x], binaryImage, index, out parsedLength);
+                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[x], buffer, index, out parsedLength);
                 PhasorValues.Add(phasorValue);
                 index += parsedLength;
             }
 
             if (configFrame.Digital2Included)
             {
-                digitalValue = DigitalValue.CreateNewValue(this, configCell.DigitalDefinitions[configCell.DigitalDefinitions.Count - 1], binaryImage, index, out parsedLength);
+                digitalValue = DigitalValue.CreateNewValue(this, configCell.DigitalDefinitions[configCell.DigitalDefinitions.Count - 1], buffer, index, out parsedLength);
                 DigitalValues.Add(digitalValue);
                 index += parsedLength;
             }
@@ -671,11 +671,11 @@ namespace TVA.PhasorProtocols.Macrodyne
         // Static Methods
 
         // Delegate handler to create a new Macrodyne data cell
-        internal static IDataCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IDataCell> state, int index, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IDataCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IDataCell> state, int index, byte[] buffer, int startIndex, out int parsedLength)
         {
             DataCell dataCell = new DataCell(parent as IDataFrame, (state as IDataFrameParsingState).ConfigurationFrame.Cells[index]);
 
-            parsedLength = dataCell.Initialize(binaryImage, startIndex, 0);
+            parsedLength = dataCell.ParseBinaryImage(buffer, startIndex, 0);
 
             return dataCell;
         }

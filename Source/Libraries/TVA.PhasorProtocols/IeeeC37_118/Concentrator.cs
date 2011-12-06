@@ -173,7 +173,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         protected override IFrame CreateNewFrame(Ticks timestamp)
         {
             // We create a new IEEE C37.118 data frame based on current configuration frame
-            DataFrame dataFrame = Concentrator.CreateDataFrame(timestamp, m_configurationFrame);                       
+            DataFrame dataFrame = Concentrator.CreateDataFrame(timestamp, m_configurationFrame);
             bool configurationChanged = false;
 
             if (m_configurationChanged)

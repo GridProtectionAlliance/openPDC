@@ -327,17 +327,17 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         #region [ Methods ]
 
         /// <summary>
-        /// Parses conversion factor image from the specified <paramref name="binaryImage"/>.
+        /// Parses conversion factor image from the specified <paramref name="buffer"/>.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        internal int ParseConversionFactor(byte[] binaryImage, int startIndex)
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        internal int ParseConversionFactor(byte[] buffer, int startIndex)
         {
             // Get analog type from first byte
-            this.AnalogType = (AnalogType)binaryImage[startIndex];
+            this.AnalogType = (AnalogType)buffer[startIndex];
 
             // Last three bytes represent scaling factor
-            ScalingValue = EndianOrder.BigEndian.ToUInt24(binaryImage, startIndex + 1);
+            ScalingValue = EndianOrder.BigEndian.ToUInt24(buffer, startIndex + 1);
 
             return ConversionFactorLength;
         }
@@ -349,15 +349,15 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         // Static Methods
 
         // Delegate handler to create a new IEEE C37.118 analog definition
-        internal static IAnalogDefinition CreateNewDefinition(IConfigurationCell parent, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IAnalogDefinition CreateNewDefinition(IConfigurationCell parent, byte[] buffer, int startIndex, out int parsedLength)
         {
             IAnalogDefinition analogDefinition = new AnalogDefinition(parent);
 
-            parsedLength = analogDefinition.Initialize(binaryImage, startIndex, 0);
+            parsedLength = analogDefinition.ParseBinaryImage(buffer, startIndex, 0);
 
             return analogDefinition;
         }
 
-        #endregion        
+        #endregion
     }
 }

@@ -23,6 +23,7 @@
 //
 //******************************************************************************************************
 
+using System;
 using System.Collections.Generic;
 using TVA.Parsing;
 
@@ -105,6 +106,117 @@ namespace TVA.PhasorProtocols
             {
                 m_tag = value;
             }
+        }
+
+        /// <summary>
+        /// Gets the binary image of the <see cref="ChannelBase"/> object.
+        /// </summary>
+        /// <remarks>
+        /// This property is not typically overriden since it is the combination of the header, body and footer images.
+        /// </remarks>
+        public virtual byte[] BinaryImage
+        {
+            get
+            {
+                // TODO: This proxy property can be removed if all channel base implementations are recoded to implement "GenerateHeaderImage/GenerateBodyImage/GenerateFooterImage" overrides...
+                byte[] buffer = new byte[BinaryLength];
+                int index = 0;
+
+                // Copy in header, body and footer images
+                int headerLength = HeaderLength;
+
+                if (headerLength > 0)
+                {
+                    Buffer.BlockCopy(HeaderImage, 0, buffer, index, headerLength);
+                    index += headerLength;
+                }
+
+                int bodyLength = BodyLength;
+
+                if (bodyLength > 0)
+                {
+                    Buffer.BlockCopy(BodyImage, 0, buffer, index, bodyLength);
+                    index += bodyLength;
+                }
+
+                int footerLength = FooterLength;
+
+                if (footerLength > 0)
+                    Buffer.BlockCopy(FooterImage, 0, buffer, index, footerLength);
+
+                return buffer;
+            }
+        }
+
+        /// <summary>
+        /// Gets the binary header image of the <see cref="ChannelBase"/> object.
+        /// </summary>
+        /// <remarks>
+        /// This property is typically overriden by a specific protocol implementation.
+        /// </remarks>
+        protected virtual byte[] HeaderImage
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the binary body image of the <see cref="ChannelBase"/> object.
+        /// </summary>
+        /// <remarks>
+        /// This property is typically overriden by a specific protocol implementation.
+        /// </remarks>
+        protected virtual byte[] BodyImage
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the binary footer image of the <see cref="BinaryImageBase"/> object.
+        /// </summary>
+        /// <remarks>
+        /// This property is typically overriden by a specific protocol implementation.
+        /// </remarks>
+        protected virtual byte[] FooterImage
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region [ Methods ]
+
+        /// <summary>
+        /// Generates binary image of the object and copies it into the given buffer, for <see cref="ISupportBinaryImage.BinaryLength"/> bytes.
+        /// </summary>
+        /// <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+        /// <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+        /// <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="startIndex"/> or <see cref="ISupportBinaryImage.BinaryLength"/> is less than 0 -or- 
+        /// <paramref name="startIndex"/> and <see cref="ISupportBinaryImage.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+        /// </exception>
+        public override int GenerateBinaryImage(byte[] buffer, int startIndex)
+        {
+            byte[] image = BinaryImage;
+            int length = image.Length;
+
+            if (length > 0)
+            {
+                buffer.ValidateParameters(startIndex, length);
+                Buffer.BlockCopy(image, 0, buffer, startIndex, length);
+            }
+
+            return length;
         }
 
         #endregion

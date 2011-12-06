@@ -283,25 +283,25 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         }
 
         /// <summary>
-        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="binaryImage"/>.
+        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="buffer"/>.
         /// </summary>
         /// <param name="configurationFrame">IEEE C37.118 <see cref="ConfigurationFrame1"/> if already parsed.</param>
-        /// <param name="binaryImage">Buffer that contains data to parse.</param>
+        /// <param name="buffer">Buffer that contains data to parse.</param>
         /// <param name="startIndex">Start index into buffer where valid data begins.</param>
-        public CommonFrameHeader(ConfigurationFrame1 configurationFrame, byte[] binaryImage, int startIndex)
+        public CommonFrameHeader(ConfigurationFrame1 configurationFrame, byte[] buffer, int startIndex)
         {
-            if (binaryImage[startIndex] != PhasorProtocols.Common.SyncByte)
-                throw new InvalidOperationException("Bad data stream, expected sync byte 0xAA as first byte in IEEE C37.118 frame, got 0x" + binaryImage[startIndex].ToString("X").PadLeft(2, '0'));
+            if (buffer[startIndex] != PhasorProtocols.Common.SyncByte)
+                throw new InvalidOperationException("Bad data stream, expected sync byte 0xAA as first byte in IEEE C37.118 frame, got 0x" + buffer[startIndex].ToString("X").PadLeft(2, '0'));
 
             // Strip out frame type and version information...
-            m_frameType = (FrameType)binaryImage[startIndex + 1] & ~IeeeC37_118.FrameType.VersionNumberMask;
-            m_version = (byte)(binaryImage[startIndex + 1] & (byte)IeeeC37_118.FrameType.VersionNumberMask);
+            m_frameType = (FrameType)buffer[startIndex + 1] & ~IeeeC37_118.FrameType.VersionNumberMask;
+            m_version = (byte)(buffer[startIndex + 1] & (byte)IeeeC37_118.FrameType.VersionNumberMask);
 
-            m_frameLength = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 2);
-            m_idCode = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 4);
+            m_frameLength = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 2);
+            m_idCode = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 4);
 
-            uint secondOfCentury = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 6);
-            uint fractionOfSecond = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 10);
+            uint secondOfCentury = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 6);
+            uint fractionOfSecond = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 10);
 
             // Without timebase, the best timestamp you can get is down to the whole second
             m_timestamp = (new UnixTimeTag((double)secondOfCentury)).ToDateTime().Ticks;

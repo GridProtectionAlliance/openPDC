@@ -258,18 +258,18 @@ namespace TVA.PhasorProtocols.FNet
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="binaryImage"/>.
+        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="buffer"/>.
         /// </summary>
-        /// <param name="binaryImage">Buffer that contains data to parse.</param>
+        /// <param name="buffer">Buffer that contains data to parse.</param>
         /// <param name="startIndex">Start index into buffer where valid data begins.</param>
-        /// <param name="length">Length of valid data in <paramref name="binaryImage"/>.</param>
-        public CommonFrameHeader(byte[] binaryImage, int startIndex, int length)
+        /// <param name="length">Length of valid data in <paramref name="buffer"/>.</param>
+        public CommonFrameHeader(byte[] buffer, int startIndex, int length)
         {
             // Validate F-NET data image
-            if (binaryImage[startIndex] != Common.StartByte)
-                throw new InvalidOperationException("Bad data stream, expected start byte 0x01 as first byte in F-NET frame, got 0x" + binaryImage[startIndex].ToString("X").PadLeft(2, '0'));
+            if (buffer[startIndex] != Common.StartByte)
+                throw new InvalidOperationException("Bad data stream, expected start byte 0x01 as first byte in F-NET frame, got 0x" + buffer[startIndex].ToString("X").PadLeft(2, '0'));
 
-            int endIndex = -1, stopIndex = Array.IndexOf<byte>(binaryImage, Common.EndByte, startIndex, length);
+            int endIndex = -1, stopIndex = Array.IndexOf<byte>(buffer, Common.EndByte, startIndex, length);
 
             if (stopIndex < 0)
                 throw new InvalidOperationException("Bad data stream, did not find stop byte 0x00 in F-NET frame");
@@ -277,18 +277,18 @@ namespace TVA.PhasorProtocols.FNet
             for (int x = stopIndex; x < length; x++)
             {
                 // We continue to scan through duplicate end bytes (nulls)
-                if (binaryImage[x] == Common.EndByte)
+                if (buffer[x] == Common.EndByte)
                     endIndex = x;
                 else if (endIndex >= 0)
                     break;
             }
 
             // Parse F-NET data frame into individual fields separated by spaces
-            m_data = Encoding.ASCII.GetString(binaryImage, startIndex + 1, stopIndex - startIndex - 1).RemoveDuplicateWhiteSpace().Trim().Split(' ');
+            m_data = Encoding.ASCII.GetString(buffer, startIndex + 1, stopIndex - startIndex - 1).RemoveDuplicateWhiteSpace().Trim().Split(' ');
 
             // Make sure all the needed data elements exist (could be a bad frame)
             if (m_data.Length < 8)
-                throw new InvalidOperationException("Bad data stream, invalid number of data elements encountered in F-NET data stream line: \"" + Encoding.ASCII.GetString(binaryImage, startIndex + 1, stopIndex - startIndex - 1).RemoveControlCharacters().Trim() + "\".  Got " + m_data.Length + " elements, expected 8.");
+                throw new InvalidOperationException("Bad data stream, invalid number of data elements encountered in F-NET data stream line: \"" + Encoding.ASCII.GetString(buffer, startIndex + 1, stopIndex - startIndex - 1).RemoveControlCharacters().Trim() + "\".  Got " + m_data.Length + " elements, expected 8.");
 
             // Calculate total bytes parsed including start and stop bytes
             m_parsedLength = endIndex - startIndex + 1;
@@ -320,6 +320,6 @@ namespace TVA.PhasorProtocols.FNet
             }
         }
 
-        #endregion       
+        #endregion
     }
 }

@@ -260,24 +260,24 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new <see cref="CommandFrame"/> from the given <paramref name="binaryImage"/>.
+        /// Creates a new <see cref="CommandFrame"/> from the given <paramref name="buffer"/>.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <remarks>
         /// This constructor is used by a consumer to parse a received IEEE C37.118 command frame. Typically
         /// command frames are sent to a device. This constructor would used if this code was being used
         /// inside of a phasor measurement device.
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is not large enough to parse frame.</exception>
-        public CommandFrame(byte[] binaryImage, int startIndex, int length)
+        public CommandFrame(byte[] buffer, int startIndex, int length)
             : base(new CommandCellCollection(Common.MaximumExtendedDataLength), DeviceCommand.ReservedBits)
         {
             if (length < CommonFrameHeader.FixedLength)
                 throw new ArgumentOutOfRangeException("length");
 
-            m_frameHeader = new CommonFrameHeader(null, binaryImage, startIndex);
+            m_frameHeader = new CommonFrameHeader(null, buffer, startIndex);
 
             if (m_frameHeader.TypeID != IeeeC37_118.FrameType.CommandFrame)
                 throw new InvalidOperationException("Binary image does not represent an IEEE C37.118 command frame");
@@ -288,12 +288,12 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             // Validate check-sum
             int sumLength = m_frameHeader.FrameLength - 2;
 
-            if (EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + sumLength) != CalculateChecksum(binaryImage, startIndex, sumLength))
+            if (EndianOrder.BigEndian.ToUInt16(buffer, startIndex + sumLength) != CalculateChecksum(buffer, startIndex, sumLength))
                 throw new InvalidOperationException("Invalid binary image detected - check sum of " + this.GetType().Name + " did not match");
 
             m_frameHeader.State = new CommandFrameParsingState(m_frameHeader.FrameLength, m_frameHeader.DataLength);
             CommonHeader = m_frameHeader;
-            Initialize(binaryImage, startIndex, length);
+            ParseBinaryImage(buffer, startIndex, length);
         }
 
         /// <summary>
@@ -440,11 +440,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             // We already parsed the frame header, so we just skip past it...
             return CommonFrameHeader.FixedLength;

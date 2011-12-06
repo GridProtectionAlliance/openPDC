@@ -587,26 +587,26 @@ namespace TVA.PhasorProtocols.Ieee1344
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             IConfigurationCellParsingState state = State;
             int index = startIndex;
 
-            m_statusFlags = EndianOrder.BigEndian.ToUInt16(binaryImage, index);
+            m_statusFlags = EndianOrder.BigEndian.ToUInt16(buffer, index);
             index += 2;
 
             // Parse out station name
-            index += base.ParseHeaderImage(binaryImage, index, length);
+            index += base.ParseHeaderImage(buffer, index, length);
 
-            IDCode = EndianOrder.BigEndian.ToUInt64(binaryImage, index);
+            IDCode = EndianOrder.BigEndian.ToUInt64(buffer, index);
 
             // Parse out total phasors and digitals defined for this device
-            state.PhasorCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 8);
-            state.DigitalCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 10);
+            state.PhasorCount = EndianOrder.BigEndian.ToUInt16(buffer, index + 8);
+            state.DigitalCount = EndianOrder.BigEndian.ToUInt16(buffer, index + 10);
             index += 12;
 
             return (index - startIndex);
@@ -615,11 +615,11 @@ namespace TVA.PhasorProtocols.Ieee1344
         /// <summary>
         /// Parses the binary footer image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseFooterImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseFooterImage(byte[] buffer, int startIndex, int length)
         {
             PhasorDefinition phasorDefinition;
             DigitalDefinition digitalDefinition;
@@ -631,7 +631,7 @@ namespace TVA.PhasorProtocols.Ieee1344
                 phasorDefinition = PhasorDefinitions[x] as PhasorDefinition;
 
                 if (phasorDefinition != null)
-                    index += phasorDefinition.ParseConversionFactor(binaryImage, index);
+                    index += phasorDefinition.ParseConversionFactor(buffer, index);
             }
 
             for (x = 0; x < DigitalDefinitions.Count; x++)
@@ -639,11 +639,11 @@ namespace TVA.PhasorProtocols.Ieee1344
                 digitalDefinition = DigitalDefinitions[x] as DigitalDefinition;
 
                 if (digitalDefinition != null)
-                    index += digitalDefinition.ParseConversionFactor(binaryImage, index);
+                    index += digitalDefinition.ParseConversionFactor(buffer, index);
             }
 
             // Parse nominal frequency
-            index += base.ParseFooterImage(binaryImage, index, length);
+            index += base.ParseFooterImage(buffer, index, length);
 
             return (index - startIndex);
         }
@@ -669,15 +669,15 @@ namespace TVA.PhasorProtocols.Ieee1344
         // Static Methods
 
         // Delegate handler to create a new IEEE 1344 configuration cell
-        internal static IConfigurationCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IConfigurationCell> state, int index, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IConfigurationCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IConfigurationCell> state, int index, byte[] buffer, int startIndex, out int parsedLength)
         {
             ConfigurationCell configCell = new ConfigurationCell(parent as IConfigurationFrame);
 
-            parsedLength = configCell.Initialize(binaryImage, startIndex, 0);
+            parsedLength = configCell.ParseBinaryImage(buffer, startIndex, 0);
 
             return configCell;
         }
 
-        #endregion       
+        #endregion
     }
 }

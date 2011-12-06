@@ -317,11 +317,11 @@ namespace TVA.PhasorProtocols.Macrodyne
         // Static Methods
 
         // Delegate handler to create a new Macrodyne frequency value
-        internal static IFrequencyValue CreateNewValue(IDataCell parent, IFrequencyDefinition definition, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IFrequencyValue CreateNewValue(IDataCell parent, IFrequencyDefinition definition, byte[] buffer, int startIndex, out int parsedLength)
         {
             IFrequencyValue frequency = new FrequencyValue(parent, definition);
 
-            parsedLength = frequency.Initialize(binaryImage, startIndex, 0);
+            parsedLength = frequency.ParseBinaryImage(buffer, startIndex, 0);
 
             return frequency;
         }

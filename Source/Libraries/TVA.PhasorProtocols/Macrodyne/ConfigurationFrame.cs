@@ -268,7 +268,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ConfigurationFrame()
             : base(0, new ConfigurationCellCollection(), 0, 0)
-        {            
+        {
         }
 
         /// <summary>
@@ -346,7 +346,7 @@ namespace TVA.PhasorProtocols.Macrodyne
             set
             {
                 m_frameHeader = value;
-                
+
                 if (m_frameHeader != null)
                 {
                     ConfigurationFrameParsingState parsingState = m_frameHeader.State as ConfigurationFrameParsingState;
@@ -410,7 +410,7 @@ namespace TVA.PhasorProtocols.Macrodyne
             {
                 if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor10Enabled) > 0)
                     return 10;
-                
+
                 if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor9Enabled) > 0)
                     return 9;
 
@@ -506,7 +506,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         }
 
         /// <summary>
-        /// Gets the length of the <see cref="BinaryImageBase.BinaryImage"/>.
+        /// Gets the length of the <see cref="ConfigurationFrame"/>.
         /// </summary>
         /// <remarks>
         /// This property is overriden so the length can be extended to include a 1-byte checksum.
@@ -576,31 +576,31 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// <summary>
         /// Parses the binary image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <exception cref="InvalidOperationException">Invalid binary image detected - check sum did not match.</exception>
-        public override int Initialize(byte[] binaryImage, int startIndex, int length)
+        public override int ParseBinaryImage(byte[] buffer, int startIndex, int length)
         {
             // Subtract one byte for Macrodyne 1-byte CRC
-            return base.Initialize(binaryImage, startIndex, length) - 1;
+            return base.ParseBinaryImage(buffer, startIndex, length) - 1;
         }
 
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             // We already parsed the frame header, so we just skip past it...
             startIndex += CommonFrameHeader.FixedLength;
 
             // Parse on -line data format
-            m_onlineDataFormatFlags = (OnlineDataFormatFlags)EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex);
+            m_onlineDataFormatFlags = (OnlineDataFormatFlags)EndianOrder.BigEndian.ToUInt16(buffer, startIndex);
 
             return CommonFrameHeader.FixedLength + 2;
         }
@@ -656,7 +656,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-            
+
             // Serialize configuration frame
             info.AddValue("frameHeader", m_frameHeader, typeof(CommonFrameHeader));
             info.AddValue("onlineDataFormatFlags", m_onlineDataFormatFlags, typeof(OnlineDataFormatFlags));

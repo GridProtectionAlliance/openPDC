@@ -717,6 +717,12 @@ namespace openPDC.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets collection of output stream devices.
+        /// </summary>
+        /// <param name="database">Source database connection.</param>
+        /// <param name="whereClause">Where filter clause.</param>
+        /// <returns>Collection of output stream devices.</returns>
         public static ObservableCollection<OutputStreamDevice> GetOutputStreamDevices(AdoDataConnection database, string whereClause)
         {
             bool createdConnection = false;

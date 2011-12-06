@@ -44,6 +44,7 @@ using System.Threading;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TVA.Communication;
+using TVA.Parsing;
 using TVA.PhasorProtocols.Anonymous;
 using TVA.Units;
 
@@ -1415,7 +1416,7 @@ namespace TVA.PhasorProtocols
                             // Publish configuration frame binary image
                             m_configurationFramePublished = true;
                             m_configurationFrame.Timestamp = dataFrame.Timestamp;
-                            image = m_configurationFrame.BinaryImage;
+                            image = m_configurationFrame.BinaryImage();
                             m_publishChannel.MulticastAsync(image, 0, image.Length);
                             Thread.Sleep(FramesPerSecond / 2);
                         }
@@ -1433,7 +1434,7 @@ namespace TVA.PhasorProtocols
                 }
 
                 // Publish data frame binary image
-                image = dataFrame.BinaryImage;
+                image = dataFrame.BinaryImage();
                 m_publishChannel.MulticastAsync(image, 0, image.Length);
 
                 // Track latency statistics against system time - in order for these statistics

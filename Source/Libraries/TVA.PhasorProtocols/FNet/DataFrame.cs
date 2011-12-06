@@ -390,9 +390,9 @@ namespace TVA.PhasorProtocols.FNet
             get
             {
                 Dictionary<string, string> baseAttributes = base.Attributes;
-                
+
                 baseAttributes.Add("Sample Index", SampleIndex.ToString());
-                
+
                 return baseAttributes;
             }
         }
@@ -404,17 +404,17 @@ namespace TVA.PhasorProtocols.FNet
         /// <summary>
         /// Parses the binary image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// This method is overriden to compensate for lack of CRC in F-NET frame.
         /// </remarks>
-        public override int Initialize(byte[] binaryImage, int startIndex, int length)
+        public override int ParseBinaryImage(byte[] buffer, int startIndex, int length)
         {
             // Subtract 2 bytes from total length, F-NET doesn't use CRC
-            return base.Initialize(binaryImage, startIndex, length) - 2;
+            return base.ParseBinaryImage(buffer, startIndex, length) - 2;
         }
 
         /// <summary>
@@ -452,10 +452,10 @@ namespace TVA.PhasorProtocols.FNet
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
- 
+
             // Serialize data frame
             info.AddValue("sampleIndex", m_sampleIndex);
-       }
+        }
 
         #endregion
     }

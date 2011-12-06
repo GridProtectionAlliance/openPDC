@@ -282,20 +282,20 @@ namespace TVA.PhasorProtocols.Ieee1344
         }
 
         /// <summary>
-        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="binaryImage"/>.
+        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="buffer"/>.
         /// </summary>
         /// <param name="configurationFrame">IEEE 1344 <see cref="ConfigurationFrame"/> if already parsed.</param>
-        /// <param name="binaryImage">Buffer that contains data to parse.</param>
+        /// <param name="buffer">Buffer that contains data to parse.</param>
         /// <param name="startIndex">Start index into buffer where valid data begins.</param>
-        public CommonFrameHeader(ConfigurationFrame configurationFrame, byte[] binaryImage, int startIndex)
+        public CommonFrameHeader(ConfigurationFrame configurationFrame, byte[] buffer, int startIndex)
         {
-            uint secondOfCentury = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex);
-            m_sampleCount = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 4);
+            uint secondOfCentury = EndianOrder.BigEndian.ToUInt32(buffer, startIndex);
+            m_sampleCount = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 4);
 
             // We go ahead and pre-grab cell's status flags so we can determine framelength - we
             // leave startindex at 6 so that cell will be able to parse flags as needed - note
             // this increases needed common frame header size by 2 (i.e., BinaryLength + 2)
-            m_statusFlags = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + FixedLength);
+            m_statusFlags = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + FixedLength);
 
             // NTP timestamps based on NtpTimeTag class are designed to work for dates between
             // 1968-01-20 and 2104-02-26 based on recommended bit interpretation in RFC-2030.
@@ -427,7 +427,7 @@ namespace TVA.PhasorProtocols.Ieee1344
                     m_sampleCount = (ushort)((m_sampleCount & ~Common.FrameCountMask) | value);
             }
         }
-        
+
         /// <summary>
         /// Gets or sets the parsing state for the <see cref="CommonFrameHeader"/> object.
         /// </summary>
@@ -592,7 +592,7 @@ namespace TVA.PhasorProtocols.Ieee1344
                 attributes.Add("Frame Length", FrameLength.ToString());
                 attributes.Add("Frame Images", "0");
             }
-            
+
             attributes.Add("Frame Count", FrameCount.ToString());
             attributes.Add("Sample Count", m_sampleCount.ToString());
             attributes.Add("Status Flags", m_statusFlags.ToString());
@@ -631,6 +631,6 @@ namespace TVA.PhasorProtocols.Ieee1344
             return EndianOrder.BigEndian.ToUInt16(buffer, startIndex + sumLength) == buffer.CrcCCITTChecksum(startIndex, sumLength);
         }
 
-        #endregion       
+        #endregion
     }
 }

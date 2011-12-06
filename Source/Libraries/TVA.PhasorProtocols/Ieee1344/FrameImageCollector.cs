@@ -313,24 +313,24 @@ namespace TVA.PhasorProtocols.Ieee1344
         /// <summary>
         /// Appends the current frame image to the frame image collection.
         /// </summary>
-        /// <param name="binaryImage">A <see cref="Byte"/> array to append to the collection.</param>
-        /// <param name="length">An <see cref="Int32"/> value indicating the number of bytes to read from the <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">A <see cref="Byte"/> array to append to the collection.</param>
+        /// <param name="length">An <see cref="Int32"/> value indicating the number of bytes to read from the <paramref name="buffer"/>.</param>
         /// <param name="offset">An <see cref="Int32"/> value indicating the offset to read from.</param>
-        public void AppendFrameImage(byte[] binaryImage, int offset, int length)
+        public void AppendFrameImage(byte[] buffer, int offset, int length)
         {
             // Validate CRC of frame image being appended
-            if (!CommonFrameHeader.ChecksumIsValid(binaryImage, offset, length))
+            if (!CommonFrameHeader.ChecksumIsValid(buffer, offset, length))
                 throw new InvalidOperationException("Invalid binary image detected - check sum of individual IEEE 1344 interleaved frame transmission did not match");
 
             // Include initial header in new stream...
             if (m_frameQueue.Length == 0)
-                m_frameQueue.Write(binaryImage, offset, CommonFrameHeader.FixedLength);
+                m_frameQueue.Write(buffer, offset, CommonFrameHeader.FixedLength);
 
             // Skip past header
             offset += CommonFrameHeader.FixedLength;
 
             // Include frame image
-            m_frameQueue.Write(binaryImage, offset, length - CommonFrameHeader.FixedLength);
+            m_frameQueue.Write(buffer, offset, length - CommonFrameHeader.FixedLength);
 
             // Track total frame images
             m_frameCount++;

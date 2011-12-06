@@ -228,8 +228,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace TVA.PhasorProtocols.IeeeC37_118
 {
@@ -242,7 +240,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         #region [ Members ]
 
         // Fields
-        private FormatFlags m_formatFlags;
+        //private FormatFlags m_formatFlags;
 
         #endregion
 
@@ -422,37 +420,37 @@ namespace TVA.PhasorProtocols.IeeeC37_118
 
         #region [ Methods ]
 
-        string getLengthPrependedString(byte[] binaryImage, int index, out int length)
+        string getLengthPrependedString(byte[] buffer, int index, out int length)
         {
-            length = EndianOrder.BigEndian.ToInt16(binaryImage, index);
-            return ByteEncoding.ASCII.GetString(binaryImage, index + 2, length);
+            length = EndianOrder.BigEndian.ToInt16(buffer, index);
+            return ByteEncoding.ASCII.GetString(buffer, index + 2, length);
         }
 
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             IConfigurationCellParsingState state = State;
             int index = startIndex;
 
             // Parse out station name
-            //index += base.ParseHeaderImage(binaryImage, startIndex, length); //This is wrong. Should call ConfigCellBase
+            //index += base.ParseHeaderImage(buffer, startIndex, length); //This is wrong. Should call ConfigCellBase
             String StationName;
             int len;
-            StationName = getLengthPrependedString(binaryImage, index, out len);
+            StationName = getLengthPrependedString(buffer, index, out len);
             index += len + 2;
-            IDCode = EndianOrder.BigEndian.ToUInt16(binaryImage, index);
-            State.G_PMU_ID = EndianOrder.BigEndian.ToGuid(binaryImage, index + 2); 
-            m_formatFlags = (FormatFlags)EndianOrder.BigEndian.ToUInt16(binaryImage, index + 16 + 2); //left as 16+x for clarity while editing, FIXME
+            IDCode = EndianOrder.BigEndian.ToUInt16(buffer, index);
+            State.G_PMU_ID = EndianOrder.BigEndian.ToGuid(buffer, index + 2); 
+            m_formatFlags = (FormatFlags)EndianOrder.BigEndian.ToUInt16(buffer, index + 16 + 2); //left as 16+x for clarity while editing, FIXME
             // Parse out total phasors, analogs and digitals defined for this device
-            State.PhasorCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 16+4); 
-            State.AnalogCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 16+6);
-            State.DigitalCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 16+8);
+            State.PhasorCount = EndianOrder.BigEndian.ToUInt16(buffer, index + 16+4); 
+            State.AnalogCount = EndianOrder.BigEndian.ToUInt16(buffer, index + 16+6);
+            State.DigitalCount = EndianOrder.BigEndian.ToUInt16(buffer, index + 16+8);
             
 
             index += 10+16; //FIXME: merge
@@ -463,11 +461,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             //FIXME: magic goes here
             int index = startIndex;
@@ -476,78 +474,78 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             //CHNAM, length-prepended string
             for (x = 0; x < State.PhasorCount; x++)
             { 
-                State.PhasorName[x] = getLengthPrependedString(binaryImage, index, out strLength); //Need to store this somewhere...
+                State.PhasorName[x] = getLengthPrependedString(buffer, index, out strLength); //Need to store this somewhere...
                 index += 2 + strLength; // for simplicity
             }
             for (x = 0; x < State.AnalogCount; x++)
             {
-                State.AnalogName[x] = getLengthPrependedString(binaryImage, index, out strLength); 
+                State.AnalogName[x] = getLengthPrependedString(buffer, index, out strLength); 
                 index += 2 + strLength; 
             }
             for (x = 0; x < State.DigitalCount; x++)
             {
-                State.DigitalName[x] = getLengthPrependedString(binaryImage, index, out strLength); 
+                State.DigitalName[x] = getLengthPrependedString(buffer, index, out strLength); 
                 index += 2 + strLength; 
             }
 
             //PHSCALE, 12 bytes of data flags, x PHNMR
             for (x = 0; x < State.PhasorCount; x++)
             {
-                State.PhasorScale[x] = binaryImage.BlockCopy(index, index + 12);
+                State.PhasorScale[x] = buffer.BlockCopy(index, index + 12);
                 index += 12;
             }
 
             //ANSCALE, 8 bytes x ANNMR
             for (x = 0; x < State.AnalogCount; x++)
             {
-                State.ANSCALE[x] = binaryImage.BlockCopy(index, index + 8);
+                State.ANSCALE[x] = buffer.BlockCopy(index, index + 8);
                 index += 12;
 
             }
             //DIGUNIT, 4 x DGNMR
             for (x = 0; x < State.DigitalCount; x++)
             {
-                State.DigitalStatus[x] = binaryImage.BlockCopy(index, index + 4);
+                State.DigitalStatus[x] = buffer.BlockCopy(index, index + 4);
                 index += 4;
             }
             //PMU_LAT, 4 bytes, IEEE float, -90.0 to +90.0
-            State.DeviceLatitude = EndianOrder.BigEndian.ToSingle(binaryImage, index);
+            State.DeviceLatitude = EndianOrder.BigEndian.ToSingle(buffer, index);
             //PMU_LON, 4 bytes, IEEE float, -179.9... to +180
-            State.DeviceLongitude = EndianOrder.BigEndian.ToSingle(binaryImage, index + 4);
+            State.DeviceLongitude = EndianOrder.BigEndian.ToSingle(buffer, index + 4);
             //PMU_ELEV, 4 bytes, IEEE float, infinity for unknown
-            State.DeviceElevation = EndianOrder.BigEndian.ToSingle(binaryImage, index + 8);
+            State.DeviceElevation = EndianOrder.BigEndian.ToSingle(buffer, index + 8);
             //SVC_CLASS, 1 ASCII char
-            State.ServiceClass = EndianOrder.BigEndian.ToChar(binaryImage, index + 9);
+            State.ServiceClass = EndianOrder.BigEndian.ToChar(buffer, index + 9);
             //WINDOW, 4 bytes, signed int
-            State.MeasurementWindow = EndianOrder.BigEndian.ToInt32(binaryImage, index + 13);
+            State.MeasurementWindow = EndianOrder.BigEndian.ToInt32(buffer, index + 13);
             //GRP_DLY, 4 bytes, signed int
-            State.GroupDelay = EndianOrder.BigEndian.ToInt32(binaryImage, index + 17);
+            State.GroupDelay = EndianOrder.BigEndian.ToInt32(buffer, index + 17);
             //FNOM, 2 bytes, unsigned int, Bit 0 is flag (50/60 hz)
-            State.FNOM = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 19);
+            State.FNOM = EndianOrder.BigEndian.ToUInt16(buffer, index + 19);
             //CFGCNT, 2 bytes
-            State.CFGCNT = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 21);
+            State.CFGCNT = EndianOrder.BigEndian.ToUInt16(buffer, index + 21);
 
             return startIndex; //FIXME
         }
         /// <summary>
         /// Parses the binary footer image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseFooterImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseFooterImage(byte[] buffer, int startIndex, int length)
         {
 
             int index = startIndex;
 
             // Parse nominal frequency
-            index += base.ParseFooterImage(binaryImage, index, length);
+            index += base.ParseFooterImage(buffer, index, length);
 
             // Parse out configuration count (new for version 7.0)
             if (Parent.DraftRevision > DraftRevision.Draft6)
             {
-                RevisionCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index);
+                RevisionCount = EndianOrder.BigEndian.ToUInt16(buffer, index);
                 index += 2;
             }
 
@@ -574,11 +572,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         // Static Methods
 
         // Delegate handler to create a new IEEE C37.118 configuration cell
-        internal static IConfigurationCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IConfigurationCell> state, int index, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IConfigurationCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IConfigurationCell> state, int index, byte[] buffer, int startIndex, out int parsedLength)
         {
             ConfigurationCell configCell = new ConfigurationCell(parent as IConfigurationFrame);
 
-            parsedLength = configCell.Initialize(binaryImage, startIndex, 0);
+            parsedLength = configCell.ParseBinaryImage(buffer, startIndex, 0);
 
             return configCell;
         }

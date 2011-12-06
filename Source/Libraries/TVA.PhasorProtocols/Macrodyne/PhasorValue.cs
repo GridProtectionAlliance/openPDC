@@ -292,7 +292,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         #endregion
 
         #region [ Properties ]
-        
+
         /// <summary>
         /// Gets or sets the <see cref="DataCell"/> parent of this <see cref="PhasorValue"/>.
         /// </summary>
@@ -330,11 +330,11 @@ namespace TVA.PhasorProtocols.Macrodyne
         // Static Methods
 
         // Delegate handler to create a new Macrodyne phasor value
-        internal static IPhasorValue CreateNewValue(IDataCell parent, IPhasorDefinition definition, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IPhasorValue CreateNewValue(IDataCell parent, IPhasorDefinition definition, byte[] buffer, int startIndex, out int parsedLength)
         {
             IPhasorValue phasor = new PhasorValue(parent, definition);
 
-            parsedLength = phasor.Initialize(binaryImage, startIndex, 0);
+            parsedLength = phasor.ParseBinaryImage(buffer, startIndex, 0);
 
             return phasor;
         }

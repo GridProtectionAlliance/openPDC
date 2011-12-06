@@ -358,14 +358,14 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Parses the binary image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// This method is overriden to ensure assignment of configuration frame.
         /// </remarks>
-        public override int Initialize(byte[] binaryImage, int startIndex, int length)
+        public override int ParseBinaryImage(byte[] buffer, int startIndex, int length)
         {
             // Make sure configuration frame gets assigned before parsing begins...
             IDataFrameParsingState state = State;
@@ -376,7 +376,7 @@ namespace TVA.PhasorProtocols
                 ConfigurationFrame = configurationFrame;
 
                 // Handle normal parsing
-                return base.Initialize(binaryImage, startIndex, length);
+                return base.ParseBinaryImage(buffer, startIndex, length);
             }
 
             // Otherwise we just skip parsing this frame...

@@ -354,16 +354,16 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <summary>
         /// Parses the binary image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// This method is overriden to compensate for lack of CRC in DST files.
         /// </remarks>
-        public override int Initialize(byte[] binaryImage, int startIndex, int length)
+        public override int ParseBinaryImage(byte[] buffer, int startIndex, int length)
         {
-            int parsedLength = base.Initialize(binaryImage, startIndex, length);
+            int parsedLength = base.ParseBinaryImage(buffer, startIndex, length);
 
             // Subtract 2 bytes from total length when using phasor data file format, DST files do not use CRC
             if (m_usePhasorDataFileFormat)
@@ -375,15 +375,15 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             IDataFrameParsingState state = State;
             ConfigurationFrame configurationFrame = state.ConfigurationFrame as ConfigurationFrame;
-            
+
             if (m_usePhasorDataFileFormat)
             {
                 // Because in cases where PDCxchng is being used the data cell count will be smaller than the
@@ -401,8 +401,8 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                 int index = startIndex + CommonFrameHeader.FixedLength;
 
                 // Parse frame timestamp
-                uint secondOfCentury = EndianOrder.BigEndian.ToUInt32(binaryImage, index);
-                m_sampleNumber = EndianOrder.BigEndian.ToUInt16(binaryImage, index + 4);
+                uint secondOfCentury = EndianOrder.BigEndian.ToUInt32(buffer, index);
+                m_sampleNumber = EndianOrder.BigEndian.ToUInt16(buffer, index + 4);
                 index += 6;
 
                 if (configurationFrame.RevisionNumber == RevisionNumber.Revision0)
@@ -412,7 +412,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
 
                 // Because in cases where PDCxchng is being used the data cell count will be smaller than the
                 // configuration cell count - we save this count to calculate the offsets later
-                state.CellCount = EndianOrder.BigEndian.ToUInt16(binaryImage, index);
+                state.CellCount = EndianOrder.BigEndian.ToUInt16(buffer, index);
                 index += 2;
 
                 if (state.CellCount > configurationFrame.Cells.Count)
@@ -425,7 +425,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
 
                     for (int x = 0; x < state.CellCount; x++)
                     {
-                        m_legacyLabels[x] = Encoding.ASCII.GetString(binaryImage, index, 4);
+                        m_legacyLabels[x] = Encoding.ASCII.GetString(buffer, index, 4);
                         // We don't need offsets, so we skip them...
                         index += 8;
                     }

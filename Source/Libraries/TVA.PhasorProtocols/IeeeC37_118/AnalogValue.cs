@@ -316,11 +316,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         // Static Methods
 
         // Delegate handler to create a new IEEE C37.118 analog value
-        internal static IAnalogValue CreateNewValue(IDataCell parent, IAnalogDefinition definition, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IAnalogValue CreateNewValue(IDataCell parent, IAnalogDefinition definition, byte[] buffer, int startIndex, out int parsedLength)
         {
             IAnalogValue analog = new AnalogValue(parent, definition);
 
-            parsedLength = analog.Initialize(binaryImage, startIndex, 0);
+            parsedLength = analog.ParseBinaryImage(buffer, startIndex, 0);
 
             return analog;
         }

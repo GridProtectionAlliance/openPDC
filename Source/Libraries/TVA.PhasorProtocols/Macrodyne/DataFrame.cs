@@ -367,7 +367,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         }
 
         /// <summary>
-        /// Gets the length of the <see cref="BinaryImageBase.BinaryImage"/>.
+        /// Gets the length of the <see cref="DataFrame"/>.
         /// </summary>
         /// <remarks>
         /// This property is overriden so the length can be extended to include a 1-byte checksum.
@@ -416,25 +416,25 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// <summary>
         /// Parses the binary image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <exception cref="InvalidOperationException">Invalid binary image detected - check sum did not match.</exception>
-        public override int Initialize(byte[] binaryImage, int startIndex, int length)
+        public override int ParseBinaryImage(byte[] buffer, int startIndex, int length)
         {
             // Subtract one byte for Macrodyne 1-byte CRC
-            return base.Initialize(binaryImage, startIndex, length) - 1;
+            return base.ParseBinaryImage(buffer, startIndex, length) - 1;
         }
 
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             // We already parsed the frame header, so we just skip past it...
             return CommonFrameHeader.FixedLength;
@@ -482,7 +482,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         protected override ushort CalculateChecksum(byte[] buffer, int offset, int length)
         {
             // Macrodyne uses 8-bit Xor checksum for frames
-            return (ushort) buffer.Xor8CheckSum(offset, length);
+            return (ushort)buffer.Xor8CheckSum(offset, length);
         }
 
         /// <summary>

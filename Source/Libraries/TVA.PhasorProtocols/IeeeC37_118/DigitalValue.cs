@@ -316,11 +316,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         // Static Methods
 
         // Delegate handler to create a new IEEE C37.118 digital value
-        internal static IDigitalValue CreateNewValue(IDataCell parent, IDigitalDefinition definition, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IDigitalValue CreateNewValue(IDataCell parent, IDigitalDefinition definition, byte[] buffer, int startIndex, out int parsedLength)
         {
             IDigitalValue digital = new DigitalValue(parent, definition);
 
-            parsedLength = digital.Initialize(binaryImage, startIndex, 0);
+            parsedLength = digital.ParseBinaryImage(buffer, startIndex, 0);
 
             return digital;
         }

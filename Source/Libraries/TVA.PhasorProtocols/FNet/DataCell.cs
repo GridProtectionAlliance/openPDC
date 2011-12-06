@@ -494,15 +494,15 @@ namespace TVA.PhasorProtocols.FNet
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// The longitude, latitude and number of satellites arrive at the top of minute in F-NET data as the analog
         /// data in a siggle row, each on their own row, as sample 1, 2, and 3 respectively.
         /// </remarks>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             DataFrame parent = Parent;
             CommonFrameHeader commonHeader = parent.CommonHeader;
@@ -593,11 +593,11 @@ namespace TVA.PhasorProtocols.FNet
         }
 
         // Delegate handler to create a new F-NET data cell
-        internal static IDataCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IDataCell> state, int index, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IDataCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IDataCell> state, int index, byte[] buffer, int startIndex, out int parsedLength)
         {
             DataCell dataCell = new DataCell(parent as IDataFrame, (state as IDataFrameParsingState).ConfigurationFrame.Cells[index]);
 
-            parsedLength = dataCell.Initialize(binaryImage, startIndex, 0);
+            parsedLength = dataCell.ParseBinaryImage(buffer, startIndex, 0);
 
             return dataCell;
         }

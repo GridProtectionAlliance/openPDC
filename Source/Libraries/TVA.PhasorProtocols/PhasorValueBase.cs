@@ -563,7 +563,7 @@ namespace TVA.PhasorProtocols
                 baseAttributes.Add("Imaginary Value", Imaginary.ToString());
                 baseAttributes.Add("Unscaled Real Value", UnscaledReal.ToString());
                 baseAttributes.Add("Unscaled Imaginary Value", UnscaledImaginary.ToString());
-                
+
                 return baseAttributes;
             }
         }
@@ -617,16 +617,16 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// The base implementation assumes fixed integer values are represented as 16-bit signed
         /// integers and floating point values are represented as 32-bit single-precision floating-point
         /// values (i.e., short and float data types respectively).
         /// </remarks>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             // Length is validated at a frame level well in advance so that low level parsing routines do not have
             // to re-validate that enough length is available to parse needed information as an optimization...
@@ -636,14 +636,14 @@ namespace TVA.PhasorProtocols
                 if (CoordinateFormat == PhasorProtocols.CoordinateFormat.Rectangular)
                 {
                     // Parse from fixed-integer, rectangular
-                    UnscaledReal = EndianOrder.BigEndian.ToInt16(binaryImage, startIndex);
-                    UnscaledImaginary = EndianOrder.BigEndian.ToInt16(binaryImage, startIndex + 2);
+                    UnscaledReal = EndianOrder.BigEndian.ToInt16(buffer, startIndex);
+                    UnscaledImaginary = EndianOrder.BigEndian.ToInt16(buffer, startIndex + 2);
                 }
                 else
                 {
                     // Parse from fixed-integer, polar
-                    m_phasor.Magnitude = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex) * Definition.ConversionFactor;
-                    m_phasor.Angle = EndianOrder.BigEndian.ToInt16(binaryImage, startIndex + 2) / 10000.0D;
+                    m_phasor.Magnitude = EndianOrder.BigEndian.ToUInt16(buffer, startIndex) * Definition.ConversionFactor;
+                    m_phasor.Angle = EndianOrder.BigEndian.ToInt16(buffer, startIndex + 2) / 10000.0D;
                 }
 
                 return 4;
@@ -653,14 +653,14 @@ namespace TVA.PhasorProtocols
                 if (CoordinateFormat == PhasorProtocols.CoordinateFormat.Rectangular)
                 {
                     // Parse from single-precision floating-point, rectangular
-                    m_phasor.Real = EndianOrder.BigEndian.ToSingle(binaryImage, startIndex);
-                    m_phasor.Imaginary = EndianOrder.BigEndian.ToSingle(binaryImage, startIndex + 4);
+                    m_phasor.Real = EndianOrder.BigEndian.ToSingle(buffer, startIndex);
+                    m_phasor.Imaginary = EndianOrder.BigEndian.ToSingle(buffer, startIndex + 4);
                 }
                 else
                 {
                     // Parse from single-precision floating-point, polar
-                    m_phasor.Magnitude = EndianOrder.BigEndian.ToSingle(binaryImage, startIndex);
-                    m_phasor.Angle = EndianOrder.BigEndian.ToSingle(binaryImage, startIndex + 4);
+                    m_phasor.Magnitude = EndianOrder.BigEndian.ToSingle(buffer, startIndex);
+                    m_phasor.Angle = EndianOrder.BigEndian.ToSingle(buffer, startIndex + 4);
                 }
 
                 return 8;

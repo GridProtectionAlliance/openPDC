@@ -54,6 +54,10 @@ namespace openPDC.UI.UserControls
             StackPanelRoot.DataContext = m_dataContext;
         }
 
+        /// <summary>
+        /// Creates an instance of <see cref="InputWizardUserControl"/> class for the specified <see cref="Device"/>.
+        /// </summary>
+        /// <param name="device"></param>
         public InputWizardUserControl(Device device)
             : this()
         {

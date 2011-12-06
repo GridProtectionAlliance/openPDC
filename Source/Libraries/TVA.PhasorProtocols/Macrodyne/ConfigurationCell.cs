@@ -427,7 +427,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         // Static Methods
 
         // Delegate handler to create a new Macrodyne configuration cell
-        internal static IConfigurationCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IConfigurationCell> state, int index, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IConfigurationCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IConfigurationCell> state, int index, byte[] buffer, int startIndex, out int parsedLength)
         {
             parsedLength = 0;
             return new ConfigurationCell(parent as ConfigurationFrame);

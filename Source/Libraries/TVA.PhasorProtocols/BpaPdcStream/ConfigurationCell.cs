@@ -540,11 +540,11 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             // BPA PDC stream doesn't use standard configuration cell header like IEEE protocols do - so we override this function to do nothing
             return 0;
@@ -553,15 +553,15 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
-            IDLabel = Encoding.ASCII.GetString(binaryImage, startIndex, 4);
-            Reserved = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 4);
-            Offset = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 6);
+            IDLabel = Encoding.ASCII.GetString(buffer, startIndex, 4);
+            Reserved = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 4);
+            Offset = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 6);
 
             return FixedBodyLength;
         }
@@ -569,11 +569,11 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <summary>
         /// Parses the binary footer image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseFooterImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseFooterImage(byte[] buffer, int startIndex, int length)
         {
             // BPA PDC stream doesn't use standard configuration cell footer like IEEE protocols do - so we override this function to do nothing
             return 0;
@@ -602,11 +602,11 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         // Static Methods
 
         // Delegate handler to create a new BPA PDCstream configuration cell
-        internal static IConfigurationCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IConfigurationCell> state, int index, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IConfigurationCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IConfigurationCell> state, int index, byte[] buffer, int startIndex, out int parsedLength)
         {
             ConfigurationCell configCell = new ConfigurationCell(parent as IConfigurationFrame);
 
-            parsedLength = configCell.Initialize(binaryImage, startIndex, 0);
+            parsedLength = configCell.ParseBinaryImage(buffer, startIndex, 0);
 
             return configCell;
         }

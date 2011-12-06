@@ -277,7 +277,7 @@ namespace TVA.PhasorProtocols
         }
 
         #endregion
-        
+
         #region [ Explicit Interface Implementation ]
 
         ConfigurationCellCollection IConfigurationFrame.Cells
@@ -393,14 +393,6 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        byte[] TVA.Parsing.ISupportBinaryImage.BinaryImage
-        {
-            get
-            {
-                return null;
-            }
-        }
-
         int TVA.Parsing.ISupportBinaryImage.BinaryLength
         {
             get
@@ -409,7 +401,12 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        int TVA.Parsing.ISupportBinaryImage.Initialize(byte[] binaryImage, int startIndex, int length)
+        int TVA.Parsing.ISupportBinaryImage.ParseBinaryImage(byte[] buffer, int startIndex, int length)
+        {
+            return 0;
+        }
+
+        int TVA.Parsing.ISupportBinaryImage.GenerateBinaryImage(byte[] buffer, int startIndex)
         {
             return 0;
         }

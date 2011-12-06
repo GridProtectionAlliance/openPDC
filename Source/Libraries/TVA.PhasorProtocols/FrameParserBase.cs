@@ -629,13 +629,13 @@ namespace TVA.PhasorProtocols
         /// Raises the <see cref="ReceivedFrameBufferImage"/> event.
         /// </summary>
         /// <param name="frameType"><see cref="FundamentalFrameType"/> to send to <see cref="ReceivedFrameBufferImage"/> event.</param>
-        /// <param name="binaryImage">Frame buffer image to send to <see cref="ReceivedFrameBufferImage"/> event.</param>
+        /// <param name="buffer">Frame buffer image to send to <see cref="ReceivedFrameBufferImage"/> event.</param>
         /// <param name="offset">Offset into frame buffer image to send to <see cref="ReceivedFrameBufferImage"/> event.</param>
         /// <param name="length">Length of data in frame buffer image to send to <see cref="ReceivedFrameBufferImage"/> event.</param>
-        protected virtual void OnReceivedFrameBufferImage(FundamentalFrameType frameType, byte[] binaryImage, int offset, int length)
+        protected virtual void OnReceivedFrameBufferImage(FundamentalFrameType frameType, byte[] buffer, int offset, int length)
         {
             if (ReceivedFrameBufferImage != null)
-                ReceivedFrameBufferImage(this, new EventArgs<FundamentalFrameType, byte[], int, int>(frameType, binaryImage, offset, length));
+                ReceivedFrameBufferImage(this, new EventArgs<FundamentalFrameType, byte[], int, int>(frameType, buffer, offset, length));
         }
 
         /// <summary>

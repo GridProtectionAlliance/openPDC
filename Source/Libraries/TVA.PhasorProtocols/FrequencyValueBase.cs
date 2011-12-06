@@ -522,31 +522,31 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// The base implementation assumes fixed integer values are represented as 16-bit signed
         /// integers and floating point values are represented as 32-bit single-precision floating-point
         /// values (i.e., short and float data types respectively).
         /// </remarks>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             // Length is validated at a frame level well in advance so that low level parsing routines do not have
             // to re-validate that enough length is available to parse needed information as an optimization...
 
             if (DataFormat == PhasorProtocols.DataFormat.FixedInteger)
             {
-                UnscaledFrequency = EndianOrder.BigEndian.ToInt16(binaryImage, startIndex);
-                UnscaledDfDt = EndianOrder.BigEndian.ToInt16(binaryImage, startIndex + 2);
-                
+                UnscaledFrequency = EndianOrder.BigEndian.ToInt16(buffer, startIndex);
+                UnscaledDfDt = EndianOrder.BigEndian.ToInt16(buffer, startIndex + 2);
+
                 return 4;
             }
             else
             {
-                m_frequency = EndianOrder.BigEndian.ToSingle(binaryImage, startIndex);
-                m_dfdt = EndianOrder.BigEndian.ToSingle(binaryImage, startIndex + 4);
+                m_frequency = EndianOrder.BigEndian.ToSingle(buffer, startIndex);
+                m_dfdt = EndianOrder.BigEndian.ToSingle(buffer, startIndex + 4);
 
                 m_frequencyAssigned = true;
                 m_dfdtAssigned = true;

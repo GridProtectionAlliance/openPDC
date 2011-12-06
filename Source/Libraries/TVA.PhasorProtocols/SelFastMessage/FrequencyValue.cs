@@ -343,13 +343,13 @@ namespace TVA.PhasorProtocols.SelFastMessage
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
-            Frequency = EndianOrder.BigEndian.ToSingle(binaryImage, startIndex);
+            Frequency = EndianOrder.BigEndian.ToSingle(buffer, startIndex);
             return 4;
         }
 
@@ -360,11 +360,11 @@ namespace TVA.PhasorProtocols.SelFastMessage
         // Static Methods
 
         // Delegate handler to create a new SEL Fast Message frequency value
-        internal static IFrequencyValue CreateNewValue(IDataCell parent, IFrequencyDefinition definition, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IFrequencyValue CreateNewValue(IDataCell parent, IFrequencyDefinition definition, byte[] buffer, int startIndex, out int parsedLength)
         {
             IFrequencyValue frequency = new FrequencyValue(parent, definition);
 
-            parsedLength = frequency.Initialize(binaryImage, startIndex, 0);
+            parsedLength = frequency.ParseBinaryImage(buffer, startIndex, 0);
 
             return frequency;
         }

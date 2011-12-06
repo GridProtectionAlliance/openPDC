@@ -289,7 +289,7 @@ namespace TVA.PhasorProtocols
         /// </remarks>
         public static void CopyImage(this ISupportBinaryImage channel, byte[] destination, ref int index)
         {
-            channel.BinaryImage.CopyImage(destination, ref index, channel.BinaryLength);
+            index += channel.GenerateBinaryImage(destination, index);
         }
 
         /// <summary>

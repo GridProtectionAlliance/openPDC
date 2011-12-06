@@ -335,11 +335,11 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         // Static Methods
 
         // Delegate handler to create a new BPA PDCstream digital definition
-        internal static IDigitalDefinition CreateNewDefinition(IConfigurationCell parent, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IDigitalDefinition CreateNewDefinition(IConfigurationCell parent, byte[] buffer, int startIndex, out int parsedLength)
         {
             IDigitalDefinition digitalDefinition = new DigitalDefinition(parent);
 
-            parsedLength = digitalDefinition.Initialize(binaryImage, startIndex, 0);
+            parsedLength = digitalDefinition.ParseBinaryImage(buffer, startIndex, 0);
 
             return digitalDefinition;
         }

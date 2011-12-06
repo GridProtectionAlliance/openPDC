@@ -517,14 +517,14 @@ namespace TVA.PhasorProtocols.Ieee1344
         /// <summary>
         /// Parses the binary image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// This method is overriden to parse from cumulated frame images.
         /// </remarks>
-        public override int Initialize(byte[] binaryImage, int startIndex, int length)
+        public override int ParseBinaryImage(byte[] buffer, int startIndex, int length)
         {
             // If frame image collector was used, make sure and parse from entire frame image...
             if (m_frameHeader != null)
@@ -538,14 +538,14 @@ namespace TVA.PhasorProtocols.Ieee1344
                     {
                         // Each individual frame will already have had a CRC check, so we implement standard parse to
                         // bypass ChannelBase CRC frame validation on cumulative frame image
-                        binaryImage = frameImages.BinaryImage;
+                        buffer = frameImages.BinaryImage;
                         length = frameImages.BinaryLength;
                         startIndex = 0;
 
                         // Parse out header, body and footer images
-                        startIndex += ParseHeaderImage(binaryImage, startIndex, length);
-                        startIndex += ParseBodyImage(binaryImage, startIndex, length - startIndex);
-                        startIndex += ParseFooterImage(binaryImage, startIndex, length - startIndex);
+                        startIndex += ParseHeaderImage(buffer, startIndex, length);
+                        startIndex += ParseBodyImage(buffer, startIndex, length - startIndex);
+                        startIndex += ParseFooterImage(buffer, startIndex, length - startIndex);
 
                         // Include 2 bytes for CRC that was already validated
                         return startIndex + 2;
@@ -557,17 +557,17 @@ namespace TVA.PhasorProtocols.Ieee1344
                 return State.ParsedBinaryLength;
             }
 
-            return base.Initialize(binaryImage, startIndex, length);
+            return base.ParseBinaryImage(buffer, startIndex, length);
         }
 
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             // We already parsed the frame header, so we just skip past it...
             return CommonFrameHeader.FixedLength;
@@ -576,17 +576,17 @@ namespace TVA.PhasorProtocols.Ieee1344
         /// <summary>
         /// Parses the binary footer image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseFooterImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseFooterImage(byte[] buffer, int startIndex, int length)
         {
             // Period assignment calculates FrameRate using NominalFrequency which is shared
             // with first (and only) configuration cell, since cell was added during ParseBodyImage
             // of ChannelFrameBase, performing the following succeeds since parsing the footer
             // follows parsing the body :)
-            Period = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex);
+            Period = EndianOrder.BigEndian.ToUInt16(buffer, startIndex);
             return FixedFooterLength;
         }
 

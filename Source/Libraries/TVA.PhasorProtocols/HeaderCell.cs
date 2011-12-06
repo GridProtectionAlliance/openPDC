@@ -354,16 +354,16 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             // Length is validated at a frame level well in advance so that low level parsing routines do not have
             // to re-validate that enough length is available to parse needed information as an optimization...
 
-            m_character = binaryImage[startIndex];
+            m_character = buffer[startIndex];
 
             return 1;
         }
@@ -388,10 +388,13 @@ namespace TVA.PhasorProtocols
         // Static Methods
 
         // Create new header cell delegate handler
-        internal static IHeaderCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IHeaderCell> state, int index, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IHeaderCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IHeaderCell> state, int index, byte[] buffer, int startIndex, out int parsedLength)
         {
             parsedLength = 1;
-            return new HeaderCell(parent as IHeaderFrame, binaryImage[startIndex]) { IDCode = (ushort)index };
+            return new HeaderCell(parent as IHeaderFrame, buffer[startIndex])
+            {
+                IDCode = (ushort)index
+            };
         }
 
         #endregion

@@ -330,11 +330,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         // Static Methods
 
         // Delegate handler to create a new IEEE C37.118 phasor value
-        internal static IPhasorValue CreateNewValue(IDataCell parent, IPhasorDefinition definition, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IPhasorValue CreateNewValue(IDataCell parent, IPhasorDefinition definition, byte[] buffer, int startIndex, out int parsedLength)
         {
             IPhasorValue phasor = new PhasorValue(parent, definition);
 
-            parsedLength = phasor.Initialize(binaryImage, startIndex, 0);
+            parsedLength = phasor.ParseBinaryImage(buffer, startIndex, 0);
 
             return phasor;
         }

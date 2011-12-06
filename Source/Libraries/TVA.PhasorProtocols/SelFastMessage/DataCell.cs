@@ -470,30 +470,30 @@ namespace TVA.PhasorProtocols.SelFastMessage
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             ConfigurationCell configCell = ConfigurationCell;
             IPhasorValue phasorValue;
             int x, parsedLength, index = startIndex;
 
             // Parse out frequency value
-            FrequencyValue = SelFastMessage.FrequencyValue.CreateNewValue(this, configCell.FrequencyDefinition, binaryImage, index, out parsedLength);
+            FrequencyValue = SelFastMessage.FrequencyValue.CreateNewValue(this, configCell.FrequencyDefinition, buffer, index, out parsedLength);
             index += parsedLength;
 
             // Parse out phasor values
             for (x = 0; x < configCell.PhasorDefinitions.Count; x++)
             {
-                phasorValue = SelFastMessage.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[x], binaryImage, index, out parsedLength);
+                phasorValue = SelFastMessage.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[x], buffer, index, out parsedLength);
                 PhasorValues.Add(phasorValue);
                 index += parsedLength;
             }
 
             // Parse out status flags
-            StatusFlags = (StatusFlags)EndianOrder.BigEndian.ToUInt16(binaryImage, index);
+            StatusFlags = (StatusFlags)EndianOrder.BigEndian.ToUInt16(buffer, index);
             index += 2;
 
             // Return total parsed length
@@ -507,15 +507,15 @@ namespace TVA.PhasorProtocols.SelFastMessage
         // Static Methods
 
         // Delegate handler to create a new SEL Fast Message data cell
-        internal static IDataCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IDataCell> state, int index, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IDataCell CreateNewCell(IChannelFrame parent, IChannelFrameParsingState<IDataCell> state, int index, byte[] buffer, int startIndex, out int parsedLength)
         {
             DataCell dataCell = new DataCell(parent as IDataFrame, (state as IDataFrameParsingState).ConfigurationFrame.Cells[index]);
 
-            parsedLength = dataCell.Initialize(binaryImage, startIndex, 0);
+            parsedLength = dataCell.ParseBinaryImage(buffer, startIndex, 0);
 
             return dataCell;
         }
 
-        #endregion        
+        #endregion
     }
 }

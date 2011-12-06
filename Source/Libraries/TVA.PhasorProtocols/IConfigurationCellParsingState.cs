@@ -237,12 +237,12 @@ namespace TVA.PhasorProtocols
     /// Defines function signature for creating new <see cref="IChannelDefinition"/> objects.
     /// </summary>
     /// <param name="parent">Reference to parent <see cref="IConfigurationCell"/>.</param>
-    /// <param name="binaryImage">Binary image to parse <see cref="IChannelDefinition"/> from.</param>
-    /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-    /// <param name="parsedLength">Returns the total number of bytes parsed from <paramref name="binaryImage"/>.</param>
+    /// <param name="buffer">Binary image to parse <see cref="IChannelDefinition"/> from.</param>
+    /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+    /// <param name="parsedLength">Returns the total number of bytes parsed from <paramref name="buffer"/>.</param>
     /// <returns>New <see cref="IChannelDefinition"/> object.</returns>
     /// <typeparam name="T">Specific <see cref="IChannelDefinition"/> type of object that the <see cref="CreateNewDefinitionFunction{T}"/> creates.</typeparam>
-    public delegate T CreateNewDefinitionFunction<T>(IConfigurationCell parent, byte[] binaryImage, int startIndex, out int parsedLength)
+    public delegate T CreateNewDefinitionFunction<T>(IConfigurationCell parent, byte[] buffer, int startIndex, out int parsedLength)
         where T : IChannelDefinition;
 
     /// <summary>
@@ -253,22 +253,34 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets reference to <see cref="CreateNewDefinitionFunction{T}"/> delegate used to create new <see cref="IPhasorDefinition"/> objects.
         /// </summary>
-        CreateNewDefinitionFunction<IPhasorDefinition> CreateNewPhasorDefinition { get; }
+        CreateNewDefinitionFunction<IPhasorDefinition> CreateNewPhasorDefinition
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets reference to <see cref="CreateNewDefinitionFunction{T}"/> delegate used to create new <see cref="IFrequencyDefinition"/> objects.
         /// </summary>
-        CreateNewDefinitionFunction<IFrequencyDefinition> CreateNewFrequencyDefinition { get; }
+        CreateNewDefinitionFunction<IFrequencyDefinition> CreateNewFrequencyDefinition
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets reference to <see cref="CreateNewDefinitionFunction{T}"/> delegate used to create new <see cref="IAnalogDefinition"/> objects.
         /// </summary>
-        CreateNewDefinitionFunction<IAnalogDefinition> CreateNewAnalogDefinition { get; }
+        CreateNewDefinitionFunction<IAnalogDefinition> CreateNewAnalogDefinition
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets reference to <see cref="CreateNewDefinitionFunction{T}"/> delegate used to create new <see cref="IDigitalDefinition"/> objects.
         /// </summary>
-        CreateNewDefinitionFunction<IDigitalDefinition> CreateNewDigitalDefinition { get; }
+        CreateNewDefinitionFunction<IDigitalDefinition> CreateNewDigitalDefinition
+        {
+            get;
+        }
 
         // below here; new items needed for ConfigFrame3 
         /*

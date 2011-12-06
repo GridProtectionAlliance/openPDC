@@ -433,17 +433,17 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             if (m_usePhasorDataFileFormat)
             {
                 // Common frame header will have parsed all phasor data file header information at this point...
                 State.CellCount = unchecked((int)CommonHeader.PmuCount);
-                
+
                 return CommonFrameHeader.DstHeaderFixedLength;
             }
             else
@@ -452,12 +452,12 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                 startIndex += CommonFrameHeader.FixedLength;
 
                 // Only need to parse what wan't already parsed in common frame header
-                m_streamType = (StreamType)binaryImage[startIndex];
-                m_revisionNumber = (RevisionNumber)binaryImage[startIndex + 1];
-                FrameRate = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 2);
-                m_rowLength = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 4);
-                m_packetsPerSample = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 8);
-                State.CellCount = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 10);
+                m_streamType = (StreamType)buffer[startIndex];
+                m_revisionNumber = (RevisionNumber)buffer[startIndex + 1];
+                FrameRate = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 2);
+                m_rowLength = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 4);
+                m_packetsPerSample = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 8);
+                State.CellCount = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 10);
 
                 // The data that's in the data stream will take precedence over what's in the
                 // in the configuration file.  The configuration file may define more PMU's than
@@ -471,16 +471,16 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <summary>
         /// Parses the binary image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// This method is overriden so INI file can be loaded after binary image has been parsed.
         /// </remarks>
-        public override int Initialize(byte[] binaryImage, int startIndex, int length)
+        public override int ParseBinaryImage(byte[] buffer, int startIndex, int length)
         {
-            int parsedLength = base.Initialize(binaryImage, startIndex, length);
+            int parsedLength = base.ParseBinaryImage(buffer, startIndex, length);
 
             // Load INI file image and associate parsed cells to cells in configuration file...
             Refresh(true);

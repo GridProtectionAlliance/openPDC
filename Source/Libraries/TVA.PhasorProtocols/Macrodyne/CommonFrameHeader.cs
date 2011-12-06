@@ -268,18 +268,18 @@ namespace TVA.PhasorProtocols.Macrodyne
         }
 
         /// <summary>
-        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="binaryImage"/>.
+        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="buffer"/>.
         /// </summary>
-        /// <param name="binaryImage">Buffer that contains data to parse.</param>
+        /// <param name="buffer">Buffer that contains data to parse.</param>
         /// <param name="startIndex">Start index into buffer where valid data begins.</param>
         /// <param name="configurationFrame">Configuration frame, if available.</param>
-        public CommonFrameHeader(byte[] binaryImage, int startIndex, ConfigurationFrame configurationFrame)
+        public CommonFrameHeader(byte[] buffer, int startIndex, ConfigurationFrame configurationFrame)
         {
-            byte firstByte = binaryImage[startIndex];
+            byte firstByte = buffer[startIndex];
 
             // Validate Macrodyne data image
             if (firstByte != 0xAA && firstByte != 0xBB)
-                throw new InvalidOperationException("Bad data stream, expected 0xAA or 0xBB as first byte in Macrodyne ON-LINE data frame or configuration frame request response, got 0x" + binaryImage[startIndex].ToString("X").PadLeft(2, '0'));
+                throw new InvalidOperationException("Bad data stream, expected 0xAA or 0xBB as first byte in Macrodyne ON-LINE data frame or configuration frame request response, got 0x" + buffer[startIndex].ToString("X").PadLeft(2, '0'));
 
             // Determine frame type (it's either the sync byte of a data frame or the repsonse by from a command request)
             if (firstByte == 0xAA)
@@ -288,7 +288,7 @@ namespace TVA.PhasorProtocols.Macrodyne
             }
             else
             {
-                switch (EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex))
+                switch (EndianOrder.BigEndian.ToUInt16(buffer, startIndex))
                 {
                     case (ushort)DeviceCommand.RequestOnlineDataFormat:
                         TypeID = Macrodyne.FrameType.ConfigurationFrame;
@@ -297,7 +297,7 @@ namespace TVA.PhasorProtocols.Macrodyne
                         TypeID = Macrodyne.FrameType.HeaderFrame;
                         break;
                     default:
-                        throw new InvalidOperationException("Bad data stream, expected 0xBB24 or 0xBB48 in response to Macrodyne device command , got 0xBB" + binaryImage[startIndex + 1].ToString("X").PadLeft(2, '0'));
+                        throw new InvalidOperationException("Bad data stream, expected 0xBB24 or 0xBB48 in response to Macrodyne device command , got 0xBB" + buffer[startIndex + 1].ToString("X").PadLeft(2, '0'));
                 }
             }
 
@@ -306,7 +306,7 @@ namespace TVA.PhasorProtocols.Macrodyne
 
             // Parse relevant common header values
             if (TypeID == Macrodyne.FrameType.DataFrame)
-                m_statusFlags = (StatusFlags)binaryImage[startIndex + 1];
+                m_statusFlags = (StatusFlags)buffer[startIndex + 1];
         }
 
         /// <summary>

@@ -235,6 +235,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using TVA.Parsing;
 
 namespace TVA.PhasorProtocols
 {
@@ -442,12 +443,20 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets or sets the <see cref="DataFormat"/> for the <see cref="IPhasorDefinition"/> objects in the <see cref="PhasorDefinitions"/> of this <see cref="ConfigurationCellBase"/>.
         /// </summary>
-        public abstract DataFormat PhasorDataFormat { get; set; }
+        public abstract DataFormat PhasorDataFormat
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets the <see cref="CoordinateFormat"/> for the <see cref="IPhasorDefinition"/> objects in the <see cref="PhasorDefinitions"/> of this <see cref="ConfigurationCellBase"/>.
         /// </summary>
-        public abstract CoordinateFormat PhasorCoordinateFormat { get; set; }
+        public abstract CoordinateFormat PhasorCoordinateFormat
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets the <see cref="IFrequencyDefinition"/> of this <see cref="ConfigurationCellBase"/>.
@@ -467,7 +476,11 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets or sets the <see cref="DataFormat"/> of the <see cref="FrequencyDefinition"/> of this <see cref="ConfigurationCellBase"/>.
         /// </summary>
-        public abstract DataFormat FrequencyDataFormat { get; set; }
+        public abstract DataFormat FrequencyDataFormat
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets the nominal <see cref="LineFrequency"/> of the <see cref="FrequencyDefinition"/> of this <see cref="ConfigurationCellBase"/>.
@@ -498,7 +511,11 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets or sets the <see cref="DataFormat"/> for the <see cref="IAnalogDefinition"/> objects in the <see cref="AnalogDefinitions"/> of this <see cref="ConfigurationCellBase"/>.
         /// </summary>
-        public abstract DataFormat AnalogDataFormat { get; set; }
+        public abstract DataFormat AnalogDataFormat
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets a reference to the <see cref="DigitalDefinitionCollection"/> of this <see cref="ConfigurationCellBase"/>.
@@ -625,7 +642,7 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return m_frequencyDefinition.BinaryImage;
+                return m_frequencyDefinition.BinaryImage();
             }
         }
 
@@ -663,16 +680,16 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             // Parse station name from header...
             int stationNameLength = MaximumStationNameLength;
 
-            StationName = Encoding.ASCII.GetString(binaryImage, startIndex, stationNameLength);
+            StationName = Encoding.ASCII.GetString(buffer, startIndex, stationNameLength);
 
             return stationNameLength;
         }
@@ -680,11 +697,11 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             // Length is validated at a frame level well in advance so that low level parsing routines do not have
             // to re-validate that enough length is available to parse needed information as an optimization...
@@ -701,7 +718,7 @@ namespace TVA.PhasorProtocols
             // Parse out phasor definitions
             for (x = 0; x < parsingState.PhasorCount; x++)
             {
-                phasorDefinition = parsingState.CreateNewPhasorDefinition(this, binaryImage, index, out parsedLength);
+                phasorDefinition = parsingState.CreateNewPhasorDefinition(this, buffer, index, out parsedLength);
                 m_phasorDefinitions.Add(phasorDefinition);
                 index += parsedLength;
             }
@@ -709,7 +726,7 @@ namespace TVA.PhasorProtocols
             // Parse out analog definitions
             for (x = 0; x < parsingState.AnalogCount; x++)
             {
-                analogDefinition = parsingState.CreateNewAnalogDefinition(this, binaryImage, index, out parsedLength);
+                analogDefinition = parsingState.CreateNewAnalogDefinition(this, buffer, index, out parsedLength);
                 m_analogDefinitions.Add(analogDefinition);
                 index += parsedLength;
             }
@@ -717,7 +734,7 @@ namespace TVA.PhasorProtocols
             // Parse out digital definitions
             for (x = 0; x < parsingState.DigitalCount; x++)
             {
-                digitalDefinition = parsingState.CreateNewDigitalDefinition(this, binaryImage, index, out parsedLength);
+                digitalDefinition = parsingState.CreateNewDigitalDefinition(this, buffer, index, out parsedLength);
                 m_digitalDefinitions.Add(digitalDefinition);
                 index += parsedLength;
             }
@@ -729,16 +746,16 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Parses the binary footer image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseFooterImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseFooterImage(byte[] buffer, int startIndex, int length)
         {
             // Parse nominal frequency defintion from footer...
             int parsedLength;
 
-            m_frequencyDefinition = State.CreateNewFrequencyDefinition(this, binaryImage, startIndex, out parsedLength);
+            m_frequencyDefinition = State.CreateNewFrequencyDefinition(this, buffer, startIndex, out parsedLength);
 
             return parsedLength;
         }

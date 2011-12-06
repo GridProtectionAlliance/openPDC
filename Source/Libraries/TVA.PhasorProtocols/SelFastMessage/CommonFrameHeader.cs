@@ -251,7 +251,7 @@ namespace TVA.PhasorProtocols.SelFastMessage
         /// Total fixed length of <see cref="CommonFrameHeader"/>.
         /// </summary>
         public const ushort FixedLength = 24;
-        
+
         /// <summary>
         /// Total header length of <see cref="CommonFrameHeader"/>.
         /// </summary>
@@ -278,26 +278,26 @@ namespace TVA.PhasorProtocols.SelFastMessage
         }
 
         /// <summary>
-        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="binaryImage"/>.
+        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="buffer"/>.
         /// </summary>
-        /// <param name="binaryImage">Buffer that contains data to parse.</param>
+        /// <param name="buffer">Buffer that contains data to parse.</param>
         /// <param name="startIndex">Start index into buffer where valid data begins.</param>
-        public CommonFrameHeader(byte[] binaryImage, int startIndex)
+        public CommonFrameHeader(byte[] buffer, int startIndex)
         {
             // Validate SEL Fast Message data image
-            if (binaryImage[startIndex] != Common.HeaderByte1 || binaryImage[startIndex + 1] != Common.HeaderByte2)
-                throw new InvalidOperationException("Bad data stream, expected header bytes 0xA546 as first bytes in SEL Fast Message frame, got 0x" + binaryImage[startIndex].ToString("X").PadLeft(2, '0') + binaryImage[startIndex + 1].ToString("X").PadLeft(2, '0'));
+            if (buffer[startIndex] != Common.HeaderByte1 || buffer[startIndex + 1] != Common.HeaderByte2)
+                throw new InvalidOperationException("Bad data stream, expected header bytes 0xA546 as first bytes in SEL Fast Message frame, got 0x" + buffer[startIndex].ToString("X").PadLeft(2, '0') + buffer[startIndex + 1].ToString("X").PadLeft(2, '0'));
 
             ushort sampleCount;
             uint secondOfCentury;
             NtpTimeTag timetag;
 
             // Parse relevant common header values
-            m_frameSize = (FrameSize)binaryImage[startIndex + 2];
-            m_idCode = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 12);
-            sampleCount = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 18);
-            secondOfCentury = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 20);
-            
+            m_frameSize = (FrameSize)buffer[startIndex + 2];
+            m_idCode = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 12);
+            sampleCount = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 18);
+            secondOfCentury = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 20);
+
             // We use an NTP time tag since SEL Fast Message SOC also starts at 1/1/1900
             timetag = new NtpTimeTag(secondOfCentury, 0);
 

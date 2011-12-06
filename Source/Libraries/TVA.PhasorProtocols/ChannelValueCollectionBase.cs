@@ -292,7 +292,7 @@ namespace TVA.PhasorProtocols
         #region [ Properties ]
 
         /// <summary>
-        /// Gets the length of the <see cref="ChannelCollectionBase{T}.BinaryImage"/>.
+        /// Gets the length of the <see cref="ChannelCollectionBase{T}"/>.
         /// </summary>
         public override int BinaryLength
         {

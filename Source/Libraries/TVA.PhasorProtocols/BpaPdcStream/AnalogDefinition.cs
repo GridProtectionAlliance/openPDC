@@ -338,11 +338,11 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         // Static Methods
 
         // Delegate handler to create a new BPA PDCstream analog definition
-        internal static IAnalogDefinition CreateNewDefinition(IConfigurationCell parent, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IAnalogDefinition CreateNewDefinition(IConfigurationCell parent, byte[] buffer, int startIndex, out int parsedLength)
         {
             IAnalogDefinition analogDefinition = new AnalogDefinition(parent);
 
-            parsedLength = analogDefinition.Initialize(binaryImage, startIndex, 0);
+            parsedLength = analogDefinition.ParseBinaryImage(buffer, startIndex, 0);
 
             return analogDefinition;
         }

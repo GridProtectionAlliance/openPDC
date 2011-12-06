@@ -90,15 +90,15 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         }
 
         /// <summary>
-        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="binaryImage"/>.
+        /// Creates a new <see cref="CommonFrameHeader"/> from given <paramref name="buffer"/>.
         /// </summary>
         /// <param name="parseWordCountFromByte">Defines flag that interprets word count in packet header from a byte instead of a word.</param>
         /// <param name="usePhasorDataFileFormat">Defines flag that determines if source data is in the Phasor Data File Format (i.e., a DST file).</param>
         /// <param name="configFrame">Previously parsed configuration frame, if available.</param>
-        /// <param name="binaryImage">Buffer that contains data to parse.</param>
+        /// <param name="buffer">Buffer that contains data to parse.</param>
         /// <param name="startIndex">Start index into buffer where valid data begins.</param>
         /// <param name="length">Maximum length of valid data from start index.</param>
-        public CommonFrameHeader(bool parseWordCountFromByte, bool usePhasorDataFileFormat, ConfigurationFrame configFrame, byte[] binaryImage, int startIndex, int length)
+        public CommonFrameHeader(bool parseWordCountFromByte, bool usePhasorDataFileFormat, ConfigurationFrame configFrame, byte[] buffer, int startIndex, int length)
         {
             uint secondOfCentury;
 
@@ -108,7 +108,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             if (m_usePhasorDataFileFormat)
             {
                 // Handle phasor file format data protocol steps
-                if (binaryImage[startIndex] == PhasorProtocols.Common.SyncByte && binaryImage[startIndex + 1] == Common.PhasorFileFormatFlag)
+                if (buffer[startIndex] == PhasorProtocols.Common.SyncByte && buffer[startIndex + 1] == Common.PhasorFileFormatFlag)
                 {
                     // Bail out and leave frame length zero if there's not enough buffer to parse complete fixed portion of header
                     if (length >= DstHeaderFixedLength)
@@ -117,11 +117,11 @@ namespace TVA.PhasorProtocols.BpaPdcStream
 
                         // Read full DST header
                         m_packetNumber = (byte)BpaPdcStream.FrameType.ConfigurationFrame;
-                        m_fileType = (FileType)binaryImage[startIndex + 2];
-                        m_fileVersion = (FileVersion)binaryImage[startIndex + 3];
-                        m_sourceID = Encoding.ASCII.GetString(binaryImage, startIndex + 4, 4);
-                        headerLength = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 8);
-                        secondOfCentury = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 12);
+                        m_fileType = (FileType)buffer[startIndex + 2];
+                        m_fileVersion = (FileVersion)buffer[startIndex + 3];
+                        m_sourceID = Encoding.ASCII.GetString(buffer, startIndex + 4, 4);
+                        headerLength = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 8);
+                        secondOfCentury = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 12);
 
                         switch (m_fileType)
                         {
@@ -136,12 +136,12 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                                 break;
                         }
 
-                        m_startSample = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 16);
-                        m_sampleInterval = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 20);
-                        m_sampleRate = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 22);
-                        m_rowLength = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 24);
-                        m_totalRows = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 28);
-                        secondOfCentury = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 32);
+                        m_startSample = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 16);
+                        m_sampleInterval = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 20);
+                        m_sampleRate = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 22);
+                        m_rowLength = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 24);
+                        m_totalRows = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 28);
+                        secondOfCentury = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 32);
 
                         switch (m_fileType)
                         {
@@ -156,12 +156,12 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                                 break;
                         }
 
-                        m_triggerSample = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 36);
-                        m_preTriggerRows = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 40);
-                        m_triggerPMU = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 44);
-                        m_triggerType = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 46);
-                        m_userInformation = Encoding.ASCII.GetString(binaryImage, startIndex + 48, 80).Trim();
-                        m_pmuCount = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 128);
+                        m_triggerSample = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 36);
+                        m_preTriggerRows = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 40);
+                        m_triggerPMU = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 44);
+                        m_triggerType = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 46);
+                        m_userInformation = Encoding.ASCII.GetString(buffer, startIndex + 48, 80).Trim();
+                        m_pmuCount = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 128);
                         FrameLength = unchecked((ushort)headerLength);
                     }
                 }
@@ -171,7 +171,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                     CommonFrameHeader configFrameHeader;
 
                     m_packetNumber = (byte)BpaPdcStream.FrameType.DataFrame;
-                    m_rowFlags = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex);
+                    m_rowFlags = EndianOrder.BigEndian.ToUInt32(buffer, startIndex);
 
                     if (configFrame != null)
                     {
@@ -203,25 +203,25 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             else
             {
                 // Handle streaming data protocol steps
-                if (binaryImage[startIndex] != PhasorProtocols.Common.SyncByte)
-                    throw new InvalidOperationException("Bad data stream, expected sync byte 0xAA as first byte in BPA PDCstream frame, got 0x" + binaryImage[startIndex].ToString("X").PadLeft(2, '0'));
+                if (buffer[startIndex] != PhasorProtocols.Common.SyncByte)
+                    throw new InvalidOperationException("Bad data stream, expected sync byte 0xAA as first byte in BPA PDCstream frame, got 0x" + buffer[startIndex].ToString("X").PadLeft(2, '0'));
 
                 // Get packet number
-                m_packetNumber = binaryImage[startIndex + 1];
+                m_packetNumber = buffer[startIndex + 1];
 
                 // Some older streams have a bad word count (e.g., some data streams have a 0x01 as the third byte
                 // in the stream - this should be a 0x00 to make the word count come out correctly).  The following
                 // compensates for this erratic behavior
                 if (parseWordCountFromByte)
-                    m_wordCount = binaryImage[startIndex + 3];
+                    m_wordCount = buffer[startIndex + 3];
                 else
-                    m_wordCount = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 2);
+                    m_wordCount = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 2);
 
                 // If this is a data frame get a rough timestamp down to the second (full parse will get accurate timestamp), this way
                 // data frames that don't get fully parsed because configuration hasn't been received will still show a timestamp
                 if (m_packetNumber > 0 && length > 8)
                 {
-                    secondOfCentury = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex + 4);
+                    secondOfCentury = EndianOrder.BigEndian.ToUInt32(buffer, startIndex + 4);
 
                     // Until configuration is available, we make a guess at time tag type - this will just be
                     // used for display purposes until a configuration frame arrives.  If second of century

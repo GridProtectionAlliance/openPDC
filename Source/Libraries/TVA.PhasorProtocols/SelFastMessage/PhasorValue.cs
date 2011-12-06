@@ -292,7 +292,7 @@ namespace TVA.PhasorProtocols.SelFastMessage
         #endregion
 
         #region [ Properties ]
-        
+
         /// <summary>
         /// Gets or sets the <see cref="DataCell"/> parent of this <see cref="PhasorValue"/>.
         /// </summary>
@@ -356,15 +356,15 @@ namespace TVA.PhasorProtocols.SelFastMessage
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             // Parse magnitude and angle in degrees
-            Magnitude = EndianOrder.BigEndian.ToSingle(binaryImage, startIndex);
-            Angle = Angle.FromDegrees(EndianOrder.BigEndian.ToSingle(binaryImage, startIndex + 4));
+            Magnitude = EndianOrder.BigEndian.ToSingle(buffer, startIndex);
+            Angle = Angle.FromDegrees(EndianOrder.BigEndian.ToSingle(buffer, startIndex + 4));
 
             return 8;
         }
@@ -376,11 +376,11 @@ namespace TVA.PhasorProtocols.SelFastMessage
         // Static Methods
 
         // Delegate handler to create a new SEL Fast Message phasor value
-        internal static IPhasorValue CreateNewValue(IDataCell parent, IPhasorDefinition definition, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IPhasorValue CreateNewValue(IDataCell parent, IPhasorDefinition definition, byte[] buffer, int startIndex, out int parsedLength)
         {
             IPhasorValue phasor = new PhasorValue(parent, definition);
 
-            parsedLength = phasor.Initialize(binaryImage, startIndex, 0);
+            parsedLength = phasor.ParseBinaryImage(buffer, startIndex, 0);
 
             return phasor;
         }

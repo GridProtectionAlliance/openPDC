@@ -542,17 +542,17 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             // Skip past header that was already parsed...
             startIndex += CommonFrameHeader.FixedLength;
 
-            m_timebase = EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex) & ~Common.TimeQualityFlagsMask;
-            State.CellCount = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 4);
+            m_timebase = EndianOrder.BigEndian.ToUInt32(buffer, startIndex) & ~Common.TimeQualityFlagsMask;
+            State.CellCount = EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 4);
 
             return FixedHeaderLength;
         }
@@ -560,13 +560,13 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Parses the binary footer image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseFooterImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseFooterImage(byte[] buffer, int startIndex, int length)
         {
-            FrameRate = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex);
+            FrameRate = EndianOrder.BigEndian.ToUInt16(buffer, startIndex);
             return 2;
         }
 

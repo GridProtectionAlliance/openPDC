@@ -234,6 +234,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using TVA.Parsing;
 
 namespace TVA.PhasorProtocols
 {
@@ -338,7 +339,7 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return Cells.BinaryImage;
+                return Cells.BinaryImage();
             }
             set
             {
@@ -388,7 +389,7 @@ namespace TVA.PhasorProtocols
                 baseAttributes.Add("Device Command", (int)Command + ": " + Command);
 
                 if (Cells.Count > 0)
-                    baseAttributes.Add("Extended Data", ByteEncoding.Hexadecimal.GetString(Cells.BinaryImage, 0, Cells.Count));
+                    baseAttributes.Add("Extended Data", ByteEncoding.Hexadecimal.GetString(Cells.BinaryImage()));
                 else
                     baseAttributes.Add("Extended Data", "<null>");
 
@@ -403,16 +404,16 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             int parsedLength = 2;
 
-            m_command = (DeviceCommand)EndianOrder.BigEndian.ToInt16(binaryImage, startIndex);
-            parsedLength += base.ParseBodyImage(binaryImage, startIndex + 2, length);
+            m_command = (DeviceCommand)EndianOrder.BigEndian.ToInt16(buffer, startIndex);
+            parsedLength += base.ParseBodyImage(buffer, startIndex + 2, length);
 
             return parsedLength;
         }

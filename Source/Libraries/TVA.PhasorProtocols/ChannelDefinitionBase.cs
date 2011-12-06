@@ -318,7 +318,10 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets the <see cref="PhasorProtocols.DataFormat"/> of this <see cref="ChannelDefinitionBase"/>.
         /// </summary>
-        public abstract DataFormat DataFormat { get; }
+        public abstract DataFormat DataFormat
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets or sets the index of this <see cref="ChannelDefinitionBase"/>.
@@ -517,20 +520,20 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// The base implementation assumes that all channel defintions begin with a label as this is
         /// the general case, override functionality if this is not the case.
         /// </remarks>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             // Length is validated at a frame level well in advance so that low level parsing routines do not have
             // to re-validate that enough length is available to parse needed information as an optimization...
 
-            Label = Encoding.ASCII.GetString(binaryImage, startIndex, MaximumLabelLength);
+            Label = Encoding.ASCII.GetString(buffer, startIndex, MaximumLabelLength);
 
             return MaximumLabelLength;
         }
@@ -574,7 +577,7 @@ namespace TVA.PhasorProtocols
         public virtual int CompareTo(object obj)
         {
             IChannelDefinition other = obj as IChannelDefinition;
-            
+
             if (other != null)
                 return CompareTo(other);
 

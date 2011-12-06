@@ -28,6 +28,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using TimeSeriesFramework;
+using TVA.Parsing;
 
 namespace TVA.PhasorProtocols
 {
@@ -369,7 +370,7 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return m_cells.BinaryImage;
+                return m_cells.BinaryImage();
             }
         }
 
@@ -411,44 +412,44 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Parses the binary image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// This method is overriden to validate the checksum in the <see cref="ChannelFrameBase{T}"/>.
         /// </remarks>
         /// <exception cref="InvalidOperationException">Invalid binary image detected - check sum did not match.</exception>
-        public override int Initialize(byte[] binaryImage, int startIndex, int length)
+        public override int ParseBinaryImage(byte[] buffer, int startIndex, int length)
         {
             // We use data length parsed from data stream if available - in many cases we'll have to as we won't enough
             // information about cell contents at this early parsing stage
             m_parsedBinaryLength = State.ParsedBinaryLength;
 
             // Normal binary image parsing is overriden for a frame so that checksum can be validated           
-            if (!ChecksumIsValid(binaryImage, startIndex))
+            if (!ChecksumIsValid(buffer, startIndex))
             {
                 // If user selects incorrect protocol, image may be very large - so we don't log the image 
-                //  byte[] binaryImageErr = binaryImage.BlockCopy(startIndex, length);
+                //  byte[] binaryImageErr = buffer.BlockCopy(startIndex, length);
                 //  + BitConverter.ToString(binaryImageErr)
                 throw new CrcException("Invalid binary image detected - check sum of " + this.GetType().Name + " did not match");
             }
 
             // Include 2 bytes for CRC in returned parsed length
-            return base.Initialize(binaryImage, startIndex, length) + 2;
+            return base.ParseBinaryImage(buffer, startIndex, length) + 2;
         }
 
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// The body image of the <see cref="ChannelFrameBase{T}"/> is parsed to create a collection of <see cref="Cells"/>.
         /// </remarks>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
             IChannelFrameParsingState<T> state = State;
             T cell;
@@ -457,7 +458,7 @@ namespace TVA.PhasorProtocols
             // Parse all frame cells
             for (int x = 0; x < state.CellCount; x++)
             {
-                cell = state.CreateNewCell(this, state, x, binaryImage, index, out parsedLength);
+                cell = state.CreateNewCell(this, state, x, buffer, index, out parsedLength);
                 m_cells.Add(cell);
                 index += parsedLength;
             }

@@ -235,6 +235,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using TVA.Parsing;
 
 namespace TVA.PhasorProtocols
 {
@@ -313,7 +314,7 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return Encoding.ASCII.GetString(Cells.BinaryImage);
+                return Encoding.ASCII.GetString(Cells.BinaryImage());
             }
             set
             {

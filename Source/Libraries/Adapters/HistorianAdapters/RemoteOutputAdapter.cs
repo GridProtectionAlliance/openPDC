@@ -236,7 +236,7 @@ namespace HistorianAdapters
         /// </summary>
         protected override bool UseAsyncConnect
         {
-            get 
+            get
             {
                 return true;
             }
@@ -308,7 +308,7 @@ namespace HistorianAdapters
                 m_publisherDelegate = TransmitPacketType1;
                 m_publisherBuffer = new byte[m_samplesPerTransmission * PacketType1.FixedLength];
             }
-            
+
             // Initialize publiser socket.
             m_historianPublisher.ConnectionString = settings.JoinKeyValuePairs();
             m_historianPublisher.PayloadAware = m_payloadAware;
@@ -373,7 +373,7 @@ namespace HistorianAdapters
         /// Attempts to connect to this <see cref="RemoteOutputAdapter"/>.
         /// </summary>
         protected override void AttemptConnection()
-        {           
+        {
             m_publisherDisconnecting = false;
             m_historianPublisher.ConnectAsync();
         }

@@ -323,17 +323,17 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Parses the binary body image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
         /// <remarks>
         /// The base implementation assumes that all channel defintions begin with a label as this is
         /// the general case, override functionality if this is not the case.
         /// </remarks>
-        protected override int ParseBodyImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseBodyImage(byte[] buffer, int startIndex, int length)
         {
-            Parent.NominalFrequency = ((EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex) & (ushort)Bits.Bit00) > 0) ? LineFrequency.Hz50 : LineFrequency.Hz60;
+            Parent.NominalFrequency = ((EndianOrder.BigEndian.ToUInt16(buffer, startIndex) & (ushort)Bits.Bit00) > 0) ? LineFrequency.Hz50 : LineFrequency.Hz60;
             return 2;
         }
 
@@ -344,11 +344,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         // Static Methods
 
         // Delegate handler to create a new IEEE C37.118 frequency definition
-        internal static IFrequencyDefinition CreateNewDefinition(IConfigurationCell parent, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IFrequencyDefinition CreateNewDefinition(IConfigurationCell parent, byte[] buffer, int startIndex, out int parsedLength)
         {
             IFrequencyDefinition frequencyDefinition = new FrequencyDefinition(parent);
 
-            parsedLength = frequencyDefinition.Initialize(binaryImage, startIndex, 0);
+            parsedLength = frequencyDefinition.ParseBinaryImage(buffer, startIndex, 0);
 
             return frequencyDefinition;
         }

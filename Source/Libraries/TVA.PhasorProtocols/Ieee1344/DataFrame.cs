@@ -452,9 +452,9 @@ namespace TVA.PhasorProtocols.Ieee1344
                 Dictionary<string, string> baseAttributes = base.Attributes;
 
                 CommonHeader.AppendHeaderAttributes(baseAttributes);
-                
+
                 baseAttributes.Add("64-Bit ID Code", IDCode.ToString());
-                
+
                 return baseAttributes;
             }
         }
@@ -466,11 +466,11 @@ namespace TVA.PhasorProtocols.Ieee1344
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
             // We already parsed the frame header, so we just skip past it...
             return CommonFrameHeader.FixedLength;

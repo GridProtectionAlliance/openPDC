@@ -381,13 +381,13 @@ namespace TVA.PhasorProtocols.Ieee1344
         #region [ Methods ]
 
         /// <summary>
-        /// Parses conversion factor image from the specified <paramref name="binaryImage"/>.
+        /// Parses conversion factor image from the specified <paramref name="buffer"/>.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        internal int ParseConversionFactor(byte[] binaryImage, int startIndex)
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        internal int ParseConversionFactor(byte[] buffer, int startIndex)
         {
-            m_statusFlags = EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex);
+            m_statusFlags = EndianOrder.BigEndian.ToUInt16(buffer, startIndex);
             return ConversionFactorLength;
         }
 
@@ -411,11 +411,11 @@ namespace TVA.PhasorProtocols.Ieee1344
         // Static Methods
 
         // Delegate handler to create a new IEEE 1344 digital definition
-        internal static IDigitalDefinition CreateNewDefinition(IConfigurationCell parent, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IDigitalDefinition CreateNewDefinition(IConfigurationCell parent, byte[] buffer, int startIndex, out int parsedLength)
         {
             IDigitalDefinition digitalDefinition = new DigitalDefinition(parent);
 
-            parsedLength = digitalDefinition.Initialize(binaryImage, startIndex, 0);
+            parsedLength = digitalDefinition.ParseBinaryImage(buffer, startIndex, 0);
 
             return digitalDefinition;
         }

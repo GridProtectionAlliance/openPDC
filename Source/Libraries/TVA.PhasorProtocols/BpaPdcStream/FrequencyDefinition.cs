@@ -241,11 +241,11 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         }
 
         // Delegate handler to create a new BPA PDCstream frequency definition
-        internal static IFrequencyDefinition CreateNewDefinition(IConfigurationCell parent, byte[] binaryImage, int startIndex, out int parsedLength)
+        internal static IFrequencyDefinition CreateNewDefinition(IConfigurationCell parent, byte[] buffer, int startIndex, out int parsedLength)
         {
             IFrequencyDefinition frequencyDefinition = new FrequencyDefinition(parent);
 
-            parsedLength = frequencyDefinition.Initialize(binaryImage, startIndex, 0);
+            parsedLength = frequencyDefinition.ParseBinaryImage(buffer, startIndex, 0);
 
             return frequencyDefinition;
         }

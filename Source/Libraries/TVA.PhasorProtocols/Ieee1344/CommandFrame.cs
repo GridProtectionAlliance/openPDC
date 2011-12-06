@@ -266,18 +266,18 @@ namespace TVA.PhasorProtocols.Ieee1344
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new <see cref="CommandFrame"/> from the given <paramref name="binaryImage"/>.
+        /// Creates a new <see cref="CommandFrame"/> from the given <paramref name="buffer"/>.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <remarks>
         /// This constructor is used by a consumer to parse a received IEEE 1344 command frame. Typically
         /// command frames are sent to a device. This constructor would used if this code was being used
         /// inside of a phasor measurement device.
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> must be at least 16.</exception>
-        public CommandFrame(byte[] binaryImage, int startIndex, int length)
+        public CommandFrame(byte[] buffer, int startIndex, int length)
             : base(new CommandCellCollection(0), DeviceCommand.ReservedBits)
         {
             if (length < FrameLength)
@@ -286,12 +286,12 @@ namespace TVA.PhasorProtocols.Ieee1344
             // Validate check-sum
             int sumLength = FrameLength - 2;
 
-            if (EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + sumLength) != CalculateChecksum(binaryImage, startIndex, sumLength))
+            if (EndianOrder.BigEndian.ToUInt16(buffer, startIndex + sumLength) != CalculateChecksum(buffer, startIndex, sumLength))
                 throw new InvalidOperationException("Invalid binary image detected - check sum of " + this.GetType().Name + " did not match");
 
-            Initialize(binaryImage, startIndex, length);
+            ParseBinaryImage(buffer, startIndex, length);
         }
- 
+
         /// <summary>
         /// Creates a new <see cref="CommandFrame"/> from specified parameters.
         /// </summary>
@@ -328,7 +328,7 @@ namespace TVA.PhasorProtocols.Ieee1344
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)] // IEEE 1344 command frame doesn't support extended data - so we hide cell collection property...
         public override CommandCellCollection Cells
-        {            
+        {
             get
             {
                 return base.Cells;
@@ -340,7 +340,7 @@ namespace TVA.PhasorProtocols.Ieee1344
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)] // IEEE 1344 command frame doesn't support extended data - so we hide extended data property...
         public override byte[] ExtendedData
-        {            
+        {
             get
             {
                 return base.ExtendedData;
@@ -429,14 +429,14 @@ namespace TVA.PhasorProtocols.Ieee1344
         /// <summary>
         /// Parses the binary header image.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <returns>The length of the data that was parsed.</returns>
-        protected override int ParseHeaderImage(byte[] binaryImage, int startIndex, int length)
+        protected override int ParseHeaderImage(byte[] buffer, int startIndex, int length)
         {
-            Timestamp = (new NtpTimeTag(EndianOrder.BigEndian.ToUInt32(binaryImage, startIndex), 0)).ToDateTime().Ticks;
-            m_idCode = EndianOrder.BigEndian.ToUInt64(binaryImage, startIndex + 4);
+            Timestamp = (new NtpTimeTag(EndianOrder.BigEndian.ToUInt32(buffer, startIndex), 0)).ToDateTime().Ticks;
+            m_idCode = EndianOrder.BigEndian.ToUInt64(buffer, startIndex + 4);
             return 12;
         }
 
@@ -466,6 +466,6 @@ namespace TVA.PhasorProtocols.Ieee1344
             info.AddValue("idCode64Bit", m_idCode);
         }
 
-        #endregion       
+        #endregion
     }
 }

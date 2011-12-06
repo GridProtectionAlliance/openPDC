@@ -260,40 +260,40 @@ namespace TVA.PhasorProtocols.SelFastMessage
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new <see cref="CommandFrame"/> from the given <paramref name="binaryImage"/>.
+        /// Creates a new <see cref="CommandFrame"/> from the given <paramref name="buffer"/>.
         /// </summary>
-        /// <param name="binaryImage">Binary image to parse.</param>
-        /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-        /// <param name="length">Length of valid data within <paramref name="binaryImage"/>.</param>
+        /// <param name="buffer">Binary image to parse.</param>
+        /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+        /// <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
         /// <remarks>
         /// This constructor is used by a consumer to parse a received SEL Fast Message command frame. Typically
         /// command frames are sent to a device. This constructor would used if this code was being used
         /// inside of a phasor measurement device.
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is not large enough to parse frame.</exception>
-        public CommandFrame(byte[] binaryImage, int startIndex, int length)
+        public CommandFrame(byte[] buffer, int startIndex, int length)
             : base(new CommandCellCollection(0), PhasorProtocols.DeviceCommand.ReservedBits)
         {
             if (length < 16)
                 throw new ArgumentOutOfRangeException("length");
 
             // Validate check-sum
-            if (!ChecksumIsValid(binaryImage, startIndex))
+            if (!ChecksumIsValid(buffer, startIndex))
                 throw new InvalidOperationException("Invalid binary image detected - check sum of " + this.GetType().Name + " did not match");
-            
-            // Validate SEL Fast Message data image
-            if (binaryImage[startIndex] != Common.HeaderByte1 || binaryImage[startIndex + 1] != Common.HeaderByte2)
-                throw new InvalidOperationException("Bad data stream, expected header bytes 0xA546 as first bytes in SEL Fast Message command frame, got 0x" + binaryImage[startIndex].ToString("X").PadLeft(2, '0') + binaryImage[startIndex + 1].ToString("X").PadLeft(2, '0'));
 
-            Command = (DeviceCommand)binaryImage[startIndex + 9];
+            // Validate SEL Fast Message data image
+            if (buffer[startIndex] != Common.HeaderByte1 || buffer[startIndex + 1] != Common.HeaderByte2)
+                throw new InvalidOperationException("Bad data stream, expected header bytes 0xA546 as first bytes in SEL Fast Message command frame, got 0x" + buffer[startIndex].ToString("X").PadLeft(2, '0') + buffer[startIndex + 1].ToString("X").PadLeft(2, '0'));
+
+            Command = (DeviceCommand)buffer[startIndex + 9];
 
             if (Command == DeviceCommand.EnableUnsolicitedMessages)
-                m_messagePeriod = (MessagePeriod)EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + 14);
-            
+                m_messagePeriod = (MessagePeriod)EndianOrder.BigEndian.ToUInt16(buffer, startIndex + 14);
+
             // Validate check-sum
             int sumLength = FrameSize - 2;
 
-            if (EndianOrder.BigEndian.ToUInt16(binaryImage, startIndex + sumLength) != CalculateChecksum(binaryImage, startIndex, sumLength))
+            if (EndianOrder.BigEndian.ToUInt16(buffer, startIndex + sumLength) != CalculateChecksum(buffer, startIndex, sumLength))
                 throw new InvalidOperationException("Invalid binary image detected - check sum of " + this.GetType().Name + " did not match");
         }
 
@@ -443,7 +443,7 @@ namespace TVA.PhasorProtocols.SelFastMessage
                 buffer[0] = (byte)Command;
                 buffer[1] = 0xC0;
                 buffer[3] = 0x20;
-                
+
                 // Only add desired message rate for enable command
                 if (Command == DeviceCommand.EnableUnsolicitedMessages)
                     EndianOrder.BigEndian.CopyBytes((ushort)m_messagePeriod, buffer, 5);

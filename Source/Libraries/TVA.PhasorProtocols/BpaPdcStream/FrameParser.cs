@@ -318,7 +318,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <para>
         /// Derived classes need to provide a common header instance (i.e., class that implements <see cref="ICommonHeader{TTypeIdentifier}"/>)
         /// for the output types; this will primarily include an ID of the <see cref="Type"/> that the data image represents.  This parsing is
-        /// only for common header information, actual parsing will be handled by output type via its <see cref="ISupportBinaryImage.Initialize"/>
+        /// only for common header information, actual parsing will be handled by output type via its <see cref="ISupportBinaryImage.ParseBinaryImage"/>
         /// method. This header image should also be used to add needed complex state information about the output type being parsed if needed.
         /// </para>
         /// <para>

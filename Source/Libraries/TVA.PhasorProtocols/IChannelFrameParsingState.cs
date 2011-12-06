@@ -239,12 +239,12 @@ namespace TVA.PhasorProtocols
     /// <param name="parent">Reference to parent <see cref="IChannelFrame"/>.</param>
     /// <param name="state">Current parsing state of associated <see cref="IChannelFrame"/>.</param>
     /// <param name="index">Index of cell within its collection.</param>
-    /// <param name="binaryImage">Binary image to parse <see cref="IChannelCell"/> from.</param>
-    /// <param name="startIndex">Start index into <paramref name="binaryImage"/> to begin parsing.</param>
-    /// <param name="parsedLength">Returns the total number of bytes parsed from <paramref name="binaryImage"/>.</param>
+    /// <param name="buffer">Binary image to parse <see cref="IChannelCell"/> from.</param>
+    /// <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+    /// <param name="parsedLength">Returns the total number of bytes parsed from <paramref name="buffer"/>.</param>
     /// <returns>New <see cref="IChannelCell"/> object.</returns>
     /// <typeparam name="T">Specific <see cref="IChannelCell"/> type of object that gets created by referenced function.</typeparam>
-    public delegate T CreateNewCellFunction<T>(IChannelFrame parent, IChannelFrameParsingState<T> state, int index, byte[] binaryImage, int startIndex, out int parsedLength) where T : IChannelCell;
+    public delegate T CreateNewCellFunction<T>(IChannelFrame parent, IChannelFrameParsingState<T> state, int index, byte[] buffer, int startIndex, out int parsedLength) where T : IChannelCell;
 
     /// <summary>
     /// Represents a protocol independent interface representation of the parsing state of any kind of <see cref="IChannelFrame"/>.
@@ -255,11 +255,18 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Gets reference to delegate used to create a new <see cref="IChannelCell"/> object.
         /// </summary>
-        CreateNewCellFunction<T> CreateNewCell { get; }
+        CreateNewCellFunction<T> CreateNewCell
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets or sets number of cells that are expected in associated <see cref="IChannelFrame"/> being parsed.
         /// </summary>
-        int CellCount { get; set; }
+        int CellCount
+        {
+            get;
+            set;
+        }
     }
 }
