@@ -2364,6 +2364,11 @@
             Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.ConserveMemory"/> property.
             </summary>
         </member>
+        <member name="F:TVA.Historian.Files.ArchiveFile.DefaultMonitorNewArchiveFiles">
+            <summary>
+            Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.MonitorNewArchiveFiles"/> property.
+            </summary>
+        </member>
         <member name="F:TVA.Historian.Files.ArchiveFile.DefaultPersistSettings">
             <summary>
             Specifies the default value for the <see cref="P:TVA.Historian.Files.ArchiveFile.PersistSettings"/> property.
@@ -2961,6 +2966,11 @@
         <member name="P:TVA.Historian.Files.ArchiveFile.ConserveMemory">
             <summary>
             Gets or sets a boolean value that indicates whether memory usage is to be kept low for performance efficiency.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Files.ArchiveFile.MonitorNewArchiveFiles">
+            <summary>
+            Gets or sets a boolean value that indicates whether to monitor and load newly encountered archive files.
             </summary>
         </member>
         <member name="P:TVA.Historian.Files.ArchiveFile.StateFile">
