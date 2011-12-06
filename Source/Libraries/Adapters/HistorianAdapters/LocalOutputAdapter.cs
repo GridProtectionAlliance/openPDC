@@ -740,9 +740,9 @@ namespace HistorianAdapters
                         // Make sure needed historian configuration settings are properly defined
                         settings = configFile.Settings[string.Format("{0}MetadataFile", acronym)];
                         settings.Add("LoadOnOpen", true, string.Format("True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the {0} meta-data file.", name));
-                        settings.Add("ReloadOnModify", true, string.Format("True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to True for the {0} meta-data file.", name));
+                        settings.Add("ReloadOnModify", false, string.Format("True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to True for the {0} meta-data file.", name));
                         settings["LoadOnOpen"].Update(true);
-                        settings["ReloadOnModify"].Update(true);
+                        settings["ReloadOnModify"].Update(false);
 
                         // Older versions of the openPDC placed the archive data files in the same folder as the executables, for both better
                         // organization and performance related to file monitoring, these files are now located in their own folder
@@ -764,6 +764,7 @@ namespace HistorianAdapters
                         settings["AutoSaveInterval"].Update(10000);
                         settings["LoadOnOpen"].Update(true);
                         settings["SaveOnClose"].Update(true);
+                        settings["ReloadOnModify"].Update(false);
 
                         defaultFileName = string.Format("{0}\\{1}_startup.dat", archivePath, acronym);
                         settings.Add("FileName", defaultFileName, string.Format("Name of the {0} state file including its path.", acronym));
@@ -783,6 +784,7 @@ namespace HistorianAdapters
                         settings["AutoSaveInterval"].Update(1000);
                         settings["LoadOnOpen"].Update(true);
                         settings["SaveOnClose"].Update(true);
+                        settings["ReloadOnModify"].Update(false);
 
                         defaultFileName = string.Format("{0}\\scratch.dat", archivePath);
                         settings.Add("FileName", defaultFileName, string.Format("Name of the {0} intercom file including its path.", acronym));

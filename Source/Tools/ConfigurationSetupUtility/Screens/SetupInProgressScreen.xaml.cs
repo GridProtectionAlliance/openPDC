@@ -1516,32 +1516,32 @@ namespace ConfigurationSetupUtility.Screens
                 }
             }
 
-            // Update the data publisher default shared secret, if defined
-            XmlNode dataPublisherPassword = configFile.SelectSingleNode("configuration/categorizedSettings/dataPublisher/add[@name = 'SharedSecret']");
+            //// Update the data publisher default shared secret, if defined
+            //XmlNode dataPublisherPassword = configFile.SelectSingleNode("configuration/categorizedSettings/dataPublisher/add[@name = 'SharedSecret']");
 
-            if (dataPublisherPassword != null)
-            {
-                string existingPassword = dataPublisherPassword.Attributes["value"].Value;
+            //if (dataPublisherPassword != null)
+            //{
+            //    string existingPassword = dataPublisherPassword.Attributes["value"].Value;
 
-                if (Convert.ToBoolean(dataPublisherPassword.Attributes["encrypted"].Value))
-                {
-                    try
-                    {
-                        existingPassword = Cipher.Decrypt(existingPassword, App.CipherLookupKey, App.CryptoStrength);
-                    }
-                    catch
-                    {
-                        existingPassword = "openPDC";
-                    }
-                }
+            //    if (Convert.ToBoolean(dataPublisherPassword.Attributes["encrypted"].Value))
+            //    {
+            //        try
+            //        {
+            //            existingPassword = Cipher.Decrypt(existingPassword, App.CipherLookupKey, App.CryptoStrength);
+            //        }
+            //        catch
+            //        {
+            //            existingPassword = "openPDC";
+            //        }
+            //    }
 
-                // During upgrade from older versions this password will be defaulted to openPDC
-                if (string.Compare(existingPassword, "openPDC", true) == 0)
-                {
-                    dataPublisherPassword.Attributes["value"].Value = "TSF-E1CCE965-39A6-4476-8C60-EF02D8212F16";
-                    dataPublisherPassword.Attributes["encrypted"].Value = "False";
-                }
-            }
+            //    // During upgrade from older versions this password will be defaulted to openPDC
+            //    if (string.Compare(existingPassword, "openPDC", true) == 0)
+            //    {
+            //        dataPublisherPassword.Attributes["value"].Value = "TSF-E1CCE965-39A6-4476-8C60-EF02D8212F16";
+            //        dataPublisherPassword.Attributes["encrypted"].Value = "False";
+            //    }
+            //}
 
             // The following change will be done only for openPDCManager configuration.
             if (Convert.ToBoolean(m_state["applyChangesToLocalManager"]) && m_state.ContainsKey("allowPassThroughAuthentication"))

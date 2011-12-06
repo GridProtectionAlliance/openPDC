@@ -1069,6 +1069,10 @@ namespace TVA.PhasorProtocols
             // See if this node should process phasor source validation
             if (settings["ProcessPhasorDataSourceValidation"].ValueAsBoolean())
             {
+                // Verify data publisher settings are set to no compression
+                settings = configFile.Settings["datapublisher"];
+                settings["Compression", true].Update("NoCompression");
+
                 CreateDefaultNode(connection, nodeIDQueryString, statusMessage, processException);
                 LoadDefaultConfigurationEntity(connection, statusMessage, processException);
                 LoadDefaultInterconnection(connection, statusMessage, processException);
@@ -1111,9 +1115,9 @@ namespace TVA.PhasorProtocols
                 settings = configFile.Settings["statMetadataFile"];
                 settings.Add("FileName", "Statistics\\stat_dbase.dat", "Name of the statistics meta-data file including its path.");
                 settings.Add("LoadOnOpen", true, "True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the statistics meta-data file.");
-                settings.Add("ReloadOnModify", true, "True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to True for the statistics meta-data file.");
+                settings.Add("ReloadOnModify", false, "True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to True for the statistics meta-data file.");
                 settings["LoadOnOpen"].Update(true);
-                settings["ReloadOnModify"].Update(true);
+                settings["ReloadOnModify"].Update(false);
 
                 settings = configFile.Settings["statStateFile"];
                 settings.Add("FileName", "Statistics\\stat_startup.dat", "Name of the statistics state file including its path.");
@@ -1123,6 +1127,7 @@ namespace TVA.PhasorProtocols
                 settings["AutoSaveInterval"].Update(10000);
                 settings["LoadOnOpen"].Update(true);
                 settings["SaveOnClose"].Update(true);
+                settings["ReloadOnModify"].Update(false);
 
                 settings = configFile.Settings["statIntercomFile"];
                 settings.Add("FileName", "Statistics\\scratch.dat", "Name of the statistics intercom file including its path.");
@@ -1132,6 +1137,7 @@ namespace TVA.PhasorProtocols
                 settings["AutoSaveInterval"].Update(1000);
                 settings["LoadOnOpen"].Update(true);
                 settings["SaveOnClose"].Update(true);
+                settings["ReloadOnModify"].Update(false);
 
                 settings = configFile.Settings["statArchiveFile"];
                 settings.Add("FileName", "Statistics\\stat_archive.d", "Name of the statistics working archive file including its path.");
