@@ -1785,7 +1785,7 @@
             Gets or sets associated <see cref="T:TVA.Historian.Files.MetadataRecord"/> of the time-series data point.
             </summary>
         </member>
-        <member name="F:TVA.Historian.Files.ArchiveDataPoint.ByteCount">
+        <member name="F:TVA.Historian.Files.ArchiveDataPoint.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.
             </summary>
@@ -1839,18 +1839,31 @@
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> class.
             </summary>
             <param name="historianID">Historian identifier of <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.</param>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Files.ArchiveDataPoint.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.ArchiveDataPoint.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveDataPoint.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.ArchiveDataPoint.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.ArchiveDataPoint.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.ArchiveDataPoint.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveDataPoint.CompareTo(System.Object)">
             <summary>
@@ -1939,12 +1952,7 @@
         </member>
         <member name="P:TVA.Historian.Files.ArchiveDataPoint.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.ArchiveDataPoint.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.ArchiveDataPoint.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>.
             </summary>
         </member>
         <member name="P:TVA.Historian.Files.ArchiveDataPoint.Flags">
@@ -2039,7 +2047,7 @@
             <seealso cref="T:TVA.Historian.Files.ArchiveFile"/>
             <seealso cref="T:TVA.Historian.Files.ArchiveDataBlock"/>
         </member>
-        <member name="F:TVA.Historian.Files.ArchiveDataBlockPointer.ByteCount">
+        <member name="F:TVA.Historian.Files.ArchiveDataBlockPointer.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.
             </summary>
@@ -2057,9 +2065,9 @@
             </summary>
             <param name="parent">An <see cref="T:TVA.Historian.Files.ArchiveFile"/> object.</param>
             <param name="index">0-based index of the <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.</param>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveDataBlockPointer.GetDataBlock(System.Boolean)">
             <summary>
@@ -2073,14 +2081,27 @@
             Deallocates the <see cref="P:TVA.Historian.Files.ArchiveDataBlockPointer.DataBlock"/> to store new <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Files.ArchiveDataBlockPointer.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.ArchiveDataBlockPointer.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveDataBlockPointer.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.ArchiveDataBlockPointer.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.ArchiveDataBlockPointer.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.ArchiveDataBlockPointer.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveDataBlockPointer.CompareTo(System.Object)">
             <summary>
@@ -2141,12 +2162,7 @@
         </member>
         <member name="P:TVA.Historian.Files.ArchiveDataBlockPointer.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.ArchiveDataBlockPointer.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.ArchiveDataBlockPointer.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.ArchiveDataBlockPointerExtensions">
@@ -2462,14 +2478,14 @@
             Writes <paramref name="metadata"/> for the specified <paramref name="historianID"/>.
             </summary>
             <param name="historianID">Historian identifier.</param>
-            <param name="metadata"><see cref="P:TVA.Historian.Files.MetadataRecord.BinaryImage"/> data.</param>
+            <param name="metadata"><see cref="T:TVA.Historian.Files.MetadataRecord"/> data.</param>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.WriteStateData(System.Int32,System.Byte[])">
             <summary>
             Writes <paramref name="statedata"/> for the specified <paramref name="historianID"/>.
             </summary>
             <param name="historianID">Historian identifier.</param>
-            <param name="statedata"><see cref="P:TVA.Historian.Files.StateRecord.BinaryImage"/> data.</param>
+            <param name="statedata"><see cref="T:TVA.Historian.Files.StateRecord"/> data.</param>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadData(System.Int32)">
             <summary>
@@ -2589,31 +2605,31 @@
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadMetaData(System.Int32)">
             <summary>
-            Reads <see cref="P:TVA.Historian.Files.MetadataRecord.BinaryImage"/> for the specified <paramref name="historianID"/>.
+            Reads <see cref="T:TVA.Historian.Files.MetadataRecord"/> for the specified <paramref name="historianID"/>.
             </summary>
             <param name="historianID">Historian identifier.</param>
-            <returns>A <see cref="T:System.Byte"/> array containing <see cref="P:TVA.Historian.Files.MetadataRecord.BinaryImage"/> of <see cref="T:TVA.Historian.Files.MetadataRecord"/> if found; otherwise null.</returns>
+            <returns>A <see cref="T:System.Byte"/> array containing <see cref="T:TVA.Historian.Files.MetadataRecord"/> of <see cref="T:TVA.Historian.Files.MetadataRecord"/> if found; otherwise null.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadStateData(System.Int32)">
             <summary>
-            Reads <see cref="P:TVA.Historian.Files.StateRecord.BinaryImage"/> for the specified <paramref name="historianID"/>.
+            Reads <see cref="T:TVA.Historian.Files.StateRecord"/> for the specified <paramref name="historianID"/>.
             </summary>
             <param name="historianID">Historian identifier.</param>
-            <returns>A <see cref="T:System.Byte"/> array containing <see cref="P:TVA.Historian.Files.StateRecord.BinaryImage"/> of <see cref="T:TVA.Historian.Files.StateRecord"/> if found; otherwise null.</returns>
+            <returns>A <see cref="T:System.Byte"/> array containing <see cref="T:TVA.Historian.Files.StateRecord"/> of <see cref="T:TVA.Historian.Files.StateRecord"/> if found; otherwise null.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadMetaDataSummary(System.Int32)">
             <summary>
-            Reads <see cref="P:TVA.Historian.Files.MetadataRecordSummary.BinaryImage"/> for the specified <paramref name="historianID"/>.
+            Reads <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/> for the specified <paramref name="historianID"/>.
             </summary>
             <param name="historianID">Historian identifier.</param>
-            <returns>A <see cref="T:System.Byte"/> array containing <see cref="P:TVA.Historian.Files.MetadataRecordSummary.BinaryImage"/> of <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/> if found; otherwise null.</returns>
+            <returns>A <see cref="T:System.Byte"/> array containing <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/> of <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/> if found; otherwise null.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.ReadStateDataSummary(System.Int32)">
             <summary>
-            Reads <see cref="P:TVA.Historian.Files.StateRecordSummary.BinaryImage"/> for the specified <paramref name="historianID"/>.
+            Reads <see cref="T:TVA.Historian.Files.StateRecordSummary"/> for the specified <paramref name="historianID"/>.
             </summary>
             <param name="historianID">Historian identifier.</param>
-            <returns>A <see cref="T:System.Byte"/> array containing <see cref="P:TVA.Historian.Files.StateRecordSummary.BinaryImage"/> of <see cref="T:TVA.Historian.Files.StateRecordSummary"/> if found; otherwise null.</returns>
+            <returns>A <see cref="T:System.Byte"/> array containing <see cref="T:TVA.Historian.Files.StateRecordSummary"/> of <see cref="T:TVA.Historian.Files.StateRecordSummary"/> if found; otherwise null.</returns>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.OnFileFull">
             <summary>
@@ -3075,15 +3091,18 @@
             </summary>
             <param name="parent">An <see cref="T:TVA.Historian.Files.ArchiveFile"/> object.</param>
         </member>
-        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.GenerateBinaryImage(System.Byte[],System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/> from the specified <paramref name="binaryImage"/>.
+            Generates binary image of the <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.BinaryLength"/> bytes.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/>.</returns>
-            <exception cref="T:System.NotSupportedException">Always</exception>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.Save">
             <summary>
@@ -3202,17 +3221,103 @@
             Gets the <see cref="T:TVA.Historian.Files.ArchiveDataBlockPointer"/>s to the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s in the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
             </summary>
             <remarks>
-            WARNING: <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.DataBlockPointers"/> is thread unsafe. Synchronized access is required.
+            WARNING: <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.DataBlockPointers"/> is not thread safe. Synchronized access is required.
             </remarks>
         </member>
         <member name="P:TVA.Historian.Files.ArchiveFileAllocationTable.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.BinaryImage"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/>.
             </summary>
         </member>
-        <member name="P:TVA.Historian.Files.ArchiveFileAllocationTable.BinaryImage">
+        <member name="T:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion">
             <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/>.
+            Defines the fixed table region of the <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/>.
+            </summary>
+        </member>
+        <member name="F:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion.FixedLength">
+            <summary>
+            Specifies the number of bytes in the binary image of the <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion"/>.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion.#ctor(TVA.Historian.Files.ArchiveFileAllocationTable)">
+            <summary>
+            Creates a new instance of the <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion"/>.
+            </summary>
+            <param name="parent">Reference to parent <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/>.</param>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Initializes <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion"/> by parsing the specified <paramref name="buffer"/> containing a binary image.
+            </summary>
+            <param name="buffer">Buffer containing binary image to parse.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start parsing.</param>
+            <param name="length">Valid number of bytes within <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>The number of bytes used for initialization in the <paramref name="buffer"/> (i.e., the number of bytes parsed).</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <paramref name="length"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <paramref name="length"/> will exceed <paramref name="buffer"/> length.
+            </exception>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
+        </member>
+        <member name="P:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion.BinaryLength">
+            <summary>
+            Gets the length of the <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable.FixedTableRegion"/>.
+            </summary>
+        </member>
+        <member name="T:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion">
+            <summary>
+            Defines the variable table region of the <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/>.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion.#ctor(TVA.Historian.Files.ArchiveFileAllocationTable)">
+            <summary>
+            Creates a new instance of the <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion"/>.
+            </summary>
+            <param name="parent">Reference to parent <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable"/>.</param>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Initializes <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion"/> by parsing the specified <paramref name="buffer"/> containing a binary image.
+            </summary>
+            <param name="buffer">Buffer containing binary image to parse.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start parsing.</param>
+            <param name="length">Valid number of bytes within <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>The number of bytes used for initialization in the <paramref name="buffer"/> (i.e., the number of bytes parsed).</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <paramref name="length"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <paramref name="length"/> will exceed <paramref name="buffer"/> length.
+            </exception>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
+        </member>
+        <member name="P:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion.BinaryLength">
+            <summary>
+            Gets the length of the <see cref="T:TVA.Historian.Files.ArchiveFileAllocationTable.VariableTableRegion"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.ArchiveFileStatistics">
@@ -3276,7 +3381,7 @@
             </summary>
             <seealso cref="T:TVA.Historian.Files.IntercomFile"/>
         </member>
-        <member name="F:TVA.Historian.Files.IntercomRecord.ByteCount">
+        <member name="F:TVA.Historian.Files.IntercomRecord.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.IntercomRecord"/>.
             </summary>
@@ -3292,18 +3397,31 @@
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.IntercomRecord"/> class.
             </summary>
             <param name="recordID">ID of the <see cref="T:TVA.Historian.Files.IntercomRecord"/>.</param>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.IntercomRecord"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.IntercomRecord"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Files.IntercomRecord.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.IntercomRecord.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.IntercomRecord"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.IntercomRecord"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.IntercomRecord"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.IntercomRecord"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.IntercomRecord"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.IntercomRecord"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.IntercomRecord.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.IntercomRecord"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.IntercomRecord.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.IntercomRecord.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.IntercomRecord.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="P:TVA.Historian.Files.IntercomRecord.DataBlocksUsed">
             <summary>
@@ -3333,12 +3451,7 @@
         </member>
         <member name="P:TVA.Historian.Files.IntercomRecord.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.IntercomRecord.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.IntercomRecord.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.IntercomRecord"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.IntercomRecord"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.MetadataFile">
@@ -3386,7 +3499,7 @@
             <seealso cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/>
             <seealso cref="T:TVA.Historian.Files.MetadataRecordSummary"/>
         </member>
-        <member name="F:TVA.Historian.Files.MetadataRecord.ByteCount">
+        <member name="F:TVA.Historian.Files.MetadataRecord.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.MetadataRecord"/>.
             </summary>
@@ -3402,18 +3515,31 @@
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.MetadataRecord"/> class.
             </summary>
             <param name="historianID">Historian identifier of <see cref="T:TVA.Historian.Files.MetadataRecord"/>.</param>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecord"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecord"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Files.MetadataRecord.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.MetadataRecord.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.MetadataRecord"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.MetadataRecord"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecord"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecord"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecord"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecord"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.MetadataRecord.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.MetadataRecord"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.MetadataRecord.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.MetadataRecord.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.MetadataRecord.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="M:TVA.Historian.Files.MetadataRecord.CompareTo(System.Object)">
             <summary>
@@ -3669,12 +3795,7 @@
         </member>
         <member name="P:TVA.Historian.Files.MetadataRecord.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.MetadataRecord.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.MetadataRecord.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.MetadataRecord"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.MetadataRecord"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.MetadataRecordAlarmFlags">
@@ -3844,7 +3965,7 @@
             </summary>
             <seealso cref="T:TVA.Historian.Files.MetadataRecord"/>
         </member>
-        <member name="F:TVA.Historian.Files.MetadataRecordAnalogFields.ByteCount">
+        <member name="F:TVA.Historian.Files.MetadataRecordAnalogFields.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.MetadataRecordAnalogFields"/>.
             </summary>
@@ -3854,14 +3975,27 @@
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.MetadataRecordAnalogFields"/> class.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Files.MetadataRecordAnalogFields.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.MetadataRecordAnalogFields.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.MetadataRecordAnalogFields"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.MetadataRecordAnalogFields"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordAnalogFields"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecordAnalogFields"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordAnalogFields"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecordAnalogFields"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.MetadataRecordAnalogFields.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.MetadataRecordAnalogFields"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="P:TVA.Historian.Files.MetadataRecordAnalogFields.EngineeringUnits">
             <summary>
@@ -3924,12 +4058,7 @@
         </member>
         <member name="P:TVA.Historian.Files.MetadataRecordAnalogFields.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.MetadataRecordAnalogFields.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.MetadataRecordAnalogFields.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.MetadataRecordAnalogFields"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.MetadataRecordAnalogFields"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.MetadataRecordComposedFields">
@@ -3938,7 +4067,7 @@
             </summary>
             <seealso cref="T:TVA.Historian.Files.MetadataRecord"/>
         </member>
-        <member name="F:TVA.Historian.Files.MetadataRecordComposedFields.ByteCount">
+        <member name="F:TVA.Historian.Files.MetadataRecordComposedFields.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.MetadataRecordComposedFields"/>.
             </summary>
@@ -3948,14 +4077,27 @@
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.MetadataRecordComposedFields"/> class.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Files.MetadataRecordComposedFields.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.MetadataRecordComposedFields.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.MetadataRecordComposedFields"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.MetadataRecordComposedFields"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordComposedFields"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecordComposedFields"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordComposedFields"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecordComposedFields"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.MetadataRecordComposedFields.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.MetadataRecordComposedFields"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.MetadataRecordComposedFields.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.MetadataRecordComposedFields.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.MetadataRecordComposedFields.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="P:TVA.Historian.Files.MetadataRecordComposedFields.HighAlarm">
             <summary>
@@ -4016,12 +4158,7 @@
         </member>
         <member name="P:TVA.Historian.Files.MetadataRecordComposedFields.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.MetadataRecordComposedFields.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.MetadataRecordComposedFields.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.MetadataRecordComposedFields"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.MetadataRecordComposedFields"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.MetadataRecordConstantFields">
@@ -4030,7 +4167,7 @@
             </summary>
             <seealso cref="T:TVA.Historian.Files.MetadataRecord"/>
         </member>
-        <member name="F:TVA.Historian.Files.MetadataRecordConstantFields.ByteCount">
+        <member name="F:TVA.Historian.Files.MetadataRecordConstantFields.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.MetadataRecordConstantFields"/>.
             </summary>
@@ -4040,14 +4177,27 @@
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.MetadataRecordConstantFields"/> class.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Files.MetadataRecordConstantFields.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.MetadataRecordConstantFields.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.MetadataRecordConstantFields"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.MetadataRecordConstantFields"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordConstantFields"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecordConstantFields"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordConstantFields"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecordConstantFields"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.MetadataRecordConstantFields.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.MetadataRecordConstantFields"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.MetadataRecordConstantFields.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.MetadataRecordConstantFields.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.MetadataRecordConstantFields.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="P:TVA.Historian.Files.MetadataRecordConstantFields.Value">
             <summary>
@@ -4061,12 +4211,7 @@
         </member>
         <member name="P:TVA.Historian.Files.MetadataRecordConstantFields.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.MetadataRecordConstantFields.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.MetadataRecordConstantFields.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.MetadataRecordConstantFields"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.MetadataRecordConstantFields"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.MetadataRecordDigitalFields">
@@ -4075,7 +4220,7 @@
             </summary>
             <seealso cref="T:TVA.Historian.Files.MetadataRecord"/>
         </member>
-        <member name="F:TVA.Historian.Files.MetadataRecordDigitalFields.ByteCount">
+        <member name="F:TVA.Historian.Files.MetadataRecordDigitalFields.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/>.
             </summary>
@@ -4085,14 +4230,27 @@
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/> class.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Files.MetadataRecordDigitalFields.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.MetadataRecordDigitalFields.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.MetadataRecordDigitalFields.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="P:TVA.Historian.Files.MetadataRecordDigitalFields.SetDescription">
             <summary>
@@ -4124,12 +4282,7 @@
         </member>
         <member name="P:TVA.Historian.Files.MetadataRecordDigitalFields.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.MetadataRecordDigitalFields.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.MetadataRecordDigitalFields.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.MetadataRecordDigitalFields"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.DataType">
@@ -4241,13 +4394,13 @@
         </member>
         <member name="T:TVA.Historian.Files.MetadataRecordSummary">
             <summary>
-            A class with a subset of information defined in <see cref="T:TVA.Historian.Files.MetadataRecord"/>. The <see cref="P:TVA.Historian.Files.MetadataRecordSummary.BinaryImage"/> of 
+            A class with a subset of information defined in <see cref="T:TVA.Historian.Files.MetadataRecord"/>. The generated binary image of 
             <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/> is sent back as a reply to <see cref="T:TVA.Historian.Packets.PacketType3"/> and 
             <see cref="T:TVA.Historian.Packets.PacketType4"/>.
             </summary>
             <seealso cref="T:TVA.Historian.Files.MetadataRecord"/>
         </member>
-        <member name="F:TVA.Historian.Files.MetadataRecordSummary.ByteCount">
+        <member name="F:TVA.Historian.Files.MetadataRecordSummary.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/>.
             </summary>
@@ -4262,18 +4415,31 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/> class.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Files.MetadataRecordSummary.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.MetadataRecordSummary.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.MetadataRecordSummary.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.MetadataRecordSummary.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.MetadataRecordSummary.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.MetadataRecordSummary.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="P:TVA.Historian.Files.MetadataRecordSummary.HistorianID">
             <summary>
@@ -4323,12 +4489,7 @@
         </member>
         <member name="P:TVA.Historian.Files.MetadataRecordSummary.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.MetadataRecordSummary.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.MetadataRecordSummary.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.NamespaceDoc">
@@ -4410,7 +4571,7 @@
             <seealso cref="T:TVA.Historian.Files.StateRecordSummary"/>
             <seealso cref="T:TVA.Historian.Files.StateRecordDataPoint"/>
         </member>
-        <member name="F:TVA.Historian.Files.StateRecord.ByteCount">
+        <member name="F:TVA.Historian.Files.StateRecord.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.StateRecord"/>.
             </summary>
@@ -4426,18 +4587,31 @@
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.StateRecord"/> class.
             </summary>
             <param name="historianID">Historian identifier of <see cref="T:TVA.Historian.Files.StateRecord"/>.</param>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecord"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecord"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Files.StateRecord.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.StateRecord.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.StateRecord"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.StateRecord"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecord"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.StateRecord"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecord"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.StateRecord"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.StateRecord.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.StateRecord"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.StateRecord.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.StateRecord.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.StateRecord.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="M:TVA.Historian.Files.StateRecord.CompareTo(System.Object)">
             <summary>
@@ -4520,12 +4694,7 @@
         </member>
         <member name="P:TVA.Historian.Files.StateRecord.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.StateRecord.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.StateRecord.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.StateRecord"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.StateRecord"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.StateRecordDataPoint">
@@ -4536,7 +4705,7 @@
             <seealso cref="T:TVA.Historian.Files.StateRecord"/>
             <seealso cref="T:TVA.Historian.Files.StateRecordSummary"/>
         </member>
-        <member name="F:TVA.Historian.Files.StateRecordDataPoint.ByteCount">
+        <member name="F:TVA.Historian.Files.StateRecordDataPoint.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/>.
             </summary>
@@ -4577,18 +4746,31 @@
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/> class.
             </summary>
             <param name="historianID">Historian identifier of <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/>.</param>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Files.StateRecordDataPoint.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.StateRecordDataPoint.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.StateRecordDataPoint.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.StateRecordDataPoint.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.StateRecordDataPoint.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.StateRecordDataPoint.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="P:TVA.Historian.Files.StateRecordDataPoint.TimeZoneIndex">
             <summary>
@@ -4609,23 +4791,18 @@
         </member>
         <member name="P:TVA.Historian.Files.StateRecordDataPoint.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.StateRecordDataPoint.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.StateRecordDataPoint.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.StateRecordDataPoint"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.StateRecordSummary">
             <summary>
-            A class with just <see cref="P:TVA.Historian.Files.StateRecord.CurrentData"/>. The <see cref="P:TVA.Historian.Files.StateRecordSummary.BinaryImage"/> of <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/> 
+            A class with just <see cref="P:TVA.Historian.Files.StateRecord.CurrentData"/>. The generated binary image of <see cref="T:TVA.Historian.Files.MetadataRecordSummary"/> 
             is sent back as a reply to <see cref="T:TVA.Historian.Packets.PacketType11"/>.
             </summary>
             <seealso cref="T:TVA.Historian.Files.StateRecord"/>
             <seealso cref="T:TVA.Historian.Packets.PacketType11"/>
         </member>
-        <member name="F:TVA.Historian.Files.StateRecordSummary.ByteCount">
+        <member name="F:TVA.Historian.Files.StateRecordSummary.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Files.StateRecordSummary"/>.
             </summary>
@@ -4640,18 +4817,31 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.StateRecordSummary"/> class.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecordSummary"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecordSummary"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Files.StateRecordSummary.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Files.StateRecordSummary.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Files.StateRecordSummary"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Files.StateRecordSummary"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecordSummary"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Files.StateRecordSummary"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Files.StateRecordSummary"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Files.StateRecordSummary"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.StateRecordSummary.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Files.StateRecordSummary"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Files.StateRecordSummary.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Files.StateRecordSummary.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Files.StateRecordSummary.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="P:TVA.Historian.Files.StateRecordSummary.HistorianID">
             <summary>
@@ -4667,12 +4857,7 @@
         </member>
         <member name="P:TVA.Historian.Files.StateRecordSummary.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Files.StateRecordSummary.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Files.StateRecordSummary.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Files.StateRecordSummary"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Files.StateRecordSummary"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Quality">
@@ -4829,6 +5014,25 @@
             <summary>
             Good
             </summary>
+        </member>
+        <member name="T:TVA.Historian.QualityExtensions">
+            <summary>
+            Defines extension methods for (and related to) <see cref="T:TVA.Historian.Quality"/> enumeration.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.QualityExtensions.MeasurementQuality(TVA.Historian.Quality)">
+            <summary>
+            Gets a <see cref="T:TimeSeriesFramework.MeasurementStateFlags"/> value from a <see cref="T:TVA.Historian.Quality"/> value.
+            </summary>
+            <param name="quality"><see cref="T:TVA.Historian.Quality"/> value to interpret.</param>
+            <returns><see cref="T:TimeSeriesFramework.MeasurementStateFlags"/> value from a <see cref="T:TVA.Historian.Quality"/> value.</returns>
+        </member>
+        <member name="M:TVA.Historian.QualityExtensions.HistorianQuality(TimeSeriesFramework.IMeasurement)">
+            <summary>
+            Gets a <see cref="T:TVA.Historian.Quality"/> value from a <see cref="T:TimeSeriesFramework.IMeasurement"/> value.
+            </summary>
+            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> value to interpret.</param>
+            <returns><see cref="T:TVA.Historian.Quality"/> value from a <see cref="T:TimeSeriesFramework.IMeasurement"/> value.</returns>
         </member>
         <member name="T:TVA.Historian.MetadataProviders.AdoMetadataProvider">
             <summary>
@@ -5727,7 +5931,7 @@
             </summary>
             <seealso cref="T:TVA.Historian.Packets.IPacket"/>
         </member>
-        <member name="F:TVA.Historian.Packets.PacketBase.ByteCount">
+        <member name="F:TVA.Historian.Packets.PacketBase.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of the packet.
             </summary>
@@ -5739,29 +5943,40 @@
             </summary>
             <param name="packetID">Numeric identifier for the packet type.</param>
         </member>
-        <member name="M:TVA.Historian.Packets.PacketBase.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Packets.PacketBase.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            When overridden in a derived class, initializes packet from the specified <paramref name="binaryImage"/>.
+            Initializes packet by parsing the specified <paramref name="buffer"/> containing a binary image.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing the packet.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing the packet.</returns>
+            <param name="buffer">Buffer containing binary image to parse.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start parsing.</param>
+            <param name="length">Valid number of bytes within <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>The number of bytes used for initialization in the <paramref name="buffer"/> (i.e., the number of bytes parsed).</returns>
+            <remarks>
+            Implementors should validate <paramref name="startIndex"/> and <paramref name="length"/> against <paramref name="buffer"/> length.
+            The <see cref="M:TVA.BufferExtensions.ValidateParameters(System.Byte[],System.Int32,System.Int32)"/> method can be used to perform this validation.
+            </remarks>
+        </member>
+        <member name="M:TVA.Historian.Packets.PacketBase.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the packet and copies it into the given buffer, for <see cref="P:TVA.Historian.Packets.PacketBase.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <remarks>
+            Implementors should validate <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Packets.PacketBase.BinaryLength"/> against <paramref name="buffer"/> length.
+            The <see cref="M:TVA.BufferExtensions.ValidateParameters(System.Byte[],System.Int32,System.Int32)"/> method can be used to perform this validation.
+            </remarks>
         </member>
         <member name="M:TVA.Historian.Packets.PacketBase.ExtractTimeSeriesData">
             <summary>
-            When overridden in a derived class, extracts time-series data from the packet.
+            Extracts time-series data from the packet.
             </summary>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> object of <see cref="T:TVA.Historian.IDataPoint"/>s if the packet contains time-series data; otherwise null.</returns>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:TVA.Historian.IDataPoint"/>s if the packet contains time-series data; otherwise null.</returns>
         </member>
         <member name="P:TVA.Historian.Packets.PacketBase.BinaryLength">
             <summary>
-            When overridden in a derived class, gets the length of the packet's binary representation.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Packets.PacketBase.BinaryImage">
-            <summary>
-            When overridden in a derived class, gets the binary representation of the packet.
+            Gets the length of the packet's binary representation.
             </summary>
         </member>
         <member name="P:TVA.Historian.Packets.PacketBase.Archive">
@@ -5804,9 +6019,10 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketCommonHeader"/> class.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketCommonHeader"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Buffer containing binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketCommonHeader"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <exception cref="T:System.InvalidOperationException">Not enough <paramref name="length"/> available to parse <see cref="T:TVA.Historian.Packets.PacketCommonHeader"/>.</exception>
         </member>
         <member name="T:TVA.Historian.Packets.PacketParser">
             <summary>
@@ -5820,7 +6036,7 @@
             <param name="buffer">Buffer containing data to parse.</param>
             <param name="offset">Offset index into <paramref name="buffer"/> that represents where to start parsing.</param>
             <param name="length">Maximum length of valid data from <paramref name="offset"/>.</param>
-            <returns>An <see cref="T:TVA.Historian.Packets.PacketCommonHeader"/> object.</returns>
+            <returns>A <see cref="T:TVA.Historian.Packets.PacketCommonHeader"/> object parsed from the <paramref name="buffer"/>, or <c>null</c> if not enough buffer is available..</returns>
         </member>
         <member name="P:TVA.Historian.Packets.PacketParser.ProtocolUsesSyncBytes">
             <summary>
@@ -5832,7 +6048,7 @@
             Represents a packet to be used for sending single time-series data point to a historian for archival.
             </summary>
         </member>
-        <member name="F:TVA.Historian.Packets.PacketType1.ByteCount">
+        <member name="F:TVA.Historian.Packets.PacketType1.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Packets.PacketType1"/>.
             </summary>
@@ -5864,18 +6080,31 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketType1"/> class.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType1"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType1"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Packets.PacketType1.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Packets.PacketType1.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Packets.PacketType1"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Packets.PacketType1"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType1"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Packets.PacketType1"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType1"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Packets.PacketType1"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Packets.PacketType1.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Packets.PacketType1"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Packets.PacketType1.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Packets.PacketType1.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Packets.PacketType1.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="M:TVA.Historian.Packets.PacketType1.ExtractTimeSeriesData">
             <summary>
@@ -5919,12 +6148,7 @@
         </member>
         <member name="P:TVA.Historian.Packets.PacketType1.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Packets.PacketType1.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Packets.PacketType1.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Packets.PacketType1"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Packets.PacketType1"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Packets.PacketType101">
@@ -5954,18 +6178,31 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketType101"/> class.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType101"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType101"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Packets.PacketType101.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Packets.PacketType101.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Packets.PacketType101"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Packets.PacketType101"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType101"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Packets.PacketType101"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType101"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Packets.PacketType101"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Packets.PacketType101.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Packets.PacketType101"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Packets.PacketType101.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Packets.PacketType101.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Packets.PacketType101.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="M:TVA.Historian.Packets.PacketType101.ExtractTimeSeriesData">
             <summary>
@@ -5992,12 +6229,7 @@
         </member>
         <member name="P:TVA.Historian.Packets.PacketType101.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Packets.PacketType101.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Packets.PacketType101.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Packets.PacketType101"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Packets.PacketType101"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Packets.PacketType101DataPoint">
@@ -6006,7 +6238,7 @@
             </summary>
             <seealso cref="T:TVA.Historian.Packets.PacketType101"/>
         </member>
-        <member name="F:TVA.Historian.Packets.PacketType101DataPoint.ByteCount">
+        <member name="F:TVA.Historian.Packets.PacketType101DataPoint.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/>.
             </summary>
@@ -6036,27 +6268,35 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/> class.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Packets.PacketType101DataPoint.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Packets.PacketType101DataPoint.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Packets.PacketType101DataPoint.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Packets.PacketType101DataPoint.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Packets.PacketType101DataPoint.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Packets.PacketType101DataPoint.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="P:TVA.Historian.Packets.PacketType101DataPoint.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Packets.PacketType101DataPoint.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Packets.PacketType101DataPoint.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Packets.PacketType101DataPoint"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Packets.PacketType11">
@@ -6075,14 +6315,27 @@
             </summary>
             <param name="packetID">Numeric identifier for the packet type.</param>
         </member>
-        <member name="M:TVA.Historian.Packets.QueryPacketBase.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Packets.QueryPacketBase.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes the query packet from the specified <paramref name="binaryImage"/>.
+            Initializes the query packet from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing the query packet.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing the query packet.</returns>
+            <param name="buffer">Binary image to be used for initializing the query packet.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing the query packet.</returns>
+        </member>
+        <member name="M:TVA.Historian.Packets.QueryPacketBase.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Packets.QueryPacketBase"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Packets.QueryPacketBase.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Packets.QueryPacketBase.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Packets.QueryPacketBase.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="M:TVA.Historian.Packets.QueryPacketBase.ExtractTimeSeriesData">
             <summary>
@@ -6098,12 +6351,7 @@
         </member>
         <member name="P:TVA.Historian.Packets.QueryPacketBase.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Packets.QueryPacketBase.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Packets.QueryPacketBase.BinaryImage">
-            <summary>
-            Gets the binary representation of the query packet.
+            Gets the length of the <see cref="T:TVA.Historian.Packets.QueryPacketBase"/>.
             </summary>
         </member>
         <member name="M:TVA.Historian.Packets.PacketType11.#ctor">
@@ -6115,9 +6363,9 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketType11"/> class.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType11"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType11"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
         <member name="M:TVA.Historian.Packets.PacketType11.Process">
             <summary>
@@ -6130,7 +6378,7 @@
             Represents a packet to be used for sending single time (expanded format) series data point to a historian for archival.
             </summary>
         </member>
-        <member name="F:TVA.Historian.Packets.PacketType2.ByteCount">
+        <member name="F:TVA.Historian.Packets.PacketType2.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Packets.PacketType2"/>.
             </summary>
@@ -6144,18 +6392,31 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketType2"/> class.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType2"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType2"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Packets.PacketType2.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Packets.PacketType2.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Packets.PacketType2"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Packets.PacketType2"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType2"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Packets.PacketType2"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType2"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Packets.PacketType2"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Packets.PacketType2.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Packets.PacketType2"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Packets.PacketType2.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Packets.PacketType2.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Packets.PacketType2.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="M:TVA.Historian.Packets.PacketType2.ExtractTimeSeriesData">
             <summary>
@@ -6240,12 +6501,7 @@
         </member>
         <member name="P:TVA.Historian.Packets.PacketType2.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Packets.PacketType2.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Packets.PacketType2.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Packets.PacketType2"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Packets.PacketType2"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Packets.PacketType3">
@@ -6262,9 +6518,9 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketType3"/> class.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType3"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType3"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
         <member name="M:TVA.Historian.Packets.PacketType3.Process">
             <summary>
@@ -6286,9 +6542,9 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketType4"/> class.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType4"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType4"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
         <member name="M:TVA.Historian.Packets.PacketType4.Process">
             <summary>
@@ -6301,7 +6557,7 @@
             Represents a packet that can be used to query the status of a historian.
             </summary>
         </member>
-        <member name="F:TVA.Historian.Packets.PacketType5.ByteCount">
+        <member name="F:TVA.Historian.Packets.PacketType5.FixedLength">
             <summary>
             Specifies the number of bytes in the binary image of <see cref="T:TVA.Historian.Packets.PacketType5"/>.
             </summary>
@@ -6315,18 +6571,31 @@
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Packets.PacketType5"/> class.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType5"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType5"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
         </member>
-        <member name="M:TVA.Historian.Packets.PacketType5.Initialize(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:TVA.Historian.Packets.PacketType5.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Initializes <see cref="T:TVA.Historian.Packets.PacketType5"/> from the specified <paramref name="binaryImage"/>.
+            Initializes <see cref="T:TVA.Historian.Packets.PacketType5"/> from the specified <paramref name="buffer"/>.
             </summary>
-            <param name="binaryImage">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType5"/>.</param>
-            <param name="startIndex">0-based starting index of initialization data in the <paramref name="binaryImage"/>.</param>
-            <param name="length">Valid number of bytes in <paramref name="binaryImage"/> from <paramref name="startIndex"/>.</param>
-            <returns>Number of bytes used from the <paramref name="binaryImage"/> for initializing <see cref="T:TVA.Historian.Packets.PacketType5"/>.</returns>
+            <param name="buffer">Binary image to be used for initializing <see cref="T:TVA.Historian.Packets.PacketType5"/>.</param>
+            <param name="startIndex">0-based starting index of initialization data in the <paramref name="buffer"/>.</param>
+            <param name="length">Valid number of bytes in <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
+            <returns>Number of bytes used from the <paramref name="buffer"/> for initializing <see cref="T:TVA.Historian.Packets.PacketType5"/>.</returns>
+        </member>
+        <member name="M:TVA.Historian.Packets.PacketType5.GenerateBinaryImage(System.Byte[],System.Int32)">
+            <summary>
+            Generates binary image of the <see cref="T:TVA.Historian.Packets.PacketType5"/> and copies it into the given buffer, for <see cref="P:TVA.Historian.Packets.PacketType5.BinaryLength"/> bytes.
+            </summary>
+            <param name="buffer">Buffer used to hold generated binary image of the source object.</param>
+            <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
+            <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <see cref="P:TVA.Historian.Packets.PacketType5.BinaryLength"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <see cref="P:TVA.Historian.Packets.PacketType5.BinaryLength"/> will exceed <paramref name="buffer"/> length.
+            </exception>
         </member>
         <member name="M:TVA.Historian.Packets.PacketType5.ExtractTimeSeriesData">
             <summary>
@@ -6336,12 +6605,7 @@
         </member>
         <member name="P:TVA.Historian.Packets.PacketType5.BinaryLength">
             <summary>
-            Gets the length of the <see cref="P:TVA.Historian.Packets.PacketType5.BinaryImage"/>.
-            </summary>
-        </member>
-        <member name="P:TVA.Historian.Packets.PacketType5.BinaryImage">
-            <summary>
-            Gets the binary representation of <see cref="T:TVA.Historian.Packets.PacketType5"/>.
+            Gets the length of the <see cref="T:TVA.Historian.Packets.PacketType5"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.DataServices.IMetadataService">
