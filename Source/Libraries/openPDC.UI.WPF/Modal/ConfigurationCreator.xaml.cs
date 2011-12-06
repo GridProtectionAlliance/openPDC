@@ -541,6 +541,7 @@ namespace openPDC.UI.Modal
 
             if (selectedDevice != null)
             {
+                
                 if (listBoxPhasors.SelectedItems.Count > 0)
                 {
                     IPhasorDefinition[] selectedPhasors = listBoxPhasors.SelectedItems.Cast<IPhasorDefinition>().ToArray();
@@ -563,6 +564,7 @@ namespace openPDC.UI.Modal
             if (selectedDevice != null)
             {
                 selectedDevice.PhasorDefinitions.Remove(listBoxPhasors.SelectedItem as IPhasorDefinition);
+                
 
                 if (selectedDevice.PhasorDefinitions.Count > 0)
                     listBoxPhasors.SelectedIndex = 0;
@@ -583,6 +585,7 @@ namespace openPDC.UI.Modal
                     selectedDevice.PhasorDefinitions.RemoveAt(selectedIndex);
                     selectedDevice.PhasorDefinitions.Insert(selectedIndex - 1, selectedPhasor);
                     listBoxPhasors.SelectedIndex = selectedIndex - 1;
+                    
                 }
             }
         }
@@ -601,6 +604,7 @@ namespace openPDC.UI.Modal
                     selectedDevice.PhasorDefinitions.RemoveAt(selectedIndex);
                     selectedDevice.PhasorDefinitions.Insert(selectedIndex + 1, selectedPhasor);
                     listBoxPhasors.SelectedIndex = selectedIndex + 1;
+                   
                 }
             }
         }
@@ -703,6 +707,7 @@ namespace openPDC.UI.Modal
         }
 
         #endregion
+       
 
     }
 }
