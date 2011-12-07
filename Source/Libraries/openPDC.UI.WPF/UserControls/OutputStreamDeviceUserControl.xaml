@@ -110,8 +110,8 @@
         <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="825"
                PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4" Sorting="DataGrid_Sorting">
                 <sdk:DataGrid.Columns>
-                    <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}"/>
-                    <sdk:DataGridTextColumn Header=" Name" Width="*" Binding="{tsfBinding:Column Path=Name}" />
+                <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                <sdk:DataGridTextColumn Header=" Name" Width="*" Binding="{tsfBinding:Column Path=Name}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
                     <sdk:DataGridTemplateColumn Header="Enabled" Width="*">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
