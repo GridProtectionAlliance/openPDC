@@ -147,7 +147,7 @@
         </StackPanel>
 
         <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" 
-                      Height="610" VerticalAlignment="Top" HorizontalAlignment="Left" Width="845"/>
+                      Height="610" VerticalAlignment="Top" HorizontalAlignment="Left" Width="830" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
 
       </StackPanel>
 
