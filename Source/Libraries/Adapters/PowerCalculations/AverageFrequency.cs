@@ -26,6 +26,7 @@
 //******************************************************************************************************
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -50,6 +51,7 @@ namespace PowerCalculations
         private double m_averageFrequency;
         private double m_maximumFrequency;
         private double m_minimumFrequency;
+        private ConcurrentDictionary<Guid, double> m_lastValues = new ConcurrentDictionary<Guid, double>();
 
         // Important: Make sure output definition defines points in the following order
         private enum Output
@@ -127,6 +129,7 @@ namespace PowerCalculations
                 double frequencyTotal;
                 double maximumFrequency = LoFrequency;
                 double minimumFrequency = HiFrequency;
+                double lastValue;
                 int total;
 
                 frequencyTotal = 0.0D;
@@ -135,6 +138,19 @@ namespace PowerCalculations
                 foreach (IMeasurement measurement in frame.Measurements.Values)
                 {
                     frequency = measurement.AdjustedValue;
+
+                    // Do some simple flat line avoidance...
+                    if (m_lastValues.TryGetValue(measurement.ID, out lastValue))
+                    {
+                        if (lastValue == frequency)
+                            frequency = 0.0D;
+                        else
+                            m_lastValues[measurement.ID] = frequency;
+                    }
+                    else
+                    {
+                        m_lastValues[measurement.ID] = frequency;
+                    }
 
                     // Validate frequency
                     if (frequency > LoFrequency && frequency < HiFrequency)
