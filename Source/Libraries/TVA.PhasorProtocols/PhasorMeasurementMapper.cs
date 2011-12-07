@@ -1068,6 +1068,16 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Returns the current configuration frame to the caller.
+        /// </summary>
+        /// <returns>A <see cref="IConfigurationFrame"/> if successful, -or- <c>null</c> if request failed.</returns>
+        [AdapterCommand("Requests the current configuration frame and returns it to the caller.")]
+        public IConfigurationFrame RequestCurrentConfiguration()
+        {
+            return m_frameParser.ConfigurationFrame;
+        }
+
+        /// <summary>
         /// Attempts to load the last known good (i.e., cached) configuration.
         /// </summary>
         [AdapterCommand("Attempts to load the last known good configuration.")]

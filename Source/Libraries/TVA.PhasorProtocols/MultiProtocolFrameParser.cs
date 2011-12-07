@@ -2055,7 +2055,7 @@ namespace TVA.PhasorProtocols
         /// <param name="ex">Exception to send to <see cref="ParsingException"/> event.</param>
         private void OnParsingException(Exception ex)
         {
-            if (ParsingException != null && !(ex is ThreadAbortException))
+            if (ParsingException != null && !(ex is ThreadAbortException) && !(ex is ObjectDisposedException))
                 ParsingException(this, new EventArgs<Exception>(ex));
 
             if (DateTime.Now.Ticks - m_lastParsingExceptionTime > m_parsingExceptionWindow)
@@ -2092,7 +2092,7 @@ namespace TVA.PhasorProtocols
         /// <param name="args">Arguments of message of new exception to send to <see cref="ParsingException"/> event.</param>
         private void OnParsingException(Exception innerException, string message, params object[] args)
         {
-            if (!(innerException is ThreadAbortException))
+            if (!(innerException is ThreadAbortException) && !(innerException is ObjectDisposedException))
                 OnParsingException(new Exception(string.Format(message, args), innerException));
         }
 
@@ -2112,7 +2112,7 @@ namespace TVA.PhasorProtocols
         /// <param name="connectionAttempts">Number of connection attempts to report.</param>
         private void OnConnectionException(Exception ex, int connectionAttempts)
         {
-            if (ConnectionException != null && !(ex is ThreadAbortException))
+            if (ConnectionException != null && !(ex is ThreadAbortException) && !(ex is ObjectDisposedException))
                 ConnectionException(this, new EventArgs<Exception, int>(ex, connectionAttempts));
         }
 
