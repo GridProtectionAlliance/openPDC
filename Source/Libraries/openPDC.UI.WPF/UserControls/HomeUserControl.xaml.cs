@@ -184,10 +184,14 @@ namespace openPDC.UI.UserControls
             if (m_windowsServiceClient != null && m_windowsServiceClient.Helper != null &&
                    m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
             {
-                m_windowsServiceClient.Helper.SendRequest("Health -actionable");
-                m_windowsServiceClient.Helper.SendRequest("Time -actionable");
-                if (PopupStatus.IsOpen)
-                    m_windowsServiceClient.Helper.SendRequest("Status -actionable");
+                try
+                {
+                    m_windowsServiceClient.Helper.SendRequest("Health -actionable");
+                    m_windowsServiceClient.Helper.SendRequest("Time -actionable");
+                    if (PopupStatus.IsOpen)
+                        m_windowsServiceClient.Helper.SendRequest("Status -actionable");
+                }
+                catch { }
             }
             TextBlockLocalTime.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
         }
@@ -355,6 +359,14 @@ namespace openPDC.UI.UserControls
         {
             m_subscribedUnsynchronized = false;
             UnsubscribeUnsynchronizedData();
+            try
+            {
+                ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
+                {
+                    ChartPlotterDynamic.Children.Remove((IPlotterElement)m_lineGraph);
+                });
+            }
+            catch { }
             if (m_restartConnectionCycle)
                 InitializeUnsynchronizedSubscription();
         }
@@ -462,7 +474,10 @@ namespace openPDC.UI.UserControls
                 InitializeUnsynchronizedSubscription();
             try
             {
-                ChartPlotterDynamic.Children.Remove((IPlotterElement)m_lineGraph);
+                ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
+                {
+                    ChartPlotterDynamic.Children.Remove((IPlotterElement)m_lineGraph);
+                });
             }
             catch { }
             m_yAxisDataCollection = new ConcurrentQueue<double>();

@@ -197,8 +197,12 @@ namespace openPDC.UI.ViewModels
             }
             catch (Exception ex)
             {
-                Popup("Failed to Retrieve Statistic Data: " + Environment.NewLine + ex.Message, "ERROR - Get Statistic Data", MessageBoxImage.Error);
+                if (ex.InnerException != null)
+                    CommonFunctions.LogException(null, "Get Statistic Data ", ex.InnerException);
+                else
+                    CommonFunctions.LogException(null, "Get Statistic Data ", ex);
             }
+
             LastRefresh = "Last Refresh: " + DateTime.Now.ToString("HH:mm:ss.fff");
         }
 
