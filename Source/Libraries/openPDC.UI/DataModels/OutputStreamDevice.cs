@@ -639,7 +639,7 @@ namespace openPDC.UI.DataModels
                                     OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
                                     outputStreamDeviceAnalog.NodeID = device.NodeID;
                                     outputStreamDeviceAnalog.OutputStreamDeviceID = device.ID;
-                                    outputStreamDeviceAnalog.Label = device.Acronym.Length > 12 ? device.Acronym.Substring(0, 12) + ":A" + analogIndex.ToString() : device.Acronym + ":A" + analogIndex.ToString(); // measurement.PointTag;                                    
+                                    outputStreamDeviceAnalog.Label = string.IsNullOrEmpty(measurement.AlternateTag) ? device.Acronym.Length > 12 ? device.Acronym.Substring(0, 12) + ":A" + analogIndex.ToString() : device.Acronym + ":A" + analogIndex.ToString() : measurement.AlternateTag; // measurement.PointTag;                                    
                                     outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
                                     OutputStreamDeviceAnalog.Save(database, outputStreamDeviceAnalog);
                                     analogIndex++;
@@ -649,7 +649,7 @@ namespace openPDC.UI.DataModels
                                     OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
                                     outputStreamDeviceDigital.NodeID = device.NodeID;
                                     outputStreamDeviceDigital.OutputStreamDeviceID = device.ID;
-                                    outputStreamDeviceDigital.Label = digitalLabel;     // measurement.PointTag;
+                                    outputStreamDeviceDigital.Label = string.IsNullOrEmpty(measurement.AlternateTag) ? digitalLabel : measurement.AlternateTag;     // measurement.PointTag;
                                     outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
                                     OutputStreamDeviceDigital.Save(database, outputStreamDeviceDigital);
                                 }

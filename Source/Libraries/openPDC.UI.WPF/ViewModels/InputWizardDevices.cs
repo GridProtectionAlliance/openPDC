@@ -843,8 +843,8 @@ namespace openPDC.UI.ViewModels
                         Include = true,
                         DigitalCount = cell.DigitalDefinitions.Count,
                         AnalogCount = cell.AnalogDefinitions.Count,
-                        AddDigitals = false,
-                        AddAnalogs = false,
+                        AddDigitals = cell.DigitalDefinitions.Count > 0 ? true : false,
+                        AddAnalogs = cell.AnalogDefinitions.Count > 0 ? true : false,
                         Existing = existingDevice == null ? false : true,
                         PhasorList = new ObservableCollection<openPDC.UI.DataModels.InputWizardDevicePhasor>((from phasor in cell.PhasorDefinitions
                                                                                                               select new openPDC.UI.DataModels.InputWizardDevicePhasor()
