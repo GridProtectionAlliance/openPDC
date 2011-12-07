@@ -276,7 +276,6 @@ namespace HistorianAdapters
         {
             base.Initialize();
 
-            string archivePath;
             string refreshMetadata;
             string errorMessage = "{0} is missing from Settings - Example: instanceName=XX;archivePath=c:\\;autoRefreshMetadata=True";
             Dictionary<string, string> settings = Settings;
@@ -285,33 +284,33 @@ namespace HistorianAdapters
             if (!settings.TryGetValue("instancename", out m_instanceName))
                 throw new ArgumentException(string.Format(errorMessage, "instanceName"));
 
-            if (!settings.TryGetValue("archivepath", out archivePath))
-                archivePath = FilePath.GetAbsolutePath("");
+            if (!settings.TryGetValue("archivepath", out m_archivePath))
+                m_archivePath = FilePath.GetAbsolutePath(FilePath.AddPathSuffix("Archive"));
 
             if (settings.TryGetValue("refreshmetadata", out refreshMetadata) || settings.TryGetValue("autorefreshmetadata", out refreshMetadata))
                 m_autoRefreshMetadata = refreshMetadata.ParseBoolean();
 
             // Initialize metadata file.
             m_instanceName = m_instanceName.ToLower();
-            m_archive.MetadataFile.FileName = Path.Combine(archivePath, m_instanceName + "_dbase.dat");
+            m_archive.MetadataFile.FileName = Path.Combine(m_archivePath, m_instanceName + "_dbase.dat");
             m_archive.MetadataFile.PersistSettings = true;
             m_archive.MetadataFile.SettingsCategory = m_instanceName + m_archive.MetadataFile.SettingsCategory;
             m_archive.MetadataFile.Initialize();
 
             // Initialize state file.
-            m_archive.StateFile.FileName = Path.Combine(archivePath, m_instanceName + "_startup.dat");
+            m_archive.StateFile.FileName = Path.Combine(m_archivePath, m_instanceName + "_startup.dat");
             m_archive.StateFile.PersistSettings = true;
             m_archive.StateFile.SettingsCategory = m_instanceName + m_archive.StateFile.SettingsCategory;
             m_archive.StateFile.Initialize();
 
             // Initialize intercom file.
-            m_archive.IntercomFile.FileName = Path.Combine(archivePath, "scratch.dat");
+            m_archive.IntercomFile.FileName = Path.Combine(m_archivePath, "scratch.dat");
             m_archive.IntercomFile.PersistSettings = true;
             m_archive.IntercomFile.SettingsCategory = m_instanceName + m_archive.IntercomFile.SettingsCategory;
             m_archive.IntercomFile.Initialize();
 
             // Initialize data archive file.           
-            m_archive.FileName = Path.Combine(archivePath, m_instanceName + "_archive.d");
+            m_archive.FileName = Path.Combine(m_archivePath, m_instanceName + "_archive.d");
             m_archive.FileSize = 100;
             m_archive.CompressData = false;
             m_archive.PersistSettings = true;
@@ -831,25 +830,41 @@ namespace HistorianAdapters
                         }
 
                         // Lookup matching reader record (i.e., LocalInputAdapter with instance name of the current historian)
-                        DataRow match = readers.FirstOrDefault(inputRow =>
-                        {
-                            if (inputRow["ConnectionString"].ToNonNullString().ParseKeyValuePairs().TryGetValue("instanceName", out instanceName))
-                                return string.Compare(instanceName, acronym, true) == 0;
+                        DataRow match;
 
-                            return false;
-                        });
+                        try
+                        {
+                            match = readers.FirstOrDefault(inputRow =>
+                            {
+                                if (inputRow["ConnectionString"].ToNonNullString().ParseKeyValuePairs().TryGetValue("instanceName", out instanceName))
+                                    return string.Compare(instanceName, acronym, true) == 0;
+
+                                return false;
+                            });
+                        }
+                        catch
+                        {
+                            match = null;
+                        }
 
                         // If no match was found, add record for associated historical data reader
                         if ((object)match == null)
                         {
-                            instanceName = acronym.ToUpper().Trim();
-                            settings = configFile.Settings[string.Format("{0}ArchiveFile", acronym)];
-                            string archiveLocation = FilePath.GetDirectoryName(settings["FileName"].Value);
-                            string adapterName = string.Format("{0}READER", instanceName);
-                            string connectionString = string.Format("archiveLocation={0}; instanceName={1}; sourceIDs={1}; publicationInterval=333333;", archiveLocation, instanceName);
-                            string query = string.Format("INSERT INTO CustomInputAdapter(NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled) " +
-                                "VALUES({0}, '{1}', 'HistorianAdapters.dll', 'HistorianAdapters.LocalInputAdapter', '{2}', 0, 1)", nodeIDQueryString, adapterName, connectionString);
-                            connection.ExecuteNonQuery(query);
+                            try
+                            {
+                                instanceName = acronym.ToUpper().Trim();
+                                settings = configFile.Settings[string.Format("{0}ArchiveFile", acronym)];
+                                string archiveLocation = FilePath.GetDirectoryName(settings["FileName"].Value);
+                                string adapterName = string.Format("{0}READER", instanceName);
+                                string connectionString = string.Format("archiveLocation={0}; instanceName={1}; sourceIDs={1}; publicationInterval=333333;", archiveLocation, instanceName);
+                                string query = string.Format("INSERT INTO CustomInputAdapter(NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled) " +
+                                    "VALUES({0}, '{1}', 'HistorianAdapters.dll', 'HistorianAdapters.LocalInputAdapter', '{2}', 0, 1)", nodeIDQueryString, adapterName, connectionString);
+                                connection.ExecuteNonQuery(query);
+                            }
+                            catch (Exception ex)
+                            {
+                                processException("LocalOutputAdapter", new EventArgs<Exception>(new InvalidOperationException("Failed to add associated historian reader input adapter for local historian: " + ex.Message, ex)));
+                            }
                         }
                     }
                 }
