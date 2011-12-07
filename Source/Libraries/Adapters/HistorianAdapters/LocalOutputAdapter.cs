@@ -856,7 +856,7 @@ namespace HistorianAdapters
                                 settings = configFile.Settings[string.Format("{0}ArchiveFile", acronym)];
                                 string archiveLocation = FilePath.GetDirectoryName(settings["FileName"].Value);
                                 string adapterName = string.Format("{0}READER", instanceName);
-                                string connectionString = string.Format("archiveLocation={0}; instanceName={1}; sourceIDs={1}; publicationInterval=333333;", archiveLocation, instanceName);
+                                string connectionString = string.Format("archiveLocation={0}; instanceName={1}; sourceIDs={1}; publicationInterval=333333; connectOnDemand=true", archiveLocation, instanceName);
                                 string query = string.Format("INSERT INTO CustomInputAdapter(NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled) " +
                                     "VALUES({0}, '{1}', 'HistorianAdapters.dll', 'HistorianAdapters.LocalInputAdapter', '{2}', 0, 1)", nodeIDQueryString, adapterName, connectionString);
                                 connection.ExecuteNonQuery(query);

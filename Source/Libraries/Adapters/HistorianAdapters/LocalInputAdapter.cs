@@ -398,6 +398,7 @@ namespace HistorianAdapters
             {
                 m_readTimer.Enabled = false;
                 OnStatusMessage("No measurement keys have been requested for reading, historian reader is idle.");
+                OnProcessingComplete();
             }
         }
 
