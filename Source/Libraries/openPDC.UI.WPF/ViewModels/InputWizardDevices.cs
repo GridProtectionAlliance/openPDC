@@ -846,6 +846,8 @@ namespace openPDC.UI.ViewModels
                         AddDigitals = cell.DigitalDefinitions.Count > 0 ? true : false,
                         AddAnalogs = cell.AnalogDefinitions.Count > 0 ? true : false,
                         Existing = existingDevice == null ? false : true,
+                        DigitalLabels = GetAnalogOrDigitalLables(cell.DigitalDefinitions),
+                        AnalogLabels = GetAnalogOrDigitalLables(cell.AnalogDefinitions),
                         PhasorList = new ObservableCollection<openPDC.UI.DataModels.InputWizardDevicePhasor>((from phasor in cell.PhasorDefinitions
                                                                                                               select new openPDC.UI.DataModels.InputWizardDevicePhasor()
                                                                                  {
@@ -873,6 +875,30 @@ namespace openPDC.UI.ViewModels
                 ConfigurationSummary += " Device";
                 ConnectToConcentrator = false;
             }
+        }
+
+        private List<string> GetAnalogOrDigitalLables(object analogOrDigitalCollection)
+        {
+            List<string> returnCollection = new List<string>();
+
+            if (analogOrDigitalCollection is DigitalDefinitionCollection)
+            {
+                DigitalDefinitionCollection collection = (DigitalDefinitionCollection)analogOrDigitalCollection;
+                foreach (IDigitalDefinition digital in collection)
+                {
+                    returnCollection.Add(digital.Label);
+                }
+            }
+            else if (analogOrDigitalCollection is AnalogDefinitionCollection)
+            {
+                AnalogDefinitionCollection collection = (AnalogDefinitionCollection)analogOrDigitalCollection;
+                foreach (IAnalogDefinition analog in collection)
+                {
+                    returnCollection.Add(analog.Label);
+                }
+            }
+
+            return returnCollection;
         }
 
         /// <summary>
@@ -1185,13 +1211,13 @@ namespace openPDC.UI.ViewModels
                             device.ParentID = PdcID;
                             device.ConnectionString = string.Empty;
                             // IF it is connected to concentrator then do not send initialize command when device is saved.
-                            Device.SaveWithAnalogsDigitals(database, device, false, inputWizardDevice.DigitalCount, inputWizardDevice.AnalogCount);
+                            Device.SaveWithAnalogsDigitals(database, device, false, inputWizardDevice.DigitalCount, inputWizardDevice.AnalogCount, inputWizardDevice.DigitalLabels, inputWizardDevice.AnalogLabels);
                         }
                         else
                         {
                             device.ConnectionString = GenerateConnectionString();
                             //If device is direct connected then notify service about it and hence send initialize.
-                            Device.SaveWithAnalogsDigitals(database, device, true, inputWizardDevice.DigitalCount, inputWizardDevice.AnalogCount);
+                            Device.SaveWithAnalogsDigitals(database, device, true, inputWizardDevice.DigitalCount, inputWizardDevice.AnalogCount, inputWizardDevice.DigitalLabels, inputWizardDevice.AnalogLabels);
                         }
 
                         if (device.ID == 0)

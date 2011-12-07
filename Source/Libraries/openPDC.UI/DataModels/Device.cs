@@ -1112,7 +1112,7 @@ namespace openPDC.UI.DataModels
         /// <param name="digitalCount">Number of digital measurements to add.</param>
         /// <param name="analogCount">Number of analog measurements to add.</param>
         /// <returns>String, for display use, indicating success.</returns>
-        public static string SaveWithAnalogsDigitals(AdoDataConnection database, Device device, bool notifyService, int digitalCount, int analogCount)
+        public static string SaveWithAnalogsDigitals(AdoDataConnection database, Device device, bool notifyService, int digitalCount, int analogCount, List<string> digitalLabels = null, List<string> analogLabels = null)
         {
             bool createdConnection = false;
             string query;
@@ -1213,7 +1213,10 @@ namespace openPDC.UI.DataModels
                                     measurement.HistorianID = savedDevice.HistorianID;
                                     measurement.DeviceID = savedDevice.ID;
                                     measurement.PointTag = savedDevice.CompanyAcronym + "_" + savedDevice.Acronym + ":" + savedDevice.VendorAcronym + "A" + i.ToString();
-                                    measurement.AlternateTag = string.Empty;
+                                    if (analogLabels != null && analogLabels[i - 1] != null)
+                                        measurement.AlternateTag = analogLabels[i - 1];
+                                    else
+                                        measurement.AlternateTag = string.Empty;
                                     measurement.SignalReference = savedDevice.Acronym + "-AV" + i.ToString();
                                     measurement.SignalTypeID = signal.ID;
                                     measurement.PhasorSourceIndex = (int?)null;
@@ -1235,7 +1238,10 @@ namespace openPDC.UI.DataModels
                                     measurement.HistorianID = savedDevice.HistorianID;
                                     measurement.DeviceID = savedDevice.ID;
                                     measurement.PointTag = savedDevice.CompanyAcronym + "_" + savedDevice.Acronym + ":" + savedDevice.VendorAcronym + "D" + i.ToString();
-                                    measurement.AlternateTag = string.Empty;
+                                    if (digitalLabels != null && digitalLabels[i - 1] != null)
+                                        measurement.AlternateTag = digitalLabels[i - 1];
+                                    else
+                                        measurement.AlternateTag = string.Empty;
                                     measurement.SignalReference = savedDevice.Acronym + "-DV" + i.ToString();
                                     measurement.SignalTypeID = signal.ID;
                                     measurement.PhasorSourceIndex = (int?)null;

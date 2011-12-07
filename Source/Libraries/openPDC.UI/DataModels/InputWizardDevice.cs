@@ -53,6 +53,8 @@ namespace openPDC.UI.DataModels
         private bool m_existing;
         private string m_statusColor;
         private ObservableCollection<InputWizardDevicePhasor> m_phasorList;
+        private List<string> m_digitalLabels;
+        private List<string> m_analogLabels;
 
         #endregion
 
@@ -304,6 +306,36 @@ namespace openPDC.UI.DataModels
             {
                 m_phasorList = value;
                 OnPropertyChanged("PhasorList");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets <see cref="InputWizardDevice"/> DigitalLabels.
+        /// </summary>
+        public List<string> DigitalLabels
+        {
+            get
+            {
+                return m_digitalLabels;
+            }
+            set
+            {
+                m_digitalLabels = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets <see cref="InputWizardDevice"/> AnalogLabels.
+        /// </summary>
+        public List<string> AnalogLabels
+        {
+            get
+            {
+                return m_analogLabels;
+            }
+            set
+            {
+                m_analogLabels = value;
             }
         }
 
