@@ -1543,12 +1543,16 @@ namespace TVA.PhasorProtocols
                 // Establish protocol specific frame parser
                 InitializeFrameParser(settings);
 
-                // Establish command channel connection, if defined...
                 if (settings.TryGetValue("commandChannel", out setting))
+                {
+                    // Establish command channel connection, if defined...
                     InitializeCommandChannel(setting);
-
-                // Establish data channel connection - must be defined.
-                InitializeDataChannel(settings);
+                }
+                else
+                {
+                    // Establish data channel connection - must be defined.
+                    InitializeDataChannel(settings);
+                }
 
                 m_rateCalcTimer.Enabled = true;
                 m_enabled = true;
@@ -2531,7 +2535,16 @@ namespace TVA.PhasorProtocols
 
         private void m_commandChannel_ConnectionEstablished(object sender, EventArgs e)
         {
-            ClientConnectedHandler();
+            try
+            {
+                // We'll start data channel once command channel has been established...
+                InitializeDataChannel(m_connectionString.ParseKeyValuePairs());
+                ClientConnectedHandler();
+            }
+            catch (Exception ex)
+            {
+                OnConnectionException(ex, m_connectionAttempts);
+            }
         }
 
         private void m_commandChannel_ConnectionAttempt(object sender, EventArgs e)
