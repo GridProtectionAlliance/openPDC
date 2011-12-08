@@ -20,6 +20,35 @@
     <StackPanel Orientation="Vertical">
 
         <Grid x:Name="GridDetailView" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="4" DataContext="{Binding Path=CurrentItem, Mode=TwoWay}" DataContextChanged="GridDetailView_DataContextChanged">
+            
+            <!--<Grid.Resources>
+                <Style x:Key="{x:Type ListBoxItem}" TargetType="ListBoxItem">
+                    <Setter Property="SnapsToDevicePixels" Value="true"/>
+                    <Setter Property="OverridesDefaultStyle" Value="true"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock x:Name="TextBlockLabel" Text="{Binding}" Visibility="Visible" HorizontalAlignment="Left"/>
+                                    <TextBox x:Name="TextBoxLabel" Width="125" Text="{Binding ElementName=TextBlockLabel, Path=Text, Mode=TwoWay}" Visibility="Collapsed" CharacterCasing="Upper"/>
+                                </StackPanel>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter TargetName="TextBoxLabel" Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="TextBlockLabel" Property="Visibility" Value="Collapsed"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="false">
+                                        <Setter TargetName="TextBoxLabel" Property="Visibility" Value="Collapsed"/>
+                                        <Setter TargetName="TextBlockLabel" Property="Visibility" Value="Visible"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+            </Grid.Resources>-->        
+            
             <Grid.BindingGroup>
                 <BindingGroup Name="input"/>
             </Grid.BindingGroup>
@@ -40,8 +69,9 @@
             </Grid.RowDefinitions>
 
             <!--Frist Row-->
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=Label}" CharacterCasing="Upper"  MaxLength="200" />
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" >
+            <TextBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Text="{tsfBinding:Column Path=Label}" CharacterCasing="Upper" TextWrapping="Wrap" Height="100" MaxLength="200" />            
+            <!--<ListBox ItemsSource="{tsfBinding:Column Path=LabelCollection}" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="175" Height="90"/>-->            
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top">
                 <TextBlock Text="Label" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
@@ -49,11 +79,11 @@
                 <TextBlock Text="Load Order" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=LoadOrder}" />
+            <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=LoadOrder}" VerticalAlignment="Top"/>
             
             <!--Second Row-->
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=MaskValue}"/>
-            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" >
+            <TextBox Grid.Row="1" Grid.Column="3" Text="{tsfBinding:Column Path=MaskValue}" VerticalAlignment="Top"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" >
                 <TextBlock Text="Mask Value" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
@@ -64,10 +94,10 @@
         <uc:DetailViewFooterUserControl x:Name="UserControlDetailViewFooter" DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
             SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
 
-        <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="600"
+        <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="460" VerticalScrollBarVisibility="Auto" Width="600"
             PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Sorting="DataGrid_Sorting">
             <sdk:DataGrid.Columns>
-                <sdk:DataGridTextColumn Header="Label" Width="*" Binding="{tsfBinding:Column Path=Label}"/>
+                <sdk:DataGridTextColumn Header="Label" Width="*" Binding="{tsfBinding:Column Path=Label}" IsReadOnly="True"/>
                 <sdk:DataGridTextColumn Header=" Mask value" Width="*" Binding="{tsfBinding:Column Path=MaskValue}" />
                 <sdk:DataGridTextColumn Header="Load Order" Width="2*" Binding="{tsfBinding:Column Path=LoadOrder}" />
             </sdk:DataGrid.Columns>

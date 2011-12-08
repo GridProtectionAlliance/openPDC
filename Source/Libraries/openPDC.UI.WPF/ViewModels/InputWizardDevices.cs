@@ -36,6 +36,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
+using openPDC.UI.UserControls;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
 using TimeSeriesFramework.UI.DataModels;
@@ -80,6 +81,7 @@ namespace openPDC.UI.ViewModels
         private Dictionary<int, string> m_historianLookupList;
         private Dictionary<int, string> m_interconnectionLookupList;
         private Dictionary<int, string> m_protocolLookupList;
+        private ObservableCollection<Protocol> m_protocolList;
         private Dictionary<int, string> m_vendorDeviceLookupList;
         private string m_connectionFileName;
         private string m_configurationFileName;
@@ -638,6 +640,7 @@ namespace openPDC.UI.ViewModels
             m_interconnectionLookupList = Interconnection.GetLookupList(null, true);
             m_protocolLookupList = Protocol.GetLookupList(null, true);
             m_vendorDeviceLookupList = VendorDevice.GetLookupList(null, true);
+            m_protocolList = Protocol.Load(null);
 
             if (m_companyLookupList.Count > 0)
                 CompanyID = m_companyLookupList.First().Key;
@@ -739,7 +742,7 @@ namespace openPDC.UI.ViewModels
                             AccessID = connectionSettings.PmuID;
                             ProtocolAcronym = connectionSettings.PhasorProtocol.ToString();
                             if (m_protocolLookupList.Count > 0)
-                                ProtocolID = m_protocolLookupList.FirstOrDefault(p => p.Value == connectionSettings.PhasorProtocol.ToString()).Key;
+                                ProtocolID = m_protocolList.FirstOrDefault(p => p.Acronym.ToLower() == connectionSettings.PhasorProtocol.ToString().ToLower()).ID; // m_protocolLookupList.FirstOrDefault(p => p.Value == connectionSettings.PhasorProtocol.ToString()).Key;
                         }
                     }
                 }
@@ -875,6 +878,8 @@ namespace openPDC.UI.ViewModels
                 ConfigurationSummary += " Device";
                 ConnectToConcentrator = false;
             }
+
+            Popup(ConfigurationSummary, "Parsed Configuration Successfully.", MessageBoxImage.Information);
         }
 
         private List<string> GetAnalogOrDigitalLables(object analogOrDigitalCollection)
@@ -1008,6 +1013,7 @@ namespace openPDC.UI.ViewModels
 
             try
             {
+                Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
                 s_responseWaitHandle = new ManualResetEvent(false);
 
                 windowsServiceClient = TimeSeriesFramework.UI.CommonFunctions.GetWindowsServiceClient();
@@ -1059,6 +1065,7 @@ namespace openPDC.UI.ViewModels
             }
             finally
             {
+                Mouse.OverrideCursor = null;
                 if (database != null)
                     database.Dispose();
 
@@ -1257,6 +1264,9 @@ namespace openPDC.UI.ViewModels
                     if (m_pdcDevice != null)
                         Device.NotifyService(m_pdcDevice);
                 }
+
+                DeviceListUserControl deviceListUserControl = new DeviceListUserControl();
+                CommonFunctions.LoadUserControl(deviceListUserControl, "Browse Devices");
 
             }
             catch (Exception ex)

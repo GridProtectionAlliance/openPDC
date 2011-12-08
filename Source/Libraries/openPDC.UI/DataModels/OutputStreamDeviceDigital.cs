@@ -40,7 +40,7 @@ namespace openPDC.UI.DataModels
     /// </summary>
     public class OutputStreamDeviceDigital : DataModelBase
     {
-        #region[Members]
+        #region [Members]
 
         private Guid m_nodeID;
         private int m_outputStreamDeviceID;
@@ -55,7 +55,7 @@ namespace openPDC.UI.DataModels
 
         #endregion
 
-        #region[properties]
+        #region [Properties]
 
         /// <summary>
         /// Gets or sets <see cref="OutputStreamDeviceDigital"/> NodeID.
@@ -122,7 +122,11 @@ namespace openPDC.UI.DataModels
             }
             set
             {
-                m_label = value;
+                m_label = string.Empty;
+                foreach (string label in value.Replace("\r\n", " ").Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    m_label += label.ToUpper() + Environment.NewLine;
+                }
                 OnPropertyChanged("Label");
             }
         }
@@ -321,6 +325,19 @@ namespace openPDC.UI.DataModels
             try
             {
                 createdConnection = CreateConnection(ref database);
+
+                int i = 0;
+                string paddedLabel = string.Empty;
+                foreach (string label in outputStreamDeviceDigital.Label.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (i >= 8)
+                        break;
+
+                    paddedLabel += label.ToUpper().PadRight(16);
+                    i++;
+                }
+
+                outputStreamDeviceDigital.Label = paddedLabel.PadRight(128);
 
                 if (outputStreamDeviceDigital.ID == 0)
                 {

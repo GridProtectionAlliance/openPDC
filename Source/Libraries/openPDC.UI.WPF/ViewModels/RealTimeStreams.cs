@@ -523,12 +523,13 @@ namespace openPDC.UI.ViewModels
 
                     if (!s_responseWaitHandle.WaitOne(10000))
                     {
-                        throw new ApplicationException("Response timeout occured. Waited 10 seconds for response.");
+                        TemporalSupportEnabled = false;
+                        //throw new ApplicationException("Response timeout occured. Waited 10 seconds for response.");
                     }
                 }
                 else
                 {
-                    throw new ApplicationException("Connection timeout occured. Tried 10 times to connect to windows service.");
+                    //throw new ApplicationException("Connection timeout occured. Tried 10 times to connect to windows service.");
                 }
             }
             catch (Exception ex)

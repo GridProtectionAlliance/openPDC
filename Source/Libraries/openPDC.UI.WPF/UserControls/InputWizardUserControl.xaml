@@ -165,7 +165,7 @@
 
                 <TextBlock Text="OR" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="{StaticResource LargeTextSize}" HorizontalAlignment="Center" Margin="0"/>
 
-                <Button Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Content="Create Configuration" HorizontalAlignment="Left" Width="175" 
+                <Button Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Content="Manage Configuration" HorizontalAlignment="Left" Width="175" 
                        Command="{Binding Path=DataContext.ManualConfigurationCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" />
 
                 <StackPanel Orientation="Horizontal" x:Name="StackPanelSummary" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3">
