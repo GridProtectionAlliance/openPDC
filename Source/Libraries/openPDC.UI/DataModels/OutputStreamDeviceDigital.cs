@@ -125,7 +125,10 @@ namespace openPDC.UI.DataModels
                 m_label = string.Empty;
                 foreach (string label in value.Replace("\r\n", " ").Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    m_label += label.ToUpper() + Environment.NewLine;
+                    if (label.Length > 16)
+                        m_label += label.Substring(0, 16).ToUpper() + Environment.NewLine + label.Substring(16).ToUpper() + Environment.NewLine;
+                    else
+                        m_label += label.ToUpper() + Environment.NewLine;
                 }
                 OnPropertyChanged("Label");
             }
@@ -333,7 +336,11 @@ namespace openPDC.UI.DataModels
                     if (i >= 8)
                         break;
 
-                    paddedLabel += label.ToUpper().PadRight(16);
+                    if (label.Length > 16)
+                        paddedLabel += label.Substring(0, 16).ToUpper();
+                    else
+                        paddedLabel += label.ToUpper().PadRight(16);
+
                     i++;
                 }
 
