@@ -1111,6 +1111,8 @@ namespace openPDC.UI.DataModels
         /// <param name="notifyService">Boolean value to notify service if needed.</param>
         /// <param name="digitalCount">Number of digital measurements to add.</param>
         /// <param name="analogCount">Number of analog measurements to add.</param>
+        /// <param name="digitalLabels">Collection of digital labels associated with a device in configuration frame.</param>
+        /// <param name="analogLabels">Collection of analog labels associated with a device in configuration frame.</param>
         /// <returns>String, for display use, indicating success.</returns>
         public static string SaveWithAnalogsDigitals(AdoDataConnection database, Device device, bool notifyService, int digitalCount, int analogCount, List<string> digitalLabels = null, List<string> analogLabels = null)
         {

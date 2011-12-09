@@ -131,8 +131,7 @@ namespace openPDC.UI.DataModels
 
         /// <summary>
         /// Gets or sets <see cref="OutputStreamDeviceDigital"/> Display Label.
-        /// </summary>
-        [Required(ErrorMessage = "OutputStreamDeviceDigital Label is a required field, please provide value.")]
+        /// </summary>        
         [StringLength(200, ErrorMessage = "OutputStreamDeviceDigital Label cannot exceed 200 characters.")]
         public string DisplayLabel
         {

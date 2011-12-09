@@ -38,7 +38,7 @@ namespace openPDC.UI.UserControls
 
         #endregion
 
-        #region[Constructor]
+        #region [ Constructor ]
 
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamDeviceDigitalUserControl"/>
@@ -48,11 +48,17 @@ namespace openPDC.UI.UserControls
             InitializeComponent();
             m_dataContext = new OutputStreamDeviceDigitals(outputStreamDeviceID, 5, true);
             this.DataContext = m_dataContext;
+            DataGridList.SelectionChanged += new SelectionChangedEventHandler(DataGridList_SelectionChanged);
         }
 
         #endregion
 
-        #region[Methods]
+        #region [ Methods ]
+
+        private void DataGridList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TextBoxLabel.ScrollToHome();
+        }
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
