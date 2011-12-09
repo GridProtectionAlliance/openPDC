@@ -10,30 +10,40 @@
         <StackPanel DockPanel.Dock="Bottom">
             <TextBlock Text="Please select the type of database you would like to have set up." TextAlignment="Center" Margin="20,0,20,5" TextWrapping="Wrap" />
             <StackPanel HorizontalAlignment="Center">
-                <RadioButton Content="Access (32-bit only)" Height="18" Checked="AccessDatabaseRadioButton_Checked" Name="m_accessDatabaseRadioButton" />
-                <RadioButton Content="SQL Server" Height="18" IsChecked="True" Checked="SqlServerDatabaseRadioButton_Checked" />
-                <RadioButton Content="MySQL" Height="18" Checked="MySqlRadioButton_Checked" />
-                <RadioButton Content="Oracle" Height="18" Checked="OracleRadioButton_Checked" />
-                <RadioButton Content="SQLite" Height="18" Checked="SqliteRadioButton_Checked" Margin="0,0,0,5" />
-                <CheckBox Content="Run initial data script" Height="18" IsChecked="True" Name="m_initialDataScriptCheckBox" Checked="InitialDataScriptCheckBox_Checked" Unchecked="InitialDataScriptCheckBox_Unchecked" ToolTip="Check this box to load initial settings (e.g., default signal types, etc.) into the new database." />
-                <CheckBox Content="Run sample data script" Height="18" Margin="15,0,0,0" IsEnabled="{Binding ElementName=m_initialDataScriptCheckBox, Path=IsChecked}" Checked="SampleDataScriptCheckBox_Checked" Unchecked="SampleDataScriptCheckBox_Unchecked" Name="m_sampleDataScriptCheckBox" ToolTip="Check this box to load one sample device into the new database." Click="SampleDataScriptCheckBox_Click" />
-                <CheckBox Content="Run audit log trigger scripts" Height="18" Margin="0,0,0,0" Checked="EnableAuditLogCheckBox_Checked" Unchecked="EnableAuditLogCheckBox_Unchecked" Name="m_enableAuditLogCheckBox" Click="EnableAuditLogCheckBox_Click">
-                    <CheckBox.ToolTip>
-                        <TextBlock>                            
-                            Check this box to run the scripts that will enable audit logging on your database.
-                            <LineBreak/>
-                            <LineBreak/>
-                            Enabling auditing causes all configuration changes to be logged by user which may
-                            <LineBreak />                            
-                            be required for production deployments with compliance implications.
-                            <LineBreak />
-                            <LineBreak />
-                            However, this level of logging can degrade performance in the openPDC Manager, 
-                            <LineBreak />
-                            so this should only be enabled if needed.
-                        </TextBlock>
-                    </CheckBox.ToolTip>
-                </CheckBox>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
+                    <StackPanel HorizontalAlignment="Center" Margin="0,0,5,0">
+                        <RadioButton Content="SQL Server" Height="18" IsChecked="True" GroupName="DatabaseType" Checked="SqlServerDatabaseRadioButton_Checked" />
+                        <RadioButton Content="MySQL" Height="18" GroupName="DatabaseType" Checked="MySqlRadioButton_Checked" />
+                        <RadioButton Content="Access (32-bit only)" GroupName="DatabaseType" Checked="AccessDatabaseRadioButton_Checked" Name="m_accessDatabaseRadioButton" />
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center" Margin="5,0,0,0">
+                        <RadioButton Content="Oracle" Height="18" GroupName="DatabaseType" Checked="OracleRadioButton_Checked" />
+                        <RadioButton Content="SQLite" Height="18" GroupName="DatabaseType" Checked="SqliteRadioButton_Checked" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center">
+                    <StackPanel>
+                        <CheckBox Content="Run initial data script" Height="18" IsChecked="True" Name="m_initialDataScriptCheckBox" Checked="InitialDataScriptCheckBox_Checked" Unchecked="InitialDataScriptCheckBox_Unchecked" ToolTip="Check this box to load initial settings (e.g., default signal types, etc.) into the new database." />
+                        <CheckBox Content="Run sample data script" Height="18" Margin="15,0,0,0" IsEnabled="{Binding ElementName=m_initialDataScriptCheckBox, Path=IsChecked}" Checked="SampleDataScriptCheckBox_Checked" Unchecked="SampleDataScriptCheckBox_Unchecked" Name="m_sampleDataScriptCheckBox" ToolTip="Check this box to load one sample device into the new database." Click="SampleDataScriptCheckBox_Click" />
+                        <CheckBox Content="Run audit log trigger scripts" Height="18" Margin="0,0,0,0" Checked="EnableAuditLogCheckBox_Checked" Unchecked="EnableAuditLogCheckBox_Unchecked" Name="m_enableAuditLogCheckBox" Click="EnableAuditLogCheckBox_Click">
+                            <CheckBox.ToolTip>
+                                <TextBlock>                            
+                                    Check this box to run the scripts that will enable audit logging on your database.
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Enabling auditing causes all configuration changes to be logged by user which may
+                                    <LineBreak />                            
+                                    be required for production deployments with compliance implications.
+                                    <LineBreak />
+                                    <LineBreak />
+                                    However, this level of logging can degrade performance in the openPDC Manager, 
+                                    <LineBreak />
+                                    so this should only be enabled if needed.
+                                </TextBlock>
+                            </CheckBox.ToolTip>
+                        </CheckBox>
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
             <TextBlock DockPanel.Dock="Bottom" TextAlignment="Center" TextWrapping="Wrap" Margin="5,5,5,0" Name="m_newDatabaseWarning">
                 Creating a new database for SQL Server or MySQL requires that the database system
