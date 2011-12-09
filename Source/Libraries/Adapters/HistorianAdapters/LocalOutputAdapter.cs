@@ -240,31 +240,34 @@ namespace HistorianAdapters
         {
             base.RefreshMetadata();
 
-            bool queueEnabled = InternalProcessQueue.Enabled;
-
-            try
+            if (m_archive != null && m_archive.IsOpen && m_archive.StateFile != null && m_archive.StateFile.IsOpen && m_archive.MetadataFile != null && m_archive.MetadataFile.IsOpen)
             {
-                InternalProcessQueue.Stop();
+                bool queueEnabled = InternalProcessQueue.Enabled;
 
-                // Synchronously refresh the metabase.
-                lock (m_metadataProviders.Adapters)
+                try
                 {
-                    foreach (IMetadataProvider provider in m_metadataProviders.Adapters)
+                    InternalProcessQueue.Stop();
+
+                    // Synchronously refresh the metabase.
+                    lock (m_metadataProviders.Adapters)
                     {
-                        provider.Refresh();
+                        foreach (IMetadataProvider provider in m_metadataProviders.Adapters)
+                        {
+                            provider.Refresh();
+                        }
+                    }
+
+                    // Wait for the metabase to synchronize.
+                    while (m_archive.StateFile.RecordsOnDisk != m_archive.MetadataFile.RecordsOnDisk)
+                    {
+                        Thread.Sleep(100);
                     }
                 }
-
-                // Wait for the metabase to synchronize.
-                while (m_archive.StateFile.RecordsOnDisk != m_archive.MetadataFile.RecordsOnDisk)
+                finally
                 {
-                    Thread.Sleep(100);
+                    if (queueEnabled)
+                        InternalProcessQueue.Start();
                 }
-            }
-            finally
-            {
-                if (queueEnabled)
-                    InternalProcessQueue.Start();
             }
         }
 
