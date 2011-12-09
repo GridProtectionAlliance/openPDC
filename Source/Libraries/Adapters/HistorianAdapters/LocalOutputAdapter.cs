@@ -909,6 +909,9 @@ namespace HistorianAdapters
 
                     if (name.EndsWith("TimeSeriesDataService") && validHistorians.BinarySearch(name.Substring(0, name.IndexOf("TimeSeriesDataService"))) < 0)
                         categoriesToRemove.Add(name);
+
+                    if (name.EndsWith("HadoopReplicationProvider") && validHistorians.BinarySearch(name.Substring(0, name.IndexOf("HadoopReplicationProvider"))) < 0)
+                        categoriesToRemove.Add(name);
                 }
 
                 if (categoriesToRemove.Count > 0)
