@@ -2466,6 +2466,11 @@
             </summary>
             <exception cref="T:System.InvalidOperationException"><see cref="T:TVA.Historian.Files.ArchiveFile"/> is not <see cref="F:TVA.Historian.Files.ArchiveFileType.Active"/>.</exception>
         </member>
+        <member name="M:TVA.Historian.Files.ArchiveFile.SynchronizeStateFile">
+            <summary>
+            Requests a resynchronization of the state file.
+            </summary>
+        </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.WriteData(TVA.Historian.IDataPoint)">
             <summary>
             Writes the specified <paramref name="dataPoint"/> to the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
