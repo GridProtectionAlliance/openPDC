@@ -31,6 +31,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using TimeSeriesFramework.UI;
+using TVA;
 using TVA.Data;
 
 namespace openPDC.UI.DataModels
@@ -126,7 +127,10 @@ namespace openPDC.UI.DataModels
                 foreach (string label in value.Replace("\r\n", " ").Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (label.Length > 16)
-                        m_label += label.Substring(0, 16).ToUpper() + Environment.NewLine + label.Substring(16).ToUpper() + Environment.NewLine;
+                    {
+                        foreach (string str in label.GetSegments(16))
+                            m_label += str.ToUpper() + Environment.NewLine;
+                    }
                     else
                         m_label += label.ToUpper() + Environment.NewLine;
                 }
@@ -336,10 +340,11 @@ namespace openPDC.UI.DataModels
                     if (i >= 8)
                         break;
 
-                    if (label.Length > 16)
-                        paddedLabel += label.Substring(0, 16).ToUpper();
+                    string temp = label.Replace(" ", "");
+                    if (temp.Length > 16)
+                        paddedLabel += temp.Substring(0, 16).ToUpper();
                     else
-                        paddedLabel += label.ToUpper().PadRight(16);
+                        paddedLabel += temp.ToUpper().PadRight(16);
 
                     i++;
                 }
