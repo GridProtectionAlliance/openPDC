@@ -467,11 +467,11 @@ namespace ConfigurationSetupUtility.Screens
             configFile.Load(configFileName);
 
             XmlNode categorizedSettings = configFile.SelectSingleNode("configuration/categorizedSettings");
-            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings/add");
+            XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
 
             foreach (XmlNode child in systemSettings.ChildNodes)
             {
-                if (child.Attributes != null)
+                if (child.Attributes != null && child.Attributes["name"] != null)
                 {
                     if (child.Attributes["name"].Value == "DataProviderString")
                     {
