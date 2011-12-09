@@ -67,6 +67,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TVA;
@@ -93,6 +94,8 @@ namespace HistorianAdapters
         private DataServices m_dataServices;
         private MetadataProviders m_metadataProviders;
         private ReplicationProviders m_replicationProviders;
+        private object m_queuedMetadataRefreshPending;
+        private AutoResetEvent m_metadataRefreshComplete;
         private bool m_autoRefreshMetadata;
         private string m_instanceName;
         private string m_archivePath;
@@ -110,6 +113,8 @@ namespace HistorianAdapters
             : base()
         {
             m_autoRefreshMetadata = true;
+            m_queuedMetadataRefreshPending = new object();
+            m_metadataRefreshComplete = new AutoResetEvent(true);
             m_archive = new ArchiveFile();
             m_archive.MetadataFile = new MetadataFile();
             m_archive.StateFile = new StateFile();
@@ -238,14 +243,38 @@ namespace HistorianAdapters
         [AdapterCommand("Refreshes metadata using all available and enabled providers.")]
         public override void RefreshMetadata()
         {
-            base.RefreshMetadata();
+            Task.Factory.StartNew(QueueMetadataRefresh);
+        }
 
-            if (m_archive != null && m_archive.IsOpen && m_archive.StateFile != null && m_archive.StateFile.IsOpen && m_archive.MetadataFile != null && m_archive.MetadataFile.IsOpen)
+        private void QueueMetadataRefresh()
+        {
+            // Queue up a metadata refresh unless another thread has already requested one
+            if (Monitor.TryEnter(m_queuedMetadataRefreshPending))
             {
-                bool queueEnabled = InternalProcessQueue.Enabled;
-
                 try
                 {
+                    // Queue new metadata refresh after waiting for any prior refresh to complete
+                    if (m_metadataRefreshComplete.WaitOne())
+                        Task.Factory.StartNew(ExecuteMetadataRefresh);
+                }
+                finally
+                {
+                    Monitor.Exit(m_queuedMetadataRefreshPending);
+                }
+            }
+        }
+
+        private void ExecuteMetadataRefresh()
+        {
+            bool queueEnabled = false;
+
+            try
+            {
+                base.RefreshMetadata();
+
+                if (m_archive != null && m_archive.IsOpen && m_archive.StateFile != null && m_archive.StateFile.IsOpen && m_archive.MetadataFile != null && m_archive.MetadataFile.IsOpen)
+                {
+                    queueEnabled = InternalProcessQueue.Enabled;
                     InternalProcessQueue.Stop();
 
                     // Synchronously refresh the metabase.
@@ -257,17 +286,22 @@ namespace HistorianAdapters
                         }
                     }
 
-                    // Wait for the metabase to synchronize.
-                    while (m_archive.StateFile.RecordsOnDisk != m_archive.MetadataFile.RecordsOnDisk)
+                    // Wait for the metabase to synchronize, up to five seconds
+                    int waitCounts = 0;
+
+                    while (m_archive.StateFile.RecordsOnDisk != m_archive.MetadataFile.RecordsOnDisk || waitCounts < 50)
                     {
                         Thread.Sleep(100);
+                        waitCounts++;
                     }
                 }
-                finally
-                {
-                    if (queueEnabled)
-                        InternalProcessQueue.Start();
-                }
+            }
+            finally
+            {
+                m_metadataRefreshComplete.Set();
+
+                if (queueEnabled)
+                    InternalProcessQueue.Start();
             }
         }
 
@@ -420,6 +454,11 @@ namespace HistorianAdapters
                                 m_archive.IntercomFile.Dispose();
                                 m_archive.IntercomFile = null;
                             }
+
+                            if (m_metadataRefreshComplete != null)
+                                m_metadataRefreshComplete.Dispose();
+
+                            m_metadataRefreshComplete = null;
                         }
                     }
                 }
@@ -448,7 +487,8 @@ namespace HistorianAdapters
 
             if (m_autoRefreshMetadata)
             {
-                RefreshMetadata();
+                // Kick off meta-data refresh, but don't wait around for it...
+                Task.Factory.StartNew(RefreshMetadata);
                 m_autoRefreshMetadata = false;
             }
 
