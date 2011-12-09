@@ -638,7 +638,7 @@ namespace openPDC.UI.ViewModels
             m_companyLookupList = Company.GetLookupList(null, true);
             m_historianLookupList = Historian.GetLookupList(null, true, false);
             m_interconnectionLookupList = Interconnection.GetLookupList(null, true);
-            m_protocolLookupList = Protocol.GetLookupList(null, true);
+            m_protocolLookupList = Protocol.GetLookupList(null, false);
             m_vendorDeviceLookupList = VendorDevice.GetLookupList(null, true);
             m_protocolList = Protocol.Load(null);
 
@@ -1029,7 +1029,7 @@ namespace openPDC.UI.ViewModels
                     connectionString += "accessid=" + AccessID + ";";
 
                     if (!connectionString.ToLower().Contains("phasorprotocol"))
-                        connectionString += "phasorprotocol=" + ProtocolAcronym + ";";
+                        connectionString += "phasorprotocol=" + m_protocolList.FirstOrDefault(p => p.ID == ProtocolID).Acronym + ";";
 
                     windowsServiceClient.Helper.SendRequest(string.Format("invoke 0 requestdeviceconfiguration \"{0}\"", connectionString));
 
@@ -1037,7 +1037,9 @@ namespace openPDC.UI.ViewModels
                     {
                         if (m_requestConfigurationAttachment is ConfigurationErrorFrame)
                         {
-                            throw new ApplicationException("Received configuration error frame." + Environment.NewLine + m_requestConfigurationError);
+                            Thread.Sleep(3000);
+                            m_requestConfigurationError = "Received configuration error frame." + Environment.NewLine + m_requestConfigurationError;
+                            throw new ApplicationException(m_requestConfigurationError);
                         }
                         else if (m_requestConfigurationAttachment is IConfigurationFrame)
                         {
@@ -1108,7 +1110,9 @@ namespace openPDC.UI.ViewModels
         private void Helper_ReceivedServiceUpdate(object sender, EventArgs<UpdateType, string> e)
         {
             if (e.Argument2.StartsWith("[PHASOR!SERVICES]") && !e.Argument2.Contains("*"))
+            {
                 m_requestConfigurationError += e.Argument2.Replace("[PHASOR!SERVICES]", "").Replace("\r\n\r\n", "\r\n");
+            }
         }
 
         /// <summary>
@@ -1151,7 +1155,6 @@ namespace openPDC.UI.ViewModels
                     device.HistorianID = HistorianID == 0 ? (int?)null : HistorianID;
                     device.ProtocolID = ProtocolID == 0 ? (int?)null : ProtocolID;
                     device.InterconnectionID = InterconnectionID == 0 ? (int?)null : InterconnectionID;
-                    device.AccessID = AccessID;
                     device.SkipDisableRealTimeData = SkipDisableRealTimeData;
                     device.ConnectionString = GenerateConnectionString();
                     device.Enabled = true;
