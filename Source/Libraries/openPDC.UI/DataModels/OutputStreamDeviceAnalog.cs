@@ -41,7 +41,7 @@ namespace openPDC.UI.DataModels
     /// </summary>
     public class OutputStreamDeviceAnalog : DataModelBase
     {
-        # region[Members]
+        #region [ Members ]
 
         private Guid m_nodeID;
         private int m_outputStreamDeviceID;
@@ -58,7 +58,7 @@ namespace openPDC.UI.DataModels
 
         #endregion
 
-        #region [properties]
+        #region [ Properties ]
 
         /// <summary>
         /// Gets or sets the current <see cref="OutputStreamDeviceAnalog"/>'s NodeID.
@@ -257,7 +257,7 @@ namespace openPDC.UI.DataModels
 
         #endregion
 
-        #region[Static]
+        #region [ Static ]
 
         // Static Methods
 

@@ -30,6 +30,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Linq;
 using TimeSeriesFramework.UI;
 using TVA;
 using TVA.Data;
@@ -41,7 +42,7 @@ namespace openPDC.UI.DataModels
     /// </summary>
     public class OutputStreamDeviceDigital : DataModelBase
     {
-        #region [Members]
+        #region [ Members ]
 
         private Guid m_nodeID;
         private int m_outputStreamDeviceID;
@@ -56,7 +57,7 @@ namespace openPDC.UI.DataModels
 
         #endregion
 
-        #region [Properties]
+        #region [ Properties ]
 
         /// <summary>
         /// Gets or sets <see cref="OutputStreamDeviceDigital"/> NodeID.
@@ -123,18 +124,26 @@ namespace openPDC.UI.DataModels
             }
             set
             {
-                m_label = string.Empty;
-                foreach (string label in value.Replace("\r\n", " ").Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    if (label.Length > 16)
-                    {
-                        foreach (string str in label.GetSegments(16))
-                            m_label += str.ToUpper() + Environment.NewLine;
-                    }
-                    else
-                        m_label += label.ToUpper() + Environment.NewLine;
-                }
+                m_label = value.TruncateRight(128).PadRight(128);
                 OnPropertyChanged("Label");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets <see cref="OutputStreamDeviceDigital"/> Display Label.
+        /// </summary>
+        [Required(ErrorMessage = "OutputStreamDeviceDigital Label is a required field, please provide value.")]
+        [StringLength(200, ErrorMessage = "OutputStreamDeviceDigital Label cannot exceed 200 characters.")]
+        public string DisplayLabel
+        {
+            get
+            {
+                return string.Concat(Label.GetSegments(16).Select(label => label.Trim() + "\r\n").Take(8));
+            }
+            set
+            {
+                Label = string.Concat(value.Split(new string[] { "\r\n" }, StringSplitOptions.None).Select(label => label.TruncateRight(16).PadRight(16)).Take(8));
+                OnPropertyChanged("DisplayLabel");
             }
         }
 
@@ -239,7 +248,7 @@ namespace openPDC.UI.DataModels
 
         #endregion
 
-        #region[static]
+        #region [ Static ]
 
         // Static Methods      
 
@@ -333,24 +342,6 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                int i = 0;
-                string paddedLabel = string.Empty;
-                foreach (string label in outputStreamDeviceDigital.Label.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    if (i >= 8)
-                        break;
-
-                    string temp = label.Replace(" ", "");
-                    if (temp.Length > 16)
-                        paddedLabel += temp.Substring(0, 16).ToUpper();
-                    else
-                        paddedLabel += temp.ToUpper().PadRight(16);
-
-                    i++;
-                }
-
-                outputStreamDeviceDigital.Label = paddedLabel.PadRight(128);
-
                 if (outputStreamDeviceDigital.ID == 0)
                 {
                     query = database.ParameterizedQueryString("INSERT INTO OutputStreamDeviceDigital (NodeID, OutputStreamDeviceID, Label, MaskValue, LoadOrder, " +
@@ -410,6 +401,5 @@ namespace openPDC.UI.DataModels
         }
 
         #endregion
-
     }
 }

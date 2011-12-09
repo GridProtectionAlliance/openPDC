@@ -286,6 +286,9 @@ namespace HistorianAdapters
                         }
                     }
 
+                    // Request a state file synchronization in case file watchers are disabled
+                    m_archive.SynchronizeStateFile();
+
                     // Wait for the metabase to synchronize, up to five seconds
                     int waitCounts = 0;
 

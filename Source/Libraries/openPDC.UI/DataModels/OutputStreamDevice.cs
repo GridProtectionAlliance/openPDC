@@ -42,7 +42,7 @@ namespace openPDC.UI.DataModels
     /// </summary>
     public class OutputStreamDevice : DataModelBase
     {
-        #region[Members]
+        #region [ Members ]
 
         private Guid m_nodeID;
         private int m_adapterID;
@@ -66,7 +66,7 @@ namespace openPDC.UI.DataModels
 
         #endregion
 
-        #region[properties]
+        #region [ Properties ]
 
         /// <summary>
         /// Gets or sets the current <see cref="OutputStreamDevice"/>'s NodeID.
@@ -385,7 +385,7 @@ namespace openPDC.UI.DataModels
 
         #endregion
 
-        #region[static]
+        #region [ Static ]
 
         // Static Methods
 
@@ -649,7 +649,7 @@ namespace openPDC.UI.DataModels
                                     OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
                                     outputStreamDeviceDigital.NodeID = device.NodeID;
                                     outputStreamDeviceDigital.OutputStreamDeviceID = device.ID;
-                                    outputStreamDeviceDigital.Label = string.IsNullOrEmpty(measurement.AlternateTag) ? digitalLabel : measurement.AlternateTag;     // measurement.PointTag;
+                                    outputStreamDeviceDigital.Label = string.IsNullOrEmpty(measurement.AlternateTag) ? DefaultDigitalLabel : measurement.AlternateTag;     // measurement.PointTag;
                                     outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
                                     OutputStreamDeviceDigital.Save(database, outputStreamDeviceDigital);
                                 }
@@ -667,7 +667,10 @@ namespace openPDC.UI.DataModels
             }
         }
 
-        private static string digitalLabel = "DIGITAL0        DIGITAL1        DIGITAL2        DIGITAL3        DIGITAL4        DIGITAL5        DIGITAL6        DIGITAL7        DIGITAL8        DIGITAL9        DIGITAL10       DIGITAL11       DIGITAL12       DIGITAL13       DIGITAL14       DIGITAL15       ";
+        //                                                    1         2         3         4         5         6         7         8         9         10        11        12
+        //                                           12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678
+        private static string DefaultDigitalLabel = "DIGITAL0        DIGITAL1        DIGITAL2        DIGITAL3        DIGITAL4        DIGITAL5        DIGITAL6        DIGITAL7        ";
+        //                                           *23456789012345+*23456789012345+*23456789012345+*23456789012345+*23456789012345+*23456789012345+*23456789012345+*23456789012345+
 
         /// <summary>
         /// Gets output stream device from the database based on where condition provided.

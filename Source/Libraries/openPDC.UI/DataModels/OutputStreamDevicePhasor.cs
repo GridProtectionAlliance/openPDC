@@ -42,7 +42,7 @@ namespace openPDC.UI.DataModels
     /// </summary>
     public class OutputStreamDevicePhasor : DataModelBase
     {
-        #region[Members]
+        #region [ Members ]
 
         private Guid m_nodeID;
         private int m_outputStreamDeviceID;
@@ -61,7 +61,7 @@ namespace openPDC.UI.DataModels
 
         #endregion
 
-        #region[Properties]
+        #region [ Properties ]
 
         /// <summary>
         /// Gets or sets <see cref="OutputStreamDevicePhasor"/> NodeID.

@@ -36,7 +36,7 @@ namespace openPDC.UI.ViewModels
     /// </summary>
     internal class OutputStreamDeviceAnalogs : PagedViewModelBase<OutputStreamDeviceAnalog, int>
     {
-        #region[Members]
+        #region [ Members ]
 
         // Fields
         private int m_outputStreamDeviceID;

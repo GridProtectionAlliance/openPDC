@@ -1214,7 +1214,7 @@ namespace openPDC.UI.DataModels
                                     measurement.DeviceID = savedDevice.ID;
                                     measurement.PointTag = savedDevice.CompanyAcronym + "_" + savedDevice.Acronym + ":" + savedDevice.VendorAcronym + "A" + i.ToString();
                                     if (analogLabels != null && analogLabels[i - 1] != null)
-                                        measurement.AlternateTag = analogLabels[i - 1].ToUpper();
+                                        measurement.AlternateTag = analogLabels[i - 1];
                                     else
                                         measurement.AlternateTag = string.Empty;
                                     measurement.SignalReference = savedDevice.Acronym + "-AV" + i.ToString();
@@ -1239,7 +1239,7 @@ namespace openPDC.UI.DataModels
                                     measurement.DeviceID = savedDevice.ID;
                                     measurement.PointTag = savedDevice.CompanyAcronym + "_" + savedDevice.Acronym + ":" + savedDevice.VendorAcronym + "D" + i.ToString();
                                     if (digitalLabels != null && digitalLabels[i - 1] != null)
-                                        measurement.AlternateTag = digitalLabels[i - 1].ToUpper();
+                                        measurement.AlternateTag = digitalLabels[i - 1];
                                     else
                                         measurement.AlternateTag = string.Empty;
                                     measurement.SignalReference = savedDevice.Acronym + "-DV" + i.ToString();

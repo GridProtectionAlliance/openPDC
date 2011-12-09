@@ -43,7 +43,7 @@ namespace openPDC.UI.DataModels
     /// </summary>
     public class OutputStreamMeasurement : DataModelBase
     {
-        #region[Members]
+        #region [ Members ]
 
         private Guid m_nodeID;
         private int m_adapterID;
@@ -60,7 +60,7 @@ namespace openPDC.UI.DataModels
 
         #endregion
 
-        #region[Properties]
+        #region [ Properties ]
 
         /// <summary>
         /// Gets or sets the current <see cref="OutputStreamMeasurement"/>'s NodeID.
@@ -247,7 +247,7 @@ namespace openPDC.UI.DataModels
 
         #endregion
 
-        #region[Static]
+        #region [ Static ]
 
         // Static Methods
 

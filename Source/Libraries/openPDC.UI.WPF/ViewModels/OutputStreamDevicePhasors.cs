@@ -39,7 +39,7 @@ namespace openPDC.UI.ViewModels
     /// </summary>
     internal class OutputStreamDevicePhasors : PagedViewModelBase<OutputStreamDevicePhasor, int>
     {
-        #region[Members]
+        #region [ Members ]
 
         private int m_outputStreamDeviceID;
         private Dictionary<string, string> m_phaseLookupList;
@@ -107,7 +107,7 @@ namespace openPDC.UI.ViewModels
 
         #endregion
 
-        #region [ Constructor ]
+        #region [ Constructors ]
 
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamDevicePhasors "/> class.
