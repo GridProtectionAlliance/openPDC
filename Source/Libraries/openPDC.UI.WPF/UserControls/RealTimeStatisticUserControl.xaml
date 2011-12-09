@@ -37,9 +37,9 @@
 
                         <TextBlock Text="{tsfBinding:Column Path=ID}" Width="120"/>
                         <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Width="140"/>
-                        <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTip="{tsfBinding:Column Path=StatisticDescription}" Width="250" TextWrapping="Wrap"/>
-                        <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" Width="90" HorizontalAlignment="Center" TextAlignment="Center"/>
-                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" Width="170"
+                        <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTip="{tsfBinding:Column Path=StatisticDescription}" Width="225" TextWrapping="Wrap"/>
+                        <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" Width="75" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" Width="215"
                                    Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center" TextAlignment="Center"/>
                     </StackPanel>
                 </Border>
@@ -147,7 +147,7 @@
         </StackPanel>
 
         <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" 
-                      Height="610" VerticalAlignment="Top" HorizontalAlignment="Left" Width="830" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                      Height="610" VerticalAlignment="Top" HorizontalAlignment="Left" Width="850" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
 
       </StackPanel>
 
