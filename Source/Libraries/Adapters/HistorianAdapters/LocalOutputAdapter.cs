@@ -806,6 +806,7 @@ namespace HistorianAdapters
                         settings.Add("AutoSaveInterval", 10000, string.Format("Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 10,000 for the {0} state file.", name));
                         settings.Add("LoadOnOpen", true, string.Format("True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the {0} state file.", name));
                         settings.Add("SaveOnClose", true, string.Format("True if file records loaded in memory are to be saved to disk when file is closed; otherwise False - this defaults to True for the {0} state file.", name));
+                        settings.Add("ReloadOnModify", false, string.Format("True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to False for the {0} state file.", name));
                         settings["AutoSaveInterval"].Update(10000);
                         settings["LoadOnOpen"].Update(true);
                         settings["SaveOnClose"].Update(true);
@@ -826,6 +827,7 @@ namespace HistorianAdapters
                         settings.Add("AutoSaveInterval", 1000, string.Format("Interval in milliseconds at which the file records loaded in memory are to be saved automatically to disk. Use -1 to disable automatic saving - this defaults to 1,000 for the {0} intercom file.", name));
                         settings.Add("LoadOnOpen", true, string.Format("True if file records are to be loaded in memory when opened; otherwise False - this defaults to True for the {0} intercom file.", name));
                         settings.Add("SaveOnClose", true, string.Format("True if file records loaded in memory are to be saved to disk when file is closed; otherwise False - this defaults to True for the {0} intercom file.", name));
+                        settings.Add("ReloadOnModify", false, string.Format("True if file records loaded in memory are to be re-loaded when file is modified on disk; otherwise False - this defaults to False for the {0} intercom file.", name));
                         settings["AutoSaveInterval"].Update(1000);
                         settings["LoadOnOpen"].Update(true);
                         settings["SaveOnClose"].Update(true);
