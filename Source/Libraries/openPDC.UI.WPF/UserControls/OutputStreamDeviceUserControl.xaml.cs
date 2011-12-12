@@ -39,6 +39,7 @@ namespace openPDC.UI.UserControls
     {
         #region [ Members ]
 
+        private int m_outputStreamID;
         private OutputStreamDevices m_dataContext;
 
         #endregion
@@ -51,13 +52,19 @@ namespace openPDC.UI.UserControls
         public OutputStreamDeviceUserControl(int outputStreamID)
         {
             InitializeComponent();
-            m_dataContext = new OutputStreamDevices(outputStreamID, 10);
-            this.DataContext = m_dataContext;
+            m_outputStreamID = outputStreamID;
+            this.Loaded += new RoutedEventHandler(OutputStreamDeviceUserControl_Loaded);
         }
 
         #endregion
 
         #region [ Methods ]
+
+        private void OutputStreamDeviceUserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            m_dataContext = new OutputStreamDevices(m_outputStreamID, 10);
+            this.DataContext = m_dataContext;
+        }
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {

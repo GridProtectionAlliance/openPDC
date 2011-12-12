@@ -47,13 +47,18 @@ namespace openPDC.UI.UserControls
         public DeviceListUserControl()
         {
             InitializeComponent();
-            m_dataContext = new Devices(16);
-            this.DataContext = m_dataContext;
+            this.Loaded += new RoutedEventHandler(DeviceListUserControl_Loaded);
         }
 
         #endregion
 
         #region [ Methods ]
+
+        private void DeviceListUserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            m_dataContext = new Devices(16);
+            this.DataContext = m_dataContext;
+        }
 
         /// <summary>
         /// Handles PreviewKeyDown event on the datagrid.

@@ -214,7 +214,7 @@ namespace openPDC.UI.DataModels
         /// </summary>
         [Required(ErrorMessage = "Device acronym is a required field, please provide value.")]
         [StringLength(200, ErrorMessage = "Device Acronym cannot exceed 200 characters.")]
-        [RegularExpression("^[A-Z0-9-'!'_@#]+$", ErrorMessage = "Only upper case letters, numbers, '!', '-', '@', '#' and '_' are allowed.")]
+        [RegularExpression("^[A-Z0-9-'!'_'@#]+$", ErrorMessage = "Only upper case letters, numbers, '!', '-', '@', '#' and '_' are allowed.")]
         public string Acronym
         {
             get
@@ -1332,7 +1332,7 @@ namespace openPDC.UI.DataModels
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="deviceID">ID of the record to be deleted.</param>
         /// <returns>String, for display use, indicating success.</returns>
-        public static string Delete(AdoDataConnection database, int deviceID)
+        public static string Delete(AdoDataConnection database, Device device)
         {
             bool createdConnection = false;
 
@@ -1343,7 +1343,8 @@ namespace openPDC.UI.DataModels
                 // Setup current user context for any delete triggers
                 TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
-                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Device WHERE ID = {0}", "deviceID"), DefaultTimeout, deviceID);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Device WHERE ID = {0}", "deviceID"), DefaultTimeout, device.ID);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamDevice WHERE Acronym = {0}", "deviceAcronym"), DefaultTimeout, device.Acronym);
 
                 return "Device deleted successfully";
             }
@@ -1515,7 +1516,8 @@ namespace openPDC.UI.DataModels
         /// Sends required commands to backend service to notify that <see cref="Device"/> configuration has changed.
         /// </summary>
         /// <param name="device"><see cref="Device"/> whose configuration has changed.</param>
-        public static void NotifyService(Device device)
+        /// <param name="historianID">ID of the historian to refresh metadata if device is null.</param>
+        public static void NotifyService(Device device, int? historianID = null)
         {
             if (device != null)
             {
@@ -1534,14 +1536,21 @@ namespace openPDC.UI.DataModels
 
                 if (device.HistorianID != null)
                     TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID) + " RefreshMetadata");
-
-                Historian statHistorian = Historian.GetHistorian(null, "WHERE Acronym = 'STAT'");
-                if (statHistorian != null)
-                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", statHistorian.ID) + " RefreshMetadata");
-
-                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
-                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("RefreshRoutes");
             }
+            else
+            {
+                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                if (historianID != null)
+                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)historianID) + " RefreshMetadata");
+            }
+
+            Historian statHistorian = Historian.GetHistorian(null, "WHERE Acronym = 'STAT'");
+            if (statHistorian != null)
+                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", statHistorian.ID) + " RefreshMetadata");
+
+            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
+            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("RefreshRoutes");
+
         }
 
         private static string ParseConnectionString(string connectionString)

@@ -235,9 +235,11 @@
 
         <uc:DetailViewFooterUserControl x:Name="UserControlDetailViewFooter" DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
                 SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
-
+        
+        <TextBlock Text="Concentrator Device List" FontWeight="Bold" HorizontalAlignment="Left"
+                   Visibility="{Binding Path=CurrentItem.IsConcentrator, Converter={StaticResource ObjectToVisibilityConverter}}"/>
         <sdk:DataGrid x:Name="DataGridList" ItemsSource="{tsfBinding:Column Path=PdcDevices}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" 
-                      Visibility="{Binding Path=CurrentItem.IsConcentrator, Converter={StaticResource ObjectToVisibilityConverter}}" Height="125">
+                      Visibility="{Binding Path=CurrentItem.IsConcentrator, Converter={StaticResource ObjectToVisibilityConverter}}" Height="100">
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path= Acronym}"/>
                 <sdk:DataGridTextColumn Header="Name" Width="2*" Binding="{tsfBinding:Column Path= Name}" />                

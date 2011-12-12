@@ -115,7 +115,10 @@ namespace openPDC.UI.DataModels
             }
             set
             {
-                m_label = value;
+                if (value.Length > 200)
+                    m_label = value.Substring(0, 200);
+                else
+                    m_label = value;
                 OnPropertyChanged("Label");
             }
         }

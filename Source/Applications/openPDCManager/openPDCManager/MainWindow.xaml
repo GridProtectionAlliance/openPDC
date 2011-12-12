@@ -17,7 +17,7 @@
         Left="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationLeft, Mode=TwoWay}"
         Top="{Binding Source={x:Static self:Properties.Settings.Default}, Path=ApplicationTop, Mode=TwoWay}"
         ResourceAccessiblity="AlwaysIncluded"
-        IncludedRoles="Administrator, Editor, Viewer" FontSize="{StaticResource SmallTextSize}">
+        IncludedRoles="Administrator, Editor, Viewer" FontSize="{StaticResource SmallTextSize}" Icon="openPDCManager.ico">
     
     <Window.Resources>
         <tsfconv:RoleBasedVisibilityConverter x:Key="roleBasedVisibilityConverter" />
@@ -30,6 +30,12 @@
         <Canvas.RenderTransform>
             <ScaleTransform ScaleX="1" ScaleY="1"/>
         </Canvas.RenderTransform>
+
+        <tsf:TsfPopup x:Name="PopupStatus" Topmost="False" Placement="Left" PlacementTarget="{Binding ElementName=ButtonHelp}" VerticalOffset="25">
+            <Border CornerRadius="5" BorderThickness="2" Background="White" BorderBrush="Blue">
+                <TextBlock x:Name="TextBlockResult" FontSize="{StaticResource LargeTextSize}" Height="Auto"/>
+            </Border>
+        </tsf:TsfPopup>
 
         <StackPanel Orientation="Vertical">
 
@@ -96,7 +102,7 @@
                         <Menu x:Name="MenuMain" ItemsSource="{Binding}" Style="{StaticResource MenuStyle}" ItemContainerStyleSelector="{StaticResource MenuItemStyleSelector}"
                             HorizontalAlignment="Left"/>
 
-                        <Button ToolTip="Click for Help" Width="Auto" Padding="0" HorizontalAlignment="Right" Click="ButtonHelp_Click">
+                        <Button x:Name="ButtonHelp" ToolTip="Click for Help" Width="Auto" Padding="0" HorizontalAlignment="Right" Click="ButtonHelp_Click">
                             <Button.Template>
                                 <ControlTemplate>
                                     <Image Source="/TimeSeriesFramework.UI;component/images/Help.png" Height="20" Width="20" />
@@ -109,7 +115,7 @@
 
             </Grid>
 
-            <TextBlock x:Name="TextBlockResult" Visibility="Collapsed" Foreground="#FFFFFFFF" FontWeight="Bold" VerticalAlignment="Center" Height="Auto" Margin="0,5,5,0" Padding="0"/>
+            
 
             <GroupBox x:Name="GroupBoxMain" Margin="2,-5,2,2" MinHeight="675">
                 <Border Padding="2" BorderThickness="1" Background="{StaticResource MenuBackgroundBrush}" CornerRadius="5">

@@ -504,6 +504,7 @@ namespace openPDC.UI.ViewModels
                         foreach (OutputStreamDevice device in outputStreamDevices)
                         {
                             device.Acronym = CurrentItem.Acronym;
+                            device.BpaAcronym = CurrentItem.Acronym.Substring(0, 4);
                             OutputStreamDevice.Save(null, device);
                         }
                     }
@@ -702,36 +703,70 @@ namespace openPDC.UI.ViewModels
         /// </summary>
         public override void Delete()
         {
-            if (CurrentItem.IsConcentrator)
+            try
             {
-                if (Confirm("Are you sure you want to delete concentrator device?" + Environment.NewLine + "Clicking yes will delete all the devices connected to: " + CurrentItem.Acronym, "Delete Device"))
+                if (CurrentItem.IsConcentrator)
                 {
-                    try
+                    ObservableCollection<Device> deviceList = Device.Load(null, CurrentItem.ID);
+                    int outputStreamDeviceCount = 0;
+                    foreach (Device device in deviceList)
                     {
-                        ObservableCollection<Device> deviceList = Device.Load(null, CurrentItem.ID);
-                        foreach (Device device in deviceList)
-                            Device.Delete(null, device.ID);
-
-                        base.Delete();
+                        outputStreamDeviceCount += OutputStreamDevice.GetOutputStreamDevices(null, "WHERE Acronym = '" + device.Acronym + "'").Count;
                     }
-                    catch (Exception ex)
+
+                    string confirm = "Are you sure you want to delete concentrator device?";
+                    if (deviceList.Count > 1)
+                        confirm += Environment.NewLine + "There are " + deviceList.Count.ToString() + " associated children devices.";
+                    else if (deviceList.Count > 0)
+                        confirm += Environment.NewLine + "There is " + deviceList.Count.ToString() + " associated child device.";
+
+                    if (outputStreamDeviceCount > 1)
+                        confirm += Environment.NewLine + "There are " + outputStreamDeviceCount.ToString() + " output stream devices that exist.";
+                    else if (outputStreamDeviceCount > 0)
+                        confirm += Environment.NewLine + "There is " + outputStreamDeviceCount.ToString() + " output stream device that exists.";
+
+                    if (Confirm(confirm, "Delete Device"))
                     {
-                        if (ex.InnerException != null)
-                        {
-                            Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Delete Device Exception:", MessageBoxImage.Error);
-                            CommonFunctions.LogException(null, "Delete Device", ex.InnerException);
-                        }
-                        else
-                        {
-                            Popup(ex.Message, "Delete Device Exception:", MessageBoxImage.Error);
-                            CommonFunctions.LogException(null, "Delete Device", ex);
-                        }
+                        foreach (Device device in deviceList)
+                            Device.Delete(null, device);
+
+                        string result = Device.Delete(null, CurrentItem);
+                        DisplayStatusMessage(result);
                     }
                 }
+                else
+                {
+                    ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.GetOutputStreamDevices(null, "WHERE Acronym = '" + CurrentItem.Acronym + "'");
+                    string confirm = "Are you sure you want to delete this device?";
+
+                    if (outputStreamDevices.Count > 1)
+                        confirm += Environment.NewLine + "It exists in " + outputStreamDevices.Count.ToString() + " output streams.";
+                    else if (outputStreamDevices.Count > 0)
+                        confirm += Environment.NewLine + "It exists in " + outputStreamDevices.Count.ToString() + " output stream.";
+
+                    if (Confirm(confirm, "Delete Device"))
+                    {
+                        string result = Device.Delete(null, CurrentItem);
+                        DisplayStatusMessage(result);
+                    }
+                }
+
+                Device.NotifyService(null, CurrentItem.HistorianID);
+                openPDC.UI.UserControls.DeviceListUserControl deviceListUserControl = new openPDC.UI.UserControls.DeviceListUserControl();
+                CommonFunctions.LoadUserControl(deviceListUserControl, "Browse Devices");
             }
-            else
+            catch (Exception ex)
             {
-                base.Delete();
+                if (ex.InnerException != null)
+                {
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Delete Device Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Delete Device", ex.InnerException);
+                }
+                else
+                {
+                    Popup(ex.Message, "Delete Device Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Delete Device", ex);
+                }
             }
         }
 

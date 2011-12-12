@@ -104,13 +104,32 @@
 
         </Grid>
         
-        <uc:DetailViewFooterUserControl x:Name="UserControlDetailViewFooter" DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
-                SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
         
+            <TextBlock Text="* - Virtual Device" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+            <uc:DetailViewFooterUserControl x:Name="UserControlDetailViewFooter" DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
+                SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" HorizontalAlignment="Right"/>
+        </Grid>
+            
         <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="825"
                PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4" Sorting="DataGrid_Sorting">
                 <sdk:DataGrid.Columns>
-                <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                <sdk:DataGridTemplateColumn Header="Acronym" Width="*">
+                    <sdk:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock Text="{tsfBinding:Column Path=Acronym}"/>
+                                <TextBlock Text="*" FontWeight="Bold" Margin="2"
+                                               Visibility="{Binding Path=Virtual, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </sdk:DataGridTemplateColumn.CellTemplate>
+                </sdk:DataGridTemplateColumn>
+                    <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
                 <sdk:DataGridTextColumn Header=" Name" Width="*" Binding="{tsfBinding:Column Path=Name}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
                     <sdk:DataGridTemplateColumn Header="Enabled" Width="*">
                         <sdk:DataGridTemplateColumn.CellTemplate>

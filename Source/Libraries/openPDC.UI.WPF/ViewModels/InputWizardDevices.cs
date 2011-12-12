@@ -645,7 +645,9 @@ namespace openPDC.UI.ViewModels
             if (m_companyLookupList.Count > 0)
                 CompanyID = m_companyLookupList.First().Key;
 
-            if (m_historianLookupList.Count > 0)
+            if (m_historianLookupList.Count > 1)
+                HistorianID = m_historianLookupList.Skip(1).First().Key;
+            else if (m_historianLookupList.Count > 0)
                 HistorianID = m_historianLookupList.First().Key;
 
             if (m_interconnectionLookupList.Count > 0)
@@ -822,9 +824,9 @@ namespace openPDC.UI.ViewModels
         }
 
         /// <summary>
-        /// Parses IConfigurationFrame to retrieve devices and other configuration information.
+        /// Parses IConfigurationFrame to retrieve devices and other configuration information.        
         /// </summary>        
-        private void ParseConfiguration()
+        private void ParseConfiguration(bool displayPopup = true)
         {
             ObservableCollection<openPDC.UI.DataModels.InputWizardDevice> wizardDeviceList = new ObservableCollection<openPDC.UI.DataModels.InputWizardDevice>();
 
@@ -879,7 +881,8 @@ namespace openPDC.UI.ViewModels
                 ConnectToConcentrator = false;
             }
 
-            Popup(ConfigurationSummary, "Parsed Configuration Successfully.", MessageBoxImage.Information);
+            if (displayPopup)
+                Popup(ConfigurationSummary, "Parsed Configuration Successfully.", MessageBoxImage.Information);
         }
 
         private List<string> GetAnalogOrDigitalLables(object analogOrDigitalCollection)
@@ -1093,7 +1096,7 @@ namespace openPDC.UI.ViewModels
                     if ((bool)cc.DialogResult)
                     {
                         m_configurationFrame = cc.ConfigurationFrame;
-                        ParseConfiguration();
+                        ParseConfiguration(false);
                     }
                 });
 

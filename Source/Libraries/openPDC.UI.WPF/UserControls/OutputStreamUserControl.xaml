@@ -116,13 +116,15 @@
             
             <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Lag Time" Style="{StaticResource RequiredLabel}"/>
-                <Button Content="?" Tag="HMC - Lag Time.png" ToolTipService.ToolTip="Click here for help on Lag Time" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
+                    <Button Content="?" Template="{StaticResource RoundButtonTemplate}" Background="{StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="18" Height="18" FontWeight="Bold" FontSize="{StaticResource TextSize}"
+                            Tag="HMC - Lag Time.png" ToolTipService.ToolTip="Click here for help on Lag Time" Click="ButtonHelp_Click" />
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
             <TextBox Grid.Row="5" Grid.Column="1" Text="{tsfBinding:Column Path=LagTime}" Width="{StaticResource XSmallItemSize}" />
             <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="2" HorizontalAlignment="Right">
                 <TextBlock Text="Lead Time" Style="{StaticResource RequiredLabel}"/>
-                <Button Content="?" Tag="HMC - Lead Time.png" ToolTipService.ToolTip="Click here for help on Lead Time" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
+                    <Button Content="?" Margin="2,0,0,0" Template="{StaticResource RoundButtonTemplate}" Background="{StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="18" Height="18" FontWeight="Bold" FontSize="{StaticResource TextSize}"
+                        Tag="HMC - Lead Time.png" ToolTipService.ToolTip="Click here for help on Lead Time" Click="ButtonHelp_Click"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
             <TextBox Grid.Row="5" Grid.Column="3" Text="{tsfBinding:Column Path=LeadTime}" Width="{StaticResource XSmallItemSize}" />
@@ -151,13 +153,15 @@
 
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">
                         <TextBlock Text="Time Resolution" Style="{StaticResource RequiredLabel}"/>
-                        <Button Content="?" Tag="HMC - Time Resolution.png" ToolTipService.ToolTip="Click here for help on Time Resolution" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
+                            <Button Content="?" Margin="2,0,0,0" Template="{StaticResource RoundButtonTemplate}" Background="{StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="18" Height="18" FontWeight="Bold" FontSize="{StaticResource TextSize}"
+                                Tag="HMC - Time Resolution.png" ToolTipService.ToolTip="Click here for help on Time Resolution" Click="ButtonHelp_Click"/>
                         <TextBlock Style="{StaticResource RequiredMarker}"/>
                     </StackPanel>
                     <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=TimeResolution}" Width="{StaticResource XXXSmallItemSize}" />
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
                         <TextBlock Text="Downsampling" Style="{StaticResource RequiredLabel}"/>
-                        <Button Content="?" Tag="HMC - Downsampling Method.png" ToolTipService.ToolTip="Click here for help on Downsampling Method" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
+                            <Button Content="?" Margin="2,0,0,0" Template="{StaticResource RoundButtonTemplate}" Background="{StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="18" Height="18" FontWeight="Bold" FontSize="{StaticResource TextSize}"
+                                Tag="HMC - Downsampling Method.png" ToolTipService.ToolTip="Click here for help on Downsampling Method" Click="ButtonHelp_Click"/>
                         <TextBlock Style="{StaticResource RequiredMarker}"/>
                     </StackPanel>
                     <ComboBox Grid.Row="0" Grid.Column="3" ItemsSource="{Binding Source={StaticResource DownSamplingMethodLookupList}}" DisplayMemberPath="Value"
@@ -200,29 +204,35 @@
 
                     <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1">
                         <CheckBox Content="Auto Start Data Channel" IsChecked="{tsfBinding:Column Path=AutoStartDataChannel}" />
-                        <Button Content="?" Tag="HMC - Auto Start Data Channel.png" ToolTipService.ToolTip="Click here for help on Auto Start Data Channel" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
+                            <Button Content="?" Margin="2,0,0,0" Template="{StaticResource RoundButtonTemplate}" Background="{StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="18" Height="18" FontWeight="Bold" FontSize="{StaticResource TextSize}"
+                                Tag="HMC - Auto Start Data Channel.png" ToolTipService.ToolTip="Click here for help on Auto Start Data Channel" Click="ButtonHelp_Click"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3">
                         <CheckBox Content="Auto Publish Config Frame" IsChecked="{tsfBinding:Column Path=AutoPublishConfigFrame}" />
-                        <Button Content="?" Tag="HMC - Auto Publish Config Frame.png" ToolTipService.ToolTip="Click here for help on Auto Publish Config Frame" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
+                            <Button Content="?" Margin="2,0,0,0" Template="{StaticResource RoundButtonTemplate}" Background="{StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="18" Height="18" FontWeight="Bold" FontSize="{StaticResource TextSize}"
+                                Tag="HMC - Auto Publish Config Frame.png" ToolTipService.ToolTip="Click here for help on Auto Publish Config Frame" Click="ButtonHelp_Click"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1">
                         <CheckBox Content="Allow Sorts By Arrival" IsChecked="{tsfBinding:Column Path=AllowSortsByArrival}"/>
-                        <Button Content="?" Tag="HMC - Allow Sorts By Arrival.png" ToolTipService.ToolTip="Click here for help on Allow Sorts By Arrival" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
+                            <Button Content="?" Margin="2,0,0,0" Template="{StaticResource RoundButtonTemplate}" Background="{StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="18" Height="18" FontWeight="Bold" FontSize="{StaticResource TextSize}"
+                                Tag="HMC - Allow Sorts By Arrival.png" ToolTipService.ToolTip="Click here for help on Allow Sorts By Arrival" Click="ButtonHelp_Click"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="3">
                         <CheckBox Content="Use Local Clock As Real-time" IsChecked="{tsfBinding:Column Path=UseLocalClockAsRealTime}" />
-                        <Button Content="?" Tag="HMC - Use Local Clock as RealTime.png" ToolTipService.ToolTip="Click here for help on Use Local Clock As Real-time" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
+                            <Button Content="?" Margin="2,0,0,0" Template="{StaticResource RoundButtonTemplate}" Background="{StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="18" Height="18" FontWeight="Bold" FontSize="{StaticResource TextSize}"
+                                Tag="HMC - Use Local Clock as RealTime.png" ToolTipService.ToolTip="Click here for help on Use Local Clock As Real-time" Click="ButtonHelp_Click"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1">
                         <CheckBox Content="Allow Preemptive Publishing" IsChecked="{tsfBinding:Column Path=AllowPreemptivePublishing}"/>
-                        <Button Content="?" Tag="HMC - Allow Preemptive Publishing.png" ToolTipService.ToolTip="Click here for help on Allow Preemptive Publishing" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
+                            <Button Content="?" Margin="2,0,0,0" Template="{StaticResource RoundButtonTemplate}" Background="{StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="18" Height="18" FontWeight="Bold" FontSize="{StaticResource TextSize}"
+                                Tag="HMC - Allow Preemptive Publishing.png" ToolTipService.ToolTip="Click here for help on Allow Preemptive Publishing" Click="ButtonHelp_Click"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="3">
                         <CheckBox Content="Ignore Bad Timestamps" IsChecked="{tsfBinding:Column Path=IgnoreBadTimeStamps}"/>
-                        <Button Content="?" Tag="HMC - Ignore Bad Timestamps.png" ToolTipService.ToolTip="Click here for help on Ignore Bad Timestamps" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
+                            <Button Content="?" Margin="2,0,0,0" Template="{StaticResource RoundButtonTemplate}" Background="{StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="18" Height="18" FontWeight="Bold" FontSize="{StaticResource TextSize}"
+                                Tag="HMC - Ignore Bad Timestamps.png" ToolTipService.ToolTip="Click here for help on Ignore Bad Timestamps" Click="ButtonHelp_Click"/>
                     </StackPanel>
 
                     <CheckBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Content="Perform Timestamp Reasonability Check" IsChecked="{tsfBinding:Column Path=PerformTimestampReasonabilityCheck}" />
@@ -261,7 +271,7 @@
         <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" PreviewKeyDown="DataGrid_PreviewKeyDown"
                       Sorting="OSGrid_Sorting">
             <sdk:DataGrid.Columns>
-                <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                <sdk:DataGridTextColumn x:Name="ColumnAcronym" Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
                 <sdk:DataGridTextColumn Header="Name" Width="*" Binding="{tsfBinding:Column Path=Name}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
                 <sdk:DataGridTextColumn Header="Type" Width="*" Binding="{Binding Path=TypeName}" CellStyle="{StaticResource CenterAlignCellStyle}" IsReadOnly="True"/>
                 <sdk:DataGridCheckBoxColumn Header="Enabled" Width="*" Binding="{tsfBinding:Column Path=Enabled}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
