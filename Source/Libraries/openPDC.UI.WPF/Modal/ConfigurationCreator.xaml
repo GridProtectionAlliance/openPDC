@@ -59,11 +59,11 @@
             <Button Content="Move Down" Name="buttonDeviceMoveDown" Click="buttonDeviceMoveDown_Click" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" />
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Analogs:" Width="47" HorizontalAlignment="Left"/>
-                <TextBox Name="textBoxAnalogs" Text="0" Width="30" HorizontalAlignment="Right" />
+                <TextBox Name="textBoxAnalogs" TextChanged="textBoxAnalogs_TextChanged" Text="0" PreviewKeyUp="textBoxAnalogs_PreviewKeyUp" Width="30" HorizontalAlignment="Right" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 <TextBlock Text=" Digitals:" Width="47" HorizontalAlignment="Left"/>
-                <TextBox Name="textBoxDigitals" Text="0" Width="30" HorizontalAlignment="Right"/>
+                <TextBox Name="textBoxDigitals" TextChanged="textBoxDigitals_TextChanged" PreviewKeyUp="textBoxDigitals_PreviewKeyUp" Text="0" Width="30" HorizontalAlignment="Right"/>
             </StackPanel>            
         </StackPanel>
         <!--Third Row-->
@@ -79,8 +79,8 @@
         
         <GroupBox Header="Phasor Coordinate Format" HorizontalAlignment="Center" Name="groupBoxPhasorCoordinateFormat" VerticalAlignment="Top" Grid.Column="2" Grid.Row="3" Grid.RowSpan="4" Width="175" >
             <StackPanel Orientation="Vertical">
-                <RadioButton Content="Polar" GroupName="PhasorCoordinateFormat"  HorizontalAlignment="Left" Name="radioButtonPhasorPolar" VerticalAlignment="Top" IsChecked="True" Checked="radioButtonPhasorFloatingPoint_Checked"/>
-                <RadioButton Content="Rectangular" GroupName="PhasorCoordinateFormat" HorizontalAlignment="Left" Name="radioButtonPhasorRectangular" VerticalAlignment="Bottom" Checked="radioButtonPhasorScaledInteger_Checked"/>
+                <RadioButton Content="Polar" GroupName="PhasorCoordinateFormat"  HorizontalAlignment="Left" Name="radioButtonPhasorPolar" VerticalAlignment="Top" IsChecked="True" Checked="radioButtonPhasorPolar_Checked"/>
+                <RadioButton Content="Rectangular" GroupName="PhasorCoordinateFormat" HorizontalAlignment="Left" Name="radioButtonPhasorRectangular" VerticalAlignment="Bottom" Checked="radioButtonPhasorRectangular_Checked"/>
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Phasor Data Format" HorizontalAlignment="Center" Name="groupBoxPhasorDataFormat" VerticalAlignment="Top" Grid.Column="2" Grid.Row="4" Width="175">
@@ -109,15 +109,15 @@
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Grid.Column="4" Grid.Row="4" Grid.RowSpan="2">
             <StackPanel Orientation="Horizontal" >
                 <TextBlock Text="Label:"  Width="50" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
-                <TextBox Name="textBoxPhasorLabel" Width="70" HorizontalAlignment="Right"/>
+                <TextBox Name="textBoxPhasorLabel" TextChanged="textBoxPhasorLabel_TextChanged" Width="70" HorizontalAlignment="Right"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"  Grid.Column="4" Grid.Row="5">
               <TextBlock Text=" Scale:" Width="50" HorizontalAlignment="Left"/>
-              <TextBox Name="textBoxPhasorScale" Width="70" HorizontalAlignment="Right"/>
+              <TextBox Name="textBoxPhasorScale"  TextChanged="textBoxPhasorScale_TextChanged" PreviewKeyUp="textBoxPhasorScale_PreviewKeyUp" Width="70" HorizontalAlignment="Right"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="4" Grid.Row="6">
               <TextBlock Text=" Offset:" Width="50" HorizontalAlignment="Left"/>
-              <TextBox Name="textBoxPhasorOffset" Width="70" HorizontalAlignment="Right"/>
+              <TextBox Name="textBoxPhasorOffset" TextChanged="textBoxPhasorOffset_TextChanged" PreviewKeyUp="textBoxPhasorOffset_PreviewKeyUp" Width="70" HorizontalAlignment="Right"/>
             </StackPanel>
         </StackPanel>
             <!--Sixth Coloum-->
