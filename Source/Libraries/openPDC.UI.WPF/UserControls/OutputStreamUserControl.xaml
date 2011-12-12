@@ -70,7 +70,7 @@
                 <TextBlock Text="ID Code" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=IDCode}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=IDCode}" Width="{StaticResource XXXSmallItemSize}"/>
             <TextBlock Grid.Row="1" Grid.Column="2" Text="Type" />
             <ComboBox Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Source={StaticResource TypeLookupList}}" DisplayMemberPath="Value" 
                       SelectedItem="{tsfBinding:Column Path=Type, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource TypeLookupList}}"/>
@@ -107,12 +107,12 @@
                 <TextBlock Text="Nominal Frequency" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="4" Grid.Column="1" Text="{tsfBinding:Column Path=NominalFrequency}" />
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{tsfBinding:Column Path=NominalFrequency}" Width="{StaticResource XXXSmallItemSize}" />
             <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2">
                 <TextBlock Text="Frames Per Second" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="4" Grid.Column="3" Text="{tsfBinding:Column Path=FramesPerSecond}" />
+                <TextBox Grid.Row="4" Grid.Column="3" Text="{tsfBinding:Column Path=FramesPerSecond}" Width="{StaticResource XXXSmallItemSize}" />
             
             <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Lag Time" Style="{StaticResource RequiredLabel}"/>
@@ -154,7 +154,7 @@
                         <Button Content="?" Tag="HMC - Time Resolution.png" ToolTipService.ToolTip="Click here for help on Time Resolution" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
                         <TextBlock Style="{StaticResource RequiredMarker}"/>
                     </StackPanel>
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=TimeResolution}" Width="{StaticResource XSmallItemSize}" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=TimeResolution}" Width="{StaticResource XXXSmallItemSize}" />
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
                         <TextBlock Text="Downsampling" Style="{StaticResource RequiredLabel}"/>
                         <Button Content="?" Tag="HMC - Downsampling Method.png" ToolTipService.ToolTip="Click here for help on Downsampling Method" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
@@ -180,12 +180,12 @@
                         <TextBlock Text="Current Scaling Value" Style="{StaticResource RequiredLabel}"/>
                         <TextBlock Style="{StaticResource RequiredMarker}"/>
                     </StackPanel>
-                    <TextBox Grid.Row="2" Grid.Column="1" Text="{tsfBinding:Column Path=CurrentScalingValue}" Width="{StaticResource XSmallItemSize}"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{tsfBinding:Column Path=CurrentScalingValue}" Width="{StaticResource XXXSmallItemSize}"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2">
                         <TextBlock Text="Voltage Scaling Value" Style="{StaticResource RequiredLabel}"/>
                         <TextBlock Style="{StaticResource RequiredMarker}"/>
                     </StackPanel>
-                    <TextBox Grid.Row="2" Grid.Column="3" Text="{tsfBinding:Column Path=VoltageScalingValue}" Width="{StaticResource XSmallItemSize}" />
+                    <TextBox Grid.Row="2" Grid.Column="3" Text="{tsfBinding:Column Path=VoltageScalingValue}" Width="{StaticResource XXXSmallItemSize}" />
 
                     <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right">
                         <TextBlock Text="Analog Scaling Value" Style="{StaticResource RequiredLabel}"/>
@@ -235,7 +235,7 @@
                 <TextBlock Text="Load Order" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="7" Grid.Column="1" Text="{tsfBinding:Column Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" />
+            <TextBox Grid.Row="7" Grid.Column="1" Text="{tsfBinding:Column Path=LoadOrder}" Width="{StaticResource XXXSmallItemSize}" />
 
                 <TextBlock Grid.Row="7" Grid.Column="2" Text="Stream Mirror Source" Visibility="{Binding Path=DataContext.MirrorMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl,AncestorLevel=1}, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 <ComboBox x:Name="ComboBoxMirrorSource" Grid.Row="7" Grid.Column="3" ItemsSource="{Binding Source={StaticResource MirroringSourceLookupList}}" DisplayMemberPath="Value" 

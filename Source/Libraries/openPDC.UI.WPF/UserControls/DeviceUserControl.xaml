@@ -117,10 +117,10 @@
                 <TextBlock Text="ID Code (Access ID)" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{tsfBinding:Column Path=AccessID}"/>
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{tsfBinding:Column Path=AccessID}" Width="{StaticResource XXXSmallItemSize}" />
 
             <TextBlock Text="Frames Per Second" Grid.Row="3" Grid.Column="2" />
-            <TextBox Grid.Row="3" Grid.Column="3" Text="{tsfBinding:Column Path=FramesPerSecond}"/>
+            <TextBox Grid.Row="3" Grid.Column="3" Text="{tsfBinding:Column Path=FramesPerSecond}" Width="{StaticResource XXXSmallItemSize}" />
 
             <TextBlock Text="Company" Grid.Row="4" Grid.Column="0" />
             <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Source={StaticResource CompanyLookupList}}" DisplayMemberPath="Value"
@@ -180,7 +180,7 @@
                 <TextBlock Text="Allowed Parsing Exception" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="8" Grid.Column="1" Text="{tsfBinding:Column Path=AllowedParsingExceptions}" MaxLength="50"/>
+            <TextBox Grid.Row="8" Grid.Column="1" Text="{tsfBinding:Column Path=AllowedParsingExceptions}" MaxLength="50" Width="{StaticResource XXXSmallItemSize}" />
 
             <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="2" HorizontalAlignment="Right">
                 <TextBlock Text="Parsing Exception Window" Style="{StaticResource RequiredLabel}" />
@@ -198,7 +198,7 @@
                 <TextBlock Text="Measurement Reporting Interval" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="9" Grid.Column="3" Text="{tsfBinding:Column Path=MeasurementReportingInterval}" MaxLength="50"/>
+            <TextBox Grid.Row="9" Grid.Column="3" Text="{tsfBinding:Column Path=MeasurementReportingInterval}" MaxLength="50" Width="{StaticResource XXXSmallItemSize}" />
 
             <TextBlock Text="Longitude" Grid.Row="10" Grid.Column="0"/>
             <TextBox Grid.Row="10" Grid.Column="1" Text="{tsfBinding:Column Path=Longitude}" />            

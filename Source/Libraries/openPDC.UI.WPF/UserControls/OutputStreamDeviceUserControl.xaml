@@ -75,7 +75,7 @@
                 <TextBlock Text="Load Order" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="2" Grid.Column="3" Text="{tsfBinding:Column Path=LoadOrder}" />
+            <TextBox Grid.Row="2" Grid.Column="3" Text="{tsfBinding:Column Path=LoadOrder}" Width="{StaticResource XXXSmallItemSize}" />
 
             <!--Third Row-->
             <TextBlock Text="Phasor Data Format" Grid.Row="3" Grid.Column="0" />
@@ -97,7 +97,7 @@
                 <TextBlock Text="ID Code" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="5" Grid.Column="1" Text="{tsfBinding:Column Path=IDCode}" />
+            <TextBox Grid.Row="5" Grid.Column="1" Text="{tsfBinding:Column Path=IDCode}" Width="{StaticResource XXXSmallItemSize}" />
 
             <!--Button-->
             <CheckBox Content="Enabled" Grid.Row="5" Grid.Column="3" IsChecked="{tsfBinding:Column Path=Enabled}"/>

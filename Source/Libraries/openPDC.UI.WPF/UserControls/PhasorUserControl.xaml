@@ -55,7 +55,7 @@
                 <TextBlock Text="Source Index" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=SourceIndex}"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=SourceIndex}" Width="{StaticResource XXXSmallItemSize}"/>
             <TextBlock Grid.Row="1" Grid.Column="2" Text="Phase"/>
             <ComboBox Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Source={StaticResource PhaseLookupList}}" DisplayMemberPath="Value"
                       SelectedItem="{tsfBinding:Column Path=Phase, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource PhaseLookupList}}"/>

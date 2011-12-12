@@ -79,10 +79,10 @@
                 <TextBlock Text="Load Order" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=LoadOrder}" VerticalAlignment="Top"/>
+            <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=LoadOrder}" VerticalAlignment="Top" Width="{StaticResource XXXSmallItemSize}" />
             
             <!--Second Row-->
-            <TextBox Grid.Row="1" Grid.Column="3" Text="{tsfBinding:Column Path=MaskValue}" VerticalAlignment="Top"/>
+            <TextBox Grid.Row="1" Grid.Column="3" Text="{tsfBinding:Column Path=MaskValue}" VerticalAlignment="Top" Width="{StaticResource XXXSmallItemSize}" />
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" >
                 <TextBlock Text="Mask Value" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
