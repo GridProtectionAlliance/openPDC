@@ -107,12 +107,12 @@
                 <TextBlock Text="Nominal Frequency" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-                <TextBox Grid.Row="4" Grid.Column="1" Text="{tsfBinding:Column Path=NominalFrequency}" Width="{StaticResource XXXSmallItemSize}" />
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{tsfBinding:Column Path=NominalFrequency}" Width="35" />
             <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2">
                 <TextBlock Text="Frames Per Second" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-                <TextBox Grid.Row="4" Grid.Column="3" Text="{tsfBinding:Column Path=FramesPerSecond}" Width="{StaticResource XXXSmallItemSize}" />
+                <TextBox Grid.Row="4" Grid.Column="3" Text="{tsfBinding:Column Path=FramesPerSecond}" Width="35" />
             
             <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Lag Time" Style="{StaticResource RequiredLabel}"/>
@@ -154,7 +154,7 @@
                         <Button Content="?" Tag="HMC - Time Resolution.png" ToolTipService.ToolTip="Click here for help on Time Resolution" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
                         <TextBlock Style="{StaticResource RequiredMarker}"/>
                     </StackPanel>
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=TimeResolution}" Width="{StaticResource XXXSmallItemSize}" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=TimeResolution}" Width="35" />
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
                         <TextBlock Text="Downsampling" Style="{StaticResource RequiredLabel}"/>
                         <Button Content="?" Tag="HMC - Downsampling Method.png" ToolTipService.ToolTip="Click here for help on Downsampling Method" Click="ButtonHelp_Click" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Top" Template="{StaticResource HyperlinkStyleButtonTemplate}"/>
@@ -180,12 +180,12 @@
                         <TextBlock Text="Current Scaling Value" Style="{StaticResource RequiredLabel}"/>
                         <TextBlock Style="{StaticResource RequiredMarker}"/>
                     </StackPanel>
-                    <TextBox Grid.Row="2" Grid.Column="1" Text="{tsfBinding:Column Path=CurrentScalingValue}" Width="{StaticResource XXSmallItemSize}"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{tsfBinding:Column Path=CurrentScalingValue}" Width="{StaticResource XSmallItemSize}"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2">
                         <TextBlock Text="Voltage Scaling Value" Style="{StaticResource RequiredLabel}"/>
                         <TextBlock Style="{StaticResource RequiredMarker}"/>
                     </StackPanel>
-                    <TextBox Grid.Row="2" Grid.Column="3" Text="{tsfBinding:Column Path=VoltageScalingValue}" Width="{StaticResource XXSmallItemSize}" />
+                    <TextBox Grid.Row="2" Grid.Column="3" Text="{tsfBinding:Column Path=VoltageScalingValue}" Width="{StaticResource XSmallItemSize}" />
 
                     <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right">
                         <TextBlock Text="Analog Scaling Value" Style="{StaticResource RequiredLabel}"/>

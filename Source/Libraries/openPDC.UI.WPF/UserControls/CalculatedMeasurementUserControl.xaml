@@ -87,22 +87,22 @@
                 <TextBlock Text="Lag Time" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="5" Grid.Column="1" Text="{tsfBinding:Column Path=LagTime}" />
+            <TextBox Grid.Row="5" Grid.Column="1" Text="{tsfBinding:Column Path=LagTime}" Width="{StaticResource XSmallItemSize}" />
             <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="2" HorizontalAlignment="Right" Height="32" VerticalAlignment="Top">
                 <TextBlock Text="Lead Time" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="5" Grid.Column="3" Text="{tsfBinding:Column Path=LeadTime}" />
+            <TextBox Grid.Row="5" Grid.Column="3" Text="{tsfBinding:Column Path=LeadTime}" Width="{StaticResource XSmallItemSize}"/>
             <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Frames Per Second" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Text="{tsfBinding:Column Path=FramesPerSecond}" Grid.Row="6" Grid.Column="1" Width="{StaticResource XXXSmallItemSize}" />
+            <TextBox Text="{tsfBinding:Column Path=FramesPerSecond}" Grid.Row="6" Grid.Column="1" Width="35" />
             <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="2" HorizontalAlignment="Right">
                 <TextBlock Text="Time Resolution" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Text="{tsfBinding:Column Path=TimeResolution}" Grid.Row="6" Grid.Column="3" Width="{StaticResource XXSmallItemSize}" />
+            <TextBox Text="{tsfBinding:Column Path=TimeResolution}" Grid.Row="6" Grid.Column="3" Width="{StaticResource XSmallItemSize}" />
             <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Downsampling Method" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
