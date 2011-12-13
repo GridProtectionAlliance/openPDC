@@ -26,8 +26,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using openPDC.UI.DataModels;
 using System.Windows.Input;
+using openPDC.UI.DataModels;
 
 namespace openPDC.UI.UserControls
 {
@@ -60,7 +60,7 @@ namespace openPDC.UI.UserControls
             m_currentDevices = new ObservableCollection<OutputStreamDevice>();
             m_newDevices = new ObservableCollection<Device>();
             this.Loaded += new System.Windows.RoutedEventHandler(OutputStreamCurrentDeviceUserControl_Loaded);
-            this.KeyUp += new System.Windows.Input.KeyEventHandler(OutputStreamCurrentDeviceUserControl_KeyUp);    
+            this.KeyUp += new System.Windows.Input.KeyEventHandler(OutputStreamCurrentDeviceUserControl_KeyUp);
         }
 
         #endregion
@@ -101,22 +101,22 @@ namespace openPDC.UI.UserControls
 
         private void ButtonDelete_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            foreach (OutputStreamDevice outputStreamDevice in m_currentDevices)
+            try
             {
-                if (outputStreamDevice.Selected)
+                foreach (OutputStreamDevice outputStreamDevice in m_currentDevices)
                 {
-                    try
+                    if (outputStreamDevice.Selected)
                     {
                         OutputStreamDevice.Delete(null, m_outputStreamID, outputStreamDevice.Acronym);
-                        MessageBox.Show("Selected output stream devices deleted successfully.", "Delete Output Stream Device", MessageBoxButton.OK);
                         LoadCurrentDevices();
                         LoadNewDevices(string.Empty);
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Delete Output Stream Device: " + outputStreamDevice.Acronym);
-                    }
                 }
+                MessageBox.Show("Selected output stream devices deleted successfully.", "Delete Output Stream Device", MessageBoxButton.OK);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Delete Output Stream Device");
             }
         }
 

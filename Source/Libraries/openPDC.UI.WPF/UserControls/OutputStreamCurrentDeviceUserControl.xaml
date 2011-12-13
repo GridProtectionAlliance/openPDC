@@ -28,8 +28,8 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 
                         <TextBox x:Name="TextBoxSearch"/>
-                        <Button Content="Search" Width="Auto" Click="ButtonSearch_Click" Margin="5,0,5,0"/>
-                        <Button Content="Show All" Width="Auto" Click="ButtonShowAll_Click"/>
+                        <Button Content="Search" Height="24" Click="ButtonSearch_Click" Margin="5,0,5,0"/>
+                        <Button Content="Show All" Height="24" Click="ButtonShowAll_Click"/>
 
                     </StackPanel>
 
@@ -60,8 +60,8 @@
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 
-                        <Button Content="Close" Width="Auto" Click="ButtonCancel_Click" Margin="0,0,5,0"/>
-                        <Button Content="Add Selected" Width="Auto" Click="ButtonAddMore_Click" />
+                        <Button Content="Close" Height="24" Click="ButtonCancel_Click" Margin="0,0,5,0"/>
+                        <Button Content="Add Selected" Width="Auto" Height="24" Click="ButtonAddMore_Click" />
 
                     </StackPanel>
 
@@ -91,8 +91,8 @@
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             
-            <Button Content="Delete Selected" Width="Auto" Click="ButtonDelete_Click" Margin="0,0,5,0"/>
-            <Button Content="Add More Devices" Width="Auto" Click="ButtonAdd_Click"/>
+            <Button Content="Delete Selected" Width="Auto" Height="24" Click="ButtonDelete_Click" Margin="0,0,5,0"/>
+            <Button Content="Add More Devices" Width="Auto" Height="24" Click="ButtonAdd_Click"/>
             
         </StackPanel>
         
