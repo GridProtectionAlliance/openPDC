@@ -115,7 +115,6 @@ namespace openPDC.UI.DataModels
         /// Gets or sets <see cref="OutputStreamDeviceDigital"/> Label.
         /// </summary>
         [Required(ErrorMessage = "OutputStreamDeviceDigital Label is a required field, please provide value.")]
-        [StringLength(200, ErrorMessage = "OutputStreamDeviceDigital Label cannot exceed 200 characters.")]
         public string Label
         {
             get
@@ -124,24 +123,23 @@ namespace openPDC.UI.DataModels
             }
             set
             {
-                m_label = value.TruncateRight(128).PadRight(128);
+                m_label = value.TruncateRight(256).PadRight(256);
                 OnPropertyChanged("Label");
             }
         }
 
         /// <summary>
         /// Gets or sets <see cref="OutputStreamDeviceDigital"/> Display Label.
-        /// </summary>        
-        [StringLength(200, ErrorMessage = "OutputStreamDeviceDigital Label cannot exceed 200 characters.")]
+        /// </summary>                
         public string DisplayLabel
         {
             get
             {
-                return string.Concat(Label.GetSegments(16).Select(label => label.Trim() + "\r\n").Take(8));
+                return string.Concat(Label.GetSegments(16).Select(label => label.Trim() + "\r\n").Take(16));
             }
             set
             {
-                Label = string.Concat(value.Split(new string[] { "\r\n" }, StringSplitOptions.None).Select(label => label.TruncateRight(16).PadRight(16)).Take(8));
+                Label = string.Concat(value.Split(new string[] { "\r\n" }, StringSplitOptions.None).Select(label => label.TruncateRight(16).PadRight(16)).Take(16));
                 OnPropertyChanged("DisplayLabel");
             }
         }

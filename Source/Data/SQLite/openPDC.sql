@@ -285,7 +285,7 @@ CREATE TABLE Measurement(
 	HistorianID INTEGER NULL,
 	DeviceID INTEGER NULL,
 	PointTag VARCHAR(200) NOT NULL,
-	AlternateTag VARCHAR(200) NULL,
+	AlternateTag TEXT NULL,
 	SignalTypeID INTEGER NOT NULL,
 	PhasorSourceIndex INTEGER NULL,
 	SignalReference VARCHAR(200) NOT NULL,

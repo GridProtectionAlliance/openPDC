@@ -69,7 +69,7 @@
             </Grid.RowDefinitions>
 
             <!--Frist Row-->
-            <TextBox x:Name="TextBoxLabel" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Text="{tsfBinding:Column Path=DisplayLabel}" CharacterCasing="Upper" TextWrapping="Wrap" Height="100" MaxLength="200" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />            
+            <TextBox x:Name="TextBoxLabel" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Text="{tsfBinding:Column Path=DisplayLabel}" CharacterCasing="Upper" TextWrapping="Wrap" Height="100" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />            
             <!--<ListBox ItemsSource="{tsfBinding:Column Path=LabelCollection}" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="175" Height="90"/>-->            
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top">
                 <TextBlock Text="Label" Style="{StaticResource RequiredLabel}"/>

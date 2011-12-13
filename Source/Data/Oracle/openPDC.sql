@@ -355,7 +355,7 @@ CREATE TABLE OutputStreamDeviceDigital(
     NodeID VARCHAR2(36) NOT NULL,
     OutputStreamDeviceID NUMBER NOT NULL,
     ID NUMBER NOT NULL,
-    Label VARCHAR2(200) NOT NULL,
+    Label VARCHAR2(4000) NOT NULL,
     MaskValue NUMBER DEFAULT 0 NOT NULL,
     LoadOrder NUMBER DEFAULT 0 NOT NULL,
     CreatedOn DATE NOT NULL,
@@ -433,7 +433,7 @@ CREATE TABLE Measurement(
     HistorianID NUMBER NULL,
     DeviceID NUMBER NULL,
     PointTag VARCHAR2(200) NOT NULL,
-    AlternateTag VARCHAR2(200) NULL,
+    AlternateTag VARCHAR2(4000) NULL,
     SignalTypeID NUMBER NOT NULL,
     PhasorSourceIndex NUMBER NULL,
     SignalReference VARCHAR2(200) NOT NULL,
@@ -1095,16 +1095,41 @@ ORDER BY OutputStreamMeasurement.HistorianID, OutputStreamMeasurement.PointID;
 
 CREATE VIEW RuntimeHistorian
 AS
-SELECT Historian.NodeID, Runtime.ID, Historian.Acronym AS AdapterName,
-    CASE TRIM(Historian.AssemblyName) WHEN 0 THEN 'HistorianAdapters.dll' ELSE Historian.AssemblyName END AS AssemblyName,
-    CASE TRIM(Historian.TypeName) WHEN 0 THEN (CASE IsLocal WHEN 1 THEN 'HistorianAdapters.LocalOutputAdapter' ELSE 'HistorianAdapters.RemoteOutputAdapter' END) ELSE Historian.TypeName END AS TypeName,
-    (Historian.ConnectionString || ';' ||
-    ('instanceName=' || Historian.Acronym) || ('sourceids=' || Historian.Acronym) || ';' ||
-    'measurementReportingInterval=' || Historian.MeasurementReportingInterval) AS ConnectionString
-FROM Historian LEFT OUTER JOIN
-    Runtime ON Historian.ID = Runtime.SourceID AND Runtime.SourceTable = 'Historian'
-WHERE (Historian.Enabled <> 0)
-ORDER BY Historian.LoadOrder;
+SELECT   Historian.NodeID,
+              Runtime.ID,
+              Historian.Acronym AS AdapterName,
+              CASE TRIM (Historian.AssemblyName)
+                 WHEN '0' THEN 'HistorianAdapters.dll'
+                 ELSE Historian.AssemblyName
+              END
+                 AS AssemblyName,
+              CASE TRIM (Historian.TypeName)
+                 WHEN '0'
+                 THEN
+                    (CASE IsLocal
+                        WHEN 1 THEN 'HistorianAdapters.LocalOutputAdapter'
+                        ELSE 'HistorianAdapters.RemoteOutputAdapter'
+                     END)
+                 ELSE
+                    Historian.TypeName
+              END
+                 AS TypeName,
+              (   Historian.ConnectionString
+               || ';'
+               || ('instanceName=' || Historian.Acronym)
+               || ';'
+               || ('sourceids=' || Historian.Acronym)
+               || ';'
+               || 'measurementReportingInterval='
+               || Historian.MeasurementReportingInterval)
+                 AS ConnectionString
+       FROM      Historian
+              LEFT OUTER JOIN
+                 Runtime
+              ON Historian.ID = Runtime.SourceID
+                 AND Runtime.SourceTable = 'Historian'
+      WHERE   (Historian.Enabled <> 0)
+   ORDER BY   Historian.LoadOrder;
 
 CREATE VIEW RuntimeDevice
 AS
