@@ -96,7 +96,7 @@
                 <Border Grid.Row="5" Grid.Column="1" BorderThickness="1" Margin="2,20,2,20" BorderBrush="#FF333333" />
 
                 <TextBlock Grid.Row="6" Grid.Column="0" Text="Device ID Code"/>
-                <TextBox Text="{tsfBinding:Column Path=DataContext.AccessID, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}}"  Grid.Row="6" Grid.Column="1" Width="{StaticResource XXSmallItemSize} " />
+                <TextBox Text="{tsfBinding:Column Path=DataContext.AccessID, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=1}}"  Grid.Row="6" Grid.Column="1" Width="{StaticResource XXSmallItemSize}" />
 
                 <TextBlock Grid.Row="7" Grid.Column="0" Text="Device Protocol" />
                 <ComboBox Grid.Row="7" Grid.Column="1" ItemsSource="{Binding Source={StaticResource ProtocolLookupList}}" DisplayMemberPath="Value"
