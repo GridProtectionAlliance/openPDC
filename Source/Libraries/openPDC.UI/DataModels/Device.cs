@@ -224,6 +224,9 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_acronym = value.Replace("'", "").ToUpper();
+                if (m_acronym.Length > 200)
+                    m_acronym = m_acronym.Substring(0, 200);
+
                 OnPropertyChanged("Acronym");
             }
         }
@@ -240,7 +243,10 @@ namespace openPDC.UI.DataModels
             }
             set
             {
-                m_name = value;
+                if (value != null && value.Length > 200)
+                    m_name = value.Substring(0, 200);
+                else
+                    m_name = value;
                 OnPropertyChanged("Name");
             }
         }

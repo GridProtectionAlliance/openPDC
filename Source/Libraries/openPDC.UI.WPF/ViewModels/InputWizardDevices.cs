@@ -894,7 +894,7 @@ namespace openPDC.UI.ViewModels
                 DigitalDefinitionCollection collection = (DigitalDefinitionCollection)analogOrDigitalCollection;
                 foreach (IDigitalDefinition digital in collection)
                 {
-                    returnCollection.Add(digital.Label);
+                    returnCollection.Add(digital.Label.TruncateRight(128));
                 }
             }
             else if (analogOrDigitalCollection is AnalogDefinitionCollection)

@@ -96,7 +96,7 @@ namespace openPDC.UI.DataModels
             }
             set
             {
-                if (value.Length > 200)
+                if (value != null && value.Length > 200)
                     m_name = value.Substring(0, 200);
                 else
                     m_name = value;
@@ -429,7 +429,7 @@ namespace openPDC.UI.DataModels
             }
             set
             {
-                if (value.Length > 200)
+                if (value != null & value.Length > 200)
                     m_label = value.Substring(0, 200);
                 else
                     m_label = value;
