@@ -638,7 +638,7 @@ namespace openPDC.UI.DataModels
                                 {
                                     OutputStreamDeviceAnalog outputStreamDeviceAnalog = new OutputStreamDeviceAnalog();
                                     outputStreamDeviceAnalog.NodeID = device.NodeID;
-                                    outputStreamDeviceAnalog.OutputStreamDeviceID = device.ID;
+                                    outputStreamDeviceAnalog.OutputStreamDeviceID = outputStreamDevice.ID;
                                     outputStreamDeviceAnalog.Label = string.IsNullOrEmpty(measurement.AlternateTag) ? device.Acronym.Length > 12 ? device.Acronym.Substring(0, 12) + ":A" + analogIndex.ToString() : device.Acronym + ":A" + analogIndex.ToString() : measurement.AlternateTag; // measurement.PointTag;                                    
                                     outputStreamDeviceAnalog.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
                                     OutputStreamDeviceAnalog.Save(database, outputStreamDeviceAnalog);
@@ -648,7 +648,7 @@ namespace openPDC.UI.DataModels
                                 {
                                     OutputStreamDeviceDigital outputStreamDeviceDigital = new OutputStreamDeviceDigital();
                                     outputStreamDeviceDigital.NodeID = device.NodeID;
-                                    outputStreamDeviceDigital.OutputStreamDeviceID = device.ID;
+                                    outputStreamDeviceDigital.OutputStreamDeviceID = outputStreamDevice.ID;
                                     outputStreamDeviceDigital.Label = string.IsNullOrEmpty(measurement.AlternateTag) ? DefaultDigitalLabel : measurement.AlternateTag;     // measurement.PointTag;
                                     outputStreamDeviceDigital.LoadOrder = Convert.ToInt32(measurement.SignalReference.Substring((measurement.SignalReference.LastIndexOf("-") + 3)));
                                     OutputStreamDeviceDigital.Save(database, outputStreamDeviceDigital);
@@ -669,7 +669,8 @@ namespace openPDC.UI.DataModels
 
         //                                                    1         2         3         4         5         6         7         8         9         10        11        12
         //                                           12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678
-        private static string DefaultDigitalLabel = "DIGITAL0        DIGITAL1        DIGITAL2        DIGITAL3        DIGITAL4        DIGITAL5        DIGITAL6        DIGITAL7        ";
+        private static string DefaultDigitalLabel = "DIGITAL0        DIGITAL1        DIGITAL2        DIGITAL3        DIGITAL4        DIGITAL5        DIGITAL6        DIGITAL7        " +
+                                                    "DIGITAL8        DIGITAL9        DIGITAL10       DIGITAL11       DIGITAL12       DIGITAL13       DIGITAL14       DIGITAL15       ";
         //                                           *23456789012345+*23456789012345+*23456789012345+*23456789012345+*23456789012345+*23456789012345+*23456789012345+*23456789012345+
 
         /// <summary>
