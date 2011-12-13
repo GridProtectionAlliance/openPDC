@@ -97,6 +97,10 @@ namespace openPDC.UI.UserControls
             }
         }
 
+        #endregion
+
+        #region [ Methods ]
+
         private void HomeUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             try
@@ -117,10 +121,6 @@ namespace openPDC.UI.UserControls
                 m_unsynchronizedSubscriber = null;
             }
         }
-
-        #endregion
-
-        #region [ Methods ]
 
         private void HomeUserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -192,6 +192,11 @@ namespace openPDC.UI.UserControls
                         m_windowsServiceClient.Helper.SendRequest("Status -actionable");
                 }
                 catch { }
+            }
+            else
+            {
+                // Try to retrieve latest.
+                m_windowsServiceClient = CommonFunctions.GetWindowsServiceClient();
             }
             TextBlockLocalTime.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
         }

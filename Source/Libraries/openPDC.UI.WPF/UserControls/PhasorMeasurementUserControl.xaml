@@ -137,11 +137,8 @@
 
             <!--Fourth Row-->
             <TextBlock Grid.Row="3" Grid.Column="0" Text="Description"/>
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{tsfBinding:Column Path=Description}"/>
-            <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3">
-                <CheckBox Content="Internal" IsChecked="{tsfBinding:Column Path=Internal}"/>
-                <CheckBox Content="Subscribed" IsChecked="{tsfBinding:Column Path=Subscribed}"/>
-            </StackPanel>
+            <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Text="{tsfBinding:Column Path=Description}" Width="{StaticResource XXXLargeItemSize}"/>
+            
 
             <!--Fifth Row-->
             <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right">
@@ -149,7 +146,11 @@
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
             <TextBox Grid.Row="4" Grid.Column="1" Text="{tsfBinding:Column Path=Adder}" Width="{StaticResource SmallItemSize}"/>
-            <CheckBox Content="Enabled" Grid.Row="4" Grid.Column="3" IsChecked="{tsfBinding:Column Path=Enabled}"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2">
+                <CheckBox Content="Internal" IsChecked="{tsfBinding:Column Path=Internal}"/>
+                <CheckBox Content="Subscribed" IsChecked="{tsfBinding:Column Path=Subscribed}"/>
+                <CheckBox Content="Enabled" IsChecked="{tsfBinding:Column Path=Enabled}"/>
+            </StackPanel>
 
             <!--Sixth Row-->
             <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Right">

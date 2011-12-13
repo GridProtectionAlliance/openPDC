@@ -75,6 +75,10 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_acronym = value.Replace("'", "").ToUpper();
+
+                if (m_acronym.Length > 200)
+                    m_acronym = m_acronym.Substring(0, 200);
+
                 OnPropertyChanged("Acronym");
                 Existing = (Device.GetDevice(null, "WHERE Acronym = '" + m_acronym.ToUpper() + "'") != null);
             }
@@ -92,7 +96,11 @@ namespace openPDC.UI.DataModels
             }
             set
             {
-                m_name = value;
+                if (value.Length > 200)
+                    m_name = value.Substring(0, 200);
+                else
+                    m_name = value;
+
                 OnPropertyChanged("Name");
             }
         }
@@ -421,7 +429,11 @@ namespace openPDC.UI.DataModels
             }
             set
             {
-                m_label = value;
+                if (value.Length > 200)
+                    m_label = value.Substring(0, 200);
+                else
+                    m_label = value;
+
                 OnPropertyChanged("Label");
             }
         }
