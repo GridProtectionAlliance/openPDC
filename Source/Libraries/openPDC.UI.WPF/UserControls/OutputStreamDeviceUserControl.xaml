@@ -75,7 +75,7 @@
                 <TextBlock Text="Load Order" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="2" Grid.Column="3" Text="{tsfBinding:Column Path=LoadOrder}" Width="{StaticResource XXXSmallItemSize}" />
+            <TextBox Grid.Row="2" Grid.Column="3" Text="{tsfBinding:Column Path=LoadOrder}" Width="35" />
 
             <!--Third Row-->
             <TextBlock Text="Phasor Data Format" Grid.Row="3" Grid.Column="0" />
@@ -97,39 +97,20 @@
                 <TextBlock Text="ID Code" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="5" Grid.Column="1" Text="{tsfBinding:Column Path=IDCode}" Width="{StaticResource XXXSmallItemSize}" />
+            <TextBox Grid.Row="5" Grid.Column="1" Text="{tsfBinding:Column Path=IDCode}" Width="35" />
 
             <!--Button-->
             <CheckBox Content="Enabled" Grid.Row="5" Grid.Column="3" IsChecked="{tsfBinding:Column Path=Enabled}"/>
 
         </Grid>
         
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <uc:DetailViewFooterUserControl x:Name="UserControlDetailViewFooter" DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
+                SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
         
-            <TextBlock Text="* - Virtual Device" HorizontalAlignment="Left" Margin="10,0,0,0"/>
-            <uc:DetailViewFooterUserControl x:Name="UserControlDetailViewFooter" DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
-                SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" HorizontalAlignment="Right"/>
-        </Grid>
-            
         <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="825"
                PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4" Sorting="DataGrid_Sorting">
                 <sdk:DataGrid.Columns>
-                <sdk:DataGridTemplateColumn Header="Acronym" Width="*">
-                    <sdk:DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                <TextBlock Text="{tsfBinding:Column Path=Acronym}"/>
-                                <TextBlock Text="*" FontWeight="Bold" Margin="2"
-                                               Visibility="{Binding Path=Virtual, Converter={StaticResource ObjectToVisibilityConverter}}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </sdk:DataGridTemplateColumn.CellTemplate>
-                </sdk:DataGridTemplateColumn>
-                    <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
                 <sdk:DataGridTextColumn Header=" Name" Width="*" Binding="{tsfBinding:Column Path=Name}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
                     <sdk:DataGridTemplateColumn Header="Enabled" Width="*">
                         <sdk:DataGridTemplateColumn.CellTemplate>

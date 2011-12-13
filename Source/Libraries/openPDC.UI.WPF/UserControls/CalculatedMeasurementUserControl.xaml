@@ -78,7 +78,7 @@
                 <TextBlock Text="Min Measurements" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Grid.Row="3" Grid.Column="3" Text="{tsfBinding:Column Path=MinimumMeasurementsToUse}" Width="{StaticResource XXXSmallItemSize}" />
+            <TextBox Grid.Row="3" Grid.Column="3" Text="{tsfBinding:Column Path=MinimumMeasurementsToUse}" Width="{StaticResource XXSmallItemSize}" />
             <TextBlock Text="Input Measurements" Grid.Row="4" Grid.Column="0" VerticalAlignment="Top" />
             <TextBox Grid.Row="4" Grid.Column="1" Text="{tsfBinding:Column Path=InputMeasurements}" Height="50" TextWrapping="Wrap" />
             <TextBlock Text="Output Measurements" Grid.Row="4" Grid.Column="2" VerticalAlignment="Top" />
@@ -102,7 +102,7 @@
                 <TextBlock Text="Time Resolution" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBox Text="{tsfBinding:Column Path=TimeResolution}" Grid.Row="6" Grid.Column="3" Width="{StaticResource XXXSmallItemSize}" />
+            <TextBox Text="{tsfBinding:Column Path=TimeResolution}" Grid.Row="6" Grid.Column="3" Width="{StaticResource XXSmallItemSize}" />
             <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Downsampling Method" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
@@ -119,7 +119,7 @@
             <CheckBox Content="Allow Preemeptive Publishing" Grid.Row="9" Grid.Column="3" IsChecked="{tsfBinding:Column Path=AllowPreemptivePublishing}"/>
             <CheckBox Content="Perform Timestamp Reasonability Check" Grid.Row="10" Grid.Column="1" IsChecked="{tsfBinding:Column Path=PerformTimestampReasonabilityCheck}"/>
             <CheckBox Content="Enabled" Grid.Row="10" Grid.Column="3" IsChecked="{tsfBinding:Column Path=Enabled}"/>
-            <TextBox Text="{tsfBinding:Column Path=LoadOrder}" Grid.Row="7" Grid.Column="3" Width="{StaticResource XXXSmallItemSize}" />
+            <TextBox Text="{tsfBinding:Column Path=LoadOrder}" Grid.Row="7" Grid.Column="3" Width="35" />
             <TextBlock Text="Runtime ID" Grid.Row="11" Grid.Column="0" />
             <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="1">
                 <TextBlock Text="{tsfBinding:Column Path=DataContext.RuntimeID, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" />

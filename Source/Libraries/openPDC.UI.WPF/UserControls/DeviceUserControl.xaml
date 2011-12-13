@@ -117,7 +117,7 @@
                 <TextBlock Text="ID Code (Access ID)" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{tsfBinding:Column Path=AccessID}" Width="{StaticResource XXXSmallItemSize}" />
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{tsfBinding:Column Path=AccessID}" Width="35" />
 
             <TextBlock Text="Frames Per Second" Grid.Row="3" Grid.Column="2" />
             <TextBox Grid.Row="3" Grid.Column="3" Text="{tsfBinding:Column Path=FramesPerSecond}" Width="{StaticResource XXXSmallItemSize}" />
@@ -198,7 +198,7 @@
                 <TextBlock Text="Measurement Reporting Interval" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="9" Grid.Column="3" Text="{tsfBinding:Column Path=MeasurementReportingInterval}" MaxLength="50" Width="{StaticResource XXXSmallItemSize}" />
+            <TextBox Grid.Row="9" Grid.Column="3" Text="{tsfBinding:Column Path=MeasurementReportingInterval}" MaxLength="50" Width="35" />
 
             <TextBlock Text="Longitude" Grid.Row="10" Grid.Column="0"/>
             <TextBox Grid.Row="10" Grid.Column="1" Text="{tsfBinding:Column Path=Longitude}" />            
@@ -235,11 +235,9 @@
 
         <uc:DetailViewFooterUserControl x:Name="UserControlDetailViewFooter" DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
                 SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
-        
-        <TextBlock Text="Concentrator Device List" FontWeight="Bold" HorizontalAlignment="Left"
-                   Visibility="{Binding Path=CurrentItem.IsConcentrator, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+
         <sdk:DataGrid x:Name="DataGridList" ItemsSource="{tsfBinding:Column Path=PdcDevices}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" 
-                      Visibility="{Binding Path=CurrentItem.IsConcentrator, Converter={StaticResource ObjectToVisibilityConverter}}" Height="100">
+                      Visibility="{Binding Path=CurrentItem.IsConcentrator, Converter={StaticResource ObjectToVisibilityConverter}}" Height="125">
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path= Acronym}"/>
                 <sdk:DataGridTextColumn Header="Name" Width="2*" Binding="{tsfBinding:Column Path= Name}" />                
