@@ -74,6 +74,7 @@ namespace openPDC.UI.UserControls
         private EnumerableDataSource<double> m_yAxisBindingCollection;      // Values plotted on Y-Axis.
         private LineGraph m_lineGraph;
         private int m_numberOfPointsToPlot = 60;
+        private bool m_eventHandlerRegistered = false;
 
         #endregion
 
@@ -135,11 +136,13 @@ namespace openPDC.UI.UserControls
                 m_windowsServiceClient.Helper.SendRequest("version -actionable");
                 m_windowsServiceClient.Helper.SendRequest("status -actionable");
                 m_windowsServiceClient.Helper.SendRequest("time -actionable");
-                m_refreshTimer = new DispatcherTimer();
-                m_refreshTimer.Interval = TimeSpan.FromSeconds(10);
-                m_refreshTimer.Tick += new EventHandler(m_refreshTimer_Tick);
-                m_refreshTimer.Start();
+                m_eventHandlerRegistered = true;
             }
+
+            m_refreshTimer = new DispatcherTimer();
+            m_refreshTimer.Interval = TimeSpan.FromSeconds(10);
+            m_refreshTimer.Tick += new EventHandler(m_refreshTimer_Tick);
+            m_refreshTimer.Start();
 
             if (IntPtr.Size == 8)
                 TextBlockInstance.Text = "64-bit";
@@ -186,17 +189,19 @@ namespace openPDC.UI.UserControls
             {
                 try
                 {
+
+                    if (!m_eventHandlerRegistered)
+                    {
+                        m_windowsServiceClient.Helper.ReceivedServiceResponse += new EventHandler<EventArgs<ServiceResponse>>(Helper_ReceivedServiceResponse);
+                        m_windowsServiceClient.Helper.SendRequest("version -actionable");
+                    }
+
                     m_windowsServiceClient.Helper.SendRequest("Health -actionable");
                     m_windowsServiceClient.Helper.SendRequest("Time -actionable");
                     if (PopupStatus.IsOpen)
                         m_windowsServiceClient.Helper.SendRequest("Status -actionable");
                 }
                 catch { }
-            }
-            else
-            {
-                // Try to retrieve latest.
-                m_windowsServiceClient = CommonFunctions.GetWindowsServiceClient();
             }
             TextBlockLocalTime.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
         }
