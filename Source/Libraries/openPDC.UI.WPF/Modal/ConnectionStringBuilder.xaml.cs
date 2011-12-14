@@ -469,13 +469,49 @@ namespace openPDC.UI.Modal
                 {
                     TabControlOptions.SelectedIndex = 2;
                     if (m_keyvaluepairs.ContainsKey("port"))
-                        ComboboxPort.SelectedItem = m_keyvaluepairs["port"];
+                    {
+                        foreach (object item in ComboboxPort.Items)
+                        {
+                            if (item.ToString().ToLower() == m_keyvaluepairs["port"])
+                            {
+                                ComboboxPort.SelectedItem = item;
+                                break;
+                            }
+                        }
+                    }
                     if (m_keyvaluepairs.ContainsKey("baudrate"))
-                        ComboboxBaudRate.SelectedItem = m_keyvaluepairs["baudrate"];
+                    {
+                        foreach (object item in ComboboxBaudRate.Items)
+                        {
+                            if (item.ToString().ToLower() == m_keyvaluepairs["baudrate"])
+                            {
+                                ComboboxBaudRate.SelectedItem = item;
+                                break;
+                            }
+                        }
+                    }
                     if (m_keyvaluepairs.ContainsKey("parity"))
-                        ComboboxParity.SelectedItem = m_keyvaluepairs["parity"];
+                    {
+                        foreach (object item in ComboboxParity.Items)
+                        {
+                            if (item.ToString().ToLower() == m_keyvaluepairs["parity"])
+                            {
+                                ComboboxParity.SelectedItem = item;
+                                break;
+                            }
+                        }
+                    }
                     if (m_keyvaluepairs.ContainsKey("stopbits"))
-                        ComboboxStopBits.SelectedItem = m_keyvaluepairs["stopbits"];
+                    {
+                        foreach (object item in ComboboxStopBits.Items)
+                        {
+                            if (item.ToString().ToLower() == m_keyvaluepairs["stopbits"])
+                            {
+                                ComboboxStopBits.SelectedItem = item;
+                                break;
+                            }
+                        }
+                    }
                     if (m_keyvaluepairs.ContainsKey("databits"))
                         TextBoxDataBits.Text = m_keyvaluepairs["databits"];
                     if (m_keyvaluepairs.ContainsKey("dtrenable") && m_keyvaluepairs["dtrenable"].ToLower() == "true")
