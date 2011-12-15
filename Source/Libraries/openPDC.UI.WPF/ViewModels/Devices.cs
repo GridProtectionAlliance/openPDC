@@ -33,7 +33,6 @@ using openPDC.UI.UserControls;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
 using TimeSeriesFramework.UI.DataModels;
-using TimeSeriesFramework.UI.UserControls;
 
 namespace openPDC.UI.ViewModels
 {
@@ -613,7 +612,7 @@ namespace openPDC.UI.ViewModels
         private void GoToMeasurements()
         {
             //openPDC.UI.DataModels.Device device = (openPDC.UI.DataModels.Device)parameter;
-            MeasurementUserControl measurementUserControl = new MeasurementUserControl(CurrentItem.ID);
+            PhasorMeasurementUserControl measurementUserControl = new PhasorMeasurementUserControl(CurrentItem.ID);
             CommonFunctions.LoadUserControl(measurementUserControl, "Manage Measurements for " + CurrentItem.Acronym);
         }
 
