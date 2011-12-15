@@ -49,7 +49,7 @@ namespace ConfigurationSetupUtility.Screens
         private class HistorianAdapter
         {
             #region [ Members ]
-            
+
             // Fields
             private Type m_type;
             private string m_description;
@@ -271,7 +271,11 @@ namespace ConfigurationSetupUtility.Screens
         /// Allows the screen to update the navigation buttons after a change is made
         /// that would affect the user's ability to navigate to other screens.
         /// </summary>
-        public Action UpdateNavigation { get; set; }
+        public Action UpdateNavigation
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -307,13 +311,23 @@ namespace ConfigurationSetupUtility.Screens
         // OutputIsForArchive is true.
         private List<Type> GetHistorianTypes()
         {
-            Func<Type, bool> outputIsForArchive = type =>
+            return typeof(IOutputAdapter).LoadImplementations(true).Where(type =>
             {
-                IOutputAdapter adapter = Activator.CreateInstance(type) as IOutputAdapter;
-                return (adapter != null) && adapter.OutputIsForArchive;
-            };
-
-            return typeof(IOutputAdapter).LoadImplementations(true).Where(outputIsForArchive).ToList();
+                try
+                {
+                    IOutputAdapter adapter = Activator.CreateInstance(type) as IOutputAdapter;
+                    return (adapter != null) && adapter.OutputIsForArchive;
+                }
+                catch (Exception ex)
+                {
+                    // If we have trouble creating adapter, we won't add it to the list - but we'll log the issue for debugging
+                    LogFile logger = new LogFile();
+                    logger.FileName = FilePath.GetAbsolutePath("ErrorLog.txt");
+                    logger.WriteTimestampedLine(string.Format("Failed to create instance of {0}: {1}", type, ErrorLogger.GetExceptionInfo(ex, false)));
+                    logger.Dispose();
+                    return false;
+                }
+            }).ToList();
         }
 
         // Occurs when the user changes the selection in the historian list box.
