@@ -1607,6 +1607,13 @@
             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> information as defined in the database.
             </summary>
         </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Protocol.Load(TVA.Data.AdoDataConnection)">
+            <summary>
+            Loads protocol list from database.
+            </summary>
+            <param name="database">ADO database connection.</param>
+            <returns>List of protocols.</returns>
+        </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Protocol.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
             <summary>
             Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> information.

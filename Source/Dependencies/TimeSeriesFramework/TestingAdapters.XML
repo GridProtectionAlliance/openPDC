@@ -133,6 +133,11 @@
             Represents a virtual input adapter used for testing purposes - no data gets produced.
             </summary>
         </member>
+        <member name="M:TestingAdapters.VirtualInputAdapter.Initialize">
+            <summary>
+            Initializes <see cref="T:TestingAdapters.VirtualInputAdapter"/>.
+            </summary>
+        </member>
         <member name="M:TestingAdapters.VirtualInputAdapter.GetShortStatus(System.Int32)">
             <summary>
             Gets a short one-line status of this <see cref="T:TestingAdapters.VirtualInputAdapter"/>.
@@ -161,6 +166,11 @@
         <member name="T:TestingAdapters.VirtualOutputAdapter">
             <summary>
             Represents a virtual historian output adapter used for testing purposes - no data gets archived.
+            </summary>
+        </member>
+        <member name="M:TestingAdapters.VirtualOutputAdapter.Initialize">
+            <summary>
+            Initializes <see cref="T:TestingAdapters.VirtualOutputAdapter"/>.
             </summary>
         </member>
         <member name="M:TestingAdapters.VirtualOutputAdapter.AttemptConnection">
