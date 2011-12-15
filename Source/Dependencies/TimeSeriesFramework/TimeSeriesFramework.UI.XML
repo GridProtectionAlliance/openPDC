@@ -1332,7 +1332,7 @@
         <member name="P:TimeSeriesFramework.UI.DataModels.Measurement.AlternateTag">
             <summary>
             Gets or sets the current <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/>'s Alternate Tag.
-            </summary>
+            </summary>        
         </member>
         <member name="P:TimeSeriesFramework.UI.DataModels.Measurement.SignalTypeID">
             <summary>
