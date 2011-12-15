@@ -391,7 +391,12 @@ namespace ConfigurationSetupUtility.Screens
         // Removes invalid characters from database name
         private void DatabaseNameTextbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            m_databaseNameTextBox.Text = Regex.Replace(m_databaseNameTextBox.Text, @"[\W]", "");
+            bool existing = Convert.ToBoolean(m_state["existing"]);
+            bool correctDatabaseName = !(existing && !Convert.ToBoolean(m_state["updateConfiguration"]));
+            if (correctDatabaseName)
+            {
+                m_databaseNameTextBox.Text = Regex.Replace(m_databaseNameTextBox.Text, @"[\W]", "");
+            }
         }
 
         // Occurs when the user changes the administrator user name.
