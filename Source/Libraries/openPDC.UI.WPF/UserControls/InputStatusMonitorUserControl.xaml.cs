@@ -336,6 +336,14 @@ namespace openPDC.UI.UserControls
             PhaseAngleYAxis.Visibility = PhaseAngleAxisTitle.Visibility = m_displayPhaseAngleYAxis ? Visibility.Visible : Visibility.Collapsed;
             VoltageYAxis.Visibility = VoltageAxisTitle.Visibility = m_displayVoltageYAxis ? Visibility.Visible : Visibility.Collapsed;
             CurrentYAxis.Visibility = CurrentAxisTitle.Visibility = m_displayCurrentYAxis ? Visibility.Visible : Visibility.Collapsed;
+            
+            // This check was added as there was an error reported where it was infinity.
+            if (m_frequencyRangeMin.IsInfinite() || m_frequencyRangeMin.IsNaN())
+                m_frequencyRangeMin = 59.95;
+
+            if (m_frequencyRangeMax.IsInfinite() || m_frequencyRangeMax.IsNaN())
+                m_frequencyRangeMax = 60.05;
+
             ChartPlotterDynamic.Visible = DataRect.Create(0, m_frequencyRangeMin, m_numberOfDataPointsToPlot, m_frequencyRangeMax);
             PhaseAnglePlotter.Visible = DataRect.Create(0, -180, m_numberOfDataPointsToPlot, 180);
             TextBlockLeft.Visibility = TextBlockRight.Visibility = ChartPlotterDynamic.MainHorizontalAxisVisibility;

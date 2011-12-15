@@ -57,7 +57,7 @@ namespace openPDC.UI.ViewModels
         {
             m_canLoad = true;
             m_deviceID = deviceID;
-            m_deviceLookupList = Device.GetLookupList(null);
+            m_deviceLookupList = Device.GetLookupList(null, isOptional: true);
             PhasorLookupList = Phasor.GetLookupList(null, m_deviceID);
             Load();
         }
@@ -109,6 +109,35 @@ namespace openPDC.UI.ViewModels
 
             if (m_phasorLookupList.Count > 0)
                 CurrentItem.PhasorSourceIndex = m_phasorLookupList.First().Key;
+        }
+
+        public override void Save()
+        {
+            try
+            {
+                if (CurrentItem.HistorianID != null && (int)CurrentItem.HistorianID > 0)
+                {
+                    CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)CurrentItem.HistorianID) + " RefreshMetadata");
+                    base.Save();
+                }
+                else
+                {
+                    base.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Save " + DataModelName + ", Refresh Metadata Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Save " + DataModelName, ex.InnerException);
+                }
+                else
+                {
+                    Popup(ex.Message, "Save " + DataModelName + ", Refresh Metadata Exception:", MessageBoxImage.Error);
+                    CommonFunctions.LogException(null, "Save " + DataModelName, ex);
+                }
+            }
         }
 
         /// <summary>

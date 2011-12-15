@@ -200,7 +200,10 @@ namespace openPDC.UI.DataModels
             }
             set
             {
-                m_connectionString = value;
+                if (value == null)
+                    m_connectionString = string.Empty;
+                else
+                    m_connectionString = value;
                 OnPropertyChanged("ConnectionString");
             }
         }
