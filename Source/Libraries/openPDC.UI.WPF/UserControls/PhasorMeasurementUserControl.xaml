@@ -137,7 +137,7 @@
 
             <!--Fourth Row-->
             <TextBlock Grid.Row="3" Grid.Column="0" Text="Description"/>
-            <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Text="{tsfBinding:Column Path=Description}" Width="{StaticResource XXXLargeItemSize}"/>
+            <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Text="{tsfBinding:Column Path=Description}" Width="525"/>
             
 
             <!--Fifth Row-->

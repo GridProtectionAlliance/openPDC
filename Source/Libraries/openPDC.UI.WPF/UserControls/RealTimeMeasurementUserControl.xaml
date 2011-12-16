@@ -129,11 +129,11 @@
                     Width="Auto" Click="ButtonDisplaySettings_Click"/>
                 <TextBlock Text="Refresh Interval: " Width="Auto"/>
                 <TextBlock x:Name="TextBlockMeasurementRefreshInterval" Width="Auto"/>                
-                <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" />
+                <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}"/>
             </StackPanel>
 
             <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" 
-                      Height="610" VerticalAlignment="Top" HorizontalAlignment="Left" Width="845" />
+                      Height="610" VerticalAlignment="Top" HorizontalAlignment="Left" Width="835" />
 
         </StackPanel>
 

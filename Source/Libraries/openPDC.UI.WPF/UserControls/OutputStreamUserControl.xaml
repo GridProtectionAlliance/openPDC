@@ -80,7 +80,7 @@
             
             <TextBlock Grid.Row="3" Grid.Column="0" Text="TCP Channel" VerticalAlignment="Top"/>
             <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" VerticalAlignment="Top">
-                <TextBox Text="{tsfBinding:Column Path=CommandChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap"/>
+                <TextBox Text="{tsfBinding:Column Path=CommandChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
                     <Button ToolTipService.ToolTip="Build Command Channel String" Width="Auto" VerticalAlignment="Top"
                         Command="{Binding Path=DataContext.BuildCommandChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
                         <Button.Template>
@@ -92,7 +92,7 @@
                 </StackPanel>
             <TextBlock Grid.Row="3" Grid.Column="2" Text="UDP Channel"  VerticalAlignment="Top"/>
             <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3" VerticalAlignment="Top">
-                <TextBox Text="{tsfBinding:Column Path=DataChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap"/>
+                    <TextBox Text="{tsfBinding:Column Path=DataChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
                     <Button Content=" + " ToolTipService.ToolTip="Build Data Channel String" Width="Auto" VerticalAlignment="Top"
                         Command="{Binding Path=DataContext.BuildDataChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
                         <Button.Template>
@@ -157,7 +157,7 @@
                                 Tag="HMC - Time Resolution.png" ToolTipService.ToolTip="Click here for help on Time Resolution" Click="ButtonHelp_Click"/>
                         <TextBlock Style="{StaticResource RequiredMarker}"/>
                     </StackPanel>
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=TimeResolution}" Width="35" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=TimeResolution}" Width="{StaticResource XSmallItemSize}" />
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
                         <TextBlock Text="Downsampling" Style="{StaticResource RequiredLabel}"/>
                             <Button Content="?" Margin="2,0,0,0" Template="{StaticResource RoundButtonTemplate}" Background="{StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="16" Height="16" FontWeight="Bold" FontSize="{StaticResource SmallTextSize}"

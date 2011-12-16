@@ -140,7 +140,7 @@
 
             <TextBlock Text="Connection String" Grid.Row="6" Grid.Column="0" />
             <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1">
-                <TextBox Text="{tsfBinding:Column Path=ConnectionString}" Height="50" TextWrapping="Wrap"/>
+                <TextBox Text="{tsfBinding:Column Path=ConnectionString}" Height="50" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
                 <Button Command="{Binding Path=DataContext.BuildConnectionStringCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"
                              VerticalAlignment="Top" ToolTip="Build connection string" Width="Auto">
                     <Button.Template>
@@ -153,7 +153,7 @@
             
             <TextBlock Text="Alternate Command Channel" Grid.Row="6" Grid.Column="2"/>
             <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="3">
-                <TextBox Text="{tsfBinding:Column Path=AlternateCommandChannel}" Height="50" TextWrapping="Wrap"/>
+                <TextBox Text="{tsfBinding:Column Path=AlternateCommandChannel}" Height="50" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Visible" />
                 <Button Command="{Binding Path=DataContext.BuildAlternateCommandChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"
                              VerticalAlignment="Top" ToolTip="Build alternate command channel" Width="Auto">
                     <Button.Template>
@@ -168,13 +168,13 @@
                 <TextBlock Text="Data Loss Interval" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="7" Grid.Column="1" Text="{tsfBinding:Column Path=DataLossInterval}" MaxLength="50"/>
+            <TextBox Grid.Row="7" Grid.Column="1" Text="{tsfBinding:Column Path=DataLossInterval}" MaxLength="50" Width="{StaticResource XSmallItemSize}"/>
 
             <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Right">
                 <TextBlock Text="Time Adjustment Ticks" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="7" Grid.Column="3" Text="{tsfBinding:Column Path=TimeAdjustmentTicks}" MaxLength="50"/>
+            <TextBox Grid.Row="7" Grid.Column="3" Text="{tsfBinding:Column Path=TimeAdjustmentTicks}" MaxLength="50" Width="{StaticResource XSmallItemSize}"/>
 
             <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Allowed Parsing Exception" Style="{StaticResource RequiredLabel}" />
@@ -186,13 +186,13 @@
                 <TextBlock Text="Parsing Exception Window" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="8" Grid.Column="3" Text="{tsfBinding:Column Path=ParsingExceptionWindow}" MaxLength="50"/>
+            <TextBox Grid.Row="8" Grid.Column="3" Text="{tsfBinding:Column Path=ParsingExceptionWindow}" MaxLength="50" Width="{StaticResource XSmallItemSize}"/>
 
             <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Delayed Connection Interval" Style="{StaticResource RequiredLabel}" TextWrapping="Wrap" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="9" Grid.Column="1" Text="{tsfBinding:Column Path=DelayedConnectionInterval}" MaxLength="50"/>
+            <TextBox Grid.Row="9" Grid.Column="1" Text="{tsfBinding:Column Path=DelayedConnectionInterval}" MaxLength="50" Width="{StaticResource XSmallItemSize}"/>
 
             <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="2" HorizontalAlignment="Right">
                 <TextBlock Text="Measurement Reporting Interval" Style="{StaticResource RequiredLabel}" />

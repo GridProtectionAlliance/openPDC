@@ -295,7 +295,7 @@
 
             <!-- Real-Time Data -->
 
-            <sdk:DataGrid x:Name="DataGridCurrentValues" Margin="2" HorizontalAlignment="Left" Height="125" HorizontalScrollBarVisibility="Auto">
+            <sdk:DataGrid x:Name="DataGridCurrentValues" Margin="2" HorizontalAlignment="Left" Height="125" HorizontalScrollBarVisibility="Visible">
 
                 <sdk:DataGrid.Columns>
 
@@ -349,7 +349,7 @@
                 <TextBlock Text=" sec" Width="Auto"/>
             </StackPanel>
 
-            <sdk:DataGrid x:Name="DataGridStatistics" Margin="2" HorizontalScrollBarVisibility="Auto" HorizontalAlignment="Left" Height="190">
+            <sdk:DataGrid x:Name="DataGridStatistics" Margin="2" HorizontalScrollBarVisibility="Visible" HorizontalAlignment="Left" Height="190">
 
                 <sdk:DataGrid.Columns>
 
