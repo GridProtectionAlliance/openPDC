@@ -224,6 +224,7 @@ namespace DataMigrationUtility
             if (m_exceptionsEncountered)
             {
                 MessageBox.Show(this, "There were errors during the data transfer. Click OK to review.", "Data Insert Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Import.Enabled = true; // Re-enable Migrate button, so user can correct issue and retry
             }
             else
             {
