@@ -127,7 +127,7 @@ namespace openPDC.UI.UserControls
         {
             m_windowsServiceClient = CommonFunctions.GetWindowsServiceClient();
 
-            if (m_windowsServiceClient == null || m_windowsServiceClient.Helper.RemotingClient.CurrentState != TVA.Communication.ClientState.Connected || !Thread.CurrentPrincipal.IsInRole("Administrator"))
+            if (m_windowsServiceClient == null || m_windowsServiceClient.Helper.RemotingClient.CurrentState != TVA.Communication.ClientState.Connected || !CommonFunctions.CurrentPrincipal.IsInRole("Administrator"))
                 ButtonRestart.IsEnabled = false;
             else
             {

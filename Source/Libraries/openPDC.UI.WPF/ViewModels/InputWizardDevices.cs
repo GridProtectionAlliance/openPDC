@@ -619,7 +619,7 @@ namespace openPDC.UI.ViewModels
         {
             get
             {
-                return Thread.CurrentPrincipal.IsInRole("Administrator, Editor");
+                return CommonFunctions.CurrentPrincipal.IsInRole("Administrator, Editor");
             }
         }
 

@@ -54,8 +54,9 @@ namespace openPDC.UI.ViewModels
         /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
         /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         public Phasors(int deviceID, int itemsPerPage, bool autoSave = true)
-            : base(itemsPerPage, autoSave)
+            : base(0, autoSave)
         {
+            ItemsPerPage = itemsPerPage;
             m_deviceID = deviceID;
 
             m_phaseLookupList = new Dictionary<string, string>();
@@ -141,6 +142,9 @@ namespace openPDC.UI.ViewModels
             {
                 if (m_deviceID > 0)
                     ItemsSource = Phasor.Load(null, m_deviceID);
+
+                if (ItemsSource != null && ItemsSource.Count == 0 && CurrentItem != null)
+                    CurrentItem.DeviceID = m_deviceID;
             }
             catch (Exception ex)
             {

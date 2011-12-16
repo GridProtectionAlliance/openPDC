@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -36,6 +37,7 @@ using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.DataModels;
 using TVA.IO;
 using TVA.Reflection;
+using TVA.Security;
 
 namespace openPDCManager
 {
@@ -79,6 +81,9 @@ namespace openPDCManager
             this.Closing += new System.ComponentModel.CancelEventHandler(MainWindow_Closing);
             Title = ((App)Application.Current).Title;
             TextBoxTitle.Text = AssemblyInfo.EntryAssembly.Title;
+
+            CommonFunctions.CurrentUser = Thread.CurrentPrincipal.Identity.Name;
+            CommonFunctions.CurrentPrincipal = Thread.CurrentPrincipal as SecurityPrincipal;
 
             if (!string.IsNullOrEmpty(CommonFunctions.CurrentUser))
                 Title += " - " + CommonFunctions.CurrentUser;

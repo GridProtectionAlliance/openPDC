@@ -477,7 +477,22 @@ namespace openPDC.UI.DataModels
                 // Setup current user context for any delete triggers
                 TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
 
+                Phasor phasor = GetPhasor(database, "WHERE ID = " + phasorID);
+
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Phasor WHERE ID = {0}", "phasorID"), DefaultTimeout, phasorID);
+
+                if (phasor != null)
+                {
+                    try
+                    {
+                        database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Measurement WHERE DeviceID = {0} AND PhasorSourceIndex = {1}", "deviceID", "phasorSourceIndex"), DefaultTimeout, phasor.DeviceID, phasor.SourceIndex);
+                    }
+                    catch (Exception ex)
+                    {
+                        CommonFunctions.LogException(database, "Phasor.Delete", ex);
+                        throw new Exception("Phasor deleted successfully but failed to delete measurements. " + Environment.NewLine + ex.Message);
+                    }
+                }
 
                 return "Phasor deleted successfully";
             }

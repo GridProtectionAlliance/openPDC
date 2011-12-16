@@ -1336,7 +1336,7 @@ namespace openPDC.UI.DataModels
         /// Deletes specified <see cref="Device"/> record from database.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="deviceID">ID of the record to be deleted.</param>
+        /// <param name="device">Device to be deleted.</param>
         /// <returns>String, for display use, indicating success.</returns>
         public static string Delete(AdoDataConnection database, Device device)
         {
