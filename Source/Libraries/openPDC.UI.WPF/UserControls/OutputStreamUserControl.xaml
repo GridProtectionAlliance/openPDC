@@ -80,7 +80,7 @@
             
             <TextBlock Grid.Row="3" Grid.Column="0" Text="TCP Channel" VerticalAlignment="Top"/>
             <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" VerticalAlignment="Top">
-                <TextBox Text="{tsfBinding:Column Path=CommandChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+                <TextBox Text="{tsfBinding:Column Path=CommandChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
                     <Button ToolTipService.ToolTip="Build Command Channel String" Width="Auto" VerticalAlignment="Top"
                         Command="{Binding Path=DataContext.BuildCommandChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
                         <Button.Template>
@@ -92,7 +92,7 @@
                 </StackPanel>
             <TextBlock Grid.Row="3" Grid.Column="2" Text="UDP Channel"  VerticalAlignment="Top"/>
             <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3" VerticalAlignment="Top">
-                    <TextBox Text="{tsfBinding:Column Path=DataChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+                    <TextBox Text="{tsfBinding:Column Path=DataChannel}" Height="{StaticResource XSmallItemSize}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
                     <Button Content=" + " ToolTipService.ToolTip="Build Data Channel String" Width="Auto" VerticalAlignment="Top"
                         Command="{Binding Path=DataContext.BuildDataChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
                         <Button.Template>

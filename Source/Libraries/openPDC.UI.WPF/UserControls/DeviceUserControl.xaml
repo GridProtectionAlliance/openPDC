@@ -140,7 +140,7 @@
 
             <TextBlock Text="Connection String" Grid.Row="6" Grid.Column="0" />
             <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1">
-                <TextBox Text="{tsfBinding:Column Path=ConnectionString}" Height="50" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+                <TextBox Text="{tsfBinding:Column Path=ConnectionString}" Height="50" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
                 <Button Command="{Binding Path=DataContext.BuildConnectionStringCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"
                              VerticalAlignment="Top" ToolTip="Build connection string" Width="Auto">
                     <Button.Template>
@@ -153,7 +153,7 @@
             
             <TextBlock Text="Alternate Command Channel" Grid.Row="6" Grid.Column="2"/>
             <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="3">
-                <TextBox Text="{tsfBinding:Column Path=AlternateCommandChannel}" Height="50" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Visible" />
+                <TextBox Text="{tsfBinding:Column Path=AlternateCommandChannel}" Height="50" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
                 <Button Command="{Binding Path=DataContext.BuildAlternateCommandChannelCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}"
                              VerticalAlignment="Top" ToolTip="Build alternate command channel" Width="Auto">
                     <Button.Template>
