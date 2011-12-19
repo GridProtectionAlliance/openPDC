@@ -1309,6 +1309,8 @@ namespace openPDC.UI.ViewModels
                 DeviceListUserControl deviceListUserControl = new DeviceListUserControl();
                 CommonFunctions.LoadUserControl(deviceListUserControl, "Browse Devices");
 
+                m_disconnectedCurrentDevice = false;
+                m_currentDeviceRuntimeID = 0;
             }
             catch (Exception ex)
             {
