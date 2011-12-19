@@ -408,34 +408,36 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor10Enabled) > 0)
-                    return 10;
+                int count = 1;
 
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor9Enabled) > 0)
-                    return 9;
+                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor2Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor2Enabled)
+                    count++;
 
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor8Enabled) > 0)
-                    return 8;
+                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor3Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor3Enabled)
+                    count++;
 
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor7Enabled) > 0)
-                    return 7;
+                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor4Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor4Enabled)
+                    count++;
 
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor6Enabled) > 0)
-                    return 6;
+                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor5Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor5Enabled)
+                    count++;
 
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor5Enabled) > 0)
-                    return 5;
+                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor6Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor6Enabled)
+                    count++;
 
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor4Enabled) > 0)
-                    return 4;
+                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor7Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor7Enabled)
+                    count++;
 
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor3Enabled) > 0)
-                    return 3;
+                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor8Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor8Enabled)
+                    count++;
 
-                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor2Enabled) > 0)
-                    return 2;
+                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor9Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor9Enabled)
+                    count++;
 
-                return 1;
+                if ((m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor10Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor10Enabled)
+                    count++;
+
+                return count;
             }
         }
 
@@ -446,7 +448,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Status2ByteEnabled) > 0;
+                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Status2ByteEnabled) == Macrodyne.OnlineDataFormatFlags.Status2ByteEnabled;
             }
         }
 
@@ -457,7 +459,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.TimestampEnabled) > 0;
+                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.TimestampEnabled) == Macrodyne.OnlineDataFormatFlags.TimestampEnabled;
             }
         }
 
@@ -468,7 +470,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.ReferenceEnabled) > 0;
+                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.ReferenceEnabled) == Macrodyne.OnlineDataFormatFlags.ReferenceEnabled;
             }
         }
 
@@ -479,7 +481,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Digital1Enabled) > 0;
+                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Digital1Enabled) == Macrodyne.OnlineDataFormatFlags.Digital1Enabled;
             }
         }
 
@@ -490,7 +492,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Digital2Enabled) > 0;
+                return (m_onlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Digital2Enabled) == Macrodyne.OnlineDataFormatFlags.Digital2Enabled;
             }
         }
 
@@ -501,7 +503,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                return (ushort)(7 + PhasorCount * 4 + (Status2Included ? 1 : 0) + (TimestampIncluded ? 6 : 0) + (ReferenceIncluded ? 6 : 0) + (Digital1Included ? 2 : 0) + (Digital2Included ? 2 : 0));
+                return (ushort)(9 + PhasorCount * 4 + (Status2Included ? 1 : 0) + (TimestampIncluded ? 6 : 0) + (ReferenceIncluded ? 6 : 0) + (Digital1Included ? 2 : 0) + (Digital2Included ? 2 : 0));
             }
         }
 

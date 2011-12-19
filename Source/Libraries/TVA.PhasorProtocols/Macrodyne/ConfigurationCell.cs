@@ -260,11 +260,42 @@ namespace TVA.PhasorProtocols.Macrodyne
             // Add a single frequency definition
             FrequencyDefinition = new FrequencyDefinition(this, "Line frequency");
 
-            // Add phasors based on online format flags
-            for (int i = 0; i < parent.PhasorCount; i++)
-            {
-                PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor " + (i + 1), PhasorType.Voltage, null));
-            }
+            OnlineDataFormatFlags flags = parent.OnlineDataFormatFlags;
+
+            PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor 1", PhasorType.Voltage, null));
+
+            if ((flags & Macrodyne.OnlineDataFormatFlags.Phasor2Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor2Enabled)
+                PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor 2", PhasorType.Voltage, null));
+
+            if ((flags & Macrodyne.OnlineDataFormatFlags.Phasor3Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor3Enabled)
+                PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor 3", PhasorType.Voltage, null));
+
+            if ((flags & Macrodyne.OnlineDataFormatFlags.Phasor4Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor4Enabled)
+                PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor 4", PhasorType.Voltage, null));
+
+            if ((flags & Macrodyne.OnlineDataFormatFlags.Phasor5Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor5Enabled)
+                PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor 5", PhasorType.Voltage, null));
+
+            if ((flags & Macrodyne.OnlineDataFormatFlags.Phasor6Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor6Enabled)
+                PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor 6", PhasorType.Voltage, null));
+
+            if ((flags & Macrodyne.OnlineDataFormatFlags.Phasor7Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor7Enabled)
+                PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor 7", PhasorType.Voltage, null));
+
+            if ((flags & Macrodyne.OnlineDataFormatFlags.Phasor8Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor8Enabled)
+                PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor 8", PhasorType.Voltage, null));
+
+            if ((flags & Macrodyne.OnlineDataFormatFlags.Phasor9Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor9Enabled)
+                PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor 9", PhasorType.Voltage, null));
+
+            if ((flags & Macrodyne.OnlineDataFormatFlags.Phasor10Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor10Enabled)
+                PhasorDefinitions.Add(new PhasorDefinition(this, "Phasor 10", PhasorType.Voltage, null));
+
+            if ((flags & Macrodyne.OnlineDataFormatFlags.Digital1Enabled) == Macrodyne.OnlineDataFormatFlags.Digital1Enabled)
+                DigitalDefinitions.Add(new DigitalDefinition(this, "Digital 1"));
+
+            if ((flags & Macrodyne.OnlineDataFormatFlags.Digital2Enabled) == Macrodyne.OnlineDataFormatFlags.Digital2Enabled)
+                DigitalDefinitions.Add(new DigitalDefinition(this, "Digital 2"));
         }
 
         /// <summary>

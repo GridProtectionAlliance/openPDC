@@ -24,6 +24,7 @@
 //******************************************************************************************************
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -48,11 +49,11 @@ namespace TVA.PhasorProtocols
 
         // Fields
         private MultiProtocolFrameParser m_frameParser;
-        private Dictionary<string, IMeasurement> m_definedMeasurements;
-        private Dictionary<ushort, ConfigurationCell> m_definedDevices;
-        private Dictionary<string, ConfigurationCell> m_labelDefinedDevices;
-        private Dictionary<string, long> m_undefinedDevices;
-        private Dictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
+        private ConcurrentDictionary<string, IMeasurement> m_definedMeasurements;
+        private ConcurrentDictionary<ushort, ConfigurationCell> m_definedDevices;
+        private ConcurrentDictionary<string, ConfigurationCell> m_labelDefinedDevices;
+        private ConcurrentDictionary<string, long> m_undefinedDevices;
+        private ConcurrentDictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
         private System.Timers.Timer m_dataStreamMonitor;
         private bool m_allowUseOfCachedConfiguration;
         private bool m_cachedConfigLoadAttempted;
@@ -88,7 +89,7 @@ namespace TVA.PhasorProtocols
         public PhasorMeasurementMapper()
         {
             // Create a cached signal reference dictionary for generated signal references
-            m_generatedSignalReferenceCache = new Dictionary<SignalKind, string[]>();
+            m_generatedSignalReferenceCache = new ConcurrentDictionary<SignalKind, string[]>();
 
             // Create data stream monitoring timer
             m_dataStreamMonitor = new System.Timers.Timer();
@@ -96,7 +97,7 @@ namespace TVA.PhasorProtocols
             m_dataStreamMonitor.AutoReset = true;
             m_dataStreamMonitor.Enabled = false;
 
-            m_undefinedDevices = new Dictionary<string, long>();
+            m_undefinedDevices = new ConcurrentDictionary<string, long>();
         }
 
         #endregion
@@ -563,7 +564,7 @@ namespace TVA.PhasorProtocols
                     if (m_frameParser != null && m_frameParser.ConfigurationFrame != null)
                     {
                         // Attempt to lookup by label (if defined), then by ID code
-                        if ((m_labelDefinedDevices != null && definedDevice.StationName != null &&
+                        if (((object)m_labelDefinedDevices != null && (object)definedDevice.StationName != null &&
                             m_frameParser.ConfigurationFrame.Cells.TryGetByStationName(definedDevice.StationName, out parsedDevice)) ||
                             m_frameParser.ConfigurationFrame.Cells.TryGetByIDCode(definedDevice.IDCode, out parsedDevice))
                             stationName = parsedDevice.StationName;
@@ -591,17 +592,14 @@ namespace TVA.PhasorProtocols
                 status.AppendFormat("Undefined devices encountered: {0}", m_undefinedDevices.Count);
                 status.AppendLine();
 
-                lock (m_undefinedDevices)
+                foreach (KeyValuePair<string, long> item in m_undefinedDevices)
                 {
-                    foreach (KeyValuePair<string, long> item in m_undefinedDevices)
-                    {
-                        status.Append("    Device \"");
-                        status.Append(item.Key);
-                        status.Append("\" encountered ");
-                        status.Append(item.Value);
-                        status.Append(" times");
-                        status.AppendLine();
-                    }
+                    status.Append("    Device \"");
+                    status.Append(item.Key);
+                    status.Append("\" encountered ");
+                    status.Append(item.Value);
+                    status.Append(" times");
+                    status.AppendLine();
                 }
 
                 return status.ToString();
@@ -837,7 +835,7 @@ namespace TVA.PhasorProtocols
             ConfigurationCell definedDevice;
             string deviceName;
 
-            m_definedDevices = new Dictionary<ushort, ConfigurationCell>();
+            m_definedDevices = new ConcurrentDictionary<ushort, ConfigurationCell>();
 
             if (m_isConcentrator)
             {
@@ -867,8 +865,8 @@ namespace TVA.PhasorProtocols
                     if (m_definedDevices.ContainsKey(definedDevice.IDCode))
                     {
                         // For devices that do not have unique ID codes, we fall back on its label for unique lookup
-                        if (m_labelDefinedDevices == null)
-                            m_labelDefinedDevices = new Dictionary<string, ConfigurationCell>(StringComparer.OrdinalIgnoreCase);
+                        if ((object)m_labelDefinedDevices == null)
+                            m_labelDefinedDevices = new ConcurrentDictionary<string, ConfigurationCell>(StringComparer.OrdinalIgnoreCase);
 
                         if (m_labelDefinedDevices.ContainsKey(definedDevice.StationName))
                         {
@@ -877,13 +875,13 @@ namespace TVA.PhasorProtocols
                         }
                         else
                         {
-                            m_labelDefinedDevices.Add(definedDevice.StationName, definedDevice);
+                            m_labelDefinedDevices.TryAdd(definedDevice.StationName, definedDevice);
                             devicedAdded = true;
                         }
                     }
                     else
                     {
-                        m_definedDevices.Add(definedDevice.IDCode, definedDevice);
+                        m_definedDevices.TryAdd(definedDevice.IDCode, definedDevice);
                         devicedAdded = true;
                     }
 
@@ -903,7 +901,7 @@ namespace TVA.PhasorProtocols
 
                 OnStatusMessage(deviceStatus.ToString());
 
-                if (m_labelDefinedDevices != null)
+                if ((object)m_labelDefinedDevices != null)
                     OnStatusMessage("WARNING: {0} has {1} defined input devices that do not have unique ID codes (i.e., the AccessID), as a result system will use the device label for identification. This is not the optimal configuration.", Name, m_labelDefinedDevices.Count);
             }
             else
@@ -922,7 +920,7 @@ namespace TVA.PhasorProtocols
                 definedDevice.IDLabel = deviceName.TruncateRight(definedDevice.IDLabelLength);
                 definedDevice.Tag = ID;
                 definedDevice.Source = this;
-                m_definedDevices.Add(definedDevice.IDCode, definedDevice);
+                m_definedDevices.TryAdd(definedDevice.IDCode, definedDevice);
             }
         }
 
@@ -933,7 +931,7 @@ namespace TVA.PhasorProtocols
             Guid signalID;
             string signalReference;
 
-            m_definedMeasurements = new Dictionary<string, IMeasurement>();
+            m_definedMeasurements = new ConcurrentDictionary<string, IMeasurement>();
 
             foreach (DataRow row in DataSource.Tables["ActiveMeasurements"].Select(string.Format("DeviceID={0}", SharedMappingID)))
             {
@@ -957,7 +955,7 @@ namespace TVA.PhasorProtocols
                         };
 
                         // Add measurement to definition list keyed by signal reference
-                        m_definedMeasurements.Add(signalReference, definedMeasurement);
+                        m_definedMeasurements.TryAdd(signalReference, definedMeasurement);
                     }
                     catch (Exception ex)
                     {
@@ -1321,7 +1319,7 @@ namespace TVA.PhasorProtocols
                 try
                 {
                     // Lookup device by its label (if needed), then by its ID code
-                    if ((m_labelDefinedDevices != null &&
+                    if (((object)m_labelDefinedDevices != null &&
                         m_labelDefinedDevices.TryGetValue(parsedDevice.StationName.ToNonNullString(), out definedDevice)) ||
                         m_definedDevices.TryGetValue(parsedDevice.IDCode, out definedDevice))
                     {
@@ -1393,20 +1391,17 @@ namespace TVA.PhasorProtocols
                     else
                     {
                         // Encountered an undefined device, track frame counts
-                        lock (m_undefinedDevices)
-                        {
-                            long frameCount;
+                        long frameCount;
 
-                            if (m_undefinedDevices.TryGetValue(parsedDevice.StationName, out frameCount))
-                            {
-                                frameCount++;
-                                m_undefinedDevices[parsedDevice.StationName] = frameCount;
-                            }
-                            else
-                            {
-                                m_undefinedDevices.Add(parsedDevice.StationName, 1);
-                                OnStatusMessage("WARNING: Encountered an undefined device \"{0}\"...", parsedDevice.StationName);
-                            }
+                        if (m_undefinedDevices.TryGetValue(parsedDevice.StationName, out frameCount))
+                        {
+                            frameCount++;
+                            m_undefinedDevices[parsedDevice.StationName] = frameCount;
+                        }
+                        else
+                        {
+                            m_undefinedDevices.TryAdd(parsedDevice.StationName, 1);
+                            OnStatusMessage("WARNING: Encountered an undefined device \"{0}\"...", parsedDevice.StationName);
                         }
                     }
                 }
@@ -1441,7 +1436,7 @@ namespace TVA.PhasorProtocols
             references[0] = SignalReference.ToString(Name + "!IS", type);
 
             // Cache generated signal synonym
-            m_generatedSignalReferenceCache.Add(type, references);
+            m_generatedSignalReferenceCache.TryAdd(type, references);
 
             return references[0];
         }
@@ -1481,7 +1476,7 @@ namespace TVA.PhasorProtocols
             references[index] = SignalReference.ToString(Name + "!IS", type, index + 1);
 
             // Cache generated signal synonym array
-            m_generatedSignalReferenceCache.Add(type, references);
+            m_generatedSignalReferenceCache.TryAdd(type, references);
 
             return references[index];
         }

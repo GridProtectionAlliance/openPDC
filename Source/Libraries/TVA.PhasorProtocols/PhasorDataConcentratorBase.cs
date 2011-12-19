@@ -145,9 +145,9 @@ namespace TVA.PhasorProtocols
         private IServer m_publishChannel;
         private IConfigurationFrame m_configurationFrame;
         private ConfigurationFrame m_baseConfigurationFrame;
-        private Dictionary<MeasurementKey, SignalReference[]> m_signalReferences;
-        private Dictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
-        private Dictionary<Guid, string> m_connectionIDCache;
+        private ConcurrentDictionary<MeasurementKey, SignalReference[]> m_signalReferences;
+        private ConcurrentDictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
+        private ConcurrentDictionary<Guid, string> m_connectionIDCache;
         private System.Timers.Timer m_commandChannelRestartTimer;
         private long m_activeConnections;
         private LineFrequency m_nominalFrequency;
@@ -182,13 +182,13 @@ namespace TVA.PhasorProtocols
         protected PhasorDataConcentratorBase()
         {
             // Create a new signal reference dictionary indexed on measurement keys
-            m_signalReferences = new Dictionary<MeasurementKey, SignalReference[]>();
+            m_signalReferences = new ConcurrentDictionary<MeasurementKey, SignalReference[]>();
 
             // Create a cached signal reference dictionary for generated signal referencs
-            m_generatedSignalReferenceCache = new Dictionary<SignalKind, string[]>();
+            m_generatedSignalReferenceCache = new ConcurrentDictionary<SignalKind, string[]>();
 
             // Create a new connection ID cache
-            m_connectionIDCache = new Dictionary<Guid, string>();
+            m_connectionIDCache = new ConcurrentDictionary<Guid, string>();
 
             // Synchrophasor protocols should default to millisecond resolution
             base.TimeResolution = Ticks.PerMillisecond;
@@ -1141,20 +1141,23 @@ namespace TVA.PhasorProtocols
 
                         // It is possible, but not as common, that a single measurement will have multiple destinations
                         // within an outgoing data stream frame, hence the following
-                        if (m_signalReferences.TryGetValue(measurementKey, out signals))
-                        {
-                            // Add a new signal to existing collection
-                            List<SignalReference> signalList = new List<SignalReference>(signals);
-                            signalList.Add(signal);
-                            m_signalReferences[measurementKey] = signalList.ToArray();
-                        }
-                        else
+                        signals = m_signalReferences.GetOrAdd(measurementKey, null as SignalReference[]);
+
+                        if ((object)signals == null)
                         {
                             // Add new signal to new collection
                             signals = new SignalReference[1];
                             signals[0] = signal;
-                            m_signalReferences.Add(measurementKey, signals);
                         }
+                        else
+                        {
+                            // Add a new signal to existing collection
+                            List<SignalReference> signalList = new List<SignalReference>(signals);
+                            signalList.Add(signal);
+                            signals = signalList.ToArray();
+                        }
+
+                        m_signalReferences[measurementKey] = signals;
                     }
                 }
                 catch (Exception ex)
@@ -1489,59 +1492,56 @@ namespace TVA.PhasorProtocols
         {
             string connectionID;
 
-            lock (m_connectionIDCache)
+            if (!m_connectionIDCache.TryGetValue(clientID, out connectionID))
             {
-                if (!m_connectionIDCache.TryGetValue(clientID, out connectionID))
+                // Attempt to lookup remote connection identification for logging purposes
+                try
                 {
-                    // Attempt to lookup remote connection identification for logging purposes
-                    try
-                    {
-                        IPEndPoint remoteEndPoint = null;
-                        TcpServer commandChannel = server as TcpServer;
+                    IPEndPoint remoteEndPoint = null;
+                    TcpServer commandChannel = server as TcpServer;
 
-                        if (commandChannel != null)
-                        {
-                            remoteEndPoint = commandChannel.Client(clientID).Provider.RemoteEndPoint as IPEndPoint;
-                        }
+                    if (commandChannel != null)
+                    {
+                        remoteEndPoint = commandChannel.Client(clientID).Provider.RemoteEndPoint as IPEndPoint;
+                    }
+                    else
+                    {
+                        UdpServer dataChannel = server as UdpServer;
+
+                        if (dataChannel != null)
+                            remoteEndPoint = dataChannel.Client(clientID).Provider.RemoteEndPoint as IPEndPoint;
+                    }
+
+                    if (remoteEndPoint != null)
+                    {
+                        if (remoteEndPoint.AddressFamily == AddressFamily.InterNetworkV6)
+                            connectionID = "[" + remoteEndPoint.Address + "]:" + remoteEndPoint.Port;
                         else
-                        {
-                            UdpServer dataChannel = server as UdpServer;
+                            connectionID = remoteEndPoint.Address + ":" + remoteEndPoint.Port;
 
-                            if (dataChannel != null)
-                                remoteEndPoint = dataChannel.Client(clientID).Provider.RemoteEndPoint as IPEndPoint;
+                        try
+                        {
+                            IPHostEntry ipHost = Dns.GetHostEntry(remoteEndPoint.Address);
+
+                            if (!string.IsNullOrWhiteSpace(ipHost.HostName))
+                                connectionID = ipHost.HostName + " (" + connectionID + ")";
                         }
-
-                        if (remoteEndPoint != null)
+                        catch
                         {
-                            if (remoteEndPoint.AddressFamily == AddressFamily.InterNetworkV6)
-                                connectionID = "[" + remoteEndPoint.Address + "]:" + remoteEndPoint.Port;
-                            else
-                                connectionID = remoteEndPoint.Address + ":" + remoteEndPoint.Port;
-
-                            try
-                            {
-                                IPHostEntry ipHost = Dns.GetHostEntry(remoteEndPoint.Address);
-
-                                if (!string.IsNullOrWhiteSpace(ipHost.HostName))
-                                    connectionID = ipHost.HostName + " (" + connectionID + ")";
-                            }
-                            catch
-                            {
-                                // Just ignoring possible DNS lookup failures...
-                            }
+                            // Just ignoring possible DNS lookup failures...
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        OnProcessException(new InvalidOperationException("Failed to lookup remote end-point connection information for client data transmission due to exception: " + ex.Message, ex));
-                    }
-
-                    if (string.IsNullOrEmpty(connectionID))
-                        connectionID = "unavailable";
-
-                    // Cache value for future lookup
-                    m_connectionIDCache.Add(clientID, connectionID);
                 }
+                catch (Exception ex)
+                {
+                    OnProcessException(new InvalidOperationException("Failed to lookup remote end-point connection information for client data transmission due to exception: " + ex.Message, ex));
+                }
+
+                if (string.IsNullOrEmpty(connectionID))
+                    connectionID = "unavailable";
+
+                // Cache value for future lookup
+                m_connectionIDCache.TryAdd(clientID, connectionID);
             }
 
             return connectionID;
@@ -1599,7 +1599,7 @@ namespace TVA.PhasorProtocols
             references[0] = SignalReference.ToString(Name + "!OS", type);
 
             // Cache generated signal synonym
-            m_generatedSignalReferenceCache.Add(type, references);
+            m_generatedSignalReferenceCache.TryAdd(type, references);
 
             return references[0];
         }
@@ -1639,7 +1639,7 @@ namespace TVA.PhasorProtocols
             references[index] = SignalReference.ToString(Name + "!OS", type, index + 1);
 
             // Cache generated signal synonym array
-            m_generatedSignalReferenceCache.Add(type, references);
+            m_generatedSignalReferenceCache.TryAdd(type, references);
 
             return references[index];
         }
@@ -1691,13 +1691,11 @@ namespace TVA.PhasorProtocols
         private void m_commandChannel_ClientDisconnected(object sender, EventArgs<Guid> e)
         {
             Guid clientID = e.Argument;
+            string connectionID;
 
             OnStatusMessage("Client \"{0}\" disconnected from command channel.", GetConnectionID(m_commandChannel, clientID));
 
-            lock (m_connectionIDCache)
-            {
-                m_connectionIDCache.Remove(clientID);
-            }
+            m_connectionIDCache.TryRemove(clientID, out connectionID);
         }
 
         private void m_commandChannel_ReceiveClientDataComplete(object sender, EventArgs<Guid, byte[], int> e)

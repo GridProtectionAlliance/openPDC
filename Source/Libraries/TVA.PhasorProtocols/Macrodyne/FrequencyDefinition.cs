@@ -251,6 +251,8 @@ namespace TVA.PhasorProtocols.SelFastMessage
         public FrequencyDefinition(IConfigurationCell parent)
             : base(parent)
         {
+            ScalingValue = 1000;
+            DfDtScalingValue = 1000;
         }
 
         /// <summary>
@@ -259,7 +261,7 @@ namespace TVA.PhasorProtocols.SelFastMessage
         /// <param name="parent">The <see cref="ConfigurationCell"/> parent of this <see cref="FrequencyDefinition"/>.</param>
         /// <param name="label">The label of this <see cref="FrequencyDefinition"/>.</param>
         public FrequencyDefinition(ConfigurationCell parent, string label)
-            : base(parent, label, 1, 1, 0.0D)
+            : base(parent, label, 1000, 1000, 0.0D)
         {
         }
 

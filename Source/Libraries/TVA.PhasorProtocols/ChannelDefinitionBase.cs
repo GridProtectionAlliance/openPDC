@@ -499,7 +499,7 @@ namespace TVA.PhasorProtocols
             {
                 Dictionary<string, string> baseAttributes = base.Attributes;
 
-                baseAttributes.Add("Label", Label);
+                baseAttributes.Add("Label", Label.ToNonNullString("Undefined").RemoveDuplicateWhiteSpace());
                 baseAttributes.Add("Index", Index.ToString());
                 baseAttributes.Add("Offset", Offset.ToString());
                 baseAttributes.Add("Data Format", (int)DataFormat + ": " + DataFormat);

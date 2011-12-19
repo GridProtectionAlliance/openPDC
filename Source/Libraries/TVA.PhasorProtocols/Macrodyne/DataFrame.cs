@@ -370,15 +370,12 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// Gets the length of the <see cref="DataFrame"/>.
         /// </summary>
         /// <remarks>
-        /// This property is overriden so the length can be extended to include a 1-byte checksum.
+        /// This property is overriden so the length can be adjusted for 1-byte checksum.
         /// </remarks>
         public override int BinaryLength
         {
             get
             {
-                // We override normal binary length so we can extend length to include checksum.
-                // Also, if frame length was parsed from stream header - we use that length
-                // instead of the calculated length...
                 if (ParsedBinaryLength > 0)
                     return ParsedBinaryLength;
                 else
@@ -452,10 +449,8 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// </remarks>
         protected override bool ChecksumIsValid(byte[] buffer, int startIndex)
         {
-
-            int sumLength = BinaryLength;
-
-            return buffer[startIndex + 1 + BinaryLength] == CalculateChecksum(buffer, startIndex + 1, sumLength);
+            int sumLength = BinaryLength - 2;
+            return buffer[startIndex + BinaryLength - 1] == CalculateChecksum(buffer, startIndex + 1, sumLength);
         }
 
         /// <summary>

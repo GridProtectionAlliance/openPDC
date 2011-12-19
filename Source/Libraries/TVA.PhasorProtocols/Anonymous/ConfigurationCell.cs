@@ -24,7 +24,7 @@
 //******************************************************************************************************
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Runtime.Serialization;
 
 namespace TVA.PhasorProtocols.Anonymous
@@ -51,7 +51,7 @@ namespace TVA.PhasorProtocols.Anonymous
         private CoordinateFormat m_phasorCoordinateFormat;
 
         // We add cached signal type and statistical tracking information to our protocol independent configuration cell
-        private Dictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
+        private ConcurrentDictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
         private Ticks m_lastReportTime;
         private long m_totalFrames;
         private long m_dataQualityErrors;
@@ -81,7 +81,7 @@ namespace TVA.PhasorProtocols.Anonymous
         public ConfigurationCell(ConfigurationFrame parent, ushort idCode)
             : base(parent, idCode, int.MaxValue, int.MaxValue, int.MaxValue)
         {
-            m_generatedSignalReferenceCache = new Dictionary<SignalKind, string[]>();
+            m_generatedSignalReferenceCache = new ConcurrentDictionary<SignalKind, string[]>();
             m_analogDataFormat = DataFormat.FloatingPoint;
             m_frequencyDataFormat = DataFormat.FloatingPoint;
             m_phasorDataFormat = DataFormat.FloatingPoint;
@@ -97,7 +97,7 @@ namespace TVA.PhasorProtocols.Anonymous
             : base(info, context)
         {
             // Deserialize configuration cell
-            m_generatedSignalReferenceCache = new Dictionary<SignalKind, string[]>();
+            m_generatedSignalReferenceCache = new ConcurrentDictionary<SignalKind, string[]>();
             m_lastReportTime = info.GetInt64("lastReportTime");
             m_analogDataFormat = (DataFormat)info.GetValue("analogDataFormat", typeof(DataFormat));
             m_frequencyDataFormat = (DataFormat)info.GetValue("frequencyDataFormat", typeof(DataFormat));
@@ -330,7 +330,7 @@ namespace TVA.PhasorProtocols.Anonymous
             references[0] = SignalReference.ToString(IDLabel, type);
 
             // Cache generated signal synonym
-            m_generatedSignalReferenceCache.Add(type, references);
+            m_generatedSignalReferenceCache.TryAdd(type, references);
 
             return references[0];
         }
@@ -371,7 +371,7 @@ namespace TVA.PhasorProtocols.Anonymous
             references[index] = SignalReference.ToString(IDLabel, type, index + 1);
 
             // Cache generated signal synonym array
-            m_generatedSignalReferenceCache.Add(type, references);
+            m_generatedSignalReferenceCache.TryAdd(type, references);
 
             return references[index];
         }

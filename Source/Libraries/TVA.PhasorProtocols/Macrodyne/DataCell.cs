@@ -247,10 +247,11 @@ namespace TVA.PhasorProtocols.Macrodyne
         #region [ Members ]
 
         // Fields
-        private byte m_status1Flags;
         private byte m_status2Flags;
         private ClockStatusFlags m_clockStatusFlags;
         private ushort m_sampleNumber;
+        private ushort m_referenceSampleNumber;
+        private PhasorValue m_referencePhasor;
 
         #endregion
 
@@ -299,7 +300,6 @@ namespace TVA.PhasorProtocols.Macrodyne
             : base(info, context)
         {
             // Deserialize data cell
-            m_status1Flags = info.GetByte("status1Flags");
             m_status2Flags = info.GetByte("status2Flags");
             m_clockStatusFlags = (ClockStatusFlags)info.GetValue("clockStatusFlags", typeof(ClockStatusFlags));
             m_sampleNumber = info.GetUInt16("sampleNumber");
@@ -372,12 +372,12 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                return (StatusFlags)m_status1Flags;
+                return Parent.CommonHeader.StatusFlags;
             }
             set
             {
-                m_status1Flags = (byte)value;
-                base.StatusFlags = Word.MakeWord(m_status1Flags, m_status2Flags);
+                Parent.CommonHeader.StatusFlags = value;
+                base.StatusFlags = Word.MakeWord((byte)value, m_status2Flags);
             }
         }
 
@@ -393,7 +393,7 @@ namespace TVA.PhasorProtocols.Macrodyne
             set
             {
                 m_status2Flags = value;
-                base.StatusFlags = Word.MakeWord(m_status1Flags, m_status2Flags);
+                base.StatusFlags = Word.MakeWord((byte)Status1Flags, m_status2Flags);
             }
         }
 
@@ -496,6 +496,36 @@ namespace TVA.PhasorProtocols.Macrodyne
         }
 
         /// <summary>
+        /// Gets or sets reference phasor sample number.
+        /// </summary>
+        public ushort ReferenceSampleNumber
+        {
+            get
+            {
+                return m_referenceSampleNumber;
+            }
+            set
+            {
+                m_referenceSampleNumber = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets reference phasor value.
+        /// </summary>
+        public PhasorValue ReferencePhasor
+        {
+            get
+            {
+                return m_referencePhasor;
+            }
+            set
+            {
+                m_referencePhasor = value;
+            }
+        }
+
+        /// <summary>
         /// Gets <see cref="AnalogValueCollection"/> of this <see cref="DataCell"/>.
         /// </summary>
         /// <remarks>
@@ -507,21 +537,6 @@ namespace TVA.PhasorProtocols.Macrodyne
             get
             {
                 return base.AnalogValues;
-            }
-        }
-
-        /// <summary>
-        /// Gets <see cref="DigitalValueCollection"/> of this <see cref="DataCell"/>.
-        /// </summary>
-        /// <remarks>
-        /// Macrodyne doesn't define any digital values.
-        /// </remarks>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override DigitalValueCollection DigitalValues
-        {
-            get
-            {
-                return base.DigitalValues;
             }
         }
 
@@ -561,12 +576,9 @@ namespace TVA.PhasorProtocols.Macrodyne
             ConfigurationFrame configFrame = configCell.Parent;
             IPhasorValue phasorValue;
             IDigitalValue digitalValue;
-            int x, parsedLength, index = startIndex;
+            int parsedLength, index = startIndex;
 
-            m_status1Flags = buffer[index];
-            index++;
-
-            // Parse out status 2 flags
+            // Parse out optional STATUS2 flags
             if (configFrame.Status2Included)
             {
                 m_status2Flags = buffer[index];
@@ -575,7 +587,8 @@ namespace TVA.PhasorProtocols.Macrodyne
             else
                 m_status2Flags = 0;
 
-            base.StatusFlags = Word.MakeWord(m_status1Flags, m_status2Flags);
+            // We interpret status bytes together as one word (matches other protocols this way)
+            base.StatusFlags = Word.MakeWord((byte)Status1Flags, m_status2Flags);
 
             // Parse out time tag
             if (configFrame.TimestampIncluded)
@@ -604,10 +617,42 @@ namespace TVA.PhasorProtocols.Macrodyne
                 index += 2;
             }
 
-            // Parse out first five phasor values
-            for (x = 0; x < TVA.Common.Min(configCell.PhasorDefinitions.Count, 5); x++)
+            // Parse out first five phasor values (1 - 5)
+            int phasorIndex = 0;
+
+            // Phasor 1 (always present)
+            phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[phasorIndex++], buffer, index, out parsedLength);
+            PhasorValues.Add(phasorValue);
+            index += parsedLength;
+
+            if ((configFrame.OnlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor2Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor2Enabled)
             {
-                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[x], buffer, index, out parsedLength);
+                // Phasor 2
+                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[phasorIndex++], buffer, index, out parsedLength);
+                PhasorValues.Add(phasorValue);
+                index += parsedLength;
+            }
+
+            if ((configFrame.OnlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor3Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor3Enabled)
+            {
+                // Phasor 3
+                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[phasorIndex++], buffer, index, out parsedLength);
+                PhasorValues.Add(phasorValue);
+                index += parsedLength;
+            }
+
+            if ((configFrame.OnlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor4Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor4Enabled)
+            {
+                // Phasor 4
+                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[phasorIndex++], buffer, index, out parsedLength);
+                PhasorValues.Add(phasorValue);
+                index += parsedLength;
+            }
+
+            if ((configFrame.OnlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor5Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor5Enabled)
+            {
+                // Phasor 5
+                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[phasorIndex++], buffer, index, out parsedLength);
                 PhasorValues.Add(phasorValue);
                 index += parsedLength;
             }
@@ -616,12 +661,15 @@ namespace TVA.PhasorProtocols.Macrodyne
             FrequencyValue = Macrodyne.FrequencyValue.CreateNewValue(this, configCell.FrequencyDefinition, buffer, index, out parsedLength);
             index += parsedLength;
 
+            // Parse reference phasor information
             if (configFrame.ReferenceIncluded)
             {
-                // TODO: Parse reference phasor...
-                index += 3;
+                m_referenceSampleNumber = EndianOrder.BigEndian.ToUInt16(buffer, index);
+                m_referencePhasor = Macrodyne.PhasorValue.CreateNewValue(this, new PhasorDefinition(null, "Reference Phasor", PhasorType.Voltage, null), buffer, index, out parsedLength) as Macrodyne.PhasorValue;
+                index += 6;
             }
 
+            // Parse first digital value
             if (configFrame.Digital1Included)
             {
                 digitalValue = DigitalValue.CreateNewValue(this, configCell.DigitalDefinitions[0], buffer, index, out parsedLength);
@@ -629,14 +677,48 @@ namespace TVA.PhasorProtocols.Macrodyne
                 index += parsedLength;
             }
 
-            // Parse out next five phasor values
-            for (x = 5; x < configCell.PhasorDefinitions.Count; x++)
+            // Parse out next five phasor values (6 - 10)
+            if ((configFrame.OnlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor6Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor6Enabled)
             {
-                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[x], buffer, index, out parsedLength);
+                // Phasor 6
+                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[phasorIndex++], buffer, index, out parsedLength);
                 PhasorValues.Add(phasorValue);
                 index += parsedLength;
             }
 
+            if ((configFrame.OnlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor7Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor7Enabled)
+            {
+                // Phasor 7
+                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[phasorIndex++], buffer, index, out parsedLength);
+                PhasorValues.Add(phasorValue);
+                index += parsedLength;
+            }
+
+            if ((configFrame.OnlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor8Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor8Enabled)
+            {
+                // Phasor 8
+                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[phasorIndex++], buffer, index, out parsedLength);
+                PhasorValues.Add(phasorValue);
+                index += parsedLength;
+            }
+
+            if ((configFrame.OnlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor9Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor9Enabled)
+            {
+                // Phasor 9
+                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[phasorIndex++], buffer, index, out parsedLength);
+                PhasorValues.Add(phasorValue);
+                index += parsedLength;
+            }
+
+            if ((configFrame.OnlineDataFormatFlags & Macrodyne.OnlineDataFormatFlags.Phasor10Enabled) == Macrodyne.OnlineDataFormatFlags.Phasor10Enabled)
+            {
+                // Phasor 10
+                phasorValue = Macrodyne.PhasorValue.CreateNewValue(this, configCell.PhasorDefinitions[phasorIndex++], buffer, index, out parsedLength);
+                PhasorValues.Add(phasorValue);
+                index += parsedLength;
+            }
+
+            // Parse second digital value
             if (configFrame.Digital2Included)
             {
                 digitalValue = DigitalValue.CreateNewValue(this, configCell.DigitalDefinitions[configCell.DigitalDefinitions.Count - 1], buffer, index, out parsedLength);
@@ -658,7 +740,6 @@ namespace TVA.PhasorProtocols.Macrodyne
             base.GetObjectData(info, context);
 
             // Serialize data cell
-            info.AddValue("status1Flags", m_status1Flags);
             info.AddValue("status2Flags", m_status2Flags);
             info.AddValue("clockStatusFlags", m_clockStatusFlags, typeof(ClockStatusFlags));
             info.AddValue("sampleNumber", m_sampleNumber);

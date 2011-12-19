@@ -420,70 +420,75 @@ namespace TVA.PhasorProtocols.Macrodyne
     [Flags(), Serializable()]
     public enum OnlineDataFormatFlags : ushort
     {
-        /// <summary>
-        /// Phasor 6 enabled.
-        /// </summary>
-        Phasor6Enabled = (ushort)Bits.Bit00,
-        /// <summary>
-        /// Phasor 7 enabled.
-        /// </summary>
-        Phasor7Enabled = (ushort)Bits.Bit01,
-        /// <summary>
-        /// Phasor 8 enabled.
-        /// </summary>
-        Phasor8Enabled = (ushort)Bits.Bit02,
-        /// <summary>
-        /// Phasor 9 enabled.
-        /// </summary>
-        Phasor9Enabled = (ushort)Bits.Bit03,
-        /// <summary>
-        /// Phasor 10 enabled.
-        /// </summary>
-        Phasor10Enabled = (ushort)Bits.Bit04,
-        /// <summary>
-        /// Digital channel 2 enabled.
-        /// </summary>
-        Digital2Enabled = (ushort)Bits.Bit05,
-        /// <summary>
-        /// Bit not used (undefined bit 1).
-        /// </summary>
-        NotUsed1 = (ushort)Bits.Bit06,
-        /// <summary>
-        /// Bit not used (undefined bit 2).
-        /// </summary>
-        NotUsed2 = (ushort)Bits.Bit07,
+        // Response byte 2 comes first (via status word interpretation)
+        
         /// <summary>
         /// Status 2 enabled.
         /// </summary>
-        Status2ByteEnabled = (ushort)Bits.Bit08,
+        Status2ByteEnabled = (ushort)Bits.Bit00,
         /// <summary>
         /// Timestamp enabled.
         /// </summary>
-        TimestampEnabled = (ushort)Bits.Bit09,
+        TimestampEnabled = (ushort)Bits.Bit01, // Bit01
         /// <summary>
         /// Phasor 2 enabled.
         /// </summary>
-        Phasor2Enabled = (ushort)Bits.Bit10,
+        Phasor2Enabled = (ushort)Bits.Bit02, // Bit02
         /// <summary>
         /// Phasor 3 enabled.
         /// </summary>
-        Phasor3Enabled = (ushort)Bits.Bit11,
+        Phasor3Enabled = (ushort)Bits.Bit03, // Bit03
         /// <summary>
         /// Phasor 4 enabled.
         /// </summary>
-        Phasor4Enabled = (ushort)Bits.Bit12,
+        Phasor4Enabled = (ushort)Bits.Bit04, // Bit04
         /// <summary>
         /// Phasor 5 enabled.
         /// </summary>
-        Phasor5Enabled = (ushort)Bits.Bit13,
+        Phasor5Enabled = (ushort)Bits.Bit05, // Bit05
         /// <summary>
         /// Reference enabled.
         /// </summary>
-        ReferenceEnabled = (ushort)Bits.Bit14,
+        ReferenceEnabled = (ushort)Bits.Bit06, // Bit06
         /// <summary>
         /// Digital channel 1 enabled.
         /// </summary>
-        Digital1Enabled = (ushort)Bits.Bit15,
+        Digital1Enabled = (ushort)Bits.Bit07, // Bit07
+        
+        // Response byte 1 comes second (via status word interpretation)
+
+        /// <summary>
+        /// Phasor 6 enabled.
+        /// </summary>
+        Phasor6Enabled = (ushort)Bits.Bit08, // Bit08
+        /// <summary>
+        /// Phasor 7 enabled.
+        /// </summary>
+        Phasor7Enabled = (ushort)Bits.Bit09, // Bit09
+        /// <summary>
+        /// Phasor 8 enabled.
+        /// </summary>
+        Phasor8Enabled = (ushort)Bits.Bit10, // Bit10
+        /// <summary>
+        /// Phasor 9 enabled.
+        /// </summary>
+        Phasor9Enabled = (ushort)Bits.Bit11, // Bit11
+        /// <summary>
+        /// Phasor 10 enabled.
+        /// </summary>
+        Phasor10Enabled = (ushort)Bits.Bit12, // Bit12
+        /// <summary>
+        /// Digital channel 2 enabled.
+        /// </summary>
+        Digital2Enabled = (ushort)Bits.Bit13, // Bit13
+        /// <summary>
+        /// Bit not used (undefined bit 1).
+        /// </summary>
+        NotUsed1 = (ushort)Bits.Bit14, // Bit14
+        /// <summary>
+        /// Bit not used (undefined bit 2).
+        /// </summary>
+        NotUsed2 = (ushort)Bits.Bit15, // Bit15
         /// <summary>
         /// No flags.
         /// </summary>

@@ -246,9 +246,10 @@ namespace TVA.PhasorProtocols.Anonymous
 
         // Fields
         private uint m_maskValue;
+        private string m_label;
 
         #endregion
-        
+
         #region [ Constructors ]
 
         /// <summary>
@@ -271,6 +272,8 @@ namespace TVA.PhasorProtocols.Anonymous
         protected DigitalDefinition(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            // Deserialize digital definition
+            m_label = info.GetString("digitalLabels");
         }
 
         #endregion
@@ -314,7 +317,39 @@ namespace TVA.PhasorProtocols.Anonymous
         {
             get
             {
+                // This accomodates longer digital labels in IEEE C37.118
                 return 256;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the label of this <see cref="DigitalDefinition"/>.
+        /// </summary>
+        public override string Label
+        {
+            get
+            {
+                return m_label;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                    value = "undefined";
+
+                if (value.Trim().Length > MaximumLabelLength)
+                {
+                    throw new OverflowException("Label length cannot exceed " + MaximumLabelLength);
+                }
+                else
+                {
+                    // We override this function since base class automatically "fixes-up" labels
+                    // by removing duplicate white space characters - this can throw off the fixed
+                    // label lengths in IEEE C37.118
+                    m_label = value.Trim();
+                }
+
+                // We pass value along to base class for posterity...
+                base.Label = value;
             }
         }
 
@@ -330,6 +365,9 @@ namespace TVA.PhasorProtocols.Anonymous
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
+
+            // Serialize digital definition
+            info.AddValue("digitalLabels", m_label);
         }
 
         #endregion

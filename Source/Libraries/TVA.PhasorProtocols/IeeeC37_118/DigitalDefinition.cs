@@ -194,6 +194,9 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                     // label offsets which would break the Get/Set Label methods (below)
                     m_label = value.Trim();
                 }
+
+                // We pass value along to base class for posterity...
+                base.Label = value;
             }
         }
 
@@ -351,20 +354,36 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             {
                 int parseLength = MaximumLabelLength;
 
-                byte[] labelBuffer = BufferPool.TakeBuffer(parseLength);
+                byte[] labelBuffer = BufferPool.TakeBuffer(16);
 
                 try
                 {
-                    Buffer.BlockCopy(buffer, startIndex, labelBuffer, 0, parseLength);
+                    string[] labels = new string[16];
 
-                    // For "multiple" labels - we just replace null's with spaces
-                    for (int i = 0; i < parseLength; i++)
+                    for (int i = 0; i < 16; i++)
                     {
-                        if (labelBuffer[i] == 0)
-                            labelBuffer[i] = 32;
+                        // Get next label buffer
+                        Buffer.BlockCopy(buffer, startIndex + i * 16, labelBuffer, 0, 16);
+
+                        bool foundNull = false;
+
+                        // Replace null characters with spaces; since characters after null
+                        // are usually invalid garbage, blank these out with spaces as well
+                        for (int j = 0; j < 16; j++)
+                        {
+                            if (foundNull || labelBuffer[j] == 0)
+                            {
+                                foundNull = true;
+                                labelBuffer[j] = 32;
+                            }
+                        }
+
+                        // Interpret bytes as an ASCII string
+                        labels[i] = Encoding.ASCII.GetString(labelBuffer, 0, 16);
                     }
 
-                    Label = Encoding.ASCII.GetString(buffer, startIndex, parseLength);
+                    // Concatenate all labels together into one large string
+                    Label = string.Concat(labels);
                 }
                 finally
                 {
