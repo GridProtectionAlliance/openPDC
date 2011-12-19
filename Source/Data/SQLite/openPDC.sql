@@ -823,7 +823,7 @@ CREATE VIEW RuntimeCalculatedMeasurement
 AS
 SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym AS AdapterName, 
  TRIM(CalculatedMeasurement.AssemblyName) AS AssemblyName, TRIM(CalculatedMeasurement.TypeName) AS TypeName,
- CASE WHEN CalculatedMeasurement.ConnectionString IS NULL THEN '' ELSE CalculatedMeasurement.ConnectionString || ';' ||
+ CASE WHEN CalculatedMeasurement.ConnectionString IS NULL THEN '' ELSE CalculatedMeasurement.ConnectionString END || ';' ||
  CASE WHEN ConfigSection IS NULL THEN '' ELSE ('configurationSection=' || ConfigSection) END || ';' ||
  ('minimumMeasurementsToUse=' || CalculatedMeasurement.MinimumMeasurementsToUse) || ';' ||
  ('framesPerSecond=' || CalculatedMeasurement.FramesPerSecond) || ';' ||
