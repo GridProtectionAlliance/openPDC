@@ -144,6 +144,10 @@ namespace openPDC.UI.UserControls
         /// <param name="e">Event arguments.</param>
         private void InputStatusMonitorUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
+            m_historicalPlayback = false;
+            m_waitingForData = false;
+            ModeMessage.Text = "Real-time";
+            ChartPlotterDynamic.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
             InitializeUserControl();
         }
 
