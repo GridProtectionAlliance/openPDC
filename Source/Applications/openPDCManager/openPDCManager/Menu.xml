@@ -13,7 +13,7 @@
     <SubMenuItems>
       <MenuDataItem Icon="" MenuText="_Browse" Description="Browse Devices" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.DeviceListUserControl" />
       <MenuDataItem Icon="" MenuText="Add _New" Description="Manage Device Configuration" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.DeviceUserControl" />
-      <MenuDataItem Icon="" MenuText="Input _Wizard" Description="Input Device Configuration Wizard" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.InputWizardUserControl" />
+      <MenuDataItem Icon="" MenuText="Input _Wizard" Description="Input Device Configuration Wizard" Roles="Administrator,Editor" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.InputWizardUserControl" />
     </SubMenuItems>
   </MenuDataItem>
   <MenuDataItem Icon="" MenuText="_Adapters" Description="" Roles="*" UserControlAssembly="" UserControlPath="">

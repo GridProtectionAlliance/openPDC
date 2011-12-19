@@ -1,6 +1,6 @@
 ﻿//******************************************************************************************************
 //  HomeUserControl.xaml.cs - Gbtc
-//
+//ButtonRestart
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
 //  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
@@ -125,9 +125,14 @@ namespace openPDC.UI.UserControls
 
         private void HomeUserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            m_windowsServiceClient = CommonFunctions.GetWindowsServiceClient();
+            if (!CommonFunctions.CurrentPrincipal.IsInRole("Administrator"))
+                ButtonRestart.IsEnabled = false;
 
-            if (m_windowsServiceClient == null || m_windowsServiceClient.Helper.RemotingClient.CurrentState != TVA.Communication.ClientState.Connected || !CommonFunctions.CurrentPrincipal.IsInRole("Administrator"))
+            if (!CommonFunctions.CurrentPrincipal.IsInRole("Administrator,Editor"))
+                ButtonInputWizard.IsEnabled = false;
+
+            m_windowsServiceClient = CommonFunctions.GetWindowsServiceClient();
+            if (m_windowsServiceClient == null || m_windowsServiceClient.Helper.RemotingClient.CurrentState != TVA.Communication.ClientState.Connected)
                 ButtonRestart.IsEnabled = false;
             else
             {

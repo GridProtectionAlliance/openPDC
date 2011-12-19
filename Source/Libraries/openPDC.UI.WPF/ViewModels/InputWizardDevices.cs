@@ -92,6 +92,8 @@ namespace openPDC.UI.ViewModels
         private string m_requestConfigurationError;
         private object m_requestConfigurationAttachment;
         private Device m_pdcDevice;
+        private int m_currentDeviceRuntimeID;
+        private bool m_disconnectedCurrentDevice;
 
         #endregion
 
@@ -623,6 +625,32 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets ID of the device in case where configuration is being updated.
+        /// </summary>
+        public int CurrentDeviceRuntimeID
+        {
+            get
+            {
+                return m_currentDeviceRuntimeID;
+            }
+            set
+            {
+                m_currentDeviceRuntimeID = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets a flag indicating if current device was disconnected before requesting configuration.
+        /// </summary>
+        public bool DisconnectedCurrentDevice
+        {
+            get
+            {
+                return m_disconnectedCurrentDevice;
+            }
+        }
+
         #endregion
 
         #region [ Constructor ]
@@ -1011,11 +1039,18 @@ namespace openPDC.UI.ViewModels
         private void RequestConfiguration()
         {
             m_requestConfigurationError = string.Empty;
-            AdoDataConnection database = new AdoDataConnection(TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory);
+            AdoDataConnection database = null;
             WindowsServiceClient windowsServiceClient = null;
 
             try
             {
+                if (m_currentDeviceRuntimeID > 0)
+                {
+                    CommonFunctions.SendCommandToService("Disconnect " + m_currentDeviceRuntimeID);
+                    m_disconnectedCurrentDevice = true;
+                }
+
+                database = new AdoDataConnection(TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory);
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
                 s_responseWaitHandle = new ManualResetEvent(false);
 

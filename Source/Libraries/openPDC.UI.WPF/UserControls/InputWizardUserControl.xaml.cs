@@ -21,10 +21,12 @@
 //
 //******************************************************************************************************
 
+using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using openPDC.UI.DataModels;
 using openPDC.UI.ViewModels;
+using TimeSeriesFramework.UI;
 using TVA;
 
 namespace openPDC.UI.UserControls
@@ -50,9 +52,12 @@ namespace openPDC.UI.UserControls
         {
             InitializeComponent();
             this.Loaded += new System.Windows.RoutedEventHandler(InputWizardUserControl_Loaded);
+            this.Unloaded += new System.Windows.RoutedEventHandler(InputWizardUserControl_Unloaded);
             m_dataContext = new InputWizardDevices(1);
             StackPanelRoot.DataContext = m_dataContext;
         }
+
+
 
         /// <summary>
         /// Creates an instance of <see cref="InputWizardUserControl"/> class for the specified <see cref="Device"/>.
@@ -91,12 +96,21 @@ namespace openPDC.UI.UserControls
                     m_dataContext.PdcVendorDeviceID = device.VendorDeviceID ?? 0;
                 }
                 ExpanderStep2.IsExpanded = true;
+                m_dataContext.CurrentDeviceRuntimeID = Convert.ToInt32(CommonFunctions.GetRuntimeID("Device", device.ID));
             }
         }
 
         #endregion
 
         #region [ Methods ]
+
+        private void InputWizardUserControl_Unloaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (m_dataContext.DisconnectedCurrentDevice && m_dataContext.CurrentDeviceRuntimeID > 0)
+                CommonFunctions.SendCommandToService("Connect " + m_dataContext.CurrentDeviceRuntimeID);
+
+            m_dataContext.CurrentDeviceRuntimeID = 0;
+        }
 
         private void InputWizardUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
