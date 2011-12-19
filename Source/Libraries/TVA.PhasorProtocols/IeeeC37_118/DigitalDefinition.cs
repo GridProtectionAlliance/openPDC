@@ -184,12 +184,16 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                     value = "undefined";
 
                 if (value.Trim().Length > MaximumLabelLength)
+                {
                     throw new OverflowException("Label length cannot exceed " + MaximumLabelLength);
+                }
                 else
+                {
                     // We override this function since base class automatically "fixes-up" labels
                     // by removing duplicate white space characters - this can throw off the
                     // label offsets which would break the Get/Set Label methods (below)
                     m_label = value.Trim();
+                }
             }
         }
 
@@ -201,7 +205,9 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             get
             {
                 if (m_parentAquired)
+                {
                     return m_draftRevision;
+                }
                 else
                 {
                     // We must assume version 1 until a parent reference is available. The parent class,
@@ -217,7 +223,9 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                         return m_draftRevision;
                     }
                     else
+                    {
                         return DraftRevision.Draft7;
+                    }
                 }
             }
         }
@@ -343,14 +351,26 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             {
                 int parseLength = MaximumLabelLength;
 
-                // For "multiple" labels - we just replace null's with spaces
-                for (int x = startIndex; x < startIndex + parseLength; x++)
-                {
-                    if (buffer[x] == 0)
-                        buffer[x] = 32;
-                }
+                byte[] labelBuffer = BufferPool.TakeBuffer(parseLength);
 
-                Label = Encoding.ASCII.GetString(buffer, startIndex, parseLength);
+                try
+                {
+                    Buffer.BlockCopy(buffer, startIndex, labelBuffer, 0, parseLength);
+
+                    // For "multiple" labels - we just replace null's with spaces
+                    for (int i = 0; i < parseLength; i++)
+                    {
+                        if (labelBuffer[i] == 0)
+                            labelBuffer[i] = 32;
+                    }
+
+                    Label = Encoding.ASCII.GetString(buffer, startIndex, parseLength);
+                }
+                finally
+                {
+                    if (labelBuffer != null)
+                        BufferPool.ReturnBuffer(labelBuffer);
+                }
 
                 return parseLength;
             }
