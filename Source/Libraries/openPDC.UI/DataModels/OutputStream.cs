@@ -990,6 +990,8 @@ namespace openPDCManager.UI.DataModels
 
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStream WHERE ID = {0}", "outputStreamID"), DefaultTimeout, outputStreamID);
 
+                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+
                 return "Output Stream Deleted Successfully";
             }
             finally

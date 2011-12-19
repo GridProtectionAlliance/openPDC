@@ -747,6 +747,8 @@ namespace openPDC.UI.DataModels
 
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM CalculatedMeasurement WHERE ID = {0}", "calculatedMeasurementID"), DefaultTimeout, calculatedMeasurementID);
 
+                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+
                 return "Calculated measurement deleted successfully";
             }
             finally

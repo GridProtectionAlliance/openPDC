@@ -1147,7 +1147,8 @@ SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, Protocol.Assemb
     'allowUseOfCachedConfiguration=' || Device.AllowUseOfCachedConfiguration || ';' ||
     'autoStartDataParsingSequence=' || Device.AutoStartDataParsingSequence || ';' ||
     'skipDisableRealTimeData=' || Device.SkipDisableRealTimeData || ';' ||
-    'measurementReportingInterval=' || Device.MeasurementReportingInterval AS ConnectionString
+    'measurementReportingInterval=' || Device.MeasurementReportingInterval || ';' ||
+	'connectOnDemand=' || Device.ConnectOnDemand AS ConnectionString
 FROM Device LEFT OUTER JOIN
     Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
     Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = 'Device'
@@ -1237,7 +1238,7 @@ CREATE VIEW RuntimeCalculatedMeasurement
 AS
 SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym AS AdapterName, 
     TRIM(CalculatedMeasurement.AssemblyName) AS AssemblyName, TRIM(CalculatedMeasurement.TypeName) AS TypeName,
-    CalculatedMeasurement.ConnectionString || ';' ||
+    NVL2(CalculatedMeasurement.ConnectionString, CalculatedMeasurement.ConnectionString, '') || ';' ||
     NVL2(ConfigSection, 'configurationSection=' || ConfigSection, '') || ';' ||
     'minimumMeasurementsToUse=' || CalculatedMeasurement.MinimumMeasurementsToUse || ';' ||
     'framesPerSecond=' || CalculatedMeasurement.FramesPerSecond || ';' ||

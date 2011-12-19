@@ -818,7 +818,8 @@ SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, Protocol.Assemb
     CONCAT(N'allowUseOfCachedConfiguration=', CAST(Device.AllowUseOfCachedConfiguration AS CHAR)),
     CONCAT(N'autoStartDataParsingSequence=', CAST(Device.AutoStartDataParsingSequence AS CHAR)),
     CONCAT(N'skipDisableRealTimeData=', CAST(Device.SkipDisableRealTimeData AS CHAR)),
-    CONCAT(N'measurementReportingInterval=', CAST(Device.MeasurementReportingInterval AS CHAR))) AS ConnectionString
+    CONCAT(N'measurementReportingInterval=', CAST(Device.MeasurementReportingInterval AS CHAR)),
+	CONCAT(N'connectOnDemand=', CAST(Device.ConnectOnDemand AS CHAR))) AS ConnectionString
 FROM Device LEFT OUTER JOIN
     Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
     Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device'
@@ -908,7 +909,7 @@ CREATE VIEW RuntimeCalculatedMeasurement
 AS
 SELECT CalculatedMeasurement.NodeID, Runtime.ID, CalculatedMeasurement.Acronym AS AdapterName, 
     TRIM(CalculatedMeasurement.AssemblyName) AS AssemblyName, TRIM(CalculatedMeasurement.TypeName) AS TypeName,
-    CONCAT_WS(';', CalculatedMeasurement.ConnectionString, IF(ConfigSection IS NULL, N'', CONCAT(N'configurationSection=', ConfigSection)),
+    CONCAT_WS(';', IF (CalculatedMeasurement.ConnectionString IS NULL, N'', CalculatedMeasurement.ConnectionString), IF(ConfigSection IS NULL, N'', CONCAT(N'configurationSection=', ConfigSection)),
     CONCAT(N'minimumMeasurementsToUse=', CAST(CalculatedMeasurement.MinimumMeasurementsToUse AS CHAR)),
     CONCAT(N'framesPerSecond=', CAST(CalculatedMeasurement.FramesPerSecond AS CHAR)),
     CONCAT(N'lagTime=', CAST(CalculatedMeasurement.LagTime AS CHAR)),

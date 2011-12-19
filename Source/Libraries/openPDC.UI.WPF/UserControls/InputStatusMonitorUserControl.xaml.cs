@@ -100,6 +100,7 @@ namespace openPDC.UI.UserControls
         private long m_lastRefreshTime;
         private bool m_historicalPlayback;
         private bool m_waitingForData;
+        private bool m_forceIPv4 = true;
 
         #endregion
 
@@ -336,7 +337,7 @@ namespace openPDC.UI.UserControls
             PhaseAngleYAxis.Visibility = PhaseAngleAxisTitle.Visibility = m_displayPhaseAngleYAxis ? Visibility.Visible : Visibility.Collapsed;
             VoltageYAxis.Visibility = VoltageAxisTitle.Visibility = m_displayVoltageYAxis ? Visibility.Visible : Visibility.Collapsed;
             CurrentYAxis.Visibility = CurrentAxisTitle.Visibility = m_displayCurrentYAxis ? Visibility.Visible : Visibility.Collapsed;
-            
+
             // This check was added as there was an error reported where it was infinity.
             if (m_frequencyRangeMin.IsInfinite() || m_frequencyRangeMin.IsNaN())
                 m_frequencyRangeMin = 59.95;
@@ -367,6 +368,7 @@ namespace openPDC.UI.UserControls
             double.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("LeadTime").ToString(), out m_leadTime);
             double.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin").ToString(), out m_frequencyRangeMin);
             double.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax").ToString(), out m_frequencyRangeMax);
+            m_forceIPv4 = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4").ToString().ParseBoolean();
             m_displayXAxis = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayXAxis").ToString().ParseBoolean();
             m_displayLegend = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayLegend").ToString().ParseBoolean();
             m_displayFrequencyYAxis = TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayFrequencyYAxis").ToString().ParseBoolean();
@@ -853,6 +855,7 @@ namespace openPDC.UI.UserControls
             CheckBoxDisplayVoltageMagnitudeYAxis.IsChecked = m_displayVoltageYAxis;
             CheckBoxUseLocalClockAsRealTime.IsChecked = m_useLocalClockAsRealtime;
             CheckBoxIgnoreBadTimestamps.IsChecked = m_ignoreBadTimestamps;
+            CheckBoxForceIPv4.IsChecked = m_forceIPv4;
         }
 
         private void ButtonManageSettings_Click(object sender, RoutedEventArgs e)

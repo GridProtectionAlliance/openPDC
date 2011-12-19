@@ -239,7 +239,7 @@ namespace openPDC.UI.UserControls
         {
             for (int i = 0; i < items.Count; i++)
             {
-                if (items[i].MenuText.Contains(stringToMatch))
+                if (items[i].MenuText.Replace("_", "").ToLower().Contains(stringToMatch.ToLower()))
                 {
                     item = items[i];
                     break;
