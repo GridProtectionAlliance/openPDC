@@ -1,6 +1,6 @@
 ﻿//******************************************************************************************************
 //  HomeUserControl.xaml.cs - Gbtc
-//ButtonRestart
+//
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
 //  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
@@ -42,6 +42,7 @@ using TimeSeriesFramework;
 using TimeSeriesFramework.Transport;
 using TimeSeriesFramework.UI;
 using TVA;
+using TVA.Configuration;
 using TVA.Data;
 using TVA.IO;
 using TVA.Reflection;
@@ -68,8 +69,8 @@ namespace openPDC.UI.UserControls
         private int m_processingUnsynchronizedMeasurements = 0;
         private double m_refreshInterval = 0.25;
         private bool m_restartConnectionCycle = true;
-        private int[] m_xAxisDataCollection;                                                            // Source data for the binding collection.
-        private EnumerableDataSource<int> m_xAxisBindingCollection;                                     // Values plotted on X-Axis.        
+        private int[] m_xAxisDataCollection;                                // Source data for the binding collection.
+        private EnumerableDataSource<int> m_xAxisBindingCollection;         // Values plotted on X-Axis.        
         private ConcurrentQueue<double> m_yAxisDataCollection;              // Source data for the binding collection. Format is <signalID, collection of values from subscription API>.
         private EnumerableDataSource<double> m_yAxisBindingCollection;      // Values plotted on Y-Axis.
         private LineGraph m_lineGraph;
@@ -88,6 +89,7 @@ namespace openPDC.UI.UserControls
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(HomeUserControl_Loaded);
             this.Unloaded += new RoutedEventHandler(HomeUserControl_Unloaded);
+
             // Load Menu
             XmlRootAttribute xmlRootAttribute = new XmlRootAttribute("MenuDataItems");
             XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<MenuDataItem>), xmlRootAttribute);
@@ -132,15 +134,18 @@ namespace openPDC.UI.UserControls
                 ButtonInputWizard.IsEnabled = false;
 
             m_windowsServiceClient = CommonFunctions.GetWindowsServiceClient();
+
             if (m_windowsServiceClient == null || m_windowsServiceClient.Helper.RemotingClient.CurrentState != TVA.Communication.ClientState.Connected)
+            {
                 ButtonRestart.IsEnabled = false;
+            }
             else
             {
                 m_windowsServiceClient.Helper.ReceivedServiceResponse += new EventHandler<EventArgs<ServiceResponse>>(Helper_ReceivedServiceResponse);
                 m_windowsServiceClient.Helper.SendRequest("Health -actionable");
-                m_windowsServiceClient.Helper.SendRequest("version -actionable");
-                m_windowsServiceClient.Helper.SendRequest("status -actionable");
-                m_windowsServiceClient.Helper.SendRequest("time -actionable");
+                m_windowsServiceClient.Helper.SendRequest("Version -actionable");
+                m_windowsServiceClient.Helper.SendRequest("Status -actionable");
+                m_windowsServiceClient.Helper.SendRequest("Time -actionable");
                 m_eventHandlerRegistered = true;
             }
 
@@ -162,7 +167,24 @@ namespace openPDC.UI.UserControls
             using (AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory))
             {
                 TextBlockDatabaseType.Text = database.DatabaseType.ToString();
-                TextBlockDatabaseName.Text = database.Connection.Database;
+
+                if (database.DatabaseType == DatabaseType.SQLite || database.DatabaseType == DatabaseType.Access)
+                {
+                    try
+                    {
+                        // Extract database file name from connection string for file centric databases
+                        TextBlockDatabaseName.Text = FilePath.GetFileName(ConfigurationFile.Current.Settings[CommonFunctions.DefaultSettingsCategory]["ConnectionString"].Value.ParseKeyValuePairs()["Data Source"]);
+                    }
+                    catch
+                    {
+                        // Fall back on database name if file name extraction fails
+                        TextBlockDatabaseName.Text = database.Connection.Database;
+                    }
+                }
+                else
+                {
+                    TextBlockDatabaseName.Text = database.Connection.Database;
+                }
             }
 
             TextBlockUser.Text = CommonFunctions.CurrentUser;
@@ -198,7 +220,7 @@ namespace openPDC.UI.UserControls
                     if (!m_eventHandlerRegistered)
                     {
                         m_windowsServiceClient.Helper.ReceivedServiceResponse += new EventHandler<EventArgs<ServiceResponse>>(Helper_ReceivedServiceResponse);
-                        m_windowsServiceClient.Helper.SendRequest("version -actionable");
+                        m_windowsServiceClient.Helper.SendRequest("Version -actionable");
                     }
 
                     m_windowsServiceClient.Helper.SendRequest("Health -actionable");
@@ -206,7 +228,9 @@ namespace openPDC.UI.UserControls
                     if (PopupStatus.IsOpen)
                         m_windowsServiceClient.Helper.SendRequest("Status -actionable");
                 }
-                catch { }
+                catch
+                {
+                }
             }
             TextBlockLocalTime.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
         }
@@ -381,7 +405,9 @@ namespace openPDC.UI.UserControls
                     ChartPlotterDynamic.Children.Remove((IPlotterElement)m_lineGraph);
                 });
             }
-            catch { }
+            catch
+            {
+            }
             if (m_restartConnectionCycle)
                 InitializeUnsynchronizedSubscription();
         }
@@ -494,7 +520,9 @@ namespace openPDC.UI.UserControls
                     ChartPlotterDynamic.Children.Remove((IPlotterElement)m_lineGraph);
                 });
             }
-            catch { }
+            catch
+            {
+            }
             m_yAxisDataCollection = new ConcurrentQueue<double>();
 
             if (m_subscribedUnsynchronized && !string.IsNullOrEmpty(m_signalID))
