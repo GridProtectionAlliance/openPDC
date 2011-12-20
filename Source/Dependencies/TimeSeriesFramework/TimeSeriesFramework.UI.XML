@@ -89,6 +89,11 @@
             Defines the default settings category for TimeSeriesFramework data connections.
             </summary>
         </member>
+        <member name="F:TimeSeriesFramework.UI.CommonFunctions.CurrentPrincipal">
+            <summary>
+            Defines the current principal for the thread owning the common functions.
+            </summary>
+        </member>
         <member name="F:TimeSeriesFramework.UI.CommonFunctions.CurrentUser">
             <summary>
             Defines the current user name as defined in the Thread.CurrentPrincipal.Identity.
