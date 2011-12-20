@@ -1536,7 +1536,7 @@ namespace openPDC.UI.DataModels
                 }
                 else
                 {
-                    //we do this to make sure all statistical measurements are in the system.
+                    // We do this to make sure all statistical measurements are in the system.
                     TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
                 }
 

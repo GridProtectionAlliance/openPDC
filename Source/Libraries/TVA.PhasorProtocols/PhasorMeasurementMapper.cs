@@ -964,6 +964,12 @@ namespace TVA.PhasorProtocols
                 }
             }
 
+            // Update output measurements that input adapter can provide such that it can participate in connect on demand
+            if (m_definedMeasurements.Count > 0)
+                OutputMeasurements = m_definedMeasurements.Values.ToArray();
+            else
+                OutputMeasurements = null;
+
             OnStatusMessage("Loaded {0} active device measurements...", m_definedMeasurements.Count);
         }
 

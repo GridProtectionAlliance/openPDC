@@ -1148,7 +1148,7 @@ SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, Protocol.Assemb
     'autoStartDataParsingSequence=' || Device.AutoStartDataParsingSequence || ';' ||
     'skipDisableRealTimeData=' || Device.SkipDisableRealTimeData || ';' ||
     'measurementReportingInterval=' || Device.MeasurementReportingInterval || ';' ||
-	'connectOnDemand=' || Device.ConnectOnDemand AS ConnectionString
+    'connectOnDemand=' || Device.ConnectOnDemand AS ConnectionString
 FROM Device LEFT OUTER JOIN
     Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
     Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = 'Device'

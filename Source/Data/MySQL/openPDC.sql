@@ -146,7 +146,7 @@ CREATE TABLE Node(
     UpdatedOn DATETIME NOT NULL DEFAULT N'0000-00-00 00:00:00',
     UpdatedBy VARCHAR(200) NOT NULL DEFAULT N'',
     CONSTRAINT PK_Node PRIMARY KEY (ID ASC),
-	CONSTRAINT IX_NodeID_Name UNIQUE KEY (Name ASC)
+    CONSTRAINT IX_NodeID_Name UNIQUE KEY (Name ASC)
 );
 
 CREATE TABLE DataOperation(
@@ -187,7 +187,7 @@ CREATE TABLE Device(
     UniqueID NCHAR(36) NULL,
     Acronym VARCHAR(200) NOT NULL,
     Name VARCHAR(200) NULL,
-	OriginalSource VARCHAR(200) NULL,
+    OriginalSource VARCHAR(200) NULL,
     IsConcentrator TINYINT NOT NULL DEFAULT 0,
     CompanyID INT NULL,
     HistorianID INT NULL,
@@ -518,7 +518,7 @@ CREATE TABLE OutputStream(
     UpdatedOn DATETIME NOT NULL DEFAULT N'0000-00-00 00:00:00',
     UpdatedBy VARCHAR(200) NOT NULL DEFAULT N'',
     CONSTRAINT PK_OutputStream PRIMARY KEY (ID ASC),
-	CONSTRAINT IX_OutputStream_NodeID_Acronym UNIQUE KEY (NodeID ASC, Acronym ASC)
+    CONSTRAINT IX_OutputStream_NodeID_Acronym UNIQUE KEY (NodeID ASC, Acronym ASC)
 );
 
 CREATE TABLE CustomOutputAdapter(
@@ -819,7 +819,7 @@ SELECT Device.NodeID, Runtime.ID, Device.Acronym AS AdapterName, Protocol.Assemb
     CONCAT(N'autoStartDataParsingSequence=', CAST(Device.AutoStartDataParsingSequence AS CHAR)),
     CONCAT(N'skipDisableRealTimeData=', CAST(Device.SkipDisableRealTimeData AS CHAR)),
     CONCAT(N'measurementReportingInterval=', CAST(Device.MeasurementReportingInterval AS CHAR)),
-	CONCAT(N'connectOnDemand=', CAST(Device.ConnectOnDemand AS CHAR))) AS ConnectionString
+    CONCAT(N'connectOnDemand=', CAST(Device.ConnectOnDemand AS CHAR))) AS ConnectionString
 FROM Device LEFT OUTER JOIN
     Protocol ON Device.ProtocolID = Protocol.ID LEFT OUTER JOIN
     Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = N'Device'

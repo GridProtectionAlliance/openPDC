@@ -97,7 +97,26 @@ namespace openPDC.UI.UserControls
                 DataGridList.SelectedIndex = -1;
         }
 
-        #endregion
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox enabledCheckBox = sender as CheckBox;
 
+            if ((object)enabledCheckBox != null)
+            {
+                string runtimeID = m_dataContext.RuntimeID;
+
+                if (!string.IsNullOrWhiteSpace(runtimeID))
+                {
+                    m_dataContext.Save();
+
+                    if (enabledCheckBox.IsChecked.GetValueOrDefault())
+                        TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + runtimeID);
+                    else
+                        TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                }
+            }
+        }
+
+        #endregion
     }
 }
