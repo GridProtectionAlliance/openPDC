@@ -1719,6 +1719,8 @@ namespace TVA.PhasorProtocols
             m_commandChannel.ConnectionException += m_commandChannel_ConnectionException;
             m_commandChannel.ConnectionTerminated += m_commandChannel_ConnectionTerminated;
             m_commandChannel.ReceiveData += m_commandChannel_ReceiveData;
+            m_commandChannel.ReceiveDataException += m_commandChannel_ReceiveDataException;
+            m_commandChannel.SendDataException += m_commandChannel_SendDataException;
 
             // Attempt connection to device over command channel
             m_commandChannel.ReceiveBufferSize = m_bufferSize;
@@ -1903,6 +1905,8 @@ namespace TVA.PhasorProtocols
                     m_commandChannel.ConnectionException -= m_commandChannel_ConnectionException;
                     m_commandChannel.ConnectionTerminated -= m_commandChannel_ConnectionTerminated;
                     m_commandChannel.ReceiveData -= m_commandChannel_ReceiveData;
+                    m_commandChannel.ReceiveDataException -= m_commandChannel_ReceiveDataException;
+                    m_commandChannel.SendDataException -= m_commandChannel_SendDataException;
                     m_commandChannel.Dispose();
                 }
             }
@@ -2438,7 +2442,10 @@ namespace TVA.PhasorProtocols
 
         private void m_dataChannel_ConnectionException(object sender, EventArgs<Exception> e)
         {
-            OnConnectionException(e.Argument, m_connectionAttempts);
+            Exception ex = e.Argument;
+
+            if (!(ex is NullReferenceException) && !(ex is ObjectDisposedException))
+                OnConnectionException(ex, m_connectionAttempts);
         }
 
         private void m_dataChannel_ConnectionTerminated(object sender, EventArgs e)
@@ -2449,7 +2456,10 @@ namespace TVA.PhasorProtocols
 
         private void m_dataChannel_SendDataException(object sender, EventArgs<Exception> e)
         {
-            OnParsingException(e.Argument, "Data channel send exception: {0}", e.Argument.Message);
+            Exception ex = e.Argument;
+
+            if (!(ex is NullReferenceException) && !(ex is ObjectDisposedException))
+                OnParsingException(e.Argument, "Data channel send exception: {0}", ex.Message);
         }
 
         private void m_dataChannel_ReceiveDataTimeout(object sender, EventArgs e)
@@ -2459,7 +2469,10 @@ namespace TVA.PhasorProtocols
 
         private void m_dataChannel_ReceiveDataException(object sender, EventArgs<Exception> e)
         {
-            OnParsingException(e.Argument, "Data channel receive exception: {0}", e.Argument.Message);
+            Exception ex = e.Argument;
+
+            if (!(ex is NullReferenceException) && !(ex is ObjectDisposedException))
+                OnParsingException(e.Argument, "Data channel receive exception: {0}", ex.Message);
         }
 
         #endregion
@@ -2509,7 +2522,10 @@ namespace TVA.PhasorProtocols
 
         private void m_serverBasedDataChannel_SendClientDataException(object sender, EventArgs<Guid, Exception> e)
         {
-            OnParsingException(e.Argument2, "Server based data channel send exception: {0}", e.Argument2.Message);
+            Exception ex = e.Argument2;
+
+            if (!(ex is NullReferenceException) && !(ex is ObjectDisposedException))
+                OnParsingException(e.Argument2, "Server based data channel send exception: {0}", ex.Message);
         }
 
         private void m_serverBasedDataChannel_ReceiveClientDataTimeout(object sender, EventArgs<Guid> e)
@@ -2519,7 +2535,10 @@ namespace TVA.PhasorProtocols
 
         private void m_serverBasedDataChannel_ReceiveClientDataException(object sender, EventArgs<Guid, Exception> e)
         {
-            OnParsingException(e.Argument2, "Server based data channel receive exception: {0}", e.Argument2.Message);
+            Exception ex = e.Argument2;
+
+            if (!(ex is NullReferenceException) && !(ex is ObjectDisposedException))
+                OnParsingException(e.Argument2, "Server based data channel receive exception: {0}", ex.Message);
         }
 
         #endregion
@@ -2567,13 +2586,32 @@ namespace TVA.PhasorProtocols
 
         private void m_commandChannel_ConnectionException(object sender, EventArgs<Exception> e)
         {
-            OnConnectionException(e.Argument, m_connectionAttempts);
+            Exception ex = e.Argument;
+
+            if (!(ex is NullReferenceException) && !(ex is ObjectDisposedException))
+                OnConnectionException(ex, m_connectionAttempts);
         }
 
         private void m_commandChannel_ConnectionTerminated(object sender, EventArgs e)
         {
             if (ConnectionTerminated != null)
                 ConnectionTerminated(this, EventArgs.Empty);
+        }
+
+        private void m_commandChannel_SendDataException(object sender, EventArgs<Exception> e)
+        {
+            Exception ex = e.Argument;
+
+            if (!(ex is NullReferenceException) && !(ex is ObjectDisposedException))
+                OnParsingException(e.Argument, "Command channel send exception: {0}", ex.Message);
+        }
+
+        private void m_commandChannel_ReceiveDataException(object sender, EventArgs<Exception> e)
+        {
+            Exception ex = e.Argument;
+
+            if (!(ex is NullReferenceException) && !(ex is ObjectDisposedException))
+                OnParsingException(e.Argument, "Command channel send exception: {0}", ex.Message);
         }
 
         #endregion

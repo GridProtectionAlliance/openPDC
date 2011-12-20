@@ -100,6 +100,7 @@ namespace HistorianAdapters
         private string m_instanceName;
         private string m_archivePath;
         private long m_archivedMeasurements;
+        private volatile int m_adapterLoadedCount;
         private bool m_disposed;
 
         #endregion
@@ -282,7 +283,8 @@ namespace HistorianAdapters
                     {
                         foreach (IMetadataProvider provider in m_metadataProviders.Adapters)
                         {
-                            provider.Refresh();
+                            if (provider.Enabled)
+                                provider.Refresh();
                         }
                     }
 
@@ -335,18 +337,21 @@ namespace HistorianAdapters
             m_archive.MetadataFile.FileName = Path.Combine(m_archivePath, m_instanceName + "_dbase.dat");
             m_archive.MetadataFile.PersistSettings = true;
             m_archive.MetadataFile.SettingsCategory = m_instanceName + m_archive.MetadataFile.SettingsCategory;
+            m_archive.MetadataFile.FileAccessMode = FileAccess.ReadWrite;
             m_archive.MetadataFile.Initialize();
 
             // Initialize state file.
             m_archive.StateFile.FileName = Path.Combine(m_archivePath, m_instanceName + "_startup.dat");
             m_archive.StateFile.PersistSettings = true;
             m_archive.StateFile.SettingsCategory = m_instanceName + m_archive.StateFile.SettingsCategory;
+            m_archive.StateFile.FileAccessMode = FileAccess.ReadWrite;
             m_archive.StateFile.Initialize();
 
             // Initialize intercom file.
             m_archive.IntercomFile.FileName = Path.Combine(m_archivePath, "scratch.dat");
             m_archive.IntercomFile.PersistSettings = true;
             m_archive.IntercomFile.SettingsCategory = m_instanceName + m_archive.IntercomFile.SettingsCategory;
+            m_archive.IntercomFile.FileAccessMode = FileAccess.ReadWrite;
             m_archive.IntercomFile.Initialize();
 
             // Initialize data archive file.           
@@ -478,15 +483,27 @@ namespace HistorianAdapters
         /// </summary>
         protected override void AttemptConnection()
         {
+            // Open archive files
             m_archive.MetadataFile.Open();
             m_archive.StateFile.Open();
             m_archive.IntercomFile.Open();
             m_archive.Open();
 
+            m_adapterLoadedCount = 0;
+
             // Initialization of services needs to occur after files are open
             m_dataServices.Initialize();
             m_metadataProviders.Initialize();
             m_replicationProviders.Initialize();
+
+            int waitCount = 0;
+
+            // Wait for adapter initialization to complete, up to 2 seconds
+            while (waitCount < 20 && m_adapterLoadedCount != m_dataServices.Adapters.Count + m_metadataProviders.Adapters.Count + m_replicationProviders.Adapters.Count)
+            {
+                Thread.Sleep(100);
+                waitCount++;
+            }
 
             if (m_autoRefreshMetadata)
             {
@@ -597,6 +614,8 @@ namespace HistorianAdapters
             e.Argument.Archive = m_archive;
             e.Argument.ServiceProcessException += DataServices_ServiceProcessException;
             OnStatusMessage("{0} has been loaded.", e.Argument.GetType().Name);
+
+            m_adapterLoadedCount++;
         }
 
         private void DataServices_AdapterUnloaded(object sender, EventArgs<IDataService> e)
@@ -652,6 +671,8 @@ namespace HistorianAdapters
             e.Argument.MetadataRefreshTimeout += MetadataProviders_MetadataRefreshTimeout;
             e.Argument.MetadataRefreshException += MetadataProviders_MetadataRefreshException;
             OnStatusMessage("{0} has been loaded.", e.Argument.GetType().Name);
+
+            m_adapterLoadedCount++;
         }
 
         private void MetadataProviders_AdapterUnloaded(object sender, EventArgs<IMetadataProvider> e)
@@ -676,6 +697,8 @@ namespace HistorianAdapters
             e.Argument.ReplicationProgress += ReplicationProvider_ReplicationProgress;
             e.Argument.ReplicationException += ReplicationProvider_ReplicationException;
             OnStatusMessage("{0} has been loaded.", e.Argument.GetType().Name);
+
+            m_adapterLoadedCount++;
         }
 
         private void ReplicationProviders_AdapterUnloaded(object sender, EventArgs<IReplicationProvider> e)
