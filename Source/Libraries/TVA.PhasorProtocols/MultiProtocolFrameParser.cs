@@ -89,7 +89,7 @@ namespace TVA.PhasorProtocols
     public enum PhasorProtocol
     {
         /// <summary>
-        /// IEEE C37.118-2011, R2 protocol.
+        /// IEEE C37.118.2-2011 protocol.
         /// </summary>
         IeeeC37_118V2,
         /// <summary>
@@ -1131,7 +1131,8 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return (m_phasorProtocol == PhasorProtocols.PhasorProtocol.IeeeC37_118V1 ||
+                return (m_phasorProtocol == PhasorProtocols.PhasorProtocol.IeeeC37_118V2 ||
+                        m_phasorProtocol == PhasorProtocols.PhasorProtocol.IeeeC37_118V1 ||
                         m_phasorProtocol == PhasorProtocols.PhasorProtocol.IeeeC37_118D6 ||
                         m_phasorProtocol == PhasorProtocols.PhasorProtocol.Ieee1344);
             }
@@ -1585,6 +1586,7 @@ namespace TVA.PhasorProtocols
             // Instantiate protocol specific frame parser
             switch (m_phasorProtocol)
             {
+                case PhasorProtocol.IeeeC37_118V2:
                 case PhasorProtocol.IeeeC37_118V1:
                     m_frameParser = new IeeeC37_118.FrameParser(IeeeC37_118.DraftRevision.Draft7);
                     break;
@@ -1959,6 +1961,7 @@ namespace TVA.PhasorProtocols
                     // Only the IEEE, SEL Fast Message and Macrodyne protocols support commands
                     switch (m_phasorProtocol)
                     {
+                        case PhasorProtocols.PhasorProtocol.IeeeC37_118V2:
                         case PhasorProtocols.PhasorProtocol.IeeeC37_118V1:
                         case PhasorProtocols.PhasorProtocol.IeeeC37_118D6:
                             commandFrame = new IeeeC37_118.CommandFrame(m_deviceID, command, 1);
