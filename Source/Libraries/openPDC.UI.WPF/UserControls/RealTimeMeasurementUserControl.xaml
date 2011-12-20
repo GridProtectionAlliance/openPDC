@@ -36,11 +36,11 @@
                         </StackPanel.Resources>
 
                         <TextBlock Text="{tsfBinding:Column Path=ID}" Width="100"/>
-                        <TextBlock Text="{tsfBinding:Column Path=Description}" Width="430" TextWrapping="Wrap"/>
+                        <TextBlock Text="{tsfBinding:Column Path=Description}" Width="400" TextWrapping="Wrap"/>
                         <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" Width="100" HorizontalAlignment="Center" TextAlignment="Center"/>
-                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" Width="75"
+                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" Width="90"
                                    Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center" TextAlignment="Center"/>
-                        <TextBlock Text="{tsfBinding:Column Path=EngineeringUnit}" Width="50" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <TextBlock Text="{tsfBinding:Column Path=EngineeringUnit}" Width="60" HorizontalAlignment="Center" TextAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </HierarchicalDataTemplate>
@@ -56,10 +56,11 @@
                         </Style>
                     </StackPanel.Resources>
 
+                    <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}" Margin="2"/>
                     <TextBlock Text="{tsfBinding:Column Path=Acronym}" Width="175" FontWeight="Bold"/>
                     <TextBlock Text="{tsfBinding:Column Path=Name}" Width="300" FontWeight="Bold"/>
                     <TextBlock Text="{tsfBinding:Column Path=ProtocolName}" Width="135" FontWeight="Bold"/>
-                    <TextBlock Text="{tsfBinding:Column Path=VendorDeviceName}" Width="135" FontWeight="Bold"/>
+                    <TextBlock Text="{tsfBinding:Column Path=VendorDeviceName}" Width="100" FontWeight="Bold"/>
                     <Button Content="Edit" Tag="{tsfBinding:Column Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" 
                             Width="50" Click="ButtonEdit_Click"  />
                 </StackPanel>
@@ -77,8 +78,9 @@
                         </Style>
                     </StackPanel.Resources>
 
+                    <Ellipse Width="12" Height="12" VerticalAlignment="Center" Fill="{tsfBinding:Column Path=StatusColor, Converter={StaticResource StringToStatusColorConverter}}" Margin="2"/>
                     <TextBlock Text="{tsfBinding:Column Path=Acronym}" Width="175" FontWeight="Bold"/>
-                    <TextBlock Text="{tsfBinding:Column Path=Name}" Width="600" FontWeight="Bold"/>
+                    <TextBlock Text="{tsfBinding:Column Path=Name}" Width="550" FontWeight="Bold"/>
                     <Button Content="Edit" Template="{StaticResource HyperlinkStyleButtonTemplate}" Width="50" Click="ButtonEdit_Click"
                                 Visibility="{tsfBinding:Column Path=ID, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                 </StackPanel>
@@ -133,7 +135,7 @@
             </StackPanel>
 
             <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" 
-                      Height="610" VerticalAlignment="Top" HorizontalAlignment="Left" Width="835" />
+                      Height="610" VerticalAlignment="Top" HorizontalAlignment="Left"/>
 
         </StackPanel>
 
