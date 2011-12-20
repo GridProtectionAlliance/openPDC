@@ -1994,9 +1994,13 @@ namespace TVA.PhasorProtocols
                         // Send command over appropriate communications channel - command channel, if defined,
                         // will take precedence over other communications channels for command traffic...
                         if (m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected)
+                        {
                             handle = m_commandChannel.SendAsync(buffer, 0, buffer.Length);
+                        }
                         else if (m_dataChannel != null && m_dataChannel.CurrentState == ClientState.Connected)
+                        {
                             handle = m_dataChannel.SendAsync(buffer, 0, buffer.Length);
+                        }
                         else if (m_serverBasedDataChannel != null && m_serverBasedDataChannel.CurrentState == ServerState.Running)
                         {
                             WaitHandle[] handles = m_serverBasedDataChannel.MulticastAsync(buffer, 0, buffer.Length);
@@ -2176,8 +2180,11 @@ namespace TVA.PhasorProtocols
                         if (handle != null)
                             handle.WaitOne();
 
-                        // Allow device time to receive and process command before sending another
+                        // Allow device time to receive and process command
                         Thread.Sleep(1000);
+
+                        // Reset bytes received after waiting for command processing time
+                        m_initialBytesReceived = 0;
 
                         // Wait for real-time data stream to cease for up to two seconds
                         while (m_initialBytesReceived > 0)
@@ -2206,8 +2213,8 @@ namespace TVA.PhasorProtocols
                         SendDeviceCommand(DeviceCommand.EnableRealTimeData);
                         break;
                     case PhasorProtocol.Macrodyne:
-                        // We collect the station name (i.e. the unit ID) from the Macrodyne
-                        // protocol as a header frame before we get the configuration frame
+                        // We collect the station name (i.e. the unit ID via 0xBB 0x48)) from the Macrodyne
+                        // protocol interpreted as a header frame before we get the configuration frame
                         SendDeviceCommand(DeviceCommand.SendHeaderFrame);
                         break;
                     default:
@@ -2640,7 +2647,7 @@ namespace TVA.PhasorProtocols
 
         private void m_frameParser_ReceivedHeaderFrame(object sender, EventArgs<IHeaderFrame> e)
         {
-            // Macrodyne receives header frame which contains station name before configuration frame
+            // Macrodyne receives header frame which contains station name before configuration frame (this gets online data format: 0xBB 0x24)
             if (m_configurationFrame == null && m_phasorProtocol == PhasorProtocol.Macrodyne)
                 SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);
 
