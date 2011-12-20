@@ -131,11 +131,13 @@
             // checkBoxConnectionTester
             // 
             this.checkBoxConnectionTester.AutoSize = true;
+            this.checkBoxConnectionTester.Checked = true;
+            this.checkBoxConnectionTester.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxConnectionTester.Location = new System.Drawing.Point(16, 78);
             this.checkBoxConnectionTester.Name = "checkBoxConnectionTester";
-            this.checkBoxConnectionTester.Size = new System.Drawing.Size(199, 20);
+            this.checkBoxConnectionTester.Size = new System.Drawing.Size(206, 20);
             this.checkBoxConnectionTester.TabIndex = 2;
-            this.checkBoxConnectionTester.Text = "PMU Connection Tester v4.2.7";
+            this.checkBoxConnectionTester.Text = "PMU Connection Tester v4.2.10";
             this.checkBoxConnectionTester.UseVisualStyleBackColor = true;
             // 
             // radioButton64bit
