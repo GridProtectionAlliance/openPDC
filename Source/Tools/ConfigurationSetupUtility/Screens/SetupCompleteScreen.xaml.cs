@@ -37,6 +37,7 @@ using System.Web.Security;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Xml.Linq;
 using TVA;
 using TVA.Configuration;
 using TVA.Identity;
@@ -140,47 +141,29 @@ namespace ConfigurationSetupUtility.Screens
                         if (migrate)
                         {
                             string dataFolder = FilePath.GetApplicationDataFolder();
-                            string migrationDataFolder = dataFolder + "\\..\\DataMigrationUtility";
+                            string dataMigrationUtilityUserSettingsFolder = dataFolder + "\\..\\DataMigrationUtility";
                             string newOleDbConnectionString = m_state["newOleDbConnectionString"].ToString();
                             string databaseType = m_state["databaseType"].ToString().Replace(" ", "");
-                            ConfigurationFile configFile = null;
-                            CategorizedSettingsElementCollection applicationSettings = null;
+                            string userSettingsFile = dataMigrationUtilityUserSettingsFolder + "\\Settings.xml";
 
-                            // Copy user-level DataMigrationUtility config file to the ConfigurationSetupUtility application folder.
-                            if (File.Exists(migrationDataFolder + "\\Settings.xml"))
-                            {
-                                if (!Directory.Exists(dataFolder))
-                                    Directory.CreateDirectory(dataFolder);
+                            XDocument doc = new XDocument(
+                                                new XElement("settings",
+                                                    new XElement("applicationSettings",
+                                                        new XElement("add", new XAttribute("name", "FromConnectionString"),
+                                                                            new XAttribute("value", m_state.ContainsKey("oldOleDbConnectionString") ? m_state["oldOleDbConnectionString"].ToString() : string.Empty)),
+                                                        new XElement("add", new XAttribute("name", "ToConnectionString"),
+                                                                            new XAttribute("value", newOleDbConnectionString)),
+                                                        new XElement("add", new XAttribute("name", "ToDataType"),
+                                                                            new XAttribute("value", databaseType)),
+                                                        new XElement("add", new XAttribute("name", "UseFromConnectionForRI"),
+                                                                            new XAttribute("value", string.Empty)),
+                                                        new XElement("add", new XAttribute("name", "FromDataType"),
+                                                                            new XAttribute("value", m_state.ContainsKey("oldOleDbDataType") ? m_state["oldOleDbDataType"].ToString() : "Unspecified"))
+                                                    )
+                                                )
+                                            );
 
-                                File.Copy(migrationDataFolder + "\\Settings.xml", dataFolder + "\\Settings.xml", true);
-                            }
-
-                            // Modify OleDB configuration file settings for the DataMigrationUtility.
-                            configFile = ConfigurationFile.Open("DataMigrationUtility.exe.config");
-                            applicationSettings = configFile.Settings["applicationSettings"];
-                            applicationSettings["FromDataType", true].Value = "Unspecified";
-                            applicationSettings["ToConnectionString", true].Value = newOleDbConnectionString;
-                            applicationSettings["ToDataType", true].Value = databaseType;
-
-                            if (m_state.ContainsKey("oldOleDbConnectionString"))
-                            {
-                                string oldOleDbConnectionString = m_state["oldOleDbConnectionString"].ToString();
-                                applicationSettings["FromConnectionString", true].Value = oldOleDbConnectionString;
-
-                                if (m_state.ContainsKey("oldOleDbDataType"))
-                                    applicationSettings["FromDataType", true].Value = m_state["oldOleDbDataType"].ToString();
-                            }
-
-                            configFile.Save();
-
-                            // Copy user-level ConfigurationSetupUtility config file to DataMigrationUtility application folder.
-                            if (File.Exists(dataFolder + "\\Settings.xml"))
-                            {
-                                if (!Directory.Exists(migrationDataFolder))
-                                    Directory.CreateDirectory(migrationDataFolder);
-
-                                File.Copy(dataFolder + "\\Settings.xml", migrationDataFolder + "\\Settings.xml", true);
-                            }
+                            doc.Save(userSettingsFile);
 
                             try
                             {

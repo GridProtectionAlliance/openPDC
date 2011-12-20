@@ -51,6 +51,9 @@ namespace Setup
         {
             radioButton64bit.Enabled = (IntPtr.Size > 4);
 
+            if (radioButton64bit.Enabled)
+                radioButton64bit.Checked = true;
+
             try
             {
                 Version version = Assembly.GetEntryAssembly().GetName().Version;

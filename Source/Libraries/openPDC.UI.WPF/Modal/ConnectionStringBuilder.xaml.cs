@@ -208,7 +208,9 @@ namespace openPDC.UI.Modal
 
             if (ComboboxParity.Items.Count > 0)
                 ComboboxParity.SelectedIndex = 0;
-            if (ComboboxStopBits.Items.Count > 0)
+            if (ComboboxStopBits.Items.Count > 1)
+                ComboboxStopBits.SelectedIndex = 1;
+            else
                 ComboboxStopBits.SelectedIndex = 0;
 
             ComboboxPort.Items.Add("COM1");
