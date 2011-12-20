@@ -111,6 +111,8 @@ namespace openPDCManager
                     if (ComboboxNode.Items.Count > 0)
                     {
                         ComboboxNode.SelectedItem = currentNode;
+                        if (ComboboxNode.SelectedItem == null)
+                            ComboboxNode.SelectedIndex = 0;
                     }
                 });
             }
@@ -165,9 +167,13 @@ namespace openPDCManager
         /// <param name="e">Event argument.</param>
         private void ComboboxNode_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            ((App)Application.Current).NodeID = ((KeyValuePair<Guid, string>)ComboboxNode.SelectedItem).Key;
+            if (ComboboxNode.SelectedItem != null)
+            {
+                ((App)Application.Current).NodeID = ((KeyValuePair<Guid, string>)ComboboxNode.SelectedItem).Key;
+            }
             m_menuDataItems[0].Command.Execute(null);
             ConnectToService();
+
         }
 
         private void ConnectToService()
