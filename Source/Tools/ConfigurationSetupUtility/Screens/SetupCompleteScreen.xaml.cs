@@ -146,6 +146,9 @@ namespace ConfigurationSetupUtility.Screens
                             string databaseType = m_state["databaseType"].ToString().Replace(" ", "");
                             string userSettingsFile = dataMigrationUtilityUserSettingsFolder + "\\Settings.xml";
 
+                            if (!Directory.Exists(dataMigrationUtilityUserSettingsFolder))
+                                Directory.CreateDirectory(dataMigrationUtilityUserSettingsFolder);
+
                             XDocument doc = new XDocument(
                                                 new XElement("settings",
                                                     new XElement("applicationSettings",
