@@ -505,10 +505,10 @@ namespace HistorianAdapters
                 waitCount++;
             }
 
+            // Kick off a meta-data refresh...
             if (m_autoRefreshMetadata)
             {
-                // Kick off meta-data refresh, but don't wait around for it...
-                Task.Factory.StartNew(RefreshMetadata);
+                RefreshMetadata();
                 m_autoRefreshMetadata = false;
             }
 
