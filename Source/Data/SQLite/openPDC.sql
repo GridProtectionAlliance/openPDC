@@ -210,8 +210,7 @@ CREATE TABLE Device(
     CONSTRAINT IX_Device_UniqueID UNIQUE (UniqueID ASC),
     CONSTRAINT IX_Device_NodeID_Acronym UNIQUE (NodeID ASC, Acronym ASC),
     CONSTRAINT FK_Device_Company FOREIGN KEY(CompanyID) REFERENCES Company (ID),
-    CONSTRAINT FK_Device_Device FOREIGN KEY(ParentID) REFERENCES Device (ID),
-    CONSTRAINT FK_Device_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID),
+    CONSTRAINT FK_Device_Device FOREIGN KEY(ParentID) REFERENCES Device (ID),    
     CONSTRAINT FK_Device_Interconnection FOREIGN KEY(InterconnectionID) REFERENCES Interconnection (ID),
     CONSTRAINT FK_Device_Node FOREIGN KEY(NodeID) REFERENCES Node (ID),
     CONSTRAINT FK_Device_Protocol FOREIGN KEY(ProtocolID) REFERENCES Protocol (ID),
@@ -300,8 +299,7 @@ CREATE TABLE Measurement(
     UpdatedOn DATETIME NOT NULL DEFAULT '',
     UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
     CONSTRAINT IX_Measurement UNIQUE (PointID ASC),
-    CONSTRAINT FK_Measurement_Device FOREIGN KEY(DeviceID) REFERENCES Device (ID) ON DELETE CASCADE,
-    CONSTRAINT FK_Measurement_Historian FOREIGN KEY(HistorianID) REFERENCES Historian (ID),
+    CONSTRAINT FK_Measurement_Device FOREIGN KEY(DeviceID) REFERENCES Device (ID) ON DELETE CASCADE,    
     CONSTRAINT FK_Measurement_SignalType FOREIGN KEY(SignalTypeID) REFERENCES SignalType (ID)
 );
 

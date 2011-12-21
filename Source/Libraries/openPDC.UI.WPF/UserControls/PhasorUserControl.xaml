@@ -65,7 +65,7 @@
                 SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
 
         <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" PreviewKeyDown="DataGrid_PreviewKeyDown"
-                      Sorting="DataGrid_Sorting">
+                      Sorting="DataGrid_Sorting" SelectedIndex="{tsfBinding:Column Path=CurrentSelectedIndex}">
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTextColumn Header="Label" Width="*" Binding="{tsfBinding:Column Path=Label}"/>
                 <sdk:DataGridTextColumn Header="Type" Width="*" Binding="{tsfBinding:Column Path=Type}" CellStyle="{StaticResource CenterAlignCellStyle}" IsReadOnly="True"/>

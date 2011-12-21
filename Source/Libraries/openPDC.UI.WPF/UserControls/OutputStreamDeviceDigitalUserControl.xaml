@@ -95,7 +95,7 @@
             SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" />
 
         <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="460" VerticalScrollBarVisibility="Auto" Width="600"
-            PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Sorting="DataGrid_Sorting">
+            PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Sorting="DataGrid_Sorting" SelectedIndex="{tsfBinding:Column Path=CurrentSelectedIndex}">
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTextColumn Header="Label" Width="*" Binding="{tsfBinding:Column Path=Label}" IsReadOnly="True"/>
                 <sdk:DataGridTextColumn Header=" Mask value" Width="*" Binding="{tsfBinding:Column Path=MaskValue}" />

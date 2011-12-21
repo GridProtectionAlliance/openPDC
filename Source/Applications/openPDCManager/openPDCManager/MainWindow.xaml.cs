@@ -105,14 +105,24 @@ namespace openPDCManager
             {
                 Dispatcher.Invoke((Action)delegate()
                 {
-                    KeyValuePair<Guid, string> currentNode = (KeyValuePair<Guid, string>)ComboboxNode.SelectedItem;
-
-                    ComboboxNode.ItemsSource = Node.GetLookupList(null);
-                    if (ComboboxNode.Items.Count > 0)
+                    if (ComboboxNode.SelectedItem == null)
                     {
-                        ComboboxNode.SelectedItem = currentNode;
-                        if (ComboboxNode.SelectedItem == null)
+                        ComboboxNode.ItemsSource = Node.GetLookupList(null);
+                        if (ComboboxNode.Items.Count > 0)
                             ComboboxNode.SelectedIndex = 0;
+                    }
+
+                    if (ComboboxNode.SelectedItem != null)
+                    {
+                        KeyValuePair<Guid, string> currentNode = (KeyValuePair<Guid, string>)ComboboxNode.SelectedItem;
+
+                        ComboboxNode.ItemsSource = Node.GetLookupList(null);
+                        if (ComboboxNode.Items.Count > 0)
+                        {
+                            ComboboxNode.SelectedItem = currentNode;
+                            if (ComboboxNode.SelectedItem == null)
+                                ComboboxNode.SelectedIndex = 0;
+                        }
                     }
                 });
             }
