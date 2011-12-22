@@ -72,6 +72,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using TimeSeriesFramework;
 using TVA.Communication;
 using TVA.IO;
@@ -667,6 +668,7 @@ namespace TVA.PhasorProtocols
         private bool m_skipDisableRealTimeData;
         private bool m_initiatingDataStream;
         private long m_initialBytesReceived;
+        private bool m_initiatingSerialConnection;
         private bool m_deviceSupportsCommands;
         private int m_allowedParsingExceptions;
         private Ticks m_parsingExceptionWindow;
@@ -1762,6 +1764,7 @@ namespace TVA.PhasorProtocols
                     break;
                 case TransportProtocol.Serial:
                     m_dataChannel = new SerialClient();
+                    m_initiatingSerialConnection = true;
                     break;
                 case TransportProtocol.File:
                     m_dataChannel = new FileClient();
@@ -2166,46 +2169,15 @@ namespace TVA.PhasorProtocols
         }
 
         // Starts data parsing sequence.
-        private void StartDataParsingSequence(object state)
+        private void StartDataParsingSequence()
         {
             try
             {
-                // This thread pool delegate is used to start streaming data on a remote device.
-                int attempts = 0;
+                // Attempt to stop real-time data, waiting a maximum of three seconds for this activity
+                if (!m_skipDisableRealTimeData)
+                    Task.Factory.StartNew(AttemptToStopRealTimeData).Wait(3000);
 
-                // Some devices will only send a config frame once data streaming has been disabled, so
-                // we use this code to disable real-time data and wait for data to stop streaming...
-                try
-                {
-                    if (!m_skipDisableRealTimeData)
-                    {
-                        // Make sure data stream is disabled
-                        WaitHandle handle = SendDeviceCommand(DeviceCommand.DisableRealTimeData);
-                        if (handle != null)
-                            handle.WaitOne();
-
-                        // Allow device time to receive and process command
-                        Thread.Sleep(1000);
-
-                        // Reset bytes received after waiting for command processing time
-                        m_initialBytesReceived = 0;
-
-                        // Wait for real-time data stream to cease for up to two seconds
-                        while (m_initialBytesReceived > 0)
-                        {
-                            m_initialBytesReceived = 0;
-                            Thread.Sleep(100);
-
-                            attempts++;
-                            if (attempts >= 20)
-                                break;
-                        }
-                    }
-                }
-                finally
-                {
-                    m_initiatingDataStream = false;
-                }
+                m_initiatingDataStream = false;
 
                 // Request configuration frame once real-time data has been disabled. Note that data stream
                 // will be enabled when we receive a configuration frame. 
@@ -2235,6 +2207,29 @@ namespace TVA.PhasorProtocols
             {
                 if (!(ex is ObjectDisposedException))
                     OnParsingException(ex);
+            }
+        }
+
+        private void AttemptToStopRealTimeData()
+        {
+            // Some devices will only send a config frame once data streaming has been disabled, so
+            // we use this code to disable real-time data and wait for data to stop streaming...
+            int attempts = 0;
+
+            // Make sure data stream is disabled
+            SendDeviceCommand(DeviceCommand.DisableRealTimeData);
+
+            Thread.Sleep(1000);
+
+            // Wait for real-time data stream to cease for up to two seconds
+            while (m_initialBytesReceived > 0)
+            {
+                m_initialBytesReceived = 0;
+                Thread.Sleep(100);
+
+                attempts++;
+                if (attempts >= 20)
+                    break;
             }
         }
 
@@ -2278,7 +2273,7 @@ namespace TVA.PhasorProtocols
             {
                 m_initialBytesReceived = 0;
                 m_initiatingDataStream = true;
-                ThreadPool.QueueUserWorkItem(StartDataParsingSequence, null);
+                Task.Factory.StartNew(StartDataParsingSequence);
             }
         }
 
@@ -2423,9 +2418,8 @@ namespace TVA.PhasorProtocols
 
         private void m_dataChannel_ConnectionEstablished(object sender, EventArgs e)
         {
-            // Only handle client connection from data channel when command channel is undefined
-            if (!(m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected))
-                ClientConnectedHandler();
+            // Handle client connection from data channel
+            ClientConnectedHandler();
 
             // Start reading file data
             if (m_transportProtocol == TransportProtocol.File)
@@ -2470,6 +2464,13 @@ namespace TVA.PhasorProtocols
         private void m_dataChannel_ReceiveDataException(object sender, EventArgs<Exception> e)
         {
             Exception ex = e.Argument;
+
+            // For some serially connected devices, a frame exception on initial connection is very common - so we ignore this during startup
+            if (m_initiatingSerialConnection && string.Compare(ex.Message, "The hardware detected a framing error.") == 0)
+            {
+                m_initiatingSerialConnection = false;
+                return;
+            }
 
             if (!(ex is NullReferenceException) && !(ex is ObjectDisposedException))
                 OnParsingException(e.Argument, "Data channel receive exception: {0}", ex.Message);
@@ -2568,7 +2569,6 @@ namespace TVA.PhasorProtocols
             {
                 // We'll start data channel once command channel has been established...
                 InitializeDataChannel(m_connectionString.ParseKeyValuePairs());
-                ClientConnectedHandler();
             }
             catch (Exception ex)
             {

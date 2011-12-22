@@ -41,6 +41,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TVA.Communication;
@@ -1482,6 +1483,15 @@ namespace TVA.PhasorProtocols
             // This is optionally overridden to handle incoming data - such as IEEE commands
         }
 
+        // Thread procedure used to proxy data to the user implemented device command handler
+        private void DeviceCommandHandlerProc(object state)
+        {
+            EventArgs<Guid, byte[], int> e = state as EventArgs<Guid, byte[], int>;
+
+            if ((object)e != null)
+                DeviceCommandHandler(e.Argument1, GetConnectionID(m_commandChannel, e.Argument1), e.Argument2, e.Argument3);
+        }
+
         /// <summary>
         /// Gets connection ID (i.e., IP:Port) for specified <paramref name="clientID"/>.
         /// </summary>
@@ -1700,7 +1710,10 @@ namespace TVA.PhasorProtocols
 
         private void m_commandChannel_ReceiveClientDataComplete(object sender, EventArgs<Guid, byte[], int> e)
         {
-            DeviceCommandHandler(e.Argument1, GetConnectionID(m_commandChannel, e.Argument1), e.Argument2, e.Argument3);
+            // Queue up derived class device command handling on a different thread since this will
+            // often engage sending data back on the same command channel and we want this async
+            // thread to complete gracefully...
+            Task.Factory.StartNew(DeviceCommandHandlerProc, e);
         }
 
         private void m_commandChannel_SendClientDataException(object sender, EventArgs<Guid, Exception> e)
