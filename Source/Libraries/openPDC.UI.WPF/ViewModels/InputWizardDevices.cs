@@ -1239,7 +1239,7 @@ namespace openPDC.UI.ViewModels
                         device.HistorianID = HistorianID == 0 ? (int?)null : HistorianID;
                         device.ProtocolID = ProtocolID == 0 ? (int?)null : ProtocolID;
                         device.InterconnectionID = InterconnectionID == 0 ? (int?)null : InterconnectionID;
-                        device.AccessID = ItemsSource.Count == 1 ? AccessID : inputWizardDevice.AccessID;
+
                         device.SkipDisableRealTimeData = SkipDisableRealTimeData;
                         device.Enabled = true;
                         device.Longitude = inputWizardDevice.Longitude;
@@ -1256,6 +1256,7 @@ namespace openPDC.UI.ViewModels
 
                         if (ConnectToConcentrator && PdcID != null && PdcID > 0)
                         {
+                            device.AccessID = inputWizardDevice.AccessID;
                             device.ParentID = PdcID;
                             device.ConnectionString = string.Empty;
                             // IF it is connected to concentrator then do not send initialize command when device is saved.
@@ -1263,6 +1264,7 @@ namespace openPDC.UI.ViewModels
                         }
                         else
                         {
+                            device.AccessID = AccessID;
                             device.ConnectionString = GenerateConnectionString();
                             //If device is direct connected then notify service about it and hence send initialize.
                             Device.SaveWithAnalogsDigitals(database, device, true, inputWizardDevice.DigitalCount, inputWizardDevice.AnalogCount, inputWizardDevice.DigitalLabels, inputWizardDevice.AnalogLabels);
