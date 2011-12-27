@@ -30,10 +30,13 @@
 //       Performed full code review, optimization and bug fixes for ICCP data export.
 //  04/26/2011 - J. Ritchie Carroll
 //       Modified code to optimize export quality.
+//  12/27/2011 - J. Ritchie Carroll
+//       Updated export code to be more resilient.
 //
 //******************************************************************************************************
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -70,15 +73,15 @@ namespace ICCPExport
 
         // Fields
         private MultipleDestinationExporter m_dataExporter;
-        private Dictionary<MeasurementKey, string> m_measurementTags;
+        private ConcurrentDictionary<MeasurementKey, string> m_measurementTags;
         private MeasurementKey m_referenceAngleKey;
         private bool m_useReferenceAngle;
         private bool m_useNumericQuality;
         private int m_exportInterval;
-        private int m_millisecondsPerFrame;
+        private long m_lastResult;
         private string m_companyTagPrefix;
         private bool m_statusDisplayed;
-        private long m_exportRetries;
+        private long m_skippedExports;
 
         #endregion
 
@@ -185,7 +188,7 @@ namespace ICCPExport
                 status.AppendLine();
                 status.AppendFormat("     Using reference angle: {0}", m_useReferenceAngle);
                 status.AppendLine();
-                status.AppendFormat("     Export retry attempts: {0}", m_exportRetries);
+                status.AppendFormat("           Skipped exports: {0}", m_skippedExports);
                 status.AppendLine();
 
                 if (m_useReferenceAngle)
@@ -256,13 +259,14 @@ namespace ICCPExport
             Dictionary<string, string> settings = Settings;
             string errorMessage = "{0} is missing from Settings - Example: exportInterval=5; useReferenceAngle=True; referenceAngleMeasurement=DEVARCHIVE:6; companyTagPrefix=TVA; useNumericQuality=True; inputMeasurementKeys={{FILTER ActiveMeasurements WHERE Device='SHELBY' AND SignalType='FREQ'}}";
             string setting;
+            double seconds;
 
             // Load required parameters
-            if (!settings.TryGetValue("exportInterval", out setting))
+            if (!settings.TryGetValue("exportInterval", out setting) || !double.TryParse(setting, out seconds))
                 throw new ArgumentException(string.Format(errorMessage, "exportInterval"));
 
-            m_exportInterval = (int)(double.Parse(setting) * 1000.0D);
-            m_millisecondsPerFrame = 1000 / FramesPerSecond;
+            m_exportInterval = (int)(seconds * 1000.0D);
+            m_lastResult = -1;
 
             if (m_exportInterval <= 0)
                 throw new ArgumentException("exportInterval should not be 0 - Example: exportInterval=5.5");
@@ -316,7 +320,7 @@ namespace ICCPExport
             m_dataExporter.Initialize(new ExportDestination[] { new ExportDestination(FilePath.GetAbsolutePath(ConfigurationSection + ".txt"), false, "", "", "") });
 
             // Create new measurement tag name dictionary
-            m_measurementTags = new Dictionary<MeasurementKey, string>();
+            m_measurementTags = new ConcurrentDictionary<MeasurementKey, string>();
             string pointID = "undefined";
 
             // Lookup point tag name for input measurement in the ActiveMeasurements table
@@ -337,7 +341,11 @@ namespace ICCPExport
                     if (!string.IsNullOrWhiteSpace(m_companyTagPrefix) && !pointTag.StartsWith(m_companyTagPrefix))
                         pointTag = m_companyTagPrefix + pointTag;
 
-                    m_measurementTags.Add(key, pointTag);
+                    m_measurementTags.TryAdd(key, pointTag);
+                }
+                catch (ThreadAbortException)
+                {
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -345,43 +353,9 @@ namespace ICCPExport
                 }
             }
 
-            // We enable tracking of latest measurements so we can use these values if points are missing
+            // We enable tracking of latest measurements so we can use these values if points are missing - since we are using
+            // latest measurement tracking, we sort all incoming points even though most of them will be thrown out...
             TrackLatestMeasurements = true;
-        }
-
-        /// <summary>
-        /// Queues a single measurement for processing.
-        /// </summary>
-        /// <param name="measurement">Measurement to queue for processing.</param>
-        public override void QueueMeasurementForProcessing(IMeasurement measurement)
-        {
-            QueueMeasurementsForProcessing(new IMeasurement[] { measurement });
-        }
-
-        /// <summary>
-        /// Queues a collection of measurements for processing.
-        /// </summary>
-        /// <param name="measurements">Collection of measurements to queue for processing.</param>
-        /// <remarks>
-        /// We override this method to only queue measurements at the desired export interval - no need
-        /// do excess sorting work for measurements that will never be used :)
-        /// </remarks>
-        public override void QueueMeasurementsForProcessing(IEnumerable<IMeasurement> measurements)
-        {
-            // Don't process measurements unless adapter is enabled
-            if (!Enabled)
-                return;
-
-            List<IMeasurement> inputMeasurements = new List<IMeasurement>();
-
-            foreach (IMeasurement measurement in measurements)
-            {
-                if (((long)measurement.Timestamp.ToMilliseconds()) % m_exportInterval == 0)
-                    inputMeasurements.Add(measurement);
-            }
-
-            if (inputMeasurements.Count > 0)
-                SortMeasurements(inputMeasurements);
         }
 
         /// <summary>
@@ -392,187 +366,165 @@ namespace ICCPExport
         protected override void PublishFrame(IFrame frame, int index)
         {
             Ticks timestamp = frame.Timestamp;
-            IDictionary<MeasurementKey, IMeasurement> measurements = frame.Measurements;
+            long result = (long)timestamp.ToMilliseconds() % (long)m_exportInterval;
 
-            if (measurements.Count > 0)
+            // Only publish when the export interval time has passed
+            if (result < m_lastResult)
             {
-                StringBuilder fileData = new StringBuilder();
-                IMeasurement measurement, referenceAngle;
-                MeasurementKey inputMeasurementKey;
-                SignalType signalType;
-                DataQuality measurementQuality;
-                double measurementValue, referenceAngleValue;
-                string measurementTag;
+                m_lastResult = result;
+                ConcurrentDictionary<MeasurementKey, IMeasurement> measurements = frame.Measurements;
 
-                // We need to get calculated reference angle value in order to export relative phase angles
-                // If the value is not here, we don't export
-                referenceAngle = null;
+                if (measurements.Count > 0)
+                {
+                    StringBuilder fileData = new StringBuilder();
+                    IMeasurement measurement, referenceAngle;
+                    MeasurementKey inputMeasurementKey;
+                    SignalType signalType;
+                    DataQuality measurementQuality;
+                    double measurementValue, referenceAngleValue;
+                    string measurementTag;
+                    bool displayedWarning = false;
 
-                // Make sure reference made it in this frame...
-                if (m_useReferenceAngle && !measurements.TryGetValue(m_referenceAngleKey, out referenceAngle))
-                {
-                    OnProcessException(new InvalidOperationException("Calculated reference angle was not found in this frame, possible reasons: system is initializing, receiving no data or lag time is too small. File creation was skipped."));
-                }
-                else
-                {
-                    // Export all defined input measurements
-                    for (int i = 0; i < InputMeasurementKeys.Length; i++)
+                    // We need to get calculated reference angle value in order to export relative phase angles
+                    // If the value is not here, we don't export
+                    referenceAngle = null;
+
+                    // Make sure reference made it in this frame...
+                    if (m_useReferenceAngle && !measurements.TryGetValue(m_referenceAngleKey, out referenceAngle))
                     {
-                        inputMeasurementKey = InputMeasurementKeys[i];
-                        signalType = InputMeasurementKeyTypes[i];
-
-                        // Look up measurement's tag name
-                        if (m_measurementTags.TryGetValue(inputMeasurementKey, out measurementTag))
+                        OnProcessException(new InvalidOperationException("Calculated reference angle was not found in this frame, possible reasons: system is initializing, receiving no data or lag time is too small. File creation was skipped."));
+                    }
+                    else
+                    {
+                        // Export all defined input measurements
+                        for (int i = 0; i < InputMeasurementKeys.Length; i++)
                         {
-                            // See if measurement exists in this frame
-                            if (measurements.TryGetValue(inputMeasurementKey, out measurement))
+                            inputMeasurementKey = InputMeasurementKeys[i];
+                            signalType = InputMeasurementKeyTypes[i];
+
+                            // Look up measurement's tag name
+                            if (m_measurementTags.TryGetValue(inputMeasurementKey, out measurementTag))
                             {
-                                // Get measurement's adjusted value (takes into account any adder and or multipler)
-                                measurementValue = measurement.AdjustedValue;
-
-                                // Interpret data quality flags
-                                measurementQuality = (measurement.ValueQualityIsGood() ? (measurement.TimestampQualityIsGood() ? DataQuality.Good : DataQuality.Suspect) : DataQuality.Bad);
-                            }
-                            else
-                            {
-                                // Didn't find measurement in this frame, try using most recent value
-                                measurementValue = LatestMeasurements[inputMeasurementKey.SignalID];
-
-                                // Interpret data quality flags - since measurement was missing in this frame we mark it as
-                                // suspect. Could have just missed the time window for sorting.
-                                measurementQuality = (Double.IsNaN(measurementValue) ? DataQuality.Bad : DataQuality.Suspect);
-
-                                // We'll export zero instead of NaN for bad data
-                                if (measurementQuality == DataQuality.Bad)
-                                    measurementValue = 0.0D;
-                            }
-
-                            // Export tag name field
-                            fileData.Append(measurementTag);
-                            fileData.Append(",");
-
-                            // Export measurement value making any needed adjustments based on signal type
-                            if (signalType == SignalType.VPHA || signalType == SignalType.IPHA)
-                            {
-                                // This is a phase angle measurement, export the value relative to the reference angle (if available)
-                                if (referenceAngle == null)
+                                // See if measurement exists in this frame
+                                if (measurements.TryGetValue(inputMeasurementKey, out measurement))
                                 {
-                                    // No reference angle defined, export raw angle
-                                    fileData.Append(measurementValue);
+                                    // Get measurement's adjusted value (takes into account any adder and or multipler)
+                                    measurementValue = measurement.AdjustedValue;
+
+                                    // Interpret data quality flags
+                                    measurementQuality = (measurement.ValueQualityIsGood() ? (measurement.TimestampQualityIsGood() ? DataQuality.Good : DataQuality.Suspect) : DataQuality.Bad);
                                 }
                                 else
                                 {
-                                    // Get reference angle's adjusted value (takes into account any adder and or multipler)
-                                    referenceAngleValue = referenceAngle.AdjustedValue;
+                                    // Didn't find measurement in this frame, try using a recent value
+                                    measurementValue = LatestMeasurements[inputMeasurementKey.SignalID];
 
-                                    // Handle relative angle wrapping
-                                    double dis0 = Math.Abs(measurementValue - referenceAngleValue);
-                                    double dis1 = Math.Abs(measurementValue - referenceAngleValue + 360);
-                                    double dis2 = Math.Abs(measurementValue - referenceAngleValue - 360);
+                                    // Interpret data quality flags - if no recent measurement is available, we mark it as bad
+                                    measurementQuality = (Double.IsNaN(measurementValue) ? DataQuality.Bad : DataQuality.Good);
 
-                                    if ((dis0 < dis1) && (dis0 < dis2))
-                                        measurementValue = measurementValue - referenceAngleValue;
-                                    else if (dis1 < dis2)
-                                        measurementValue = measurementValue - referenceAngleValue + 360;
+                                    // We'll export zero instead of NaN for bad data
+                                    if (measurementQuality == DataQuality.Bad)
+                                        measurementValue = 0.0D;
+                                }
+
+                                // Export tag name field
+                                fileData.Append(measurementTag);
+                                fileData.Append(",");
+
+                                // Export measurement value making any needed adjustments based on signal type
+                                if (signalType == SignalType.VPHA || signalType == SignalType.IPHA)
+                                {
+                                    // This is a phase angle measurement, export the value relative to the reference angle (if available)
+                                    if (referenceAngle == null)
+                                    {
+                                        // No reference angle defined, export raw angle
+                                        fileData.Append(measurementValue);
+                                    }
                                     else
-                                        measurementValue = measurementValue - referenceAngleValue - 360;
+                                    {
+                                        // Get reference angle's adjusted value (takes into account any adder and or multipler)
+                                        referenceAngleValue = referenceAngle.AdjustedValue;
 
+                                        // Handle relative angle wrapping
+                                        double dis0 = Math.Abs(measurementValue - referenceAngleValue);
+                                        double dis1 = Math.Abs(measurementValue - referenceAngleValue + 360);
+                                        double dis2 = Math.Abs(measurementValue - referenceAngleValue - 360);
+
+                                        if ((dis0 < dis1) && (dis0 < dis2))
+                                            measurementValue = measurementValue - referenceAngleValue;
+                                        else if (dis1 < dis2)
+                                            measurementValue = measurementValue - referenceAngleValue + 360;
+                                        else
+                                            measurementValue = measurementValue - referenceAngleValue - 360;
+
+                                        fileData.Append(measurementValue);
+                                    }
+                                }
+                                else if (signalType == SignalType.VPHM)
+                                {
+                                    // Typical voltages from PMU's are line-to-neutral volts so we convert them to line-to-line kilovolts
+                                    fileData.Append(measurementValue * SqrtOf3 / 1000.0D);
+                                }
+                                else
+                                {
+                                    // Export all other types of measurements as their raw value
                                     fileData.Append(measurementValue);
                                 }
-                            }
-                            else if (signalType == SignalType.VPHM)
-                            {
-                                // Typical voltages from PMU's are line-to-neutral volts so we convert them to line-to-line kilovolts
-                                fileData.Append(measurementValue * SqrtOf3 / 1000.0D);
+
+                                // Export interpreted measurement quality
+                                fileData.Append(",");
+
+                                if (m_useNumericQuality)
+                                    fileData.Append((int)measurementQuality);
+                                else
+                                    fileData.Append(measurementQuality);
+
+                                // Terminate line (ICCP file link expects these two terminating commas, weird...)
+                                fileData.AppendLine(",,");
                             }
                             else
                             {
-                                // Export all other types of measurements as their raw value
-                                fileData.Append(measurementValue);
+                                // We were unable to find measurement tag for this key - this is unexpected
+                                OnProcessException(new InvalidOperationException(string.Format("Failed to find measurement tag for measurement {0}", inputMeasurementKey)));
                             }
-
-                            // Export interpreted measurement quality
-                            fileData.Append(",");
-
-                            if (m_useNumericQuality)
-                                fileData.Append((int)measurementQuality);
-                            else
-                                fileData.Append(measurementQuality);
-
-                            // Terminate line (ICCP file link expects these two terminating commas, weird...)
-                            fileData.AppendLine(",,");
-                        }
-                        else
-                        {
-                            // We were unable to find measurement tag for this key - this is unexpected
-                            OnProcessException(new InvalidOperationException(string.Format("Failed to find measurement tag for measurement {0}", inputMeasurementKey)));
                         }
                     }
-                }
 
-                // Measurement export to a file may take more than available processing time - so we queue this work up ...
-                ThreadPool.QueueUserWorkItem(ProcessFileExport, fileData.ToString());
-
-                // We display export status every other minute
-                if (new DateTime(frame.Timestamp).Minute % 2 == 0)
-                {
-                    //Make sure message is only displayed once during the minute
-                    if (!m_statusDisplayed)
-                    {
-                        OnStatusMessage(string.Format("{0} successful file based measurement exports...", m_dataExporter.TotalExports));
-                        m_statusDisplayed = true;
-                    }
-                }
-                else
-                    m_statusDisplayed = false;
-            }
-            else
-            {
-                // No data was available in the frame, lag time set too tight?
-                OnProcessException(new InvalidOperationException("No measurements were available for file based data export, possible reasons: system is initializing , receiving no data or lag time is too small. File creation was skipped."));
-            }
-        }
-
-        private void ProcessFileExport(object state)
-        {
-            string fileData = state as string;
-
-            if (fileData != null)
-            {
-                const int MaximumAttempts = 4;
-                int retryDelayInterval = m_exportInterval / MaximumAttempts;
-                int attempts = 0;
-                bool retry = true;
-
-                if (retryDelayInterval < 100)
-                    retryDelayInterval = 100;
-
-                while (retry)
-                {
+                    // Queue up measurement export to data exporter - this will only allow one export at a time
                     try
                     {
-                        m_dataExporter.ExportData(fileData);
-                        retry = false;
+                        m_dataExporter.ExportData(fileData.ToString());
                     }
                     catch (ThreadAbortException)
                     {
-                        throw;  // This exception is normal, we'll just rethrow this back up the try stack
+                        throw;
                     }
                     catch (Exception ex)
                     {
-                        attempts++;
+                        m_skippedExports++;
+                        OnStatusMessage("WARNING: Skipped export due to exception: " + ex.Message);
+                        displayedWarning = true;
+                    }
 
-                        if (attempts < MaximumAttempts)
+                    // We display export status every other minute
+                    if (new DateTime(timestamp).Minute % 2 == 0 && !displayedWarning)
+                    {
+                        //Make sure message is only displayed once during the minute
+                        if (!m_statusDisplayed)
                         {
-                            m_exportRetries++;
-                            Thread.Sleep(retryDelayInterval);
-                        }
-                        else
-                        {
-                            retry = false;
-                            OnProcessException(new InvalidOperationException(string.Format("{0} {1} retries attempted.", ex.Message, attempts), ex));
+                            OnStatusMessage("{0} successful file based measurement exports...", m_dataExporter.TotalExports);
+                            m_statusDisplayed = true;
                         }
                     }
+                    else
+                    {
+                        m_statusDisplayed = false;
+                    }
+                }
+                else
+                {
+                    // No data was available in the frame, lag time set too tight?
+                    OnProcessException(new InvalidOperationException("No measurements were available for file based data export, possible reasons: system is initializing , receiving no data or lag time is too small. File creation was skipped."));
                 }
             }
         }
