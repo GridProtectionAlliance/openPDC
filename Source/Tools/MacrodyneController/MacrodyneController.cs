@@ -37,7 +37,7 @@ namespace MacrodyneController
         public MacrodyneController()
         {
             InitializeComponent();
-        
+
             m_bytesToSend = new MemoryStream();
             m_bytesReceived = new MemoryStream();
         }
@@ -50,9 +50,9 @@ namespace MacrodyneController
 
             // Initialize serial port selection lists
             foreach (string port in SerialPort.GetPortNames())
-	        {
-        		ComboBoxSerialPorts.Items.Add(port); 
-	        }
+            {
+                ComboBoxSerialPorts.Items.Add(port);
+            }
 
             foreach (string parity in Enum.GetNames(typeof(Parity)))
             {
@@ -253,8 +253,8 @@ namespace MacrodyneController
         {
             if (m_byteEncoding == ByteEncoding.ASCII)
             {
-                TextBoxBytesToSend.Text = m_byteEncoding.GetString(m_bytesToSend.ToArray()).RemoveControlCharacters().RemoveDuplicateWhiteSpace();
-                TextBoxBytesReceived.Text = m_byteEncoding.GetString(m_bytesReceived.ToArray()).RemoveControlCharacters().RemoveDuplicateWhiteSpace();
+                TextBoxBytesToSend.Text = m_byteEncoding.GetString(m_bytesToSend.ToArray()).RemoveControlCharacters();
+                TextBoxBytesReceived.Text = m_byteEncoding.GetString(m_bytesReceived.ToArray()).RemoveControlCharacters();
             }
             else
             {

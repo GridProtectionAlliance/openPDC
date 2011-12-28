@@ -341,16 +341,16 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Removes duplicate white space, control characters and null from a string.
+        /// Removes control characters and null from a string.
         /// </summary>
         /// <param name="value">Source <see cref="String"/> to validate.</param>
         /// <remarks>
-        /// Strings reported from field devices can be full of inconsistencies, this function "cleans-up" the strings for visualization.
+        /// Strings reported from field devices can be full of inconsistencies, this function helps clean-up the strings.
         /// </remarks>
-        /// <returns><paramref name="value"/> with duplicate white space, control characters and nulls removed.</returns>
+        /// <returns><paramref name="value"/> with control characters and nulls removed.</returns>
         public static string GetValidLabel(this string value)
         {
-            return value.RemoveNull().ReplaceControlCharacters().RemoveDuplicateWhiteSpace().Trim();
+            return value.RemoveNull().ReplaceControlCharacters().Trim();
         }
 
         /// <summary>
