@@ -32,6 +32,7 @@ using System.Text;
 using System.Threading;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
+using TimeSeriesFramework.Transport;
 using TVA.Communication;
 using TVA.IO;
 using TVA.PhasorProtocols.Anonymous;
@@ -54,6 +55,7 @@ namespace TVA.PhasorProtocols
         private ConcurrentDictionary<string, ConfigurationCell> m_labelDefinedDevices;
         private ConcurrentDictionary<string, long> m_undefinedDevices;
         private ConcurrentDictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
+        private DataSubscriber m_primaryDataSource;
         private System.Timers.Timer m_dataStreamMonitor;
         private bool m_allowUseOfCachedConfiguration;
         private bool m_cachedConfigLoadAttempted;
@@ -510,6 +512,11 @@ namespace TVA.PhasorProtocols
                     status.AppendFormat("     Shared mapping source: {0}", SharedMapping);
                     status.AppendLine();
                 }
+                if ((object)m_primaryDataSource != null)
+                {
+                    status.AppendFormat("       Primary data source: {0}", m_primaryDataSource.Name);
+                    status.AppendLine();
+                }
                 status.AppendFormat("   Source device time zone: {0}", m_timezone.Id);
                 status.AppendLine();
                 status.AppendFormat("    Manual time adjustment: {0} seconds", m_timeAdjustmentTicks.ToSeconds().ToString("0.000"));
@@ -680,6 +687,13 @@ namespace TVA.PhasorProtocols
                             m_dataStreamMonitor.Dispose();
                         }
                         m_dataStreamMonitor = null;
+
+                        if (m_primaryDataSource != null)
+                        {
+                            m_primaryDataSource.ConnectionEstablished -= m_primaryDataSource_ConnectionEstablished;
+                            m_primaryDataSource.ConnectionTerminated -= m_primaryDataSource_ConnectionTerminated;
+                        }
+                        m_primaryDataSource = null;
                     }
                 }
                 finally
@@ -710,6 +724,46 @@ namespace TVA.PhasorProtocols
                 m_accessID = ushort.Parse(setting);
             else
                 m_accessID = 1;
+
+            if (settings.TryGetValue("primaryDataSource", out setting))
+            {
+                uint primaryDataSourceID = 0;
+
+                // Lookup adapter runtime ID of specified primary data source
+                if (!string.IsNullOrWhiteSpace(setting))
+                {
+                    try
+                    {
+                        DataRow[] filteredRows = DataSource.Tables["InputAdapters"].Select(string.Format("AdapterName = '{0}'", setting));
+
+                        if (filteredRows.Length > 0)
+                            primaryDataSourceID = uint.Parse(filteredRows[0]["ID"].ToString());
+                        else
+                            OnProcessException(new InvalidOperationException(string.Format("Failed to find input adapter ID for primary data source \"{0}\", data source was not established.", setting)));
+                    }
+                    catch (Exception ex)
+                    {
+                        OnProcessException(new InvalidOperationException(string.Format("Failed to find input adapter ID for primary data source \"{0}\" due to exception: {1} Data source was not established.", setting, ex.Message), ex));
+                    }
+                }
+
+                if (primaryDataSourceID > 0)
+                {
+                    // Get matching data subscriber
+                    m_primaryDataSource = Parent.FirstOrDefault(adapter => adapter.ID == primaryDataSourceID && adapter is DataSubscriber) as DataSubscriber;
+
+                    if ((object)m_primaryDataSource == null)
+                    {
+                        OnProcessException(new InvalidOperationException(string.Format("Input adapter \"{0}\" specified to be the primary data source was not a DataSubscriber adapter, data source was not established.", setting)));
+                    }
+                    else
+                    {
+                        // Attach to connection events of primary source adapter since these will be used to control when back connection is established...
+                        m_primaryDataSource.ConnectionEstablished += m_primaryDataSource_ConnectionEstablished;
+                        m_primaryDataSource.ConnectionTerminated += m_primaryDataSource_ConnectionTerminated;
+                    }
+                }
+            }
 
             if (settings.TryGetValue("sharedMapping", out setting))
                 SharedMapping = setting.Trim();
@@ -1209,6 +1263,29 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Starts the <see cref="PhasorMeasurementMapper"/> or restarts it if it is already running.
+        /// </summary>
+        [AdapterCommand("Starts the adapter or restarts it if it is already running.")]
+        public override void Start()
+        {
+            // We only start the adapter if a primary data source is not defined - otherwise we yield to its connection state to start this connection
+            if ((object)m_primaryDataSource == null)
+            {
+                base.Start();
+            }
+            else
+            {
+                // Wait for primary source adapter to initialize
+                if (!m_primaryDataSource.WaitForInitialize(m_primaryDataSource.InitializationTimeout))
+                {
+                    // Primary source adapter never initialized, so we start backup connection
+                    OnProcessException(new TimeoutException("Timeout waiting for primary source adapter initialization - starting backup connection."));
+                    base.Start();
+                }
+            }
+        }
+
+        /// <summary>
         /// Attempts to connect to data input source.
         /// </summary>
         protected override void AttemptConnection()
@@ -1497,6 +1574,22 @@ namespace TVA.PhasorProtocols
                 m_hashCode = Guid.NewGuid().GetHashCode();
 
             return m_hashCode;
+        }
+
+        // Primary data source connection has terminated, engage backup connection
+        private void m_primaryDataSource_ConnectionTerminated(object sender, EventArgs e)
+        {
+            OnStatusMessage("WARNING: Primary data source connection was terminated, attempting to engage backup connection...");
+            Start();
+        }
+
+        // Primary data source connection has been reestablished, disengage backup connection
+        private void m_primaryDataSource_ConnectionEstablished(object sender, EventArgs e)
+        {
+            if (Enabled)
+                OnStatusMessage("Primary data source connection has been reestablished, disengaging backup connection...");
+
+            Stop();
         }
 
         private void m_frameParser_ReceivedDataFrame(object sender, EventArgs<IDataFrame> e)
