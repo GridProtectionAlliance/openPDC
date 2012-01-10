@@ -7,6 +7,8 @@
       <MenuDataItem Icon="" MenuText="_Graph Measurements" Description="Graph Real-time Measurements" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.InputStatusMonitorUserControl"/>
       <MenuDataItem Icon="" MenuText="_Device Measurements" Description="Real-time Device Measurements" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.RealTimeMeasurementUserControl"/>
       <MenuDataItem Icon="" MenuText="_Stream Statistics" Description="Real-time Stream Statistics" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.RealTimeStatisticUserControl"/>
+      <MenuDataItem Icon="" MenuText="_HistorianView" Description ="Historian View" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.HistorianViewUserControl"/>
+      <!--<MenuDataItem Icon="" MenuText="_ChartWindow" Description ="Chart Window" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.ChartWindowUserControl"/>-->
     </SubMenuItems>
   </MenuDataItem>
   <MenuDataItem Icon="" MenuText="_Devices" Description="" Roles="*" UserControlAssembly="" UserControlPath="">
