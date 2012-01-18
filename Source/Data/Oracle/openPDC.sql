@@ -1282,7 +1282,8 @@ WHERE ImportedMeasurement.Enabled <> 0;
 CREATE VIEW RuntimeStatistic
 AS
 SELECT Node.ID AS NodeID, Statistic.ID AS ID, Statistic.Source, Statistic.SignalIndex, Statistic.Name, Statistic.Description,
-    Statistic.AssemblyName, Statistic.TypeName, Statistic.MethodName, Statistic.Arguments, Statistic.Enabled
+    Statistic.AssemblyName, Statistic.TypeName, Statistic.MethodName, Statistic.Arguments, Statistic.IsConnectedState, Statistic.DataType, 
+                      Statistic.DisplayFormat, Statistic.Enabled
 FROM Statistic, Node;
 
 CREATE VIEW IaonOutputAdapter
