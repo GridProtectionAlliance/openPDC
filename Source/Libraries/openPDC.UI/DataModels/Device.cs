@@ -1615,9 +1615,21 @@ namespace openPDC.UI.DataModels
                 DataTable deviceTable;
                 string query;
 
-                query = database.ParameterizedQueryString("SELECT * FROM DeviceDetail WHERE NodeID = {0} AND IsConcentrator = {1} AND Acronym NOT IN "
-                    + "(SELECT Acronym FROM OutputStreamDevice WHERE AdapterID = {2}) ORDER BY Acronym", "nodeID", "isConcentrator", "adapterID");
-                deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), database.Bool(false), outputStreamID);
+                // this check was added because oledb does not support parameterized subquery.
+                if (database.DatabaseType == DatabaseType.Access)
+                {
+                    query = database.ParameterizedQueryString("SELECT * FROM DeviceDetail WHERE NodeID = {0} AND IsConcentrator = {1} AND Acronym NOT IN "
+                        + "(SELECT Acronym FROM OutputStreamDevice WHERE AdapterID = " + outputStreamID + ") ORDER BY Acronym", "nodeID", "isConcentrator");
+
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), database.Bool(false));
+                }
+                else
+                {
+                    query = database.ParameterizedQueryString("SELECT * FROM DeviceDetail WHERE NodeID = {0} AND IsConcentrator = {1} AND Acronym NOT IN "
+                        + "(SELECT Acronym FROM OutputStreamDevice WHERE AdapterID = {2}) ORDER BY Acronym", "nodeID", "isConcentrator", "adapterID");
+
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), database.Bool(false), outputStreamID);
+                }
 
                 foreach (DataRow row in deviceTable.Rows)
                 {
