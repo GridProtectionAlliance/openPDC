@@ -842,7 +842,7 @@ ORDER BY CalculatedMeasurement.LoadOrder;
 
 CREATE VIEW ActiveMeasurement
 AS
-SELECT COALESCE(Historian.NodeID, Device.NodeID) AS NodeID,
+SELECT Node.ID AS NodeID,
  COALESCE(Device.NodeID, Historian.NodeID) AS SourceNodeID,
  COALESCE(Historian.Acronym, Device.Acronym, '__') || ':' || Measurement.PointID AS ID,
  Measurement.SignalID, Measurement.PointTag, Measurement.AlternateTag, Measurement.SignalReference,
@@ -861,6 +861,7 @@ FROM (SELECT *, SignalType.Acronym AS SignalType FROM Measurement LEFT OUTER JOI
     Historian ON Measurement.HistorianID = Historian.ID LEFT OUTER JOIN
     Runtime ON Device.ID = Runtime.SourceID AND Runtime.SourceTable = 'Device' LEFT OUTER JOIN
     Runtime AS RuntimeP ON RuntimeP.SourceID = Device.ParentID AND RuntimeP.SourceTable = 'Device'
+	CROSS JOIN dbo.Node
 WHERE (Device.Enabled <> 0 OR Device.Enabled IS NULL) AND (Measurement.Enabled <> 0)
 UNION ALL
 SELECT NodeID, SourceNodeID, (Source || ':' || PointID) AS ID, SignalID, PointTag,
