@@ -353,7 +353,7 @@ namespace openPDC.UI.ViewModels
             }
             set
             {
-                m_pdcAcronym = value;
+                m_pdcAcronym = value.Replace(" ", "").Replace("'", "").ToUpper();
                 OnPropertyChanged("PdcAcronym");
 
                 // Everytime acronym changes, check in the database to see if it already exists.
