@@ -4,6 +4,74 @@
         <name>DataQualityMonitoring</name>
     </assembly>
     <members>
+        <member name="M:DataQualityMonitoring.Alarm.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:DataQualityMonitoring.Alarm"/> class.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Alarm.Condition(TimeSeriesFramework.IMeasurement)">
+            <summary>
+            Tests the given measurement to determine
+            whether its value triggers an alarm event.
+            </summary>
+            <param name="signal">The signal whose value is to be checked.</param>
+            <returns>True if the event is triggers; false otherwise.</returns>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.ExpressionText">
+            <summary>
+            Gets or sets the expression text which determines
+            the condition on which an alarm event occurs.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.ID">
+            <summary>
+            Gets or sets the identification number of the alarm.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.SignalID">
+            <summary>
+            Gets or sets the identification number of the
+            signal whose value is monitored by the alarm.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.AlarmAdapter">
+            <summary>
+            Action adapter that generates alarm measurements based on alarm definitions from the database.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.AlarmAdapter.Initialize">
+            <summary>
+            Initializes the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.AlarmAdapter.Start">
+            <summary>
+            Starts the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>, or restarts it if it is already running.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.AlarmAdapter.Stop">
+            <summary>
+            Stops the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.AlarmAdapter.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{TimeSeriesFramework.IMeasurement})">
+            <summary>
+            Queues a collection of measurements for processing.
+            </summary>
+            <param name="measurements">Measurements to queue for processing.</param>
+        </member>
+        <member name="M:DataQualityMonitoring.AlarmAdapter.GetShortStatus(System.Int32)">
+            <summary>
+            Gets a short one-line status of this <see cref="T:TimeSeriesFramework.Adapters.AdapterBase"/>.
+            </summary>
+            <param name="maxLength">Maximum number of available characters for display.</param>
+            <returns>A short one-line summary of the current status of this <see cref="T:TimeSeriesFramework.Adapters.AdapterBase"/>.</returns>
+        </member>
+        <member name="P:DataQualityMonitoring.AlarmAdapter.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
+            </summary>
+        </member>
         <member name="T:DataQualityMonitoring.FlatlineTest">
             <summary>
             Tests measurements to determine whether they have flatlined.

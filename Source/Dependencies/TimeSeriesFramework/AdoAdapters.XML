@@ -147,6 +147,11 @@
             Gets or sets the format used to output measurement timestamps to the data source.
             </summary>
         </member>
+        <member name="P:AdoAdapters.AdoOutputAdapter.BulkInsertLimit">
+            <summary>
+            Gets or sets the maximum number of measurements to be collated into one insert statement.
+            </summary>
+        </member>
         <member name="P:AdoAdapters.AdoOutputAdapter.OutputIsForArchive">
             <summary>
             Returns a flag that determines if measurements sent to this
