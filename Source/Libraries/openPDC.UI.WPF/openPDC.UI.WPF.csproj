@@ -86,13 +86,13 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Windows.Controls.DataVisualization.Toolkit">
-      <HintPath>..\..\..\..\..\Historian\Current Version\Source\Dependencies\Microsoft\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
+      <HintPath>..\..\Dependencies\Microsoft\WPF\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Controls.Input.Toolkit">
-      <HintPath>..\..\..\..\..\Historian\Current Version\Source\Dependencies\Microsoft\System.Windows.Controls.Input.Toolkit.dll</HintPath>
+      <HintPath>..\..\Dependencies\Microsoft\WPF\System.Windows.Controls.Input.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Controls.Layout.Toolkit">
-      <HintPath>..\..\..\..\..\Historian\Current Version\Source\Dependencies\Microsoft\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
+      <HintPath>..\..\Dependencies\Microsoft\WPF\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
@@ -139,7 +139,7 @@
     <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
     <Reference Include="WPFToolkit">
-      <HintPath>..\..\..\..\..\Historian\Current Version\Source\Dependencies\Microsoft\WPFToolkit.dll</HintPath>
+      <HintPath>..\..\Dependencies\Microsoft\WPF\WPFToolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
