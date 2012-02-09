@@ -78,7 +78,8 @@ namespace ICCPExport
         private bool m_useReferenceAngle;
         private bool m_useNumericQuality;
         private int m_exportInterval;
-        private long m_lastResult;
+        private Ticks m_lastPublicationTime;
+        private bool m_intervalPublished;
         private string m_companyTagPrefix;
         private bool m_statusDisplayed;
         private long m_skippedExports;
@@ -266,7 +267,7 @@ namespace ICCPExport
                 throw new ArgumentException(string.Format(errorMessage, "exportInterval"));
 
             m_exportInterval = (int)(seconds * 1000.0D);
-            m_lastResult = -1;
+            m_lastPublicationTime = 0;
 
             if (m_exportInterval <= 0)
                 throw new ArgumentException("exportInterval should not be 0 - Example: exportInterval=5.5");
@@ -366,13 +367,12 @@ namespace ICCPExport
         protected override void PublishFrame(IFrame frame, int index)
         {
             Ticks timestamp = frame.Timestamp;
-            long result = (long)timestamp.ToMilliseconds() % (long)m_exportInterval;
 
             // Only publish when the export interval time has passed
-            if (result < m_lastResult)
+            if ((timestamp - m_lastPublicationTime).ToMilliseconds() > m_exportInterval)
             {
-                m_lastResult = result;
                 ConcurrentDictionary<MeasurementKey, IMeasurement> measurements = frame.Measurements;
+                m_lastPublicationTime = timestamp;
 
                 if (measurements.Count > 0)
                 {
