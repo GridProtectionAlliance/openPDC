@@ -603,7 +603,7 @@ namespace openPDC.UI.DataModels
                     outputStreamDevice.IDCode = device.AccessID;
                     Save(database, outputStreamDevice);
 
-                    outputStreamDevice = GetOutputStreamDevice(database, "WHERE Acronym = '" + device.Acronym + "'");
+                    outputStreamDevice = GetOutputStreamDevice(database, "WHERE Acronym = '" + device.Acronym + "' AND AdapterID = " + outputStreamID);
 
                     if (outputStreamDevice != null)
                     {
