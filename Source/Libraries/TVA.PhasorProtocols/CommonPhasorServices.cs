@@ -1419,15 +1419,7 @@ namespace TVA.PhasorProtocols
 
                 if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM CustomActionAdapter WHERE AdapterName='SecureDataPublisher'")) == 0)
                 {
-                    query = ParameterizedQueryString(adapterType, "INSERT INTO CustomActionAdapter(NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, Enabled) " +
-                        "VALUES ({0}, {1}, {2}, {3}, {4}, {5})", "nodeID", "adapterName", "assemblyName", "typeName", "connectionString", "enabled");
-
-                    using (IDbCommand command = connection.CreateParameterizedCommand(query, nodeIDQueryString, "SecureDataPublisher", "TimeSeriesFramework.dll",
-                        "TimeSeriesFramework.Transport.DataPublisher", "requireAuthentication=true", 1))
-                    {
-                        command.ExecuteNonQuery();
-                    }
-
+                    connection.ExecuteNonQuery(string.Format("INSERT INTO CustomActionAdapter(NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, Enabled) VALUES({0}, 'SecureDataPublisher', 'TimeSeriesFramework.dll', 'TimeSeriesFramework.Transport.DataPublisher', 'requireAuthentication=true', 1)", nodeIDQueryString));
                 }
 
             }
