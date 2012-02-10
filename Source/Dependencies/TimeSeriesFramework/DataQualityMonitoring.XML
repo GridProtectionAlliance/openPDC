@@ -4,24 +4,130 @@
         <name>DataQualityMonitoring</name>
     </assembly>
     <members>
+        <member name="T:DataQualityMonitoring.AlarmState">
+            <summary>
+            Represents the two states that an alarm can be in: raised or cleared.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmState.Cleared">
+            <summary>
+            Indicates that an alarm is cleared.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmState.Raised">
+            <summary>
+            Indicates that an alarm has been raised.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.AlarmSeverity">
+            <summary>
+            Represents the severity of alarms.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmSeverity.None">
+            <summary>
+            Indicates that an alarm is of no importance.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmSeverity.Information">
+            <summary>
+            Indicates that an alarm is informative, but not dangerous.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmSeverity.Low">
+            <summary>
+            Indicates that an alarm is not very important.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmSeverity.MediumLow">
+            <summary>
+            Indicates that an alarm is somewhat important.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmSeverity.Medium">
+            <summary>
+            Indicates that an alarm is moderately importance.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmSeverity.MediumHigh">
+            <summary>
+            Indicates that an alarm is important.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmSeverity.High">
+            <summary>
+            Indicates that an alarm is very important.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmSeverity.Critical">
+            <summary>
+            Indicates than an alarm signifies a dangerous situation.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmSeverity.Error">
+            <summary>
+            Indicates that an alarm reports bad data.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.AlarmOperation">
+            <summary>
+            Represents the operation to be performed
+            when testing values from an incoming signal.
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmOperation.Equal">
+            <summary>
+            Internal range test
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmOperation.NotEqual">
+            <summary>
+            External range test
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmOperation.GreaterOrEqual">
+            <summary>
+            Upper bound
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmOperation.LessOrEqual">
+            <summary>
+            Lower bound
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmOperation.GreaterThan">
+            <summary>
+            Upper limit
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmOperation.LessThan">
+            <summary>
+            Lower limit
+            </summary>
+        </member>
+        <member name="F:DataQualityMonitoring.AlarmOperation.Flatline">
+            <summary>
+            Latched value
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Alarm">
+            <summary>
+            Represents an alarm that tests the values of
+            an incoming signal to determine the state of alarm.
+            </summary>
+        </member>
         <member name="M:DataQualityMonitoring.Alarm.#ctor">
             <summary>
             Creates a new instance of the <see cref="T:DataQualityMonitoring.Alarm"/> class.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.Alarm.Condition(TimeSeriesFramework.IMeasurement)">
+        <member name="M:DataQualityMonitoring.Alarm.Test(TimeSeriesFramework.IMeasurement)">
             <summary>
-            Tests the given measurement to determine
-            whether its value triggers an alarm event.
+            Tests the value of the given signal to determine
+            whether the alarm should be raised or cleared.
             </summary>
-            <param name="signal">The signal whose value is to be checked.</param>
-            <returns>True if the event is triggers; false otherwise.</returns>
-        </member>
-        <member name="P:DataQualityMonitoring.Alarm.ExpressionText">
-            <summary>
-            Gets or sets the expression text which determines
-            the condition on which an alarm event occurs.
-            </summary>
+            <param name="signal">The signal whose value is to be tested.</param>
+            <returns>true if the alarm's state changed; false otherwise</returns>
         </member>
         <member name="P:DataQualityMonitoring.Alarm.ID">
             <summary>
@@ -32,6 +138,89 @@
             <summary>
             Gets or sets the identification number of the
             signal whose value is monitored by the alarm.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.Description">
+            <summary>
+            Gets or sets the description of the alarm.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.Severity">
+            <summary>
+            Gets or sets the severity of the alarm.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.Operation">
+            <summary>
+            Gets or sets the operation to be performed
+            when testing values from the incoming signal.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.Delay">
+            <summary>
+            Gets or sets the amount of time that the
+            signal must be exhibiting alarming behavior
+            before the alarm is raised.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.SetPoint">
+            <summary>
+            Gets or sets the value to be compared against
+            the signal to determine whether to raise the
+            alarm. This value is irrelevant for the
+            <see cref="F:DataQualityMonitoring.AlarmOperation.Flatline"/> operation.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.Tolerance">
+            <summary>
+            Gets or sets a tolerance window around the
+            <see cref="P:DataQualityMonitoring.Alarm.SetPoint"/> to use when comparing
+            against the value of the signal. This value
+            is only relevant for the <see cref="F:DataQualityMonitoring.AlarmOperation.Equal"/>
+            and <see cref="F:DataQualityMonitoring.AlarmOperation.NotEqual"/> operations.
+            </summary>
+            <remarks>
+            <para>The equal and not equal operations are actually
+            internal and external range tests based on the setpoint
+            and the tolerance. The two tests are performed as follows.</para>
+            
+            <list type="bullet">
+            <item>Equal: <c>(value &gt;= SetPoint - Tolerance) &amp;&amp; (value &lt;= SetPoint + Tolerance)</c></item>
+            <item>Not equal: <c>(value &lt; SetPoint - Tolerance) || (value &gt; SetPoint + Tolerance)</c></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.Hysteresis">
+            <summary>
+            Gets or sets the hysteresis used when clearing
+            alarms. This value is only relevant in greater
+            than (or equal) and less than (or equal) operations.
+            </summary>
+            <remarks>
+            <para>The hysteresis is an offset that provides padding between
+            the point at which the alarm is raised and the point at
+            which the alarm is cleared. For example, in the case of the
+            <see cref="F:DataQualityMonitoring.AlarmOperation.GreaterOrEqual"/> operation:</para>
+            
+            <list type="bullet">
+            <item>Raised: <c>value &gt;= SetPoint</c></item>
+            <item>Cleared: <c>value &lt; SetPoint - Hysteresis</c></item>
+            </list>
+            
+            <para>The direction of the offset depends on whether the
+            operation is greater than (or equal) or less than (or equal).
+            The hysteresis must be greater than zero.</para>
+            </remarks>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.State">
+            <summary>
+            Gets or sets the state of the alarm (raised or cleared).
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Alarm.Cause">
+            <summary>
+            Gets or sets the most recent measurement
+            that caused the alarm to be raised.
             </summary>
         </member>
         <member name="T:DataQualityMonitoring.AlarmAdapter">
@@ -54,6 +243,12 @@
             Stops the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>.
             </summary>
         </member>
+        <member name="M:DataQualityMonitoring.AlarmAdapter.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:DataQualityMonitoring.AlarmAdapter"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
         <member name="M:DataQualityMonitoring.AlarmAdapter.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{TimeSeriesFramework.IMeasurement})">
             <summary>
             Queues a collection of measurements for processing.
@@ -66,6 +261,12 @@
             </summary>
             <param name="maxLength">Maximum number of available characters for display.</param>
             <returns>A short one-line summary of the current status of this <see cref="T:TimeSeriesFramework.Adapters.AdapterBase"/>.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.AlarmAdapter.GetRaisedAlarms">
+            <summary>
+            Gets a collection containing all the raised alarms in the system.
+            </summary>
+            <returns>A collection containing all the raised alarms.</returns>
         </member>
         <member name="P:DataQualityMonitoring.AlarmAdapter.SupportsTemporalProcessing">
             <summary>
@@ -283,6 +484,81 @@
         <member name="P:DataQualityMonitoring.RangeTest.SupportsTemporalProcessing">
             <summary>
             Gets the flag indicating if this adapter supports temporal processing.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.AlarmService">
+            <summary>
+            Represents a REST web service for alarms.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.IAlarmService">
+            <summary>
+            Defines a REST web service for alarms.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IAlarmService.ReadAllRaisedAlarmsAsXml">
+            <summary>
+            Reads all raised alarms from the <see cref="P:DataQualityMonitoring.Services.IAlarmService.AlarmAdapter"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IAlarmService.ReadAllRaisedAlarmsAsJson">
+            <summary>
+            Reads all raised alarms from the <see cref="P:DataQualityMonitoring.Services.IAlarmService.AlarmAdapter"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IAlarmService.ReadHighestSeverityAlarmsAsXml">
+            <summary>
+            Reads the raised alarms with the highest severity for each signal from the <see cref="P:DataQualityMonitoring.Services.IAlarmService.AlarmAdapter"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.IAlarmService.ReadHighestSeverityAlarmsAsJson">
+            <summary>
+            Reads the raised alarms with the highest severity for each signal from the <see cref="P:DataQualityMonitoring.Services.IAlarmService.AlarmAdapter"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> object.</returns>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.IAlarmService.AlarmAdapter">
+            <summary>
+            Gets or sets the <see cref="P:DataQualityMonitoring.Services.IAlarmService.AlarmAdapter"/> used by the web service for its data.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.AlarmService.#ctor(DataQualityMonitoring.AlarmAdapter)">
+            <summary>
+            Creates a new instance of the <see cref="T:DataQualityMonitoring.Services.AlarmService"/> class.
+            </summary>
+            <param name="adapter">The adapter whose alarms are served by this service.</param>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.AlarmService.ReadAllRaisedAlarmsAsXml">
+            <summary>
+            Reads all raised alarms from the <see cref="P:DataQualityMonitoring.Services.AlarmService.AlarmAdapter"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.AlarmService.ReadAllRaisedAlarmsAsJson">
+            <summary>
+            Reads all raised alarms from the <see cref="P:DataQualityMonitoring.Services.AlarmService.AlarmAdapter"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.AlarmService.ReadHighestSeverityAlarmsAsXml">
+            <summary>
+            Reads the raised alarms with the highest severity for each signal from the <see cref="P:DataQualityMonitoring.Services.AlarmService.AlarmAdapter"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> object.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.AlarmService.ReadHighestSeverityAlarmsAsJson">
+            <summary>
+            Reads the raised alarms with the highest severity for each signal from the <see cref="P:DataQualityMonitoring.Services.AlarmService.AlarmAdapter"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
+            </summary>
+            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> object.</returns>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.AlarmService.AlarmAdapter">
+            <summary>
+            Gets or sets the alarm adapter whose
+            alarms are served by this service.
             </summary>
         </member>
         <member name="T:DataQualityMonitoring.Services.FlatlineService">
@@ -542,6 +818,112 @@
         <member name="P:DataQualityMonitoring.Services.OutOfRangeService.Tests">
             <summary>
             Gets the collection of <see cref="T:DataQualityMonitoring.RangeTest"/>s that have registered with the service.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.SerializableAlarm">
+            <summary>
+            Represents a serializable <see cref="T:DataQualityMonitoring.Alarm"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableAlarm.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableAlarm"/> class.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableAlarm.#ctor(DataQualityMonitoring.Alarm)">
+            <summary>
+            Creates a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableAlarm"/> class.
+            </summary>
+            <param name="sourceAlarm"><see cref="T:DataQualityMonitoring.Alarm"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableAlarm"/> is to be initialized.</param>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.ID">
+            <summary>
+            Gets or sets the identification number of the alarm.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.SignalID">
+            <summary>
+            Gets or sets the identification number of the
+            signal whose value is monitored by the alarm.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.Description">
+            <summary>
+            Gets or sets the description of the alarm.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.Severity">
+            <summary>
+            Gets or sets the severity of the alarm.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.Operation">
+            <summary>
+            Gets or sets the operation to be performed
+            when testing values from the incoming signal.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.Delay">
+            <summary>
+            Gets or sets the amount of time that the
+            signal must be exhibiting alarming behavior
+            before the alarm is raised.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.SetPoint">
+            <summary>
+            Gets or sets the value to be compared against
+            the signal to determine whether to raise the
+            alarm.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.Tolerance">
+            <summary>
+            Gets or sets a tolerance window around the
+            <see cref="P:DataQualityMonitoring.Services.SerializableAlarm.SetPoint"/> to use when comparing
+            against the value of the signal.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.Hysteresis">
+            <summary>
+            Gets or sets the hysteresis used when clearing alarms.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.State">
+            <summary>
+            Gets or sets the state of the alarm (raised or cleared).
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.TimeRaised">
+            <summary>
+            Gets or sets the time at which the alarm was raised.
+            </summary>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarm.ValueAtTimeRaised">
+            <summary>
+            Gets or sets the value of the signal
+            at the time that the alarm was raised.
+            </summary>
+        </member>
+        <member name="T:DataQualityMonitoring.Services.SerializableAlarmCollection">
+            <summary>
+            Represents a container for <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableAlarmCollection.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.Services.SerializableAlarmCollection.#ctor(System.Collections.Generic.ICollection{DataQualityMonitoring.Alarm})">
+            <summary>
+            Creates a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> class.
+            </summary>
+            <param name="raisedAlarms">The collection of raised alarms to be contained by this <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/>.</param>
+        </member>
+        <member name="P:DataQualityMonitoring.Services.SerializableAlarmCollection.Alarms">
+            <summary>
+            Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableAlarm"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/>.
             </summary>
         </member>
         <member name="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement">
