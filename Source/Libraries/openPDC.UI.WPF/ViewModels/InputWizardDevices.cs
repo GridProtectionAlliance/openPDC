@@ -748,8 +748,9 @@ namespace openPDC.UI.ViewModels
 
                         if (connectionSettings != null)
                         {
-                            ConnectionString = connectionSettings.ConnectionString.ToLower();
-                            Dictionary<string, string> connectionStringKeyValues = ConnectionString.ParseKeyValuePairs();
+                            ConnectionString = connectionSettings.ConnectionString;
+                            Dictionary<string, string> connectionStringKeyValues = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+                            connectionStringKeyValues = ConnectionString.ParseKeyValuePairs();
 
                             if (connectionStringKeyValues.ContainsKey("commandchannel"))
                             {

@@ -201,7 +201,7 @@ namespace openPDC.UI.Modal
                 TabItemUdpServer.Visibility = Visibility.Collapsed;
             }
 
-            m_keyvaluepairs = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            m_keyvaluepairs = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
             ComboboxParity.ItemsSource = CommonFunctions.GetParities();
             ComboboxStopBits.ItemsSource = CommonFunctions.GetStopBits();
@@ -377,7 +377,7 @@ namespace openPDC.UI.Modal
         {
             if (!string.IsNullOrEmpty(this.ConnectionString))
             {
-                string[] keyvalues = this.ConnectionString.ToLower().Replace("[", "").Replace("]", "").Split(new char[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries);
+                string[] keyvalues = this.ConnectionString.Replace("[", "").Replace("]", "").Split(new char[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries);
                 foreach (string keyvalue in keyvalues)
                 {
                     string[] keyvaluepair = keyvalue.Split('=');
@@ -474,7 +474,7 @@ namespace openPDC.UI.Modal
                     {
                         foreach (object item in ComboboxPort.Items)
                         {
-                            if (item.ToString().ToLower() == m_keyvaluepairs["port"])
+                            if (item.ToString().ToLower() == m_keyvaluepairs["port"].ToLower())
                             {
                                 ComboboxPort.SelectedItem = item;
                                 break;
@@ -485,7 +485,7 @@ namespace openPDC.UI.Modal
                     {
                         foreach (object item in ComboboxBaudRate.Items)
                         {
-                            if (item.ToString().ToLower() == m_keyvaluepairs["baudrate"])
+                            if (item.ToString().ToLower() == m_keyvaluepairs["baudrate"].ToLower())
                             {
                                 ComboboxBaudRate.SelectedItem = item;
                                 break;
@@ -496,7 +496,7 @@ namespace openPDC.UI.Modal
                     {
                         foreach (object item in ComboboxParity.Items)
                         {
-                            if (item.ToString().ToLower() == m_keyvaluepairs["parity"])
+                            if (item.ToString().ToLower() == m_keyvaluepairs["parity"].ToLower())
                             {
                                 ComboboxParity.SelectedItem = item;
                                 break;
@@ -507,7 +507,7 @@ namespace openPDC.UI.Modal
                     {
                         foreach (object item in ComboboxStopBits.Items)
                         {
-                            if (item.ToString().ToLower() == m_keyvaluepairs["stopbits"])
+                            if (item.ToString().ToLower() == m_keyvaluepairs["stopbits"].ToLower())
                             {
                                 ComboboxStopBits.SelectedItem = item;
                                 break;

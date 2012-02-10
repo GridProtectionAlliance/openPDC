@@ -1561,7 +1561,10 @@ namespace openPDC.UI.DataModels
 
         private static string ParseConnectionString(string connectionString)
         {
-            Dictionary<string, string> settings = connectionString.ToLower().ParseKeyValuePairs();
+
+            Dictionary<string, string> settings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            settings = connectionString.ParseKeyValuePairs();
+
             if (settings.ContainsKey("commandchannel"))
             {
                 settings.Remove("commandchannel");
@@ -1573,7 +1576,9 @@ namespace openPDC.UI.DataModels
 
         private static string ParseAlternateCommand(string connectionString)
         {
-            Dictionary<string, string> settings = connectionString.ToLower().ParseKeyValuePairs();
+            Dictionary<string, string> settings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            settings = connectionString.ParseKeyValuePairs();
+
             if (settings.ContainsKey("commandchannel"))
                 return settings["commandchannel"].Replace("{", "").Replace("}", "");
 
