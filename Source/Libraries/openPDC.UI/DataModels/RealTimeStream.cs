@@ -229,7 +229,7 @@ namespace openPDC.UI.DataModels
 
                 // Get non-statistics Measurements list.
                 resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, DeviceID, SignalID, PointID, PointTag, SignalReference, " +
-                    "SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym FROM MeasurementDetail WHERE NodeID = {0} AND " +
+                    "SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym, Subscribed, Internal FROM MeasurementDetail WHERE NodeID = {0} AND " +
                     "SignalAcronym <> {1} ORDER BY SignalReference", "nodeID", "signalAcronym"), DefaultTimeout, database.CurrentNodeID(), "STAT").Copy());
 
                 resultSet.Tables[2].TableName = "MeasurementTable";
@@ -277,7 +277,7 @@ namespace openPDC.UI.DataModels
                                         Enabled = Convert.ToBoolean(device.Field<object>("Enabled")),
                                         MeasurementList = new ObservableCollection<RealTimeMeasurement>(
                                                 from measurement in resultSet.Tables["MeasurementTable"].AsEnumerable()
-                                                where measurement.ConvertNullableField<int>("DeviceID") == device.ConvertNullableField<int>("ID")
+                                                where measurement.ConvertNullableField<int>("DeviceID") == device.ConvertNullableField<int>("ID") && (measurement.ConvertField<bool>("Subscribed") == true || measurement.ConvertField<bool>("Internal") == true)   //We will only display measurements which are internal or subscribed to avoid confusion.
                                                 select new RealTimeMeasurement()
                                                 {
                                                     ID = measurement.Field<string>("ID"),
