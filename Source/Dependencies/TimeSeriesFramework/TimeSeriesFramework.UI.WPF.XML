@@ -624,6 +624,24 @@
             InitializeComponent
             </summary>
         </member>
+        <member name="T:TimeSeriesFramework.UI.UserControls.AlarmUserControl">
+            <summary>
+            Interaction logic for AlarmUserControl.xaml
+            </summary>
+            <summary>
+            AlarmUserControl
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.AlarmUserControl.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.UserControls.AlarmUserControl"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.AlarmUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
         <member name="T:TimeSeriesFramework.UI.UserControls.CompanyUserControl">
             <summary>
             Interaction logic for CompanyUserControl.xaml
@@ -1323,6 +1341,89 @@
             is something other than a <see cref="T:System.Boolean"/> or an enum. This determines whether the
             <see cref="T:System.Windows.Controls.TextBox"/> bound to the <see cref="P:TimeSeriesFramework.UI.ViewModels.AdapterConnectionStringParameter.Value"/> of the parameters is
             visible. The value is true for most parameters, including those which are not defined by an adapter type.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.ViewModels.Alarms">
+            <summary>
+            Class to hold bindable <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> collection and current selection information for UI.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Alarms.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.ViewModels.Alarms"/> class.
+            </summary>
+            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
+            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Alarms.Load">
+            <summary>
+            Loads collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> defined in the database.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Alarms.GetCurrentItemKey">
+            <summary>
+            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Alarms.GetCurrentItemName">
+            <summary>
+            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Alarms.Clear">
+            <summary>
+            Clears the record for the associated <see cref="T:TimeSeriesFramework.UI.IDataModel"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Alarms.m_currentItem_PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
+            <summary>
+            Handles PropertyChanged event on CurrentItem.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Alarms.OnPropertyChanged(System.String)">
+            <summary>
+            Raises the <see cref="E:TimeSeriesFramework.UI.PagedViewModelBase`2.PropertyChanged"/> event.
+            </summary>
+            <param name="propertyName">Property name that has changed.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Alarms.UpdateEnableFlags">
+            <summary>
+            Updates the enable flags which determine whether
+            or not certain input fields are enabled.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Alarms.IsNewRecord">
+            <summary>
+            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Alarms.NodeLookupList">
+            <summary>
+            Gets the list of nodes.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Alarms.MeasurementLookupList">
+            <summary>
+            Gets the list of measurements in the system.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Alarms.OptionalMeasurementLookupList">
+            <summary>
+            Gets the list of measurements in the system with an additional default value.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Alarms.OperationList">
+            <summary>
+            Gets a list of operations that can be performed to trigger an alarm.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Alarms.SeverityList">
+            <summary>
+            Gets a list of levels of severity that can be assigned to alarms.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.ViewModels.ApplicationRoles">

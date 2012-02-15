@@ -725,6 +725,170 @@
             Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Adapter"/> UpdatedBy.
             </summary>
         </member>
+        <member name="T:TimeSeriesFramework.UI.DataModels.Alarm">
+            <summary>
+            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> information as defined in the database.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Alarm.Load(TVA.Data.AdoDataConnection)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
+            </summary>        
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Alarm.GetAlarm(TVA.Data.AdoDataConnection,System.String)">
+            <summary>
+            Retrieves an <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> information from the database based on query string filter.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="whereClause">Filter clause to append to the SELECT query.</param>
+            <returns><see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> information.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Alarm.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
+            <summary>
+            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> style list of <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> information.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>
+            <returns><see cref="T:System.Collections.Generic.Dictionary`2"/> containing ID and tag name of alarms defined in the database.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Alarm.Save(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.Alarm)">
+            <summary>
+            Saves <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> information to database.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="alarm">Information about <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/>.</param>        
+            <returns>String, for display use, indicating success.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Alarm.Delete(TVA.Data.AdoDataConnection,System.Int32)">
+            <summary>
+            Deletes specified <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> record from database.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="alarmId">ID of the record to be deleted.</param>
+            <returns>String, for display use, indicating success.</returns>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.NodeID">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> NodeID
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.ID">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> ID
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.TagName">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> TagName
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.SignalID">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> SignalID
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.AssociatedMeasurementID">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> AssociatedMeasurementID
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.Description">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> Description
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.Severity">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> Severity
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.Operation">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> Operation
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.SetPoint">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> SetPoint
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.Tolerance">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> Tolerance
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.Delay">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> Delay
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.Hysteresis">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> Hysteresis
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.LoadOrder">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> LoadOrder
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.Enabled">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> Enabled.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.CreatedOn">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> CreatedOn.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.CreatedBy">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> CreatedBy.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.UpdatedOn">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> UpdatedOn.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.UpdatedBy">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> UpdatedBy.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.OperationDescription">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> OperationDescription
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.CreateAssociatedMeasurement">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> CreateAssociatedMeasurement
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.SetPointEnabled">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> SetPointEnabled
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.ToleranceEnabled">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> ToleranceEnabled
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.DelayEnabled">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> DelayEnabled
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.HysteresisEnabled">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> HysteresisEnabled
+            </summary>
+        </member>
         <member name="T:TimeSeriesFramework.UI.DataModels.ApplicationRole">
             <summary>
              Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.ApplicationRole"/> information as defined in the database.
