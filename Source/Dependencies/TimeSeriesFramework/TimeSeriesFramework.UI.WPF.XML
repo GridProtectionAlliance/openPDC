@@ -287,6 +287,11 @@
             <param name="statusText">Text to be displayed on popup window.</param>
             <returns>Boolean flag indicating success.</returns>
         </member>
+        <member name="M:TimeSeriesFramework.UI.PagedViewModelBase`2.Initialize">
+            <summary>
+            Initialization to be done before the initial call to <see cref="M:TimeSeriesFramework.UI.PagedViewModelBase`2.Load"/>.
+            </summary>
+        </member>
         <member name="M:TimeSeriesFramework.UI.PagedViewModelBase`2.Load">
             <summary>
             Loads the records for the associated <see cref="T:TimeSeriesFramework.UI.IDataModel"/>.
@@ -1355,6 +1360,11 @@
             <param name="itemsPerPage">Integer value to determine number of items per page.</param>
             <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
         </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Alarms.Initialize">
+            <summary>
+            Initialization to be done before the initial call to <see cref="M:TimeSeriesFramework.UI.ViewModels.Alarms.Load"/>.
+            </summary>
+        </member>
         <member name="M:TimeSeriesFramework.UI.ViewModels.Alarms.Load">
             <summary>
             Loads collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> defined in the database.
@@ -1409,11 +1419,6 @@
         <member name="P:TimeSeriesFramework.UI.ViewModels.Alarms.MeasurementLookupList">
             <summary>
             Gets the list of measurements in the system.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.Alarms.OptionalMeasurementLookupList">
-            <summary>
-            Gets the list of measurements in the system with an additional default value.
             </summary>
         </member>
         <member name="P:TimeSeriesFramework.UI.ViewModels.Alarms.OperationList">
@@ -1711,6 +1716,11 @@
             Creates a new instance of <see cref="T:TimeSeriesFramework.UI.DataModels.Historian"/> and assigns it to CurrentItem.
             </summary>
         </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Historians.Initialize">
+            <summary>
+            Initialization to be done before the initial call to <see cref="M:TimeSeriesFramework.UI.PagedViewModelBase`2.Load"/>.
+            </summary>
+        </member>
         <member name="P:TimeSeriesFramework.UI.ViewModels.Historians.IsNewRecord">
             <summary>
             Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
@@ -1844,6 +1854,11 @@
             Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
             </summary>
             <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Nodes.Initialize">
+            <summary>
+            Initialization to be done before the initial call to <see cref="M:TimeSeriesFramework.UI.PagedViewModelBase`2.Load"/>.
+            </summary>
         </member>
         <member name="M:TimeSeriesFramework.UI.ViewModels.Nodes.Save">
             <summary>
@@ -2002,6 +2017,11 @@
             Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
             </summary>
             <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.VendorDevices.Initialize">
+            <summary>
+            Initialization to be done before the initial call to <see cref="M:TimeSeriesFramework.UI.PagedViewModelBase`2.Load"/>.
+            </summary>
         </member>
         <member name="P:TimeSeriesFramework.UI.ViewModels.VendorDevices.IsNewRecord">
             <summary>

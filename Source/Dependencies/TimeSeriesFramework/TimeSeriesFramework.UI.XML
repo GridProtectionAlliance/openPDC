@@ -1376,7 +1376,7 @@
             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.Load(TVA.Data.AdoDataConnection,System.Int32,System.Boolean)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.Load(TVA.Data.AdoDataConnection,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
