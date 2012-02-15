@@ -1417,7 +1417,7 @@ namespace TVA.PhasorProtocols
 
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating secure data publisher..."));
 
-                if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM CustomActionAdapter WHERE AdapterName='SecureDataPublisher'")) == 0)
+                if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM CustomActionAdapter WHERE AdapterName='SecureDataPublisher' AND NodeID = {0}", nodeIDQueryString))) == 0)
                 {
                     connection.ExecuteNonQuery(string.Format("INSERT INTO CustomActionAdapter(NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, Enabled) VALUES({0}, 'SecureDataPublisher', 'TimeSeriesFramework.dll', 'TimeSeriesFramework.Transport.DataPublisher', 'requireAuthentication=true', 1)", nodeIDQueryString));
                 }
