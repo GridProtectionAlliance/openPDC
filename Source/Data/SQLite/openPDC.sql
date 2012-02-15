@@ -524,6 +524,31 @@ CREATE TABLE OutputStream(
     CONSTRAINT IX_OutputStream_NodeID_Acronym UNIQUE (NodeID ASC, Acronym ASC)
 );
 
+CREATE TABLE Alarm(
+    NodeID NCHAR(36) NOT NULL,
+    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    TagName VARCHAR(200) NOT NULL,
+    SignalID NCHAR(36) NOT NULL,
+    AssociatedMeasurementID NCHAR(36) NULL,
+    Description TEXT NULL,
+    Severity INTEGER NOT NULL,
+    Operation INTEGER NOT NULL,
+    SetPoint DOUBLE NULL,
+    Tolerance DOUBLE NULL,
+    Delay DOUBLE NULL,
+    Hysteresis DOUBLE NULL,
+    LoadOrder INTEGER NOT NULL DEFAULT 0,
+    Enabled BOOLEAN NOT NULL DEFAULT 0,
+    CreatedOn DATETIME NOT NULL DEFAULT '',
+    CreatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    UpdatedOn DATETIME NOT NULL DEFAULT '',
+    UpdatedBy VARCHAR(200) NOT NULL DEFAULT '',
+    CONSTRAINT FK_Alarm_Node FOREIGN KEY(NodeID) REFERENCES node (ID) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT FK_Alarm_Measurement_SignalID FOREIGN KEY(SignalID) REFERENCES Measurement (SignalID) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT FK_Alarm_Measurement_AssociatedMeasurementID FOREIGN KEY(AssociatedMeasurementID) REFERENCES Measurement (SignalID),
+    CONSTRAINT IX_Alarm_TagName UNIQUE (TagName ASC)
+);
+
 CREATE TABLE CustomOutputAdapter(
     NodeID NCHAR(36) NOT NULL,
     ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -1309,6 +1334,13 @@ FOR EACH ROW
   END;
 
 CREATE TRIGGER OutputStreamMeasurement_InsertDefault AFTER INSERT ON OutputStreamMeasurement
+FOR EACH ROW
+  BEGIN
+    UPDATE OutputStreamMeasurement SET CreatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND CreatedOn = '';
+    UPDATE OutputStreamMeasurement SET UpdatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND UpdatedOn = '';
+  END;
+
+CREATE TRIGGER Alarm_InsertDefault AFTER INSERT ON Alarm
 FOR EACH ROW
   BEGIN
     UPDATE OutputStreamMeasurement SET CreatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND CreatedOn = '';

@@ -1087,6 +1087,53 @@ BEGIN
 END
 GO
 
+CREATE TRIGGER Alarm_AuditUpdate 
+   ON  Alarm
+   AFTER UPDATE
+AS 
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	SELECT * INTO #deleted  FROM deleted
+	SELECT * INTO #inserted FROM inserted
+
+	DECLARE @id NVARCHAR(MAX)		
+	SELECT @id = CONVERT(NVARCHAR(MAX), ID) FROM #deleted	
+	
+	EXEC InsertIntoAuditLog 'Alarm', 'ID', @id
+	
+	DROP TABLE #inserted
+	DROP TABLE #deleted
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER Alarm_AuditDelete
+   ON  Alarm
+   AFTER DELETE
+AS 
+BEGIN
+	
+	SET NOCOUNT ON;
+	
+	SELECT * INTO #deleted FROM deleted
+		
+	DECLARE @id NVARCHAR(MAX)		
+	SELECT @id = CONVERT(NVARCHAR(MAX), ID) FROM #deleted	
+
+	EXEC InsertIntoAuditLog 'Alarm', 'ID', @id, '1'
+		
+	DROP TABLE #deleted
+
+END
+GO
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

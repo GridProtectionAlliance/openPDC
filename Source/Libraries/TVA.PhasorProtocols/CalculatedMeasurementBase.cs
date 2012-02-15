@@ -95,6 +95,10 @@ namespace TVA.PhasorProtocols
         /// </summary>
         STAT = 11,
         /// <summary>
+        /// Alarm value.
+        /// </summary>
+        ALRM = 12,
+        /// <summary>
         /// Undefined signal.
         /// </summary>
         NONE = -1

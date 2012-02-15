@@ -1714,6 +1714,84 @@ CREATE TRIGGER Phasor_AuditDelete AFTER DELETE ON Phasor
     END;
 	/
 
+CREATE TRIGGER Alarm_AuditUpdate AFTER UPDATE ON Alarm 
+    FOR EACH ROW BEGIN
+
+        IF :OLD.NodeID != :NEW.NodeID THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'NodeID', :OLD.NodeID, :NEW.NodeID, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.TagName != :NEW.TagName THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'TagName', :OLD.TagName, :NEW.TagName, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.SignalID != :NEW.SignalID THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'SignalID', :OLD.SignalID, :NEW.SignalID, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.AssociatedMeasurementID != :NEW.AssociatedMeasurementID THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'AssociatedMeasurementID', :OLD.AssociatedMeasurementID, :NEW.AssociatedMeasurementID, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.Description != :NEW.Description THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Description', :OLD.Description, :NEW.Description, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.Severity != :NEW.Severity THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Severity', :OLD.Severity, :NEW.Severity, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.Operation != :NEW.Operation THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Operation', :OLD.Operation, :NEW.Operation, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.SetPoint != :NEW.SetPoint THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'SetPoint', :OLD.SetPoint, :NEW.SetPoint, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.Tolerance != :NEW.Tolerance THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Tolerance', :OLD.Tolerance, :NEW.Tolerance, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.Delay != :NEW.Delay THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Delay', :OLD.Delay, :NEW.Delay, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.Hysteresis != :NEW.Hysteresis THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Hysteresis', :OLD.Hysteresis, :NEW.Hysteresis, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.LoadOrder != :NEW.LoadOrder THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'LoadOrder', :OLD.LoadOrder, :NEW.LoadOrder, :NEW.UpdatedBy);
+        END IF;
+
+        IF :OLD.Enabled != :NEW.Enabled THEN
+			INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Enabled', :OLD.Enabled, :NEW.Enabled, :NEW.UpdatedBy);
+        END IF;
+    
+    END;
+	/
+
+CREATE TRIGGER Alarm_AuditDelete AFTER DELETE ON Alarm
+    FOR EACH ROW BEGIN
+
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'NodeID', :OLD.NodeID, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'TagName', :OLD.TagName, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'SignalID', :OLD.SignalID, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'AssociatedMeasurementID', :OLD.AssociatedMeasurementID, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Description', :OLD.Description, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Severity', :OLD.Severity, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Operation', :OLD.Operation, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'SetPoint', :OLD.SetPoint, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Tolerance', :OLD.Tolerance, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Delay', :OLD.Delay, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Hysteresis', :OLD.Hysteresis, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'LoadOrder', :OLD.LoadOrder, NULL, '1', context.get_current_user);
+		INSERT INTO AuditLog (TableName, PrimaryKeyColumn, PrimaryKeyValue, ColumnName, OriginalValue, NewValue, Deleted, UpdatedBy) VALUES ('Alarm', 'ID', :OLD.ID, 'Enabled', :OLD.Enabled, NULL, '1', context.get_current_user);
+    
+    END;
+	/
+
 CREATE TRIGGER Vendor_AuditUpdate AFTER UPDATE ON Vendor
     FOR EACH ROW BEGIN
 

@@ -40,6 +40,7 @@ using System.Windows.Media;
 using System.Xml.Linq;
 using TVA;
 using TVA.Configuration;
+using TVA.Data;
 using TVA.Identity;
 using TVA.IO;
 
@@ -196,6 +197,9 @@ namespace ConfigurationSetupUtility.Screens
                             }
                         }
 
+                        // Always make sure time series startup operations are defined in the database.
+                        ValidateTimeSeriesStartupOperations();
+
                         // Always make sure that all three needed roles are available for each defined node(s) in the database
                         ValidateSecurityRoles();
 
@@ -328,6 +332,29 @@ namespace ConfigurationSetupUtility.Screens
             bool managerInstalled = File.Exists("openPDCManager.exe");
             m_managerStartCheckBox.IsChecked = managerInstalled;
             m_managerStartCheckBox.IsEnabled = managerInstalled;
+        }
+
+        private void ValidateTimeSeriesStartupOperations()
+        {
+            const string countQuery = "SELECT COUNT(*) FROM DataOperation WHERE MethodName = 'PerformTimeSeriesStartupOperations'";
+            const string insertQuery = "INSERT INTO DataOperation(Description, AssemblyName, TypeName, MethodName, Arguments, LoadOrder, Enabled) VALUES('Time Series Startup Operations', 'TimeSeriesFramework.dll', 'TimeSeriesFramework.TimeSeriesStartupOperations', 'PerformTimeSeriesStartupOperations', '', 0, 1)";
+
+            IDbConnection connection = null;
+            int timeSeriesStartupOperationsCount;
+
+            try
+            {
+                connection = OpenNewConnection();
+                timeSeriesStartupOperationsCount = Convert.ToInt32(connection.ExecuteScalar(countQuery));
+
+                if (timeSeriesStartupOperationsCount == 0)
+                    connection.ExecuteNonQuery(insertQuery);
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Dispose();
+            }
         }
 
         private void ValidateSecurityRoles()

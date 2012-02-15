@@ -291,6 +291,10 @@ namespace TVA.PhasorProtocols
         /// </summary>
         Statistic,
         /// <summary>
+        /// Alarm value.
+        /// </summary>
+        Alarm,
+        /// <summary>
         /// Undetermined signal type.
         /// </summary>
         Unknown
@@ -554,6 +558,8 @@ namespace TVA.PhasorProtocols
                     return SignalKind.Calculation;
                 case "ST": // Statistical Value
                     return SignalKind.Statistic;
+                case "AL": // Alarm Value
+                    return SignalKind.Alarm;
                 default:
                     return SignalKind.Unknown;
             }
@@ -586,6 +592,8 @@ namespace TVA.PhasorProtocols
                     return "CV"; // Calculated Value
                 case SignalKind.Statistic:
                     return "ST"; // Statistical Value
+                case SignalKind.Alarm:
+                    return "AL"; // Alarm Value
                 default:
                     return "??";
             }

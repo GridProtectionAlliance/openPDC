@@ -34,7 +34,8 @@
   <MenuDataItem Icon="" MenuText="Mana_ge" Description="" Roles="*" UserControlAssembly="" UserControlPath="">
     <SubMenuItems>
       <MenuDataItem Icon="" MenuText="_Nodes" Description="Manage Nodes" Roles="Administrator" UserControlAssembly="TimeSeriesFramework.UI.WPF.dll" UserControlPath="TimeSeriesFramework.UI.UserControls.NodeUserControl" />
-      <MenuDataItem Icon="" MenuText="_Measurements" Description="Manage Measurements" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.PhasorMeasurementUserControl"/>      
+      <MenuDataItem Icon="" MenuText="_Measurements" Description="Manage Measurements" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.PhasorMeasurementUserControl"/>
+      <MenuDataItem Icon="" MenuText="_Alarms" Description="Manage Alarms" Roles="*" UserControlAssembly="TimeSeriesFramework.UI.WPF.dll" UserControlPath="TimeSeriesFramework.UI.UserControls.AlarmUserControl" />
       <MenuDataItem Icon="" MenuText="_Companies" Description="Manage Companies" Roles="*" UserControlAssembly="TimeSeriesFramework.UI.WPF.dll" UserControlPath="TimeSeriesFramework.UI.UserControls.CompanyUserControl" />
       <MenuDataItem Icon="" MenuText="_Vendors" Description="Manage Vendors" Roles="*" UserControlAssembly="TimeSeriesFramework.UI.WPF.dll" UserControlPath="TimeSeriesFramework.UI.UserControls.VendorUserControl" />
       <MenuDataItem Icon="" MenuText="Vendor _Devices" Description="Manage Vendor Devices" Roles="*" UserControlAssembly="TimeSeriesFramework.UI.WPF.dll" UserControlPath="TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl" />
