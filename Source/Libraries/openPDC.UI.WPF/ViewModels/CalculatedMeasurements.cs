@@ -94,7 +94,7 @@ namespace openPDC.UI.ViewModels
             get
             {
                 if (m_initializeCommand == null)
-                    m_initializeCommand = new RelayCommand(Initialize, () => CanSave);
+                    m_initializeCommand = new RelayCommand(InitializeAdapter, () => CanSave);
 
                 return m_initializeCommand;
             }
@@ -107,8 +107,6 @@ namespace openPDC.UI.ViewModels
         public CalculatedMeasurements(int itemsPerPage, bool autoSave = true)
             : base(itemsPerPage, autoSave)
         {
-            m_nodeLookupList = Node.GetLookupList(null);
-            m_downsamplingMethod = TimeSeriesFramework.UI.CommonFunctions.GetDownsamplingMethodLookupList();
         }
 
         #endregion
@@ -146,6 +144,16 @@ namespace openPDC.UI.ViewModels
                 CurrentItem.DownsamplingMethod = m_downsamplingMethod.First().Key;
         }
 
+        /// <summary>
+        /// Initialization to be done before the initial call to <see cref="PagedViewModelBase{T1,T2}.Load"/>.
+        /// </summary>
+        public override void Initialize()
+        {
+            base.Initialize();
+            m_nodeLookupList = Node.GetLookupList(null);
+            m_downsamplingMethod = TimeSeriesFramework.UI.CommonFunctions.GetDownsamplingMethodLookupList();
+        }
+
         protected override void OnPropertyChanged(string propertyName)
         {
             base.OnPropertyChanged(propertyName);
@@ -159,7 +167,7 @@ namespace openPDC.UI.ViewModels
             }
         }
 
-        private void Initialize()
+        private void InitializeAdapter()
         {
             try
             {

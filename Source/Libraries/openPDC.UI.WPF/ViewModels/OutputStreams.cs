@@ -101,7 +101,7 @@ namespace openPDCManager.UI.ViewModels
             {
                 if (m_initializeCommand == null)
                 {
-                    m_initializeCommand = new RelayCommand(Initialize);
+                    m_initializeCommand = new RelayCommand(InitializeOutputStream);
                 }
                 return m_initializeCommand;
             }
@@ -291,9 +291,33 @@ namespace openPDCManager.UI.ViewModels
         #region [ Constructor ]
 
         public OutputStreams(int itemsPerPage, bool autoSave = true)
-            : base(0, true)
+            : base(itemsPerPage, true)
         {
-            ItemsPerPage = itemsPerPage;
+        }
+
+        #endregion
+
+        #region [ Methods ]
+
+        public override int GetCurrentItemKey()
+        {
+            return CurrentItem.ID;
+        }
+
+        public override string GetCurrentItemName()
+        {
+            return CurrentItem.Name;
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            CurrentItem.NodeID = m_nodelookupList.First().Key;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             m_nodelookupList = Node.GetLookupList(null);
 
@@ -319,28 +343,6 @@ namespace openPDCManager.UI.ViewModels
             m_coordinateFormatLookupList = new Dictionary<string, string>();
             m_coordinateFormatLookupList.Add("Polar", "Polar");
             m_coordinateFormatLookupList.Add("Rectangular", "Rectangular");
-
-            Load();
-        }
-
-        #endregion
-
-        #region [ Methods ]
-
-        public override int GetCurrentItemKey()
-        {
-            return CurrentItem.ID;
-        }
-
-        public override string GetCurrentItemName()
-        {
-            return CurrentItem.Name;
-        }
-
-        public override void Clear()
-        {
-            base.Clear();
-            CurrentItem.NodeID = m_nodelookupList.First().Key;
         }
 
         public override void Load()
@@ -369,7 +371,7 @@ namespace openPDCManager.UI.ViewModels
             }
         }
 
-        private void Initialize()
+        private void InitializeOutputStream()
         {
             if (Confirm("Do you want to send Initialize Command?", "Output Stream: " + CurrentItem.Acronym))
             {

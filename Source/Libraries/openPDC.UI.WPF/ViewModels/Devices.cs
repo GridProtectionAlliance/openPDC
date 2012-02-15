@@ -81,15 +81,6 @@ namespace openPDC.UI.ViewModels
         public Devices(int itemsPerPage, bool autoSave = true, openPDC.UI.DataModels.Device device = null)
             : base(itemsPerPage, autoSave)
         {
-            m_nodeLookupList = Node.GetLookupList(null);
-            m_concentratorDeviceLookupList = openPDC.UI.DataModels.Device.GetLookupList(null, openPDC.UI.DataModels.DeviceType.Concentrator, true);
-            m_companyLookupList = Company.GetLookupList(null, true);
-            m_historianLookupList = Historian.GetLookupList(null, true, false);
-            m_interconnectionLookupList = Interconnection.GetLookupList(null, true);
-            m_protocolLookupList = Protocol.GetLookupList(null, true);
-            m_vendorDeviceLookupList = VendorDevice.GetLookupList(null, true);
-            m_timezoneLookupList = TimeSeriesFramework.UI.CommonFunctions.GetTimeZones(true);
-
             if (device != null)     // i.e. user wants to edit existing device's configuration. So we will load that by default.
             {
                 CurrentItem = device;
@@ -336,7 +327,7 @@ namespace openPDC.UI.ViewModels
             get
             {
                 if (m_initializeCommand == null)
-                    m_initializeCommand = new RelayCommand(Initialize, () => CanSave);
+                    m_initializeCommand = new RelayCommand(InitializeDevice, () => CanSave);
 
                 return m_initializeCommand;
             }
@@ -446,6 +437,22 @@ namespace openPDC.UI.ViewModels
 
             if (m_timezoneLookupList.Count > 0)
                 CurrentItem.TimeZone = m_timezoneLookupList.First().Key;
+        }
+
+        /// <summary>
+        /// Initialization to be done before the initial call to <see cref="Load"/>.
+        /// </summary>
+        public override void Initialize()
+        {
+            base.Initialize();
+            m_nodeLookupList = Node.GetLookupList(null);
+            m_concentratorDeviceLookupList = openPDC.UI.DataModels.Device.GetLookupList(null, openPDC.UI.DataModels.DeviceType.Concentrator, true);
+            m_companyLookupList = Company.GetLookupList(null, true);
+            m_historianLookupList = Historian.GetLookupList(null, true, false);
+            m_interconnectionLookupList = Interconnection.GetLookupList(null, true);
+            m_protocolLookupList = Protocol.GetLookupList(null, true);
+            m_vendorDeviceLookupList = VendorDevice.GetLookupList(null, true);
+            m_timezoneLookupList = TimeSeriesFramework.UI.CommonFunctions.GetTimeZones(true);
         }
 
         /// <summary>
@@ -639,7 +646,7 @@ namespace openPDC.UI.ViewModels
             }
         }
 
-        private void Initialize()
+        private void InitializeDevice()
         {
             try
             {
