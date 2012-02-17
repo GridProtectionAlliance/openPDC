@@ -125,7 +125,7 @@ namespace openPDCManager.UI.DataModels
         /// </summary>
         [Required(ErrorMessage = "Output stream acronym is a required field, please provide value.")]
         [StringLength(200, ErrorMessage = "Output stream acronym cannot exceed 200 characters.")]
-        [RegularExpression("^[A-Z0-9-'!'_]+$", ErrorMessage = "Only upper case letters, numbers, '!', '-' and '_' are allowed.")]
+        [RegularExpression("^[A-Z0-9-'!'_'@#\\$]+$", ErrorMessage = "Only upper case letters, numbers, '!', '-', '@', '#', '_' and '$' are allowed.")]
         public string Acronym
         {
             get

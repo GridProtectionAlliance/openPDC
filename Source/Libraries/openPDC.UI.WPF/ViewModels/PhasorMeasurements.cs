@@ -57,10 +57,12 @@ namespace openPDC.UI.ViewModels
         {
             m_canLoad = true;
             m_deviceID = deviceID;
-            m_deviceLookupList = Device.GetLookupList(null, isOptional: true);
+            m_deviceLookupList = Device.GetLookupList(null, DeviceType.All, true, true);
             PhasorLookupList = Phasor.GetLookupList(null, m_deviceID);
             Load();
         }
+
+
 
         #endregion
 
@@ -74,6 +76,11 @@ namespace openPDC.UI.ViewModels
             get
             {
                 return m_deviceLookupList;
+            }
+            set
+            {
+                m_deviceLookupList = value;
+                OnPropertyChanged("DeviceLookupList");
             }
         }
 

@@ -214,7 +214,7 @@ namespace openPDC.UI.DataModels
         /// </summary>
         [Required(ErrorMessage = "Device acronym is a required field, please provide value.")]
         [StringLength(200, ErrorMessage = "Device Acronym cannot exceed 200 characters.")]
-        [RegularExpression("^[A-Z0-9-'!'_'@#]+$", ErrorMessage = "Only upper case letters, numbers, '!', '-', '@', '#' and '_' are allowed.")]
+        [RegularExpression("^[A-Z0-9-'!'_'@#\\$]+$", ErrorMessage = "Only upper case letters, numbers, '!', '-', '@', '#', '_' and '$' are allowed.")]
         public string Acronym
         {
             get
@@ -1010,9 +1010,10 @@ namespace openPDC.UI.DataModels
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>        
         /// <param name="deviceType"><see cref="DeviceType"/> to filter data.</param>
-        /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>        
+        /// <param name="isOptional">Indicates if selection on UI is optional for this collection.</param>    
+        /// <param name="showAll">boolean flag indicates if all the devices should be returned irrespective of node.</param>
         /// <returns><see cref="Dictionary{T1,T2}"/> containing ID and Name of devices defined in the database.</returns>
-        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, DeviceType deviceType = DeviceType.DirectConnected, bool isOptional = false)
+        public static Dictionary<int, string> GetLookupList(AdoDataConnection database, DeviceType deviceType = DeviceType.DirectConnected, bool isOptional = false, bool showAll = false)
         {
             bool createdConnection = false;
 
@@ -1043,8 +1044,16 @@ namespace openPDC.UI.DataModels
                 }
                 else
                 {
-                    query = database.ParameterizedQueryString("SELECT ID, Acronym FROM Device WHERE NodeID = {0} ORDER BY LoadOrder", "nodeID");
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
+                    if (showAll)
+                    {
+                        query = "SELECT ID, Acronym FROM Device ORDER BY LoadOrder";
+                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query);
+                    }
+                    else
+                    {
+                        query = database.ParameterizedQueryString("SELECT ID, Acronym FROM Device WHERE NodeID = {0} ORDER BY LoadOrder", "nodeID");
+                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
+                    }
                 }
 
                 foreach (DataRow row in deviceTable.Rows)
