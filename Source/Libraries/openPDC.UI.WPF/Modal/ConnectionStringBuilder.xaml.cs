@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Forms;
 using TimeSeriesFramework.UI;
+using TVA;
 
 namespace openPDC.UI.Modal
 {
@@ -377,15 +378,17 @@ namespace openPDC.UI.Modal
         {
             if (!string.IsNullOrEmpty(this.ConnectionString))
             {
-                string[] keyvalues = this.ConnectionString.Replace("[", "").Replace("]", "").Split(new char[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries);
-                foreach (string keyvalue in keyvalues)
-                {
-                    string[] keyvaluepair = keyvalue.Split('=');
-                    if (keyvaluepair.GetLength(0) == 2)
-                    {
-                        m_keyvaluepairs.Add(keyvaluepair[0].Trim(), keyvaluepair[1].Trim());
-                    }
-                }
+                //string[] keyvalues = this.ConnectionString.Replace("[", "").Replace("]", "").Split(new char[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries);
+                //foreach (string keyvalue in keyvalues)
+                //{
+                //    string[] keyvaluepair = keyvalue.Split('=');
+                //    if (keyvaluepair.GetLength(0) == 2)
+                //    {
+                //        m_keyvaluepairs.Add(keyvaluepair[0].Trim(), keyvaluepair[1].Trim());
+                //    }
+                //}
+
+                m_keyvaluepairs = ConnectionString.Replace("[", "").Replace("]", "").ParseKeyValuePairs();
 
                 if (m_connectionType == ConnectionType.CommandChannel)  //command channel is TCP
                 {
@@ -580,11 +583,12 @@ namespace openPDC.UI.Modal
             else
                 m_keyvaluepairs.Remove("interface");
 
-            m_connectionString = string.Empty;
-            foreach (KeyValuePair<string, string> keyvalue in m_keyvaluepairs)
-            {
-                m_connectionString += keyvalue.Key + "=" + keyvalue.Value + "; ";
-            }
+            m_connectionString = m_keyvaluepairs.JoinKeyValuePairs();
+            //m_connectionString = string.Empty;
+            //foreach (KeyValuePair<string, string> keyvalue in m_keyvaluepairs)
+            //{
+            //    m_connectionString += keyvalue.Key + "=" + keyvalue.Value + "; ";
+            //}
         }
 
         /// <summary>

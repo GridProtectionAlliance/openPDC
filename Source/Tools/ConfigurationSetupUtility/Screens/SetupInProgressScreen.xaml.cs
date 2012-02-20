@@ -1456,11 +1456,41 @@ namespace ConfigurationSetupUtility.Screens
                     }
                 }
 
+                bool updated = false;
+
+                // Make sure externalDataPublisher settings exist
+                XmlNode externalDataPublisherNode = configFile.SelectSingleNode("configuration/categorizedSettings/externalDataPublisher");
+                if (externalDataPublisherNode == null)
+                {
+                    externalDataPublisherNode = configFile.CreateElement("externalDataPublisher");
+
+                    XmlElement addElement = configFile.CreateElement("add");
+
+                    XmlAttribute attribute = configFile.CreateAttribute("name");
+                    attribute.Value = "ConfigurationString";
+                    addElement.Attributes.Append(attribute);
+
+                    attribute = configFile.CreateAttribute("value");
+                    attribute.Value = "port=6166";
+                    addElement.Attributes.Append(attribute);
+
+                    attribute = configFile.CreateAttribute("description");
+                    attribute.Value = "Data required by the server to initialize.";
+                    addElement.Attributes.Append(attribute);
+
+                    attribute = configFile.CreateAttribute("encrypted");
+                    attribute.Value = "false";
+                    addElement.Attributes.Append(attribute);
+
+                    externalDataPublisherNode.AppendChild(addElement);
+                    configFile.SelectSingleNode("configuration/categorizedSettings").AppendChild(externalDataPublisherNode);
+                    updated = true;
+                }
+
                 // Make sure desired run-time garbage collection settings exist
                 if (addGCServerSettings)
                 {
                     XmlNode runtime = configFile.SelectSingleNode("configuration/runtime");
-                    bool updated = false;
 
                     if (runtime == null)
                     {
