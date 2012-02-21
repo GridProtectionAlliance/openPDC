@@ -4,6 +4,69 @@
         <name>TimeSeriesFramework.UI</name>
     </assembly>
     <members>
+        <member name="T:TimeSeriesFramework.UI.AlarmMonitor">
+            <summary>
+            Represents a monitor that checks a web service in order to
+            keep an updated list of raised alarms defined by that service.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AlarmMonitor.#ctor(System.Boolean)">
+            <summary>
+            Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.AlarmMonitor"/> class.
+            </summary>
+            <param name="singleton">Indicates whether this instance should update the global reference to become the singleton.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AlarmMonitor.Start">
+            <summary>
+            Starts the refresh timer that checks alarm status.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AlarmMonitor.Stop">
+            <summary>
+            Stops the refresh timer.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AlarmMonitor.GetAlarmList">
+            <summary>
+            Gets the current list of raised alarms.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AlarmMonitor.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or
+            resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AlarmMonitor.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:TimeSeriesFramework.UI.AlarmMonitor"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="E:TimeSeriesFramework.UI.AlarmMonitor.RefreshedAlarms">
+            <summary>
+            Event raised when alarms are refreshed.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.AlarmMonitor.RefreshInterval">
+            <summary>
+            Gets or sets the interval, in seconds,
+            between refreshing the alarm list.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.AlarmMonitor.CurrentNodeID">
+            <summary>
+            Gets or sets the node ID currently
+            in use by the alarm monitor.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.AlarmMonitor.Singleton">
+            <summary>
+            Gets or sets the global reference to a singleton
+            of the <see cref="T:TimeSeriesFramework.UI.AlarmMonitor"/> class.
+            </summary>
+        </member>
         <member name="T:TimeSeriesFramework.UI.AuthenticationRequest">
             <summary>
             Represents a subscriber authentication request.
@@ -1829,6 +1892,41 @@
         <member name="P:TimeSeriesFramework.UI.DataModels.Protocol.LoadOrder">
             <summary>
             Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> LoadOrder.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.RaisedAlarm.ID">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.RaisedAlarm"/> ID
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.RaisedAlarm.Severity">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.RaisedAlarm"/> Severity
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.RaisedAlarm.TimeRaised">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.RaisedAlarm"/> TimeRaised
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.RaisedAlarm.TagName">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.RaisedAlarm"/> TagName
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.RaisedAlarm.Description">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.RaisedAlarm"/> Description
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.RaisedAlarm.Value">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.RaisedAlarm"/> Value
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.RaisedAlarm.SeverityText">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.RaisedAlarm"/> SeverityText
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.DataModels.SecurityGroup">

@@ -629,6 +629,24 @@
             InitializeComponent
             </summary>
         </member>
+        <member name="T:TimeSeriesFramework.UI.UserControls.AlarmStatusUserControl">
+            <summary>
+            Interaction logic for AlarmStatusUserControl.xaml
+            </summary>
+            <summary>
+            AlarmStatusUserControl
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.AlarmStatusUserControl.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.UserControls.AlarmStatusUserControl"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.AlarmStatusUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
         <member name="T:TimeSeriesFramework.UI.UserControls.AlarmUserControl">
             <summary>
             Interaction logic for AlarmUserControl.xaml
@@ -1900,6 +1918,62 @@
             </summary>
         </member>
         <member name="P:TimeSeriesFramework.UI.ViewModels.Protocols.IsNewRecord">
+            <summary>
+            Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.ViewModels.RaisedAlarms"/> class.
+            </summary>
+            <param name="itemsPerPage">Integer value to determine number of items per page.</param>
+            <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.SetRowColor(System.Windows.Controls.DataGridRow)">
+            <summary>
+            Sets the color of the given row based on the associated alarm's severity.
+            </summary>
+            <param name="row">The row whose color is to be set.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.GetCurrentItemKey">
+            <summary>
+            Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.GetCurrentItemName">
+            <summary>
+            Gets the string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
+            </summary>
+            <returns>The string based named identifier of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.Load">
+            <summary>
+            Does nothing.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.SortData(System.String)">
+            <summary>
+            Sorts model data.
+            </summary>
+            <param name="sortMemberPath">Member path for sorting.</param>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.Monitor">
+            <summary>
+            Gets or sets the <see cref="T:TimeSeriesFramework.UI.AlarmMonitor"/> used to receive updates about raised alarms.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.CanSave">
+            <summary>
+            Gets flag that indicates if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> state is valid and can be saved.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.CanDelete">
+            <summary>
+            Gets flag that indicates if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> can be deleted.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.IsNewRecord">
             <summary>
             Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
             </summary>
