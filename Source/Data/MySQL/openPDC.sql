@@ -1292,7 +1292,7 @@ CREATE TRIGGER CustomOutputAdapter_InsertDefault BEFORE INSERT ON CustomOutputAd
 FOR EACH ROW SET NEW.CreatedBy = USER(), NEW.CreatedOn = UTC_TIMESTAMP(), NEW.UpdatedBy = USER(), NEW.UpdatedOn = UTC_TIMESTAMP();
 
 CREATE TRIGGER Device_InsertDefault BEFORE INSERT ON Device
-FOR EACH ROW SET NEW.UniqueID = UUID(), NEW.CreatedBy = USER(), NEW.CreatedOn = UTC_TIMESTAMP(), NEW.UpdatedBy = USER(), NEW.UpdatedOn = UTC_TIMESTAMP();
+FOR EACH ROW SET NEW.UniqueID = COALESCE(NEW.UniqueID, UUID()), NEW.CreatedBy = USER(), NEW.CreatedOn = UTC_TIMESTAMP(), NEW.UpdatedBy = USER(), NEW.UpdatedOn = UTC_TIMESTAMP();
 
 CREATE TRIGGER Historian_InsertDefault BEFORE INSERT ON Historian
 FOR EACH ROW SET NEW.CreatedBy = USER(), NEW.CreatedOn = UTC_TIMESTAMP(), NEW.UpdatedBy = USER(), NEW.UpdatedOn = UTC_TIMESTAMP();
