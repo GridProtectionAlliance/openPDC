@@ -121,10 +121,26 @@ namespace openPDC.UI.Modal
         private ConnectionType m_connectionType;
         private string m_connectionString;
         private Dictionary<string, string> m_keyvaluepairs;
+        private bool m_pgConnection;
 
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets a flag indicating if the connection is to Phasor Gateway.
+        /// </summary>
+        public bool PgConnection
+        {
+            get
+            {
+                return m_pgConnection;
+            }
+            set
+            {
+                m_pgConnection = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets connection string from the parameters defined on the UI.
@@ -180,7 +196,10 @@ namespace openPDC.UI.Modal
             {
                 TabItemTCP.Visibility = Visibility.Visible;
                 TabItemUDP.Visibility = Visibility.Collapsed;
-                TabItemSerial.Visibility = Visibility.Visible;
+                if (PgConnection)
+                    TabItemSerial.Visibility = Visibility.Collapsed;
+                else
+                    TabItemSerial.Visibility = Visibility.Visible;
                 TabItemFile.Visibility = Visibility.Collapsed;
                 TabItemUdpServer.Visibility = Visibility.Collapsed;
             }
@@ -358,14 +377,20 @@ namespace openPDC.UI.Modal
         /// <param name="e">Event arguments.</param>
         private void ButtonSaveTCP_Click(object sender, RoutedEventArgs e)
         {
+            m_keyvaluepairs["port"] = String.IsNullOrEmpty(TextBoxPort.Text) ? "4712" : TextBoxPort.Text;
+
             if (m_connectionType != ConnectionType.CommandChannel)
             {
                 string hostIP = String.IsNullOrEmpty(TextBoxHostIP.Text) ? "127.0.0.1" : TextBoxHostIP.Text;
                 m_keyvaluepairs["server"] = FormatIP(hostIP);
                 m_keyvaluepairs["islistener"] = CheckboxEstablishServer.IsChecked.ToString().ToLower();
-            }
 
-            m_keyvaluepairs["port"] = String.IsNullOrEmpty(TextBoxPort.Text) ? "4712" : TextBoxPort.Text;
+                if (PgConnection)
+                {
+                    m_keyvaluepairs["server"] = m_keyvaluepairs["server"] + ":" + m_keyvaluepairs["port"];
+                    m_keyvaluepairs.Remove("port");
+                }
+            }
 
             SetConnectionString(TransportProtocol.tcp);
             this.DialogResult = true;
@@ -442,7 +467,15 @@ namespace openPDC.UI.Modal
                 {
                     TabControlOptions.SelectedIndex = 0;
                     if (m_keyvaluepairs.ContainsKey("server"))
+                    {
+                        if (m_keyvaluepairs["server"].Contains(":") && PgConnection)
+                        {
+                            m_keyvaluepairs["port"] = m_keyvaluepairs["server"].Substring(m_keyvaluepairs["server"].LastIndexOf(":") + 1);
+                            m_keyvaluepairs["server"] = m_keyvaluepairs["server"].Substring(0, m_keyvaluepairs["server"].LastIndexOf(":"));
+                        }
                         TextBoxHostIP.Text = m_keyvaluepairs["server"];
+
+                    }
                     if (m_keyvaluepairs.ContainsKey("port"))
                         TextBoxPort.Text = m_keyvaluepairs["port"];
                     if (m_keyvaluepairs.ContainsKey("islistener") && m_keyvaluepairs["islistener"].ToLower() == "true")
