@@ -1894,6 +1894,11 @@
             Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Protocol"/> LoadOrder.
             </summary>
         </member>
+        <member name="T:TimeSeriesFramework.UI.DataModels.RaisedAlarm">
+            <summary>
+            Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.RaisedAlarm"/> information as defined in the database.
+            </summary>
+        </member>
         <member name="P:TimeSeriesFramework.UI.DataModels.RaisedAlarm.ID">
             <summary>
             Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.RaisedAlarm"/> ID
