@@ -321,6 +321,7 @@ namespace openPDCManager
 
         private void ButtonHelp_Click(object sender, RoutedEventArgs e)
         {
+            bool useLocalHelp = false;
             try
             {
                 // Check for internet connectivity.
@@ -331,9 +332,22 @@ namespace openPDCManager
             }
             catch
             {
-                // Launch the offline copy of the help page.
-                Process.Start("openPDCManagerHelp.mht");
+                useLocalHelp = true;
             }
+
+            if (useLocalHelp)
+            {
+                try
+                {
+                    // Launch the offline copy of the help page.
+                    Process.Start("openPDCManagerHelp.mht");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to launch local help file." + Environment.NewLine + ex.Message, "openPDC Manager Help", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
         }
 
         #endregion
