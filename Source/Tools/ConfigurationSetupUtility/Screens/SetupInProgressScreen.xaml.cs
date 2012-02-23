@@ -1459,10 +1459,10 @@ namespace ConfigurationSetupUtility.Screens
                 bool updated = false;
 
                 // Make sure externalDataPublisher settings exist
-                XmlNode externalDataPublisherNode = configFile.SelectSingleNode("configuration/categorizedSettings/externalDataPublisher");
+                XmlNode externalDataPublisherNode = configFile.SelectSingleNode("configuration/categorizedSettings/externaldatapublisher");
                 if (externalDataPublisherNode == null)
                 {
-                    externalDataPublisherNode = configFile.CreateElement("externalDataPublisher");
+                    externalDataPublisherNode = configFile.CreateElement("externaldatapublisher");
 
                     XmlElement addElement = configFile.CreateElement("add");
 
