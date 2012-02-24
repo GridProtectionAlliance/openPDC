@@ -61,7 +61,7 @@
             in use by the alarm monitor.
             </summary>
         </member>
-        <member name="P:TimeSeriesFramework.UI.AlarmMonitor.Singleton">
+        <member name="P:TimeSeriesFramework.UI.AlarmMonitor.Default">
             <summary>
             Gets or sets the global reference to a singleton
             of the <see cref="T:TimeSeriesFramework.UI.AlarmMonitor"/> class.
