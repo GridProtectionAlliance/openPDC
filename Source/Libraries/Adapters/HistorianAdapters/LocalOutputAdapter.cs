@@ -929,8 +929,12 @@ namespace HistorianAdapters
                                 string adapterName = string.Format("{0}READER", instanceName);
                                 string connectionString = string.Format("archiveLocation={0}; instanceName={1}; sourceIDs={1}; publicationInterval=333333; connectOnDemand=true", archiveLocation, instanceName);
                                 string query = string.Format("INSERT INTO CustomInputAdapter(NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, LoadOrder, Enabled) " +
-                                    "VALUES({0}, '{1}', 'HistorianAdapters.dll', 'HistorianAdapters.LocalInputAdapter', '{2}', 0, 1)", nodeIDQueryString, adapterName, connectionString);
-                                connection.ExecuteNonQuery(query);
+                                    "VALUES({0}, @adapterName, 'HistorianAdapters.dll', 'HistorianAdapters.LocalInputAdapter', @connectionString, 0, 1)", nodeIDQueryString);
+
+                                if (adapterType.Name == "OracleDataAdapter")
+                                    query = query.Replace('@', ':');
+
+                                connection.ExecuteNonQuery(query, adapterName, connectionString);
                             }
                             catch (Exception ex)
                             {
