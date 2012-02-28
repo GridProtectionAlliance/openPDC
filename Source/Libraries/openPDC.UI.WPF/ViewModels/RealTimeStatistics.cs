@@ -179,7 +179,8 @@ namespace openPDC.UI.ViewModels
                                 StreamStatistic streamStatistic;
                                 if (measurement.ConnectedState) //if measurement defines connection state.
                                 {
-                                    if ((measurement.Source == "InputStream" && RealTimeStatistic.InputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
+                                    if ((measurement.Source == "System" && RealTimeStatistic.SystemStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
+                                        (measurement.Source == "InputStream" && RealTimeStatistic.InputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
                                         (measurement.Source == "OutputStream" && RealTimeStatistic.OutputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)))
                                     {
                                         if (DateTime.TryParseExact(element.Element("Time").Value, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 30)

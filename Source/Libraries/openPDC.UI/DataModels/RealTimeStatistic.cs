@@ -148,6 +148,41 @@ namespace openPDC.UI.DataModels
                     StatisticMeasurements.Add(statisticMeasurement.PointID, statisticMeasurement);
                 }
 
+                // Create a system statistics list.
+                ObservableCollection<StreamStatistic> systemStatistics = new ObservableCollection<StreamStatistic>();
+                systemStatistics.Add(new StreamStatistic()
+                {
+                    ID = 0,
+                    Acronym = "SYSTEM",
+                    Name = "System",
+                    StatusColor = "Gray",
+                    StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(
+                        statisticMeasurements.Where(sm => sm.SignalReference.StartsWith("SYSTEM-ST"))
+                        ),
+                    DeviceStatisticList = new ObservableCollection<PdcDeviceStatistic>()
+                });
+
+                SystemStatistics = new Dictionary<int, StreamStatistic>();
+                foreach (StreamStatistic streamStatistic in systemStatistics)
+                {
+                    // We do this to associate statistic measurement to parent output stream easily.
+                    foreach (StatisticMeasurement measurement in streamStatistic.StatisticMeasurementList)
+                        measurement.DeviceID = streamStatistic.ID;
+
+                    streamStatistic.DeviceStatisticList.Insert(0, new PdcDeviceStatistic()
+                    {
+                        DeviceID = 0,
+                        DeviceAcronym = "Run-Time Statistics",
+                        DeviceName = "",
+                        StatisticMeasurementList = streamStatistic.StatisticMeasurementList
+                    });
+
+                    streamStatistic.StatisticMeasurementList = null;
+
+                    // We do this for later use in refreshing data.
+                    SystemStatistics.Add(streamStatistic.ID, streamStatistic);
+                }
+
                 // Create an input stream statistics list.
                 ObservableCollection<StreamStatistic> inputStreamStatistics = new ObservableCollection<StreamStatistic>(
                         from stream in resultSet.Tables["DirectDevices"].AsEnumerable()
@@ -251,7 +286,15 @@ namespace openPDC.UI.DataModels
                     OutputStreamStatistics.Add(streamStatistic.ID, streamStatistic);
                 }
 
-                // Merge input and output stream statistics to create a realtime statistics list.
+                // Merge system, input and output stream statistics to create a realtime statistics list.
+                realTimeStatisticList.Add(new RealTimeStatistic()
+                    {
+                        SourceType = "System",
+                        Expanded = false,
+                        StreamStatisticList = systemStatistics
+                    }
+                );
+
                 realTimeStatisticList.Add(new RealTimeStatistic()
                     {
                         SourceType = "Input Streams",
@@ -377,6 +420,11 @@ namespace openPDC.UI.DataModels
         /// Defines a collection of <see cref="StatisticMeasurement"/>s defined in the database.
         /// </summary>
         public static Dictionary<int, StatisticMeasurement> StatisticMeasurements;
+
+        /// <summary>
+        /// Defines a collection of <see cref="StreamStatistic"/> defined in the database.
+        /// </summary>
+        public static Dictionary<int, StreamStatistic> SystemStatistics;
 
         /// <summary>
         /// Defines a collection of <see cref="StreamStatistic"/> defined in the database.
