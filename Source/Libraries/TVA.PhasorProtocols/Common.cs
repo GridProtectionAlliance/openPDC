@@ -373,7 +373,7 @@ namespace TVA.PhasorProtocols
                 case PhasorProtocol.BpaPdcStream:
                     return "BPA PDCstream";
                 case PhasorProtocol.FNet:
-                    return "Virginia Tech F-NET";
+                    return "UTK F-NET";
                 case PhasorProtocol.SelFastMessage:
                     return "SEL Fast Message";
                 case PhasorProtocol.Macrodyne:
