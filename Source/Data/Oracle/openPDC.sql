@@ -1006,15 +1006,15 @@ ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT PK_MeasurementGroupMeasur
 
 ALTER TABLE Subscriber ADD CONSTRAINT FK_Subscriber_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
-ALTER TABLE SubscriberMeasurement ADD CONSTRAINT FK_SubscriberMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
+ALTER TABLE SubscriberMeasurement ADD CONSTRAINT FK_SubscriberMeasurement_Node FOREIGN KEY(NodeID) REFERENCES Node (ID) ON DELETE CASCADE;
 
-ALTER TABLE SubscriberMeasurement ADD CONSTRAINT FK_SubscriberMeasure_Measure FOREIGN KEY(SignalID) REFERENCES Measurement (SignalID);
+ALTER TABLE SubscriberMeasurement ADD CONSTRAINT FK_SubscriberMeasure_Measure FOREIGN KEY(SignalID) REFERENCES Measurement (SignalID) ON DELETE CASCADE;
 
-ALTER TABLE SubscriberMeasurement ADD CONSTRAINT FK_SubscribeMeasure_Subscribe FOREIGN KEY(NodeID, SubscriberID) REFERENCES Subscriber (NodeID, ID);
+ALTER TABLE SubscriberMeasurement ADD CONSTRAINT FK_SubscribeMeasure_Subscribe FOREIGN KEY(NodeID, SubscriberID) REFERENCES Subscriber (NodeID, ID) ON DELETE CASCADE;
 
 ALTER TABLE SubscriberMeasurementGroup ADD CONSTRAINT FK_SubscriberMeasureGrp_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
 
-ALTER TABLE SubscriberMeasurementGroup ADD CONSTRAINT FK_SubscribMeasureGrp_Subscrib FOREIGN KEY(NodeID, SubscriberID) REFERENCES Subscriber (NodeID, ID);
+ALTER TABLE SubscriberMeasurementGroup ADD CONSTRAINT FK_SubscribMeasureGrp_Subscrib FOREIGN KEY(NodeID, SubscriberID) REFERENCES Subscriber (NodeID, ID) ON DELETE CASCADE;
 
 ALTER TABLE SubscriberMeasurementGroup ADD CONSTRAINT FK_SubscribMeasurGrp_MeasurGrp FOREIGN KEY(MeasurementGroupID) REFERENCES MeasurementGroup (ID);
 
@@ -1022,9 +1022,9 @@ ALTER TABLE MeasurementGroup ADD CONSTRAINT FK_MeasurementGroup_Node FOREIGN KEY
 
 ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT FK_MeasureGrpMeasure_Node FOREIGN KEY(NodeID) REFERENCES Node (ID);
 
-ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT FK_MeasureGrpMeasure_Measure FOREIGN KEY(SignalID) REFERENCES Measurement (SignalID);
+ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT FK_MeasureGrpMeasure_Measure FOREIGN KEY(SignalID) REFERENCES Measurement (SignalID) ON DELETE CASCADE;
 
-ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT FK_MeasurGrpMeasur_MeasurGrp FOREIGN KEY(MeasurementGroupID) REFERENCES MeasurementGroup (ID);
+ALTER TABLE MeasurementGroupMeasurement ADD CONSTRAINT FK_MeasurGrpMeasur_MeasurGrp FOREIGN KEY(MeasurementGroupID) REFERENCES MeasurementGroup (ID) ON DELETE CASCADE;
 
 ALTER TABLE Node ADD CONSTRAINT FK_Node_Company FOREIGN KEY(CompanyID) REFERENCES Company (ID);
 

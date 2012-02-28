@@ -311,7 +311,7 @@ namespace openPDC.UI.DataModels
                 Func<DataRow, KeyValuePair<DataRow, string>> mapFunction = measurement =>
                 {
                     string signalReference = measurement.Field<string>("SignalReference");
-                    string measurementSource = signalReference.Contains("!IS") ? "InputStream" : signalReference.Contains("!OS") ? "OutputStream" : "Device";
+                    string measurementSource = signalReference.Contains("!IS") ? "InputStream" : signalReference.Contains("!OS") ? "OutputStream" : signalReference.StartsWith("SYSTEM") ? "System" : "Device";
                     return new KeyValuePair<DataRow, string>(measurement, measurementSource);
                 };
 
