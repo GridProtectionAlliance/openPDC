@@ -854,15 +854,15 @@ END;
 CREATE TABLE UserAccount (
     ID VARCHAR2(36) NOT NULL,
     Name VARCHAR2(200) NOT NULL,
-    Password VARCHAR2(200) DEFAULT ULL,
-    FirstName VARCHAR2(200) DEFAULT ULL,
-    LastName VARCHAR2(200) DEFAULT ULL,
+    Password VARCHAR2(200) DEFAULT NULL,
+    FirstName VARCHAR2(200) DEFAULT NULL,
+    LastName VARCHAR2(200) DEFAULT NULL,
     DefaultNodeID VARCHAR2(36) NOT NULL,
-    Phone VARCHAR2(200) DEFAULT ULL,
-    Email VARCHAR2(200) DEFAULT ULL,
+    Phone VARCHAR2(200) DEFAULT NULL,
+    Email VARCHAR2(200) DEFAULT NULL,
     LockedOut NUMBER DEFAULT 0 NOT NULL,
     UseADAuthentication NUMBER DEFAULT 1 NOT NULL,
-    ChangePasswordOn DATE DEFAULT ULL,
+    ChangePasswordOn DATE DEFAULT NULL,
     CreatedOn DATE NOT NULL,
     CreatedBy VARCHAR2(200) NOT NULL,
     UpdatedOn DATE NOT NULL,
@@ -1567,7 +1567,7 @@ MeasurementGroupMeasurement.SignalID AS SignalID, Measurement.PointID AS PointID
 FROM ((MeasurementGroupMeasurement JOIN MeasurementGroup ON (MeasurementGroupMeasurement.MeasurementGroupID = MeasurementGroup.ID)) JOIN Measurement ON (MeasurementGroupMeasurement.SignalID = Measurement.SignalID));
 
 CREATE FUNCTION NEW_GUID RETURN NCHAR AS
-    guid NVARCHAR2(36);
+    guid VARCHAR2(36);
 BEGIN
     SELECT SYS_GUID() INTO guid FROM dual;
     
@@ -1726,7 +1726,10 @@ END;
 /
 
 CREATE TRIGGER Device_InsertDefault BEFORE INSERT ON Device FOR EACH ROW BEGIN
-    SELECT COALESCE(:NEW.UniqueID, NEW_GUID()) INTO :NEW.UniqueID FROM dual;
+	IF :NEW.UniqueID IS NULL THEN
+		SELECT NEW_GUID() INTO :NEW.UniqueID FROM dual
+	END IF;
+
     SELECT USER INTO :NEW.CreatedBy FROM dual;
     SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
     SELECT USER INTO :NEW.UpdatedBy FROM dual;
