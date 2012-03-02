@@ -1384,7 +1384,7 @@ CREATE VIEW HistorianMetadata
 AS
 SELECT PointID AS HistorianID, CASE SignalAcronym WHEN 'DIGI' THEN 1 ELSE 0 END AS DataType, PointTag AS Name, SignalReference AS Synonym1, 
     SignalAcronym AS Synonym2, AlternateTag AS Synonym3, Description, VendorDeviceDescription AS HardwareInfo, '' AS Remarks, 
-    HistorianAcronym AS PlantCode, 1 AS UnitNumber, DeviceAcronym AS SystemName, ProtocolID AS SourceID, Enabled, 1 / FramesPerSecond AS ScanRate, 
+    HistorianAcronym AS PlantCode, 1 AS UnitNumber, DeviceAcronym AS SystemName, ProtocolID AS SourceID, Enabled, CAST(1 / FramesPerSecond AS NUMBER(10,10)) AS ScanRate, 
     0 AS CompressionMinTime, 0 AS CompressionMaxTime, EngineeringUnits,
     CASE SignalAcronym WHEN 'FREQ' THEN 59.95 WHEN 'VPHM' THEN 475000 WHEN 'IPHM' THEN 0 WHEN 'VPHA' THEN -181 WHEN 'IPHA' THEN -181 ELSE 0 END AS LowWarning,
     CASE SignalAcronym WHEN 'FREQ' THEN 60.05 WHEN 'VPHM' THEN 525000 WHEN 'IPHM' THEN 3150 WHEN 'VPHA' THEN 181 WHEN 'IPHA' THEN 181 ELSE 0 END AS HighWarning,
@@ -1578,7 +1578,7 @@ BEGIN
         SUBSTR(guid, 17, 4) || '-' ||
         SUBSTR(guid, 21);
         
-    RETURN guid;
+    RETURN LOWER(guid);
 END;
 /
 
