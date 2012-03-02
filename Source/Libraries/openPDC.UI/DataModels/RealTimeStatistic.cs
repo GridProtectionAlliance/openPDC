@@ -120,7 +120,7 @@ namespace openPDC.UI.DataModels
 
                 // Get PDCs and directly connected devices.
                 resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, Acronym, Name FROM DeviceDetail " +
-                    "WHERE NodeID = {0} AND (IsConcentrator = {1} OR ParentAcronym = {2}) AND Enabled = {3} ORDER BY Acronym", "nodeID", "isConcentrator", "parentAcronym", "enabled"),
+                    "WHERE NodeID = {0} AND (IsConcentrator = {1} OR ParentAcronym = {2} OR ParentAcronym IS NULL) AND Enabled = {3} ORDER BY Acronym", "nodeID", "isConcentrator", "parentAcronym", "enabled"),
                     DefaultTimeout, database.CurrentNodeID(), database.Bool(true), string.Empty, database.Bool(true)).Copy());
 
                 resultSet.Tables[0].TableName = "DirectDevices";
