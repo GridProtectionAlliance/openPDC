@@ -30,6 +30,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using TimeSeriesFramework.UI;
+using TVA;
 using TVA.Data;
 
 namespace openPDC.UI.DataModels
@@ -263,7 +264,7 @@ namespace openPDC.UI.DataModels
                             Expanded = false,
                             DeviceList = new ObservableCollection<RealTimeDevice>(
                                     from device in resultSet.Tables["DeviceTable"].AsEnumerable()
-                                    where device.Field<string>("ParentAcronym") == pdc.Field<string>("Acronym")
+                                    where device.Field<string>("ParentAcronym").ToNonNullString() == pdc.Field<string>("Acronym")
                                     select new RealTimeDevice()
                                     {
                                         ID = device.ConvertNullableField<int>("ID"),
