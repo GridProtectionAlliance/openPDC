@@ -618,7 +618,7 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (!existing || migrate)
                 {
-                    if (!oracleSetup.CreateNewSchema || !CheckIfDatabaseExists(oracleSetup.ConnectionString, dataProviderString, oracleSetup.SchemaUserName))
+                    if (!oracleSetup.CreateNewSchema || !CheckIfDatabaseExists(oracleSetup.AdminConnectionString, dataProviderString, oracleSetup.SchemaUserName))
                     {
                         IDbConnection dbConnection = null;
                         List<string> scriptNames = new List<string>();
