@@ -1090,13 +1090,23 @@ namespace openPDC.UI.DataModels
                 if (isOptional)
                     deviceList.Add(0, "All Device");
 
-                query = database.ParameterizedQueryString("SELECT ID, Acronym FROM DeviceDetail WHERE NodeID = {0} AND ProtocolType = {1} ORDER BY LoadOrder",
+                query = database.ParameterizedQueryString("SELECT ID, Acronym, IsConcentrator FROM DeviceDetail WHERE NodeID = {0} AND ProtocolType = {1} ORDER BY LoadOrder",
                     "nodeID", "protocolType");
 
                 deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), protocolType);
 
                 foreach (DataRow row in deviceTable.Rows)
-                    deviceList[row.ConvertField<int>("ID")] = row.Field<string>("Acronym");
+                {
+                    if (row.ConvertField<bool>("IsConcentrator"))
+                    {
+                        foreach (Device device in GetDevices(database, " WHERE ParentID = " + row.ConvertField<int>("ID")))
+                            deviceList[device.ID] = device.Acronym;
+                    }
+                    else
+                    {
+                        deviceList[row.ConvertField<int>("ID")] = row.Field<string>("Acronym");
+                    }
+                }
 
                 return deviceList;
             }
