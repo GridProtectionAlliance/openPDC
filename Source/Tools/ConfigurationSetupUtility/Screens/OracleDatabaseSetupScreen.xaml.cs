@@ -151,6 +151,13 @@ namespace ConfigurationSetupUtility.Screens
                     return false;
                 }
 
+                if (m_schemaUserNameTextBox.Text.Length > 30)
+                {
+                    MessageBox.Show("Schema user name must be 30 characters or less.");
+                    m_schemaUserNameTextBox.Focus();
+                    return false;
+                }
+
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
 

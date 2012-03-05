@@ -307,6 +307,7 @@ namespace ConfigurationSetupUtility
                 {
                     StringBuilder statementBuilder = new StringBuilder();
                     Regex comment = new Regex(@"/\*.*\*/|--.*\n", RegexOptions.Multiline);
+                    string indexTablespaceName = string.Format("{0}_INDEX", SchemaUserName.TruncateRight(24));
 
                     transaction = connection.BeginTransaction();
                     command.Transaction = transaction;
@@ -334,6 +335,9 @@ namespace ConfigurationSetupUtility
                         {
                             // Remove trailing delimiter and newlines.
                             statement = statement.Remove(statement.Length - 1);
+
+                            // Fix name of tablespace for index
+                            statement = statement.Replace("OPDC_INDEX", indexTablespaceName);
 
                             // Remove comments and execute the statement.
                             command.CommandText = statement;

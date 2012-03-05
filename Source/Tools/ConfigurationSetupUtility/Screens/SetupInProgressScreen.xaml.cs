@@ -646,8 +646,9 @@ namespace ConfigurationSetupUtility.Screens
                             string user = oracleSetup.SchemaUserName;
 
                             AppendStatusMessage(string.Format("Attempting to create new user {0}...", user));
-                            oracleSetup.ExecuteStatement(string.Format("CREATE TABLESPACE {0}_TS DATAFILE '{0}.dbf' SIZE 20M AUTOEXTEND ON", user));
-                            oracleSetup.ExecuteStatement(string.Format("CREATE USER {0} IDENTIFIED BY {1} DEFAULT TABLESPACE {0}_TS", user, oracleSetup.SchemaPassword));
+                            oracleSetup.ExecuteStatement(string.Format("CREATE TABLESPACE {0}_TS DATAFILE '{1}.dbf' SIZE 20M AUTOEXTEND ON", user.TruncateRight(27), user));
+                            oracleSetup.ExecuteStatement(string.Format("CREATE TABLESPACE {0}_INDEX DATAFILE '{1}_index.dbf' SIZE 20M AUTOEXTEND ON", user.TruncateRight(24), user));
+                            oracleSetup.ExecuteStatement(string.Format("CREATE USER {0} IDENTIFIED BY {1} DEFAULT TABLESPACE {2}_TS", user, oracleSetup.SchemaPassword, user.TruncateRight(27)));
                             oracleSetup.ExecuteStatement(string.Format("GRANT UNLIMITED TABLESPACE TO {0}", user));
                             oracleSetup.ExecuteStatement(string.Format("GRANT CREATE SESSION TO {0}", user));
 
@@ -864,7 +865,8 @@ namespace ConfigurationSetupUtility.Screens
                             try
                             {
                                 oracleSetup.ExecuteStatement(string.Format("DROP USER {0} CASCADE", databaseName));
-                                oracleSetup.ExecuteStatement(string.Format("DROP TABLESPACE {0}_TS", databaseName));
+                                oracleSetup.ExecuteStatement(string.Format("DROP TABLESPACE {0}_TS INCLUDING CONTENTS AND DATAFILES", databaseName.TruncateRight(27)));
+                                oracleSetup.ExecuteStatement(string.Format("DROP TABLESPACE {0}_INDEX INCLUDING CONTENTS AND DATAFILES", databaseName.TruncateRight(24)));
                                 AppendStatusMessage(string.Format("Dropped database {0} successfully.", databaseName));
                             }
                             catch

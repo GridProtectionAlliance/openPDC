@@ -23,6 +23,7 @@
 -- The following statements are used to create a tablespace, user, and schema.
 -- Be sure to change the password.
 -- CREATE TABLESPACE openPDC_TS DATAFILE 'openPDC.dbf' SIZE 20M AUTOEXTEND ON;
+-- CREATE TABLESPACE OPDC_INDEX DATAFILE 'opdc_index.dbf' SIZE 20M AUTOEXTEND ON;
 -- CREATE USER openPDC IDENTIFIED BY MyPassword DEFAULT TABLESPACE openPDC_TS;
 -- GRANT UNLIMITED TABLESPACE TO openPDC;
 -- GRANT CREATE SESSION TO openPDC;
