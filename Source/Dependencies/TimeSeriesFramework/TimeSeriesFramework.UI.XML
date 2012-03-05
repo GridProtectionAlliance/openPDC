@@ -793,6 +793,11 @@
             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> information as defined in the database.
             </summary>
         </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Alarm.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> class.
+            </summary>
+        </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Alarm.Load(TVA.Data.AdoDataConnection)">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
