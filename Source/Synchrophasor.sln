@@ -68,7 +68,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E
 		Dependencies\TVA\TVA.Communication.dll = Dependencies\TVA\TVA.Communication.dll
 		Dependencies\TVA\TVA.Communication.xml = Dependencies\TVA\TVA.Communication.xml
 		Dependencies\TVA\TVA.Core.dll = Dependencies\TVA\TVA.Core.dll
-		Dependencies\TVA\TVA.Core.XML = Dependencies\TVA\TVA.Core.XML
 		Dependencies\TVA\TVA.Historian.dll = Dependencies\TVA\TVA.Historian.dll
 		Dependencies\TVA\TVA.Historian.XML = Dependencies\TVA\TVA.Historian.XML
 		Dependencies\TVA\TVA.Security.dll = Dependencies\TVA\TVA.Security.dll
@@ -247,8 +246,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{53255B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{44A76C31-308D-4D46-B263-734DD9FA3570}"
 	ProjectSection(SolutionItems) = preProject
-		Dependencies\SQLite\SQLite.Interop.dll = Dependencies\SQLite\SQLite.Interop.dll
-		Dependencies\SQLite\sqlite3.dll = Dependencies\SQLite\sqlite3.dll
 		Dependencies\SQLite\System.Data.SQLite.dll = Dependencies\SQLite\System.Data.SQLite.dll
 		Dependencies\SQLite\System.Data.SQLite.Linq.dll = Dependencies\SQLite\System.Data.SQLite.Linq.dll
 		Dependencies\SQLite\System.Data.SQLite.Linq.xml = Dependencies\SQLite\System.Data.SQLite.Linq.xml
@@ -261,7 +258,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI.WPF", "Libraries
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "x86", "x86", "{AD1920D4-64C4-43C9-903D-3C78981C8850}"
 	ProjectSection(SolutionItems) = preProject
-		Dependencies\SQLite\x86\SQLite.Interop.dll = Dependencies\SQLite\x86\SQLite.Interop.dll
 		Dependencies\SQLite\x86\System.Data.SQLite.dll = Dependencies\SQLite\x86\System.Data.SQLite.dll
 		Dependencies\SQLite\x86\System.Data.SQLite.Linq.dll = Dependencies\SQLite\x86\System.Data.SQLite.Linq.dll
 		Dependencies\SQLite\x86\System.Data.SQLite.Linq.xml = Dependencies\SQLite\x86\System.Data.SQLite.Linq.xml

@@ -333,6 +333,37 @@
             <param name="facetDescription"></param>
             <returns></returns>
         </member>
+        <member name="T:System.Data.SQLite.SkipClause">
+            <summary>
+            SkipClause represents the a SKIP expression in a SqlSelectStatement.
+            It has a count property, which indicates how many rows should be skipped.
+            </summary>
+        </member>
+        <member name="M:System.Data.SQLite.SkipClause.#ctor(System.Data.SQLite.ISqlFragment)">
+            <summary>
+            Creates a SkipClause with the given skipCount.
+            </summary>
+            <param name="skipCount"></param>
+        </member>
+        <member name="M:System.Data.SQLite.SkipClause.#ctor(System.Int32)">
+            <summary>
+            Creates a SkipClause with the given skipCount.
+            </summary>
+            <param name="skipCount"></param>
+        </member>
+        <member name="M:System.Data.SQLite.SkipClause.WriteSql(System.Data.SQLite.SqlWriter,System.Data.SQLite.SqlGenerator)">
+            <summary>
+            Write out the SKIP part of sql select statement 
+            It basically writes OFFSET (X).
+            </summary>
+            <param name="writer"></param>
+            <param name="sqlGenerator"></param>
+        </member>
+        <member name="P:System.Data.SQLite.SkipClause.SkipCount">
+            <summary>
+            How many rows should be skipped.
+            </summary>
+        </member>
         <member name="T:System.Data.SQLite.SqlBuilder">
             <summary>
             This class is like StringBuilder.  While traversing the tree for the first time, 
@@ -367,21 +398,6 @@
             Whether the builder is empty.  This is used by the <see cref="M:System.Data.SQLite.SqlGenerator.Visit(System.Data.Common.CommandTrees.DbProjectExpression)"/>
             to determine whether a sql statement can be reused.
             </summary>
-        </member>
-        <member name="M:System.Data.SQLite.SqlChecker.Rewrite(System.Data.Common.CommandTrees.DbQueryCommandTree)">
-            <summary>
-            SQLite doesn't support things like SKIP and a few other things.  
-            So determine if the query has to be rewritten
-            </summary>
-            <remarks>
-            Microsoft went to all the trouble of making things like SKIP work 
-            on Sql Server 2000 by doing a rewrite of the commandtree.
-            However, all that fancy stuff is hidden from us.  Thanks to 
-            reflection however, we can go ahead and use the Sql 2000 rewriter code
-            they made.
-            </remarks>
-            <param name="tree">The tree to inspect for a rewrite</param>
-            <returns>Returns a new query tree if it needs rewriting</returns>
         </member>
         <member name="T:System.Data.SQLite.SqlGenerator">
              <summary>
@@ -1365,6 +1381,14 @@
             <param name="e"></param>
             <returns></returns>
         </member>
+        <member name="M:System.Data.SQLite.SqlGenerator.HandleCanonicalFunctionRight(System.Data.SQLite.SqlGenerator,System.Data.Common.CommandTrees.DbFunctionExpression)">
+            <summary>
+            RIGHT(string, length) -> SUBSTR(string, -(length), length)
+            </summary>
+            <param name="sqlgen"></param>
+            <param name="e"></param>
+            <returns></returns>
+        </member>
         <member name="M:System.Data.SQLite.SqlGenerator.HandleCanonicalFunctionToLower(System.Data.SQLite.SqlGenerator,System.Data.Common.CommandTrees.DbFunctionExpression)">
             <summary>
              Function rename ToLower -> LOWER
@@ -1845,7 +1869,7 @@
         <member name="M:System.Data.SQLite.TopClause.WriteSql(System.Data.SQLite.SqlWriter,System.Data.SQLite.SqlGenerator)">
             <summary>
             Write out the TOP part of sql select statement 
-            It basically writes TOP (X) [WITH TIES].
+            It basically writes LIMIT (X).
             </summary>
             <param name="writer"></param>
             <param name="sqlGenerator"></param>
