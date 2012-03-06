@@ -350,7 +350,7 @@ namespace openPDC.UI.DataModels
                         "createdOn");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout, outputStreamMeasurement.NodeID == Guid.Empty ? database.CurrentNodeID() : outputStreamMeasurement.NodeID,
-                        outputStreamMeasurement.AdapterID, outputStreamMeasurement.HistorianID, outputStreamMeasurement.PointID, outputStreamMeasurement.SignalReference,
+                        outputStreamMeasurement.AdapterID, outputStreamMeasurement.HistorianID.ToNotNull(), outputStreamMeasurement.PointID, outputStreamMeasurement.SignalReference,
                         CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
                 }
                 else
@@ -360,7 +360,7 @@ namespace openPDC.UI.DataModels
                         "historianID", "pointID", "signalReference", "updatedBy", "updatedOn", "id");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout, outputStreamMeasurement.NodeID, outputStreamMeasurement.AdapterID,
-                        outputStreamMeasurement.HistorianID, outputStreamMeasurement.PointID, outputStreamMeasurement.SignalReference,
+                        outputStreamMeasurement.HistorianID.ToNotNull(), outputStreamMeasurement.PointID, outputStreamMeasurement.SignalReference,
                         CommonFunctions.CurrentUser, database.UtcNow(), outputStreamMeasurement.ID);
                 }
 
