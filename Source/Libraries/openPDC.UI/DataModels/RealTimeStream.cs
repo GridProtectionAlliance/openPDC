@@ -18,6 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  07/21/2011 - Mehulbhai P Thakkar
 //       Generated original version of source code.
+//  03/06/2012 - J. Ritchie Carroll
+//       Added virual device for subscribed measurements when two nodes share a single database.
 //
 //******************************************************************************************************
 
@@ -198,6 +200,7 @@ namespace openPDC.UI.DataModels
         public static ObservableCollection<RealTimeStream> Load(AdoDataConnection database)
         {
             bool createdConnection = false;
+
             try
             {
                 ObservableCollection<RealTimeStream> realTimeStreamList = null;
@@ -228,12 +231,49 @@ namespace openPDC.UI.DataModels
 
                 resultSet.Tables[1].TableName = "DeviceTable";
 
-                // Get non-statistics Measurements list.
+                // Get non-statistical measurement list
                 resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, DeviceID, SignalID, PointID, PointTag, SignalReference, " +
                     "SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym, Subscribed, Internal FROM MeasurementDetail WHERE NodeID = {0} AND " +
                     "SignalAcronym <> {1} ORDER BY SignalReference", "nodeID", "signalAcronym"), DefaultTimeout, database.CurrentNodeID(), "STAT").Copy());
 
                 resultSet.Tables[2].TableName = "MeasurementTable";
+
+                // Query for any non-statistical measurements that are subscribed via GEP, but are a part of another node in the same database
+                // IMPORTANT: Make sure columns in this external node query exactly match those of the previous primary measurement query
+                DataTable otherMeasurements = database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, 0 AS DeviceID, SignalID, PointID, PointTag, SignalReference, " +
+                    "SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym, Subscribed, Internal FROM MeasurementDetail WHERE NodeID <> {0} AND " +
+                    "SignalAcronym <> {1} AND Subscribed <> 0 ORDER BY SignalReference", "nodeID", "signalAcronym"), DefaultTimeout, database.CurrentNodeID(), "STAT");
+
+                // Copy in subscribed measurements from other nodes into existing measurement list
+                DataTable measurements = resultSet.Tables[2];
+
+                if (measurements.Rows.Count > 0)
+                {
+                    // Add a subscribed measurement device placeholder - all associated measurements will have deviceID of zero
+                    row = resultSet.Tables["DeviceTable"].NewRow();
+                    row["ID"] = 0;
+                    row["Acronym"] = "SUBSCRIBED";
+                    row["Name"] = "Subscribed Measurements";
+                    row["CompanyName"] = string.Empty;
+                    row["ProtocolName"] = string.Empty;
+                    row["VendorDeviceName"] = string.Empty;
+                    row["ParentAcronym"] = string.Empty;
+                    row["Enabled"] = false;
+                    resultSet.Tables["DeviceTable"].Rows.Add(row);
+
+                    // Manually copy new measurement rows into existing table
+                    foreach (DataRow existingRow in otherMeasurements.Rows)
+                    {
+                        DataRow newRow = measurements.NewRow();
+
+                        for (int x = 0; x < otherMeasurements.Columns.Count; x++)
+                        {
+                            newRow[x] = existingRow[x];
+                        }
+
+                        measurements.Rows.Add(newRow);
+                    }
+                }
 
                 // If any non-statistic measurement has DeviceID set to NULL, then we will treat it as a calculated measurement.
                 // And associate it with a dummy device "CALCULATED" record as defined below.
@@ -242,7 +282,7 @@ namespace openPDC.UI.DataModels
                     row = resultSet.Tables["DeviceTable"].NewRow();
                     row["ID"] = DBNull.Value;
                     row["Acronym"] = "CALCULATED";
-                    row["Name"] = "CALCULATED MEASUREMENTS";
+                    row["Name"] = "Calculated Measurements";
                     row["CompanyName"] = string.Empty;
                     row["ProtocolName"] = string.Empty;
                     row["VendorDeviceName"] = string.Empty;
@@ -278,7 +318,7 @@ namespace openPDC.UI.DataModels
                                         Enabled = Convert.ToBoolean(device.Field<object>("Enabled")),
                                         MeasurementList = new ObservableCollection<RealTimeMeasurement>(
                                                 from measurement in resultSet.Tables["MeasurementTable"].AsEnumerable()
-                                                where measurement.ConvertNullableField<int>("DeviceID") == device.ConvertNullableField<int>("ID") && (measurement.ConvertField<bool>("Subscribed") == true || measurement.ConvertField<bool>("Internal") == true)   //We will only display measurements which are internal or subscribed to avoid confusion.
+                                                where measurement.ConvertNullableField<int>("DeviceID") == device.ConvertNullableField<int>("ID") && (measurement.ConvertField<bool>("Subscribed") || measurement.ConvertField<bool>("Internal"))   //We will only display measurements which are internal or subscribed to avoid confusion.
                                                 select new RealTimeMeasurement()
                                                 {
                                                     ID = measurement.Field<string>("ID"),
