@@ -200,6 +200,9 @@ namespace ConfigurationSetupUtility.Screens
                         // Always make sure time series startup operations are defined in the database.
                         ValidateTimeSeriesStartupOperations();
 
+                        // Always make sure that node settings defines the alarm service URL.
+                        ValidateNodeSettings();
+
                         // Always make sure that all three needed roles are available for each defined node(s) in the database
                         ValidateSecurityRoles();
 
@@ -353,6 +356,54 @@ namespace ConfigurationSetupUtility.Screens
             finally
             {
                 if (connection != null)
+                    connection.Dispose();
+            }
+        }
+
+        private void ValidateNodeSettings()
+        {
+            const string settingsQuery = "SELECT Settings FROM Node WHERE ID = '{0}'";
+            const string updateQuery = "UPDATE Node SET Settings = @settings WHERE ID = '{0}'";
+
+            object selectedNodeId;
+            string nodeIDQueryString;
+
+            IDbConnection connection = null;
+            object nodeSettingsConnectionString;
+            Dictionary<string, string> nodeSettings;
+
+            string alarmServiceUrl;
+
+            try
+            {
+                // Ensure that there is a selected node ID
+                if (m_state.TryGetValue("selectedNodeId", out selectedNodeId) && !string.IsNullOrWhiteSpace(selectedNodeId.ToNonNullString()))
+                {
+                    // Open new connection
+                    nodeIDQueryString = selectedNodeId.ToString();
+                    connection = OpenNewConnection();
+
+                    // Fix nodeIDQueryString if this is a Microsoft Access database connection
+                    if (IsAccessDbConnection(connection))
+                        nodeIDQueryString = "{" + nodeIDQueryString + "}";
+
+                    // Get node settings from the database
+                    nodeSettingsConnectionString = connection.ExecuteScalar(string.Format(settingsQuery, nodeIDQueryString));
+                    nodeSettings = nodeSettingsConnectionString.ToNonNullString().ParseKeyValuePairs();
+
+                    // If the AlarmServiceUrl does not exist in node settings, add it and then update the database record
+                    if (!nodeSettings.TryGetValue("AlarmServiceUrl", out alarmServiceUrl))
+                    {
+                        nodeSettings.Add("AlarmServiceUrl", "http://localhost:5018/alarmservices");
+                        nodeSettingsConnectionString = nodeSettings.JoinKeyValuePairs();
+                        connection.ExecuteNonQuery(string.Format(updateQuery, nodeIDQueryString), nodeSettingsConnectionString);
+                    }
+                }
+            }
+            finally
+            {
+                // Dispose of the connection if it was opened
+                if ((object)connection != null)
                     connection.Dispose();
             }
         }
@@ -835,6 +886,15 @@ namespace ConfigurationSetupUtility.Screens
             }
 
             return connection;
+        }
+
+        private bool IsAccessDbConnection(IDbConnection connection)
+        {
+            Dictionary<string, string> connectionStringSettings;
+            string provider;
+
+            connectionStringSettings = connection.ConnectionString.ParseKeyValuePairs();
+            return connectionStringSettings.TryGetValue("Provider", out provider) && provider.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase);
         }
 
         #endregion

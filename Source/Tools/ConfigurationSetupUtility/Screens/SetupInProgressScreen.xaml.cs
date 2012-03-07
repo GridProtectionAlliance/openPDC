@@ -1321,7 +1321,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 IDbCommand nodeCommand = connection.CreateCommand();
                 nodeCommand.CommandText = "INSERT INTO Node(Name, CompanyID, Description, Settings, MenuType, MenuData, Master, LoadOrder, Enabled) " +
-                    "VALUES('Default', NULL, 'Default node', 'TimeSeriesDataServiceUrl=http://localhost:6152/historian;RemoteStatusServerConnectionString={server=localhost:8500};datapublisherport=6165;RealTimeStatisticServiceUrl=http://localhost:6052/historian', 'File', 'Menu.xml', 1, 0, 1)";
+                    "VALUES('Default', NULL, 'Default node', 'TimeSeriesDataServiceUrl=http://localhost:6152/historian;RemoteStatusServerConnectionString={server=localhost:8500};datapublisherport=6165;RealTimeStatisticServiceUrl=http://localhost:6052/historian;AlarmServiceUrl=http://localhost:5018/alarmservices', 'File', 'Menu.xml', 1, 0, 1)";
                 nodeCommand.ExecuteNonQuery();
                 m_defaultNodeAdded = true;
                 defaultNodeCreated = true;
