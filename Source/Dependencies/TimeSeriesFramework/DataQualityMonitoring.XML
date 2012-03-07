@@ -54,24 +54,6 @@
             Gets the flag indicating if this adapter supports temporal processing.
             </summary>
         </member>
-        <member name="P:DataQualityMonitoring.AlarmAdapter.ServicePublishMetadata">
-            <summary>
-            Gets or sets a boolean value that indicates whether web service
-            metadata is to made available at all web service endpoints.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.AlarmAdapter.ServiceEndpoints">
-            <summary>
-            Gets or sets a semicolon delimited list of
-            URIs where the web service can be accessed.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.AlarmAdapter.ServiceSecurityPolicy">
-            <summary>
-            Gets or sets the <see cref="P:System.Type.FullName"/> of System.IdentityModel.Policy.IAuthorizationPolicy
-            to be used for securing all web service <see cref="P:TVA.ServiceModel.SelfHostingService.Endpoints"/>.
-            </summary>
-        </member>
         <member name="P:DataQualityMonitoring.AlarmAdapter.Status">
             <summary>
             Returns the detailed status of the data input source.

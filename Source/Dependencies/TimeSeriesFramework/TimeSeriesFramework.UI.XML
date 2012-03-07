@@ -107,6 +107,83 @@
             Gets or sets the cryptographic initialization vector for the subscriber.
             </summary>
         </member>
+        <member name="T:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery">
+            <summary>
+            Represents an object that will query DataSubscriber instances to determine if measurements are authorized.
+            </summary>
+        </member>
+        <member name="F:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.DefaultResponseTimeout">
+            <summary>
+            Default value for <see cref="P:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.ResponseTimeout"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.#ctor">
+            <summary>
+            Creates a new <see cref="T:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.Finalize">
+            <summary>
+            Releases the unmanaged resources before the <see cref="T:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery"/> object is reclaimed by <see cref="T:System.GC"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.Dispose">
+            <summary>
+            Releases all the resources used by the <see cref="T:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery"/> object.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.RequestAuthorizationStatus(System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Requests the authorization state of the specified <paramref name="sourceMeasurements"/>.
+            </summary>
+            <param name="sourceMeasurements">Measurement signal IDs to request authorization state for.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.OnAuthorizedMeasurements(System.Guid[])">
+            <summary>
+            Raises <see cref="E:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.AuthorizedMeasurements"/> event.
+            </summary>
+            <param name="authorizedMeasurements">Authorized measurements.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.OnProcessException(System.Exception)">
+            <summary>
+            Raises <see cref="E:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.ProcessException"/> event.
+            </summary>
+            <param name="ex">Processing <see cref="T:System.Exception"/>.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.Helper_ReceivedServiceResponse(System.Object,TVA.EventArgs{TVA.ServiceProcess.ServiceResponse})">
+            <summary>
+            Handles ReceivedServiceResponse event.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="E:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.AuthorizedMeasurements">
+            <summary>
+            Provides full list of authorized measurement signal IDs.
+            </summary>
+            <remarks>
+            <see cref="F:TVA.EventArgs`1.Argument"/> is an array of the <see cref="T:System.Guid"/> based signal IDs of the authorized measurements.
+            </remarks>
+        </member>
+        <member name="E:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.ProcessException">
+            <summary>
+            Event is raised when there is an exception encountered while processing.
+            </summary>
+            <remarks>
+            <see cref="F:TVA.EventArgs`1.Argument"/> is the exception that was thrown.
+            </remarks>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.AuthorizedMeasurementsQuery.ResponseTimeout">
+            <summary>
+            Gets or sets allowed timeout, in milliseconds, for a command request response.
+            </summary>
+        </member>
         <member name="T:TimeSeriesFramework.UI.Binding.Column">
             <summary>
             Represents a custom <see cref="N:TimeSeriesFramework.UI.Binding"/> class.
@@ -261,12 +338,13 @@
             <param name="targetType">Type of the child UIElement.</param>
             <param name="element">Reference parameter to return UIElement.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID(System.String,System.Int32)">
+        <member name="M:TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID(System.String,System.Int32,TVA.Data.AdoDataConnection)">
             <summary>
             Retrieves runtime id for an object.
             </summary>
             <param name="sourceTable">Table where object has been defined.</param>
             <param name="sourceID">ID of an object in source table.</param>
+            <param name="database">Existing database connection, if available.</param>
             <returns>string, id of an object in Runtime table.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.CommonFunctions.SetRetryServiceConnection(System.Boolean)">
