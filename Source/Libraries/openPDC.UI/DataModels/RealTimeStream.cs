@@ -247,7 +247,7 @@ namespace openPDC.UI.DataModels
                 // Copy in subscribed measurements from other nodes into existing measurement list
                 DataTable measurements = resultSet.Tables[2];
 
-                if (measurements.Rows.Count > 0)
+                if (otherMeasurements.Rows.Count > 0)
                 {
                     // Add a subscribed measurement device placeholder - all associated measurements will have deviceID of zero
                     row = resultSet.Tables["DeviceTable"].NewRow();
