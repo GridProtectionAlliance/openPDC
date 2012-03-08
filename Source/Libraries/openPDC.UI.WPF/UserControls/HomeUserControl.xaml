@@ -60,8 +60,8 @@
             </Grid.RowDefinitions>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <ComboBox x:Name="ComboBoxDevice" Margin="0,0,5,0" SelectionChanged="ComboBoxDevice_SelectionChanged" DisplayMemberPath="Value"/>
-                <ComboBox x:Name="ComboBoxMeasurement" Margin="0,0,5,0" SelectionChanged="ComboBoxMeasurement_SelectionChanged" DisplayMemberPath="PointTag" SelectedValuePath="SignalID"/>                
+                <ComboBox x:Name="ComboBoxDevice" Margin="0,0,5,0" SelectionChanged="ComboBoxDevice_SelectionChanged" DisplayMemberPath="Value" Width="Auto" MinWidth="150"/>
+                <ComboBox x:Name="ComboBoxMeasurement" Margin="0,0,5,0" SelectionChanged="ComboBoxMeasurement_SelectionChanged" DisplayMemberPath="PointTag" SelectedValuePath="SignalID" Width="Auto" MinWidth="150"/>                
             </StackPanel>
 
             <d3:ChartPlotter Name="ChartPlotterDynamic" Grid.Row="1" Margin="2" Height="225" Width="590" MainHorizontalAxisVisibility="Collapsed">                
