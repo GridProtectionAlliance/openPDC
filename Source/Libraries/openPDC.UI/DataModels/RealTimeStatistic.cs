@@ -157,7 +157,7 @@ namespace openPDC.UI.DataModels
                     Name = "System",
                     StatusColor = "Gray",
                     StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(
-                        statisticMeasurements.Where(sm => sm.SignalReference.StartsWith("SYSTEM-ST"))
+                        statisticMeasurements.Where(sm => sm.SignalReference.Contains("!SYSTEM"))
                         ),
                     DeviceStatisticList = new ObservableCollection<PdcDeviceStatistic>()
                 });
@@ -354,7 +354,7 @@ namespace openPDC.UI.DataModels
                 Func<DataRow, KeyValuePair<DataRow, string>> mapFunction = measurement =>
                 {
                     string signalReference = measurement.Field<string>("SignalReference");
-                    string measurementSource = signalReference.Contains("!IS") ? "InputStream" : signalReference.Contains("!OS") ? "OutputStream" : signalReference.StartsWith("SYSTEM") ? "System" : "Device";
+                    string measurementSource = signalReference.Contains("!IS") ? "InputStream" : signalReference.Contains("!OS") ? "OutputStream" : signalReference.Contains("!SYSTEM") ? "System" : "Device";
                     return new KeyValuePair<DataRow, string>(measurement, measurementSource);
                 };
 
