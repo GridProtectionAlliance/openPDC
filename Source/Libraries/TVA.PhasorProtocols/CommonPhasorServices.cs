@@ -448,7 +448,9 @@ namespace TVA.PhasorProtocols
                 }
             }
             else
+            {
                 OnStatusMessage("ERROR: Cannot process simultaneous requests for device configurations, please try again in a few seconds..");
+            }
 
             return new ConfigurationErrorFrame();
         }
@@ -465,7 +467,9 @@ namespace TVA.PhasorProtocols
                 OnStatusMessage("Sent device command \"{0}\"...", command);
             }
             else
+            {
                 OnStatusMessage("Failed to send device command \"{0}\", no frame parser is defined.", command);
+            }
         }
 
         /// <summary>
@@ -500,9 +504,13 @@ namespace TVA.PhasorProtocols
                 sourceAcronym = signalReference.Acronym;
 
                 if (sourceAcronym.EndsWith("!IS"))
+                {
                     source = "InputStream";
+                }
                 else if (sourceAcronym.EndsWith("!OS"))
+                {
                     source = "OutputStream";
+                }
                 else
                 {
                     device = m_inputAdapters.FirstOrDefault<IInputAdapter>(adapter => adapter.Name == sourceAcronym) as PhasorMeasurementMapper;
@@ -528,13 +536,19 @@ namespace TVA.PhasorProtocols
             outputStreams = m_actionAdapters.Where<IActionAdapter>(adapter => adapter is PhasorDataConcentratorBase).Cast<PhasorDataConcentratorBase>();
 
             foreach (PhasorMeasurementMapper inputStream in inputStreams)
+            {
                 statisticsEngine.AddSource("InputStream", inputStream);
+            }
 
             foreach (ConfigurationCell device in devices)
+            {
                 statisticsEngine.AddSource("Device", device);
+            }
 
             foreach (PhasorDataConcentratorBase outputStream in outputStreams)
+            {
                 statisticsEngine.AddSource("OutputStream", outputStream);
+            }
         }
 
         private void m_frameParser_ReceivedConfigurationFrame(object sender, EventArgs<IConfigurationFrame> e)

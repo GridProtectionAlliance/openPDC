@@ -79,7 +79,6 @@ namespace ICCPExport
         private bool m_useNumericQuality;
         private int m_exportInterval;
         private Ticks m_lastPublicationTime;
-        private bool m_intervalPublished;
         private string m_companyTagPrefix;
         private bool m_statusDisplayed;
         private long m_skippedExports;
