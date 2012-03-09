@@ -90,7 +90,7 @@ namespace openPDCManager
                 Title += " - " + CommonFunctions.CurrentUser;
 
             CommonFunctions.SetRetryServiceConnection(true);
-            CommonFunctions.ServiceConntectionRefreshed += new EventHandler(CommonFunctions_ServiceConntectionRefreshed);
+            CommonFunctions.ServiceConnectionRefreshed += CommonFunctions_ServiceConnectionRefreshed;
             m_navigationProcessed = false;
             m_navigationList = new LinkedList<TextBlock>();
             FrameContent.Navigated += new NavigatedEventHandler(FrameContent_Navigated);
@@ -100,7 +100,7 @@ namespace openPDCManager
 
         #region [ Methods ]
 
-        private void CommonFunctions_ServiceConntectionRefreshed(object sender, EventArgs e)
+        private void CommonFunctions_ServiceConnectionRefreshed(object sender, EventArgs e)
         {
             try
             {

@@ -29,13 +29,12 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
-using TimeSeriesFramework.Transport;
 using TimeSeriesFramework.Statistics;
+using TimeSeriesFramework.Transport;
 using TVA.Configuration;
 using TVA.Data;
 using TVA.IO;
@@ -500,13 +499,13 @@ namespace TVA.PhasorProtocols
                 signalReference = new SignalReference(measurementDefinition.Field<object>("SignalReference").ToString());
                 sourceAcronym = signalReference.Acronym;
 
-                if (signalReference.Acronym.EndsWith("!IS"))
+                if (sourceAcronym.EndsWith("!IS"))
                     source = "InputStream";
-                else if (signalReference.Acronym.EndsWith("!OS"))
+                else if (sourceAcronym.EndsWith("!OS"))
                     source = "OutputStream";
                 else
                 {
-                    device = m_inputAdapters.FirstOrDefault<IInputAdapter>(adapter => adapter.Name == signalReference.Acronym) as PhasorMeasurementMapper;
+                    device = m_inputAdapters.FirstOrDefault<IInputAdapter>(adapter => adapter.Name == sourceAcronym) as PhasorMeasurementMapper;
 
                     if (device != null)
                         source = "Device";
@@ -1032,7 +1031,7 @@ namespace TVA.PhasorProtocols
                 {
                     string updateQuery = ParameterizedQueryString(adapterType, "UPDATE CustomActionAdapter SET ConnectionString = {0} WHERE AdapterName = 'STATISTIC!SERVICES' AND NodeID = " + nodeIDQueryString, "connectionString");
 
-                    if (statWaitHandleNames == string.Empty)
+                    if (string.IsNullOrEmpty(statWaitHandleNames))
                         statWaitHandleNames = "CommonPhasorServicesInitialize";
                     else
                         statWaitHandleNames += ",CommonPhasorServicesInitialize";
