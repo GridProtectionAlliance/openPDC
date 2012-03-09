@@ -1099,8 +1099,12 @@ namespace openPDC.UI.DataModels
                 {
                     if (row.ConvertField<bool>("IsConcentrator"))
                     {
-                        foreach (Device device in GetDevices(database, " WHERE ParentID = " + row.ConvertField<int>("ID")))
-                            deviceList[device.ID] = device.Acronym;
+                        ObservableCollection<Device> devices = GetDevices(database, " WHERE ParentID = " + row.ConvertField<int>("ID"));
+                        if (devices != null)
+                        {
+                            foreach (Device device in devices)
+                                deviceList[device.ID] = device.Acronym;
+                        }
                     }
                     else
                     {
