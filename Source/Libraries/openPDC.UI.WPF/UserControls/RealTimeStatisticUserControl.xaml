@@ -35,11 +35,11 @@
                             </Style>
                         </StackPanel.Resources>
 
-                        <TextBlock Text="{tsfBinding:Column Path=ID}" Width="120"/>
-                        <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Width="140"/>
-                        <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTip="{tsfBinding:Column Path=StatisticDescription}" Width="225" TextWrapping="Wrap"/>
-                        <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" Width="75" HorizontalAlignment="Center" TextAlignment="Center"/>
-                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" Width="215"
+                        <TextBlock Text="{tsfBinding:Column Path=ID}" Width="150"/>
+                        <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Width="150"/>
+                        <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTip="{tsfBinding:Column Path=StatisticDescription}" Width="200" TextWrapping="Wrap"/>
+                        <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" Width="70" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" Width="210"
                                    Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center" TextAlignment="Center"/>
                     </StackPanel>
                 </Border>

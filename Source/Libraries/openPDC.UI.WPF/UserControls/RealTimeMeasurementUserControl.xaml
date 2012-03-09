@@ -24,9 +24,8 @@
         <StackPanel.Resources>
 
             <HierarchicalDataTemplate x:Key="MeasurementNodeTemplate">
-                <Border BorderThickness="0,0,0,1" BorderBrush="#FFDDDDDD">
+                <Border BorderThickness="0,0,0,1" BorderBrush="#FFDDDDDD">                                       
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-
                         <StackPanel.Resources>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -35,8 +34,8 @@
                             </Style>
                         </StackPanel.Resources>
 
-                        <TextBlock Text="{tsfBinding:Column Path=ID}" Width="100"/>
-                        <TextBlock Text="{tsfBinding:Column Path=Description}" Width="400" TextWrapping="Wrap"/>
+                        <TextBlock Text="{tsfBinding:Column Path=ID}" Width="150"/>
+                        <TextBlock Text="{tsfBinding:Column Path=Description}" Width="350" TextWrapping="Wrap"/>
                         <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" Width="100" HorizontalAlignment="Center" TextAlignment="Center"/>
                         <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" Width="90"
                                    Foreground="{tsfBinding:Column Path=Quality, Converter={StaticResource StringToStatusColorConverter}}" HorizontalAlignment="Center" TextAlignment="Center"/>
