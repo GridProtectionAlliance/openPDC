@@ -519,7 +519,7 @@ namespace openPDC.UI.ViewModels
                 {
                     windowsServiceClient.Helper.ReceivedServiceResponse += Helper_ReceivedServiceResponse;
 
-                    windowsServiceClient.Helper.SendRequest("TemporalSupport -system");
+                    CommonFunctions.SendCommandToService("TemporalSupport -system");
 
                     if (!s_responseWaitHandle.WaitOne(10000))
                     {

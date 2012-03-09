@@ -1070,7 +1070,7 @@ namespace openPDC.UI.ViewModels
                     if (!connectionString.ToLower().Contains("phasorprotocol"))
                         connectionString += "phasorprotocol=" + m_protocolList.FirstOrDefault(p => p.ID == ProtocolID).Acronym + ";";
 
-                    windowsServiceClient.Helper.SendRequest(string.Format("invoke 0 requestdeviceconfiguration \"{0}\"", connectionString));
+                    CommonFunctions.SendCommandToService(string.Format("invoke 0 requestdeviceconfiguration \"{0}\"", connectionString));
 
                     if (s_responseWaitHandle.WaitOne(65000))
                     {

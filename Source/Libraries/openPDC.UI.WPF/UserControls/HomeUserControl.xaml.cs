@@ -142,10 +142,10 @@ namespace openPDC.UI.UserControls
             else
             {
                 m_windowsServiceClient.Helper.ReceivedServiceResponse += new EventHandler<EventArgs<ServiceResponse>>(Helper_ReceivedServiceResponse);
-                m_windowsServiceClient.Helper.SendRequest("Health -actionable");
-                m_windowsServiceClient.Helper.SendRequest("Version -actionable");
-                m_windowsServiceClient.Helper.SendRequest("Status -actionable");
-                m_windowsServiceClient.Helper.SendRequest("Time -actionable");
+                CommonFunctions.SendCommandToService("Health -actionable");
+                CommonFunctions.SendCommandToService("Version -actionable");
+                CommonFunctions.SendCommandToService("Status -actionable");
+                CommonFunctions.SendCommandToService("Time -actionable");
                 m_eventHandlerRegistered = true;
             }
 
@@ -220,13 +220,13 @@ namespace openPDC.UI.UserControls
                     if (!m_eventHandlerRegistered)
                     {
                         m_windowsServiceClient.Helper.ReceivedServiceResponse += new EventHandler<EventArgs<ServiceResponse>>(Helper_ReceivedServiceResponse);
-                        m_windowsServiceClient.Helper.SendRequest("Version -actionable");
+                        CommonFunctions.SendCommandToService("Version -actionable");
                     }
 
-                    m_windowsServiceClient.Helper.SendRequest("Health -actionable");
-                    m_windowsServiceClient.Helper.SendRequest("Time -actionable");
+                    CommonFunctions.SendCommandToService("Health -actionable");
+                    CommonFunctions.SendCommandToService("Time -actionable");
                     if (PopupStatus.IsOpen)
-                        m_windowsServiceClient.Helper.SendRequest("Status -actionable");
+                        CommonFunctions.SendCommandToService("Status -actionable");
                 }
                 catch
                 {
@@ -355,7 +355,7 @@ namespace openPDC.UI.UserControls
             PopupStatus.IsOpen = true;
             if (m_windowsServiceClient != null && m_windowsServiceClient.Helper != null &&
                    m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
-                m_windowsServiceClient.Helper.SendRequest("Status -actionable");
+                CommonFunctions.SendCommandToService("Status -actionable");
         }
 
         private void ButtonClose_Click(object sender, RoutedEventArgs e)
