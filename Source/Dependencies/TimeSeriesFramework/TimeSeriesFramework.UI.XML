@@ -425,7 +425,7 @@
             <param name="userControl">User control to be loaded.</param>
             <param name="title">Title of the user control to be loaded.</param>
         </member>
-        <member name="E:TimeSeriesFramework.UI.CommonFunctions.ServiceConntectionRefreshed">
+        <member name="E:TimeSeriesFramework.UI.CommonFunctions.ServiceConnectionRefreshed">
             <summary>
             Used to notify main window that connection to service has changed.
             </summary>
