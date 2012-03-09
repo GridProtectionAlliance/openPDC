@@ -49,6 +49,7 @@ namespace openPDC.UI.UserControls
         public DeviceUserControl(Device device)
         {
             InitializeComponent();
+            this.Loaded += new System.Windows.RoutedEventHandler(DeviceUserControl_Loaded);
             this.Unloaded += new System.Windows.RoutedEventHandler(DeviceUserControl_Unloaded);
             if (device == null)
                 this.DataContext = new Devices(0, false);
@@ -59,6 +60,11 @@ namespace openPDC.UI.UserControls
         #endregion
 
         #region [ Methods ]
+
+        private void DeviceUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            TextBoxAcronym.Focus();
+        }
 
         /// <summary>
         /// Handles unload event of the <see cref="DeviceUserControl"/>.
