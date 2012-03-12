@@ -1070,6 +1070,8 @@ namespace openPDC.UI.ViewModels
                     if (!connectionString.ToLower().Contains("phasorprotocol"))
                         connectionString += "phasorprotocol=" + m_protocolList.FirstOrDefault(p => p.ID == ProtocolID).Acronym + ";";
 
+                    s_responseWaitHandle.Reset();
+                    m_requestConfigurationAttachment = null;
                     CommonFunctions.SendCommandToService(string.Format("invoke 0 requestdeviceconfiguration \"{0}\"", connectionString));
 
                     if (s_responseWaitHandle.WaitOne(65000))
@@ -1166,12 +1168,11 @@ namespace openPDC.UI.ViewModels
             // Handle any special attachments coming in from service
             if (attachments != null)
             {
-                foreach (object attachment in attachments)
-                {
-                    m_requestConfigurationAttachment = attachment;
-                    s_responseWaitHandle.Set();
-                }
+                // Return value is always the first attachment
+                m_requestConfigurationAttachment = attachments.First();
             }
+
+            s_responseWaitHandle.Set();
         }
 
         /// <summary>
