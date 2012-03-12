@@ -484,6 +484,7 @@ namespace TVA.PhasorProtocols
                 m_dataPublisher.QueueMeasurementsForProcessing(measurements);
         }
 
+        // TODO: Add a StatisticsCategory table to do mapping automatically
         private void StatisticsEngine_Loaded(object sender, StatisticsEngine.UnmappedMeasurementsEventArgs e)
         {
             StatisticsEngine statisticsEngine = StatisticsEngine.Default;
@@ -495,6 +496,7 @@ namespace TVA.PhasorProtocols
             SignalReference signalReference;
             string sourceAcronym;
             string source;
+            int suffixIndex;
 
             foreach (IMeasurement measurement in e.UnmappedMeasurements)
             {
@@ -503,23 +505,24 @@ namespace TVA.PhasorProtocols
                 signalReference = new SignalReference(measurementDefinition.Field<object>("SignalReference").ToString());
                 sourceAcronym = signalReference.Acronym;
 
-                if (sourceAcronym.EndsWith("!IS"))
+                if (StatisticsEngine.RegexMatch(signalReference.ToString(), "IS"))
                 {
                     source = "InputStream";
                 }
-                else if (sourceAcronym.EndsWith("!OS"))
+                else if (StatisticsEngine.RegexMatch(signalReference.ToString(), "OS"))
                 {
                     source = "OutputStream";
                 }
-                else
+                else if (StatisticsEngine.RegexMatch(signalReference.ToString(), "PMU"))
                 {
-                    device = m_inputAdapters.FirstOrDefault<IInputAdapter>(adapter => adapter.Name == sourceAcronym) as PhasorMeasurementMapper;
+                    suffixIndex = sourceAcronym.LastIndexOf('!');
+                    device = m_inputAdapters.FirstOrDefault<IInputAdapter>(adapter => adapter.Name == sourceAcronym.Remove(suffixIndex)) as PhasorMeasurementMapper;
 
-                    if (device != null)
+                    if ((object)device != null)
                         source = "Device";
                 }
 
-                if (source != null)
+                if ((object)source != null)
                     statisticsEngine.MapMeasurement(measurement, source);
             }
         }
@@ -844,9 +847,24 @@ namespace TVA.PhasorProtocols
 
                     foreach (DataRow statistic in deviceStatistics)
                     {
-                        acronym = device.Field<string>("Acronym");
+                        string oldAcronym;
+                        string oldSignalReference;
+
                         signalIndex = statistic.ConvertField<int>("SignalIndex");
+                        oldAcronym = device.Field<string>("Acronym");
+                        acronym = oldAcronym + "!PMU";
+                        oldSignalReference = SignalReference.ToString(oldAcronym, SignalKind.Statistic, signalIndex);
                         signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
+
+                        // If the original format for device statistics is found in the database, update to new format
+                        if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1}", oldSignalReference, statHistorianID))) > 0)
+                        {
+                            connection.ExecuteNonQuery("UPDATE Measurement SET SignalReference='{0}' WHERE SignalReference='{1}' AND HistorianID={2}", signalReference, oldSignalReference, statHistorianID);
+
+                            // No need to insert it since we
+                            // can guarantee its existence
+                            break;
+                        }
 
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1}", signalReference, statHistorianID))) == 0)
                         {
@@ -1023,13 +1041,6 @@ namespace TVA.PhasorProtocols
                     {
                         connection.ExecuteNonQuery(string.Format("DELETE FROM OutputStreamMeasurement WHERE ID = {0} AND NodeID = {1}", measurementID, nodeIDQueryString));
                     }
-                }
-
-                statusMessage("CommonPhasorServices", new EventArgs<string>("Validating external data publisher..."));
-
-                if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM CustomActionAdapter WHERE AdapterName='EXTERNAL!DATAPUBLISHER' AND NodeID = {0}", nodeIDQueryString))) == 0)
-                {
-                    connection.ExecuteNonQuery(string.Format("INSERT INTO CustomActionAdapter(NodeID, AdapterName, AssemblyName, TypeName, ConnectionString, Enabled) VALUES({0}, 'EXTERNAL!DATAPUBLISHER', 'TimeSeriesFramework.dll', 'TimeSeriesFramework.Transport.DataPublisher', 'requireAuthentication=true', 1)", nodeIDQueryString));
                 }
 
                 statusMessage("CommonPhasorServices", new EventArgs<string>("Validating statistics engine..."));

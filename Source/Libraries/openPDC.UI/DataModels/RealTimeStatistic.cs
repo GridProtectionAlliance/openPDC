@@ -27,6 +27,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Windows.Media;
+using TimeSeriesFramework.Statistics;
 using TimeSeriesFramework.UI;
 using TVA.Data;
 
@@ -354,7 +355,19 @@ namespace openPDC.UI.DataModels
                 Func<DataRow, KeyValuePair<DataRow, string>> mapFunction = measurement =>
                 {
                     string signalReference = measurement.Field<string>("SignalReference");
-                    string measurementSource = signalReference.Contains("!IS") ? "InputStream" : signalReference.Contains("!OS") ? "OutputStream" : signalReference.Contains("!SYSTEM") ? "System" : "Device";
+                    string measurementSource;
+
+                    if (StatisticsEngine.RegexMatch(signalReference, "SYSTEM"))
+                        measurementSource = "System";
+                    else if (StatisticsEngine.RegexMatch(signalReference, "PMU"))
+                        measurementSource = "Device";
+                    else if (StatisticsEngine.RegexMatch(signalReference, "IS"))
+                        measurementSource = "InputStream";
+                    else if (StatisticsEngine.RegexMatch(signalReference, "OS"))
+                        measurementSource = "OutputStream";
+                    else
+                        measurementSource = "???";
+
                     return new KeyValuePair<DataRow, string>(measurement, measurementSource);
                 };
 
