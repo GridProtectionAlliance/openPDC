@@ -33,6 +33,11 @@ ECHO.
 ECHO Getting latest version...
 %tfs% get %target1% /version:T /force /recursive /noprompt
 %tfs% get %target2% /version:T /force /recursive /noprompt
+%tfs% get "%sourcetools%ConfigCrypter.exe" /force /recursive /noprompt
+%tfs% get "%sourcetools%ConfigurationEditor.exe" /force /recursive /noprompt
+%tfs% get "%sourcetools%DataMigrationUtility.exe" /force /recursive /noprompt
+%tfs% get "%sourcetools%HistorianPlaybackUtility.exe" /force /recursive /noprompt
+%tfs% get "%sourcetools%HistorianView.exe" /force /recursive /noprompt
 
 ECHO.
 ECHO Checking out dependencies...
@@ -40,6 +45,7 @@ ECHO Checking out dependencies...
 %tfs% checkout %target2% /recursive /noprompt
 %tfs% checkout "%sourcetools%ConfigCrypter.exe" /noprompt
 %tfs% checkout "%sourcetools%ConfigurationEditor.exe" /noprompt
+%tfs% checkout "%sourcetools%DataMigrationUtility.exe" /noprompt
 %tfs% checkout "%sourcetools%HistorianPlaybackUtility.exe" /noprompt
 %tfs% checkout "%sourcetools%HistorianView.exe" /noprompt
 
@@ -50,6 +56,7 @@ XCOPY %source2% %target2% /Y /U
 XCOPY %source1% %target1% /Y /U
 XCOPY "%frameworktools%ConfigCrypter\ConfigCrypter.exe" "%sourcetools%ConfigCrypter.exe" /Y
 XCOPY "%frameworktools%ConfigEditor\ConfigEditor.exe" "%sourcetools%ConfigurationEditor.exe" /Y
+XCOPY "%frameworktools%DataMigrationUtility\DataMigrationUtility.exe" "%sourcetools%DataMigrationUtility.exe" /Y
 XCOPY "%historiantools%HistorianPlaybackUtility\HistorianPlaybackUtility.exe" "%sourcetools%HistorianPlaybackUtility.exe" /Y
 XCOPY "%historiantools%HistorianView\HistorianView.exe" "%sourcetools%HistorianView.exe" /Y
 
@@ -67,6 +74,7 @@ ECHO Checking in dependencies...
 %tfs% checkin %target2% /noprompt /recursive /comment:"Synchrophasor: Updated time-series framework dependencies."
 %tfs% checkin "%sourcetools%ConfigCrypter.exe" /noprompt /comment:"Synchrophasor: Updated code library tool: ConfigCrypter."
 %tfs% checkin "%sourcetools%ConfigurationEditor.exe" /noprompt /comment:"Synchrophasor: Updated code library tools: ConfigurationEditor."
+%tfs% checkin "%sourcetools%DataMigrationUtility.exe" /noprompt /comment:"Synchrophasor: Updated code library tools: DataMigrationUtility."
 %tfs% checkin "%sourcetools%HistorianPlaybackUtility.exe" /noprompt /comment:"Synchrophasor: Updated openHistorian playback / export tool: HistorianPlaybackUtility."
 %tfs% checkin "%sourcetools%HistorianView.exe" /noprompt /comment:"Synchrophasor: Updated openHistorian trending tool: HistorianView."
 
