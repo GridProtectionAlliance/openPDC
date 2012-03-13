@@ -143,10 +143,10 @@ namespace openPDC.UI.DataModels
                 ObservableCollection<StatisticMeasurement> statisticMeasurements = GetStatisticMeasurements(database);
 
                 // We do this for later use in refreshing data.
-                StatisticMeasurements = new Dictionary<int, StatisticMeasurement>();
+                StatisticMeasurements = new Dictionary<Guid, StatisticMeasurement>();
                 foreach (StatisticMeasurement statisticMeasurement in statisticMeasurements)
                 {
-                    StatisticMeasurements.Add(statisticMeasurement.PointID, statisticMeasurement);
+                    StatisticMeasurements.Add(statisticMeasurement.SignalID, statisticMeasurement);
                 }
 
                 // Create a system statistics list.
@@ -337,7 +337,7 @@ namespace openPDC.UI.DataModels
                 ObservableCollection<Statistic> statisticDefinitions = Statistic.Load(database);
 
                 // Get statistics measurements.
-                DataTable statisticMeasurements = database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, DeviceID, PointID, PointTag, SignalReference " +
+                DataTable statisticMeasurements = database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT SignalID, ID, DeviceID, PointID, PointTag, SignalReference " +
                     "FROM StatisticMeasurement WHERE NodeID = {0}", "nodeID"), DefaultTimeout, database.CurrentNodeID());
 
                 // Assign min and max point IDs as we will need them to request data from web service.
@@ -391,6 +391,7 @@ namespace openPDC.UI.DataModels
 
                         return new StatisticMeasurement()
                         {
+                            SignalID = database.Guid(measurement, "SignalID"),
                             ID = measurement.Field<string>("ID"),
                             DeviceID = Convert.ToInt32(measurement.Field<object>("DeviceID") ?? -1),
                             PointID = Convert.ToInt32(measurement.Field<object>("PointID")),
@@ -432,7 +433,7 @@ namespace openPDC.UI.DataModels
         /// <summary>
         /// Defines a collection of <see cref="StatisticMeasurement"/>s defined in the database.
         /// </summary>
-        public static Dictionary<int, StatisticMeasurement> StatisticMeasurements;
+        public static Dictionary<Guid, StatisticMeasurement> StatisticMeasurements;
 
         /// <summary>
         /// Defines a collection of <see cref="StreamStatistic"/> defined in the database.
@@ -718,6 +719,7 @@ namespace openPDC.UI.DataModels
         #region [ Members ]
 
         // Fields
+        private Guid m_signalID;
         private int m_deviceID;
         private int m_pointID;
         private string m_id;
@@ -739,6 +741,22 @@ namespace openPDC.UI.DataModels
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets <see cref="StatisticMeasurement"/>'s SignalID.
+        /// </summary>
+        public Guid SignalID
+        {
+            get
+            {
+                return m_signalID;
+            }
+            set
+            {
+                m_signalID = value;
+                OnPropertyChanged("SignalID");
+            }
+        }
 
         /// <summary>
         /// Gets or set <see cref="StatisticMeasurement"/>'s DeviceID.

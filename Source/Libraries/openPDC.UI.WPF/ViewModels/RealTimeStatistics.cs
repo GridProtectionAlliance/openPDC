@@ -23,12 +23,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
+using System.Text;
+using System.Threading;
 using System.Windows;
-using System.Windows.Threading;
-using System.Xml.Linq;
 using openPDC.UI.DataModels;
+using TimeSeriesFramework;
+using TimeSeriesFramework.Transport;
 using TimeSeriesFramework.UI;
 using TVA;
 using TVA.Data;
@@ -40,13 +40,33 @@ namespace openPDC.UI.ViewModels
         #region [ Members ]
 
         private int m_statisticDataRefreshInterval = 10;
-        private DispatcherTimer m_refreshTimer;
         private string m_lastRefresh;
-        private string m_url;
+        private bool m_restartConnectionCycle;
+
+        // Unsynchronized Subscription Fields.
+        private DataSubscriber m_unsynchronizedSubscriber;
+        private bool m_subscribedUnsynchronized;
+        private string m_allSignalIDs;  // string of GUIDs used for subscription.
+        private int m_processingUnsynchronizedMeasurements = 0;
 
         #endregion
 
         #region [ Properties ]
+
+        /// <summary>
+        /// Gets or sets a boolean flag indicating if connection to backend windows service needs to be reestablished upon disconnection.
+        /// </summary>
+        public bool RestartConnectionCycle
+        {
+            get
+            {
+                return m_restartConnectionCycle;
+            }
+            set
+            {
+                m_restartConnectionCycle = value;
+            }
+        }
 
         /// <summary>
         /// Gets flag that determines if <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/> is a new record.
@@ -59,6 +79,9 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets when data refreshed last time.
+        /// </summary>
         public string LastRefresh
         {
             get
@@ -76,19 +99,165 @@ namespace openPDC.UI.ViewModels
 
         #region [ Constructors ]
 
+        /// <summary>
+        /// Creates an instance of <see cref="RealTimeStatistics"/>.
+        /// </summary>
+        /// <param name="itemsPerPage">Number of items to be displayed on page.</param>
+        /// <param name="refreshInterval">Interval at which data will be refreshed.</param>
+        /// <param name="autoSave">Boolean flag indicating if changed records to be auto saved.</param>
         public RealTimeStatistics(int itemsPerPage, int refreshInterval, bool autoSave = false)
             : base(0, autoSave)
         {
             m_statisticDataRefreshInterval = refreshInterval;
-            m_refreshTimer = new DispatcherTimer();
-            m_refreshTimer.Interval = TimeSpan.FromSeconds(m_statisticDataRefreshInterval);
-            m_refreshTimer.Tick += new EventHandler(m_refreshTimer_Tick);
+            InitializeUnsynchronizedSubscription();
+            m_restartConnectionCycle = true;
+
             Load();
         }
 
         #endregion
 
         #region [ Methods ]
+
+        #region [ Unsynchronized Subscription ]
+
+        private void m_unsynchronizedSubscriber_ConnectionTerminated(object sender, EventArgs e)
+        {
+            m_subscribedUnsynchronized = false;
+            UnsubscribeUnsynchronizedData();
+            if (RestartConnectionCycle)
+                InitializeUnsynchronizedSubscription();
+        }
+
+        private void m_unsynchronizedSubscriber_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
+        {
+            if (0 == Interlocked.Exchange(ref m_processingUnsynchronizedMeasurements, 1))
+            {
+                try
+                {
+                    foreach (IMeasurement newMeasurement in e.Argument)
+                    {
+                        StatisticMeasurement measurement;
+
+                        if (RealTimeStatistic.StatisticMeasurements.TryGetValue(newMeasurement.ID, out measurement))
+                        {
+                            if (!string.IsNullOrEmpty(measurement.DisplayFormat) && !string.IsNullOrEmpty(measurement.DataType))
+                            {
+                                measurement.Quality = newMeasurement.ValueQualityIsGood() ? "GOOD" : "BAD";
+                                measurement.Value = string.Format(measurement.DisplayFormat, ConvertValueToType(newMeasurement.Value.ToString(), measurement.DataType));
+                                measurement.TimeTag = newMeasurement.Timestamp.ToString("HH:mm:ss.fff");
+
+                                StreamStatistic streamStatistic;
+                                if (measurement.ConnectedState) //if measurement defines connection state.
+                                {
+                                    if ((measurement.Source == "System" && RealTimeStatistic.SystemStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
+                                        (measurement.Source == "InputStream" && RealTimeStatistic.InputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
+                                        (measurement.Source == "OutputStream" && RealTimeStatistic.OutputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)))
+                                    {
+                                        if (newMeasurement.ValueQualityIsGood() && newMeasurement.TimestampQualityIsGood())
+                                            streamStatistic.StatusColor = "Green";
+                                        else if (!newMeasurement.ValueQualityIsGood() && !newMeasurement.TimestampQualityIsGood())
+                                            streamStatistic.StatusColor = "Red";
+                                        else
+                                            streamStatistic.StatusColor = "Yellow";
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    LastRefresh = "Last Refresh: " + DateTime.Now.ToString("HH:mm:ss.fff");
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref m_processingUnsynchronizedMeasurements, 0);
+                }
+            }
+        }
+
+        private void m_unsynchronizedSubscriber_ConnectionEstablished(object sender, EventArgs e)
+        {
+            m_subscribedUnsynchronized = true;
+            SubscribeUnsynchronizedData();
+        }
+
+        private void m_unsynchronizedSubscriber_ProcessException(object sender, EventArgs<Exception> e)
+        {
+
+        }
+
+        private void m_unsynchronizedSubscriber_StatusMessage(object sender, EventArgs<string> e)
+        {
+
+        }
+
+        private void InitializeUnsynchronizedSubscription()
+        {
+            try
+            {
+                using (AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory))
+                {
+                    m_unsynchronizedSubscriber = new DataSubscriber();
+                    m_unsynchronizedSubscriber.StatusMessage += m_unsynchronizedSubscriber_StatusMessage;
+                    m_unsynchronizedSubscriber.ProcessException += m_unsynchronizedSubscriber_ProcessException;
+                    m_unsynchronizedSubscriber.ConnectionEstablished += m_unsynchronizedSubscriber_ConnectionEstablished;
+                    m_unsynchronizedSubscriber.NewMeasurements += m_unsynchronizedSubscriber_NewMeasurements;
+                    m_unsynchronizedSubscriber.ConnectionTerminated += m_unsynchronizedSubscriber_ConnectionTerminated;
+                    m_unsynchronizedSubscriber.ConnectionString = database.DataPublisherConnectionString();
+                    m_unsynchronizedSubscriber.Initialize();
+                    m_unsynchronizedSubscriber.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                Popup("Failed to initialize subscription." + Environment.NewLine + ex.Message, "Failed to Subscribe", MessageBoxImage.Error);
+            }
+        }
+
+        private void StopUnsynchronizedSubscription()
+        {
+            if (m_unsynchronizedSubscriber != null)
+            {
+                m_unsynchronizedSubscriber.StatusMessage -= m_unsynchronizedSubscriber_StatusMessage;
+                m_unsynchronizedSubscriber.ProcessException -= m_unsynchronizedSubscriber_ProcessException;
+                m_unsynchronizedSubscriber.ConnectionEstablished -= m_unsynchronizedSubscriber_ConnectionEstablished;
+                m_unsynchronizedSubscriber.NewMeasurements -= m_unsynchronizedSubscriber_NewMeasurements;
+                m_unsynchronizedSubscriber.ConnectionTerminated -= m_unsynchronizedSubscriber_ConnectionTerminated;
+                m_unsynchronizedSubscriber.Stop();
+                m_unsynchronizedSubscriber.Dispose();
+                m_unsynchronizedSubscriber = null;
+            }
+        }
+
+        private void SubscribeUnsynchronizedData()
+        {
+            if (m_unsynchronizedSubscriber == null)
+                InitializeUnsynchronizedSubscription();
+
+            if (m_subscribedUnsynchronized && !string.IsNullOrEmpty(m_allSignalIDs))
+                m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true, m_statisticDataRefreshInterval);
+        }
+
+        /// <summary>
+        /// Unsubscribes data from the service.
+        /// </summary>
+        public void UnsubscribeUnsynchronizedData()
+        {
+            try
+            {
+                if (m_unsynchronizedSubscriber != null)
+                {
+                    m_unsynchronizedSubscriber.Unsubscribe();
+                    StopUnsynchronizedSubscription();
+                }
+            }
+            catch
+            {
+                m_unsynchronizedSubscriber = null;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Gets the primary key value of the <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/>.
@@ -114,17 +283,18 @@ namespace openPDC.UI.ViewModels
             {
                 base.Load();
 
-                using (AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory))
+                StringBuilder sb = new StringBuilder();
+                foreach (KeyValuePair<Guid, StatisticMeasurement> measurement in RealTimeStatistic.StatisticMeasurements)
                 {
-                    m_url = database.RealTimeStatisticServiceUrl();
-                    if (!m_url.EndsWith("/"))
-                        m_url = m_url + "/";
-
-                    m_url = m_url + "timeseriesdata/read/current/" + RealTimeStatistic.MinPointID.ToString() + "-" + RealTimeStatistic.MaxPointID.ToString() + "/XML";
+                    sb.Append(measurement.Key);
+                    sb.Append(";");
                 }
 
-                m_refreshTimer.Start();
-                GetStatisticData();
+                m_allSignalIDs = sb.ToString();
+                if (m_allSignalIDs.Length > 0)
+                    m_allSignalIDs = m_allSignalIDs.Substring(0, m_allSignalIDs.Length - 1);
+
+                //GetStatisticData();
             }
             catch (Exception ex)
             {
@@ -141,71 +311,66 @@ namespace openPDC.UI.ViewModels
             }
         }
 
-        private void m_refreshTimer_Tick(object sender, EventArgs e)
-        {
-            GetStatisticData();
-        }
-
-        private void GetStatisticData()
-        {
-            try
-            {
-                Dictionary<int, StatisticMeasurement> statisticMeasurementData = new Dictionary<int, StatisticMeasurement>();
-                HttpWebRequest request = WebRequest.Create(m_url) as HttpWebRequest;
-                using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-                {
-                    if (response.StatusCode == HttpStatusCode.OK)
-                    {
-                        StreamReader reader = new StreamReader(response.GetResponseStream());
-                        XElement timeSeriesDataPoints = XElement.Parse(reader.ReadToEnd());
+        //private void GetStatisticData()
+        //{
+        //    try
+        //    {
+        //        Dictionary<int, StatisticMeasurement> statisticMeasurementData = new Dictionary<int, StatisticMeasurement>();
+        //        HttpWebRequest request = WebRequest.Create(m_url) as HttpWebRequest;
+        //        using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+        //        {
+        //            if (response.StatusCode == HttpStatusCode.OK)
+        //            {
+        //                StreamReader reader = new StreamReader(response.GetResponseStream());
+        //                XElement timeSeriesDataPoints = XElement.Parse(reader.ReadToEnd());
 
 
-                        foreach (XElement element in timeSeriesDataPoints.Element("TimeSeriesDataPoints").Elements("TimeSeriesDataPoint"))
-                        {
-                            StatisticMeasurement measurement;
-                            if (RealTimeStatistic.StatisticMeasurements.TryGetValue(Convert.ToInt32(element.Element("HistorianID").Value), out measurement))
-                            {
-                                DateTime sourceDateTime;
-                                string quality;
-                                if (DateTime.TryParseExact(element.Element("Time").Value, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 30)
-                                    quality = "Unknown";
-                                else
-                                    quality = element.Element("Quality").Value;
+        //                foreach (XElement element in timeSeriesDataPoints.Element("TimeSeriesDataPoints").Elements("TimeSeriesDataPoint"))
+        //                {
+        //                    StatisticMeasurement measurement;
+        //                    if (RealTimeStatistic.StatisticMeasurements.TryGetValue(Convert.ToInt32(element.Element("HistorianID").Value), out measurement))
+        //                    {
+        //                        DateTime sourceDateTime;
+        //                        string quality;
+        //                        if (DateTime.TryParseExact(element.Element("Time").Value, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 30)
+        //                            quality = "Unknown";
+        //                        else
+        //                            quality = element.Element("Quality").Value;
 
-                                measurement.Quality = quality;
-                                measurement.Value = string.Format(measurement.DisplayFormat, ConvertValueToType(element.Element("Value").Value, measurement.DataType));
-                                measurement.TimeTag = sourceDateTime.ToString("HH:mm:ss.fff");
+        //                        measurement.Quality = quality;
+        //                        measurement.Value = string.Format(measurement.DisplayFormat, ConvertValueToType(element.Element("Value").Value, measurement.DataType));
+        //                        measurement.TimeTag = sourceDateTime.ToString("HH:mm:ss.fff");
 
-                                StreamStatistic streamStatistic;
-                                if (measurement.ConnectedState) //if measurement defines connection state.
-                                {
-                                    if ((measurement.Source == "System" && RealTimeStatistic.SystemStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
-                                        (measurement.Source == "InputStream" && RealTimeStatistic.InputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
-                                        (measurement.Source == "OutputStream" && RealTimeStatistic.OutputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)))
-                                    {
-                                        if (DateTime.TryParseExact(element.Element("Time").Value, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 30)
-                                            streamStatistic.StatusColor = "Gray";
-                                        else if (Convert.ToBoolean(measurement.Value))
-                                            streamStatistic.StatusColor = "Green";
-                                        else
-                                            streamStatistic.StatusColor = "Red";
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null)
-                    CommonFunctions.LogException(null, "Get Statistic Data ", ex.InnerException);
-                else
-                    CommonFunctions.LogException(null, "Get Statistic Data ", ex);
-            }
+        //                        StreamStatistic streamStatistic;
+        //                        if (measurement.ConnectedState) //if measurement defines connection state.
+        //                        {
+        //                            if ((measurement.Source == "System" && RealTimeStatistic.SystemStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
+        //                                (measurement.Source == "InputStream" && RealTimeStatistic.InputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
+        //                                (measurement.Source == "OutputStream" && RealTimeStatistic.OutputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)))
+        //                            {
+        //                                if (DateTime.TryParseExact(element.Element("Time").Value, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out sourceDateTime) && DateTime.UtcNow.Subtract(sourceDateTime).TotalSeconds > 30)
+        //                                    streamStatistic.StatusColor = "Gray";
+        //                                else if (Convert.ToBoolean(measurement.Value))
+        //                                    streamStatistic.StatusColor = "Green";
+        //                                else
+        //                                    streamStatistic.StatusColor = "Red";
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        if (ex.InnerException != null)
+        //            CommonFunctions.LogException(null, "Get Statistic Data ", ex.InnerException);
+        //        else
+        //            CommonFunctions.LogException(null, "Get Statistic Data ", ex);
+        //    }
 
-            LastRefresh = "Last Refresh: " + DateTime.Now.ToString("HH:mm:ss.fff");
-        }
+        //    LastRefresh = "Last Refresh: " + DateTime.Now.ToString("HH:mm:ss.fff");
+        //}
 
         private object ConvertValueToType(string xmlValue, string xmlDataType)
         {
@@ -228,17 +393,7 @@ namespace openPDC.UI.ViewModels
 
         public void Stop()
         {
-            if (m_refreshTimer != null)
-            {
-                try
-                {
-                    m_refreshTimer.Stop();
-                }
-                finally
-                {
-                    m_refreshTimer = null;
-                }
-            }
+            UnsubscribeUnsynchronizedData();
         }
 
         #endregion

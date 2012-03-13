@@ -296,7 +296,7 @@ namespace openPDC.UI.ViewModels
                 foreach (StatisticMeasurement measurement in tempMeasurements)
                 {
                     StatisticMeasurement tempMeasurement;
-                    if (RealTimeStatistic.StatisticMeasurements.TryGetValue(measurement.PointID, out tempMeasurement))
+                    if (RealTimeStatistic.StatisticMeasurements.TryGetValue(measurement.SignalID, out tempMeasurement))
                         StatisticMeasurements.Add(tempMeasurement);
                 }
 
