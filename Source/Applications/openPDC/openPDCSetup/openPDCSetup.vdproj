@@ -879,12 +879,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_806BBBB78A804046A87F8FFB3E2905D7"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_86865CE26B4B432396CC32E6415BB6B6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1000,6 +994,12 @@
         "Entry"
         {
         "MsmKey" = "8:_8CC5573129CFD27D27DF9C8AD46E3CE1"
+        "OwnerKey" = "8:_1B501E8157E942DA9544A9AB8600A65D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8CC5573129CFD27D27DF9C8AD46E3CE1"
         "OwnerKey" = "8:_0ED8F76A287D478B8A5C74B8B132DC8B"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1079,12 +1079,6 @@
         {
         "MsmKey" = "8:_8CC5573129CFD27D27DF9C8AD46E3CE1"
         "OwnerKey" = "8:_A3D01DE38DB7E1362BC442B38453D309"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8CC5573129CFD27D27DF9C8AD46E3CE1"
-        "OwnerKey" = "8:_806BBBB78A804046A87F8FFB3E2905D7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1618,12 +1612,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1B501E8157E942DA9544A9AB8600A65D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_F29D2ED961FC4E73BC80A499F9ACA397"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1727,6 +1715,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_3DEEE6A7EFB72064571C8B5AEAEB22F7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_1B501E8157E942DA9544A9AB8600A65D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1841,12 +1835,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_8E4D746EE3A9439CD41A9E2EABF39C57"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_806BBBB78A804046A87F8FFB3E2905D7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1972,7 +1960,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_86CEDBCD197244D7AA71DDC16162AB41"
+        "OwnerKey" = "8:_2009CC0437024019908C8E28FC984E37"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1984,7 +1972,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2009CC0437024019908C8E28FC984E37"
+        "OwnerKey" = "8:_86CEDBCD197244D7AA71DDC16162AB41"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -2862,7 +2850,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:openPDC.UI.WPF, Version=1.5.42.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:openPDC.UI.WPF, Version=1.5.43.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_44AF5BFA925CCF0D6ADFAD99EA55CF35"
@@ -3744,7 +3732,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.5.42.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:TVA.PhasorProtocols, Version=1.5.43.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_9754762A1845B49390DCE6078289EEB4"
@@ -3888,7 +3876,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:openPDC.UI, Version=1.5.42.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:openPDC.UI, Version=1.5.43.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_A3D01DE38DB7E1362BC442B38453D309"
@@ -4684,10 +4672,10 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:32512"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_806BBBB78A804046A87F8FFB3E2905D7"
+            "Target" = "8:"
             "Folder" = "8:_8F1B8C80820349DA9194FDA4E7291C5E"
             "WorkingFolder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
-            "Icon" = "8:_806BBBB78A804046A87F8FFB3E2905D7"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_C32CB178D4E64C3498EE62AA9F1901E2"
@@ -5842,34 +5830,6 @@
                 "ExcludeFilters"
                 {
                 "ExcludeFilter" = "8:App.config"
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_806BBBB78A804046A87F8FFB3E2905D7"
-            {
-            "SourcePath" = "8:..\\..\\..\\Tools\\DataMigrationUtility\\obj\\Debug\\DataMigrationUtility.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_7D253EACC81848AEA2104B4FE9EA2FD8"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{933BE44C-B124-4ACC-8BE8-A6A22AAC4413}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
                 }
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A6B550752FC744A8B2D9B52ACAF33030"
