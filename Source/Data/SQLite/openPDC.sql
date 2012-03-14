@@ -1108,7 +1108,7 @@ FROM Phasor P LEFT OUTER JOIN Phasor DP ON P.DestinationPhasorID = DP.ID
 
 CREATE VIEW StatisticMeasurement AS
 SELECT     MeasurementDetail.*
-FROM MeasurementDetail WHERE MeasurementDetail.SignalAcronym = 'STAT' 
+FROM MeasurementDetail WHERE MeasurementDetail.SignalAcronym = 'STAT';
 
 CREATE VIEW AppRoleSecurityGroupDetail AS 
 SELECT ApplicationRoleSecurityGroup.ApplicationRoleID AS ApplicationRoleID,ApplicationRoleSecurityGroup.SecurityGroupID AS SecurityGroupID,ApplicationRole.Name AS ApplicationRoleName,ApplicationRole.Description AS ApplicationRoleDescription,SecurityGroup.Name AS SecurityGroupName,SecurityGroup.Description AS SecurityGroupDescription 
