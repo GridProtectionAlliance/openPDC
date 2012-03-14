@@ -1107,7 +1107,8 @@ FROM Phasor P LEFT OUTER JOIN Phasor DP ON P.DestinationPhasorID = DP.ID
       LEFT OUTER JOIN Device D ON P.DeviceID = D.ID;
 
 CREATE VIEW StatisticMeasurement AS
-SELECT     MeasurementDetail.*, 'InputStream' AS MeasurementSource FROM MeasurementDetail WHERE MeasurementDetail.SignalAcronym = 'STAT' AND SignalReference LIKE '%IS%' UNION SELECT     MeasurementDetail.*, 'OutputStream' AS MeasurementSource FROM MeasurementDetail WHERE MeasurementDetail.SignalAcronym = 'STAT' AND SignalReference LIKE '%!OS%' UNION SELECT     MeasurementDetail.*, 'Device' AS MeasurementSource FROM MeasurementDetail WHERE MeasurementDetail.SignalAcronym = 'STAT' AND SignalReference NOT LIKE '%!IS%' AND SignalReference NOT LIKE '%!OS%';
+SELECT     MeasurementDetail.*
+FROM MeasurementDetail WHERE MeasurementDetail.SignalAcronym = 'STAT' 
 
 CREATE VIEW AppRoleSecurityGroupDetail AS 
 SELECT ApplicationRoleSecurityGroup.ApplicationRoleID AS ApplicationRoleID,ApplicationRoleSecurityGroup.SecurityGroupID AS SecurityGroupID,ApplicationRole.Name AS ApplicationRoleName,ApplicationRole.Description AS ApplicationRoleDescription,SecurityGroup.Name AS SecurityGroupName,SecurityGroup.Description AS SecurityGroupDescription 

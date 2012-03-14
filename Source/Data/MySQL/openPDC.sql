@@ -1190,7 +1190,7 @@ FROM Phasor P LEFT OUTER JOIN Phasor DP ON P.DestinationPhasorID = DP.ID
 LEFT OUTER JOIN Device D ON P.DeviceID = D.ID;
 
 CREATE VIEW StatisticMeasurement AS
-SELECT MeasurementDetail.*, CASE WHEN LOCATE('!IS', MeasurementDetail.SignalReference) > 0 THEN 'InputStream' WHEN LOCATE('!OS', MeasurementDetail.SignalReference) > 0 THEN 'OutputStream' ELSE 'Device' END AS MeasurementSource
+SELECT MeasurementDetail.*
 FROM MeasurementDetail 
 WHERE MeasurementDetail.SignalAcronym = 'STAT';
 
