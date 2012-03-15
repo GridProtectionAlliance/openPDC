@@ -284,6 +284,10 @@ namespace ConfigurationSetupUtility.Screens
                         SetupAdminUserCredentials(connectionString, dataProviderString);
                     }
                 }
+                else if (m_state.ContainsKey("createNewNode") && Convert.ToBoolean(m_state["createNewNode"]))
+                {
+                    CreateNewNode(connectionString, dataProviderString);
+                }
 
                 // Modify the openPDC configuration file.
                 ModifyConfigFiles(connectionString, dataProviderString, false);
@@ -326,7 +330,7 @@ namespace ConfigurationSetupUtility.Screens
                     dataProviderString = dataProviderStringValue.ToString();
 
                 if (string.IsNullOrWhiteSpace(dataProviderString))
-                    dataProviderString = "AssemblyName={MySql.Data, Version=6.3.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
+                    dataProviderString = "AssemblyName={MySql.Data, Version=6.5.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
 
                 if (!existing || migrate)
                 {
@@ -411,6 +415,10 @@ namespace ConfigurationSetupUtility.Screens
                                 sm.GoToPreviousScreen();
                         });
                     }
+                }
+                else if (m_state.ContainsKey("createNewNode") && Convert.ToBoolean(m_state["createNewNode"]))
+                {
+                    CreateNewNode(mySqlSetup.ConnectionString, dataProviderString);
                 }
 
                 // Modify the openPDC configuration file.
@@ -528,7 +536,25 @@ namespace ConfigurationSetupUtility.Screens
                                 return;
                             }
 
+                            if (!sqlServerSetup.ExecuteStatement("CREATE ROLE [openPGManagerRole] AUTHORIZATION [dbo]"))
+                            {
+                                OnSetupFailed();
+                                return;
+                            }
+
                             if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'openPDCManagerRole', N'{0}'", user)))
+                            {
+                                OnSetupFailed();
+                                return;
+                            }
+
+                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datareader', N'openPGManagerRole'", user)))
+                            {
+                                OnSetupFailed();
+                                return;
+                            }
+
+                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datawriter', N'openPGManagerRole'", user)))
                             {
                                 OnSetupFailed();
                                 return;
@@ -558,6 +584,10 @@ namespace ConfigurationSetupUtility.Screens
                                 sm.GoToPreviousScreen();
                         });
                     }
+                }
+                else if (m_state.ContainsKey("createNewNode") && Convert.ToBoolean(m_state["createNewNode"]))
+                {
+                    CreateNewNode(sqlServerSetup.ConnectionString, dataProviderString);
                 }
 
                 // Modify the openPDC configuration file.
@@ -700,6 +730,10 @@ namespace ConfigurationSetupUtility.Screens
                         });
                     }
                 }
+                else if (m_state.ContainsKey("createNewNode") && Convert.ToBoolean(m_state["createNewNode"]))
+                {
+                    CreateNewNode(oracleSetup.ConnectionString, dataProviderString);
+                }
 
                 // Modify the openPDC configuration file.
                 string connectionString = oracleSetup.ConnectionString;
@@ -757,6 +791,10 @@ namespace ConfigurationSetupUtility.Screens
                         SetUpStatisticsHistorian(connectionString, dataProviderString);
                         SetupAdminUserCredentials(connectionString, dataProviderString);
                     }
+                }
+                else if (m_state.ContainsKey("createNewNode") && Convert.ToBoolean(m_state["createNewNode"]))
+                {
+                    CreateNewNode(connectionString, dataProviderString);
                 }
 
                 // Modify the openPDC configuration file.
@@ -1346,6 +1384,81 @@ namespace ConfigurationSetupUtility.Screens
             }
 
             return defaultNodeCreated;
+        }
+
+        /// <summary>
+        /// Creates a brand new node based on the selected node ID.
+        /// </summary>
+        /// <param name="connectionString">Connection string to the database in which the node is to be created.</param>
+        /// <param name="dataProviderString">Data provider string used to create database connection.</param>
+        private void CreateNewNode(string connectionString, string dataProviderString)
+        {
+            string insertQuery = "INSERT INTO Node(Name, Description, MenuData, Enabled) VALUES(@name, @description, 'Menu.xml', 1)";
+            string updateQuery = "UPDATE Node SET ID = {0} WHERE Name = @name";
+
+            Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
+            Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
+            string assemblyName = dataProviderSettings["AssemblyName"];
+            string connectionTypeName = dataProviderSettings["ConnectionType"];
+            string connectionSetting;
+
+            Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
+            Type connectionType = assembly.GetType(connectionTypeName);
+            IDbConnection connection = null;
+
+            Guid nodeID;
+            string nodeIDQueryString = null;
+            string name = string.Empty;
+            string description = string.Empty;
+
+            AppendStatusMessage("Creating new node...");
+
+            if (!m_state.ContainsKey("selectedNodeId"))
+                throw new InvalidOperationException("Attempted to create new node without node selected.");
+
+            if (!m_state.ContainsKey("newNodeName"))
+                throw new InvalidOperationException("Attempted to create new node without a name.");
+
+            nodeID = (Guid)m_state["selectedNodeId"];
+            name = m_state["newNodeName"].ToString();
+
+            if (m_state.ContainsKey("newNodeDescription"))
+                description = m_state["newNodeDescription"].ToNonNullString();
+
+            if (settings.TryGetValue("Provider", out connectionSetting))
+            {
+                // Check if provider is for Access since it uses braces as Guid delimeters
+                if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                    nodeIDQueryString = "{" + nodeID.ToString() + "}";
+            }
+            if (string.IsNullOrWhiteSpace(nodeIDQueryString))
+                nodeIDQueryString = "'" + nodeID.ToString() + "'";
+
+            try
+            {
+                connection = (IDbConnection)Activator.CreateInstance(connectionType);
+                connection.ConnectionString = connectionString;
+                connection.Open();
+
+                // Oracle uses a different character for parameterized queries
+                if (connection.GetType().Name == "OracleConnection")
+                {
+                    insertQuery = insertQuery.Replace('@', ':');
+                    updateQuery = updateQuery.Replace('@', ':');
+                }
+
+                connection.ExecuteNonQuery(insertQuery, name, description);
+                connection.ExecuteNonQuery(string.Format(updateQuery, nodeIDQueryString), name);
+
+                AddRolesForNode(connection, nodeIDQueryString);
+            }
+            finally
+            {
+                if ((object)connection != null)
+                    connection.Dispose();
+            }
+
+            AppendStatusMessage("Successfully created new node.");
         }
 
         /// <summary>

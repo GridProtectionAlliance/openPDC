@@ -150,7 +150,7 @@ namespace ConfigurationSetupUtility.Screens
                             connection.ConnectionString = connectionString;
                             connection.Open();
 
-                            if ((int)connection.ExecuteScalar("SELECT COUNT(*) FROM UserAccount") > 0)
+                            if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM UserAccount")) > 0)
                                 m_state["securityUpgrade"] = false;
                             else
                                 m_state["securityUpgrade"] = true;

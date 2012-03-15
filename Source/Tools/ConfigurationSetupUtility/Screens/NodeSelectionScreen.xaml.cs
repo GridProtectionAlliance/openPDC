@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.OleDb;
 using System.Data.SqlClient;
@@ -55,6 +56,9 @@ namespace ConfigurationSetupUtility.Screens
 
         // Fields
         private Dictionary<string, object> m_state;
+        private IList<NodeInfo> m_dbNodes;
+        private IList<NodeInfo> m_nodeList;
+        private NodeInfo m_newNode;
 
         #endregion
 
@@ -159,13 +163,37 @@ namespace ConfigurationSetupUtility.Screens
         // Initializes the state keys to their default values.
         private void InitializeState()
         {
-            IDbConnection connection = GetDatabaseConnection();
-            IList<NodeInfo> nodes = GetNodes(connection);
-            Guid nodeId = GetNodeIdFromConfigFile();
-            NodeInfo defaultSelection = nodes.SingleOrDefault(info => info.Id == nodeId);
-            int defaultIndex = (defaultSelection == null) ? 0 : nodes.IndexOf(defaultSelection);
+            // This method is called either now or when the
+            // data grid is loaded, whichever happens last.
+            if (m_dataGrid.IsLoaded)
+                UpdateDataGrid();
 
-            if (nodes.Count > 0)
+            if (!m_state.ContainsKey("createNewNode"))
+                m_state.Add("createNewNode", false);
+        }
+
+        private void UpdateDataGrid()
+        {
+            IDbConnection connection;
+
+            Guid nodeId;
+            NodeInfo defaultSelection;
+            int defaultIndex;
+
+            // Avoid accessing the database again
+            // if we already have database nodes.
+            if (m_dbNodes == null)
+            {
+                connection = GetDatabaseConnection();
+                m_dbNodes = GetNodes(connection);
+            }
+
+            m_nodeList = new List<NodeInfo>(m_dbNodes);
+            nodeId = GetNodeIdFromConfigFile();
+            defaultSelection = m_nodeList.SingleOrDefault(info => info.Id == nodeId);
+            defaultIndex = (defaultSelection == null) ? 0 : m_nodeList.IndexOf(defaultSelection);
+
+            if (m_nodeList.Count > 0)
                 m_infoTextBlock.Text = "Please select the node you would like the openPDC to use.";
             else
             {
@@ -179,14 +207,15 @@ namespace ConfigurationSetupUtility.Screens
             // add it as a possible selection in case the user does not wish to change it.
             if (defaultSelection == null)
             {
-                nodes.Add(new NodeInfo()
+                m_nodeList.Add(new NodeInfo()
                 {
                     Name = "ConfigFile",
+                    Company = GetCompanyNameFromConfigFile(),
                     Description = "This node was found in the configuration file.",
                     Id = nodeId
                 });
             }
-            else if(nodes.Count == 1)
+            else if (m_nodeList.Count == 1)
             {
                 ScreenManager manager = m_state["screenManager"] as ScreenManager;
 
@@ -197,8 +226,37 @@ namespace ConfigurationSetupUtility.Screens
                 }
             }
 
-            m_dataGrid.ItemsSource = nodes;
+            m_dataGrid.ItemsSource = new ObservableCollection<NodeInfo>(m_nodeList);
             m_dataGrid.SelectedIndex = defaultIndex;
+        }
+
+        // Updates the new node with the name entered by the user.
+        private void UpdateNewNode()
+        {
+            string nodeName = m_newNodeTextBox.Text;
+
+            if (string.IsNullOrWhiteSpace(nodeName))
+                return;
+
+            if ((object)m_newNode == null)
+            {
+                m_newNode = new NodeInfo();
+                m_newNode.Company = GetCompanyNameFromConfigFile();
+                m_newNode.Description = "Node created by Configuration Setup Utility";
+                m_newNode.Id = Guid.NewGuid();
+
+                m_nodeList.Add(m_newNode);
+
+                m_state["newNodeDescription"] = m_newNode.Description;
+            }
+
+            m_newNode.Name = nodeName;
+
+            m_dataGrid.SelectedIndex = -1;
+            m_dataGrid.ItemsSource = new ObservableCollection<NodeInfo>(m_nodeList);
+            m_dataGrid.SelectedIndex = m_nodeList.IndexOf(m_newNode);
+
+            m_state["newNodeName"] = m_newNode.Name;
         }
 
         // Gets a database connection based on the selections the user made earlier in the setup.
@@ -344,7 +402,7 @@ namespace ConfigurationSetupUtility.Screens
 
                     connection.Open();
                     command = connection.CreateCommand();
-                    command.CommandText = "SELECT Node.ID AS ID, Node.Name AS Name, Company.Name AS Company, Description FROM Node LEFT OUTER JOIN Company ON Node.CompanyID = Company.ID WHERE Enabled <> 0";
+                    command.CommandText = "SELECT ID, Name, CompanyName AS Company, Description FROM NodeDetail WHERE Enabled <> 0";
                     reader = command.ExecuteReader();
 
                     while (reader.Read())
@@ -380,23 +438,41 @@ namespace ConfigurationSetupUtility.Screens
         // Gets the node ID that is currently stored in the config file.
         private Guid GetNodeIdFromConfigFile()
         {
-            Guid nodeId = Guid.NewGuid();
+            string nodeIDString;
+            Guid nodeID;
+
+            nodeIDString = GetValueOfSystemSetting("NodeID").ToNonNullString();
+
+            if (Guid.TryParse(nodeIDString, out nodeID))
+                return nodeID;
+            else
+                return Guid.NewGuid();
+        }
+
+        // Gets the company acronym that is currently stored in the config file.
+        private string GetCompanyNameFromConfigFile()
+        {
+            return GetValueOfSystemSetting("CompanyName");
+        }
+
+        // Gets the value of the config file system setting with the given name.
+        private string GetValueOfSystemSetting(string settingName)
+        {
             string configFileName = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
             XmlDocument doc = new XmlDocument();
+
             IEnumerable<XmlNode> systemSettings;
             XmlNode idNode;
+            string value = null;
 
             try
             {
                 doc.Load(configFileName);
                 systemSettings = doc.SelectNodes("configuration/categorizedSettings/systemSettings/add").Cast<XmlNode>();
-                idNode = systemSettings.SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == "NodeID");
+                idNode = systemSettings.SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == settingName);
 
                 if (idNode != null)
-                {
-                    string nodeIdString = idNode.Attributes["value"].Value;
-                    nodeId = Guid.Parse(nodeIdString);
-                }
+                    value = idNode.Attributes["value"].Value;
             }
             catch
             {
@@ -406,16 +482,44 @@ namespace ConfigurationSetupUtility.Screens
                 // should not interrupt the setup.
             }
 
-            return nodeId;
+            return value;
+        }
+
+        // Occurs when the data grid is loaded.
+        private void DataGrid_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // This method is called either now or when the state
+            // object is initialized, whichever happens last.
+            if ((object)m_state != null)
+                UpdateDataGrid();
         }
 
         // Occurs when the user selects a different node to be used by the openPDC.
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            NodeInfo info = m_dataGrid.SelectedItem as NodeInfo;
+            object selectedItem = m_dataGrid.SelectedItem;
+            NodeInfo info = selectedItem as NodeInfo;
 
-            if (m_state != null && info != null)
+            if ((object)m_state != null && (object)info != null)
                 m_state["selectedNodeId"] = info.Id;
+
+            m_state["createNewNode"] = (selectedItem != null) && (selectedItem == m_newNode);
+        }
+
+        // Occurs when the user uses the keyboard when the new node text box is in focus.
+        private void NewNodeTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                UpdateNewNode();
+                e.Handled = true;
+            }
+        }
+
+        // Occurs when the user clicks the "New Node" button.
+        private void NewNodeButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            UpdateNewNode();
         }
 
         #endregion

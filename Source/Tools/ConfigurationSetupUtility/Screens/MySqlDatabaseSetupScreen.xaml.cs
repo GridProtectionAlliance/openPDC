@@ -69,7 +69,12 @@ namespace ConfigurationSetupUtility.Screens
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(MySqlDatabaseSetupScreen_Loaded);
 
-            string[] mySQLConnectorNetVersions = { "6.3.6.0", "6.3.4.0", "6.2.4.0", "6.1.5.0", "6.0.7.0", "5.2.7.0", "5.1.7.0", "5.0.9.0" };
+            string[] mySQLConnectorNetVersions = { "6.5.4.0", "6.5.3.0", "6.5.2.0", "6.5.1.0", "6.5.0.0",
+                                                   "6.4.4.0", "6.4.3.0", "6.4.2.0", "6.4.1.0", "6.4.0.0",
+                                                   "6.3.8.0", "6.3.7.0", "6.3.6.0", "6.3.5.0", "6.3.4.0", "6.3.3.0", "6.3.2.0", "6.3.1.0", "6.3.0.0",
+                                                   "6.2.5.0", "6.2.4.0", "6.2.3.0", "6.2.2.0", "6.2.1.0", "6.2.0.0",
+                                                   "6.1.6.0", "6.1.5.0", "6.1.4.0", "6.1.3.0", "6.1.2.0", "6.1.1.0", "6.1.0.0" };
+
             string assemblyNamePrefix = "MySql.Data, Version=";
             string assemblyNameSuffix = ", Culture=neutral, PublicKeyToken=c5687fc88969c44d";
             string assemblyName;
@@ -97,7 +102,7 @@ namespace ConfigurationSetupUtility.Screens
             }
 
             if (string.IsNullOrEmpty(m_dataProviderString))
-                m_dataProviderString = "AssemblyName={MySql.Data, Version=6.3.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
+                m_dataProviderString = "AssemblyName={MySql.Data, Version=6.5.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
         }
 
 
