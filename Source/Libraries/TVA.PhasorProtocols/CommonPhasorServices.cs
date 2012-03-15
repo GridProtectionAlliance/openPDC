@@ -859,7 +859,7 @@ namespace TVA.PhasorProtocols
                         // If the original format for device statistics is found in the database, update to new format
                         if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}' AND HistorianID={1}", oldSignalReference, statHistorianID))) > 0)
                         {
-                            connection.ExecuteNonQuery("UPDATE Measurement SET SignalReference='{0}' WHERE SignalReference='{1}' AND HistorianID={2}", signalReference, oldSignalReference, statHistorianID);
+                            connection.ExecuteNonQuery(string.Format("UPDATE Measurement SET SignalReference='{0}' WHERE SignalReference='{1}' AND HistorianID={2}", signalReference, oldSignalReference, statHistorianID));
 
                             // No need to insert it since we
                             // can guarantee its existence
