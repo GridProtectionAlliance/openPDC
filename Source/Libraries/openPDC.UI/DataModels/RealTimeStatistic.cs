@@ -139,6 +139,11 @@ namespace openPDC.UI.DataModels
 
                 resultSet.Tables[2].TableName = "OutputStreams";
 
+                resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, AdapterName FROM CustomActionAdapter WHERE " +
+                    "NodeID = {0} AND TypeName = {1} AND Enabled = {2} ORDER BY AdapterName", "nodeID", "typeName", "enabled"), DefaultTimeout, database.CurrentNodeID(), "TimeSeriesFramework.Transport.DataPublisher", database.Bool(true)).Copy());
+
+                resultSet.Tables[3].TableName = "DataPublishers";
+
                 // Get list of statistic measurements detail.
                 ObservableCollection<StatisticMeasurement> statisticMeasurements = GetStatisticMeasurements(database);
 
@@ -156,7 +161,7 @@ namespace openPDC.UI.DataModels
                     ID = 0,
                     Acronym = "SYSTEM",
                     Name = "System",
-                    StatusColor = "Gray",
+                    StatusColor = "Green",
                     StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(
                         statisticMeasurements.Where(sm => sm.SignalReference.Contains("!SYSTEM"))
                         ),
@@ -173,7 +178,7 @@ namespace openPDC.UI.DataModels
                     streamStatistic.DeviceStatisticList.Insert(0, new PdcDeviceStatistic()
                     {
                         DeviceID = 0,
-                        DeviceAcronym = "Run-Time Statistics",
+                        DeviceAcronym = "Run-time Statistics",
                         DeviceName = "",
                         StatisticMeasurementList = streamStatistic.StatisticMeasurementList
                     });
@@ -225,7 +230,7 @@ namespace openPDC.UI.DataModels
                     streamStatistic.DeviceStatisticList.Insert(0, new PdcDeviceStatistic()
                         {
                             DeviceID = 0,
-                            DeviceAcronym = "Run-Time Statistics",
+                            DeviceAcronym = "Run-time Statistics",
                             DeviceName = "",
                             StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(streamStatistic.StatisticMeasurementList)
                         });
@@ -260,7 +265,7 @@ namespace openPDC.UI.DataModels
                             DeviceStatisticList = new ObservableCollection<PdcDeviceStatistic>(),
                             StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(
                                     (from statisticMeasurement in statisticMeasurements
-                                     where statisticMeasurement.SignalReference.StartsWith(outputStream.Field<string>("Acronym") + "!")
+                                     where statisticMeasurement.SignalReference.StartsWith(outputStream.Field<string>("Acronym") + "!OS-")
                                      select statisticMeasurement).OrderBy(sm => sm.Source).ThenBy(sm => sm.LoadOrder)
                                 )
                         }
@@ -276,7 +281,7 @@ namespace openPDC.UI.DataModels
                     streamStatistic.DeviceStatisticList.Insert(0, new PdcDeviceStatistic()
                     {
                         DeviceID = 0,
-                        DeviceAcronym = "Run-Time Statistics",
+                        DeviceAcronym = "Run-time Statistics",
                         DeviceName = "",
                         StatisticMeasurementList = streamStatistic.StatisticMeasurementList
                     });
@@ -285,6 +290,45 @@ namespace openPDC.UI.DataModels
 
                     // We do this for later use in refreshing data.
                     OutputStreamStatistics.Add(streamStatistic.ID, streamStatistic);
+                }
+
+                // Create a data publisher statistics list
+                ObservableCollection<StreamStatistic> dataPublisherStatistics = new ObservableCollection<StreamStatistic>(
+                        from publisher in resultSet.Tables["DataPublishers"].AsEnumerable()
+                        select new StreamStatistic()
+                        {
+                            ID = Convert.ToInt32(publisher.Field<object>("ID")),
+                            Acronym = publisher.Field<string>("AdapterName"),
+                            Name = "",
+                            StatusColor = "Gray",
+                            DeviceStatisticList = new ObservableCollection<PdcDeviceStatistic>(),
+                            StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(
+                                    (from statisticMeasurement in statisticMeasurements
+                                     where statisticMeasurement.SignalReference.StartsWith(publisher.Field<string>("AdapterName") + "!PUB-")
+                                     select statisticMeasurement).OrderBy(sm => sm.Source).ThenBy(sm => sm.LoadOrder)
+                                )
+                        }
+                    );
+
+                DataPublisherStatistics = new Dictionary<int, StreamStatistic>();
+                foreach (StreamStatistic streamStatistic in dataPublisherStatistics)
+                {
+                    // We do this to associate statistic measurement to parent output stream easily.
+                    foreach (StatisticMeasurement measurement in streamStatistic.StatisticMeasurementList)
+                        measurement.DeviceID = streamStatistic.ID;
+
+                    streamStatistic.DeviceStatisticList.Insert(0, new PdcDeviceStatistic()
+                    {
+                        DeviceID = 0,
+                        DeviceAcronym = "Run-time Statistics",
+                        DeviceName = "",
+                        StatisticMeasurementList = streamStatistic.StatisticMeasurementList
+                    });
+
+                    streamStatistic.StatisticMeasurementList = null;
+
+                    // We do this for later use in refreshing data.
+                    DataPublisherStatistics.Add(streamStatistic.ID, streamStatistic);
                 }
 
                 // Merge system, input and output stream statistics to create a realtime statistics list.
@@ -311,6 +355,13 @@ namespace openPDC.UI.DataModels
                         StreamStatisticList = outputStreamStatistics
                     }
                 );
+
+                realTimeStatisticList.Add(new RealTimeStatistic()
+                    {
+                        SourceType = "Data Publisher",
+                        Expanded = false,
+                        StreamStatisticList = dataPublisherStatistics
+                    });
 
                 return realTimeStatisticList;
             }
@@ -361,10 +412,14 @@ namespace openPDC.UI.DataModels
                         measurementSource = "System";
                     else if (StatisticsEngine.RegexMatch(signalReference, "PMU"))
                         measurementSource = "Device";
-                    else if (StatisticsEngine.RegexMatch(signalReference, "IS"))
-                        measurementSource = "InputStream";
                     else if (StatisticsEngine.RegexMatch(signalReference, "OS"))
                         measurementSource = "OutputStream";
+                    else if (StatisticsEngine.RegexMatch(signalReference, "IS"))
+                        measurementSource = "InputStream";
+                    else if (StatisticsEngine.RegexMatch(signalReference, "SUB"))
+                        measurementSource = "Subscriber";
+                    else if (StatisticsEngine.RegexMatch(signalReference, "PUB"))
+                        measurementSource = "Publisher";
                     else
                         measurementSource = "???";
 
@@ -376,6 +431,7 @@ namespace openPDC.UI.DataModels
                     {
                         DataRow measurement = keyvaluepair.Key;
                         string measurementSource = keyvaluepair.Value;
+                        System.Diagnostics.Debug.WriteLine(measurementSource);
                         string signalReference = measurement.Field<string>("SignalReference");
                         int measurementIndex = Convert.ToInt32(signalReference.Substring(signalReference.LastIndexOf("-ST") + 3));
                         Statistic statisticDefinition = new Statistic();
@@ -449,6 +505,11 @@ namespace openPDC.UI.DataModels
         /// Defines a collection of <see cref="StreamStatistic"/> defined in the database.
         /// </summary>
         public static Dictionary<int, StreamStatistic> OutputStreamStatistics;
+
+        /// <summary>
+        /// Defines a collection of <see cref="StreamStatistic"/> defined in the database.
+        /// </summary>
+        public static Dictionary<int, StreamStatistic> DataPublisherStatistics;
 
         /// <summary>
         /// Defines collection of device ids with associated statistical measurements.

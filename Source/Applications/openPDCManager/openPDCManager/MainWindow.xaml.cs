@@ -35,6 +35,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.DataModels;
+using TVA.Configuration;
 using TVA.IO;
 using TVA.Reflection;
 using TVA.Security;
@@ -55,6 +56,7 @@ namespace openPDCManager
         private LinkedListNode<TextBlock> m_currentNode;
         private AlarmMonitor m_alarmMonitor;
         private bool m_navigationProcessed;
+        private string m_defaultNodeID;
 
         #endregion
 
@@ -89,6 +91,10 @@ namespace openPDCManager
             if (!string.IsNullOrEmpty(CommonFunctions.CurrentUser))
                 Title += " - " + CommonFunctions.CurrentUser;
 
+            ConfigurationFile configFile = ConfigurationFile.Current;
+            CategorizedSettingsElementCollection configSettings = configFile.Settings["systemSettings"];
+            m_defaultNodeID = configSettings["NodeID"].Value;
+
             CommonFunctions.SetRetryServiceConnection(true);
             CommonFunctions.ServiceConnectionRefreshed += CommonFunctions_ServiceConnectionRefreshed;
             m_navigationProcessed = false;
@@ -106,9 +112,11 @@ namespace openPDCManager
             {
                 Dispatcher.Invoke((Action)delegate()
                 {
+                    Dictionary<Guid, string> nodesList = Node.GetLookupList(null);
+
                     if (ComboboxNode.SelectedItem == null)
                     {
-                        ComboboxNode.ItemsSource = Node.GetLookupList(null);
+                        ComboboxNode.ItemsSource = nodesList;
                         if (ComboboxNode.Items.Count > 0)
                             ComboboxNode.SelectedIndex = 0;
                     }
@@ -116,13 +124,24 @@ namespace openPDCManager
                     if (ComboboxNode.SelectedItem != null)
                     {
                         KeyValuePair<Guid, string> currentNode = (KeyValuePair<Guid, string>)ComboboxNode.SelectedItem;
-
-                        ComboboxNode.ItemsSource = Node.GetLookupList(null);
-                        if (ComboboxNode.Items.Count > 0)
+                        if (!string.IsNullOrEmpty(m_defaultNodeID))
                         {
-                            ComboboxNode.SelectedItem = currentNode;
-                            if (ComboboxNode.SelectedItem == null)
-                                ComboboxNode.SelectedIndex = 0;
+                            foreach (KeyValuePair<Guid, string> item in nodesList)
+                            {
+                                if (item.Key.ToString().ToLower() == m_defaultNodeID.ToLower())
+                                {
+                                    currentNode = item;
+                                    break;
+                                }
+                            }
+
+                            ComboboxNode.ItemsSource = nodesList;
+                            if (ComboboxNode.Items.Count > 0)
+                            {
+                                ComboboxNode.SelectedItem = currentNode;
+                                if (ComboboxNode.SelectedItem == null)
+                                    ComboboxNode.SelectedIndex = 0;
+                            }
                         }
                     }
                 });

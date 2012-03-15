@@ -35,8 +35,8 @@
                             </Style>
                         </StackPanel.Resources>
 
-                        <TextBlock Text="{tsfBinding:Column Path=ID}" Width="150"/>
-                        <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Width="150"/>
+                        <TextBlock Text="{tsfBinding:Column Path=ID}" Width="100"/>
+                        <TextBlock Text="{tsfBinding:Column Path=SignalReference}" Width="200"/>
                         <TextBlock Text="{tsfBinding:Column Path=StatisticName}" ToolTip="{tsfBinding:Column Path=StatisticDescription}" Width="200" TextWrapping="Wrap"/>
                         <TextBlock Text="{tsfBinding:Column Path=TimeTag}" FontWeight="Bold" Width="70" HorizontalAlignment="Center" TextAlignment="Center"/>
                         <TextBlock Text="{tsfBinding:Column Path=Value}" FontWeight="Bold" Width="210"
