@@ -505,8 +505,11 @@ namespace openPDCManager.UI.ViewModels
 
         private void GoToDevices(object parameter)
         {
-            OutputStreamDeviceUserControl outputStreamDeviceUserControl = new OutputStreamDeviceUserControl(CurrentItem.ID);
-            CommonFunctions.LoadUserControl(outputStreamDeviceUserControl, "Manage Devices for " + CurrentItem.Acronym);
+            if (!MirrorMode || !string.IsNullOrEmpty(CurrentItem.MirroringSourceDevice))
+            {
+                OutputStreamDeviceUserControl outputStreamDeviceUserControl = new OutputStreamDeviceUserControl(CurrentItem.ID);
+                CommonFunctions.LoadUserControl(outputStreamDeviceUserControl, "Manage Devices for " + CurrentItem.Acronym);
+            }
         }
 
         private void LaunchDeviceWizard(object parameter)
