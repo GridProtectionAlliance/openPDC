@@ -356,8 +356,11 @@ namespace openPDC.UI.ViewModels
 
         private void GoToPhasors()
         {
-            OutputStreamDevicePhasorUserControl outputStreamDevicePhasorUserControl = new OutputStreamDevicePhasorUserControl(CurrentItem.ID);
-            CommonFunctions.LoadUserControl(outputStreamDevicePhasorUserControl, "Manage Phasors for " + CurrentItem.Acronym);
+            if (!m_mirrorMode)
+            {
+                OutputStreamDevicePhasorUserControl outputStreamDevicePhasorUserControl = new OutputStreamDevicePhasorUserControl(CurrentItem.ID);
+                CommonFunctions.LoadUserControl(outputStreamDevicePhasorUserControl, "Manage Phasors for " + CurrentItem.Acronym);
+            }
         }
 
         /// <summary>
@@ -365,21 +368,30 @@ namespace openPDC.UI.ViewModels
         /// </summary>        
         private void GoToDeviceWizard()
         {
-            OutputStream outputStream = OutputStream.GetOutputStream(null, " WHERE ID = " + m_outputStreamID);
-            openPDC.UI.UserControls.OutputStreamCurrentDeviceUserControl outputStreamCurrentDeviceUserControl = new OutputStreamCurrentDeviceUserControl(m_outputStreamID, outputStream.Acronym);
-            CommonFunctions.LoadUserControl(outputStreamCurrentDeviceUserControl, "Manage Devices for " + outputStream.Acronym);
+            if (!m_mirrorMode)
+            {
+                OutputStream outputStream = OutputStream.GetOutputStream(null, " WHERE ID = " + m_outputStreamID);
+                openPDC.UI.UserControls.OutputStreamCurrentDeviceUserControl outputStreamCurrentDeviceUserControl = new OutputStreamCurrentDeviceUserControl(m_outputStreamID, outputStream.Acronym);
+                CommonFunctions.LoadUserControl(outputStreamCurrentDeviceUserControl, "Manage Devices for " + outputStream.Acronym);
+            }
         }
 
         private void GoToAnalogs()
         {
-            OutputStreamDeviceAnalogUserControl outputStreamDeviceAnalogUserControl = new OutputStreamDeviceAnalogUserControl(CurrentItem.ID);
-            CommonFunctions.LoadUserControl(outputStreamDeviceAnalogUserControl, "Manage Analogs for " + CurrentItem.Acronym);
+            if (!m_mirrorMode)
+            {
+                OutputStreamDeviceAnalogUserControl outputStreamDeviceAnalogUserControl = new OutputStreamDeviceAnalogUserControl(CurrentItem.ID);
+                CommonFunctions.LoadUserControl(outputStreamDeviceAnalogUserControl, "Manage Analogs for " + CurrentItem.Acronym);
+            }
         }
 
         private void GoToDigitals()
         {
-            OutputStreamDeviceDigitalUserControl outputStreamDeviceDigitalUserControl = new OutputStreamDeviceDigitalUserControl(CurrentItem.ID);
-            CommonFunctions.LoadUserControl(outputStreamDeviceDigitalUserControl, "Manage Digitals for " + CurrentItem.Acronym);
+            if (!m_mirrorMode)
+            {
+                OutputStreamDeviceDigitalUserControl outputStreamDeviceDigitalUserControl = new OutputStreamDeviceDigitalUserControl(CurrentItem.ID);
+                CommonFunctions.LoadUserControl(outputStreamDeviceDigitalUserControl, "Manage Digitals for " + CurrentItem.Acronym);
+            }
         }
 
         #endregion

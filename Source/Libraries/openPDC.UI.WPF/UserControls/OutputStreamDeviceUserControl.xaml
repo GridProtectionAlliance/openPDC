@@ -52,7 +52,7 @@
             
             <!--Right Button-->
             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right">
-                <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Device Wizard" Command="{tsfBinding:GridButtonCommand Path=DataContext.DeviceWizardCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" Width="Auto"/>                
+                <Button x:Name="ButtonDeviceWizard" Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Device Wizard" Command="{tsfBinding:GridButtonCommand Path=DataContext.DeviceWizardCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" Width="Auto"/>                
             </StackPanel>
 
             <!--First Row-->

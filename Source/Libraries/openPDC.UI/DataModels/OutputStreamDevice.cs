@@ -595,7 +595,7 @@ namespace openPDC.UI.DataModels
                     OutputStreamDevice outputStreamDevice = new OutputStreamDevice();
                     outputStreamDevice.NodeID = device.NodeID;
                     outputStreamDevice.AdapterID = outputStreamID;
-                    outputStreamDevice.Acronym = device.Acronym;
+                    outputStreamDevice.Acronym = device.Acronym.Substring(device.Acronym.LastIndexOf("!") + 1);
                     outputStreamDevice.BpaAcronym = string.Empty;
                     outputStreamDevice.Name = device.Name;
                     outputStreamDevice.LoadOrder = device.LoadOrder;
@@ -603,7 +603,7 @@ namespace openPDC.UI.DataModels
                     outputStreamDevice.IDCode = device.AccessID;
                     Save(database, outputStreamDevice);
 
-                    outputStreamDevice = GetOutputStreamDevice(database, "WHERE Acronym = '" + device.Acronym + "' AND AdapterID = " + outputStreamID);
+                    outputStreamDevice = GetOutputStreamDevice(database, "WHERE Acronym = '" + outputStreamDevice.Acronym + "' AND AdapterID = " + outputStreamID);
 
                     if (outputStreamDevice != null)
                     {
@@ -626,6 +626,8 @@ namespace openPDC.UI.DataModels
                         {
                             if (measurement.SignalAcronym != "STAT")
                             {
+                                measurement.SignalReference = measurement.SignalReference.Substring(measurement.SignalReference.LastIndexOf("!") + 1);
+
                                 OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
                                 outputStreamMeasurement.NodeID = device.NodeID;
                                 outputStreamMeasurement.AdapterID = outputStreamID;

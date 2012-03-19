@@ -507,15 +507,18 @@ namespace openPDCManager.UI.ViewModels
         {
             if (!MirrorMode || !string.IsNullOrEmpty(CurrentItem.MirroringSourceDevice))
             {
-                OutputStreamDeviceUserControl outputStreamDeviceUserControl = new OutputStreamDeviceUserControl(CurrentItem.ID);
+                OutputStreamDeviceUserControl outputStreamDeviceUserControl = new OutputStreamDeviceUserControl(CurrentItem.ID, MirrorMode);
                 CommonFunctions.LoadUserControl(outputStreamDeviceUserControl, "Manage Devices for " + CurrentItem.Acronym);
             }
         }
 
         private void LaunchDeviceWizard(object parameter)
         {
-            OutputStreamCurrentDeviceUserControl outputStreamCurrentDeviceUserControl = new OutputStreamCurrentDeviceUserControl(CurrentItem.ID, CurrentItem.Acronym);
-            CommonFunctions.LoadUserControl(outputStreamCurrentDeviceUserControl, "Current Devices for " + CurrentItem.Acronym);
+            if (!MirrorMode)
+            {
+                OutputStreamCurrentDeviceUserControl outputStreamCurrentDeviceUserControl = new OutputStreamCurrentDeviceUserControl(CurrentItem.ID, CurrentItem.Acronym);
+                CommonFunctions.LoadUserControl(outputStreamCurrentDeviceUserControl, "Current Devices for " + CurrentItem.Acronym);
+            }
         }
 
         private void GoToMeasurements(object parameter)

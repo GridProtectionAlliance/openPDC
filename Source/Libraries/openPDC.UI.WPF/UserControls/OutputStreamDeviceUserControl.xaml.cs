@@ -41,6 +41,7 @@ namespace openPDC.UI.UserControls
 
         private int m_outputStreamID;
         private OutputStreamDevices m_dataContext;
+        private bool m_mirrorMode;  // from output stream.
 
         #endregion
 
@@ -49,9 +50,11 @@ namespace openPDC.UI.UserControls
         /// <summary>
         /// Creates an instance of <see cref="OutputStreamDeviceUserControl"/> class.
         /// </summary>
-        public OutputStreamDeviceUserControl(int outputStreamID)
+        public OutputStreamDeviceUserControl(int outputStreamID, bool mirrorMode = false)
         {
             InitializeComponent();
+            m_mirrorMode = mirrorMode;
+            ButtonDeviceWizard.IsEnabled = !m_mirrorMode;
             m_outputStreamID = outputStreamID;
             this.Loaded += new RoutedEventHandler(OutputStreamDeviceUserControl_Loaded);
         }
