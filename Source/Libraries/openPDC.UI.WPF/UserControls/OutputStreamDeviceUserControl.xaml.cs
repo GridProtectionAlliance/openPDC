@@ -55,6 +55,7 @@ namespace openPDC.UI.UserControls
             InitializeComponent();
             m_mirrorMode = mirrorMode;
             ButtonDeviceWizard.IsEnabled = !m_mirrorMode;
+            UserControlDetailViewFooter.Visibility = m_mirrorMode ? Visibility.Collapsed : Visibility.Visible;
             m_outputStreamID = outputStreamID;
             this.Loaded += new RoutedEventHandler(OutputStreamDeviceUserControl_Loaded);
         }
