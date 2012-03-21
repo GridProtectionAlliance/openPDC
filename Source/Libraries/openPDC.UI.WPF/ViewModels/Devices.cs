@@ -693,7 +693,7 @@ namespace openPDC.UI.ViewModels
                 if (!string.IsNullOrEmpty(CurrentItem.AlternateCommandChannel))
                     csb.ConnectionString = CurrentItem.AlternateCommandChannel;
 
-                if (m_protocolLookupList[(int)CurrentItem.ProtocolID] == "Gateway Transport")
+                if (CurrentItem.ProtocolID != null && m_protocolLookupList[(int)CurrentItem.ProtocolID] == "Gateway Transport")
                     csb.PgConnection = true;
                 else
                     csb.PgConnection = false;

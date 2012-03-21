@@ -824,7 +824,7 @@ namespace openPDCManager.UI.DataModels
                 OutputStreamDevice outputStreamDevice = outputStreamDevices[0];
 
                 // Get OriginalSource value for the above outputstreamdevice from the input Device table.
-                Device device = Device.GetDevice(database, " WHERE Acronym = '" + outputStreamDevice.Acronym + "'");
+                Device device = Device.GetDevice(database, " WHERE Acronym LIKE '%" + outputStreamDevice.Acronym + "'");
 
                 if (device == null)
                     return "";
