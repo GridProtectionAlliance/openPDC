@@ -328,6 +328,40 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Enumerates connected clients.
+        /// </summary>
+        [AdapterCommand("Enumerates connected clients.")]
+        public virtual void EnumerateClients()
+        {
+            if ((object)m_dataPublisher != null)
+                m_dataPublisher.EnumerateClients();
+        }
+
+        /// <summary>
+        /// Rotates cipher keys for specified client connection.
+        /// </summary>
+        /// <param name="clientIndex">Enumerated index for client connection.</param>
+        [AdapterCommand("Rotates cipher keys for a client connection using its enumerated index.")]
+        public virtual void RotateCipherKeys(int clientIndex)
+        {
+            if ((object)m_dataPublisher != null)
+                m_dataPublisher.RotateCipherKeys(clientIndex);
+        }
+
+        /// <summary>
+        /// Gets subscriber information for specified client connection.
+        /// </summary>
+        /// <param name="clientIndex">Enumerated index for client connection.</param>
+        [AdapterCommand("Gets subscriber information for client connection using its enumerated index.")]
+        public virtual string GetSubscriberInfo(int clientIndex)
+        {
+            if ((object)m_dataPublisher != null)
+                return m_dataPublisher.GetSubscriberInfo(clientIndex);
+
+            return null;
+        }
+
+        /// <summary>
         /// Assigns the reference to the parent <see cref="IAdapterCollection"/> that will contain this <see cref="AdapterBase"/>.
         /// </summary>
         /// <param name="parent">Parent adapter collection.</param>
@@ -352,7 +386,7 @@ namespace TVA.PhasorProtocols
             }
 
             // Assign parent collection for data publishing server
-            if (m_dataPublisher != null)
+            if ((object)m_dataPublisher != null)
                 ((IAdapter)m_dataPublisher).AssignParentCollection(parent);
         }
 
