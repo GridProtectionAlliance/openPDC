@@ -191,10 +191,20 @@ namespace openPDCManager
         /// <param name="e">Event arguments.</param>
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Properties.Settings.Default.Save();
-            CommonFunctions.SetRetryServiceConnection(false);
-            m_alarmMonitor.Dispose();
-            Application.Current.Shutdown();
+            try
+            {
+                Properties.Settings.Default.Save();
+                CommonFunctions.SetRetryServiceConnection(false);
+                m_alarmMonitor.Dispose();
+                Application.Current.Shutdown();
+            }
+
+            catch (System.NullReferenceException)
+            {
+                Application.Current.Shutdown();
+                MessageBox.Show("Please Re-run the ConfigrationSetupUtility");
+
+            }
         }
 
         /// <summary>
