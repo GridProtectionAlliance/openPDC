@@ -590,6 +590,83 @@
             <returns>string value.</returns>
             <remarks>This method is not implemented.</remarks>
         </member>
+        <member name="T:TimeSeriesFramework.UI.SubscriberStatusQuery">
+            <summary>
+            Represents an object that will query the external DataPublisher for real-time subscriber status.
+            </summary>
+        </member>
+        <member name="F:TimeSeriesFramework.UI.SubscriberStatusQuery.DefaultResponseTimeout">
+            <summary>
+            Default value for <see cref="P:TimeSeriesFramework.UI.SubscriberStatusQuery.ResponseTimeout"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.SubscriberStatusQuery.#ctor">
+            <summary>
+            Creates a new <see cref="T:TimeSeriesFramework.UI.SubscriberStatusQuery"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.SubscriberStatusQuery.Finalize">
+            <summary>
+            Releases the unmanaged resources before the <see cref="T:TimeSeriesFramework.UI.SubscriberStatusQuery"/> object is reclaimed by <see cref="T:System.GC"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.SubscriberStatusQuery.Dispose">
+            <summary>
+            Releases all the resources used by the <see cref="T:TimeSeriesFramework.UI.SubscriberStatusQuery"/> object.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.SubscriberStatusQuery.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:TimeSeriesFramework.UI.SubscriberStatusQuery"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.SubscriberStatusQuery.RequestSubsscriberStatus(System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Requests the status of the specified <paramref name="subscriberIDs"/>.
+            </summary>
+            <param name="subscriberIDs">Subscriber IDs to request status for.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.SubscriberStatusQuery.OnSubscriberStatuses(System.Collections.Generic.Dictionary{System.Guid,System.Tuple{System.Boolean,System.String}})">
+            <summary>
+            Raises <see cref="E:TimeSeriesFramework.UI.SubscriberStatusQuery.SubscriberStatuses"/> event.
+            </summary>
+            <param name="subscriberStatuses">Dictionary of subscriber statuses.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.SubscriberStatusQuery.OnProcessException(System.Exception)">
+            <summary>
+            Raises <see cref="E:TimeSeriesFramework.UI.SubscriberStatusQuery.ProcessException"/> event.
+            </summary>
+            <param name="ex">Processing <see cref="T:System.Exception"/>.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.SubscriberStatusQuery.Helper_ReceivedServiceResponse(System.Object,TVA.EventArgs{TVA.ServiceProcess.ServiceResponse})">
+            <summary>
+            Handles ReceivedServiceResponse event.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="E:TimeSeriesFramework.UI.SubscriberStatusQuery.SubscriberStatuses">
+            <summary>
+            Provides a dictionary of current subscriber statuses.
+            </summary>
+            <remarks>
+            <see cref="F:TVA.EventArgs`1.Argument"/> is a dictionary keyed off the <see cref="T:System.Guid"/> based subscriber IDs containing the current connected state and status information.
+            </remarks>
+        </member>
+        <member name="E:TimeSeriesFramework.UI.SubscriberStatusQuery.ProcessException">
+            <summary>
+            Event is raised when there is an exception encountered while processing.
+            </summary>
+            <remarks>
+            <see cref="F:TVA.EventArgs`1.Argument"/> is the exception that was thrown.
+            </remarks>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.SubscriberStatusQuery.ResponseTimeout">
+            <summary>
+            Gets or sets allowed timeout, in milliseconds, for a command request response.
+            </summary>
+        </member>
         <member name="T:TimeSeriesFramework.UI.DataModelBase">
             <summary>
             Represents an abstract base class for all entity model objects.
