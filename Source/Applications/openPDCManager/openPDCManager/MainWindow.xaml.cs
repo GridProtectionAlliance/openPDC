@@ -93,7 +93,8 @@ namespace openPDCManager
 
             ConfigurationFile configFile = ConfigurationFile.Current;
             CategorizedSettingsElementCollection configSettings = configFile.Settings["systemSettings"];
-            m_defaultNodeID = configSettings["NodeID"].Value;
+            if (configSettings["NodeID"] != null)
+                m_defaultNodeID = configSettings["NodeID"].Value;
 
             CommonFunctions.SetRetryServiceConnection(true);
             CommonFunctions.ServiceConnectionRefreshed += CommonFunctions_ServiceConnectionRefreshed;
@@ -198,12 +199,14 @@ namespace openPDCManager
                 m_alarmMonitor.Dispose();
                 Application.Current.Shutdown();
             }
-
             catch (System.NullReferenceException)
             {
                 Application.Current.Shutdown();
                 MessageBox.Show("Please Re-run the ConfigrationSetupUtility");
-
+            }
+            catch
+            {
+                // Do Nothing. Just let it shut down gracefully without crashing.
             }
         }
 
