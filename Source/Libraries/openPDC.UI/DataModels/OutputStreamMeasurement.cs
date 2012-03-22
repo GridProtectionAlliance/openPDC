@@ -349,7 +349,7 @@ namespace openPDC.UI.DataModels
                         "nodeID", "adapterID", "historianID", "pointID", "signalReference", "updatedBy", "updatedOn", "createdBy",
                         "createdOn");
 
-                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, outputStreamMeasurement.NodeID == Guid.Empty ? database.CurrentNodeID() : outputStreamMeasurement.NodeID,
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, outputStreamMeasurement.NodeID == Guid.Empty ? database.CurrentNodeID() : database.Guid(outputStreamMeasurement.NodeID),
                         outputStreamMeasurement.AdapterID, outputStreamMeasurement.HistorianID.ToNotNull(), outputStreamMeasurement.PointID, outputStreamMeasurement.SignalReference,
                         CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
                 }
@@ -359,7 +359,7 @@ namespace openPDC.UI.DataModels
                         "SignalReference = {4}, UpdatedBy = {5}, UpdatedOn = {6} WHERE ID = {7}", "nodeID", "adapterID",
                         "historianID", "pointID", "signalReference", "updatedBy", "updatedOn", "id");
 
-                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, outputStreamMeasurement.NodeID, outputStreamMeasurement.AdapterID,
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.Guid(outputStreamMeasurement.NodeID), outputStreamMeasurement.AdapterID,
                         outputStreamMeasurement.HistorianID.ToNotNull(), outputStreamMeasurement.PointID, outputStreamMeasurement.SignalReference,
                         CommonFunctions.CurrentUser, database.UtcNow(), outputStreamMeasurement.ID);
                 }
