@@ -150,6 +150,7 @@ namespace TVA.PhasorProtocols
         private ConcurrentDictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
         private ConcurrentDictionary<Guid, string> m_connectionIDCache;
         private System.Timers.Timer m_commandChannelRestartTimer;
+        private object m_reinitializationLock;
         private long m_activeConnections;
         private LineFrequency m_nominalFrequency;
         private DataFormat m_dataFormat;
@@ -190,6 +191,9 @@ namespace TVA.PhasorProtocols
 
             // Create a new connection ID cache
             m_connectionIDCache = new ConcurrentDictionary<Guid, string>();
+
+            // Lock used to reinitialize socket layer
+            m_reinitializationLock = new object();
 
             // Synchrophasor protocols should default to millisecond resolution
             base.TimeResolution = Ticks.PerMillisecond;
@@ -1420,8 +1424,20 @@ namespace TVA.PhasorProtocols
                             // Publish configuration frame binary image
                             m_configurationFramePublished = true;
                             m_configurationFrame.Timestamp = dataFrame.Timestamp;
+
                             image = m_configurationFrame.BinaryImage();
-                            m_publishChannel.MulticastAsync(image, 0, image.Length);
+
+                            try
+                            {
+                                m_publishChannel.MulticastAsync(image, 0, image.Length);
+                            }
+                            catch (SocketException ex)
+                            {
+                                // Restart connection if a socket exception occurs
+                                OnProcessException(new InvalidOperationException(string.Format("Socket exception occurred while attempting to send client data: {0}", ex.Message), ex));
+                                Task.Factory.StartNew(ReinitializeSocketLayer);
+                            }
+
                             Thread.Sleep(FramesPerSecond / 2);
                         }
                     }
@@ -1439,7 +1455,17 @@ namespace TVA.PhasorProtocols
 
                 // Publish data frame binary image
                 image = dataFrame.BinaryImage();
-                m_publishChannel.MulticastAsync(image, 0, image.Length);
+
+                try
+                {
+                    m_publishChannel.MulticastAsync(image, 0, image.Length);
+                }
+                catch (SocketException ex)
+                {
+                    // Restart connection if a socket exception occurs
+                    OnProcessException(new InvalidOperationException(string.Format("Socket exception occurred while attempting to send client data: {0}", ex.Message), ex));
+                    Task.Factory.StartNew(ReinitializeSocketLayer);
+                }
 
                 // Track latency statistics against system time - in order for these statistics
                 // to be useful, the local clock must be fairly accurate
@@ -1453,6 +1479,67 @@ namespace TVA.PhasorProtocols
 
                 m_totalLatency += latency;
                 m_latencyMeasurements++;
+            }
+        }
+
+        private void ReinitializeSocketLayer()
+        {
+            if (!m_disposed && Monitor.TryEnter(m_reinitializationLock))
+            {
+                bool retry = false;
+
+                try
+                {
+                    Stop();
+
+                    string commandChannelConfig = null, dataChannelConfig = null;
+
+                    if ((object)m_dataChannel != null)
+                    {
+                        // Get current configuration string
+                        dataChannelConfig = m_dataChannel.ConfigurationString;
+
+                        // Dispose the existing data channel
+                        this.DataChannel = null;
+                    }
+
+                    if ((object)m_commandChannel != null)
+                    {
+                        // Get current configuration string
+                        commandChannelConfig = m_commandChannel.ConfigurationString;
+
+                        // Dispose the existing command channel
+                        this.CommandChannel = null;
+                    }
+
+                    // Wait a moment to let sockets release
+                    Thread.Sleep(1000);
+
+                    // Clear existing cache
+                    m_connectionIDCache.Clear();
+
+                    // Reinitialize data channel, if defined
+                    if (!string.IsNullOrWhiteSpace(dataChannelConfig))
+                        this.DataChannel = new UdpServer(dataChannelConfig);
+
+                    // Reinitialize command channel, if defined
+                    if (!string.IsNullOrWhiteSpace(commandChannelConfig))
+                        this.CommandChannel = new TcpServer(commandChannelConfig);
+
+                    Start();
+                }
+                catch (Exception ex)
+                {
+                    retry = true;
+                    OnProcessException(new InvalidOperationException(string.Format("Failed to reinitialize socket layer: {0}", ex.Message), ex));
+                }
+                finally
+                {
+                    Monitor.Exit(m_reinitializationLock);
+                }
+
+                if (retry)
+                    Task.Factory.StartNew(ReinitializeSocketLayer);
             }
         }
 
