@@ -1141,8 +1141,38 @@ namespace TVA.PhasorProtocols
                     // No need to define this measurement for sorting unless it has a destination in the outgoing frame
                     if (signal.CellIndex > -1)
                     {
+                        // Get historian field
+                        string historian = measurementRow["Historian"].ToNonNullString();
+                        string pointID = measurementRow["PointID"].ToString();
+
                         // Define measurement key
-                        measurementKey = new MeasurementKey(Guid.Empty, uint.Parse(measurementRow["PointID"].ToString()), measurementRow["Historian"].ToString());
+                        if (!string.IsNullOrEmpty(historian))
+                        {
+                            measurementKey = new MeasurementKey(Guid.Empty, uint.Parse(pointID), historian);
+                        }
+                        else
+                        {
+                            DataTable activeMeasurements = DataSource.Tables["ActiveMeasurements"];
+                            DataRow[] activeMeasurementRows = new DataRow[0];
+
+                            object activeMeasurementSignalID = null;
+                            object activeMeasurementID = null;
+
+                            if ((object)activeMeasurements != null)
+                                activeMeasurementRows = activeMeasurements.Select(string.Format("ID LIKE '*:{0}'", pointID));
+
+                            if (activeMeasurementRows.Length == 1)
+                            {
+                                activeMeasurementSignalID = activeMeasurementRows[0]["SignalID"];
+                                activeMeasurementID = activeMeasurementRows[0]["ID"];
+                            }
+
+                            // If we still can't find the measurement key, now is the time to give up
+                            if (activeMeasurementSignalID == null && activeMeasurementID == null)
+                                throw new Exception(string.Format("Cannot find measurement key for measurement with pointID {0}", pointID));
+
+                            measurementKey = MeasurementKey.Parse(activeMeasurementID.ToString(), Guid.Parse(activeMeasurementRows[0]["SignalID"].ToString()));
+                        }
 
                         // It is possible, but not as common, that a single measurement will have multiple destinations
                         // within an outgoing data stream frame, hence the following
