@@ -99,6 +99,7 @@ namespace TVA.PhasorProtocols
             // Create a new data publishing server
             m_dataPublisher = new DataPublisher();
             m_dataPublisher.Name = "dataPublisher";
+            m_dataPublisher.UseBaseTimeOffsets = true;
 
             // Attach to events on new data publishing server reference
             m_dataPublisher.StatusMessage += m_dataPublisher_StatusMessage;
