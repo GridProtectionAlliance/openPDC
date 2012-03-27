@@ -1615,7 +1615,7 @@ namespace ConfigurationSetupUtility.Screens
         }
 
         // Modifies the configuration file with the given file name to contain the given connection string and data provider string.
-        private void ModifyConfigFile(string configFileName, string connectionString, string dataProviderString, bool encrypted, bool addGCServerSettings)
+        private void ModifyConfigFile(string configFileName, string connectionString, string dataProviderString, bool encrypted, bool serviceConfigFile)
         {
             // Modify system settings.
             XmlDocument configFile = new XmlDocument();
@@ -1664,77 +1664,96 @@ namespace ConfigurationSetupUtility.Screens
                         }
                     }
                 }
+            }
 
-                bool updated = false;
+            // Make sure externalDataPublisher settings exist
+            XmlNode externalDataPublisherNode = configFile.SelectSingleNode("configuration/categorizedSettings/externaldatapublisher");
+            if (serviceConfigFile && (object)externalDataPublisherNode == null)
+            {
+                externalDataPublisherNode = configFile.CreateElement("externaldatapublisher");
 
-                // Make sure externalDataPublisher settings exist
-                XmlNode externalDataPublisherNode = configFile.SelectSingleNode("configuration/categorizedSettings/externaldatapublisher");
-                if (externalDataPublisherNode == null)
+                XmlElement addElement = configFile.CreateElement("add");
+
+                XmlAttribute attribute = configFile.CreateAttribute("name");
+                attribute.Value = "ConfigurationString";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("value");
+                attribute.Value = "port=6166";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("description");
+                attribute.Value = "Data required by the server to initialize.";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("encrypted");
+                attribute.Value = "false";
+                addElement.Attributes.Append(attribute);
+
+                externalDataPublisherNode.AppendChild(addElement);
+                configFile.SelectSingleNode("configuration/categorizedSettings").AppendChild(externalDataPublisherNode);
+            }
+
+            // Make sure alarm services settings exist
+            XmlNode alarmServicesNode = configFile.SelectSingleNode("configuration/categorizedSettings/alarmServicesAlarmService");
+            if (serviceConfigFile && (object)alarmServicesNode == null)
+            {
+                alarmServicesNode = configFile.CreateElement("alarmServicesAlarmService");
+
+                XmlElement addElement = configFile.CreateElement("add");
+
+                XmlAttribute attribute = configFile.CreateAttribute("name");
+                attribute.Value = "Endpoints";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("value");
+                attribute.Value = "http.rest://localhost:5018/alarmservices";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("description");
+                attribute.Value = "Semicolon delimited list of URIs where the web service can be accessed.";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("encrypted");
+                attribute.Value = "false";
+                addElement.Attributes.Append(attribute);
+
+                alarmServicesNode.AppendChild(addElement);
+                configFile.SelectSingleNode("configuration/categorizedSettings").AppendChild(alarmServicesNode);
+            }
+
+            // Make sure desired run-time garbage collection settings exist
+            if (serviceConfigFile)
+            {
+                XmlNode runtime = configFile.SelectSingleNode("configuration/runtime");
+
+                if (runtime == null)
                 {
-                    externalDataPublisherNode = configFile.CreateElement("externaldatapublisher");
-
-                    XmlElement addElement = configFile.CreateElement("add");
-
-                    XmlAttribute attribute = configFile.CreateAttribute("name");
-                    attribute.Value = "ConfigurationString";
-                    addElement.Attributes.Append(attribute);
-
-                    attribute = configFile.CreateAttribute("value");
-                    attribute.Value = "port=6166";
-                    addElement.Attributes.Append(attribute);
-
-                    attribute = configFile.CreateAttribute("description");
-                    attribute.Value = "Data required by the server to initialize.";
-                    addElement.Attributes.Append(attribute);
-
-                    attribute = configFile.CreateAttribute("encrypted");
-                    attribute.Value = "false";
-                    addElement.Attributes.Append(attribute);
-
-                    externalDataPublisherNode.AppendChild(addElement);
-                    configFile.SelectSingleNode("configuration/categorizedSettings").AppendChild(externalDataPublisherNode);
-                    updated = true;
+                    // Add runtime section
+                    runtime = configFile.CreateElement("runtime");
+                    configFile.SelectSingleNode("configuration").AppendChild(runtime);
                 }
 
-                // Make sure desired run-time garbage collection settings exist
-                if (addGCServerSettings)
+                // Make sure settings exist
+                XmlNode gcConcurrent = runtime.SelectSingleNode("gcConcurrent");
+                XmlNode gcServer = runtime.SelectSingleNode("gcServer");
+
+                if (gcConcurrent == null)
                 {
-                    XmlNode runtime = configFile.SelectSingleNode("configuration/runtime");
+                    XmlElement elem = configFile.CreateElement("gcConcurrent");
+                    XmlAttribute attrib = configFile.CreateAttribute("enabled");
+                    attrib.Value = "false";
+                    elem.Attributes.Append(attrib);
+                    runtime.AppendChild(elem);
+                }
 
-                    if (runtime == null)
-                    {
-                        // Add runtime section
-                        runtime = configFile.CreateElement("runtime");
-                        configFile.SelectSingleNode("configuration").AppendChild(runtime);
-                        updated = true;
-                    }
-
-                    // Make sure settings exist
-                    XmlNode gcConcurrent = runtime.SelectSingleNode("gcConcurrent");
-                    XmlNode gcServer = runtime.SelectSingleNode("gcServer");
-
-                    if (gcConcurrent == null)
-                    {
-                        XmlElement elem = configFile.CreateElement("gcConcurrent");
-                        XmlAttribute attrib = configFile.CreateAttribute("enabled");
-                        attrib.Value = "false";
-                        elem.Attributes.Append(attrib);
-                        runtime.AppendChild(elem);
-                        updated = true;
-                    }
-
-                    if (gcServer == null)
-                    {
-                        XmlElement elem = configFile.CreateElement("gcServer");
-                        XmlAttribute attrib = configFile.CreateAttribute("enabled");
-                        attrib.Value = "true";
-                        elem.Attributes.Append(attrib);
-                        runtime.AppendChild(elem);
-                        updated = true;
-                    }
-
-                    if (updated)
-                        configFile.Save(configFileName);
+                if (gcServer == null)
+                {
+                    XmlElement elem = configFile.CreateElement("gcServer");
+                    XmlAttribute attrib = configFile.CreateAttribute("enabled");
+                    attrib.Value = "true";
+                    elem.Attributes.Append(attrib);
+                    runtime.AppendChild(elem);
                 }
             }
 
