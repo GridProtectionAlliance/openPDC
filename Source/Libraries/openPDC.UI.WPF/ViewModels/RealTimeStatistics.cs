@@ -203,7 +203,10 @@ namespace openPDC.UI.ViewModels
                     m_unsynchronizedSubscriber.ConnectionEstablished += m_unsynchronizedSubscriber_ConnectionEstablished;
                     m_unsynchronizedSubscriber.NewMeasurements += m_unsynchronizedSubscriber_NewMeasurements;
                     m_unsynchronizedSubscriber.ConnectionTerminated += m_unsynchronizedSubscriber_ConnectionTerminated;
-                    m_unsynchronizedSubscriber.ConnectionString = database.DataPublisherConnectionString();
+
+                    // Statistics move slowly, typically every 10 seconds, so we reduce data loss interval to every 20 seconds
+                    m_unsynchronizedSubscriber.ConnectionString = "dataLossInterval = 20.0; " + database.DataPublisherConnectionString();
+
                     m_unsynchronizedSubscriber.Initialize();
                     m_unsynchronizedSubscriber.Start();
                 }
