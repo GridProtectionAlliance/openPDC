@@ -268,7 +268,7 @@ namespace openPDC.UI.UserControls
         {
             for (int i = 0; i < items.Count; i++)
             {
-                if (items[i].MenuText.Replace("_", "").ToLower().Contains(stringToMatch.ToLower()))
+                if (items[i].UserControlPath.ToLower() == stringToMatch.ToLower())
                 {
                     item = items[i];
                     break;
