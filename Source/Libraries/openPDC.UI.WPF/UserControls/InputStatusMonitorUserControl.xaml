@@ -353,8 +353,17 @@
 
                 <sdk:DataGrid.Columns>
 
-                    <sdk:DataGridTextColumn Header="ID" IsReadOnly="True" Width="75" Binding="{tsfBinding:Column Path=ID}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                    <!--<sdk:DataGridTextColumn Header="ID" IsReadOnly="True" Width="75" Binding="{tsfBinding:Column Path=ID}" ToolTipService.ToolTip="{tsfBinding:Column Path=SignalReference}" CellStyle="{StaticResource CenterAlignCellStyle}"/>-->
 
+                    <sdk:DataGridTemplateColumn Header="ID" Width="75" IsReadOnly="True">
+                        <sdk:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{tsfBinding:Column Path=ID}" ToolTipService.ToolTip="{tsfBinding:Column Path=SignalReference}" HorizontalAlignment="Left"/>
+                            </DataTemplate>
+                        </sdk:DataGridTemplateColumn.CellTemplate>
+                    </sdk:DataGridTemplateColumn>
+                    
+                    
                     <sdk:DataGridTemplateColumn Header="Statistic" Width="180" IsReadOnly="True">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
