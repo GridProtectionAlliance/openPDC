@@ -510,7 +510,7 @@ namespace openPDC.UI.UserControls
 
         private void ButtonGetStatistics_Click(object sender, RoutedEventArgs e)
         {
-            GetStatistics(((Button)sender).Content.ToString());
+            GetStatistics(((Button)sender).Tag.ToString());
         }
 
         private void GetStatistics(string acronym)

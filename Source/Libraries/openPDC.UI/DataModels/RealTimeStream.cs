@@ -430,6 +430,7 @@ namespace openPDC.UI.DataModels
         // Fields        
         private int? m_id;
         private string m_acronym;
+        private string m_acronymTruncated;
         private string m_name;
         private string m_protocolName;
         private string m_vendorDeviceName;
@@ -472,7 +473,23 @@ namespace openPDC.UI.DataModels
             set
             {
                 m_acronym = value;
+                AcronymTruncated = m_acronym.Substring(m_acronym.LastIndexOf("!") + 1);
                 OnPropertyChanged("Acronym");
+            }
+        }
+
+        /// <summary>
+        /// Gets truncated acronym, i.e. removed parent device prefix. This is only for display purpose.
+        /// </summary>
+        public string AcronymTruncated
+        {
+            get
+            {
+                return m_acronymTruncated;
+            }
+            set
+            {
+                m_acronymTruncated = value;
             }
         }
 
