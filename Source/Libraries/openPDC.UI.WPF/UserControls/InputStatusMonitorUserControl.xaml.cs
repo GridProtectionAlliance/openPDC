@@ -742,12 +742,13 @@ namespace openPDC.UI.UserControls
 
                         if (m_historicalPlayback)
                         {
-                            ModeMessage.Text = "Initializing historical playback...";
                             Dispatcher.BeginInvoke(new Action(delegate()
                             {
                                 string startTime = TextBoxStartTime.Text;
                                 string stopTime = TextBoxStopTime.Text;
                                 int processingInterval = int.Parse(TextBoxProcessInterval.Text);
+
+                                ModeMessage.Text = "Initializing historical playback...";
 
                                 //m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps, startTime: TextBoxStartTime.Text, stopTime: TextBoxStopTime.Text, processingInterval: (int)SliderProcessInterval.Value);
                                 m_subscriber.UnsynchronizedSubscribe(true, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime, startTime, stopTime, null, processingInterval);
