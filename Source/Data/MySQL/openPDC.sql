@@ -18,6 +18,8 @@
 --  ----------------------------------------------------------------------------------------------------
 --  05/07/2011 - J. Ritchie Carroll
 --       Generated original version of schema.
+--  03/27/2012 - prasanthgs
+--       Added ExceptionLog table for keeping recent exceptions.
 --  ----------------------------------------------------------------------------------------------------
 
 CREATE DATABASE openPDC CHARACTER SET = UTF8;
@@ -36,6 +38,16 @@ CREATE TABLE ErrorLog(
     Detail TEXT NULL,
     CreatedOn DATETIME NOT NULL DEFAULT N'0000-00-00 00:00:00',
     CONSTRAINT PK_ErrorLog PRIMARY KEY (ID ASC)
+);
+
+CREATE TABLE ExceptionLog(
+    ID INT AUTO_INCREMENT NOT NULL,
+    Source VARCHAR(200) NULL,
+    Type VARCHAR(200) NULL,
+    Message TEXT NULL,
+    Detail TEXT NULL,
+    DateTime DATETIME NOT NULL DEFAULT N'0000-00-00 00:00:00',
+    CONSTRAINT PK_ExceptionLog PRIMARY KEY (ID ASC)
 );
 
 CREATE TABLE Runtime(
@@ -1341,6 +1353,9 @@ FOR EACH ROW SET NEW.CreatedBy = USER(), NEW.CreatedOn = UTC_TIMESTAMP(), NEW.Up
 
 CREATE TRIGGER ErrorLog_InsertDefault BEFORE INSERT ON ErrorLog FOR EACH ROW
 SET NEW.CreatedOn = UTC_TIMESTAMP();
+
+CREATE TRIGGER ExceptionLog_InsertDefault BEFORE INSERT ON ExceptionLog FOR EACH ROW
+SET NEW.DateTime = UTC_TIMESTAMP();
 
 CREATE TRIGGER AuditLog_InsertDefault BEFORE INSERT ON AuditLog FOR EACH ROW
 SET NEW.UpdatedOn = UTC_TIMESTAMP();	

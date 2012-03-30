@@ -18,6 +18,8 @@
 --  ----------------------------------------------------------------------------------------------------
 --  05/07/2011 - J. Ritchie Carroll
 --       Generated original version of schema.
+--  03/27/2012 - prasanthgs
+--       Added ExceptionLog table for keeping recent exceptions.
 --  ----------------------------------------------------------------------------------------------------
 
 -- The following statements are used to create a tablespace, user, and schema.
@@ -45,6 +47,26 @@ CREATE SEQUENCE SEQ_ErrorLog START WITH 1 INCREMENT BY 1;
 
 CREATE TRIGGER AI_ErrorLog BEFORE INSERT ON ErrorLog
     FOR EACH ROW BEGIN SELECT SEQ_ErrorLog.nextval INTO :NEW.ID FROM dual;
+END;
+/
+
+CREATE TABLE ExceptionLog(
+    ID NUMBER NOT NULL,
+    Source VARCHAR2(4000),
+    Type VARCHAR2(4000),
+    Message VARCHAR2(4000),
+    Detail VARCHAR2(4000),
+    DateTime DATE NOT NULL
+);
+
+CREATE UNIQUE INDEX IX_ExceptionLog_ID ON ExceptionLog (ID ASC) TABLESPACE OPDC_INDEX;
+
+ALTER TABLE ExceptionLog ADD CONSTRAINT PK_ExceptionLog PRIMARY KEY (ID);
+
+CREATE SEQUENCE SEQ_ExceptionLog START WITH 1 INCREMENT BY 1;
+
+CREATE TRIGGER AI_ExceptionLog BEFORE INSERT ON ExceptionLog
+    FOR EACH ROW BEGIN SELECT SEQ_ExceptionLog.nextval INTO :NEW.ID FROM dual;
 END;
 /
 
@@ -1863,6 +1885,11 @@ END;
 
 CREATE TRIGGER ErrorLog_InsertDefault BEFORE INSERT ON ErrorLog
     FOR EACH ROW BEGIN SELECT SYSDATE INTO :NEW.CreatedOn FROM dual;
+END;
+/
+
+CREATE TRIGGER ExceptionLog_InsertDefault BEFORE INSERT ON ExceptionLog
+    FOR EACH ROW BEGIN SELECT SYSDATE INTO :NEW.DateTime FROM dual;
 END;
 /
 
