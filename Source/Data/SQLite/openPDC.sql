@@ -22,23 +22,18 @@
 --       Translated MySQL script to SQLite.
 --  03/27/2012 - prasanthgs
 --       Added ExceptionLog table for keeping recent exceptions.
+--  04/12/2012 - prasanthgs
+--       Reworked as per the comments of codeplex reviewers.
+--       Added new field Type to ErrorLog table. Removed ExceptionLog table.
 --  ----------------------------------------------------------------------------------------------------
 
 CREATE TABLE ErrorLog(
     ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     Source VARCHAR(200) NOT NULL,
+    Type VARCHAR(200) NULL,
     Message TEXT NOT NULL,
     Detail TEXT NULL,
     CreatedOn DATETIME NOT NULL DEFAULT ''
-);
-
-CREATE TABLE ExceptionLog(
-    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    Source VARCHAR(200) NULL,
-    Type VARCHAR(200) NULL,
-    Message TEXT NULL,
-    Detail TEXT NULL,
-    DateTime DATETIME NOT NULL DEFAULT ''
 );
 
 CREATE TABLE Runtime(
@@ -1382,9 +1377,6 @@ FOR EACH ROW
 
 CREATE TRIGGER ErrorLog_InsertDefault AFTER INSERT ON ErrorLog FOR EACH ROW
 BEGIN UPDATE ErrorLog SET CreatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND CreatedOn = ''; END;
-
-CREATE TRIGGER ExceptionLog_InsertDefault AFTER INSERT ON ExceptionLog FOR EACH ROW
-BEGIN UPDATE ExceptionLog SET DateTime = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND DateTime = ''; END;
 
 CREATE TRIGGER AuditLog_InsertDefault AFTER INSERT ON AuditLog FOR EACH ROW
 BEGIN UPDATE AuditLog SET UpdatedOn = strftime('%Y-%m-%d %H:%M:%f') WHERE ROWID = NEW.ROWID AND UpdatedOn = ''; END;

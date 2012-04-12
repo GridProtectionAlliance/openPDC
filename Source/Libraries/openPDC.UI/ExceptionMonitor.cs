@@ -18,6 +18,9 @@
 //  ----------------------------------------------------------------------------------------------------
 //  3/26/2012 - prasanthgs
 //       Generated original version of source code.
+//  04/12/2012 - prasanthgs
+//       Reworked as per the comments of codeplex reviewers.
+//       Reusing ErrorLog instead of creating new table ExceptionLog.
 //
 //******************************************************************************************************
 
@@ -28,6 +31,7 @@ using TVA.Data;
 using TimeSeriesFramework.UI;
 using System.Data;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace openPDC.UI
 {
@@ -44,6 +48,11 @@ namespace openPDC.UI
 
         // Constants
         private const int DefaultRefreshInterval = 10;
+
+        /// <summary>
+        /// Specifies the default value for the <see cref="DefaultErrorLogSize"/> property.
+        /// </summary>
+        private const int DefaultErrorLogSize = 2000;
 
         /// <summary>
         /// Event raised when ExceptionList updation required.
@@ -197,37 +206,35 @@ namespace openPDC.UI
         }
 
         /// <summary>
-        /// Fetch recent exception details from ExceptionLog table.
+        /// Fetch recent exception details from ErrorLog table.
         /// </summary>
         private void RefreshExceptionsList()
         {
             bool createdConnection = false;
             AdoDataConnection database = null;
-            int idxNo = default(int);
             List<ExceptionLog> newTempList = null;
 
             try
             {
-
                 createdConnection = DataModelBase.CreateConnection(ref database);
 
                 DataTable ErrorLogTable = database.Connection.RetrieveData(database.AdapterType,
-                    "SELECT Source, Type, Message, Detail, DateTime FROM ExceptionLog ORDER BY ID DESC");
+                    "SELECT Source, Type, Message, Detail, CreatedOn FROM ErrorLog ORDER BY ID DESC");
 
-                newTempList = new List<ExceptionLog>();
-
-                foreach (DataRow row in ErrorLogTable.Rows)
-                {
-                    newTempList.Add(new ExceptionLog
-                    {
-                        DateandTime = row.Field<DateTime>("DateTime"),
-                        ExceptionSource = row.Field<String>("Source"),
-                        ExceptionType = row.Field<String>("Type"),
-                        ExceptionMessage = row.Field<String>("Message"),
-                        Index = ++idxNo,
-                        Details = row.Field<String>("Detail")
-                    });
-                }
+                //Load only first 2000 Exception information to list.
+                newTempList = ErrorLogTable.AsEnumerable()
+                                        .Select((row, idxNo) => new ExceptionLog
+                                        {
+                                            DateandTime = row.Field<DateTime>("CreatedOn"),
+                                            ExceptionSource = row.Field<String>("Source"),
+                                            ExceptionType = row.Field<String>("Type"),
+                                            ExceptionMessage = row.Field<String>("Message"),
+                                            Index = ++idxNo,
+                                            Details = row.Field<String>("Detail")
+                                        })
+                                         .Distinct()
+                                         .Take(DefaultErrorLogSize)
+                                         .ToList();
 
                 // Update the exception list
                 lock (m_exLock)

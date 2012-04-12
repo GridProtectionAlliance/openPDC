@@ -18,6 +18,9 @@
 //  ----------------------------------------------------------------------------------------------------
 //  03/27/2012 - prasanthgs
 //       Generated original version of source code.
+//  04/12/2012 - prasanthgs
+//       Reworked as per the comments of codeplex reviewers.
+//       Code Optimized.
 //
 //******************************************************************************************************
 
@@ -60,17 +63,8 @@ namespace openPDC.UI.UserControls
 
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
-
-            if (e.Column.SortMemberPath != null && e.Column.SortMemberPath != String.Empty)
-            {
-                ExceptionLog tempItem = m_dataContext.CurrentItem;
-
-                m_dataContext.SortData(e.Column.SortMemberPath);
-
-                m_dataContext.CurrentItem = tempItem;
-            }
-
             m_dataContext.LastSortMemberPath = e.Column.SortMemberPath;
+            m_dataContext.Sort(m_dataContext.GetCurrentItemKey());
         }
 
         private void ButtonRestore_Click(object sender, RoutedEventArgs e)

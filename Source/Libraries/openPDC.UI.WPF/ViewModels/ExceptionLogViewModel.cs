@@ -18,6 +18,9 @@
 //  ----------------------------------------------------------------------------------------------------
 //  3/26/2012 - prasanthgs
 //       Generated original version of source code.
+//  04/12/2012 - prasanthgs
+//       Reworked as per the comments of codeplex reviewers.
+//       Code Optimized.
 //
 //******************************************************************************************************
 
@@ -132,25 +135,36 @@ namespace openPDC.UI.ViewModels
         private void LoadExceptions()
         {
             int CurIdx = default(int);
-            ExceptionLog newItem = null;
 
             if ((object)m_exMonitor != null)
             {
                 CurIdx = GetCurrentItemKey();
                 ItemsSource = m_exMonitor.GetRecentExceptions();
-                newItem = ItemsSource.SingleOrDefault(ex => ex.Index == CurIdx);
+                
+                //Sort and select current item.
+                Sort(CurIdx);
+            }
+        }
 
-                if ((object)LastSortMemberPath != null && LastSortMemberPath != String.Empty)
-                    SortData(LastSortMemberPath);
+        /// <summary>
+        /// Initiates parent sortmethod.
+        /// Set current selected item after sort based on display index.
+        /// </summary>
+        /// <param name="idxCurItem">Index of selected item before sort</param>
+        public void Sort(int idxCurItem)
+        {
+            ExceptionLog newItem = ItemsSource.SingleOrDefault(ex => ex.Index == idxCurItem);
 
-                if ((object)newItem != null)
-                {
-                    CurrentItem = newItem;
-                }
-                else
-                {
-                    CurrentSelectedIndex = -1;
-                }
+            if ((object)LastSortMemberPath != null && LastSortMemberPath != String.Empty)
+                SortData(LastSortMemberPath);
+
+            if ((object)newItem != null)
+            {
+                CurrentItem = newItem;
+            }
+            else
+            {
+                CurrentSelectedIndex = -1;
             }
         }
 
