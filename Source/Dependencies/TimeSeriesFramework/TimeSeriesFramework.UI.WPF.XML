@@ -249,6 +249,35 @@
             <param name="container"><see cref="T:System.Windows.FrameworkElement"/> containing <see cref="T:TimeSeriesFramework.UI.MenuDataItem"/>.</param>
             <returns><see cref="T:System.Windows.Style"/> based on MenuText.</returns>
         </member>
+        <member name="T:TimeSeriesFramework.UI.Modal.ErrorDetailDisplay">
+            <summary>
+            Interaction logic for ErrorDetailDisplay.xaml
+            </summary>
+            <summary>
+            ErrorDetailDisplay
+            </summary>
+        </member>
+        <member name="F:TimeSeriesFramework.UI.Modal.ErrorDetailDisplay.MessageProperty">
+            <summary>
+            Dependency property for <see cref="P:TimeSeriesFramework.UI.Modal.ErrorDetailDisplay.Message"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Modal.ErrorDetailDisplay.#ctor(System.String)">
+            <summary>
+            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.Modal.ErrorDetailDisplay"/> class.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.Modal.ErrorDetailDisplay.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.Modal.ErrorDetailDisplay.Message">
+            <summary>
+            Gets and Sets <see cref="T:System.Windows.Input.ICommand"/> for error message details.
+            </summary>
+            
+        </member>
         <member name="T:TimeSeriesFramework.UI.PagedViewModelBase`2">
             <summary>
             Represents an abstract class with paging support which all ViewModel objects derive from.
@@ -885,6 +914,25 @@
         <member name="P:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl.SaveEnabled">
             <summary>
             Gets or sets boolean value indicating IsEnabled property of Save button.
+            </summary>
+        </member>
+        <member name="T:TimeSeriesFramework.UI.UserControls.ErrorLogUserControl">
+            <summary>
+            Interaction logic for ErrorLogUserControl.xaml
+            </summary>
+            <summary>
+            ErrorLogUserControl
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.ErrorLogUserControl.#ctor">
+            <summary>
+            Constructor for Error user control class.
+            Creates data source with page size 18.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.ErrorLogUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.UserControls.HistorianUserControl">
@@ -1703,6 +1751,74 @@
         <member name="P:TimeSeriesFramework.UI.ViewModels.Companies.IsNewRecord">
             <summary>
             Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Creates a new instance of <see cref="T:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel"/> class.
+            </summary>
+            <param name="itemsPerPage"> No of Maximum items in each page.</param>
+            <param name="autoSave">Default value true.</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.LoadErrors">
+            <summary>
+            Update the DataGrid with latest error list.
+            Also sorts the data if sort is applied before refresh.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.Sort(System.Int32)">
+            <summary>
+            Initiates parent sortmethod.
+            Set current selected item after sort based on display index.
+            </summary>
+            <param name="idxCurItem">Index of selected item before sort</param>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.ShowErrorLog">
+            <summary>
+            Show brief error log details.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.Load">
+            <summary>
+            Overriden method
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.GetCurrentItemKey">
+            <summary>
+            Overriden method
+            Use current item index as key for setting 
+            error list selected item after refresh.
+            </summary>
+            <returns>Returns current item index.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.GetCurrentItemName">
+            <summary>
+            Overriden method
+            Get current item index.
+            </summary>
+            <returns>Returns String representation of current index.</returns>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.LastSortMemberPath">
+            <summary>
+            Gets or sets <see cref="P:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.LastSortMemberPath"/> Sort Member Path of DataGrid.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.Monitor">
+            <summary>
+            Gets or sets the <see cref="T:TimeSeriesFramework.UI.ErrorMonitor"/> used to receive
+            updates about recent Errors.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.ShowCommand">
+            <summary>
+            Gets Show command.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.IsNewRecord">
+            <summary>
+            Checks for new item in Error list.
+            Since this is an error viewer, no new records can be added.
+            Always returns false.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.ViewModels.Historians">
