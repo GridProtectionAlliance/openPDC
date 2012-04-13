@@ -115,7 +115,6 @@
   <ItemGroup>
     <Compile Include="DataModels\CalculatedMeasurement.cs" />
     <Compile Include="DataModels\Device.cs" />
-    <Compile Include="DataModels\ExceptionLog.cs" />
     <Compile Include="DataModels\InputWizardDevice.cs" />
     <Compile Include="DataModels\OutputStream.cs" />
     <Compile Include="DataModels\OutputStreamDevice.cs" />
@@ -127,7 +126,6 @@
     <Compile Include="DataModels\RealTimeStream.cs" />
     <Compile Include="DataModels\RealTimeStatistic.cs" />
     <Compile Include="DataModels\Statistic.cs" />
-    <Compile Include="ExceptionMonitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -48,6 +48,7 @@ using TVA;
 using TVA.Data;
 using TVA.IO;
 using TVA.Security.Cryptography;
+using System.Linq;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -1623,6 +1624,8 @@ namespace ConfigurationSetupUtility.Screens
             XmlNode categorizedSettings = configFile.SelectSingleNode("configuration/categorizedSettings");
             XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
 
+            bool databaseConfigurationType = (m_state["configurationType"].ToString() == "database");
+
             if (encrypted)
                 connectionString = Cipher.Encrypt(connectionString, App.CipherLookupKey, App.CryptoStrength);
 
@@ -1663,6 +1666,45 @@ namespace ConfigurationSetupUtility.Screens
                             child.Attributes["value"].Value = selectedNodeId;
                         }
                     }
+                }
+            }
+
+            if (serviceConfigFile && databaseConfigurationType)
+            {
+                XmlNode errorLoggerNode = configFile.SelectSingleNode("configuration/categorizedSettings/errorLogger");
+
+                // Ensure that error logger category exists
+                if ((object)errorLoggerNode == null)
+                {
+                    errorLoggerNode = configFile.CreateElement("errorLogger");
+                    configFile.SelectSingleNode("configuration/categorizedSettings").AppendChild(errorLoggerNode);
+                }
+
+                // Make sure LogToDatabase setting exists
+                XmlNode logToDatabaseNode = errorLoggerNode.SelectNodes("add").Cast<XmlNode>()
+                    .SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == "LogToDatabase");
+
+                if ((object)logToDatabaseNode == null)
+                {
+                    XmlElement addElement = configFile.CreateElement("add");
+
+                    XmlAttribute attribute = configFile.CreateAttribute("name");
+                    attribute.Value = "LogToDatabase";
+                    addElement.Attributes.Append(attribute);
+
+                    attribute = configFile.CreateAttribute("value");
+                    attribute.Value = "True";
+                    addElement.Attributes.Append(attribute);
+
+                    attribute = configFile.CreateAttribute("description");
+                    attribute.Value = "True if an encountered exception is logged to the database; otherwise False.";
+                    addElement.Attributes.Append(attribute);
+
+                    attribute = configFile.CreateAttribute("encrypted");
+                    attribute.Value = "false";
+                    addElement.Attributes.Append(attribute);
+
+                    errorLoggerNode.AppendChild(addElement);
                 }
             }
 
