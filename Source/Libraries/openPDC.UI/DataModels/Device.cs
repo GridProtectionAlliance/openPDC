@@ -1577,7 +1577,7 @@ namespace openPDC.UI.DataModels
             if (statHistorian != null)
                 TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", statHistorian.ID) + " RefreshMetadata");
 
-            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
+            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("INVOKE /a STATISTIC!SERVICES ReloadStatistics");
             TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("RefreshRoutes");
 
         }
