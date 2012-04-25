@@ -51,7 +51,7 @@ namespace PowerCalculations
         private double m_averageFrequency;
         private double m_maximumFrequency;
         private double m_minimumFrequency;
-        private ConcurrentDictionary<Guid, double> m_lastValues = new ConcurrentDictionary<Guid, double>();
+        private ConcurrentDictionary<Guid, int> m_lastValues = new ConcurrentDictionary<Guid, int>();
 
         // Important: Make sure output definition defines points in the following order
         private enum Output
@@ -125,11 +125,14 @@ namespace PowerCalculations
         {
             if (frame.Measurements.Count > 0)
             {
+                const double hzResolution = 1000.0; // three decimal places
+
                 double frequency;
                 double frequencyTotal;
                 double maximumFrequency = LoFrequency;
                 double minimumFrequency = HiFrequency;
-                double lastValue;
+                int adjustedFrequency;
+                int lastValue;
                 int total;
 
                 frequencyTotal = 0.0D;
@@ -138,18 +141,19 @@ namespace PowerCalculations
                 foreach (IMeasurement measurement in frame.Measurements.Values)
                 {
                     frequency = measurement.AdjustedValue;
+                    adjustedFrequency = (int)(frequency * hzResolution);
 
                     // Do some simple flat line avoidance...
                     if (m_lastValues.TryGetValue(measurement.ID, out lastValue))
                     {
-                        if (lastValue == frequency)
+                        if (lastValue == adjustedFrequency)
                             frequency = 0.0D;
                         else
-                            m_lastValues[measurement.ID] = frequency;
+                            m_lastValues[measurement.ID] = adjustedFrequency;
                     }
                     else
                     {
-                        m_lastValues[measurement.ID] = frequency;
+                        m_lastValues[measurement.ID] = adjustedFrequency;
                     }
 
                     // Validate frequency
