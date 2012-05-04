@@ -848,6 +848,9 @@ namespace TVA.PhasorProtocols
                             connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('VirtualInput', 'Virtual Device', 'Frame', 'Virtual', 'TestingAdapters.dll', 'TestingAdapters.VirtualInputAdapter', " + (protocols.Rows.Count + 4) + ")");
                     }
 
+                    if (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Protocol WHERE Acronym='Iec61850_90_5'"))) == 0)
+                        connection.ExecuteNonQuery("INSERT INTO Protocol(Acronym, Name, Type, Category, AssemblyName, TypeName, LoadOrder) VALUES('Iec61850_90_5', 'IEC 61850-90-5', 'Frame', 'Phasor', 'TVA.PhasorProtocols.dll', 'TVA.PhasorProtocols.PhasorMeasurementMapper', 12)");
+
                     foreach (DataRow protocol in protocols.Rows)
                     {
                         if (string.Compare(protocol.Field<string>("Category"), "Phasor", true) == 0)
