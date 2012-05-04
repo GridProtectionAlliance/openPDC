@@ -1004,16 +1004,16 @@ namespace TVA.PhasorProtocols
                     string formatString;
 
                     formatString = deviceRow["PhasorDataFormat"].ToNonNullString(m_dataFormat.ToString());
-                    cell.PhasorDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), string.IsNullOrEmpty(formatString) ? m_dataFormat.ToString() : formatString);
+                    cell.PhasorDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), string.IsNullOrEmpty(formatString) ? m_dataFormat.ToString() : formatString, true);
 
                     formatString = deviceRow["FrequencyDataFormat"].ToNonNullString(m_dataFormat.ToString());
-                    cell.FrequencyDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), string.IsNullOrEmpty(formatString) ? m_dataFormat.ToString() : formatString);
+                    cell.FrequencyDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), string.IsNullOrEmpty(formatString) ? m_dataFormat.ToString() : formatString, true);
 
                     formatString = deviceRow["AnalogDataFormat"].ToNonNullString(m_dataFormat.ToString());
-                    cell.AnalogDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), string.IsNullOrEmpty(formatString) ? m_dataFormat.ToString() : formatString);
+                    cell.AnalogDataFormat = (DataFormat)Enum.Parse(typeof(DataFormat), string.IsNullOrEmpty(formatString) ? m_dataFormat.ToString() : formatString, true);
 
                     formatString = deviceRow["CoordinateFormat"].ToNonNullString(m_coordinateFormat.ToString());
-                    cell.PhasorCoordinateFormat = (CoordinateFormat)Enum.Parse(typeof(CoordinateFormat), string.IsNullOrEmpty(formatString) ? m_coordinateFormat.ToString() : formatString);
+                    cell.PhasorCoordinateFormat = (CoordinateFormat)Enum.Parse(typeof(CoordinateFormat), string.IsNullOrEmpty(formatString) ? m_coordinateFormat.ToString() : formatString, true);
 
                     // Assign device identification labels
                     cell.IDLabel = deviceRow["Name"].ToString().TruncateRight(cell.IDLabelLength).Trim();

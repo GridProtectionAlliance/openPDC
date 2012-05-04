@@ -23,7 +23,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Serialization;
+using TVA.IO;
 
 namespace TVA.PhasorProtocols.Iec61850_90_5
 {
@@ -42,6 +44,8 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         private uint m_configurationRevision;
         private byte m_sampleSynchronization;
         private ushort m_sampleRate;
+        private ushort m_idCode;
+        private string m_stationName;
         private ConfigurationFrame m_configuration;
         private int m_parsedBodyLength;
 
@@ -390,7 +394,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
                         header.PublishFrame(dataFrame);
                     }
 
-                    // Clear any existing ADSU values from this data cell
+                    // Clear any existing ASDU values from this data cell
                     PhasorValues.Clear();
                     AnalogValues.Clear();
                     DigitalValues.Clear();
@@ -401,6 +405,35 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
 
                 // Parse MSVID value
                 m_msvID = buffer.ParseStringTag(SampledValueTag.MsvID, ref index);
+
+                // If formatted according to implementation agreement, MSVID value will contain an ID code and station name
+                if (!string.IsNullOrWhiteSpace(m_msvID))
+                {
+                    int underscoreIndex = m_msvID.IndexOf("_");
+
+                    if (underscoreIndex > 0)
+                    {
+                        if (!ushort.TryParse(m_msvID.Substring(0, underscoreIndex), out m_idCode))
+                        {
+                            m_idCode = 1;
+                            m_stationName = m_msvID;
+                        }
+                        else
+                        {
+                            m_stationName = m_msvID.Substring(underscoreIndex + 1);
+                        }
+                    }
+                    else
+                    {
+                        m_idCode = 1;
+                        m_stationName = m_msvID;
+                    }
+                }
+                else
+                {
+                    m_idCode = 1;
+                    m_stationName = "IEC61850Dataset";
+                }
 
                 // Parse dataset name
                 m_dataSet = buffer.ParseStringTag(SampledValueTag.Dataset, ref index);
@@ -459,7 +492,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
 
                     // If we still have no configuration, see if a "guess" is requested
                     if ((object)m_configuration == null && header.GuessConfiguration)
-                        GuessAtConfiguration();
+                        GuessAtConfiguration(tagLength);
                 }
 
                 if ((object)m_configuration == null)
@@ -495,15 +528,348 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         // Attempt to parse an associated ETR configuration
         private void ParseETRConfiguration()
         {
-            //m_configuration = new ConfigurationFrame();
-            //Parent.ConfigurationFrame = m_configuration;
+            if (!string.IsNullOrWhiteSpace(m_msvID))
+            {
+                // See if an associated ETR file exists
+                string etrFileName = m_msvID + ".etr";
+                string etrFilePath = FilePath.GetAbsolutePath(etrFileName);
+                bool foundETRFile = File.Exists(etrFilePath);
+
+                if (!foundETRFile)
+                {
+                    // Also test for ETR in configuration cache folder
+                    etrFilePath = FilePath.GetAbsolutePath("ConfigurationCache\\" + etrFileName);
+                    foundETRFile = File.Exists(etrFilePath);
+                }
+
+                if (foundETRFile)
+                {
+                    try
+                    {
+                        StreamReader reader = new StreamReader(etrFilePath);
+                        SignalType signalType, lastSignalType = SignalType.NONE;
+                        string label;
+                        bool statusDefined = false;
+                        int magnitudeSignals = 0;
+                        int angleSignals = 0;
+
+                        ConfigurationFrame configFrame = new ConfigurationFrame(16777216, 1, DateTime.UtcNow.Ticks, m_sampleRate);
+                        ConfigurationCell configCell = new ConfigurationCell(configFrame, m_idCode, LineFrequency.Hz60)
+                        {
+                            StationName = m_stationName
+                        };
+
+                        // Keep parsing records until there are no more...
+                        while (ParseNextSampleDefinition(reader, out signalType, out label))
+                        {
+                            bool badOrder = false;
+
+                            // Validate signal order
+                            switch (signalType)
+                            {
+                                case SignalType.FLAG:
+                                    badOrder = lastSignalType != SignalType.NONE;
+                                    statusDefined = true;
+                                    break;
+                                case SignalType.VPHM:
+                                case SignalType.IPHM:
+                                    badOrder = (lastSignalType != SignalType.FLAG && lastSignalType != SignalType.VPHA && lastSignalType != SignalType.IPHA);
+                                    PhasorDefinition phasor = new PhasorDefinition(configCell, label, 1, 0.0D, signalType == SignalType.VPHM ? PhasorType.Voltage : PhasorType.Current, null);
+                                    configCell.PhasorDefinitions.Add(phasor);
+                                    magnitudeSignals++;
+                                    break;
+                                case SignalType.VPHA:
+                                    badOrder = lastSignalType != SignalType.VPHM;
+                                    angleSignals++;
+                                    break;
+                                case SignalType.IPHA:
+                                    badOrder = lastSignalType != SignalType.IPHM;
+                                    angleSignals++;
+                                    break;
+                                case SignalType.FREQ:
+                                    badOrder = (lastSignalType != SignalType.VPHA && lastSignalType != SignalType.IPHA);
+                                    break;
+                                case SignalType.DFDT:
+                                    badOrder = lastSignalType != SignalType.FREQ;
+                                    configCell.FrequencyDefinition = new FrequencyDefinition(configCell, "Frequency");
+                                    break;
+                                case SignalType.ALOG:
+                                    badOrder = (lastSignalType != SignalType.DFDT && lastSignalType != SignalType.ALOG);
+                                    AnalogDefinition analog = new AnalogDefinition(configCell, label, 1, 0.0D, AnalogType.SinglePointOnWave);
+                                    configCell.AnalogDefinitions.Add(analog);
+                                    break;
+                                case SignalType.DIGI:
+                                    badOrder = (lastSignalType != SignalType.DFDT && lastSignalType != SignalType.ALOG && lastSignalType != SignalType.DIGI);
+                                    DigitalDefinition digital = new DigitalDefinition(configCell, label, 0, 1);
+                                    configCell.DigitalDefinitions.Add(digital);
+                                    break;
+                                default:
+                                    throw new InvalidOperationException("Unxpected signal type enecountered: " + signalType);
+                            }
+
+                            if (badOrder)
+                                throw new InvalidOperationException(string.Format("Invalid signal order encountered - {0} cannot follow {1}. Standard synchrophasor order is: status flags, one or more phasor magnitude/angle pairs, frequency, dF/dt, optional analogs, optional digitals", signalType, lastSignalType));
+
+                            lastSignalType = signalType;
+                        }
+
+                        if (!statusDefined)
+                            throw new InvalidOperationException("No status flag signal was defined.");
+
+                        if (configCell.PhasorDefinitions.Count == 0)
+                            throw new InvalidOperationException("No phasor magnitude/angle signal pairs were defined.");
+
+                        if (magnitudeSignals != angleSignals)
+                            throw new InvalidOperationException("Phasor magnitude/angle signal pair mismatch - there must be a one-to-one defintion between angle and magnitude signals.");
+
+                        if (configCell.FrequencyDefinition == null)
+                            throw new InvalidOperationException("No frequency and dF/dt signal pair was defined.");
+
+                        // Add cell to configuration frame
+                        configFrame.Cells.Add(configCell);
+
+                        // Publish configuration frame
+                        PublishNewConfigurationFrame(configFrame);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidOperationException(string.Format("Failed to parse associated ETR configuration \"{0}\": {1}", etrFilePath, ex.Message), ex);
+                    }
+                }
+            }
+        }
+
+        // Complex function used to read next signal type and lable from the ETR file...
+        private bool ParseNextSampleDefinition(StreamReader reader, out SignalType signalType, out string label)
+        {
+            string signalLabel, dataType, signalDetail;
+            bool result = false;
+
+            signalType = SignalType.NONE;
+            label = null;
+
+            // Attempt to read signal definition and label line
+            signalLabel = reader.ReadLine();
+
+            if (signalLabel != null)
+            {
+                // Attempt to reader data type line
+                dataType = reader.ReadLine();
+
+                if (dataType != null)
+                {
+                    // Clean up data type
+                    dataType = dataType.Trim().ToLower();
+
+                    int index = signalLabel.IndexOf("-");
+
+                    // Get defined signal label
+                    label = signalLabel.Substring(index + 1).Trim();
+
+                    // See if signal type contains ST
+                    index = signalLabel.IndexOf(".ST.");
+
+                    if (index > 0)
+                    {
+                        // Get detail portion of signal type label
+                        signalDetail = signalLabel.Substring(index + 4);
+
+                        // Status or digital value
+                        if (signalDetail.StartsWith("Ind1"))
+                        {
+                            // Status word value
+                            signalType = SignalType.FLAG;
+
+                            if (dataType != "i2")
+                                throw new InvalidOperationException(string.Format("Invalid data type size {0} specified for signal type {1} parsed from {2}", dataType, signalType, signalLabel));
+
+                            result = true;
+                        }
+                        else if (signalDetail.StartsWith("Ind2"))
+                        {
+                            // Digital value
+                            signalType = SignalType.DIGI;
+
+                            if (dataType != "i2")
+                                throw new InvalidOperationException(string.Format("Invalid data type size {0} specified for signal type {1} parsed from {2}", dataType, signalType, signalLabel));
+
+                            result = true;
+                        }
+                        else
+                        {
+                            // Unable to determine signal type
+                            throw new InvalidOperationException(string.Format("Unable to determine ETR signal type for {0} ({1})", signalLabel, dataType));
+                        }
+                    }
+                    else
+                    {
+                        // See if signal type contains MX
+                        index = signalLabel.IndexOf(".MX.");
+
+                        if (index > 0)
+                        {
+                            // Get detail portion of signal type label
+                            signalDetail = signalLabel.Substring(index + 4);
+
+                            // Frequency or phasor value
+                            if (signalDetail.StartsWith("HzRte"))
+                            {
+                                // dF/dt value
+                                signalType = SignalType.DFDT;
+
+                                if (dataType != "f4")
+                                    throw new InvalidOperationException(string.Format("Invalid data type size {0} specified for signal type {1} parsed from {2}", dataType, signalType, signalLabel));
+
+                                result = true;
+                            }
+                            else if (signalDetail.StartsWith("Hz"))
+                            {
+                                // Frequency value
+                                signalType = SignalType.FREQ;
+
+                                if (dataType != "f4")
+                                    throw new InvalidOperationException(string.Format("Invalid data type size {0} specified for signal type {1} parsed from {2}", dataType, signalType, signalLabel));
+
+                                result = true;
+                            }
+                            else if (signalDetail.StartsWith("PhV") || signalDetail.StartsWith("SeqV"))
+                            {
+                                if (signalDetail.Contains(".mag."))
+                                {
+                                    // Voltage phase magnitude
+                                    signalType = SignalType.VPHM;
+                                }
+                                else if (signalDetail.Contains(".ang."))
+                                {
+                                    // Voltage phase angle
+                                    signalType = SignalType.VPHA;
+                                }
+                                else
+                                {
+                                    // Unable to determine signal type
+                                    throw new InvalidOperationException(string.Format("Unable to determine ETR signal type for {0} ({1})", signalLabel, dataType));
+                                }
+
+                                if (dataType != "f4")
+                                    throw new InvalidOperationException(string.Format("Invalid data type size {0} specified for signal type {1} parsed from {2}", dataType, signalType, signalLabel));
+
+                                result = true;
+                            }
+                            else if (signalDetail.StartsWith("SeqA") || signalDetail.StartsWith("A"))
+                            {
+                                if (signalDetail.Contains(".mag."))
+                                {
+                                    // Current phase magnitude
+                                    signalType = SignalType.IPHM;
+                                }
+                                else if (signalDetail.Contains(".ang."))
+                                {
+                                    // Current phase angle
+                                    signalType = SignalType.IPHA;
+                                }
+                                else
+                                {
+                                    // Unable to determine signal type
+                                    throw new InvalidOperationException(string.Format("Unable to determine ETR signal type for {0} ({1})", signalLabel, dataType));
+                                }
+
+                                if (dataType != "f4")
+                                    throw new InvalidOperationException(string.Format("Invalid data type size {0} specified for signal type {1} parsed from {2}", dataType, signalType, signalLabel));
+
+                                result = true;
+                            }
+                            else
+                            {
+                                // Unable to determine signal type
+                                throw new InvalidOperationException(string.Format("Unable to determine ETR signal type for {0} ({1})", signalLabel, dataType));
+                            }
+                        }
+                        else
+                        {
+                            // Assuming anything else is an Analog value
+                            signalType = SignalType.ALOG;
+
+                            if (dataType != "f4")
+                                throw new InvalidOperationException(string.Format("Invalid data type size {0} specified for assumed analog signal type parsed from {1}", dataType, signalLabel));
+
+                            result = true;
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         // Attempt to guess at the configuration
-        private void GuessAtConfiguration()
+        private void GuessAtConfiguration(int sampleLength)
         {
-            //m_configuration = new ConfigurationFrame();
-            //Parent.ConfigurationFrame = m_configuration;
+            // Removed fixed length for 2-byte status, 4-byte frequency and 4-byte dF/dt
+            int test = sampleLength - 10;
+
+            // Assume remaining even 8-byte pairs are phasor values (i.e., 4-byte magnitude and 4-byte angle)
+            int phasors = test / 8;
+            test -= phasors * 8;
+
+            // Assume remaining even 2-byte items are digital values
+            int digitals = test / 2;
+            test -= digitals * 2;
+
+            // If no bytes remain, we'll assume this distribution as a guess configuration
+            if (test == 0)
+            {
+                // Just assume some details for a configuration frame
+                ConfigurationFrame configFrame = new ConfigurationFrame(16777216, 1, DateTime.UtcNow.Ticks, m_sampleRate);
+                ConfigurationCell configCell = new ConfigurationCell(configFrame, m_idCode, LineFrequency.Hz60)
+                {
+                    StationName = m_stationName
+                };
+
+                // Add phasors
+                for (int i = 0; i < phasors; i++)
+                {
+                    PhasorType type = i < phasors / 2 ? PhasorType.Voltage : PhasorType.Current;
+                    PhasorDefinition phasor = new PhasorDefinition(configCell, "Phasor " + (i + 1), 1, 0.0D, type, null);
+                    configCell.PhasorDefinitions.Add(phasor);
+                }
+
+                // Add frequency
+                configCell.FrequencyDefinition = new FrequencyDefinition(configCell, "Frequency");
+
+                // Add digitals
+                for (int i = 0; i < digitals; i++)
+                {
+                    DigitalDefinition digital = new DigitalDefinition(configCell, "Digital " + (i + 1), 0, 1);
+                    configCell.DigitalDefinitions.Add(digital);
+                }
+
+                configFrame.Cells.Add(configCell);
+                PublishNewConfigurationFrame(configFrame);
+            }
+        }
+
+        // Exposes a newly created configuration frame
+        private void PublishNewConfigurationFrame(ConfigurationFrame configFrame)
+        {
+            // Cache new configuration
+            m_configuration = configFrame;
+
+            // Provide new configuration to the parent data frame
+            Parent.ConfigurationFrame = configFrame;
+
+            // Update local associated configuration cell
+            ConfigurationCell = configFrame.Cells[0];
+
+            // Update local parsing state with new configuration info
+            State = new DataCellParsingState(
+                ConfigurationCell,
+                Iec61850_90_5.PhasorValue.CreateNewValue,
+                Iec61850_90_5.FrequencyValue.CreateNewValue,
+                Iec61850_90_5.AnalogValue.CreateNewValue,
+                Iec61850_90_5.DigitalValue.CreateNewValue);
+
+            // Publish the configuration frame to the rest of the system
+            Parent.CommonHeader.PublishFrame(configFrame);
         }
 
         /// <summary>

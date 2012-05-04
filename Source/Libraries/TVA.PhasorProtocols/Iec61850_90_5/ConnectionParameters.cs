@@ -87,7 +87,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             m_guessConfiguration = DefaultGuessConfiguration;
             m_parseRedundantASDUs = DefaultParseRedundantASDUs;
             m_ignoreSignatureValidationFailures = DefaultIgnoreSignatureValidationFailures;
-            m_phasorAngleFormat = (AngleFormat)Enum.Parse(typeof(AngleFormat), DefaultPhasorAngleFormat);
+            m_phasorAngleFormat = (AngleFormat)Enum.Parse(typeof(AngleFormat), DefaultPhasorAngleFormat, true);
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             }
             catch
             {
-                m_phasorAngleFormat = (AngleFormat)Enum.Parse(typeof(AngleFormat), DefaultPhasorAngleFormat);
+                m_phasorAngleFormat = (AngleFormat)Enum.Parse(typeof(AngleFormat), DefaultPhasorAngleFormat, true);
             }
         }
 

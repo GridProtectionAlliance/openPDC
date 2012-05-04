@@ -189,7 +189,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
                     m_guessConfiguration = Iec61850_90_5.ConnectionParameters.DefaultGuessConfiguration;
                     m_parseRedundantASDUs = Iec61850_90_5.ConnectionParameters.DefaultParseRedundantASDUs;
                     m_ignoreSignatureValidationFailures = Iec61850_90_5.ConnectionParameters.DefaultIgnoreSignatureValidationFailures;
-                    m_phasorAngleFormat = (AngleFormat)Enum.Parse(typeof(AngleFormat), Iec61850_90_5.ConnectionParameters.DefaultPhasorAngleFormat);
+                    m_phasorAngleFormat = (AngleFormat)Enum.Parse(typeof(AngleFormat), Iec61850_90_5.ConnectionParameters.DefaultPhasorAngleFormat, true);
                 }
             }
         }
