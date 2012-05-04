@@ -49,7 +49,7 @@
     <NOWARN>
     </NOWARN>
     <RemoveIntegerChecks>true</RemoveIntegerChecks>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisRules>
     </CodeAnalysisRules>
     <DefineConstants>DEBUG</DefineConstants>
@@ -216,6 +216,26 @@
     <Compile Include="IDataFrameParsingState.cs" />
     <Compile Include="IDigitalDefinition.cs" />
     <Compile Include="IDigitalValue.cs" />
+    <Compile Include="Iec61850_90_5\AnalogDefinition.cs" />
+    <Compile Include="Iec61850_90_5\AnalogValue.cs" />
+    <Compile Include="Iec61850_90_5\CommandFrame.cs" />
+    <Compile Include="Iec61850_90_5\Common.cs" />
+    <Compile Include="Iec61850_90_5\CommonFrameHeader.cs" />
+    <Compile Include="Iec61850_90_5\ConfigurationCell.cs" />
+    <Compile Include="Iec61850_90_5\ConfigurationCellCollection.cs" />
+    <Compile Include="Iec61850_90_5\ConfigurationFrame.cs" />
+    <Compile Include="Iec61850_90_5\ConnectionParameters.cs" />
+    <Compile Include="Iec61850_90_5\DataCell.cs" />
+    <Compile Include="Iec61850_90_5\DataCellCollection.cs" />
+    <Compile Include="Iec61850_90_5\DataFrame.cs" />
+    <Compile Include="Iec61850_90_5\DigitalDefinition.cs" />
+    <Compile Include="Iec61850_90_5\DigitalValue.cs" />
+    <Compile Include="Iec61850_90_5\FrameParser.cs" />
+    <Compile Include="Iec61850_90_5\FrequencyDefinition.cs" />
+    <Compile Include="Iec61850_90_5\FrequencyValue.cs" />
+    <Compile Include="Iec61850_90_5\NamespaceDoc.cs" />
+    <Compile Include="Iec61850_90_5\PhasorDefinition.cs" />
+    <Compile Include="Iec61850_90_5\PhasorValue.cs" />
     <Compile Include="Ieee1344\NamespaceDoc.cs" />
     <Compile Include="IeeeC37_118\Concentrator.cs" />
     <Compile Include="IeeeC37_118\ConfigurationCell3.cs">

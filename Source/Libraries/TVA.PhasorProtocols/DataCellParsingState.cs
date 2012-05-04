@@ -267,9 +267,12 @@ namespace TVA.PhasorProtocols
             m_createNewAnalogValue = createNewAnalogValue;
             m_createNewDigitalValue = createNewDigitalValue;
 
-            PhasorCount = m_configurationCell.PhasorDefinitions.Count;
-            AnalogCount = m_configurationCell.AnalogDefinitions.Count;
-            DigitalCount = m_configurationCell.DigitalDefinitions.Count;
+            if (m_configurationCell != null)
+            {
+                PhasorCount = m_configurationCell.PhasorDefinitions.Count;
+                AnalogCount = m_configurationCell.AnalogDefinitions.Count;
+                DigitalCount = m_configurationCell.DigitalDefinitions.Count;
+            }
         }
 
         #endregion

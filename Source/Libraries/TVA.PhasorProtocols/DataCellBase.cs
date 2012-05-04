@@ -215,7 +215,10 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return m_configurationCell.StationName;
+                if ((object)m_configurationCell != null)
+                    return m_configurationCell.StationName.ToNonNullString();
+
+                return "";
             }
         }
 
@@ -226,7 +229,10 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return m_configurationCell.IDLabel;
+                if ((object)m_configurationCell != null)
+                    return m_configurationCell.IDLabel.ToNonNullString();
+
+                return "";
             }
         }
 
@@ -258,7 +264,10 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return m_configurationCell.IDCode;
+                if ((object)m_configurationCell != null)
+                    return m_configurationCell.IDCode;
+
+                return 0;
             }
             set
             {

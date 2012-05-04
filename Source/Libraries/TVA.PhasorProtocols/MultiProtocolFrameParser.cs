@@ -120,7 +120,11 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Macrodyne protocol.
         /// </summary>
-        Macrodyne
+        Macrodyne,
+        /// <summary>
+        /// IEC 61850-90-5 protocol.
+        /// </summary>
+        Iec61850_90_5
     }
 
     #endregion
@@ -742,7 +746,7 @@ namespace TVA.PhasorProtocols
                 m_phasorProtocol = value;
                 m_deviceSupportsCommands = DeriveCommandSupport();
 
-                // Setup protocol specific connection parameters...
+                // Setup protocol specific connection parameters, for those protocols that have them...
                 switch (value)
                 {
                     case PhasorProtocols.PhasorProtocol.BpaPdcStream:
@@ -753,6 +757,9 @@ namespace TVA.PhasorProtocols
                         break;
                     case PhasorProtocols.PhasorProtocol.SelFastMessage:
                         m_connectionParameters = new SelFastMessage.ConnectionParameters();
+                        break;
+                    case PhasorProtocols.PhasorProtocol.Iec61850_90_5:
+                        m_connectionParameters = new Iec61850_90_5.ConnectionParameters();
                         break;
                     default:
                         m_connectionParameters = null;
@@ -1598,6 +1605,28 @@ namespace TVA.PhasorProtocols
                 case PhasorProtocol.Ieee1344:
                     m_frameParser = new Ieee1344.FrameParser();
                     break;
+                case PhasorProtocol.Iec61850_90_5:
+                    m_frameParser = new Iec61850_90_5.FrameParser();
+
+                    // Check for IEC 61850-90-5 protocol specific parameters in connection string
+                    Iec61850_90_5.ConnectionParameters iecParameters = m_connectionParameters as Iec61850_90_5.ConnectionParameters;
+
+                    if (iecParameters != null)
+                    {
+                        if (settings.TryGetValue("useETRConfiguration", out setting))
+                            iecParameters.UseETRConfiguration = setting.ParseBoolean();
+
+                        if (settings.TryGetValue("guessConfiguration", out setting))
+                            iecParameters.GuessConfiguration = setting.ParseBoolean();
+
+                        if (settings.TryGetValue("parseRedundantASDUs", out setting))
+                            iecParameters.ParseRedundantASDUs = setting.ParseBoolean();
+
+                        if (settings.TryGetValue("ignoreSignatureValidationFailures", out setting))
+                            iecParameters.IgnoreSignatureValidationFailures = setting.ParseBoolean();
+                    }
+
+                    break;
                 case PhasorProtocol.BpaPdcStream:
                     m_frameParser = new BpaPdcStream.FrameParser();
 
@@ -1976,6 +2005,9 @@ namespace TVA.PhasorProtocols
                         case PhasorProtocols.PhasorProtocol.Ieee1344:
                             commandFrame = new Ieee1344.CommandFrame(m_deviceID, command);
                             break;
+                        case PhasorProtocols.PhasorProtocol.Iec61850_90_5:
+                            commandFrame = new Iec61850_90_5.CommandFrame(m_deviceID, command, 1);
+                            break;
                         case PhasorProtocols.PhasorProtocol.SelFastMessage:
                             // Get defined message period
                             SelFastMessage.MessagePeriod messagePeriod = SelFastMessage.MessagePeriod.DefaultRate;
@@ -2141,7 +2173,7 @@ namespace TVA.PhasorProtocols
         private bool DeriveCommandSupport()
         {
             // Command support is based on phasor protocol, transport protocol and connection style
-            if (IsIEEEProtocol || m_phasorProtocol == PhasorProtocol.SelFastMessage || m_phasorProtocol == PhasorProtocol.Macrodyne)
+            if (IsIEEEProtocol || m_phasorProtocol == PhasorProtocol.Iec61850_90_5 || m_phasorProtocol == PhasorProtocol.SelFastMessage || m_phasorProtocol == PhasorProtocol.Macrodyne)
             {
                 // IEEE protocols using TCP or Serial connection support device commands
                 if (m_transportProtocol == TransportProtocol.Tcp || m_transportProtocol == TransportProtocol.Serial)

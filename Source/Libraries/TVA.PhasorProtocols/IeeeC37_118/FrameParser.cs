@@ -662,6 +662,15 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                     // Create new derived configuration cell
                     derivedCell = new ConfigurationCell(derivedFrame, sourceCell.IDCode, sourceCell.NominalFrequency);
 
+                    string stationName = sourceCell.StationName;
+                    string idLabel = sourceCell.IDLabel;
+
+                    if (!string.IsNullOrWhiteSpace(stationName))
+                        derivedCell.StationName = stationName.TruncateLeft(derivedCell.MaximumStationNameLength);
+
+                    if (!string.IsNullOrWhiteSpace(idLabel))
+                        derivedCell.IDLabel = idLabel.TruncateLeft(derivedCell.IDLabelLength);
+
                     // Create equivalent derived phasor definitions
                     foreach (IPhasorDefinition sourcePhasor in sourceCell.PhasorDefinitions)
                     {

@@ -343,7 +343,10 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return m_configurationFrame.IDCode;
+                if ((object)m_configurationFrame != null)
+                    return m_configurationFrame.IDCode;
+
+                return 0;
             }
             set
             {

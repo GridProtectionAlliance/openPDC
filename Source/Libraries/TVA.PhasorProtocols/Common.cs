@@ -378,6 +378,8 @@ namespace TVA.PhasorProtocols
                     return "SEL Fast Message";
                 case PhasorProtocol.Macrodyne:
                     return "Macrodyne";
+                case PhasorProtocol.Iec61850_90_5:
+                    return "IEC 61850-90-5";
                 default:
                     return protocol.ToString().Replace('_', '.').ToUpper();
             }
