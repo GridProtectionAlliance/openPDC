@@ -197,7 +197,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         }
 
         /// <summary>
-        /// Gets the <see cref="IeeeC37_118.DraftRevision"/> of this <see cref="DigitalDefinition"/>.
+        /// Gets the <see cref="Iec61850_90_5.DraftRevision"/> of this <see cref="DigitalDefinition"/>.
         /// </summary>
         public DraftRevision DraftRevision
         {

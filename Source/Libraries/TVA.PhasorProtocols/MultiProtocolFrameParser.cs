@@ -2206,7 +2206,7 @@ namespace TVA.PhasorProtocols
             try
             {
                 // Attempt to stop real-time data, waiting a maximum of three seconds for this activity
-                if (!m_skipDisableRealTimeData)
+                if (!m_skipDisableRealTimeData && m_phasorProtocol != PhasorProtocol.Iec61850_90_5)
                     Task.Factory.StartNew(AttemptToStopRealTimeData).Wait(3000);
 
                 m_initiatingDataStream = false;
@@ -2671,7 +2671,7 @@ namespace TVA.PhasorProtocols
         {
             // We automatically request enabling of real-time data upon reception of config frame if requested. Note that SEL Fast Message will
             // have already been enabled at this point so we don't duplicate request for enabling real-time data stream
-            if (m_configurationFrame == null && m_deviceSupportsCommands && m_autoStartDataParsingSequence && m_phasorProtocol != PhasorProtocol.SelFastMessage)
+            if (m_configurationFrame == null && m_deviceSupportsCommands && m_autoStartDataParsingSequence && m_phasorProtocol != PhasorProtocol.SelFastMessage && m_phasorProtocol != PhasorProtocol.Iec61850_90_5)
                 SendDeviceCommand(DeviceCommand.EnableRealTimeData);
 
             m_configurationFrame = e.Argument;

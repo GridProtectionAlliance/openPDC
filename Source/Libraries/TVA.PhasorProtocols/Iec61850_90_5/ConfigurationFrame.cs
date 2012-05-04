@@ -32,7 +32,7 @@ using TVA.Parsing;
 namespace TVA.PhasorProtocols.Iec61850_90_5
 {
     /// <summary>
-    /// Represents the IEC 61850-90-5 implementation of a <see cref="IConfigurationFrame"/>, type 1, that can be sent or received.
+    /// Represents the IEC 61850-90-5 implementation of a <see cref="IConfigurationFrame"/> that can be sent or received.
     /// </summary>
     [Serializable()]
     public class ConfigurationFrame : ConfigurationFrameBase, ISupportFrameImage<FrameType>

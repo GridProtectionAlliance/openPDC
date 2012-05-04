@@ -52,10 +52,10 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         {
             // Define new parsing state which defines constructors for key configuration values
             State = new ConfigurationCellParsingState(
-                IeeeC37_118.PhasorDefinition.CreateNewDefinition,
-                IeeeC37_118.FrequencyDefinition.CreateNewDefinition,
-                IeeeC37_118.AnalogDefinition.CreateNewDefinition,
-                IeeeC37_118.DigitalDefinition.CreateNewDefinition);
+                Iec61850_90_5.PhasorDefinition.CreateNewDefinition,
+                Iec61850_90_5.FrequencyDefinition.CreateNewDefinition,
+                Iec61850_90_5.AnalogDefinition.CreateNewDefinition,
+                Iec61850_90_5.DigitalDefinition.CreateNewDefinition);
         }
 
         /// <summary>
