@@ -47,7 +47,6 @@ namespace EpriExport
     {
         #region [ Members ]
 
-
         // Constants
         private const double SqrtOf3 = 1.7320508075688772935274463415059D;
 
@@ -268,8 +267,8 @@ namespace EpriExport
             // Add row 1
             header.Append("Data Points,Tie lines,Time step");
 
-            if (count - 4 > 0)
-                header.Append(new string(',', count - 4));
+            if (count - 3 > 0)
+                header.Append(new string(',', count - 3));
 
             header.AppendLine();
 
