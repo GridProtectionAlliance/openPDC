@@ -322,6 +322,7 @@ namespace HistorianAdapters
             string refreshMetadata;
             string errorMessage = "{0} is missing from Settings - Example: instanceName=XX;archivePath=c:\\;autoRefreshMetadata=True";
             Dictionary<string, string> settings = Settings;
+            string setting;
 
             // Validate settings.
             if (!settings.TryGetValue("instancename", out m_instanceName))
