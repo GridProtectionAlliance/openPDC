@@ -37,6 +37,36 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
     {
         #region [ Members ]
 
+        /// <summary>Computes a Hash-based Message Authentication Code (HMAC) using the AES hash function.</summary>
+        private class AesHmac : HMAC
+        {
+            /// <summary>Initializes a new instance of the AesHmac class with the specified key data.</summary>
+            /// <param name="key">The secret key for AesHmac encryption.</param>
+            public AesHmac(byte[] key)
+            {
+                HashName = "System.Security.Cryptography.AesCryptoServiceProvider";
+                HashSizeValue = 128;
+                BlockSizeValue = 128;
+                Initialize();
+                Key = (byte[])key.Clone();
+            }
+        }
+
+        /// <summary>Computes a Hash-based Message Authentication Code (HMAC) using the SHA256 hash function.</summary>
+        private class ShaHmac : HMAC
+        {
+            /// <summary>Initializes a new instance of the ShaHmac class with the specified key data.</summary>
+            /// <param name="key">The secret key for ShaHmac encryption.</param>
+            public ShaHmac(byte[] key)
+            {
+                HashName = "System.Security.Cryptography.SHA256CryptoServiceProvider";
+                HashSizeValue = 256;
+                BlockSizeValue = 128;
+                Initialize();
+                Key = (byte[])key.Clone();
+            }
+        }
+
         // Constants
 
         /// <summary>
@@ -225,26 +255,32 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
                                     if (buffer[hmacIndex++] == 0x85)
                                     {
                                         // KeyID is tehcnically a lookup into derived rotating keys, but all these are using dummy key for now
-                                        HMACSHA256 shaHash = new HMACSHA256(Common.DummyKey);
+                                        HMAC hmac = m_signatureAlgorithm <= SignatureAlgorithm.Sha256 ? (HMAC)(new ShaHmac(Common.DummyKey)) : (HMAC)(new AesHmac(Common.DummyKey));
                                         int result = 0;
 
                                         switch (m_signatureAlgorithm)
                                         {
                                             case SignatureAlgorithm.None:
                                                 break;
+                                            case SignatureAlgorithm.Aes64:
+                                                m_sourceHash = buffer.BlockCopy(hmacIndex, 8);
+                                                m_calculatedHash = hmac.ComputeHash(buffer, packetIndex, (int)m_spduLength).BlockCopy(0, 8);
+                                                result = m_sourceHash.CompareTo(0, m_calculatedHash, 0, 8);
+                                                break;
                                             case SignatureAlgorithm.Sha80:
                                                 m_sourceHash = buffer.BlockCopy(hmacIndex, 10);
-                                                m_calculatedHash = shaHash.ComputeHash(buffer, packetIndex, (int)m_spduLength);
+                                                m_calculatedHash = hmac.ComputeHash(buffer, packetIndex, (int)m_spduLength).BlockCopy(0, 10);
                                                 result = m_sourceHash.CompareTo(0, m_calculatedHash, 0, 10);
                                                 break;
                                             case SignatureAlgorithm.Sha128:
+                                            case SignatureAlgorithm.Aes128:
                                                 m_sourceHash = buffer.BlockCopy(hmacIndex, 16);
-                                                m_calculatedHash = shaHash.ComputeHash(buffer, packetIndex, (int)m_spduLength);
+                                                m_calculatedHash = hmac.ComputeHash(buffer, packetIndex, (int)m_spduLength).BlockCopy(0, 16);
                                                 result = m_sourceHash.CompareTo(0, m_calculatedHash, 0, 16);
                                                 break;
                                             case SignatureAlgorithm.Sha256:
                                                 m_sourceHash = buffer.BlockCopy(hmacIndex, 32);
-                                                m_calculatedHash = shaHash.ComputeHash(buffer, packetIndex, (int)m_spduLength);
+                                                m_calculatedHash = hmac.ComputeHash(buffer, packetIndex, (int)m_spduLength).BlockCopy(0, 32);
                                                 result = m_sourceHash.CompareTo(0, m_calculatedHash, 0, 32);
                                                 break;
                                             default:
