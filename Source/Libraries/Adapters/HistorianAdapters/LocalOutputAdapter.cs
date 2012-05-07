@@ -99,6 +99,7 @@ namespace HistorianAdapters
         private bool m_autoRefreshMetadata;
         private string m_instanceName;
         private string m_archivePath;
+        private bool m_useNamespaceReservation;
         private long m_archivedMeasurements;
         private volatile int m_adapterLoadedCount;
         private bool m_disposed;
@@ -331,6 +332,11 @@ namespace HistorianAdapters
 
             if (settings.TryGetValue("refreshmetadata", out refreshMetadata) || settings.TryGetValue("autorefreshmetadata", out refreshMetadata))
                 m_autoRefreshMetadata = refreshMetadata.ParseBoolean();
+
+            if (settings.TryGetValue("useNamespaceReservation", out setting))
+                m_useNamespaceReservation = setting.ParseBoolean();
+            else
+                m_useNamespaceReservation = false;
 
             // Initialize metadata file.
             m_instanceName = m_instanceName.ToLower();
@@ -588,6 +594,7 @@ namespace HistorianAdapters
             // Attempt to reserve the http namespace reservation for this data service URI
             string uri = string.Empty;
             IDataService provider = e.Argument;
+
             if (provider != null && !string.IsNullOrWhiteSpace(provider.Endpoints))
             {
                 foreach (string endpoint in provider.Endpoints.Split(';'))
@@ -598,7 +605,11 @@ namespace HistorianAdapters
                         {
                             // Convert the endpoint address to standard URI format.
                             uri = Regex.Replace(endpoint.Trim(), "http\\..*://", "http://", RegexOptions.IgnoreCase);
-                            SetNamespaceReservation(new Uri(uri));
+
+                            if (m_useNamespaceReservation)
+                                AddNamespaceReservation(new Uri(uri));
+                            else
+                                RemoveNamespaceReservation(new Uri(uri));
                         }
                     }
                     catch (Exception ex)
@@ -1019,7 +1030,7 @@ namespace HistorianAdapters
         }
 
         // Create an http namespace reservation
-        private static void SetNamespaceReservation(Uri serviceUri)
+        private static void AddNamespaceReservation(Uri serviceUri)
         {
             OperatingSystem OS = Environment.OSVersion;
             ProcessStartInfo psi = null;
@@ -1042,7 +1053,47 @@ namespace HistorianAdapters
                 }
             }
 
-            if (psi != null && parameters != null)
+            if (psi != null)
+            {
+                psi.Verb = "runas";
+                psi.CreateNoWindow = true;
+                psi.WindowStyle = ProcessWindowStyle.Hidden;
+                psi.UseShellExecute = false;
+                psi.Arguments = parameters;
+
+                using (Process shell = new Process())
+                {
+                    shell.StartInfo = psi;
+                    shell.Start();
+                    if (!shell.WaitForExit(5000))
+                        shell.Kill();
+                }
+            }
+        }
+
+        private static void RemoveNamespaceReservation(Uri serviceUri)
+        {
+            OperatingSystem OS = Environment.OSVersion;
+            ProcessStartInfo psi = null;
+            string parameters = null;
+
+            if (OS.Platform == PlatformID.Win32NT)
+            {
+                if (OS.Version.Major > 5)
+                {
+                    // Vista, Windows 2008, Window 7, etc use "netsh" for reservations
+                    parameters = string.Format(@"http delete urlacl url={0}://+:{1}{2}", serviceUri.Scheme, serviceUri.Port, serviceUri.AbsolutePath);
+                    psi = new ProcessStartInfo("netsh", parameters);
+                }
+                else
+                {
+                    // Attempt to use "httpcfg" for older Windows versions...
+                    parameters = string.Format(@"delete urlacl /u {0}://*:{1}{2}/", serviceUri.Scheme, serviceUri.Port, serviceUri.AbsolutePath);
+                    psi = new ProcessStartInfo("httpcfg", parameters);
+                }
+            }
+
+            if (psi != null)
             {
                 psi.Verb = "runas";
                 psi.CreateNoWindow = true;
