@@ -476,7 +476,12 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
     public static class Common
     {
         /// <summary>
-        /// Identifies a connectionless transport protocol tag in IEC 61850-90-5 data frames.
+        /// Timebase used by IEC 61850-90-5 protocol implementation.
+        /// </summary>
+        public const uint Timebase = 16777216;
+
+        /// <summary>
+        /// Marker for a connectionless transport protocol tag in IEC 61850-90-5 data frames.
         /// </summary>
         public const byte CltpTag = 0x40;
 

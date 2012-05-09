@@ -119,7 +119,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             m_idCode = idCode;
             m_timestamp = timestamp;
             m_version = 1;
-            m_timebase = 16777216;
+            m_timebase = Common.Timebase;
         }
 
         /// <summary>

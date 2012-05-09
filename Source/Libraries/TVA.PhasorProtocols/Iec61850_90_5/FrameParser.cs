@@ -408,7 +408,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
                 IFrequencyDefinition sourceFrequency;
 
                 // Assuming timebase = 16777216
-                derivedFrame = new ConfigurationFrame(16777216, sourceFrame.IDCode, sourceFrame.Timestamp, sourceFrame.FrameRate);
+                derivedFrame = new ConfigurationFrame(Common.Timebase, sourceFrame.IDCode, sourceFrame.Timestamp, sourceFrame.FrameRate);
 
                 foreach (IConfigurationCell sourceCell in sourceFrame.Cells)
                 {
