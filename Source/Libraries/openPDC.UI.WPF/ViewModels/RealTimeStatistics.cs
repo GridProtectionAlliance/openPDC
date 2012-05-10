@@ -144,7 +144,7 @@ namespace openPDC.UI.ViewModels
                             if (!string.IsNullOrEmpty(measurement.DisplayFormat) && !string.IsNullOrEmpty(measurement.DataType))
                             {
                                 measurement.Quality = newMeasurement.ValueQualityIsGood() ? "GOOD" : "BAD";
-                                measurement.Value = string.Format(measurement.DisplayFormat, ConvertValueToType(newMeasurement.Value.ToString(), measurement.DataType));
+                                measurement.Value = string.Format(measurement.DisplayFormat, ConvertValueToType(newMeasurement.AdjustedValue.ToString(), measurement.DataType));
                                 measurement.TimeTag = newMeasurement.Timestamp.ToString("HH:mm:ss.fff");
 
                                 StreamStatistic streamStatistic;

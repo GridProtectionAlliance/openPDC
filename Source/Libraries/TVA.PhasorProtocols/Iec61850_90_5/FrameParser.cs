@@ -74,6 +74,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         private bool m_guessConfiguration;
         private bool m_parseRedundantASDUs;
         private bool m_ignoreSignatureValidationFailures;
+        private bool m_ignoreSampleSizeValidationFailures;
         private AngleFormat m_phasorAngleFormat;
 
         #endregion
@@ -146,8 +147,11 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
                 status.Append("     Parse redundant ASDUs: ");
                 status.Append(m_parseRedundantASDUs);
                 status.AppendLine();
-                status.Append("Ignore Checksum Validation: ");
+                status.Append("Bypass checksum validation: ");
                 status.Append(m_ignoreSignatureValidationFailures);
+                status.AppendLine();
+                status.Append("Bypass data len validation: ");
+                status.Append(m_ignoreSampleSizeValidationFailures);
                 status.AppendLine();
                 status.Append(" Unexpected command frames: ");
                 status.Append(m_unexpectedCommandFrames);
@@ -181,6 +185,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
                     m_guessConfiguration = parameters.GuessConfiguration;
                     m_parseRedundantASDUs = parameters.ParseRedundantASDUs;
                     m_ignoreSignatureValidationFailures = parameters.IgnoreSignatureValidationFailures;
+                    m_ignoreSampleSizeValidationFailures = parameters.IgnoreSampleSizeValidationFailures;
                     m_phasorAngleFormat = parameters.PhasorAngleFormat;
                 }
                 else
@@ -189,6 +194,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
                     m_guessConfiguration = Iec61850_90_5.ConnectionParameters.DefaultGuessConfiguration;
                     m_parseRedundantASDUs = Iec61850_90_5.ConnectionParameters.DefaultParseRedundantASDUs;
                     m_ignoreSignatureValidationFailures = Iec61850_90_5.ConnectionParameters.DefaultIgnoreSignatureValidationFailures;
+                    m_ignoreSampleSizeValidationFailures = Iec61850_90_5.ConnectionParameters.DefaultIgnoreSampleSizeValidationFailures;
                     m_phasorAngleFormat = (AngleFormat)Enum.Parse(typeof(AngleFormat), Iec61850_90_5.ConnectionParameters.DefaultPhasorAngleFormat, true);
                 }
             }
@@ -237,7 +243,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             if (length >= CommonFrameHeader.FixedLength)
             {
                 // Parse common frame header
-                CommonFrameHeader parsedFrameHeader = new CommonFrameHeader(m_configurationFrame, m_useETRConfiguration, m_guessConfiguration, m_parseRedundantASDUs, m_ignoreSignatureValidationFailures, m_phasorAngleFormat, buffer, offset, length)
+                CommonFrameHeader parsedFrameHeader = new CommonFrameHeader(m_configurationFrame, m_useETRConfiguration, m_guessConfiguration, m_parseRedundantASDUs, m_ignoreSignatureValidationFailures, m_ignoreSampleSizeValidationFailures, m_phasorAngleFormat, buffer, offset, length)
                 {
                     PublishFrame = OnReceivedChannelFrame
                 };

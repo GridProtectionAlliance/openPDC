@@ -420,7 +420,7 @@ namespace openPDC.UI.UserControls
                 {
                     foreach (IMeasurement measurement in e.Argument)
                     {
-                        double tempValue = measurement.Value;
+                        double tempValue = measurement.AdjustedValue;
 
                         if (!double.IsNaN(tempValue) && !double.IsInfinity(tempValue)) // Process data only if it is not NaN or infinity.
                         {

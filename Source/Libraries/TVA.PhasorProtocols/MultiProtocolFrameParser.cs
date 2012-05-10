@@ -1624,6 +1624,9 @@ namespace TVA.PhasorProtocols
 
                         if (settings.TryGetValue("ignoreSignatureValidationFailures", out setting))
                             iecParameters.IgnoreSignatureValidationFailures = setting.ParseBoolean();
+
+                        if (settings.TryGetValue("ignoreSampleSizeValidationFailures", out setting))
+                            iecParameters.IgnoreSampleSizeValidationFailures = setting.ParseBoolean();
                     }
 
                     break;

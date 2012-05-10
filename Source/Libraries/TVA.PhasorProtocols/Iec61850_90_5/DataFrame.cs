@@ -429,12 +429,21 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
                 }
                 else
                 {
-                    // Validate that sample size matches current configuration
-                    if (tagLength != m_configuration.GetCalculatedSampleLength())
-                        throw new InvalidOperationException("Configuration does match data sample size - cannot parse data");
+                    // See if sample size validation should by bypassed
+                    if (header.IgnoreSampleSizeValidationFailures)
+                    {
+                        base.ParseBodyImage(buffer, index, length - (index - startIndex));
+                        index += tagLength;
+                    }
+                    else
+                    {
+                        // Validate that sample size matches current configuration
+                        if (tagLength != m_configuration.GetCalculatedSampleLength())
+                            throw new InvalidOperationException("Configuration does match data sample size - cannot parse data");
 
-                    // Parse standard synchrophasor sequence
-                    index += base.ParseBodyImage(buffer, index, length - (index - startIndex));
+                        // Parse standard synchrophasor sequence
+                        index += base.ParseBodyImage(buffer, index, length - (index - startIndex));
+                    }
                 }
 
                 // Skip past optional sample mod tag, if defined
@@ -583,6 +592,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         }
 
         // Complex function used to read next signal type and lable from the ETR file...
+        // Note that current parsing depends on sample tag name format defined in the IEC 61850-90-5 implementation agreement
         private bool ParseNextSampleDefinition(StreamReader reader, out SignalType signalType, out string label, out bool endOfFile)
         {
             string signalLabel, dataType, signalDetail;

@@ -363,7 +363,7 @@ namespace openPDC.UI.ViewModels
                                     {
                                         measurement.Quality = newMeasurement.ValueQualityIsGood() ? "GOOD" : "BAD";
                                         measurement.TimeTag = newMeasurement.Timestamp.ToString("HH:mm:ss.fff");
-                                        measurement.Value = newMeasurement.Value.ToString("0.###");
+                                        measurement.Value = newMeasurement.AdjustedValue.ToString("0.###");
 
                                         //if (measurement.SignalAcronym == "FLAG")
                                         //{

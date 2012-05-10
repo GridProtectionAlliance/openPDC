@@ -67,7 +67,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             if (length < CommonFrameHeader.FixedLength)
                 throw new ArgumentOutOfRangeException("length");
 
-            m_frameHeader = new CommonFrameHeader(null, false, false, false, true, AngleFormat.Degrees, buffer, startIndex, 0);
+            m_frameHeader = new CommonFrameHeader(null, false, false, false, true, true, AngleFormat.Degrees, buffer, startIndex, 0);
 
             if (m_frameHeader.TypeID != Iec61850_90_5.FrameType.CommandFrame)
                 throw new InvalidOperationException("Binary image does not represent an IEC 61850-90-5 command frame");

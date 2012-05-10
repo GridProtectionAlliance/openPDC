@@ -63,6 +63,11 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         public const bool DefaultIgnoreSignatureValidationFailures = true;
 
         /// <summary>
+        /// Default value for <see cref="IgnoreSampleSizeValidationFailures"/> property.
+        /// </summary>
+        public const bool DefaultIgnoreSampleSizeValidationFailures = false;
+
+        /// <summary>
         /// Default value for <see cref="PhasorAngleFormat"/> property.
         /// </summary>
         public const string DefaultPhasorAngleFormat = "Degrees";
@@ -72,6 +77,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         private bool m_guessConfiguration;
         private bool m_parseRedundantASDUs;
         private bool m_ignoreSignatureValidationFailures;
+        private bool m_ignoreSampleSizeValidationFailures;
         private AngleFormat m_phasorAngleFormat;
 
         #endregion
@@ -87,6 +93,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             m_guessConfiguration = DefaultGuessConfiguration;
             m_parseRedundantASDUs = DefaultParseRedundantASDUs;
             m_ignoreSignatureValidationFailures = DefaultIgnoreSignatureValidationFailures;
+            IgnoreSampleSizeValidationFailures = DefaultIgnoreSampleSizeValidationFailures;
             m_phasorAngleFormat = (AngleFormat)Enum.Parse(typeof(AngleFormat), DefaultPhasorAngleFormat, true);
         }
 
@@ -133,6 +140,15 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             catch
             {
                 m_ignoreSignatureValidationFailures = DefaultIgnoreSignatureValidationFailures;
+            }
+
+            try
+            {
+                IgnoreSampleSizeValidationFailures = info.GetBoolean("ignoreSampleSizeValidationFailures");
+            }
+            catch
+            {
+                IgnoreSampleSizeValidationFailures = DefaultIgnoreSampleSizeValidationFailures;
             }
 
             try
@@ -218,6 +234,24 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             set
             {
                 m_ignoreSignatureValidationFailures = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets flag that determines if system should ignore sample size validation errors.
+        /// </summary>
+        [Category("Optional Connection Parameters"),
+        Description("Determines if system should ignore sample size validation errors."),
+        DefaultValue(DefaultIgnoreSampleSizeValidationFailures)]
+        public bool IgnoreSampleSizeValidationFailures
+        {
+            get
+            {
+                return m_ignoreSampleSizeValidationFailures;
+            }
+            set
+            {
+                m_ignoreSampleSizeValidationFailures = value;
             }
         }
 

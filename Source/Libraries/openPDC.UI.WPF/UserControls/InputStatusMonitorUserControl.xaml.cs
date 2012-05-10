@@ -584,7 +584,7 @@ namespace openPDC.UI.UserControls
                             }
                         }
 
-                        double tempValue = newMeasurement.Value;
+                        double tempValue = newMeasurement.AdjustedValue;
                         Guid tempSignalID = newMeasurement.ID;
                         if (!double.IsNaN(tempValue) && !double.IsInfinity(tempValue)) // Process data only if it is not NaN or infinity.
                         {

@@ -186,7 +186,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         {
             get
             {
-                // TODO: Should data be considered invalid when signature check fails? On my test device this would always be invalid since SHA is fixed...
+                // TODO: Should data be considered invalid when signature check fails? On my test device this would always be invalid since SHA is not being calculated...
                 return (StatusFlags & Iec61850_90_5.StatusFlags.DataIsValid) == 0;
             }
             set

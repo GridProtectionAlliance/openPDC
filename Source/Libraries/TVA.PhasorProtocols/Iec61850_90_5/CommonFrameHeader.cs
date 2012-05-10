@@ -99,6 +99,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         private bool m_guessConfiguration;
         private bool m_parseRedundantASDUs;
         private bool m_ignoreSignatureValidationFailures;
+        private bool m_ignoreSampleSizeValidationFailures;
         private AngleFormat m_angleFormat;
         private IChannelParsingState m_state;
         private Action<IChannelFrame> m_publishFrame;
@@ -130,17 +131,19 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         /// <param name="guessConfiguration">Determines if system should try to guess at a possible configuration given payload size.</param>
         /// <param name="parseRedundantASDUs">Determines if system should expose redundantly parsed ASDUs.</param>
         /// <param name="ignoreSignatureValidationFailures">Determines if system should ignore checksum signature validation errors.</param>
+        /// <param name="ignoreSampleSizeValidationFailures">Determines if system should ignore sample size validation errors.</param>
         /// <param name="angleFormat">Allows customization of the angle parsing format.</param>
         /// <param name="buffer">Buffer that contains data to parse.</param>
         /// <param name="startIndex">Start index into buffer where valid data begins.</param>
         /// <param name="length">Maximum length of valid data from offset.</param>
-        public CommonFrameHeader(ConfigurationFrame configurationFrame, bool useETRConfiguration, bool guessConfiguration, bool parseRedundantASDUs, bool ignoreSignatureValidationFailures, AngleFormat angleFormat, byte[] buffer, int startIndex, int length)
+        public CommonFrameHeader(ConfigurationFrame configurationFrame, bool useETRConfiguration, bool guessConfiguration, bool parseRedundantASDUs, bool ignoreSignatureValidationFailures, bool ignoreSampleSizeValidationFailures, AngleFormat angleFormat, byte[] buffer, int startIndex, int length)
         {
             // Cache behavioral connection parameters
             m_useETRConfiguration = useETRConfiguration;
             m_guessConfiguration = guessConfiguration;
             m_parseRedundantASDUs = parseRedundantASDUs;
             m_ignoreSignatureValidationFailures = ignoreSignatureValidationFailures;
+            m_ignoreSampleSizeValidationFailures = ignoreSampleSizeValidationFailures;
             m_angleFormat = angleFormat;
 
             // See if frame is for a common IEEE C37.118 frame (e.g., for configuration or command)
@@ -689,6 +692,21 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             set
             {
                 m_ignoreSignatureValidationFailures = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets flag that determines if system should ignore sample size validation errors.
+        /// </summary>
+        public bool IgnoreSampleSizeValidationFailures
+        {
+            get
+            {
+                return m_ignoreSampleSizeValidationFailures;
+            }
+            set
+            {
+                m_ignoreSampleSizeValidationFailures = value;
             }
         }
 
