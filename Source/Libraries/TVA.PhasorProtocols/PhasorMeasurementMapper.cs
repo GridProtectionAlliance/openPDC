@@ -74,6 +74,7 @@ namespace TVA.PhasorProtocols
         private long m_totalHeaderFrames;
         private string m_sharedMapping;
         private uint m_sharedMappingID;
+        private bool m_forceLabelMapping;
         private ushort m_accessID;
         private bool m_isConcentrator;
         private bool m_receivedConfigFrame;
@@ -517,7 +518,13 @@ namespace TVA.PhasorProtocols
                     status.AppendFormat("       Primary data source: {0}", m_primaryDataSource.Name);
                     status.AppendLine();
                 }
-                status.AppendFormat("   Source device time zone: {0}", m_timezone.Id);
+                status.AppendFormat(" Source connection ID code: {0}", m_accessID);
+                status.AppendLine();
+                status.AppendFormat("     Forcing label mapping: {0}", m_forceLabelMapping);
+                status.AppendLine();
+                status.AppendFormat("      Label mapped devices: {0}", (object)m_labelDefinedDevices == null ? 0 : m_labelDefinedDevices.Count);
+                status.AppendLine();
+                status.AppendFormat("          Target time zone: {0}", m_timezone.Id);
                 status.AppendLine();
                 status.AppendFormat("    Manual time adjustment: {0} seconds", m_timeAdjustmentTicks.ToSeconds().ToString("0.000"));
                 status.AppendLine();
@@ -725,6 +732,11 @@ namespace TVA.PhasorProtocols
             else
                 m_accessID = 1;
 
+            if (settings.TryGetValue("forceLabelMapping", out setting))
+                m_forceLabelMapping = setting.ParseBoolean();
+            else
+                m_forceLabelMapping = false;
+
             if (settings.TryGetValue("primaryDataSource", out setting))
             {
                 uint primaryDataSourceID = 0;
@@ -909,23 +921,34 @@ namespace TVA.PhasorProtocols
                     // Create new configuration cell parsing needed ID code and label from input stream configuration
                     definedDevice = new ConfigurationCell(ushort.Parse(row["AccessID"].ToString()));
                     deviceName = row["Acronym"].ToNonNullString("[undefined]").Trim();
+
                     definedDevice.StationName = row["Name"].ToNonNullString(deviceName).Trim().TruncateRight(definedDevice.MaximumStationNameLength);
                     definedDevice.IDLabel = deviceName.TruncateRight(definedDevice.IDLabelLength);
                     definedDevice.Tag = uint.Parse(row["ID"].ToString());
                     definedDevice.Source = this;
+
                     devicedAdded = false;
 
-                    // See if key already exists in this collection
-                    if (m_definedDevices.ContainsKey(definedDevice.IDCode))
+                    if (m_forceLabelMapping)
                     {
-                        // For devices that do not have unique ID codes, we fall back on its label for unique lookup
+                        // When forcing label mapping we always try to use label for unique lookup
                         if ((object)m_labelDefinedDevices == null)
                             m_labelDefinedDevices = new ConcurrentDictionary<string, ConfigurationCell>(StringComparer.OrdinalIgnoreCase);
 
+                        // See if label already exists in this collection
                         if (m_labelDefinedDevices.ContainsKey(definedDevice.StationName))
                         {
-                            OnProcessException(new InvalidOperationException(string.Format("ERROR: Device ID \"{0}\", labeled \"{1}\", was not unique in the {2} input stream. Data from devices that are not distinctly defined by ID code or label will not be correctly parsed until uniquely identified.", definedDevice.IDCode, definedDevice.StationName, Name)));
-                            definedDevice.Dispose();
+                            // For devices that do not have unique labels when forcing label mapping, we fall back on its ID code for unique lookup
+                            if (m_definedDevices.ContainsKey(definedDevice.IDCode))
+                            {
+                                OnProcessException(new InvalidOperationException(string.Format("ERROR: Device ID \"{0}\", labeled \"{1}\", was not unique in the {2} input stream. Data from devices that are not distinctly defined by ID code or label will not be correctly parsed until uniquely identified.", definedDevice.IDCode, definedDevice.StationName, Name)));
+                                definedDevice.Dispose();
+                            }
+                            else
+                            {
+                                m_definedDevices.TryAdd(definedDevice.IDCode, definedDevice);
+                                devicedAdded = true;
+                            }
                         }
                         else
                         {
@@ -935,8 +958,29 @@ namespace TVA.PhasorProtocols
                     }
                     else
                     {
-                        m_definedDevices.TryAdd(definedDevice.IDCode, definedDevice);
-                        devicedAdded = true;
+                        // See if key already exists in this collection
+                        if (m_definedDevices.ContainsKey(definedDevice.IDCode))
+                        {
+                            // For devices that do not have unique ID codes, we fall back on its label for unique lookup
+                            if ((object)m_labelDefinedDevices == null)
+                                m_labelDefinedDevices = new ConcurrentDictionary<string, ConfigurationCell>(StringComparer.OrdinalIgnoreCase);
+
+                            if (m_labelDefinedDevices.ContainsKey(definedDevice.StationName))
+                            {
+                                OnProcessException(new InvalidOperationException(string.Format("ERROR: Device ID \"{0}\", labeled \"{1}\", was not unique in the {2} input stream. Data from devices that are not distinctly defined by ID code or label will not be correctly parsed until uniquely identified.", definedDevice.IDCode, definedDevice.StationName, Name)));
+                                definedDevice.Dispose();
+                            }
+                            else
+                            {
+                                m_labelDefinedDevices.TryAdd(definedDevice.StationName, definedDevice);
+                                devicedAdded = true;
+                            }
+                        }
+                        else
+                        {
+                            m_definedDevices.TryAdd(definedDevice.IDCode, definedDevice);
+                            devicedAdded = true;
+                        }
                     }
 
                     if (devicedAdded)
@@ -956,7 +1000,12 @@ namespace TVA.PhasorProtocols
                 OnStatusMessage(deviceStatus.ToString());
 
                 if ((object)m_labelDefinedDevices != null)
-                    OnStatusMessage("WARNING: {0} has {1} defined input devices that do not have unique ID codes (i.e., the AccessID), as a result system will use the device label for identification. This is not the optimal configuration.", Name, m_labelDefinedDevices.Count);
+                {
+                    if (m_forceLabelMapping)
+                        OnStatusMessage("{0} has {1} defined input devices that are using the device label for identification since connection has been forced to use label mapping. This is not the optimal configuration.", Name, m_labelDefinedDevices.Count);
+                    else
+                        OnStatusMessage("WARNING: {0} has {1} defined input devices that do not have unique ID codes (i.e., the AccessID), as a result system will use the device label for identification. This is not the optimal configuration.", Name, m_labelDefinedDevices.Count);
+                }
             }
             else
             {
@@ -974,7 +1023,21 @@ namespace TVA.PhasorProtocols
                 definedDevice.IDLabel = deviceName.TruncateRight(definedDevice.IDLabelLength);
                 definedDevice.Tag = ID;
                 definedDevice.Source = this;
-                m_definedDevices.TryAdd(definedDevice.IDCode, definedDevice);
+
+                // When forcing label mapping we always try to use label for unique lookup instead of ID code
+                if (m_forceLabelMapping)
+                {
+                    if ((object)m_labelDefinedDevices == null)
+                        m_labelDefinedDevices = new ConcurrentDictionary<string, ConfigurationCell>(StringComparer.OrdinalIgnoreCase);
+
+                    m_labelDefinedDevices.TryAdd(definedDevice.StationName, definedDevice);
+
+                    OnStatusMessage("Input device is using the device label for identification since connection has been forced to use label mapping. This is not the optimal configuration.");
+                }
+                else
+                {
+                    m_definedDevices.TryAdd(definedDevice.IDCode, definedDevice);
+                }
             }
         }
 
