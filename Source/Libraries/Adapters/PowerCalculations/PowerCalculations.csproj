@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AverageFrequency.cs" />
+    <Compile Include="PowerCalculator.cs" />
     <Compile Include="PowerStability.cs" />
     <Compile Include="EventDetection\FrequencyExcursion.cs" />
     <Compile Include="EventDetection\LossOfField.cs" />
