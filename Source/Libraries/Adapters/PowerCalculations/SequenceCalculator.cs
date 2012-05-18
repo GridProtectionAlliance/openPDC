@@ -46,6 +46,7 @@ namespace PowerCalculations
 
         // Constants
         private const double SqrtOf3 = 1.7320508075688772935274463415059D;
+        private const double Rad120 = 2.0D * Math.PI / 3.0D;
 
         // Fields
         private MeasurementKey[] m_angles;
@@ -135,25 +136,40 @@ namespace PowerCalculations
 
                 if (m_trackRecentValues)
                 {
+
+                    status.AppendFormat("         Phase A magnitude: {0}", m_magnitudes[0]);
+                    status.AppendLine();
+                    status.AppendFormat("         Phase B magnitude: {0}", m_magnitudes[1]);
+                    status.AppendLine();
+                    status.AppendFormat("         Phase C magnitude: {0}", m_magnitudes[2]);
+                    status.AppendLine();
+                    status.AppendFormat("             Phase A angle: {0}", m_angles[0]);
+                    status.AppendLine();
+                    status.AppendFormat("             Phase B angle: {0}", m_angles[1]);
+                    status.AppendLine();
+                    status.AppendFormat("             Phase C angle: {0}", m_angles[2]);
+                    status.AppendLine();
+                    status.AppendLine();
+
                     status.Append("   Last positive sequences: ");
 
                     lock (m_positiveMagnitudeSample)
                     {
-                        // Display last several values
-                        if (m_positiveMagnitudeSample.Count > ValuesToShow)
-                            status.Append(m_positiveMagnitudeSample.GetRange(m_positiveMagnitudeSample.Count - ValuesToShow - 1, ValuesToShow).Select(v => v.ToString("0.00 ") + m_magnitudeUnits).ToDelimitedString(", "));
-                        else
-                            status.Append("Not enough values calculated yet...");
-                    }
-                    status.AppendLine();
+                        lock (m_positiveAngleSample)
+                        {
+                            // Display last several values
+                            if (m_positiveMagnitudeSample.Count > ValuesToShow)
+                            {
+                                List<double> positiveMagnitudeSample = m_positiveMagnitudeSample.GetRange(m_positiveMagnitudeSample.Count - ValuesToShow - 1, ValuesToShow);
+                                List<double> positiveAngleSample = m_positiveAngleSample.GetRange(m_positiveMagnitudeSample.Count - ValuesToShow - 1, ValuesToShow);
 
-                    lock (m_positiveAngleSample)
-                    {
-                        // Display last several values
-                        if (m_positiveAngleSample.Count > ValuesToShow)
-                            status.Append(m_positiveAngleSample.GetRange(m_positiveAngleSample.Count - ValuesToShow - 1, ValuesToShow).Select(v => v.ToString("0.00°")).ToDelimitedString(", "));
-                        else
-                            status.Append("Not enough values calculated yet...");
+                                status.Append(positiveMagnitudeSample.Zip(positiveAngleSample, (mV, mA) => string.Format("{0:0.00} {1}, {2:0.00}°", mV, m_magnitudeUnits, mA)).ToDelimitedString("\r\n                            "));
+                            }
+                            else
+                            {
+                                status.Append("Not enough values calculated yet...");
+                            }
+                        }
                     }
                     status.AppendLine();
 
@@ -161,21 +177,21 @@ namespace PowerCalculations
 
                     lock (m_negativeMagnitudeSample)
                     {
-                        // Display last several values
-                        if (m_negativeMagnitudeSample.Count > ValuesToShow)
-                            status.Append(m_negativeMagnitudeSample.GetRange(m_negativeMagnitudeSample.Count - ValuesToShow - 1, ValuesToShow).Select(v => v.ToString("0.00 ") + m_magnitudeUnits).ToDelimitedString(", "));
-                        else
-                            status.Append("Not enough values calculated yet...");
-                    }
-                    status.AppendLine();
+                        lock (m_negativeAngleSample)
+                        {
+                            // Display last several values
+                            if (m_positiveMagnitudeSample.Count > ValuesToShow)
+                            {
+                                List<double> negativeMagnitudeSample = m_negativeMagnitudeSample.GetRange(m_negativeMagnitudeSample.Count - ValuesToShow - 1, ValuesToShow);
+                                List<double> negativeAngleSample = m_negativeAngleSample.GetRange(m_negativeMagnitudeSample.Count - ValuesToShow - 1, ValuesToShow);
 
-                    lock (m_negativeAngleSample)
-                    {
-                        // Display last several values
-                        if (m_negativeAngleSample.Count > ValuesToShow)
-                            status.Append(m_negativeAngleSample.GetRange(m_negativeAngleSample.Count - ValuesToShow - 1, ValuesToShow).Select(v => v.ToString("0.00°")).ToDelimitedString(", "));
-                        else
-                            status.Append("Not enough values calculated yet...");
+                                status.Append(negativeMagnitudeSample.Zip(negativeAngleSample, (mV, mA) => string.Format("{0:0.00} {1}, {2:0.00}°", mV, m_magnitudeUnits, mA)).ToDelimitedString("\r\n                            "));
+                            }
+                            else
+                            {
+                                status.Append("Not enough values calculated yet...");
+                            }
+                        }
                     }
                     status.AppendLine();
 
@@ -183,22 +199,23 @@ namespace PowerCalculations
 
                     lock (m_zeroMagnitudeSample)
                     {
-                        // Display last several values
-                        if (m_zeroMagnitudeSample.Count > ValuesToShow)
-                            status.Append(m_zeroMagnitudeSample.GetRange(m_zeroMagnitudeSample.Count - ValuesToShow - 1, ValuesToShow).Select(v => v.ToString("0.00 ") + m_magnitudeUnits).ToDelimitedString(", "));
-                        else
-                            status.Append("Not enough values calculated yet...");
+                        lock (m_zeroAngleSample)
+                        {
+                            // Display last several values
+                            if (m_zeroMagnitudeSample.Count > ValuesToShow)
+                            {
+                                List<double> zeroMagnitudeSample = m_zeroMagnitudeSample.GetRange(m_zeroMagnitudeSample.Count - ValuesToShow - 1, ValuesToShow);
+                                List<double> zeroAngleSample = m_zeroAngleSample.GetRange(m_zeroMagnitudeSample.Count - ValuesToShow - 1, ValuesToShow);
+
+                                status.Append(zeroMagnitudeSample.Zip(zeroAngleSample, (mV, mA) => string.Format("{0:0.00} {1}, {2:0.00}°", mV, m_magnitudeUnits, mA)).ToDelimitedString("\r\n                            "));
+                            }
+                            else
+                            {
+                                status.Append("Not enough values calculated yet...");
+                            }
+                        }
                     }
                     status.AppendLine();
-
-                    lock (m_zeroAngleSample)
-                    {
-                        // Display last several values
-                        if (m_zeroAngleSample.Count > ValuesToShow)
-                            status.Append(m_zeroAngleSample.GetRange(m_zeroAngleSample.Count - ValuesToShow - 1, ValuesToShow).Select(v => v.ToString("0.00°")).ToDelimitedString(", "));
-                        else
-                            status.Append("Not enough values calculated yet...");
-                    }
                     status.AppendLine();
                 }
 
@@ -307,8 +324,6 @@ namespace PowerCalculations
             ComplexNumber negativeSequence = new ComplexNumber(double.NaN, double.NaN);
             ComplexNumber zeroSequence = new ComplexNumber(double.NaN, double.NaN);
 
-            //double positiveSequence = double.NaN, negativeSequence = double.NaN, zeroSequence = double.NaN, sequenceMagnitude = double.NaN;
-
             try
             {
                 ConcurrentDictionary<MeasurementKey, IMeasurement> measurements = frame.Measurements;
@@ -361,13 +376,6 @@ namespace PowerCalculations
                     ComplexNumber aPhase = new ComplexNumber(Angle.FromDegrees(aA), mA);
                     ComplexNumber bPhase = new ComplexNumber(Angle.FromDegrees(aB), mB);
                     ComplexNumber cPhase = new ComplexNumber(Angle.FromDegrees(aC), mC);
-
-                    // 120 degrees in radians
-                    const double angle = 2.0D * Math.PI / 3.0D;
-
-                    // a = e^(angle * i)
-                    ComplexNumber a = new ComplexNumber(Math.Cos(angle), Math.Sin(angle));
-                    ComplexNumber aSq = a * a;
 
                     zeroSequence = (aPhase + bPhase + cPhase) / 3.0D;
                     positiveSequence = (aPhase + a * bPhase + aSq * cPhase) / 3.0D;
@@ -449,6 +457,14 @@ namespace PowerCalculations
                 OnNewMeasurements(new IMeasurement[] { positiveMagnitudeMeasurement, positiveAngleMeasurement, negativeMagnitudeMeasurement, negativeAngleMeasurement, zeroMagnitudeMeasurement, zeroAngleMeasurement });
             }
         }
+
+        #endregion
+
+        #region [ Static ]
+
+        // a = e^((2/3) * pi * i)
+        private static readonly ComplexNumber a = new ComplexNumber(Math.Cos(Rad120), Math.Sin(Rad120));
+        private static readonly ComplexNumber aSq = a * a;
 
         #endregion
     }
