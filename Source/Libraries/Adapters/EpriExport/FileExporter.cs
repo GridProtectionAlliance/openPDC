@@ -36,6 +36,7 @@ using TVA;
 using TVA.Collections;
 using TVA.IO;
 using TVA.PhasorProtocols;
+using TVA.Units;
 
 namespace EpriExport
 {
@@ -61,6 +62,7 @@ namespace EpriExport
         private StringBuilder m_fileData;
         private Ticks m_startTime;
         private long m_totalExports;
+        private Dictionary<MeasurementKey, double> m_baseVoltages;
 
         #endregion
 
@@ -222,7 +224,12 @@ namespace EpriExport
             // latest measurement tracking, we sort all incoming points even though most of them will be thrown out...
             TrackLatestMeasurements = true;
 
+            // Create a new dictionary of base voltages
+            m_baseVoltages = new Dictionary<MeasurementKey, double>();
+
             StringBuilder header = new StringBuilder();
+            MeasurementKey voltageMagnitudeKey;
+            double baseKV;
 
             header.Append("t");
 
@@ -240,6 +247,19 @@ namespace EpriExport
                     case SignalType.VPHM:
                         header.AppendFormat(",V{0}", voltageIndex++);
                         count++;
+
+                        // We need a base voltage for each defined voltage magnitude
+                        voltageMagnitudeKey = InputMeasurementKeys[i];
+
+                        if (settings.TryGetValue(voltageMagnitudeKey + "BaseKV", out setting) && double.TryParse(setting, out baseKV))
+                        {
+                            m_baseVoltages.Add(voltageMagnitudeKey, baseKV * SI.Kilo);
+                        }
+                        else
+                        {
+                            OnStatusMessage("WARNING: Did not find a valid base KV setting for voltage magnitude {0}, assumed 500KV", voltageMagnitudeKey.ToString());
+                            m_baseVoltages.Add(voltageMagnitudeKey, 500.0D * SI.Kilo);
+                        }
                         break;
                     case SignalType.VPHA:
                         header.AppendFormat(",A{0}", angleIndex++);
@@ -366,8 +386,8 @@ namespace EpriExport
                         }
                         else if (signalType == SignalType.VPHM)
                         {
-                            // Typical voltages from PMU's are line-to-neutral volts so we convert them to line-to-line kilovolts
-                            m_fileData.Append(measurementValue * SqrtOf3 / 1000.0D);
+                            // Typical voltages from PMU's are line-to-neutral volts so we convert them to line-to-line and covert to base units
+                            m_fileData.Append(measurementValue * SqrtOf3 / m_baseVoltages[inputMeasurementKey]);
                         }
                         else
                         {
