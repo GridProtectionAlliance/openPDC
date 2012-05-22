@@ -27,12 +27,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using TVA.Units;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TVA;
 using TVA.Collections;
 using TVA.PhasorProtocols;
+using TVA.Units;
 
 namespace PowerCalculations
 {
@@ -310,7 +310,8 @@ namespace PowerCalculations
             }
 
             // Assign a default adapter name to be used if sequence calculator is loaded as part of automated collection
-            Name = string.Format("SC!{0}", OutputMeasurements[(int)Output.PositiveMagnitude].Key);
+            if (string.IsNullOrWhiteSpace(Name))
+                Name = string.Format("SC!{0}", OutputMeasurements[(int)Output.PositiveMagnitude].Key);
         }
 
         /// <summary>

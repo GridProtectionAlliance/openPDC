@@ -216,7 +216,8 @@ namespace PowerCalculations
             }
 
             // Assign a default adapter name to be used if power calculator is loaded as part of automated collection
-            Name = string.Format("PC!{0}", OutputMeasurements[(int)Output.Power].Key);
+            if (string.IsNullOrWhiteSpace(Name))
+                Name = string.Format("PC!{0}", OutputMeasurements[(int)Output.Power].Key);
         }
 
         /// <summary>
