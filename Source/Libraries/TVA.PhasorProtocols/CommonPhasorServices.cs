@@ -296,6 +296,9 @@ namespace TVA.PhasorProtocols
                 statisticsEngine = StatisticsEngine.Default;
                 statisticsEngine.Loaded += StatisticsEngine_Loaded;
                 statisticsEngine.BeforeCalculate += StatisticsEngine_BeforeCalculate;
+                statisticsEngine.MapAcronymFunction("InputStream", StatisticsEngine.GetAdapterAcronym);
+                statisticsEngine.MapAcronymFunction("OutputStream", StatisticsEngine.GetAdapterAcronym);
+                statisticsEngine.MapAcronymFunction("Device", GetDeviceAcronym);
                 GetExternalEventHandle("CommonPhasorServicesInitialize").Set();
             }
 
@@ -550,11 +553,7 @@ namespace TVA.PhasorProtocols
                 }
                 else if (StatisticsEngine.RegexMatch(signalReference.ToString(), "PMU"))
                 {
-                    suffixIndex = sourceAcronym.LastIndexOf('!');
-                    device = m_inputAdapters.FirstOrDefault<IInputAdapter>(adapter => adapter.Name == sourceAcronym.Remove(suffixIndex)) as PhasorMeasurementMapper;
-
-                    if ((object)device != null)
-                        source = "Device";
+                    source = "Device";
                 }
 
                 if ((object)source != null)
@@ -1339,6 +1338,16 @@ namespace TVA.PhasorProtocols
                         new MeasurementKey(measurement["SignalID"].ToNonNullString(Guid.Empty.ToString()).ConvertToType<Guid>(), uint.Parse(elems[1].Trim()), elems[0].Trim());
                 }
             }
+        }
+
+        private static string GetDeviceAcronym(object source)
+        {
+            ConfigurationCell device = source as ConfigurationCell;
+
+            if ((object)device == null)
+                return null;
+
+            return device.IDLabel;
         }
 
         #region [ Device Statistic Calculators ]
