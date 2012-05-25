@@ -16,6 +16,9 @@
 //       Edited Comments.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
+//  05/25/2012 - J. Ritchie Carroll
+//       Fixed an issue with publication of the frame buffer image so that when connection tester
+//       serializes these frames they will not overlap when parsing large data sets.
 //
 //*******************************************************************************************************
 
@@ -236,8 +239,10 @@
 #endregion
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using TVA.Collections;
 using TVA.Parsing;
 
@@ -321,6 +326,7 @@ namespace TVA.PhasorProtocols
         // Fields
         private ProcessQueue<byte[]> m_bufferQueue;
         private IConnectionParameters m_connectionParameters;
+        private BlockingCollection<EventArgs<FundamentalFrameType, byte[], int, int>> m_frameImageQueue;
         private bool m_disposed;
 
         #endregion
@@ -352,14 +358,14 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                return (m_bufferQueue != null);
+                return ((object)m_bufferQueue != null);
             }
             set
             {
                 // This property allows a dynamic change in state of how to process streaming data
                 if (value)
                 {
-                    if (m_bufferQueue == null)
+                    if ((object)m_bufferQueue == null)
                     {
                         m_bufferQueue = CreateBufferQueue();
                         m_bufferQueue.ProcessException += m_bufferQueue_ProcessException;
@@ -370,7 +376,7 @@ namespace TVA.PhasorProtocols
                 }
                 else
                 {
-                    if (m_bufferQueue != null)
+                    if ((object)m_bufferQueue != null)
                     {
                         m_bufferQueue.Stop();
                         m_bufferQueue.ProcessException -= m_bufferQueue_ProcessException;
@@ -388,7 +394,7 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                if (m_bufferQueue == null)
+                if ((object)m_bufferQueue == null)
                     return 0;
                 else
                     return m_bufferQueue.Count;
@@ -437,7 +443,7 @@ namespace TVA.PhasorProtocols
                 status.Append(ConfigurationFrame == null ? "No" : "Yes");
                 status.AppendLine();
 
-                if (ConfigurationFrame != null)
+                if ((object)ConfigurationFrame != null)
                 {
                     status.Append("   Devices in config frame: ");
                     status.Append(ConfigurationFrame.Cells.Count);
@@ -453,8 +459,10 @@ namespace TVA.PhasorProtocols
                     status.Append(ConfigurationFrame.FrameRate);
                     status.AppendLine();
                 }
+
                 status.Append("  Parsing execution source: ");
-                if (m_bufferQueue == null)
+
+                if ((object)m_bufferQueue == null)
                 {
                     status.Append("Communications thread");
                     status.AppendLine();
@@ -486,12 +494,17 @@ namespace TVA.PhasorProtocols
                 {
                     if (disposing)
                     {
-                        if (m_bufferQueue != null)
+                        if ((object)m_bufferQueue != null)
                         {
                             m_bufferQueue.ProcessException -= m_bufferQueue_ProcessException;
                             m_bufferQueue.Dispose();
                         }
                         m_bufferQueue = null;
+
+                        if ((object)m_frameImageQueue != null)
+                            m_frameImageQueue.Dispose();
+
+                        m_frameImageQueue = null;
 
                         // Detach from base class events
                         base.DataParsed -= base_DataParsed;
@@ -515,8 +528,12 @@ namespace TVA.PhasorProtocols
         {
             base.Start(implementations);
 
-            if (m_bufferQueue != null)
+            if ((object)m_bufferQueue != null)
                 m_bufferQueue.Start();
+
+            // Restart frame image queue processing if consumer has attached to frame buffer image event
+            if ((object)m_frameImageQueue != null)
+                (new Thread(ProcessFrameImageQueue)).Start();
         }
 
         /// <summary>
@@ -526,7 +543,7 @@ namespace TVA.PhasorProtocols
         {
             base.Stop();
 
-            if (m_bufferQueue != null)
+            if ((object)m_bufferQueue != null)
                 m_bufferQueue.Stop();
         }
 
@@ -538,12 +555,16 @@ namespace TVA.PhasorProtocols
         /// <param name="count">The number of bytes to be written to the current stream.</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (m_bufferQueue == null)
+            if ((object)m_bufferQueue == null)
+            {
                 // Directly parse frame using calling thread (typically communications thread)
                 base.Write(buffer, offset, count);
+            }
             else
+            {
                 // Queue up received data buffer for real-time parsing and return to data collection as quickly as possible...
                 m_bufferQueue.Add(buffer.BlockCopy(offset, count));
+            }
         }
 
         /// <summary>
@@ -571,7 +592,7 @@ namespace TVA.PhasorProtocols
         /// </remarks>
         public override void Flush()
         {
-            if (m_bufferQueue != null)
+            if ((object)m_bufferQueue != null)
                 m_bufferQueue.Flush();
         }
 
@@ -581,7 +602,7 @@ namespace TVA.PhasorProtocols
         /// <param name="frame"><see cref="IConfigurationFrame"/> to send to <see cref="ReceivedConfigurationFrame"/> event.</param>
         protected virtual void OnReceivedConfigurationFrame(IConfigurationFrame frame)
         {
-            if (ReceivedConfigurationFrame != null)
+            if ((object)ReceivedConfigurationFrame != null)
                 ReceivedConfigurationFrame(this, new EventArgs<IConfigurationFrame>(frame));
         }
 
@@ -591,7 +612,7 @@ namespace TVA.PhasorProtocols
         /// <param name="frame"><see cref="IDataFrame"/> to send to <see cref="ReceivedDataFrame"/> event.</param>
         protected virtual void OnReceivedDataFrame(IDataFrame frame)
         {
-            if (ReceivedDataFrame != null)
+            if ((object)ReceivedDataFrame != null)
                 ReceivedDataFrame(this, new EventArgs<IDataFrame>(frame));
         }
 
@@ -601,7 +622,7 @@ namespace TVA.PhasorProtocols
         /// <param name="frame"><see cref="IHeaderFrame"/> to send to <see cref="ReceivedHeaderFrame"/> event.</param>
         protected virtual void OnReceivedHeaderFrame(IHeaderFrame frame)
         {
-            if (ReceivedHeaderFrame != null)
+            if ((object)ReceivedHeaderFrame != null)
                 ReceivedHeaderFrame(this, new EventArgs<IHeaderFrame>(frame));
         }
 
@@ -611,7 +632,7 @@ namespace TVA.PhasorProtocols
         /// <param name="frame"><see cref="ICommandFrame"/> to send to <see cref="ReceivedCommandFrame"/> event.</param>
         protected virtual void OnReceivedCommandFrame(ICommandFrame frame)
         {
-            if (ReceivedCommandFrame != null)
+            if ((object)ReceivedCommandFrame != null)
                 ReceivedCommandFrame(this, new EventArgs<ICommandFrame>(frame));
         }
 
@@ -621,7 +642,7 @@ namespace TVA.PhasorProtocols
         /// <param name="frame"><see cref="IChannelFrame"/> to send to <see cref="ReceivedUndeterminedFrame"/> event.</param>
         protected virtual void OnReceivedUndeterminedFrame(IChannelFrame frame)
         {
-            if (ReceivedUndeterminedFrame != null)
+            if ((object)ReceivedUndeterminedFrame != null)
                 ReceivedUndeterminedFrame(this, new EventArgs<IChannelFrame>(frame));
         }
 
@@ -634,8 +655,37 @@ namespace TVA.PhasorProtocols
         /// <param name="length">Length of data in frame buffer image to send to <see cref="ReceivedFrameBufferImage"/> event.</param>
         protected virtual void OnReceivedFrameBufferImage(FundamentalFrameType frameType, byte[] buffer, int offset, int length)
         {
-            if (ReceivedFrameBufferImage != null)
-                ReceivedFrameBufferImage(this, new EventArgs<FundamentalFrameType, byte[], int, int>(frameType, buffer, offset, length));
+            // Since this event is called from an async socket operation, these events can be processed simultaneously, especially
+            // when the consuming event may take time to process this data (e.g., writing the frame to a capture file for replay),
+            // so we queue these events up for serial processing
+            if ((object)ReceivedFrameBufferImage != null)
+            {
+                // If a consumer is subscribing to this event, make sure frame image queue exists
+                if ((object)m_frameImageQueue == null)
+                {
+                    m_frameImageQueue = new BlockingCollection<EventArgs<FundamentalFrameType, byte[], int, int>>();
+                    (new Thread(ProcessFrameImageQueue)).Start();
+                }
+
+                m_frameImageQueue.Add(new EventArgs<FundamentalFrameType, byte[], int, int>(frameType, buffer, offset, length));
+            }
+        }
+
+        // Process elements in frame image queue
+        private void ProcessFrameImageQueue()
+        {
+            while (Enabled)
+            {
+                try
+                {
+                    // Expose next frame buffer image
+                    ReceivedFrameBufferImage(this, m_frameImageQueue.Take());
+                }
+                catch (Exception ex)
+                {
+                    OnParsingException(ex);
+                }
+            }
         }
 
         /// <summary>
@@ -643,7 +693,7 @@ namespace TVA.PhasorProtocols
         /// </summary>
         protected virtual void OnConfigurationChanged()
         {
-            if (ConfigurationChanged != null)
+            if ((object)ConfigurationChanged != null)
                 ConfigurationChanged(this, EventArgs.Empty);
         }
 
@@ -653,11 +703,11 @@ namespace TVA.PhasorProtocols
         /// <param name="frame"><see cref="IChannelFrame"/> that was parsed by <see cref="FrameImageParserBase{TTypeIdentifier,TOutputType}"/> that implements protocol specific common frame header interface.</param>
         protected virtual void OnReceivedChannelFrame(IChannelFrame frame)
         {
-            if (frame != null)
+            if ((object)frame != null)
             {
                 IDataFrame dataFrame = frame as IDataFrame;
 
-                if (dataFrame != null)
+                if ((object)dataFrame != null)
                 {
                     // Frame was a data frame
                     OnReceivedDataFrame(dataFrame);
@@ -666,7 +716,7 @@ namespace TVA.PhasorProtocols
                 {
                     IConfigurationFrame configFrame = frame as IConfigurationFrame;
 
-                    if (configFrame != null)
+                    if ((object)configFrame != null)
                     {
                         // Frame was a configuration frame
                         OnReceivedConfigurationFrame(configFrame);
@@ -675,7 +725,7 @@ namespace TVA.PhasorProtocols
                     {
                         IHeaderFrame headerFrame = frame as IHeaderFrame;
 
-                        if (headerFrame != null)
+                        if ((object)headerFrame != null)
                         {
                             // Frame was a header frame
                             OnReceivedHeaderFrame(headerFrame);
@@ -684,7 +734,7 @@ namespace TVA.PhasorProtocols
                         {
                             ICommandFrame commandFrame = frame as ICommandFrame;
 
-                            if (commandFrame != null)
+                            if ((object)commandFrame != null)
                             {
                                 // Frame was a command frame
                                 OnReceivedCommandFrame(commandFrame);
