@@ -269,12 +269,11 @@ namespace EpriExport
                         // Lookup measurement key in active measurements table
                         DataRow row = DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID='{0}'", InputMeasurementKeys[i].ToString()))[0];
 
-                        // Remove invalid symbols that may be in tag name
-                        string tagName = row["PointTag"].ToNonNullString("NA").ToUpper();
+                        string tagName = row["PointTag"].ToNonNullString("NA").ToUpper().Trim();
 
-                        if (tagName.StartsWith("P"))
+                        if (tagName.StartsWith("P") || tagName.EndsWith("MW"))
                             header.AppendFormat(",P{0}", pIndex++);
-                        else if (tagName.StartsWith("Q"))
+                        else if (tagName.StartsWith("Q") || tagName.EndsWith("MVAR"))
                             header.AppendFormat(",Q{0}", qIndex++);
                         count++;
                         break;
