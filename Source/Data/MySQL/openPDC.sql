@@ -813,6 +813,12 @@ ALTER TABLE SecurityGroupUserAccount ADD CONSTRAINT FK_securitygroupuseraccount_
 
 ALTER TABLE SecurityGroupUserAccount ADD CONSTRAINT FK_securitygroupuseraccount_securitygroup FOREIGN KEY (SecurityGroupID) REFERENCES securitygroup (ID) ON DELETE CASCADE ON UPDATE CASCADE;
 
+CREATE VIEW NodeInfo
+AS
+SELECT Node.ID AS NodeID, Node.Name, Company.Name AS CompanyName, Node.Longitude, Node.Latitude, Node.Description,
+    Node.ImagePath, Node.Settings, Node.MenuType, Node.MenuData, Node.Master, Node.Enabled
+FROM Node LEFT OUTER JOIN Company ON Node.CompanyID = Company.ID;
+
 CREATE VIEW RuntimeOutputStreamMeasurement
 AS
 SELECT OutputStreamMeasurement.NodeID, Runtime.ID AS AdapterID, Historian.Acronym AS Historian, 

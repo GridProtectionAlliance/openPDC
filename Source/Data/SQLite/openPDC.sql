@@ -725,6 +725,12 @@ CREATE UNIQUE INDEX PK_Runtime ON Runtime (SourceID ASC, SourceTable ASC);
 
 CREATE UNIQUE INDEX PK_Measurement ON Measurement (SignalID ASC);
 
+CREATE VIEW NodeInfo
+AS
+SELECT Node.ID AS NodeID, Node.Name, Company.Name AS CompanyName, Node.Longitude, Node.Latitude,
+ Node.Description, Node.ImagePath, Node.Settings, Node.MenuType, Node.MenuData, Node.Master, Node.Enabled
+FROM Node LEFT OUTER JOIN Company ON Node.CompanyID = Company.ID;
+
 CREATE VIEW RuntimeOutputStreamMeasurement
 AS
 SELECT OutputStreamMeasurement.NodeID, Runtime.ID AS AdapterID, Historian.Acronym AS Historian, 
