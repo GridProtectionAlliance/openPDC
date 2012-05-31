@@ -200,6 +200,9 @@ namespace ConfigurationSetupUtility.Screens
                         // Always make sure time series startup operations are defined in the database.
                         ValidateTimeSeriesStartupOperations();
 
+                        // Always make sure new configuration entity records are defined in the database.
+                        ValidateConfigurationEntity();
+
                         // Always make sure that node settings defines the alarm service URL.
                         ValidateNodeSettings();
 
