@@ -127,6 +127,25 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
         }
 
         /// <summary>
+        /// Gets the number of redundant frames in each packet.
+        /// </summary>
+        /// <remarks>
+        /// This value is used when calculating statistics. It is assumed that for each
+        /// frame that is received, that frame will be included in the next <c>n</c>
+        /// packets, where <c>n</c> is the number of redundant frames per packet.
+        /// </remarks>
+        public override int RedundantFramesPerPacket
+        {
+            get
+            {
+                if ((object)m_configurationFrame == null || !m_configurationFrame.CommonHeader.ParseRedundantASDUs)
+                    return base.RedundantFramesPerPacket;
+
+                return m_configurationFrame.CommonHeader.AsduCount - 1;
+            }
+        }
+
+        /// <summary>
         /// Gets current descriptive status of the <see cref="FrameParser"/>.
         /// </summary>
         public override string Status

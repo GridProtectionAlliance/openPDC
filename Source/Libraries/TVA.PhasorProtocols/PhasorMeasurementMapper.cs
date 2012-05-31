@@ -48,6 +48,128 @@ namespace TVA.PhasorProtocols
     {
         #region [ Members ]
 
+        // Nested Types
+
+        private class MissingDataMonitor : ConcentratorBase
+        {
+            #region [ Members ]
+
+            // Fields
+            private long m_lastFrameTimestamp;
+            private long m_missingData;
+            private int m_redundantFramesPerPacket;
+
+            #endregion
+
+            #region [ Properties ]
+
+            /// <summary>
+            /// Gets or sets the redundant frames per packet.
+            /// </summary>
+            public int RedundantFramesPerPacket
+            {
+                get
+                {
+                    return m_redundantFramesPerPacket;
+                }
+                set
+                {
+                    m_redundantFramesPerPacket = value;
+                }
+            }
+
+            /// <summary>
+            /// Gets the missing data count since the monitor was started.
+            /// </summary>
+            public long TotalMissingData
+            {
+                get
+                {
+                    long cutOff;
+                    int missingFrameCount;
+
+                    cutOff = GetSortedTimestamp(RealTime - LagTicks);
+                    missingFrameCount = (int)Math.Round((cutOff - m_lastFrameTimestamp) / TicksPerFrame);
+                    m_missingData += (missingFrameCount > m_redundantFramesPerPacket) ? (missingFrameCount - m_redundantFramesPerPacket) : 0;
+                    m_lastFrameTimestamp = cutOff;
+
+                    return m_missingData;
+                }
+            }
+
+            #endregion
+
+            #region [ Methods ]
+
+            /// <summary>
+            /// Starts the <see cref="MissingDataMonitor"/>.
+            /// </summary>
+            public override void Start()
+            {
+                base.Start();
+                m_lastFrameTimestamp = GetSortedTimestamp(RealTime);
+            }
+
+            /// <summary>
+            /// Called when a frame is published by the underlying concentrator engine.
+            /// </summary>
+            /// <param name="frame">The frame that is published.</param>
+            /// <param name="index">The index of the frame from 0 to <see cref="ConcentratorBase.FramesPerSecond"/> - 1.</param>
+            protected override void PublishFrame(IFrame frame, int index)
+            {
+                int missingFrameCount;
+
+                missingFrameCount = (int)Math.Round((frame.Timestamp - m_lastFrameTimestamp) / TicksPerFrame);
+                m_missingData += (missingFrameCount > m_redundantFramesPerPacket) ? (missingFrameCount - m_redundantFramesPerPacket) : 0;
+                m_lastFrameTimestamp = frame.Timestamp;
+            }
+
+            // Calculates what the given time would be if it were aligned properly to a frame timestamp.
+            private long GetSortedTimestamp(long ticks)
+            {
+                long baseTicks, ticksBeyondSecond, frameIndex, destinationTicks, nextDestinationTicks;
+
+                // Baseline timestamp to the top of the second
+                baseTicks = ticks - ticks % Ticks.PerSecond;
+
+                // Remove the seconds from ticks
+                ticksBeyondSecond = ticks - baseTicks;
+
+                // Calculate a frame index between 0 and m_framesPerSecond-1, corresponding to ticks
+                // rounded down to the nearest frame
+                frameIndex = (long)(ticksBeyondSecond / TicksPerFrame);
+
+                // Calculate the timestamp of the nearest frame rounded up
+                nextDestinationTicks = (frameIndex + 1) * Ticks.PerSecond / FramesPerSecond;
+
+                // Determine whether the desired frame is the nearest
+                // frame rounded down or the nearest frame rounded up
+                if (TimeResolution <= 1)
+                {
+                    if (nextDestinationTicks <= ticksBeyondSecond)
+                        destinationTicks = nextDestinationTicks;
+                    else
+                        destinationTicks = frameIndex * Ticks.PerSecond / FramesPerSecond;
+                }
+                else
+                {
+                    // If, after translating nextDestinationTicks to the time resolution, it is less than
+                    // or equal to ticks, nextDestinationTicks corresponds to the desired frame
+                    if ((nextDestinationTicks / TimeResolution) * TimeResolution <= ticksBeyondSecond)
+                        destinationTicks = nextDestinationTicks;
+                    else
+                        destinationTicks = frameIndex * Ticks.PerSecond / FramesPerSecond;
+                }
+
+                // Recover the seconds that were removed
+                destinationTicks += baseTicks;
+
+                return destinationTicks;
+            }
+
+            #endregion
+        }
+
         // Fields
         private MultiProtocolFrameParser m_frameParser;
         private ConcurrentDictionary<string, IMeasurement> m_definedMeasurements;
@@ -56,6 +178,7 @@ namespace TVA.PhasorProtocols
         private ConcurrentDictionary<string, long> m_undefinedDevices;
         private ConcurrentDictionary<SignalKind, string[]> m_generatedSignalReferenceCache;
         private DataSubscriber m_primaryDataSource;
+        private MissingDataMonitor m_missingDataMonitor;
         private System.Timers.Timer m_dataStreamMonitor;
         private bool m_allowUseOfCachedConfiguration;
         private bool m_cachedConfigLoadAttempted;
@@ -80,6 +203,9 @@ namespace TVA.PhasorProtocols
         private bool m_receivedConfigFrame;
         private long m_bytesReceived;
         private int m_hashCode;
+        private double m_lagTime;
+        private double m_leadTime;
+        private long m_timeResolution;
         private bool m_disposed;
 
         #endregion
@@ -209,6 +335,20 @@ namespace TVA.PhasorProtocols
             set
             {
                 m_timeAdjustmentTicks = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the number of missing frames of data, taking into account redundant frames.
+        /// </summary>
+        public long MissingData
+        {
+            get
+            {
+                if (m_frameParser.RedundantFramesPerPacket > 0 && (object)m_missingDataMonitor != null)
+                    return m_missingDataMonitor.TotalMissingData;
+
+                return MissingFrames;
             }
         }
 
@@ -880,6 +1020,15 @@ namespace TVA.PhasorProtocols
 
             if (settings.TryGetValue("configurationFile", out setting))
                 LoadConfiguration(setting);
+
+            if (!(settings.TryGetValue("lagTime", out setting) && double.TryParse(setting, out m_lagTime)))
+                m_lagTime = 10.0D;
+
+            if (!(settings.TryGetValue("leadTime", out setting) && double.TryParse(setting, out m_leadTime)))
+                m_leadTime = 3.0D;
+
+            if (!(settings.TryGetValue("timeResolution", out setting) && long.TryParse(setting, out m_timeResolution)))
+                m_timeResolution = 10000L;
 
             // Provide access ID to frame parser as this may be necessary to make a phasor connection
             frameParser.DeviceID = m_accessID;
@@ -1659,6 +1808,24 @@ namespace TVA.PhasorProtocols
         {
             ExtractFrameMeasurements(e.Argument);
             m_totalDataFrames++;
+
+            if (m_frameParser.RedundantFramesPerPacket > 0)
+            {
+                if ((object)m_missingDataMonitor == null)
+                {
+                    m_missingDataMonitor = new MissingDataMonitor()
+                    {
+                        LagTime = m_lagTime,
+                        LeadTime = m_leadTime,
+                        FramesPerSecond = m_frameParser.DefinedFrameRate,
+                        TimeResolution = m_timeResolution,
+                        UsePrecisionTimer = false
+                    };
+                }
+
+                m_missingDataMonitor.RedundantFramesPerPacket = m_frameParser.RedundantFramesPerPacket;
+                m_missingDataMonitor.SortMeasurements(e.Argument.Cells);
+            }
         }
 
         private void m_frameParser_ReceivedConfigurationFrame(object sender, EventArgs<IConfigurationFrame> e)

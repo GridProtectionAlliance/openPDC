@@ -1134,6 +1134,25 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
+        /// Gets the number of redundant frames in each packet.
+        /// </summary>
+        /// <remarks>
+        /// This value is used when calculating statistics. It is assumed that for each
+        /// frame that is received, that frame will be included in the next <c>n</c>
+        /// packets, where <c>n</c> is the number of redundant frames per packet.
+        /// </remarks>
+        public int RedundantFramesPerPacket
+        {
+            get
+            {
+                if ((object)m_frameParser != null)
+                    return m_frameParser.RedundantFramesPerPacket;
+
+                return 0;
+            }
+        }
+
+        /// <summary>
         /// Gets a flag that determines if the currently selected <see cref="PhasorProtocol"/> is an IEEE standard protocol.
         /// </summary>
         public bool IsIEEEProtocol
@@ -2279,7 +2298,7 @@ namespace TVA.PhasorProtocols
             // Since rate calculation timer is not precise, the missing frames calculation can be calculated out
             // of sequence with the total frames. If there is a negative balance, we cache the value so it can
             // be applied to the next calculation to keep calculation more accurate.
-            long missingFrames = (long)(m_configuredFrameRate * m_rateCalcTimer.Interval * SI.Milli) - m_frameRateTotal;
+            long missingFrames = (long)(m_configuredFrameRate * m_rateCalcTimer.Interval * SI.Milli * (RedundantFramesPerPacket + 1)) - m_frameRateTotal;
 
             if (missingFrames > 0)
             {
