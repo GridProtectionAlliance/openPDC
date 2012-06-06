@@ -52,6 +52,9 @@ namespace TVA.PhasorProtocols
     {
         #region [ Members ]
 
+        // Constants
+        private const int ProcessWaitTimeout = 1000;
+
         // Events
 
         // Derived classes will typically also expose events to provide instances to the protocol specific final derived channel frames
@@ -484,12 +487,15 @@ namespace TVA.PhasorProtocols
         // Process elements in frame image queue
         private void ProcessFrameImageQueue()
         {
+            EventArgs<FundamentalFrameType, byte[], int, int> frameImage;
+
             while (Enabled)
             {
                 try
                 {
                     // Expose next frame buffer image
-                    ReceivedFrameBufferImage(this, m_frameImageQueue.Take());
+                    if (m_frameImageQueue.TryTake(out frameImage, ProcessWaitTimeout))
+                        ReceivedFrameBufferImage(this, frameImage);
                 }
                 catch (Exception ex)
                 {
