@@ -143,7 +143,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionSettings.cs" />
     <Compile Include="Modal\ConfigurationCreator.xaml.cs">
       <DependentUpon>ConfigurationCreator.xaml</DependentUpon>
     </Compile>
@@ -211,7 +210,6 @@
     <Compile Include="UserControls\RealTimeStatisticUserControl.xaml.cs">
       <DependentUpon>RealTimeStatisticUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VersionConfigToNamespaceAssemblyObjectBinder.cs" />
     <Compile Include="ViewModels\CalculatedMeasurements.cs" />
     <Compile Include="ViewModels\Devices.cs" />
     <Compile Include="ViewModels\InputWizardDevices.cs" />
@@ -230,6 +228,10 @@
     <ProjectReference Include="..\openPDC.UI\openPDC.UI.csproj">
       <Project>{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}</Project>
       <Name>openPDC.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PMUConnectionTester\PMUConnectionTester.csproj">
+      <Project>{AFFE84C3-9703-4DDA-8733-39B9894A2848}</Project>
+      <Name>PMUConnectionTester</Name>
     </ProjectReference>
     <ProjectReference Include="..\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
       <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>

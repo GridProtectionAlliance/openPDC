@@ -1,7 +1,7 @@
 ﻿//******************************************************************************************************
 //  ConnectionSettings.cs - Gbtc
 //
-//  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
+//  Copyright © 2012, Grid Protection Alliance.  All Rights Reserved.
 //
 //  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
 //  the NOTICE file distributed with this work for additional information regarding copyright ownership.
@@ -16,7 +16,7 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  05/25/2011 - Mehulbhai P Thakkar
+//  06/06/2012 - J. Ritchie Carroll
 //       Generated original version of source code.
 //
 //******************************************************************************************************
@@ -25,10 +25,10 @@ using System;
 using TVA.Communication;
 using TVA.PhasorProtocols;
 
-namespace openPDC.UI
+namespace ConnectionTester
 {
     /// <summary>
-    /// Represents connection information defined in PmuConnection file.
+    /// Represents information defined in a PMU Connection Tester connection file.
     /// </summary>
     [Serializable()]
     public class ConnectionSettings
@@ -71,22 +71,6 @@ namespace openPDC.UI
         /// <summary>
         /// Defines additional connection information such as alternate command channel from PmuConnection file.
         /// </summary>
-        public object ConnectionParameters;
-
-        /// <summary>
-        /// Defines name of the configuration file.
-        /// </summary>
-        public string ConfigurationFileName;
-
-        /// <summary>
-        /// Defines boolean flag to refresh configuration file on change.
-        /// </summary>
-        public bool RefreshConfigurationFileOnChange;
-
-        /// <summary>
-        /// Defines boolean flag indicating if parse word count from byte.
-        /// </summary>
-        public bool ParseWordCountFromByte;
-
+        public IConnectionParameters ConnectionParameters;
     }
 }

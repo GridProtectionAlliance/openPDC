@@ -34,6 +34,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using ConnectionTester;
 using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
 using openPDC.UI.UserControls;
@@ -717,33 +718,27 @@ namespace openPDC.UI.ViewModels
         {
             Stream fileData = null;
             OpenFileDialog fileDialog = new OpenFileDialog();
+
             fileDialog.Multiselect = false;
             fileDialog.Filter = "PMU Connection Files (*.PmuConnection)|*.PmuConnection|All Files (*.*)|*.*";
+
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
                     Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
                     ConnectionFileName = fileDialog.FileName;
+
                     if ((fileData = fileDialog.OpenFile()) != null)
                     {
                         ConnectionSettings connectionSettings = new ConnectionSettings();
+
                         using (fileData)
                         {
                             SoapFormatter sf = new SoapFormatter();
                             sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
                             sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
-                            sf.Binder = new VersionConfigToNamespaceAssemblyObjectBinder();
                             connectionSettings = sf.Deserialize(fileData) as ConnectionSettings;
-
-                            if (connectionSettings.ConnectionParameters != null)
-                            {
-                                ConnectionSettings cs = new ConnectionSettings();
-                                cs = (ConnectionSettings)connectionSettings.ConnectionParameters;
-                                connectionSettings.ConfigurationFileName = cs.ConfigurationFileName;
-                                connectionSettings.RefreshConfigurationFileOnChange = cs.RefreshConfigurationFileOnChange;
-                                connectionSettings.ParseWordCountFromByte = cs.ParseWordCountFromByte;
-                            }
                         }
 
                         if (connectionSettings != null)
@@ -766,12 +761,36 @@ namespace openPDC.UI.ViewModels
 
                             ConnectionString = "transportprotocol=" + connectionSettings.TransportProtocol.ToString() + ";" + connectionStringKeyValues.JoinKeyValuePairs();
 
-                            if (connectionSettings.ConnectionParameters != null)
-                                ConnectionString += ";inifilename=" + connectionSettings.ConfigurationFileName + ";refreshconfigfileonchange=" + connectionSettings.RefreshConfigurationFileOnChange.ToString() +
-                                    ";parsewordcountfrombyte=" + connectionSettings.ParseWordCountFromByte;
+                            if ((object)connectionSettings.ConnectionParameters != null)
+                            {
+                                switch (connectionSettings.PhasorProtocol)
+                                {
+                                    case PhasorProtocol.BpaPdcStream:
+                                        TVA.PhasorProtocols.BpaPdcStream.ConnectionParameters bpaParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.BpaPdcStream.ConnectionParameters;
+                                        if ((object)bpaParameters != null)
+                                            ConnectionString += "; iniFileName=" + bpaParameters.ConfigurationFileName + "; refreshConfigFileOnChange=" + bpaParameters.RefreshConfigurationFileOnChange.ToString() + "; parseWordCountFromByte=" + bpaParameters.ParseWordCountFromByte;
+                                        break;
+                                    case PhasorProtocol.FNet:
+                                        TVA.PhasorProtocols.FNet.ConnectionParameters fnetParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.FNet.ConnectionParameters;
+                                        if ((object)fnetParameters != null)
+                                            ConnectionString += "; timeOffset=" + fnetParameters.TimeOffset + "; stationName=" + fnetParameters.StationName + "; frameRate=" + fnetParameters.FrameRate + "; nominalFrequency=" + (int)fnetParameters.NominalFrequency;
+                                        break;
+                                    case PhasorProtocol.SelFastMessage:
+                                        TVA.PhasorProtocols.SelFastMessage.ConnectionParameters selParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.SelFastMessage.ConnectionParameters;
+                                        if ((object)selParameters != null)
+                                            ConnectionString += "; messagePeriod=" + selParameters.MessagePeriod;
+                                        break;
+                                    case PhasorProtocol.Iec61850_90_5:
+                                        TVA.PhasorProtocols.Iec61850_90_5.ConnectionParameters iecParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.Iec61850_90_5.ConnectionParameters;
+                                        if ((object)iecParameters != null)
+                                            ConnectionString += "; useETRConfiguration=" + iecParameters.UseETRConfiguration + "; guessConfiguration=" + iecParameters.GuessConfiguration + "; parseRedundantASDUs=" + iecParameters.ParseRedundantASDUs + "; ignoreSignatureValidationFailures=" + iecParameters.IgnoreSignatureValidationFailures + "; ignoreSampleSizeValidationFailures=" + iecParameters.IgnoreSampleSizeValidationFailures;
+                                        break;
+                                }
+                            }
 
                             AccessID = connectionSettings.PmuID;
                             ProtocolAcronym = connectionSettings.PhasorProtocol.ToString();
+
                             if (m_protocolLookupList.Count > 0)
                                 ProtocolID = m_protocolList.FirstOrDefault(p => p.Acronym.ToLower() == connectionSettings.PhasorProtocol.ToString().ToLower()).ID; // m_protocolLookupList.FirstOrDefault(p => p.Value == connectionSettings.PhasorProtocol.ToString()).Key;
                         }
