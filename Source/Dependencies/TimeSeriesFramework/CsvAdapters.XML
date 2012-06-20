@@ -51,10 +51,20 @@
             Gets or sets the number of measurements that are read from the CSV file in each frame.
             </summary>
         </member>
+        <member name="P:CsvAdapters.CsvInputAdapter.TransverseMode">
+            <summary>
+            Gets or sets a value that determines whether CSV file is in transverse mode for real-time concentration.
+            </summary>
+        </member>
         <member name="P:CsvAdapters.CsvInputAdapter.SimulateTimestamp">
             <summary>
             Gets or sets a value that determines whether timestamps are
             simulated for the purposes of real-time concentration.
+            </summary>
+        </member>
+        <member name="P:CsvAdapters.CsvInputAdapter.ColumnMappings">
+            <summary>
+            Defines the column mappings must defined: e.g., 0=Timestamp; 1=PPA:12; 2=PPA13.
             </summary>
         </member>
         <member name="P:CsvAdapters.CsvInputAdapter.UseAsyncConnect">
