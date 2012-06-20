@@ -530,11 +530,9 @@ namespace TVA.PhasorProtocols
             DataTable activeMeasurements = DataSource.Tables["ActiveMeasurements"];
             DataRow measurementDefinition;
 
-            PhasorMeasurementMapper device;
             SignalReference signalReference;
             string sourceAcronym;
             string source;
-            int suffixIndex;
 
             foreach (IMeasurement measurement in e.UnmappedMeasurements)
             {
