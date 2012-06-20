@@ -208,7 +208,7 @@ namespace Comtrade
                         return "df";
                 }
 
-                return "";
+                return PhaseDesignation;
             }
             set
             {
@@ -263,7 +263,7 @@ namespace Comtrade
                     }
                     else
                     {
-                        m_phaseDesignation = char.MinValue;
+                        this.PhaseDesignation = value[0].ToString();
                         this.SignalKind = SignalKind.Analog;
                         m_coordinateFormat = CoordinateFormat.Polar;
                     }
@@ -338,7 +338,7 @@ namespace Comtrade
         /// </summary>
         public PhasorType PhasorType
         {
-            get            
+            get
             {
                 return m_phasorType;
             }
@@ -586,7 +586,7 @@ namespace Comtrade
             set
             {
                 value = char.ToUpper(value);
-                
+
                 if (value != 'P' && value != 'S')
                     throw new ArgumentException(value + " is not a valid primary or secondary data scaling identifer - must be either \'P\' or \'S\'.");
 
@@ -641,6 +641,6 @@ namespace Comtrade
             s_validAnalogSignalKinds.Sort();
         }
 
-        #endregion        
+        #endregion
     }
 }
