@@ -33,7 +33,7 @@ namespace Comtrade
     /// <summary>
     /// COMTRADE data file(s) parser.
     /// </summary>
-    public class Parser
+    public class Parser : IDisposable
     {
         #region [ Members ]
 
