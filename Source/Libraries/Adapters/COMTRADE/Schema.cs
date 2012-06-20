@@ -399,6 +399,28 @@ namespace Comtrade
         }
 
         /// <summary>
+        /// Gets the total digital words for given number of digital values when the file type is binary.
+        /// </summary>
+        public int DigitalWords
+        {
+            get
+            {
+                return (int)Math.Ceiling(m_digitalChannels.Length / 16.0D);
+            }
+        }
+
+        /// <summary>
+        /// Calculates the size of a record, in bytes, when the file type is binary.
+        /// </summary>
+        public int BinaryRecordLength
+        {
+            get
+            {
+                return 8 + 2 * m_analogChannels.Length + 2 * DigitalWords;
+            }
+        }
+
+        /// <summary>
         /// Gets the file image of this <see cref="Schema"/>.
         /// </summary>
         public string FileImage

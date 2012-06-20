@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalogChannel.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="Timestamp.cs" />
     <Compile Include="DigitalChannel.cs" />
     <Compile Include="FileExporter.cs" />
