@@ -54,7 +54,7 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
+    <OutputPath>..\..\..\Build\Output\Release\Libraries\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <DocumentationFile>..\..\..\Build\Output\Release\Libraries\openPDC.UI.xml</DocumentationFile>
     <Optimize>true</Optimize>
