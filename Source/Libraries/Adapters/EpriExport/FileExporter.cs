@@ -177,7 +177,7 @@ namespace EpriExport
             base.Initialize();
 
             Dictionary<string, string> settings = Settings;
-            string errorMessage = "{0} is missing from Settings - Example: exportInterval=5; useReferenceAngle=True; referenceAngleMeasurement=DEVARCHIVE:6; companyTagPrefix=TVA; useNumericQuality=True; inputMeasurementKeys={{FILTER ActiveMeasurements WHERE Device='SHELBY' AND SignalType='FREQ'}}";
+            const string errorMessage = "{0} is missing from Settings - Example: exportInterval=5; useReferenceAngle=True; referenceAngleMeasurement=DEVARCHIVE:6; companyTagPrefix=TVA; useNumericQuality=True; inputMeasurementKeys={{FILTER ActiveMeasurements WHERE Device='SHELBY' AND SignalType='FREQ'}}";
             string setting;
             double seconds;
 
@@ -234,49 +234,47 @@ namespace EpriExport
             header.Append("t");
 
             // Write header row
-            int angleIndex = 1;
-            int voltageIndex = 1;
-            int pIndex = 1;
-            int qIndex = 1;
-            int count = 0;
+            int tieLines = 1;
 
             for (int i = 0; i < InputMeasurementKeys.Length; i++)
             {
-                switch (InputMeasurementKeyTypes[i])
+                // Lookup measurement key in active measurements table
+                DataRow row = DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID='{0}'", InputMeasurementKeys[i]))[0];
+                string tagName = row["PointTag"].ToNonNullString("NA").ToUpper().Trim().Replace(',', '_');
+
+                if (tagName.StartsWith("P") || tagName.EndsWith("MW"))
                 {
-                    case SignalType.VPHM:
-                        header.AppendFormat(",V{0}", voltageIndex++);
-                        count++;
+                    header.AppendFormat(",{0} P", tagName);
+                }
+                else if (tagName.StartsWith("Q") || tagName.EndsWith("MVAR"))
+                {
+                    header.AppendFormat(",{0} Q", tagName);
+                }
+                else if (InputMeasurementKeyTypes[i] == SignalType.VPHM)
+                {
+                    header.AppendFormat(",{0} V", tagName);
+                    tieLines++;
 
-                        // We need a base voltage for each defined voltage magnitude
-                        voltageMagnitudeKey = InputMeasurementKeys[i];
+                    // We need a base voltage for each defined voltage magnitude
+                    voltageMagnitudeKey = InputMeasurementKeys[i];
 
-                        if (settings.TryGetValue(voltageMagnitudeKey + "BaseKV", out setting) && double.TryParse(setting, out baseKV))
-                        {
-                            m_baseVoltages.Add(voltageMagnitudeKey, baseKV * SI.Kilo);
-                        }
-                        else
-                        {
-                            OnStatusMessage("WARNING: Did not find a valid base KV setting for voltage magnitude {0}, assumed 500KV", voltageMagnitudeKey.ToString());
-                            m_baseVoltages.Add(voltageMagnitudeKey, 500.0D * SI.Kilo);
-                        }
-                        break;
-                    case SignalType.VPHA:
-                        header.AppendFormat(",A{0}", angleIndex++);
-                        count++;
-                        break;
-                    case SignalType.CALC:
-                        // Lookup measurement key in active measurements table
-                        DataRow row = DataSource.Tables["ActiveMeasurements"].Select(string.Format("ID='{0}'", InputMeasurementKeys[i].ToString()))[0];
-
-                        string tagName = row["PointTag"].ToNonNullString("NA").ToUpper().Trim();
-
-                        if (tagName.StartsWith("P") || tagName.EndsWith("MW"))
-                            header.AppendFormat(",P{0}", pIndex++);
-                        else if (tagName.StartsWith("Q") || tagName.EndsWith("MVAR"))
-                            header.AppendFormat(",Q{0}", qIndex++);
-                        count++;
-                        break;
+                    if (settings.TryGetValue(voltageMagnitudeKey + "BaseKV", out setting) && double.TryParse(setting, out baseKV))
+                    {
+                        m_baseVoltages.Add(voltageMagnitudeKey, baseKV * SI.Kilo);
+                    }
+                    else
+                    {
+                        OnStatusMessage("WARNING: Did not find a valid base KV setting for voltage magnitude {0}, assumed 500KV", voltageMagnitudeKey.ToString());
+                        m_baseVoltages.Add(voltageMagnitudeKey, 500.0D * SI.Kilo);
+                    }
+                }
+                else if (InputMeasurementKeyTypes[i] == SignalType.VPHA)
+                {
+                    header.AppendFormat(",{0} A", tagName);
+                }
+                else
+                {
+                    header.AppendFormat(",{0} ??", tagName);
                 }
             }
 
@@ -286,13 +284,13 @@ namespace EpriExport
             // Add row 1
             header.Append("Data Points,Tie lines,Time step");
 
-            if (count - 3 > 0)
-                header.Append(new string(',', count - 3));
+            if (InputMeasurementKeys.Length - 3 > 0)
+                header.Append(new string(',', InputMeasurementKeys.Length - 3));
 
             header.AppendLine();
 
             // Add row 2
-            header.AppendFormat("{0},{1},{2}", m_exportInterval * 30, voltageIndex, 1 / 30.0D);
+            header.AppendFormat("{0},{1},{2}", m_exportInterval * FramesPerSecond / 1000, tieLines, 1 / 30.0D);
             header.AppendLine();
 
             // Add row 3
