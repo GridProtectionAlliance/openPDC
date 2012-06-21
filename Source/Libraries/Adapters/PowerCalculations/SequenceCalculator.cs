@@ -45,7 +45,6 @@ namespace PowerCalculations
         #region [ Members ]
 
         // Constants
-        private const double SqrtOf3 = 1.7320508075688772935274463415059D;
         private const double Rad120 = 2.0D * Math.PI / 3.0D;
 
         // Fields
@@ -134,21 +133,21 @@ namespace PowerCalculations
 
                 StringBuilder status = new StringBuilder();
 
+                status.AppendFormat("         Phase A magnitude: {0}", m_magnitudes[0]);
+                status.AppendLine();
+                status.AppendFormat("         Phase B magnitude: {0}", m_magnitudes[1]);
+                status.AppendLine();
+                status.AppendFormat("         Phase C magnitude: {0}", m_magnitudes[2]);
+                status.AppendLine();
+                status.AppendFormat("             Phase A angle: {0}", m_angles[0]);
+                status.AppendLine();
+                status.AppendFormat("             Phase B angle: {0}", m_angles[1]);
+                status.AppendLine();
+                status.AppendFormat("             Phase C angle: {0}", m_angles[2]);
+                status.AppendLine();
+
                 if (m_trackRecentValues)
                 {
-
-                    status.AppendFormat("         Phase A magnitude: {0}", m_magnitudes[0]);
-                    status.AppendLine();
-                    status.AppendFormat("         Phase B magnitude: {0}", m_magnitudes[1]);
-                    status.AppendLine();
-                    status.AppendFormat("         Phase C magnitude: {0}", m_magnitudes[2]);
-                    status.AppendLine();
-                    status.AppendFormat("             Phase A angle: {0}", m_angles[0]);
-                    status.AppendLine();
-                    status.AppendFormat("             Phase B angle: {0}", m_angles[1]);
-                    status.AppendLine();
-                    status.AppendFormat("             Phase C angle: {0}", m_angles[2]);
-                    status.AppendLine();
                     status.AppendLine();
 
                     status.Append("   Last positive sequences: ");
@@ -297,7 +296,7 @@ namespace PowerCalculations
 
             // Validate output measurements
             if (OutputMeasurements.Length < Enum.GetValues(typeof(Output)).Length)
-                throw new InvalidOperationException("Not enough output measurements were specified for the sequence calculator, expecting measurements for the \"Positive Sequence\", \"Negative Sequence\", \"Zero Sequence\" and the \"Common Sequence Magnitude\" - in this order.");
+                throw new InvalidOperationException("Not enough output measurements were specified for the sequence calculator, expecting measurements for the \"Positive Sequence Magnitude\", \"Positive Sequence Angle\", \"Negative Sequence Magnitude\", \"Negative Sequence Angle\", \"Zero Sequence Magnitude\" and \"Zero Sequence Angle\" - in this order.");
 
             if (m_trackRecentValues)
             {
@@ -332,7 +331,7 @@ namespace PowerCalculations
                 IMeasurement measurement;
                 bool allValuesReceived = false;
 
-                // Get all needed measurement value from this frame
+                // Get all needed measurement values from this frame
                 if (measurements.TryGetValue(m_magnitudes[0], out measurement) && measurement.ValueQualityIsGood())
                 {
                     // Get A-phase magnitude value
