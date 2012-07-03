@@ -42,6 +42,7 @@ namespace Comtrade
         private string m_fileName;
         private bool m_disposed;
         private FileStream[] m_fileStreams;
+        private StreamReader[] m_fileReaders;
         private int m_streamIndex;
         private DateTime m_timestamp;
         private double[] m_values;
@@ -197,7 +198,10 @@ namespace Comtrade
                 throw new FileNotFoundException(string.Format("Specified COMTRADE data file \"{0}\" was not found, cannot open files.", m_fileName));
 
             // Get all data files in the collection
-            string[] fileNames = FilePath.GetFileList(FilePath.GetAbsolutePath(m_fileName) + "\\" + FilePath.GetFileNameWithoutExtension(m_fileName) + FilePath.GetExtension(m_fileName)[0] + "*");
+            string directory = FilePath.GetDirectoryName(m_fileName);
+            string rootFileName = FilePath.GetFileNameWithoutExtension(m_fileName);
+            string extension = FilePath.GetExtension(m_fileName).Substring(0, 2) + "*";
+            string[] fileNames = FilePath.GetFileList(Path.Combine(directory, rootFileName + extension));
 
             // Make sure to process files in order
             Array.Sort(fileNames, StringComparer.InvariantCultureIgnoreCase);
@@ -257,27 +261,34 @@ namespace Comtrade
         // Handle ASCII file read
         private bool ReadNextAscii()
         {
-            FileStream currentFile = m_fileStreams[m_streamIndex];
-            StreamReader reader = new StreamReader(currentFile, Encoding.ASCII, false);
+            if ((object)m_fileReaders == null)
+            {
+                m_fileReaders = new StreamReader[m_fileStreams.Length];
+
+                for(int i = 0; i < m_fileStreams.Length; i++)
+                    m_fileReaders[i] = new StreamReader(m_fileStreams[i]);
+            }
 
             // Read next line of record values
+            StreamReader reader = m_fileReaders[m_streamIndex];
             string line = reader.ReadLine();
+            string[] elems = ((object)line != null) ? line.Split(',') : null;
 
             // See if we have reached the end of this file
-            if ((object)line == null)
+            if ((object)elems == null || elems.Length != m_values.Length + 2)
             {
-                m_streamIndex++;
+                if (reader.EndOfStream)
+                {
+                    m_streamIndex++;
 
-                // There is more to read if there is another file
-                return m_streamIndex < m_fileStreams.Length && ReadNext();
+                    // There is more to read if there is another file
+                    return m_streamIndex < m_fileStreams.Length && ReadNext();
+                }
+
+                throw new InvalidOperationException("COMTRADE schema does not match number of elements found in ASCII data file.");
             }
 
             // Parse row of data
-            string[] elems = line.Split(',');
-
-            if (elems.Length != m_values.Length + 2)
-                throw new InvalidOperationException("COMTRADE schema does not match number of elements found in ASCII data file.");
-
             uint sample = uint.Parse(elems[0]);
 
             // Get timestamp of this record
