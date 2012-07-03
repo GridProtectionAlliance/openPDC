@@ -131,17 +131,27 @@ namespace Comtrade
         {
             get
             {
-                return string.Format("{0}:{1}", m_stationName, m_channelName);
+                if (string.IsNullOrEmpty(m_stationName))
+                    return null;
+
+                if (!string.IsNullOrEmpty(m_channelName))
+                    return string.Format("{0}:{1}", m_stationName, m_channelName);
+
+                return m_stationName;
             }
             set
             {
                 string[] parts = value.Split(':');
 
-                if (parts.Length != 2)
-                    throw new FormatException("Analog channel name must be formatted as station_name:channel_name.");
-
-                m_stationName = parts[0].Trim();
-                m_channelName = parts[1].Trim();
+                if (parts.Length == 2)
+                {
+                    m_stationName = parts[0].Trim();
+                    m_channelName = parts[1].Trim();
+                }
+                else
+                {
+                    m_stationName = value;
+                }
             }
         }
 
