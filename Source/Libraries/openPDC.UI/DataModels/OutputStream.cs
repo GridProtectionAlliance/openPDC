@@ -988,8 +988,15 @@ namespace openPDCManager.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
+                // Get Acronym of output stream we need to delete and save it
+                DataTable outputStreamAcronym = database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT Acronym FROM OutputStream WHERE ID = {0}", "outputStreamID"), DefaultTimeout, outputStreamID);
+                
+                // Delete output stream from database
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStream WHERE ID = {0}", "outputStreamID"), DefaultTimeout, outputStreamID);
 
+                // Delete statistic measurements from database using the output stream acronym we have just deleted
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Measurement WHERE SignalReference LIKE '" + outputStreamAcronym.Rows[0].Field<string>("Acronym") + "$!OS-ST%' escape'$'"), DefaultTimeout);
+                
                 TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
 
                 return "Output Stream Deleted Successfully";
