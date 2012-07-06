@@ -38,7 +38,7 @@ namespace openPDC.UI.UserControls
         #region [ Members ]
 
         // Fields
-        private int m_measurementsDataRefreshInterval = 10;
+        private int m_measurementsDataRefreshInterval = 5;
         private RealTimeStreams m_dataContext;
 
         #endregion
@@ -71,7 +71,7 @@ namespace openPDC.UI.UserControls
 
             if (m_measurementsDataRefreshInterval == 0)
             {
-                m_measurementsDataRefreshInterval = 10;
+                m_measurementsDataRefreshInterval = 5;
                 IsolatedStorageManager.InitializeStorageForRealTimeMeasurements(true);
             }
 

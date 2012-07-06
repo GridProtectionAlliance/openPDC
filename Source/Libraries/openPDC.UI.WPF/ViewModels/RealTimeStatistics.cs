@@ -39,7 +39,7 @@ namespace openPDC.UI.ViewModels
     {
         #region [ Members ]
 
-        private int m_statisticDataRefreshInterval = 10;
+        private int m_statisticDataRefreshInterval = 5;
         private string m_lastRefresh;
         private bool m_restartConnectionCycle;
 

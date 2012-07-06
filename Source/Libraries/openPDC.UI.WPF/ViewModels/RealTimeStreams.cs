@@ -52,7 +52,7 @@ namespace openPDC.UI.ViewModels
         private string m_lastRefresh;
         private ObservableCollection<StatisticMeasurement> m_statisticMeasurements;
         private RealTimeStatistics m_statistics;
-        private int m_statisticRefreshInterval = 10;
+        private int m_statisticRefreshInterval = 5;
         private bool m_temporalSupportEnabled;
         private string m_startTime = "*-10m";
         private string m_stopTime = "*";
@@ -62,7 +62,7 @@ namespace openPDC.UI.ViewModels
         private bool m_subscribedUnsynchronized;
         private string m_allSignalIDs;  // string of GUIDs used for subscription.
         private int m_processingUnsynchronizedMeasurements = 0;
-        private int m_refreshInterval = 10;
+        private int m_refreshInterval = 5;
 
         #endregion
 

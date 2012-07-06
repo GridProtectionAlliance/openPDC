@@ -37,7 +37,7 @@ namespace openPDC.UI.UserControls
         #region [ Members ]
 
         // Fields
-        private int m_statisticDataRefreshInterval = 10;
+        private int m_statisticDataRefreshInterval = 5;
         private RealTimeStatistics m_dataContext;
 
         #endregion
@@ -69,7 +69,7 @@ namespace openPDC.UI.UserControls
 
             if (m_statisticDataRefreshInterval == 0)
             {
-                m_statisticDataRefreshInterval = 10;
+                m_statisticDataRefreshInterval = 5;
                 IsolatedStorageManager.InitializeStorageForStreamStatistics(true);
             }
 
