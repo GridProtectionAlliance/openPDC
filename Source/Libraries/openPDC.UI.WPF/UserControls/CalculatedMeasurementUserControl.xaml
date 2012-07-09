@@ -50,16 +50,18 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Node" Grid.Row="0" Grid.Column="0" />
-            <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Source={StaticResource NodeLookupList}}" DisplayMemberPath="Value"
-                      SelectedItem="{tsfBinding:Column Path=NodeID, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource NodeLookupList}}"/>
+            <TextBlock Text="Name" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=Name}" MaxLength="50"/>
+            
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
                 <TextBlock Text="Acronym" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
             <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=Acronym}" CharacterCasing="Upper" MaxLength="100" />
-            <TextBlock Text="Name" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=Name}" MaxLength="50"/>
+
+            <TextBlock Text="Connection String" Grid.Row="1" Grid.Column="0" />
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=ConnectionString}" />
+
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right">
                 <TextBlock Text="Assembly Name" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
@@ -70,8 +72,13 @@
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
             <TextBox Grid.Row="2" Grid.Column="1" Text="{tsfBinding:Column Path=TypeName}" />
-            <TextBlock Text="Connection String" Grid.Row="2" Grid.Column="2" />
-            <TextBox Grid.Row="2" Grid.Column="3" Text="{tsfBinding:Column Path=ConnectionString}" />
+
+            <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right">
+                <TextBlock Text="Load Order" Style="{StaticResource RequiredLabel}"/>
+                <TextBlock Style="{StaticResource RequiredMarker}"/>
+            </StackPanel>
+            <TextBox Text="{tsfBinding:Column Path=LoadOrder}" Grid.Row="2" Grid.Column="3" Width="35" />
+
             <TextBlock Text="Config Section" Grid.Row="3" Grid.Column="0"/>
             <TextBox Grid.Row="3" Grid.Column="1" Text="{tsfBinding:Column Path=ConfigSection}"/>
             <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right">
@@ -109,17 +116,14 @@
             </StackPanel>
             <ComboBox Grid.Row="7" Grid.Column="1"  ItemsSource="{Binding Source={StaticResource DownsamplingMethodLookupList}}" DisplayMemberPath="Value"
                       SelectedItem="{tsfBinding:Column Path=DownsamplingMethod, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource DownsamplingMethodLookupList}}"/>
-            <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Right">
-                <TextBlock Text="Load Order" Style="{StaticResource RequiredLabel}"/>
-                <TextBlock Style="{StaticResource RequiredMarker}"/>
-            </StackPanel>
+            
             <CheckBox Content="Use Local Clock As Real-Time" Grid.Row="8" Grid.Column="1" IsChecked="{tsfBinding:Column Path=UseLocalClockAsRealTime}"/>
             <CheckBox Content="Allow Sorts By Arrival" Grid.Row="8" Grid.Column="3" IsChecked="{tsfBinding:Column Path=AllowSortsByArrival}"/>
             <CheckBox Content="Ignore Bad Timestamps" Grid.Row="9" Grid.Column="1" IsChecked="{tsfBinding:Column Path=IgnoreBadTimestamps}"/>
             <CheckBox Content="Allow Preemeptive Publishing" Grid.Row="9" Grid.Column="3" IsChecked="{tsfBinding:Column Path=AllowPreemptivePublishing}"/>
             <CheckBox Content="Perform Timestamp Reasonability Check" Grid.Row="10" Grid.Column="1" IsChecked="{tsfBinding:Column Path=PerformTimestampReasonabilityCheck}"/>
             <CheckBox Content="Enabled" Grid.Row="10" Grid.Column="3" IsChecked="{tsfBinding:Column Path=Enabled}"/>
-            <TextBox Text="{tsfBinding:Column Path=LoadOrder}" Grid.Row="7" Grid.Column="3" Width="35" />
+           
             <TextBlock Text="Runtime ID" Grid.Row="11" Grid.Column="0" />
             <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="1">
                 <TextBlock Text="{tsfBinding:Column Path=DataContext.RuntimeID, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" />
