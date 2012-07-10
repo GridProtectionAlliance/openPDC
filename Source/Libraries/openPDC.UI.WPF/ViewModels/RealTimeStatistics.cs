@@ -167,7 +167,7 @@ namespace openPDC.UI.ViewModels
                         }
                     }
 
-                    LastRefresh = "Last Refresh: " + DateTime.Now.ToString("HH:mm:ss.fff");
+                    LastRefresh = "Last Refresh: " + DateTime.UtcNow.ToString("HH:mm:ss.fff");
                 }
                 finally
                 {
