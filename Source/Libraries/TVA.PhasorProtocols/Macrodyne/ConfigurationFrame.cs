@@ -237,6 +237,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using TVA.Interop;
 using TVA.IO.Checksums;
 using TVA.Parsing;
 
@@ -250,9 +251,36 @@ namespace TVA.PhasorProtocols.Macrodyne
     {
         #region [ Members ]
 
+        /// <summary>
+        /// Default voltage phasor INI based configuration entry.
+        /// </summary>
+        public const string DefaultVoltagePhasorEntry = "V,4500.0,0.0060573,0,0,500,Default 500kV";
+
+        /// <summary>
+        /// Default current phasor INI based configuration entry.
+        /// </summary>
+        public const string DefaultCurrentPhasorEntry = "I,600.00,0.000040382,0,1,1,Default Current";
+
+        /// <summary>
+        /// Default frequency INI based configuration entry.
+        /// </summary>
+        public const string DefaultFrequencyEntry = "F,1000,60,1000,0,0,Frequency";
+
+        // Events
+
+        /// <summary>
+        /// Occurs when the Macrodyne INI based configuration file has been reloaded.
+        /// </summary>
+        public event EventHandler ConfigurationFileReloaded;
+
         // Fields
         private CommonFrameHeader m_frameHeader;
+        private IniFile m_iniFile;
+        private ConfigurationCellCollection m_configurationFileCells;
         private OnlineDataFormatFlags m_onlineDataFormatFlags;
+        private PhasorDefinition m_defaultPhasorV;
+        private PhasorDefinition m_defaultPhasorI;
+        private FrequencyDefinition m_defaultFrequency;
         private string m_stationName;
 
         #endregion
@@ -269,6 +297,8 @@ namespace TVA.PhasorProtocols.Macrodyne
         public ConfigurationFrame()
             : base(0, new ConfigurationCellCollection(), 0, 0)
         {
+            // We just assume current timestamp for configuration frames since they don't provide one
+            Timestamp = DateTime.UtcNow.Ticks;
         }
 
         /// <summary>
@@ -279,16 +309,21 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// <remarks>
         /// This constructor is used by a consumer to generate a Macrodyne configuration frame.
         /// </remarks>
-        public ConfigurationFrame(OnlineDataFormatFlags onlineDataFormatFlags, string unitID)
+        public ConfigurationFrame(OnlineDataFormatFlags onlineDataFormatFlags, string unitID, string configurationFileName = null)
             : base(0, new ConfigurationCellCollection(), 0, 0)
         {
             m_onlineDataFormatFlags = onlineDataFormatFlags;
             m_stationName = unitID;
 
+            if (!string.IsNullOrEmpty(configurationFileName))
+                m_iniFile = new IniFile(configurationFileName);
+
             ConfigurationCell configCell = new ConfigurationCell(this);
 
             // Macrodyne protocol sends data for one device
             Cells.Add(configCell);
+
+            //Refresh(false);
         }
 
         /// <summary>
@@ -302,6 +337,15 @@ namespace TVA.PhasorProtocols.Macrodyne
             // Deserialize configuration frame
             m_frameHeader = (CommonFrameHeader)info.GetValue("frameHeader", typeof(CommonFrameHeader));
             m_onlineDataFormatFlags = (OnlineDataFormatFlags)info.GetValue("onlineDataFormatFlags", typeof(OnlineDataFormatFlags));
+
+            try
+            {
+                m_iniFile = new IniFile(info.GetString("configurationFileName"));
+            }
+            catch (SerializationException)
+            {
+                m_iniFile = null;
+            }
         }
 
         #endregion
@@ -567,6 +611,9 @@ namespace TVA.PhasorProtocols.Macrodyne
 
                 baseAttributes.Add("ON-LINE Data Format Flags", (byte)OnlineDataFormatFlags + ": " + OnlineDataFormatFlags);
 
+                if ((object)m_iniFile != null)
+                    baseAttributes.Add("Configuration File Name", m_iniFile.FileName);
+
                 return baseAttributes;
             }
         }
@@ -574,6 +621,183 @@ namespace TVA.PhasorProtocols.Macrodyne
         #endregion
 
         #region [ Methods ]
+
+        ///// <summary>
+        ///// Reload Macrodyne INI based configuration file.
+        ///// </summary>
+        //public void Refresh()
+        //{
+        //    Refresh(false);
+        //}
+
+        //internal void Refresh(bool refreshCausedByFrameParse)
+        //{
+        //    if ((object)m_iniFile == null)
+        //        return;
+
+        //    // The only time we need an access lock is when we reload the config file...
+        //    lock (m_iniFile)
+        //    {
+        //        if (File.Exists(m_iniFile.FileName))
+        //        {
+        //            ConfigurationCell pmuCell;
+        //            int phasorCount, pmuCount, x, y;
+
+        //            m_defaultPhasorV = new PhasorDefinition(null, 0, m_iniFile["DEFAULT", "PhasorV", DefaultVoltagePhasorEntry]);
+        //            m_defaultPhasorI = new PhasorDefinition(null, 0, m_iniFile["DEFAULT", "PhasorI", DefaultCurrentPhasorEntry]);
+        //            m_defaultFrequency = new FrequencyDefinition(null, m_iniFile["DEFAULT", "Frequency", DefaultFrequencyEntry]);
+        //            FrameRate = ushort.Parse(m_iniFile["CONFIG", "SampleRate", "30"]);
+
+        //            // We read all cells in the config file into their own configuration cell collection - cells parsed
+        //            // from the configuration frame will be mapped to their associated config file cell by ID label
+        //            // when the configuration cell is parsed from the configuration frame
+        //            if (m_configurationFileCells == null)
+        //                m_configurationFileCells = new ConfigurationCellCollection();
+
+        //            m_configurationFileCells.Clear();
+
+        //            // Load phasor data for each section in config file...
+        //            foreach (string section in m_iniFile.GetSectionNames())
+        //            {
+        //                if (section.Length > 0)
+        //                {
+        //                    // Make sure this is not a special section
+        //                    if (string.Compare(section, "DEFAULT", true) != 0 && string.Compare(section, "CONFIG", true) != 0)
+        //                    {
+        //                        // Create new PMU entry structure from config file settings...
+        //                        phasorCount = int.Parse(m_iniFile[section, "NumberPhasors", "0"]);
+
+        //                        // Check for PDC code
+        //                        int pdcID = int.Parse(m_iniFile[section, "PDC", "-1"]);
+
+        //                        if (pdcID == -1)
+        //                        {
+        //                            // No PDC entry exists, assume this is a PMU
+        //                            pmuCell = new ConfigurationCell(this, 0);
+        //                            pmuCell.IDCode = ushort.Parse(m_iniFile[section, "PMU", Cells.Count.ToString()]);
+        //                            pmuCell.SectionEntry = section; // This will automatically assign ID label as first 4 digits of section
+        //                            pmuCell.StationName = m_iniFile[section, "Name", section];
+
+        //                            for (x = 0; x < phasorCount; x++)
+        //                            {
+        //                                pmuCell.PhasorDefinitions.Add(new PhasorDefinition(pmuCell, x + 1, m_iniFile[section, "Phasor" + (x + 1), DefaultVoltagePhasorEntry]));
+        //                            }
+
+        //                            pmuCell.FrequencyDefinition = new FrequencyDefinition(pmuCell, m_iniFile[section, "Frequency", DefaultFrequencyEntry]);
+        //                            m_configurationFileCells.Add(pmuCell);
+        //                        }
+        //                        else
+        //                        {
+        //                            // This is a PDC, need to define one virtual entry for each PMU
+        //                            pmuCount = int.Parse(m_iniFile[section, "NumberPMUs", "0"]);
+
+        //                            for (x = 0; x < pmuCount; x++)
+        //                            {
+        //                                // Create a new PMU cell for each PDC entry that exists
+        //                                pmuCell = new ConfigurationCell(this, 0);
+
+        //                                // For BPA INI files, PMUs tradionally have an ID number indexed starting at zero or one - so we multiply
+        //                                // ID by 1000 and add index to attempt to create a fairly unique ID to help optimize downstream parsing
+        //                                pmuCell.IDCode = unchecked((ushort)(pdcID * 1000 + x));
+        //                                pmuCell.SectionEntry = string.Format("{0}pmu{1}", section, x); // This will automatically assign ID label as first 4 digits of section
+        //                                pmuCell.StationName = string.Format("{0} - Device {1}", m_iniFile[section, "Name", section], (x + 1));
+
+        //                                for (y = 0; y < 2; y++)
+        //                                {
+        //                                    pmuCell.PhasorDefinitions.Add(new PhasorDefinition(pmuCell, y + 1, m_iniFile[section, "Phasor" + ((x * 2) + (y + 1)), DefaultVoltagePhasorEntry]));
+        //                                }
+
+        //                                pmuCell.FrequencyDefinition = new FrequencyDefinition(pmuCell, m_iniFile[section, "Frequency", DefaultFrequencyEntry]);
+        //                                m_configurationFileCells.Add(pmuCell);
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+
+        //            // Associate parsed cells with cells defined in INI file
+        //            if (m_configurationFileCells.Count > 0 && (Cells != null))
+        //            {
+        //                ConfigurationCell configurationFileCell = null;
+        //                IConfigurationCell configurationCell = null;
+
+        //                if (refreshCausedByFrameParse)
+        //                {
+        //                    // Create a new configuration cell collection that will account for PDC block cells
+        //                    ConfigurationCellCollection cellCollection = new ConfigurationCellCollection();
+        //                    ConfigurationCell cell;
+
+        //                    // For freshly parsed configuration frames we'll have no PMU's in configuration
+        //                    // frame for PDCxchng blocks - so we'll need to dynamically create them
+        //                    for (x = 0; x < Cells.Count; x++)
+        //                    {
+        //                        // Get current configuration cell
+        //                        cell = Cells[x];
+
+        //                        // Lookup INI file configuration cell by ID label
+        //                        m_configurationFileCells.TryGetByIDLabel(cell.IDLabel, out configurationCell);
+        //                        configurationFileCell = (ConfigurationCell)configurationCell;
+
+        //                        if (configurationFileCell == null)
+        //                        {
+        //                            // Couldn't find associated INI file cell - just append the parsed cell to the collection
+        //                            cellCollection.Add(cell);
+        //                        }
+        //                        else
+        //                        {
+        //                            if (configurationFileCell.IsPdcBlockSection)
+        //                            {
+        //                                // This looks like a PDC block section - so we'll keep adding cells for each defined PMU in the PDC block
+        //                                int index = 0;
+
+        //                                do
+        //                                {
+        //                                    // Lookup PMU by section name
+        //                                    m_configurationFileCells.TryGetBySectionEntry(string.Format("{0}pmu{1}", cell.IDLabel, index), ref configurationFileCell);
+
+        //                                    // Add PDC block PMU configuration cell to the collection
+        //                                    if (configurationFileCell != null)
+        //                                        cellCollection.Add(configurationFileCell);
+
+        //                                    index++;
+        //                                }
+        //                                while (configurationFileCell != null);
+        //                            }
+        //                            else
+        //                            {
+        //                                // As far as we can tell from INI file, this is just a regular PMU
+        //                                cell.ConfigurationFileCell = configurationFileCell;
+        //                                cellCollection.Add(cell);
+        //                            }
+        //                        }
+        //                    }
+
+        //                    // Assign "new" cell collection which will include PMU's from defined PDC blocks
+        //                    Cells.Clear();
+        //                    Cells.AddRange(cellCollection);
+        //                }
+        //                else
+        //                {
+        //                    // For simple INI file updates, we just re-assign INI file cells associating by section entry
+        //                    foreach (ConfigurationCell cell in Cells)
+        //                    {
+        //                        // Attempt to associate this configuration cell with information read from external INI based configuration file
+        //                        m_configurationFileCells.TryGetBySectionEntry(cell.SectionEntry, ref configurationFileCell);
+        //                        cell.ConfigurationFileCell = configurationFileCell;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else
+        //            throw new InvalidOperationException("Macrodyne config file \"" + m_iniFile.FileName + "\" does not exist.");
+        //    }
+
+        //    // In case other classes want to know, we send out a notification that the config file has been reloaded (make sure
+        //    // you do this after the write lock has been released to avoid possible dead-lock situations)
+        //    if (ConfigurationFileReloaded != null)
+        //        ConfigurationFileReloaded(this, EventArgs.Empty);
+
+        //}
 
         /// <summary>
         /// Parses the binary image.

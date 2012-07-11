@@ -110,7 +110,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             {
                 m_useETRConfiguration = info.GetBoolean("useETRConfiguration");
             }
-            catch
+            catch (SerializationException)
             {
                 m_useETRConfiguration = DefaultUseETRConfiguration;
             }
@@ -119,7 +119,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             {
                 m_guessConfiguration = info.GetBoolean("guessConfiguration");
             }
-            catch
+            catch (SerializationException)
             {
                 m_guessConfiguration = DefaultGuessConfiguration;
             }
@@ -128,7 +128,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             {
                 m_parseRedundantASDUs = info.GetBoolean("parseRedundantASDUs");
             }
-            catch
+            catch (SerializationException)
             {
                 m_parseRedundantASDUs = DefaultParseRedundantASDUs;
             }
@@ -137,7 +137,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             {
                 m_ignoreSignatureValidationFailures = info.GetBoolean("ignoreSignatureValidationFailures");
             }
-            catch
+            catch (SerializationException)
             {
                 m_ignoreSignatureValidationFailures = DefaultIgnoreSignatureValidationFailures;
             }
@@ -146,7 +146,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             {
                 IgnoreSampleSizeValidationFailures = info.GetBoolean("ignoreSampleSizeValidationFailures");
             }
-            catch
+            catch (SerializationException)
             {
                 IgnoreSampleSizeValidationFailures = DefaultIgnoreSampleSizeValidationFailures;
             }
@@ -155,7 +155,7 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
             {
                 m_phasorAngleFormat = (AngleFormat)info.GetValue("phasorAngleFormat", typeof(AngleFormat));
             }
-            catch
+            catch (SerializationException)
             {
                 m_phasorAngleFormat = (AngleFormat)Enum.Parse(typeof(AngleFormat), DefaultPhasorAngleFormat, true);
             }

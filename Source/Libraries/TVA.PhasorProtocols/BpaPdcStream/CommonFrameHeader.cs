@@ -256,7 +256,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                 m_sourceID = info.GetString("sourceID");
                 m_startSample = info.GetUInt32("startSample");
             }
-            catch
+            catch (SerializationException)
             {
                 m_usePhasorDataFileFormat = false;
                 m_roughTimestamp = 0;

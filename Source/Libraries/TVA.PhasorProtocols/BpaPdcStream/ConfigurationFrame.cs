@@ -152,7 +152,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
                 m_usePhasorDataFileFormat = info.GetBoolean("usePhasorDataFileFormat");
                 m_rowLength = info.GetUInt32("rowLength");
             }
-            catch
+            catch (SerializationException)
             {
                 m_usePhasorDataFileFormat = false;
                 m_rowLength = 0;
