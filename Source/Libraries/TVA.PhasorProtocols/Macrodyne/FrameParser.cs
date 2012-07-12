@@ -367,24 +367,35 @@ namespace TVA.PhasorProtocols.Macrodyne
 
                 while (aaaaSyncBytesPosition > -1)
                 {
-                    MemoryStream newBuffer = new MemoryStream();
-                    byte[] bytes = buffer.BlockCopy(offset, aaaaSyncBytesPosition - offset + 1);
-                    newBuffer.Write(bytes, 0, bytes.Length);
-
-                    int nextByte = aaaaSyncBytesPosition + 2;
-
-                    if (nextByte < offset + count)
+                    // TODO: Seems to be an issue with index of sequence when it starts at zero and matches first byte
+                    if (buffer[aaaaSyncBytesPosition + 1] == 0xAA)
                     {
-                        bytes = buffer.BlockCopy(nextByte, offset + count - nextByte);
+                        MemoryStream newBuffer = new MemoryStream();
+                        byte[] bytes;
+
+                        bytes = buffer.BlockCopy(offset, aaaaSyncBytesPosition - offset + 1);
                         newBuffer.Write(bytes, 0, bytes.Length);
+
+                        int nextByte = aaaaSyncBytesPosition + 2;
+
+                        if (nextByte < offset + count)
+                        {
+                            bytes = buffer.BlockCopy(nextByte, offset + count - nextByte);
+                            newBuffer.Write(bytes, 0, bytes.Length);
+                        }
+
+                        buffer = newBuffer.ToArray();
+                        offset = 0;
+                        count = buffer.Length;
+
+                        // Find next 0xAA 0xAA sequence
+                        aaaaSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xAA, 0xAA }, offset, count);
                     }
-
-                    buffer = newBuffer.ToArray();
-                    offset = 0;
-                    count = buffer.Length;
-
-                    // Find next 0xAA 0xAA sequence
-                    aaaaSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xAA, 0xAA }, offset, count);
+                    else
+                    {
+                        // Work around to find next 0xAA 0xAA sequence after zero
+                        aaaaSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xAA, 0xAA }, offset + 1, count - 1);
+                    }
                 }
 
                 if (StreamInitialized)
