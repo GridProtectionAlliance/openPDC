@@ -85,7 +85,7 @@ namespace ProtocolTester
             parser.ReceivedDataFrame += parser_ReceivedDataFrame;
 
             // Define the connection string
-            parser.ConnectionString = @"phasorProtocol=Macrodyne; accessID=1; transportProtocol=File; skipDisableRealTimeData = true; file=C:\Users\Ritchie\Desktop\Macrodyne\DMR.out; iniFileName=C:\Users\Ritchie\Desktop\Macrodyne\BCH18Aug2011.ini; deviceLabel=DMR1; protocolVersion=G";
+            parser.ConnectionString = @"phasorProtocol=Macrodyne; accessID=1; transportProtocol=File; skipDisableRealTimeData = true; file=C:\Users\Ritchie\Desktop\Macrodyne\ING.out; iniFileName=C:\Users\Ritchie\Desktop\Macrodyne\BCH18Aug2011.ini; deviceLabel=ING1; protocolVersion=G";
 
             // When connecting to a file based resource you may want to loop the data
             parser.AutoRepeatCapturedPlayback = true;

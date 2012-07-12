@@ -63,8 +63,10 @@ namespace TVA.PhasorProtocols.Macrodyne
                 SectionEntry = deviceLabel;
 
             // Add a single frequency definition
-            FrequencyDefinition = new FrequencyDefinition(this);
-            FrequencyDefinition.Label = "Line frequency";
+            FrequencyDefinition = new FrequencyDefinition(this)
+            {
+                Label = "Line frequency"
+            };
 
             OnlineDataFormatFlags flags = parent.OnlineDataFormatFlags;
 

@@ -363,39 +363,27 @@ namespace TVA.PhasorProtocols.Macrodyne
             if (Enabled)
             {
                 // See if there are any 0xAA 0xAA sequences - these must be removed
-                int aaaaSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xAA, 0xAA }, offset, count);
+                int syncBytePosition = buffer.IndexOfSequence(new byte[] { 0xAA, 0xAA }, offset, count);
 
-                while (aaaaSyncBytesPosition > -1)
+                while (syncBytePosition > -1)
                 {
-                    // TODO: Seems to be an issue with index of sequence when it starts at zero and matches first byte
-                    if (buffer[aaaaSyncBytesPosition + 1] == 0xAA)
-                    {
-                        MemoryStream newBuffer = new MemoryStream();
-                        byte[] bytes;
+                    MemoryStream newBuffer = new MemoryStream();
 
-                        bytes = buffer.BlockCopy(offset, aaaaSyncBytesPosition - offset + 1);
-                        newBuffer.Write(bytes, 0, bytes.Length);
+                    // Write buffer before repeated byte
+                    newBuffer.Write(buffer, offset, syncBytePosition - offset + 1);
 
-                        int nextByte = aaaaSyncBytesPosition + 2;
+                    int nextByte = syncBytePosition + 2;
 
-                        if (nextByte < offset + count)
-                        {
-                            bytes = buffer.BlockCopy(nextByte, offset + count - nextByte);
-                            newBuffer.Write(bytes, 0, bytes.Length);
-                        }
+                    // Write buffer after repeated byte, if any
+                    if (nextByte < offset + count)
+                        newBuffer.Write(buffer, nextByte, offset + count - nextByte);
 
-                        buffer = newBuffer.ToArray();
-                        offset = 0;
-                        count = buffer.Length;
+                    buffer = newBuffer.ToArray();
+                    offset = 0;
+                    count = buffer.Length;
 
-                        // Find next 0xAA 0xAA sequence
-                        aaaaSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xAA, 0xAA }, offset, count);
-                    }
-                    else
-                    {
-                        // Work around to find next 0xAA 0xAA sequence after zero
-                        aaaaSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xAA, 0xAA }, offset + 1, count - 1);
-                    }
+                    // Find next 0xAA 0xAA sequence
+                    syncBytePosition = buffer.IndexOfSequence(new byte[] { 0xAA, 0xAA }, offset, count);
                 }
 
                 if (StreamInitialized)
@@ -404,20 +392,26 @@ namespace TVA.PhasorProtocols.Macrodyne
                 }
                 else
                 {
-                    // Initial stream may be anywhere in the middle of a frame, so we attempt to locate sync-bytes to "line-up" data stream
-                    int aaSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xAA }, offset, count);
-                    int bbSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xBB }, offset, count);
+                    // Initial stream may be anywhere in the middle of a frame, so we attempt to locate sync-bytes to "line-up" data stream,
+                    // First we look for data frame sync-byte:
+                    syncBytePosition = buffer.IndexOfSequence(new byte[] { 0xAA }, offset, count);
 
-                    if (aaSyncBytesPosition > -1)
+                    if (syncBytePosition > -1)
                     {
                         StreamInitialized = true;
-                        base.Write(buffer, aaSyncBytesPosition, count - (aaSyncBytesPosition - offset));
+                        base.Write(buffer, syncBytePosition, count - (syncBytePosition - offset));
                     }
-                    else if (bbSyncBytesPosition > -1)
+                    else
                     {
-                        StreamInitialized = true;
-                        base.Write(buffer, bbSyncBytesPosition, count - (bbSyncBytesPosition - offset));
-                    }
+                        // Second we look for command frame response sync-byte:
+                        syncBytePosition = buffer.IndexOfSequence(new byte[] { 0xBB }, offset, count);
+
+                        if (syncBytePosition > -1)
+                        {
+                            StreamInitialized = true;
+                            base.Write(buffer, syncBytePosition, count - (syncBytePosition - offset));
+                        }
+                    }    
                 }
             }
         }
@@ -543,7 +537,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         }
 
         /// <summary>
-        /// Raises the <see cref="ParsingException"/> event.
+        /// Raises the <see cref="BinaryImageParserBase.ParsingException"/> event.
         /// </summary>
         /// <param name="ex">The <see cref="Exception"/> that was encountered during parsing.</param>
         protected override void OnParsingException(Exception ex)
@@ -596,8 +590,10 @@ namespace TVA.PhasorProtocols.Macrodyne
 
                     if (sourceFrequency != null)
                     {
-                        derivedCell.FrequencyDefinition = new FrequencyDefinition(derivedCell);
-                        derivedCell.FrequencyDefinition.Label = sourceFrequency.Label;
+                        derivedCell.FrequencyDefinition = new FrequencyDefinition(derivedCell)
+                        {
+                            Label = sourceFrequency.Label
+                        };
                     }
 
                     // Create equivalent dervied digital definitions
