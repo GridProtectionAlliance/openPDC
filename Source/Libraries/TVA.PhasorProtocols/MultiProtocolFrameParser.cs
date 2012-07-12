@@ -761,6 +761,9 @@ namespace TVA.PhasorProtocols
                     case PhasorProtocols.PhasorProtocol.Iec61850_90_5:
                         m_connectionParameters = new Iec61850_90_5.ConnectionParameters();
                         break;
+                    case PhasorProtocols.PhasorProtocol.Macrodyne:
+                        m_connectionParameters = new Macrodyne.ConnectionParameters();
+                        break;
                     default:
                         m_connectionParameters = null;
                         break;
@@ -1710,6 +1713,36 @@ namespace TVA.PhasorProtocols
                     break;
                 case PhasorProtocol.Macrodyne:
                     m_frameParser = new Macrodyne.FrameParser();
+
+                    // Check for Macrodyne protocol specific parameters in connection string
+                    Macrodyne.ConnectionParameters macrodyneParameters = m_connectionParameters as Macrodyne.ConnectionParameters;
+
+                    if (macrodyneParameters != null)
+                    {
+                        Macrodyne.ProtocolVersion protocolVersion;
+
+                        if (settings.TryGetValue("protocolVersion", out setting) && Enum.TryParse(setting, true, out protocolVersion))
+                            macrodyneParameters.ProtocolVersion = protocolVersion;
+                        else
+                            macrodyneParameters.ProtocolVersion = Macrodyne.ProtocolVersion.M;
+
+                        // INI file name setting is required for 1690G protocol
+                        if (settings.TryGetValue("iniFileName", out setting))
+                            macrodyneParameters.ConfigurationFileName = FilePath.GetAbsolutePath(setting);
+                        else if (macrodyneParameters.ProtocolVersion == Macrodyne.ProtocolVersion.G && string.IsNullOrWhiteSpace(macrodyneParameters.ConfigurationFileName))
+                            throw new ArgumentException("Macrodyne INI filename setting (e.g., \"iniFileName=DEVICE_PDC.ini\") was not found. This setting is required for 1690G devices - frame parser initialization terminated.");
+
+                        // Device label setting is required for 1690G protocol
+                        if (settings.TryGetValue("deviceLabel", out setting))
+                            macrodyneParameters.DeviceLabel = setting;
+                        else if (macrodyneParameters.ProtocolVersion == Macrodyne.ProtocolVersion.G && string.IsNullOrWhiteSpace(macrodyneParameters.DeviceLabel))
+                            throw new ArgumentException("Macrodyne device label setting (e.g., \"deviceLabel=DEVICE1\") was not found. This setting is required for 1690G devices - frame parser initialization terminated.");
+
+                        if (settings.TryGetValue("refreshConfigFileOnChange", out setting))
+                            macrodyneParameters.RefreshConfigurationFileOnChange = setting.ParseBoolean();
+                        else
+                            macrodyneParameters.RefreshConfigurationFileOnChange = false;
+                    }
                     break;
                 default:
                     throw new InvalidOperationException(string.Format("Phasor protocol \"{0}\" is not recognized, failed to initialize frame parser", m_phasorProtocol));
@@ -2245,7 +2278,15 @@ namespace TVA.PhasorProtocols
                     case PhasorProtocol.Macrodyne:
                         // We collect the station name (i.e. the unit ID via 0xBB 0x48)) from the Macrodyne
                         // protocol interpreted as a header frame before we get the configuration frame
-                        SendDeviceCommand(DeviceCommand.SendHeaderFrame);
+                        bool sendCommand = true;
+                        Macrodyne.ConnectionParameters parameters = m_connectionParameters as Macrodyne.ConnectionParameters;
+
+                        if ((object)parameters != null)
+                            sendCommand = (parameters.ProtocolVersion != Macrodyne.ProtocolVersion.G);
+
+                        if (sendCommand)
+                            SendDeviceCommand(DeviceCommand.SendHeaderFrame);
+
                         break;
                     default:
                         // Otherwise we just rquest the configuration frame

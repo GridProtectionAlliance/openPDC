@@ -1,237 +1,32 @@
-//*******************************************************************************************************
+//******************************************************************************************************
 //  FrameParser.cs - Gbtc
 //
-//  Tennessee Valley Authority, 2009
-//  No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
+//  Copyright © 2012, Grid Protection Alliance.  All Rights Reserved.
 //
-//  This software is made freely available under the TVA Open Source Agreement (see below).
+//  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
+//  the NOTICE file distributed with this work for additional information regarding copyright ownership.
+//  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+//  not use this file except in compliance with the License. You may obtain a copy of the License at:
+//
+//      http://www.opensource.org/licenses/eclipse-1.0.php
+//
+//  Unless agreed to in writing, the subject software distributed under the License is distributed on an
+//  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
+//  License for the specific language governing permissions and limitations.
 //
 //  Code Modification History:
-//  -----------------------------------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------------------------------
 //  04/30/2009 - J. Ritchie Carroll
 //       Generated original version of source code.
 //  09/15/2009 - Stephen C. Wills
 //       Added new header and license agreement.
 //
-//*******************************************************************************************************
-
-#region [ TVA Open Source Agreement ]
-/*
-
- THIS OPEN SOURCE AGREEMENT ("AGREEMENT") DEFINES THE RIGHTS OF USE,REPRODUCTION, DISTRIBUTION,
- MODIFICATION AND REDISTRIBUTION OF CERTAIN COMPUTER SOFTWARE ORIGINALLY RELEASED BY THE
- TENNESSEE VALLEY AUTHORITY, A CORPORATE AGENCY AND INSTRUMENTALITY OF THE UNITED STATES GOVERNMENT
- ("GOVERNMENT AGENCY"). GOVERNMENT AGENCY IS AN INTENDED THIRD-PARTY BENEFICIARY OF ALL SUBSEQUENT
- DISTRIBUTIONS OR REDISTRIBUTIONS OF THE SUBJECT SOFTWARE. ANYONE WHO USES, REPRODUCES, DISTRIBUTES,
- MODIFIES OR REDISTRIBUTES THE SUBJECT SOFTWARE, AS DEFINED HEREIN, OR ANY PART THEREOF, IS, BY THAT
- ACTION, ACCEPTING IN FULL THE RESPONSIBILITIES AND OBLIGATIONS CONTAINED IN THIS AGREEMENT.
-
- Original Software Designation: openPDC
- Original Software Title: The TVA Open Source Phasor Data Concentrator
- User Registration Requested. Please Visit https://naspi.tva.com/Registration/
- Point of Contact for Original Software: J. Ritchie Carroll <mailto:jrcarrol@tva.gov>
-
- 1. DEFINITIONS
-
- A. "Contributor" means Government Agency, as the developer of the Original Software, and any entity
- that makes a Modification.
-
- B. "Covered Patents" mean patent claims licensable by a Contributor that are necessarily infringed by
- the use or sale of its Modification alone or when combined with the Subject Software.
-
- C. "Display" means the showing of a copy of the Subject Software, either directly or by means of an
- image, or any other device.
-
- D. "Distribution" means conveyance or transfer of the Subject Software, regardless of means, to
- another.
-
- E. "Larger Work" means computer software that combines Subject Software, or portions thereof, with
- software separate from the Subject Software that is not governed by the terms of this Agreement.
-
- F. "Modification" means any alteration of, including addition to or deletion from, the substance or
- structure of either the Original Software or Subject Software, and includes derivative works, as that
- term is defined in the Copyright Statute, 17 USC § 101. However, the act of including Subject Software
- as part of a Larger Work does not in and of itself constitute a Modification.
-
- G. "Original Software" means the computer software first released under this Agreement by Government
- Agency entitled openPDC, including source code, object code and accompanying documentation, if any.
-
- H. "Recipient" means anyone who acquires the Subject Software under this Agreement, including all
- Contributors.
-
- I. "Redistribution" means Distribution of the Subject Software after a Modification has been made.
-
- J. "Reproduction" means the making of a counterpart, image or copy of the Subject Software.
-
- K. "Sale" means the exchange of the Subject Software for money or equivalent value.
-
- L. "Subject Software" means the Original Software, Modifications, or any respective parts thereof.
-
- M. "Use" means the application or employment of the Subject Software for any purpose.
-
- 2. GRANT OF RIGHTS
-
- A. Under Non-Patent Rights: Subject to the terms and conditions of this Agreement, each Contributor,
- with respect to its own contribution to the Subject Software, hereby grants to each Recipient a
- non-exclusive, world-wide, royalty-free license to engage in the following activities pertaining to
- the Subject Software:
-
- 1. Use
-
- 2. Distribution
-
- 3. Reproduction
-
- 4. Modification
-
- 5. Redistribution
-
- 6. Display
-
- B. Under Patent Rights: Subject to the terms and conditions of this Agreement, each Contributor, with
- respect to its own contribution to the Subject Software, hereby grants to each Recipient under Covered
- Patents a non-exclusive, world-wide, royalty-free license to engage in the following activities
- pertaining to the Subject Software:
-
- 1. Use
-
- 2. Distribution
-
- 3. Reproduction
-
- 4. Sale
-
- 5. Offer for Sale
-
- C. The rights granted under Paragraph B. also apply to the combination of a Contributor's Modification
- and the Subject Software if, at the time the Modification is added by the Contributor, the addition of
- such Modification causes the combination to be covered by the Covered Patents. It does not apply to
- any other combinations that include a Modification. 
-
- D. The rights granted in Paragraphs A. and B. allow the Recipient to sublicense those same rights.
- Such sublicense must be under the same terms and conditions of this Agreement.
-
- 3. OBLIGATIONS OF RECIPIENT
-
- A. Distribution or Redistribution of the Subject Software must be made under this Agreement except for
- additions covered under paragraph 3H. 
-
- 1. Whenever a Recipient distributes or redistributes the Subject Software, a copy of this Agreement
- must be included with each copy of the Subject Software; and
-
- 2. If Recipient distributes or redistributes the Subject Software in any form other than source code,
- Recipient must also make the source code freely available, and must provide with each copy of the
- Subject Software information on how to obtain the source code in a reasonable manner on or through a
- medium customarily used for software exchange.
-
- B. Each Recipient must ensure that the following copyright notice appears prominently in the Subject
- Software:
-
-          No copyright is claimed pursuant to 17 USC § 105.  All Other Rights Reserved.
-
- C. Each Contributor must characterize its alteration of the Subject Software as a Modification and
- must identify itself as the originator of its Modification in a manner that reasonably allows
- subsequent Recipients to identify the originator of the Modification. In fulfillment of these
- requirements, Contributor must include a file (e.g., a change log file) that describes the alterations
- made and the date of the alterations, identifies Contributor as originator of the alterations, and
- consents to characterization of the alterations as a Modification, for example, by including a
- statement that the Modification is derived, directly or indirectly, from Original Software provided by
- Government Agency. Once consent is granted, it may not thereafter be revoked.
-
- D. A Contributor may add its own copyright notice to the Subject Software. Once a copyright notice has
- been added to the Subject Software, a Recipient may not remove it without the express permission of
- the Contributor who added the notice.
-
- E. A Recipient may not make any representation in the Subject Software or in any promotional,
- advertising or other material that may be construed as an endorsement by Government Agency or by any
- prior Recipient of any product or service provided by Recipient, or that may seek to obtain commercial
- advantage by the fact of Government Agency's or a prior Recipient's participation in this Agreement.
-
- F. In an effort to track usage and maintain accurate records of the Subject Software, each Recipient,
- upon receipt of the Subject Software, is requested to register with Government Agency by visiting the
- following website: https://naspi.tva.com/Registration/. Recipient's name and personal information
- shall be used for statistical purposes only. Once a Recipient makes a Modification available, it is
- requested that the Recipient inform Government Agency at the web site provided above how to access the
- Modification.
-
- G. Each Contributor represents that that its Modification does not violate any existing agreements,
- regulations, statutes or rules, and further that Contributor has sufficient rights to grant the rights
- conveyed by this Agreement.
-
- H. A Recipient may choose to offer, and to charge a fee for, warranty, support, indemnity and/or
- liability obligations to one or more other Recipients of the Subject Software. A Recipient may do so,
- however, only on its own behalf and not on behalf of Government Agency or any other Recipient. Such a
- Recipient must make it absolutely clear that any such warranty, support, indemnity and/or liability
- obligation is offered by that Recipient alone. Further, such Recipient agrees to indemnify Government
- Agency and every other Recipient for any liability incurred by them as a result of warranty, support,
- indemnity and/or liability offered by such Recipient.
-
- I. A Recipient may create a Larger Work by combining Subject Software with separate software not
- governed by the terms of this agreement and distribute the Larger Work as a single product. In such
- case, the Recipient must make sure Subject Software, or portions thereof, included in the Larger Work
- is subject to this Agreement.
-
- J. Notwithstanding any provisions contained herein, Recipient is hereby put on notice that export of
- any goods or technical data from the United States may require some form of export license from the
- U.S. Government. Failure to obtain necessary export licenses may result in criminal liability under
- U.S. laws. Government Agency neither represents that a license shall not be required nor that, if
- required, it shall be issued. Nothing granted herein provides any such export license.
-
- 4. DISCLAIMER OF WARRANTIES AND LIABILITIES; WAIVER AND INDEMNIFICATION
-
- A. No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF ANY KIND, EITHER
- EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY THAT THE SUBJECT
- SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- PARTICULAR PURPOSE, OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE ERROR
- FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO THE SUBJECT SOFTWARE. THIS
- AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR
- RECIPIENT OF ANY RESULTS, RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
- RESULTING FROM USE OF THE SUBJECT SOFTWARE. FURTHER, GOVERNMENT AGENCY DISCLAIMS ALL WARRANTIES AND
- LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT
- "AS IS."
-
- B. Waiver and Indemnity: RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST GOVERNMENT AGENCY, ITS
- AGENTS, EMPLOYEES, CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY PRIOR RECIPIENT. IF RECIPIENT'S USE
- OF THE SUBJECT SOFTWARE RESULTS IN ANY LIABILITIES, DEMANDS, DAMAGES, EXPENSES OR LOSSES ARISING FROM
- SUCH USE, INCLUDING ANY DAMAGES FROM PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S USE OF THE
- SUBJECT SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS  GOVERNMENT AGENCY, ITS AGENTS,
- EMPLOYEES, CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY
- LAW.  THE FOREGOING RELEASE AND INDEMNIFICATION SHALL APPLY EVEN IF THE LIABILITIES, DEMANDS, DAMAGES,
- EXPENSES OR LOSSES ARE CAUSED, OCCASIONED, OR CONTRIBUTED TO BY THE NEGLIGENCE, SOLE OR CONCURRENT, OF
- GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT.  RECIPIENT'S SOLE REMEDY FOR ANY SUCH MATTER SHALL BE THE
- IMMEDIATE, UNILATERAL TERMINATION OF THIS AGREEMENT.
-
- 5. GENERAL TERMS
-
- A. Termination: This Agreement and the rights granted hereunder will terminate automatically if a
- Recipient fails to comply with these terms and conditions, and fails to cure such noncompliance within
- thirty (30) days of becoming aware of such noncompliance. Upon termination, a Recipient agrees to
- immediately cease use and distribution of the Subject Software. All sublicenses to the Subject
- Software properly granted by the breaching Recipient shall survive any such termination of this
- Agreement.
-
- B. Severability: If any provision of this Agreement is invalid or unenforceable under applicable law,
- it shall not affect the validity or enforceability of the remainder of the terms of this Agreement.
-
- C. Applicable Law: This Agreement shall be subject to United States federal law only for all purposes,
- including, but not limited to, determining the validity of this Agreement, the meaning of its
- provisions and the rights, obligations and remedies of the parties.
-
- D. Entire Understanding: This Agreement constitutes the entire understanding and agreement of the
- parties relating to release of the Subject Software and may not be superseded, modified or amended
- except by further written agreement duly executed by the parties.
-
- E. Binding Authority: By accepting and using the Subject Software under this Agreement, a Recipient
- affirms its authority to bind the Recipient to all terms and conditions of this Agreement and that
- Recipient hereby agrees to all terms and conditions herein.
-
- F. Point of Contact: Any Recipient contact with Government Agency is to be directed to the designated
- representative as follows: J. Ritchie Carroll <mailto:jrcarrol@tva.gov>.
-
-*/
-#endregion
+//******************************************************************************************************
 
 using System;
+using System.IO;
+using System.Text;
+using TVA.IO;
 using TVA.Parsing;
 
 namespace TVA.PhasorProtocols.Macrodyne
@@ -275,6 +70,40 @@ namespace TVA.PhasorProtocols.Macrodyne
         // Fields
         private HeaderFrame m_headerFrame;
         private ConfigurationFrame m_configurationFrame;
+        private ProtocolVersion m_protocolVersion;
+        private string m_configurationFileName;
+        private string m_deviceLabel;
+        private bool m_refreshConfigurationFileOnChange;
+        private FileSystemWatcher m_configurationFileWatcher;
+        private object m_syncLock;
+        private bool m_disposed;
+
+        #endregion
+
+        #region [ Constructors ]
+
+        /// <summary>
+        /// Creates a new <see cref="FrameParser"/>.
+        /// </summary>
+        public FrameParser()
+        {
+            m_protocolVersion = ProtocolVersion.M;
+            m_syncLock = new object();
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="FrameParser"/> from specified parameters.
+        /// </summary>
+        /// <param name="protocolVersion">The protocol version that the parser should use.</param>
+        /// <param name="configurationFileName">The optional external Macrodyne configuration in BPA PDCstream INI file based format.</param>
+        /// <param name="deviceLabel">The INI section device label to use.</param>
+        public FrameParser(ProtocolVersion protocolVersion, string configurationFileName, string deviceLabel)
+            : this()
+        {
+            m_protocolVersion = protocolVersion;
+            m_deviceLabel = deviceLabel;
+            ConfigurationFileName = configurationFileName;
+        }
 
         #endregion
 
@@ -295,7 +124,7 @@ namespace TVA.PhasorProtocols.Macrodyne
             }
             set
             {
-                m_configurationFrame = CastToDerivedConfigurationFrame(value);
+                m_configurationFrame = CastToDerivedConfigurationFrame(value, m_configurationFileName, m_deviceLabel);
             }
         }
 
@@ -306,8 +135,113 @@ namespace TVA.PhasorProtocols.Macrodyne
         {
             get
             {
-                // Even though all data frames begin with 0xAA, the command responses do not. Do to this inconsistency, we don't enable sync bytes.
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets external Macrodyne based configuration file.
+        /// </summary>
+        public string ConfigurationFileName
+        {
+            get
+            {
+                if (m_configurationFrame == null)
+                    return m_configurationFileName;
+                else
+                    return m_configurationFrame.ConfigurationFileName;
+            }
+            set
+            {
+                m_configurationFileName = value;
+                ResetFileWatcher();
+
+                if ((object)m_configurationFrame == null && !string.IsNullOrEmpty(m_configurationFileName) && File.Exists(m_configurationFileName))
+                {
+                    m_configurationFrame = new ConfigurationFrame(OnlineDataFormatFlags.TimestampEnabled, "1690", m_configurationFileName, m_deviceLabel);
+                    m_configurationFrame.CommonHeader = new CommonFrameHeader(m_protocolVersion, FrameType.ConfigurationFrame);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets device section label, as defined in associated INI file.
+        /// </summary>
+        public string DeviceLabel
+        {
+            get
+            {
+                return m_deviceLabel;
+            }
+            set
+            {
+                m_deviceLabel = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets flag that determines if configuration file is automatically reloaded when it has changed on disk.
+        /// </summary>
+        public bool RefreshConfigurationFileOnChange
+        {
+            get
+            {
+                return m_refreshConfigurationFileOnChange;
+            }
+            set
+            {
+                m_refreshConfigurationFileOnChange = value;
+                ResetFileWatcher();
+            }
+        }
+
+        /// <summary>
+        /// Gets current descriptive status of the <see cref="FrameParser"/>.
+        /// </summary>
+        public override string Status
+        {
+            get
+            {
+                StringBuilder status = new StringBuilder();
+
+                status.AppendFormat("Macrodyne protocol version: {0}", m_protocolVersion);
+                status.AppendLine();
+                status.AppendFormat("    INI configuration file: {0}", FilePath.TrimFileName(m_configurationFileName.ToNonNullNorEmptyString("undefined"), 51));
+                status.AppendLine();
+                status.AppendFormat("  Device INI section label: {0}", m_deviceLabel);
+                status.AppendLine();
+                status.AppendFormat(" Auto-reload configuration: {0}", m_refreshConfigurationFileOnChange);
+                status.AppendLine();
+                status.Append(base.Status);
+
+                return status.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets any connection specific <see cref="IConnectionParameters"/> that may be needed for parsing.
+        /// </summary>
+        public override IConnectionParameters ConnectionParameters
+        {
+            get
+            {
+                return base.ConnectionParameters;
+            }
+            set
+            {
+                Macrodyne.ConnectionParameters parameters = value as Macrodyne.ConnectionParameters;
+
+                if (parameters != null)
+                {
+                    base.ConnectionParameters = parameters;
+
+                    // Assign new incoming connection parameter values
+                    m_protocolVersion = parameters.ProtocolVersion;
+                    m_deviceLabel = parameters.DeviceLabel;
+                    ConfigurationFileName = parameters.ConfigurationFileName;
+                    m_refreshConfigurationFileOnChange = parameters.RefreshConfigurationFileOnChange;
+                    ResetFileWatcher();
+                }
             }
         }
 
@@ -316,12 +250,43 @@ namespace TVA.PhasorProtocols.Macrodyne
         #region [ Methods ]
 
         /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="FrameParser"/> object and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                try
+                {
+                    if (disposing)
+                    {
+                        if (m_configurationFileWatcher != null)
+                        {
+                            m_configurationFileWatcher.Changed -= m_configurationFileWatcher_Changed;
+                            m_configurationFileWatcher.Dispose();
+                        }
+                        m_configurationFileWatcher = null;
+                    }
+                }
+                finally
+                {
+                    m_disposed = true;          // Prevent duplicate dispose.
+                    base.Dispose(disposing);    // Call base class Dispose().
+                }
+            }
+        }
+
+        /// <summary>
         /// Start the data parser.
         /// </summary>
         public override void Start()
         {
             // We narrow down parsing types to just those needed...
             base.Start(new Type[] { typeof(DataFrame), typeof(HeaderFrame), typeof(ConfigurationFrame) });
+
+            // Make sure we mark stream an initialized even though base class doesn't think we use sync-bytes
+            StreamInitialized = false;
         }
 
         /// <summary>
@@ -351,7 +316,7 @@ namespace TVA.PhasorProtocols.Macrodyne
             if (length >= CommonFrameHeader.FixedLength)
             {
                 // Parse common frame header
-                CommonFrameHeader parsedFrameHeader = new CommonFrameHeader(buffer, offset, m_configurationFrame);
+                CommonFrameHeader parsedFrameHeader = new CommonFrameHeader(buffer, offset, m_protocolVersion, m_configurationFrame);
 
                 // As an optimization, we also make sure entire frame buffer image is available to be parsed - by doing this
                 // we eliminate the need to validate length on all subsequent data elements that comprise the frame
@@ -382,6 +347,114 @@ namespace TVA.PhasorProtocols.Macrodyne
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Writes a sequence of bytes onto the stream for parsing.
+        /// </summary>
+        /// <param name="buffer">An array of bytes. This method copies count bytes from buffer to the current stream.</param>
+        /// <param name="offset">The zero-based byte offset in buffer at which to begin copying bytes to the current stream.</param>
+        /// <param name="count">The number of bytes to be written to the current stream.</param>
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            // Since the Macrodyne implementation supports both 0xAA and 0xBB as sync-bytes, we must manually check for both during stream initialization,
+            // base class handles this only then there is a consistently defined set of sync-bytes, not variable.
+
+            if (Enabled)
+            {
+                // See if there are any 0xAA 0xAA sequences - these must be removed
+                int aaaaSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xAA, 0xAA }, offset, count);
+
+                while (aaaaSyncBytesPosition > -1)
+                {
+                    MemoryStream newBuffer = new MemoryStream();
+                    byte[] bytes = buffer.BlockCopy(offset, aaaaSyncBytesPosition - offset + 1);
+                    newBuffer.Write(bytes, 0, bytes.Length);
+
+                    int nextByte = aaaaSyncBytesPosition + 2;
+
+                    if (nextByte < offset + count)
+                    {
+                        bytes = buffer.BlockCopy(nextByte, offset + count - nextByte);
+                        newBuffer.Write(bytes, 0, bytes.Length);
+                    }
+
+                    buffer = newBuffer.ToArray();
+                    offset = 0;
+                    count = buffer.Length;
+
+                    // Find next 0xAA 0xAA sequence
+                    aaaaSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xAA, 0xAA }, offset, count);
+                }
+
+                if (StreamInitialized)
+                {
+                    base.Write(buffer, offset, count);
+                }
+                else
+                {
+                    // Initial stream may be anywhere in the middle of a frame, so we attempt to locate sync-bytes to "line-up" data stream
+                    int aaSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xAA }, offset, count);
+                    int bbSyncBytesPosition = buffer.IndexOfSequence(new byte[] { 0xBB }, offset, count);
+
+                    if (aaSyncBytesPosition > -1)
+                    {
+                        StreamInitialized = true;
+                        base.Write(buffer, aaSyncBytesPosition, count - (aaSyncBytesPosition - offset));
+                    }
+                    else if (bbSyncBytesPosition > -1)
+                    {
+                        StreamInitialized = true;
+                        base.Write(buffer, bbSyncBytesPosition, count - (bbSyncBytesPosition - offset));
+                    }
+                }
+            }
+        }
+
+        // Handler for file watcher - we notify consumer when changes have occured to configuration file
+        private void m_configurationFileWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            // We synchronize change actions - don't want more than one refresh happening at a time...
+            lock (m_syncLock)
+            {
+                // Notify consumer of change in configuration
+                OnConfigurationChanged();
+
+                // Reload configuration...
+                if ((object)m_configurationFrame != null)
+                    m_configurationFrame.Refresh();
+            }
+        }
+
+        // Reset file watcher
+        private void ResetFileWatcher()
+        {
+            if (m_configurationFileWatcher != null)
+            {
+                m_configurationFileWatcher.Changed -= m_configurationFileWatcher_Changed;
+                m_configurationFileWatcher.Dispose();
+            }
+            m_configurationFileWatcher = null;
+
+            string configurationFile = ConfigurationFileName;
+
+            if (m_refreshConfigurationFileOnChange && !string.IsNullOrEmpty(configurationFile) && File.Exists(configurationFile))
+            {
+                try
+                {
+                    // Create a new file watcher for configuration file - we'll automatically refresh configuration file
+                    // when this file gets updated...
+                    m_configurationFileWatcher = new FileSystemWatcher(FilePath.GetDirectoryName(configurationFile), FilePath.GetFileName(configurationFile));
+                    m_configurationFileWatcher.Changed += m_configurationFileWatcher_Changed;
+                    m_configurationFileWatcher.EnableRaisingEvents = true;
+                    m_configurationFileWatcher.IncludeSubdirectories = false;
+                    m_configurationFileWatcher.NotifyFilter = NotifyFilters.LastWrite;
+                }
+                catch (Exception ex)
+                {
+                    OnParsingException(ex);
+                }
+            }
         }
 
         /// <summary>
@@ -458,13 +531,26 @@ namespace TVA.PhasorProtocols.Macrodyne
             }
         }
 
+        /// <summary>
+        /// Raises the <see cref="ParsingException"/> event.
+        /// </summary>
+        /// <param name="ex">The <see cref="Exception"/> that was encountered during parsing.</param>
+        protected override void OnParsingException(Exception ex)
+        {
+            base.OnParsingException(ex);
+
+            // At the first sign of an error, we need to reset stream initialization flag - could just be looping a saved file source or we missed some data,
+            // just need to resync to next 0xAA byte...
+            StreamInitialized = false;
+        }
+
         #endregion
 
         #region [ Static ]
 
         // Attempts to cast given frame into a Macrodyne configuration frame - theoretically this will
         // allow the same configuration frame to be used for any protocol implementation
-        internal static ConfigurationFrame CastToDerivedConfigurationFrame(IConfigurationFrame sourceFrame)
+        internal static ConfigurationFrame CastToDerivedConfigurationFrame(IConfigurationFrame sourceFrame, string configurationFileName, string deviceLabel)
         {
             // See if frame is already a Macrodyne frame (if so, we don't need to do any work)
             ConfigurationFrame derivedFrame = sourceFrame as ConfigurationFrame;
@@ -481,41 +567,7 @@ namespace TVA.PhasorProtocols.Macrodyne
                         stationName = "Unit " + sourceCell.IDCode.ToString();
 
                     stationName = stationName.TruncateLeft(8);
-
-                    switch (sourceFrame.Cells[0].PhasorDefinitions.Count)
-                    {
-                        case 10:
-                            derivedFrame = new ConfigurationFrame(OnlineDataFormatFlags.Phasor10Enabled | OnlineDataFormatFlags.TimestampEnabled, stationName);
-                            break;
-                        case 9:
-                            derivedFrame = new ConfigurationFrame(OnlineDataFormatFlags.Phasor9Enabled | OnlineDataFormatFlags.TimestampEnabled, stationName);
-                            break;
-                        case 8:
-                            derivedFrame = new ConfigurationFrame(OnlineDataFormatFlags.Phasor8Enabled | OnlineDataFormatFlags.TimestampEnabled, stationName);
-                            break;
-                        case 7:
-                            derivedFrame = new ConfigurationFrame(OnlineDataFormatFlags.Phasor7Enabled | OnlineDataFormatFlags.TimestampEnabled, stationName);
-                            break;
-                        case 6:
-                            derivedFrame = new ConfigurationFrame(OnlineDataFormatFlags.Phasor6Enabled | OnlineDataFormatFlags.TimestampEnabled, stationName);
-                            break;
-                        case 5:
-                            derivedFrame = new ConfigurationFrame(OnlineDataFormatFlags.Phasor5Enabled | OnlineDataFormatFlags.TimestampEnabled, stationName);
-                            break;
-                        case 4:
-                            derivedFrame = new ConfigurationFrame(OnlineDataFormatFlags.Phasor4Enabled | OnlineDataFormatFlags.TimestampEnabled, stationName);
-                            break;
-                        case 3:
-                            derivedFrame = new ConfigurationFrame(OnlineDataFormatFlags.Phasor3Enabled | OnlineDataFormatFlags.TimestampEnabled, stationName);
-                            break;
-                        case 2:
-                            derivedFrame = new ConfigurationFrame(OnlineDataFormatFlags.Phasor2Enabled | OnlineDataFormatFlags.TimestampEnabled, stationName);
-                            break;
-                        default:
-                            derivedFrame = new ConfigurationFrame(OnlineDataFormatFlags.TimestampEnabled, stationName);
-                            break;
-                    }
-
+                    derivedFrame = new ConfigurationFrame(Common.GetFormatFlagsFromPhasorCount(sourceFrame.Cells[0].PhasorDefinitions.Count), stationName, configurationFileName, deviceLabel);
                     derivedFrame.IDCode = sourceFrame.IDCode;
 
                     // Create new derived configuration cell
@@ -532,7 +584,10 @@ namespace TVA.PhasorProtocols.Macrodyne
                     sourceFrequency = sourceCell.FrequencyDefinition;
 
                     if (sourceFrequency != null)
-                        derivedCell.FrequencyDefinition = new FrequencyDefinition(derivedCell, sourceFrequency.Label);
+                    {
+                        derivedCell.FrequencyDefinition = new FrequencyDefinition(derivedCell);
+                        derivedCell.FrequencyDefinition.Label = sourceFrequency.Label;
+                    }
 
                     // Create equivalent dervied digital definitions
                     foreach (IDigitalDefinition sourceDigital in sourceCell.DigitalDefinitions)

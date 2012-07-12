@@ -70,8 +70,8 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         private bool m_parseWordCountFromByte;
         private FileSystemWatcher m_configurationFileWatcher;
         private bool m_usePhasorDataFileFormat;
-        private bool m_disposed;
         private object m_syncLock;
+        private bool m_disposed;
 
         #endregion
 

@@ -847,6 +847,5 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         }
 
         #endregion
-
     }
 }

@@ -85,7 +85,7 @@ namespace ProtocolTester
             parser.ReceivedDataFrame += parser_ReceivedDataFrame;
 
             // Define the connection string
-            parser.ConnectionString = "phasorProtocol=Macrodyne; accessID=1; transportProtocol=Serial; port=COM4; baudrate=38400; parity=None; stopbits=One; databits=8; dtrenable=True; rtsenable=False; skipDisableRealTimeData = true";
+            parser.ConnectionString = @"phasorProtocol=Macrodyne; accessID=1; transportProtocol=File; skipDisableRealTimeData = true; file=C:\Users\Ritchie\Desktop\Macrodyne\ING.out; iniFileName=C:\Users\Ritchie\Desktop\Macrodyne\BCH18Aug2011.ini; deviceLabel=ING1; protocolVersion=G";
 
             // When connecting to a file based resource you may want to loop the data
             parser.AutoRepeatCapturedPlayback = true;
@@ -119,6 +119,9 @@ namespace ProtocolTester
             // Increase the frame count each time a frame is received
             frameCount++;
 
+            //IDataCell device = dataFrame.Cells[0];
+            //Console.Write(device.FrequencyValue.Frequency.ToString("0.000Hz "));
+
             // Print information each time we receive 60 frames (every 2 seconds for 30 frames per second)
             // Also check to assure the DataFrame has at least one Cell
             if ((frameCount % 60 == 0) && (dataFrame.Cells.Count > 0))
@@ -135,7 +138,8 @@ namespace ProtocolTester
 
                 Console.WriteLine("    Last Timestamp: {0}", ((DateTime)device.Timestamp).ToString("yyyy-MM-dd HH:mm:ss.fff"));
 
-                Console.WriteLine(concentrator.Status);
+                if ((object)concentrator != null)
+                    Console.WriteLine(concentrator.Status);
             }
         }
 

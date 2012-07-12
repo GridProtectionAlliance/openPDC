@@ -768,7 +768,7 @@ namespace openPDC.UI.ViewModels
                                     case PhasorProtocol.BpaPdcStream:
                                         TVA.PhasorProtocols.BpaPdcStream.ConnectionParameters bpaParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.BpaPdcStream.ConnectionParameters;
                                         if ((object)bpaParameters != null)
-                                            ConnectionString += "; iniFileName=" + bpaParameters.ConfigurationFileName + "; refreshConfigFileOnChange=" + bpaParameters.RefreshConfigurationFileOnChange.ToString() + "; parseWordCountFromByte=" + bpaParameters.ParseWordCountFromByte;
+                                            ConnectionString += "; iniFileName=" + bpaParameters.ConfigurationFileName + "; refreshConfigFileOnChange=" + bpaParameters.RefreshConfigurationFileOnChange + "; parseWordCountFromByte=" + bpaParameters.ParseWordCountFromByte;
                                         break;
                                     case PhasorProtocol.FNet:
                                         TVA.PhasorProtocols.FNet.ConnectionParameters fnetParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.FNet.ConnectionParameters;
@@ -784,6 +784,11 @@ namespace openPDC.UI.ViewModels
                                         TVA.PhasorProtocols.Iec61850_90_5.ConnectionParameters iecParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.Iec61850_90_5.ConnectionParameters;
                                         if ((object)iecParameters != null)
                                             ConnectionString += "; useETRConfiguration=" + iecParameters.UseETRConfiguration + "; guessConfiguration=" + iecParameters.GuessConfiguration + "; parseRedundantASDUs=" + iecParameters.ParseRedundantASDUs + "; ignoreSignatureValidationFailures=" + iecParameters.IgnoreSignatureValidationFailures + "; ignoreSampleSizeValidationFailures=" + iecParameters.IgnoreSampleSizeValidationFailures;
+                                        break;
+                                    case PhasorProtocol.Macrodyne:
+                                        TVA.PhasorProtocols.Macrodyne.ConnectionParameters macrodyneParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.Macrodyne.ConnectionParameters;
+                                        if ((object)macrodyneParameters != null)
+                                            ConnectionString += "; protocolVersion=" + macrodyneParameters.ProtocolVersion + "; iniFileName=" + macrodyneParameters.ConfigurationFileName + "; refreshConfigFileOnChange=" + macrodyneParameters.RefreshConfigurationFileOnChange + "; deviceLabel=" + macrodyneParameters.DeviceLabel;
                                         break;
                                 }
                             }
