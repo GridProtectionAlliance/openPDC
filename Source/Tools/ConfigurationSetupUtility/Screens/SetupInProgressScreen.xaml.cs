@@ -41,14 +41,12 @@ using System.Threading;
 using System.Web.Security;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Xml;
 using Microsoft.Win32;
 using TVA;
 using TVA.Data;
 using TVA.IO;
 using TVA.Security.Cryptography;
-using System.Linq;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -537,7 +535,7 @@ namespace ConfigurationSetupUtility.Screens
                                 return;
                             }
 
-                            if (!sqlServerSetup.ExecuteStatement("CREATE ROLE [openPGManagerRole] AUTHORIZATION [dbo]"))
+                            if (!sqlServerSetup.ExecuteStatement("CREATE ROLE [openPDCManagerRole] AUTHORIZATION [dbo]"))
                             {
                                 OnSetupFailed();
                                 return;
@@ -549,13 +547,13 @@ namespace ConfigurationSetupUtility.Screens
                                 return;
                             }
 
-                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datareader', N'openPGManagerRole'", user)))
+                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datareader', N'openPDCManagerRole'")))
                             {
                                 OnSetupFailed();
                                 return;
                             }
 
-                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datawriter', N'openPGManagerRole'", user)))
+                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datawriter', N'openPDCManagerRole'")))
                             {
                                 OnSetupFailed();
                                 return;
