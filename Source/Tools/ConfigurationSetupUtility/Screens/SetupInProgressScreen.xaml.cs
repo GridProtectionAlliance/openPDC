@@ -453,6 +453,7 @@ namespace ConfigurationSetupUtility.Screens
                 string adminUserName, adminPassword;
                 object dataProviderStringValue;
                 string dataProviderString = null;
+                bool createNewUser = false;
 
                 sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
                 sqlServerSetup.OutputDataReceived += SqlServerSetup_OutputDataReceived;
@@ -476,8 +477,9 @@ namespace ConfigurationSetupUtility.Screens
                         bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
                         bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
                         bool enableAuditLog = Convert.ToBoolean(m_state["enableAuditLog"]);
-                        bool createNewUser = Convert.ToBoolean(m_state["createNewSqlServerUser"]);
                         int progress = 0;
+
+                        createNewUser = Convert.ToBoolean(m_state["createNewSqlServerUser"]);
 
                         // Determine which scripts need to be run.
                         scriptNames.Add("openPDC.sql");
@@ -595,7 +597,7 @@ namespace ConfigurationSetupUtility.Screens
 
                 // Check to see if user requested to use integrated authentication
                 if (m_state.ContainsKey("useSqlServerIntegratedSecurity"))
-                    useIntegratedSecurity = Convert.ToBoolean(m_state["useSqlServerIntegratedSecurity"]);
+                    useIntegratedSecurity = Convert.ToBoolean(m_state["useSqlServerIntegratedSecurity"]) && !createNewUser;
 
                 if (useIntegratedSecurity)
                     connectionString = sqlServerSetup.IntegratedSecurityConnectionString;

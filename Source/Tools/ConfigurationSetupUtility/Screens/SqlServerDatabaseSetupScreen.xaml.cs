@@ -512,7 +512,9 @@ namespace ConfigurationSetupUtility.Screens
                 if (advancedWindow.ShowDialog() == true)
                 {
                     // Force use of non-pooled connection string such that database can later be deleted if needed
-                    m_sqlServerSetup.ConnectionString = advancedWindow.ConnectionString + "; pooling=false";
+                    Dictionary<string, string> settings = advancedWindow.ConnectionString.ParseKeyValuePairs();
+                    settings.Remove("Integrated Security");
+                    m_sqlServerSetup.ConnectionString = settings.JoinKeyValuePairs() + "; pooling=false";
                     m_state["sqlServerDataProviderString"] = advancedWindow.DataProviderString;
                     m_state["encryptSqlServerConnectionStrings"] = advancedWindow.Encrypt;
                 }
