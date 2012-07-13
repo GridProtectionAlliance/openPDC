@@ -147,6 +147,7 @@
     <Compile Include="LocalOutputAdapter.cs" />
     <Compile Include="RemoteOutputAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatisticsReader.cs" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

@@ -29,7 +29,7 @@ using System.Xml;
 using TVA.Historian;
 using TVA.Historian.Files;
 
-namespace TVA.PhasorProtocols
+namespace HistorianAdapters
 {
     /// <summary>
     /// Reads certain device and input stream statistics from the statistics archive.
@@ -39,19 +39,17 @@ namespace TVA.PhasorProtocols
     /// </summary>
     public class StatisticsReader
     {
-
         #region [ Members ]
 
         // Fields
-
-        private ArchiveFile archive;
-        private Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_totalFrames;
-        private Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_missingFrames;
-        private Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_connectedStats;
-        private Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_averageLatency;
-        private Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_actualDataRate;
-        private Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_dataQualityErrors;
-        private Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_timeQualityErrors;
+        private ArchiveFile m_archive;
+        private readonly Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_totalFrames;
+        private readonly Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_missingFrames;
+        private readonly Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_connectedStats;
+        private readonly Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_averageLatency;
+        private readonly Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_actualDataRate;
+        private readonly Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_dataQualityErrors;
+        private readonly Dictionary<MetadataRecord, IEnumerable<IDataPoint>> m_timeQualityErrors;
 
         #endregion
 
@@ -84,7 +82,8 @@ namespace TVA.PhasorProtocols
         /// be set manually before attempting to read statistics from the archive.
         /// </summary>
         /// <param name="openPdcConfigPath">Path to the openPDC configuration file.</param>
-        public StatisticsReader(string openPdcConfigPath) : this()
+        public StatisticsReader(string openPdcConfigPath)
+            : this()
         {
             XmlDocument doc;
             XmlNode archiveFileNode;
@@ -103,10 +102,17 @@ namespace TVA.PhasorProtocols
             intercomFileNode = doc.SelectSingleNode("configuration/categorizedSettings/statIntercomFile");
             metadataFileNode = doc.SelectSingleNode("configuration/categorizedSettings/statMetadataFile");
 
-            ArchiveFilePath = archiveFileNode.ChildNodes.Cast<XmlNode>().Single(node => node.Name == "FileName").Value;
-            StateFilePath = stateFileNode.ChildNodes.Cast<XmlNode>().Single(node => node.Name == "FileName").Value;
-            IntercomFilePath = intercomFileNode.ChildNodes.Cast<XmlNode>().Single(node => node.Name == "FileName").Value;
-            MetadataFilePath = metadataFileNode.ChildNodes.Cast<XmlNode>().Single(node => node.Name == "FileName").Value;
+            if ((object)archiveFileNode != null)
+                ArchiveFilePath = archiveFileNode.ChildNodes.Cast<XmlNode>().Single(node => node.Name == "FileName").Value;
+
+            if ((object)stateFileNode != null)
+                StateFilePath = stateFileNode.ChildNodes.Cast<XmlNode>().Single(node => node.Name == "FileName").Value;
+
+            if ((object)intercomFileNode != null)
+                IntercomFilePath = intercomFileNode.ChildNodes.Cast<XmlNode>().Single(node => node.Name == "FileName").Value;
+
+            if ((object)metadataFileNode != null)
+                MetadataFilePath = metadataFileNode.ChildNodes.Cast<XmlNode>().Single(node => node.Name == "FileName").Value;
         }
 
         #endregion
@@ -116,32 +122,56 @@ namespace TVA.PhasorProtocols
         /// <summary>
         /// Path to the archive file (*_archive.d).
         /// </summary>
-        public string ArchiveFilePath { get; set; }
+        public string ArchiveFilePath
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Path to the state file (*_startup.dat).
         /// </summary>
-        public string StateFilePath { get; set; }
+        public string StateFilePath
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Path to the intercom file (scratch.dat).
         /// </summary>
-        public string IntercomFilePath { get; set; }
+        public string IntercomFilePath
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Path to the metadata file (*_dbase.dat).
         /// </summary>
-        public string MetadataFilePath { get; set; }
+        public string MetadataFilePath
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The timestamp at which to start gathering statistics from the archive.
         /// </summary>
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The timestamp at which to stop gathering statistics from the archive.
         /// </summary>
-        public DateTime EndTime { get; set; }
+        public DateTime EndTime
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// After the <see cref="StatisticsReader"/> has read statistics from the archive file,
@@ -245,39 +275,54 @@ namespace TVA.PhasorProtocols
             IEnumerable<MetadataRecord> dataQualityErrorRecords;
             IEnumerable<MetadataRecord> timeQualityErrorRecords;
 
-            if (archive != null)
+            if (m_archive != null)
                 throw new InvalidOperationException("The StatisticsReader must be closed before reopening.");
 
-            archive = OpenArchiveFile();
-            records = archive.MetadataFile.Read();
+            m_archive = OpenArchiveFile();
+            records = m_archive.MetadataFile.Read();
+
             totalFrameRecords = records.Where(record => record.Name.EndsWith("!IS:ST1"));
             missingFrameRecords = records.Where(record => record.Name.EndsWith("!IS:ST3"));
             connectedStatRecords = records.Where(record => record.Name.EndsWith("!IS:ST8"));
             averageLatencyRecords = records.Where(record => record.Name.EndsWith("!IS:ST14"));
             actualDataRateRecords = records.Where(record => record.Name.EndsWith("!IS:ST17"));
-            dataQualityErrorRecords = records.Where(record => IsDataQualityError(record));
-            timeQualityErrorRecords = records.Where(record => IsTimeQualityError(record));
+            dataQualityErrorRecords = records.Where(IsDataQualityError);
+            timeQualityErrorRecords = records.Where(IsTimeQualityError);
 
             foreach (MetadataRecord totalFrameRecord in totalFrameRecords)
-                m_totalFrames.Add(totalFrameRecord, archive.ReadData(totalFrameRecord.HistorianID, StartTime, EndTime));
+            {
+                m_totalFrames.Add(totalFrameRecord, m_archive.ReadData(totalFrameRecord.HistorianID, StartTime, EndTime));
+            }
 
             foreach (MetadataRecord missingFrameRecord in missingFrameRecords)
-                m_missingFrames.Add(missingFrameRecord, archive.ReadData(missingFrameRecord.HistorianID, StartTime, EndTime));
+            {
+                m_missingFrames.Add(missingFrameRecord, m_archive.ReadData(missingFrameRecord.HistorianID, StartTime, EndTime));
+            }
 
             foreach (MetadataRecord connectedStatRecord in connectedStatRecords)
-                m_connectedStats.Add(connectedStatRecord, archive.ReadData(connectedStatRecord.HistorianID, StartTime, EndTime));
+            {
+                m_connectedStats.Add(connectedStatRecord, m_archive.ReadData(connectedStatRecord.HistorianID, StartTime, EndTime));
+            }
 
             foreach (MetadataRecord averageLatencyRecord in averageLatencyRecords)
-                m_averageLatency.Add(averageLatencyRecord, archive.ReadData(averageLatencyRecord.HistorianID, StartTime, EndTime));
+            {
+                m_averageLatency.Add(averageLatencyRecord, m_archive.ReadData(averageLatencyRecord.HistorianID, StartTime, EndTime));
+            }
 
             foreach (MetadataRecord actualDataRateRecord in actualDataRateRecords)
-                m_actualDataRate.Add(actualDataRateRecord, archive.ReadData(actualDataRateRecord.HistorianID, StartTime, EndTime));
+            {
+                m_actualDataRate.Add(actualDataRateRecord, m_archive.ReadData(actualDataRateRecord.HistorianID, StartTime, EndTime));
+            }
 
             foreach (MetadataRecord dataQualityErrorRecord in dataQualityErrorRecords)
-                m_dataQualityErrors.Add(dataQualityErrorRecord, archive.ReadData(dataQualityErrorRecord.HistorianID, StartTime, EndTime));
+            {
+                m_dataQualityErrors.Add(dataQualityErrorRecord, m_archive.ReadData(dataQualityErrorRecord.HistorianID, StartTime, EndTime));
+            }
 
             foreach (MetadataRecord timeQualityErrorRecord in timeQualityErrorRecords)
-                m_timeQualityErrors.Add(timeQualityErrorRecord, archive.ReadData(timeQualityErrorRecord.HistorianID, StartTime, EndTime));
+            {
+                m_timeQualityErrors.Add(timeQualityErrorRecord, m_archive.ReadData(timeQualityErrorRecord.HistorianID, StartTime, EndTime));
+            }
         }
 
         /// <summary>
@@ -285,32 +330,40 @@ namespace TVA.PhasorProtocols
         /// </summary>
         public void Close()
         {
-            if (archive != null)
-            {
-                archive.Close();
-                archive = null;
-            }
+            if ((object)m_archive == null)
+                return;
+
+            m_archive.Close();
+            m_archive = null;
         }
 
         // Opens the archive file in order to retrieve the statistics.
         private ArchiveFile OpenArchiveFile()
         {
-            ArchiveFile file = new ArchiveFile();
-            file.FileName = ArchiveFilePath;
-            file.FileAccessMode = FileAccess.Read;
+            ArchiveFile file = new ArchiveFile
+            {
+                FileName = ArchiveFilePath,
+                FileAccessMode = FileAccess.Read,
 
-            file.StateFile = new StateFile();
-            file.StateFile.FileAccessMode = FileAccess.Read;
-            file.StateFile.FileName = StateFilePath;
+                StateFile = new StateFile
+                {
+                    FileAccessMode = FileAccess.Read,
+                    FileName = StateFilePath
+                },
 
-            file.IntercomFile = new IntercomFile();
-            file.IntercomFile.FileAccessMode = FileAccess.Read;
-            file.IntercomFile.FileName = IntercomFilePath;
+                IntercomFile = new IntercomFile
+                {
+                    FileAccessMode = FileAccess.Read,
+                    FileName = IntercomFilePath
+                },
 
-            file.MetadataFile = new MetadataFile();
-            file.MetadataFile.FileAccessMode = FileAccess.Read;
-            file.MetadataFile.FileName = MetadataFilePath;
-            file.MetadataFile.LoadOnOpen = true;
+                MetadataFile = new MetadataFile
+                {
+                    FileAccessMode = FileAccess.Read,
+                    FileName = MetadataFilePath,
+                    LoadOnOpen = true
+                }
+            };
 
             file.Open();
 
@@ -320,20 +373,15 @@ namespace TVA.PhasorProtocols
         // Determines whether the given MetadataRecord describes the data quality error statistic.
         private static bool IsDataQualityError(MetadataRecord record)
         {
-            return record.Name.EndsWith(":ST1")
-                && !record.Name.EndsWith("!IS:ST1")
-                && !record.Name.EndsWith("!OS:ST1");
+            return record.Name.EndsWith(":ST1") && !record.Name.EndsWith("!IS:ST1") && !record.Name.EndsWith("!OS:ST1");
         }
 
         // Determines whether the given MetadataRecord describes the time quality error statistic.
         private static bool IsTimeQualityError(MetadataRecord record)
         {
-            return record.Name.EndsWith(":ST2")
-                && !record.Name.EndsWith("!IS:ST2")
-                && !record.Name.EndsWith("!OS:ST2");
+            return record.Name.EndsWith(":ST2") && !record.Name.EndsWith("!IS:ST2") && !record.Name.EndsWith("!OS:ST2");
         }
 
         #endregion
-        
     }
 }
