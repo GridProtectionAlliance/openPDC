@@ -51,8 +51,29 @@ namespace Comtrade
         /// <param name="lineImage">Line image to parse.</param>
         public Timestamp(string lineImage)
         {
-            // dd/mm/yyyy,hh:mm:ss.ssssss
-            Value = DateTime.ParseExact(lineImage.RemoveWhiteSpace(), "dd/MM/yyyy,HH:mm:ss.ffffff", CultureInfo.InvariantCulture).Ticks;
+            string[] parts = lineImage.Split(':');
+
+            double seconds;
+            double milliseconds = 0.0D;
+
+            if (parts.Length == 4)
+            {
+                double.TryParse(parts[parts.Length - 1], out milliseconds);
+                parts = new string[] { parts[0], parts[1], parts[2] };
+            }
+
+            double.TryParse(parts[parts.Length - 1], out seconds);
+
+            seconds += milliseconds;
+
+            parts[parts.Length - 1] = seconds.ToString("00.000000");
+
+            lineImage = string.Join(":", parts).RemoveWhiteSpace();
+
+            DateTime result;
+            DateTime.TryParseExact(lineImage, new string[] {"dd/MM/yyyy,HH:mm:ss.ffffff", "MM/dd/yyyy,HH:mm:ss.ffffff"}, CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
+
+            Value = result.Ticks;
         }
 
         #endregion

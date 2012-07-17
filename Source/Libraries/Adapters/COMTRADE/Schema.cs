@@ -209,8 +209,8 @@ namespace Comtrade
             }
             set
             {
-                if (value != 1999)
-                    throw new ArgumentOutOfRangeException("value", value + " is an invalid version number. Only IEEE Std C37.111 version 1999 is supported by this implementation of the phasor data schema.");
+                //if (value != 1999)
+                //    throw new ArgumentOutOfRangeException("value", value + " is an invalid version number. Only IEEE Std C37.111 version 1999 is supported by this implementation of the phasor data schema.");
 
                 m_version = value;
             }
