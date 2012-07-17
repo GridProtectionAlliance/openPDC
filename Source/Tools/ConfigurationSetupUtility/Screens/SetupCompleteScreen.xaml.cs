@@ -452,40 +452,41 @@ namespace ConfigurationSetupUtility.Screens
 
                     nodeCommand = connection.CreateCommand();
                     nodeCommand.CommandText = "SELECT ID FROM Node";
-                    nodeReader = nodeCommand.ExecuteReader();
 
-                    DataTable dataTable = new DataTable();
-                    dataTable.Load(nodeReader);
-
-                    if (nodeReader != null)
-                        nodeReader.Close();
-
-                    foreach (DataRow row in dataTable.Rows)
+                    using (nodeReader = nodeCommand.ExecuteReader())
                     {
-                        string nodeID = row["ID"].ToNonNullString();
+                        DataTable dataTable = new DataTable();
+                        dataTable.Load(nodeReader);
 
-                        if (databaseType == "access")
-                            nodeID = "{" + nodeID + "}";
-                        else
-                            nodeID = "'" + nodeID + "'";
+                        if (nodeReader != null)
+                            nodeReader.Close();
 
-                        IDbCommand command = connection.CreateCommand();
+                        foreach (DataRow row in dataTable.Rows)
+                        {
+                            string nodeID = row["ID"].ToNonNullString();
 
-                        command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRole WHERE NodeID = {0} AND Name = 'Administrator'", nodeID);
-                        if (Convert.ToInt32(command.ExecuteScalar()) == 0)
-                            AddRolesForNode(connection, nodeID, "Administrator");
-                        else
-                            VerifyAdminUser(connection, nodeID); // Verify an admin user exists for the node and attached to administrator role.
+                            if (databaseType == "access")
+                                nodeID = "{" + nodeID + "}";
+                            else
+                                nodeID = "'" + nodeID + "'";
 
-                        command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRole WHERE NodeID = {0} AND Name = 'Editor'", nodeID);
-                        if (Convert.ToInt32(command.ExecuteScalar()) == 0)
-                            AddRolesForNode(connection, nodeID, "Editor");
+                            IDbCommand command = connection.CreateCommand();
 
-                        command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRole WHERE NodeID = {0} AND Name = 'Viewer'", nodeID);
-                        if (Convert.ToInt32(command.ExecuteScalar()) == 0)
-                            AddRolesForNode(connection, nodeID, "Viewer");
+                            command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRole WHERE NodeID = {0} AND Name = 'Administrator'", nodeID);
+                            if (Convert.ToInt32(command.ExecuteScalar()) == 0)
+                                AddRolesForNode(connection, nodeID, "Administrator");
+                            else
+                                VerifyAdminUser(connection, nodeID); // Verify an admin user exists for the node and attached to administrator role.
+
+                            command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRole WHERE NodeID = {0} AND Name = 'Editor'", nodeID);
+                            if (Convert.ToInt32(command.ExecuteScalar()) == 0)
+                                AddRolesForNode(connection, nodeID, "Editor");
+
+                            command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRole WHERE NodeID = {0} AND Name = 'Viewer'", nodeID);
+                            if (Convert.ToInt32(command.ExecuteScalar()) == 0)
+                                AddRolesForNode(connection, nodeID, "Viewer");
+                        }
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -493,9 +494,6 @@ namespace ConfigurationSetupUtility.Screens
                 }
                 finally
                 {
-                    if (nodeReader != null)
-                        nodeReader.Close();
-
                     if (connection != null)
                         connection.Dispose();
                 }
@@ -637,26 +635,21 @@ namespace ConfigurationSetupUtility.Screens
 
                         // Get the admin user ID from the database.
                         IDataReader userIdReader = null;
-                        try
+                        IDbDataParameter newNameParameter = adminCredentialCommand.CreateParameter();
+
+                        newNameParameter.ParameterName = paramChar + "name";
+                        newNameParameter.Value = m_state["adminUserName"].ToString();
+
+                        adminCredentialCommand.CommandText = "SELECT ID FROM UserAccount WHERE Name = " + paramChar + "name";
+                        adminCredentialCommand.Parameters.Clear();
+                        adminCredentialCommand.Parameters.Add(newNameParameter);
+                    
+                        using (userIdReader = adminCredentialCommand.ExecuteReader())
                         {
-                            IDbDataParameter nameParameter = adminCredentialCommand.CreateParameter();
-
-                            nameParameter.ParameterName = paramChar + "name";
-                            nameParameter.Value = m_state["adminUserName"].ToString();
-
-                            adminCredentialCommand.CommandText = "SELECT ID FROM UserAccount WHERE Name = " + paramChar + "name";
-                            adminCredentialCommand.Parameters.Clear();
-                            adminCredentialCommand.Parameters.Add(nameParameter);
-                            userIdReader = adminCredentialCommand.ExecuteReader();
-
                             if (userIdReader.Read())
                                 adminUserID = userIdReader["ID"].ToNonNullString();
                         }
-                        finally
-                        {
-                            if (userIdReader != null)
-                                userIdReader.Close();
-                        }
+                        
 
                         // Assign Administrative User to Administrator Role.
                         if (!string.IsNullOrEmpty(adminRoleID) && !string.IsNullOrEmpty(adminUserID))
@@ -709,54 +702,55 @@ namespace ConfigurationSetupUtility.Screens
 
                 nodeCommand = oldConnection.CreateCommand();
                 nodeCommand.CommandText = "SELECT * FROM Node";
-                IDataReader nodeReader = nodeCommand.ExecuteReader();
-
-                DataTable dataTable = new DataTable();
-                dataTable.Load(nodeReader);
-
-                if (nodeReader != null)
-                    nodeReader.Close();
-
-                // See if old database contains old column names
-                if (dataTable.Columns.Contains("TimeSeriesDataServiceUrl"))
+                using (IDataReader nodeReader = nodeCommand.ExecuteReader())
                 {
-                    IDbConnection newConnection = OpenNewConnection();
 
-                    if (newConnection != null)
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(nodeReader);
+
+                    if (nodeReader != null)
+                        nodeReader.Close();
+
+                    // See if old database contains old column names
+                    if (dataTable.Columns.Contains("TimeSeriesDataServiceUrl"))
                     {
-                        // Convert original columns into connection settings format
-                        foreach (DataRow row in dataTable.Rows)
+                        IDbConnection newConnection = OpenNewConnection();
+
+                        if (newConnection != null)
                         {
-                            string nodeID = row["ID"].ToNonNullString();
-
-                            if (oldDatabaseType == "access")
-                                nodeID = "{" + nodeID + "}";
-                            else
-                                nodeID = "'" + nodeID + "'";
-
-                            string remoteStatusServer = row["RemoteStatusServiceUrl"].ToNonNullString();
-                            string realTimeStatisticServiceUrl = row["RealTimeStatisticServiceUrl"].ToNonNullString();
-
-                            // Make sure remote status server contains a data publisher port
-                            Dictionary<string, string> remoteStatusServerSettings = remoteStatusServer.ParseKeyValuePairs();
-
-                            if (!remoteStatusServerSettings.ContainsKey("dataPublisherPort"))
+                            // Convert original columns into connection settings format
+                            foreach (DataRow row in dataTable.Rows)
                             {
-                                remoteStatusServerSettings["dataPublisherPort"] = "6165";
-                                remoteStatusServer = remoteStatusServerSettings.JoinKeyValuePairs();
+                                string nodeID = row["ID"].ToNonNullString();
+
+                                if (oldDatabaseType == "access")
+                                    nodeID = "{" + nodeID + "}";
+                                else
+                                    nodeID = "'" + nodeID + "'";
+
+                                string remoteStatusServer = row["RemoteStatusServiceUrl"].ToNonNullString();
+                                string realTimeStatisticServiceUrl = row["RealTimeStatisticServiceUrl"].ToNonNullString();
+
+                                // Make sure remote status server contains a data publisher port
+                                Dictionary<string, string> remoteStatusServerSettings = remoteStatusServer.ParseKeyValuePairs();
+
+                                if (!remoteStatusServerSettings.ContainsKey("dataPublisherPort"))
+                                {
+                                    remoteStatusServerSettings["dataPublisherPort"] = "6165";
+                                    remoteStatusServer = remoteStatusServerSettings.JoinKeyValuePairs();
+                                }
+
+                                string connectionSettings = string.Format("RemoteStatusServerConnectionString={{{0}}}; RealTimeStatisticServiceUrl={1}", remoteStatusServer, realTimeStatisticServiceUrl);
+
+                                IDbCommand command = newConnection.CreateCommand();
+                                command.CommandText = string.Format("UPDATE Node SET Settings = '{0}' WHERE ID = {1}", connectionSettings, nodeID);
+                                command.ExecuteNonQuery();
                             }
 
-                            string connectionSettings = string.Format("RemoteStatusServerConnectionString={{{0}}}; RealTimeStatisticServiceUrl={1}", remoteStatusServer, realTimeStatisticServiceUrl);
-
-                            IDbCommand command = newConnection.CreateCommand();
-                            command.CommandText = string.Format("UPDATE Node SET Settings = '{0}' WHERE ID = {1}", connectionSettings, nodeID);
-                            command.ExecuteNonQuery();
+                            newConnection.Dispose();
                         }
-
-                        newConnection.Dispose();
                     }
                 }
-
                 oldConnection.Dispose();
             }
         }

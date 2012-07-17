@@ -403,21 +403,23 @@ namespace ConfigurationSetupUtility.Screens
                     connection.Open();
                     command = connection.CreateCommand();
                     command.CommandText = "SELECT ID, Name, CompanyName AS Company, Description FROM NodeDetail WHERE Enabled <> 0";
-                    reader = command.ExecuteReader();
 
-                    while (reader.Read())
+                    using (reader = command.ExecuteReader())
                     {
-                        Guid nodeId;
-
-                        if (Guid.TryParse(reader["ID"].ToNonNullString(), out nodeId))
+                        while (reader.Read())
                         {
-                            nodes.Add(new NodeInfo()
+                            Guid nodeId;
+
+                            if (Guid.TryParse(reader["ID"].ToNonNullString(), out nodeId))
                             {
-                                Name = reader["Name"].ToNonNullString(),
-                                Company = reader["Company"].ToNonNullString(),
-                                Description = reader["Description"].ToNonNullString(),
-                                Id = nodeId
-                            });
+                                nodes.Add(new NodeInfo()
+                                {
+                                    Name = reader["Name"].ToNonNullString(),
+                                    Company = reader["Company"].ToNonNullString(),
+                                    Description = reader["Description"].ToNonNullString(),
+                                    Id = nodeId
+                                });
+                            }
                         }
                     }
                 }
