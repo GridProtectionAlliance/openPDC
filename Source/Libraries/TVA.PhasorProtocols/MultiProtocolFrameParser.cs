@@ -1668,8 +1668,6 @@ namespace TVA.PhasorProtocols
 
                         if (settings.TryGetValue("refreshConfigFileOnChange", out setting))
                             bpaPdcParameters.RefreshConfigurationFileOnChange = setting.ParseBoolean();
-                        else
-                            bpaPdcParameters.RefreshConfigurationFileOnChange = false;
 
                         if (settings.TryGetValue("parseWordCountFromByte", out setting))
                             bpaPdcParameters.ParseWordCountFromByte = setting.ParseBoolean();
@@ -1723,8 +1721,6 @@ namespace TVA.PhasorProtocols
 
                         if (settings.TryGetValue("protocolVersion", out setting) && Enum.TryParse(setting, true, out protocolVersion))
                             macrodyneParameters.ProtocolVersion = protocolVersion;
-                        else
-                            macrodyneParameters.ProtocolVersion = Macrodyne.ProtocolVersion.M;
 
                         // INI file name setting is required for 1690G protocol
                         if (settings.TryGetValue("iniFileName", out setting))
@@ -1740,8 +1736,6 @@ namespace TVA.PhasorProtocols
 
                         if (settings.TryGetValue("refreshConfigFileOnChange", out setting))
                             macrodyneParameters.RefreshConfigurationFileOnChange = setting.ParseBoolean();
-                        else
-                            macrodyneParameters.RefreshConfigurationFileOnChange = false;
                     }
                     break;
                 default:
