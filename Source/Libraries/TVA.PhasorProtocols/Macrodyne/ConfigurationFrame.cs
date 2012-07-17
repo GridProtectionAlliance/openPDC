@@ -220,6 +220,24 @@ namespace TVA.PhasorProtocols.Macrodyne
         }
 
         /// <summary>
+        /// Gets or sets the numeric ID code for this <see cref="ConfigurationCell"/>.
+        /// </summary>
+        public override ushort IDCode
+        {
+            get
+            {
+                if (Cells.Count > 0)
+                    return Cells[0].IDCode;
+
+                return base.IDCode;
+            }
+            set
+            {
+                base.IDCode = value;
+            }
+        }
+
+        /// <summary>
         /// Gets the INI based configuration file name of this <see cref="ConfigurationFrame"/>.
         /// </summary>
         public string ConfigurationFileName

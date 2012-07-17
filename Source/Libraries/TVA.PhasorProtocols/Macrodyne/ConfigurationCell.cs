@@ -245,18 +245,17 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// </summary>
         public override ushort IDCode
         {
-            // Macrodyne only allows one device, so we share ID code with parent frame...
             get
             {
                 if (m_configurationFileCell == null)
-                    return Parent.IDCode;
+                    return base.IDCode;
 
                 return m_configurationFileCell.IDCode;
             }
             set
             {
                 if (m_configurationFileCell == null)
-                    Parent.IDCode = value;
+                    base.IDCode = value;
                 else
                     m_configurationFileCell.IDCode = value;
             }

@@ -26,6 +26,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using TVA.IO;
 using TVA.Parsing;
 
@@ -287,6 +288,9 @@ namespace TVA.PhasorProtocols.Macrodyne
 
             // Make sure we mark stream an initialized even though base class doesn't think we use sync-bytes
             StreamInitialized = false;
+
+            // Publish configuration frame
+            ThreadPool.QueueUserWorkItem(PublishConfigurationFrame);
         }
 
         /// <summary>
@@ -411,8 +415,26 @@ namespace TVA.PhasorProtocols.Macrodyne
                             StreamInitialized = true;
                             base.Write(buffer, syncBytePosition, count - (syncBytePosition - offset));
                         }
-                    }    
+                    }
                 }
+            }
+        }
+
+        // Publish the current configuration frame
+        private void PublishConfigurationFrame(object state)
+        {
+            try
+            {
+                if ((object)m_configurationFrame != null)
+                    OnReceivedConfigurationFrame(m_configurationFrame);
+            }
+            catch (ThreadAbortException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                OnParsingException(ex);
             }
         }
 
@@ -460,22 +482,6 @@ namespace TVA.PhasorProtocols.Macrodyne
                     OnParsingException(ex);
                 }
             }
-        }
-
-        /// <summary>
-        /// Raises the <see cref="FrameParserBase{TypeIndentifier}.ReceivedConfigurationFrame"/> event.
-        /// </summary>
-        /// <param name="frame"><see cref="IConfigurationFrame"/> to send to <see cref="FrameParserBase{TypeIndentifier}.ReceivedConfigurationFrame"/> event.</param>
-        protected override void OnReceivedConfigurationFrame(IConfigurationFrame frame)
-        {
-            // We override this method so we can cache configuration frame when it's received
-            base.OnReceivedConfigurationFrame(frame);
-
-            // Cache new configuration frame for parsing subsequent data frames...
-            ConfigurationFrame configurationFrame = frame as ConfigurationFrame;
-
-            if (configurationFrame != null)
-                m_configurationFrame = configurationFrame;
         }
 
         /// <summary>
