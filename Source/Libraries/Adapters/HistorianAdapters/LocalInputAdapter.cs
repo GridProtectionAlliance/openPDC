@@ -330,8 +330,16 @@ namespace HistorianAdapters
                         // Open the active archive
                         m_archiveFile.Open();
 
-                        // Start the data reader on its own thread so connection attempt can complete in a timely fashion...
-                        ThreadPool.QueueUserWorkItem(StartDataReader);
+                        try
+                        {
+                            // Start the data reader on its own thread so connection attempt can complete in a timely fashion...
+                            ThreadPool.QueueUserWorkItem(StartDataReader);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Process exception for logging
+                            OnProcessException(new InvalidOperationException("Failed to start data reader due to exception: " + ex.Message, ex));
+                        }
                     }
                 }
                 else

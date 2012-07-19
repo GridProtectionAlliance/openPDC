@@ -171,6 +171,7 @@ namespace TVA.PhasorProtocols
             private long m_lastMissedWindowTime;
             private long m_resynchronizations;
             private int m_referenceCount;
+            private Action<Exception> m_exceptionHandler;
             private bool m_disposed;
 
             #endregion
@@ -290,6 +291,22 @@ namespace TVA.PhasorProtocols
                         return m_frameWaitHandleA;
 
                     return m_frameWaitHandleB;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets the function that handles exceptions
+            /// thrown by the precision input timer.
+            /// </summary>
+            public Action<Exception> ExceptionHandler
+            {
+                get
+                {
+                    return m_exceptionHandler;
+                }
+                set
+                {
+                    m_exceptionHandler = value;
                 }
             }
 
@@ -457,6 +474,11 @@ namespace TVA.PhasorProtocols
                             }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    // Process exception for logging
+                    m_exceptionHandler(new InvalidOperationException("Exception thrown by precision input timer: " + ex.Message, ex));
                 }
                 finally
                 {
@@ -2441,11 +2463,19 @@ namespace TVA.PhasorProtocols
                 // Get static input timer for given frames per second creating it if needed
                 if (!s_inputTimers.TryGetValue(framesPerSecond, out timer))
                 {
-                    // Create a new precision input timer
-                    timer = new PrecisionInputTimer(framesPerSecond);
+                    try
+                    {
+                        // Create a new precision input timer
+                        timer = new PrecisionInputTimer(framesPerSecond);
 
-                    // Add timer state for given rate to static collection
-                    s_inputTimers.Add(framesPerSecond, timer);
+                        // Add timer state for given rate to static collection
+                        s_inputTimers.Add(framesPerSecond, timer);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Process exception for logging
+                        OnParsingException(new InvalidOperationException("Failed to create precision input timer due to exception: " + ex.Message, ex));
+                    }
                 }
 
                 // Increment reference count for input timer at given frame rate
@@ -2510,9 +2540,17 @@ namespace TVA.PhasorProtocols
             // Handle client connection from data channel
             ClientConnectedHandler();
 
-            // Start reading file data
-            if (m_transportProtocol == TransportProtocol.File)
-                ThreadPool.QueueUserWorkItem(ReadFileData);
+            try
+            {
+                // Start reading file data
+                if (m_transportProtocol == TransportProtocol.File)
+                    ThreadPool.QueueUserWorkItem(ReadFileData);
+            }
+            catch (Exception ex)
+            {
+                // Process exception for logging
+                OnParsingException(new InvalidOperationException("Failed to queue file read operation due to exception: " + ex.Message, ex));
+            }
         }
 
         private void m_dataChannel_ConnectionAttempt(object sender, EventArgs e)

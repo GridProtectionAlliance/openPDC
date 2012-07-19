@@ -1391,9 +1391,17 @@ namespace TVA.PhasorProtocols
                 {
                     m_frameParser.ConfigurationFrame = configFrame;
 
-                    // Cache this configuration frame since its being loaded as the new last known good configuration
-                    ThreadPool.QueueUserWorkItem(ConfigurationFrame.Cache,
-                        new EventArgs<IConfigurationFrame, Action<Exception>, string>(configFrame, OnProcessException, Name));
+                    try
+                    {
+                        // Cache this configuration frame since its being loaded as the new last known good configuration
+                        ThreadPool.QueueUserWorkItem(ConfigurationFrame.Cache,
+                            new EventArgs<IConfigurationFrame, Action<Exception>, string>(configFrame, OnProcessException, Name));
+                    }
+                    catch (Exception ex)
+                    {
+                        // Process exception for logging
+                        OnProcessException(new InvalidOperationException("Failed to queue caching of config frame due to exception: " + ex.Message, ex));
+                    }
 
                     m_receivedConfigFrame = true;
                     m_configurationChanges++;
@@ -1834,9 +1842,17 @@ namespace TVA.PhasorProtocols
             {
                 OnStatusMessage("Received configuration frame at {0}", DateTime.UtcNow);
 
-                // Cache configuration on an independent thread in case this takes some time
-                ThreadPool.QueueUserWorkItem(ConfigurationFrame.Cache,
-                    new EventArgs<IConfigurationFrame, Action<Exception>, string>(e.Argument, OnProcessException, Name));
+                try
+                {
+                    // Cache configuration on an independent thread in case this takes some time
+                    ThreadPool.QueueUserWorkItem(ConfigurationFrame.Cache,
+                        new EventArgs<IConfigurationFrame, Action<Exception>, string>(e.Argument, OnProcessException, Name));
+                }
+                catch (Exception ex)
+                {
+                    // Process exception for logging
+                    OnProcessException(new InvalidOperationException("Failed to queue caching of config frame due to exception: " + ex.Message, ex));
+                }
 
                 m_receivedConfigFrame = true;
             }

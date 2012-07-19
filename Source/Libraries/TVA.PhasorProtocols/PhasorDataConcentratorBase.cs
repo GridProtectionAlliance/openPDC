@@ -1700,9 +1700,17 @@ namespace TVA.PhasorProtocols
             // Cache configuration frame for reference
             OnStatusMessage("Caching configuration frame...");
 
-            // Cache configuration on an independent thread in case this takes some time
-            ThreadPool.QueueUserWorkItem(TVA.PhasorProtocols.Anonymous.ConfigurationFrame.Cache,
-                new EventArgs<IConfigurationFrame, Action<Exception>, string>(configurationFrame, OnProcessException, name));
+            try
+            {
+                // Cache configuration on an independent thread in case this takes some time
+                ThreadPool.QueueUserWorkItem(TVA.PhasorProtocols.Anonymous.ConfigurationFrame.Cache,
+                    new EventArgs<IConfigurationFrame, Action<Exception>, string>(configurationFrame, OnProcessException, name));
+            }
+            catch (Exception ex)
+            {
+                // Process exception for logging
+                OnProcessException(new InvalidOperationException("Failed to queue caching of config frame due to exception: " + ex.Message, ex));
+            }
         }
 
         /// <summary>

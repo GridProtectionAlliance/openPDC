@@ -289,8 +289,16 @@ namespace TVA.PhasorProtocols.Macrodyne
             // Make sure we mark stream an initialized even though base class doesn't think we use sync-bytes
             StreamInitialized = false;
 
-            // Publish configuration frame
-            ThreadPool.QueueUserWorkItem(PublishConfigurationFrame);
+            try
+            {
+                // Publish configuration frame
+                ThreadPool.QueueUserWorkItem(PublishConfigurationFrame);
+            }
+            catch (Exception ex)
+            {
+                // Process exception for logging
+                OnParsingException(new InvalidOperationException("Failed to publish configuration frame due to exception: " + ex.Message, ex));
+            }
         }
 
         /// <summary>
