@@ -100,8 +100,11 @@
 
             </HierarchicalDataTemplate>
 
-            <Style x:Key="ExpandedItemStyle" TargetType="TreeViewItem">
+            <!--<Style x:Key="ExpandedItemStyle" TargetType="TreeViewItem">
                 <Setter Property="IsExpanded" Value="{tsfBinding:Column Path=DataContext.Expanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}"/>
+            </Style>-->
+            <Style x:Key="ExpandedItemStyle" TargetType="TreeViewItem">
+                <Setter Property="IsExpanded" Value="True"/>
             </Style>
 
         </StackPanel.Resources>
@@ -146,7 +149,7 @@
             <TextBlock Text="{Binding Path=DataContext.LastRefresh, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}}" />
         </StackPanel>
 
-        <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" 
+            <TreeView ItemsSource="{tsfBinding:Column Path=ItemsSource}" ItemTemplate="{StaticResource RootNodeTemplate}" ItemContainerStyle="{StaticResource ExpandedItemStyle}"
                       Height="610" VerticalAlignment="Top" HorizontalAlignment="Left" Width="850" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
 
       </StackPanel>
