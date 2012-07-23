@@ -305,7 +305,6 @@ namespace MacrodyneController
             m_serialClient.ConnectionTerminated += m_serialClient_ConnectionTerminated;
             m_serialClient.ReceiveDataComplete += m_serialClient_ReceiveDataComplete;
             m_serialClient.ReceiveDataException += m_serialClient_ReceiveDataException;
-            m_serialClient.ReceiveDataTimeout += m_serialClient_ReceiveDataTimeout;
             m_serialClient.SendDataComplete += m_serialClient_SendDataComplete;
             m_serialClient.SendDataException += m_serialClient_SendDataException;
             m_serialClient.ConnectionString = connectionString;
@@ -324,7 +323,6 @@ namespace MacrodyneController
                 m_serialClient.ConnectionTerminated -= m_serialClient_ConnectionTerminated;
                 m_serialClient.ReceiveDataComplete -= m_serialClient_ReceiveDataComplete;
                 m_serialClient.ReceiveDataException -= m_serialClient_ReceiveDataException;
-                m_serialClient.ReceiveDataTimeout -= m_serialClient_ReceiveDataTimeout;
                 m_serialClient.SendDataComplete -= m_serialClient_SendDataComplete;
                 m_serialClient.SendDataException -= m_serialClient_SendDataException;
                 m_serialClient.Dispose();
@@ -358,11 +356,6 @@ namespace MacrodyneController
         void m_serialClient_ConnectionTerminated(object sender, EventArgs e)
         {
             UpdateStatus("Connection to " + m_serialClient.Name + " terminated.");
-        }
-
-        void m_serialClient_ReceiveDataTimeout(object sender, EventArgs e)
-        {
-            UpdateStatus("Receive data timeout.");
         }
 
         void m_serialClient_ReceiveDataException(object sender, EventArgs<Exception> e)

@@ -1636,7 +1636,7 @@ namespace TVA.PhasorProtocols
                         UdpServer dataChannel = server as UdpServer;
 
                         if (dataChannel != null)
-                            remoteEndPoint = dataChannel.Client(clientID).Provider.RemoteEndPoint as IPEndPoint;
+                            remoteEndPoint = dataChannel.Client(clientID).Provider as IPEndPoint;
                     }
 
                     if (remoteEndPoint != null)
