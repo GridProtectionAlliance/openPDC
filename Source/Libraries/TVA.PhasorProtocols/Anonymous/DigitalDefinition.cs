@@ -311,14 +311,16 @@ namespace TVA.PhasorProtocols.Anonymous
         }
 
         /// <summary>
-        /// Gets the maximum length of the Label of this <see cref="DigitalDefinition"/>.
+        /// Gets the maximum length of the <see cref="ChannelDefinitionBase.Label"/> of this <see cref="DigitalDefinition"/>.
         /// </summary>
+        /// <remarks>
+        /// This length is not restricted for anonymous protocol defintions.
+        /// </remarks>
         public override int MaximumLabelLength
         {
             get
             {
-                // This accomodates longer digital labels in IEEE C37.118
-                return 256;
+                return int.MaxValue;
             }
         }
 

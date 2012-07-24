@@ -123,6 +123,15 @@ namespace TVA.PhasorProtocols.Macrodyne
             {
                 m_sectionEntry = null;
             }
+
+            try
+            {
+                m_configurationFileCell = info.GetValue("configurationFileCell", typeof(ConfigurationCell)) as ConfigurationCell;
+            }
+            catch (SerializationException)
+            {
+                m_configurationFileCell = null;
+            }
         }
 
         #endregion
@@ -433,6 +442,7 @@ namespace TVA.PhasorProtocols.Macrodyne
 
             // Serialize configuration cell
             info.AddValue("sectionEntry", SectionEntry);
+            info.AddValue("configurationFileCell", m_configurationFileCell, typeof(ConfigurationCell));
         }
 
         #endregion

@@ -283,6 +283,20 @@ namespace TVA.PhasorProtocols.Anonymous
             }
         }
 
+        /// <summary>
+        /// Gets the maximum length of the <see cref="ChannelDefinitionBase.Label"/> of this <see cref="FrequencyDefinition"/>.
+        /// </summary>
+        /// <remarks>
+        /// This length is not restricted for anonymous protocol defintions.
+        /// </remarks>
+        public override int MaximumLabelLength
+        {
+            get
+            {
+                return int.MaxValue;
+            }
+        }
+
         #endregion
     }
 }

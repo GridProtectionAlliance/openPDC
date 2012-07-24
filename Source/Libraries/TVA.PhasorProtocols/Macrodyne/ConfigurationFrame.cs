@@ -703,6 +703,7 @@ namespace TVA.PhasorProtocols.Macrodyne
             // Serialize configuration frame
             info.AddValue("frameHeader", m_frameHeader, typeof(CommonFrameHeader));
             info.AddValue("onlineDataFormatFlags", m_onlineDataFormatFlags, typeof(OnlineDataFormatFlags));
+            info.AddValue("configurationFileName", (object)m_iniFile == null ? null : m_iniFile.FileName);
         }
 
         #endregion
