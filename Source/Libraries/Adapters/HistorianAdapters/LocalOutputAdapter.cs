@@ -67,7 +67,6 @@ using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TVA;
@@ -242,69 +241,91 @@ namespace HistorianAdapters
         [AdapterCommand("Refreshes metadata using all available and enabled providers.")]
         public override void RefreshMetadata()
         {
-            Task.Factory.StartNew(QueueMetadataRefresh);
+            ThreadPool.QueueUserWorkItem(QueueMetadataRefresh);
         }
 
-        private void QueueMetadataRefresh()
+        private void QueueMetadataRefresh(object state)
         {
-            // Queue up a metadata refresh unless another thread has already requested one
-            if (Monitor.TryEnter(m_queuedMetadataRefreshPending))
+            try
             {
+                // Queue up a metadata refresh unless another thread has already requested one
+                if (Monitor.TryEnter(m_queuedMetadataRefreshPending))
+                {
+                    try
+                    {
+                        // Queue new metadata refresh after waiting for any prior refresh to complete
+                        if (m_metadataRefreshComplete.WaitOne())
+                            ThreadPool.QueueUserWorkItem(ExecuteMetadataRefresh);
+                    }
+                    finally
+                    {
+                        Monitor.Exit(m_queuedMetadataRefreshPending);
+                    }
+                }
+            }
+            catch (ThreadAbortException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                OnProcessException(ex);
+            }
+        }
+
+        private void ExecuteMetadataRefresh(object state)
+        {
+            try
+            {
+                bool queueEnabled = false;
+
                 try
                 {
-                    // Queue new metadata refresh after waiting for any prior refresh to complete
-                    if (m_metadataRefreshComplete.WaitOne())
-                        Task.Factory.StartNew(ExecuteMetadataRefresh);
+                    base.RefreshMetadata();
+
+                    if (m_archive != null && m_archive.IsOpen && m_archive.StateFile != null && m_archive.StateFile.IsOpen && m_archive.MetadataFile != null && m_archive.MetadataFile.IsOpen)
+                    {
+                        queueEnabled = InternalProcessQueue.Enabled;
+                        InternalProcessQueue.Stop();
+
+                        // Synchronously refresh the metabase.
+                        lock (m_metadataProviders.Adapters)
+                        {
+                            foreach (IMetadataProvider provider in m_metadataProviders.Adapters)
+                            {
+                                if (provider.Enabled)
+                                    provider.Refresh();
+                            }
+                        }
+
+                        // Request a state file synchronization in case file watchers are disabled
+                        m_archive.SynchronizeStateFile();
+
+                        // Wait for the metabase to synchronize, up to five seconds
+                        int waitCounts = 0;
+
+                        while (m_archive.StateFile.RecordsOnDisk != m_archive.MetadataFile.RecordsOnDisk || waitCounts < 50)
+                        {
+                            Thread.Sleep(100);
+                            waitCounts++;
+                        }
+                    }
                 }
                 finally
                 {
-                    Monitor.Exit(m_queuedMetadataRefreshPending);
+                    m_metadataRefreshComplete.Set();
+
+                    if (queueEnabled)
+                        InternalProcessQueue.Start();
                 }
             }
-        }
-
-        private void ExecuteMetadataRefresh()
-        {
-            bool queueEnabled = false;
-
-            try
+            catch (ThreadAbortException)
             {
-                base.RefreshMetadata();
-
-                if (m_archive != null && m_archive.IsOpen && m_archive.StateFile != null && m_archive.StateFile.IsOpen && m_archive.MetadataFile != null && m_archive.MetadataFile.IsOpen)
-                {
-                    queueEnabled = InternalProcessQueue.Enabled;
-                    InternalProcessQueue.Stop();
-
-                    // Synchronously refresh the metabase.
-                    lock (m_metadataProviders.Adapters)
-                    {
-                        foreach (IMetadataProvider provider in m_metadataProviders.Adapters)
-                        {
-                            if (provider.Enabled)
-                                provider.Refresh();
-                        }
-                    }
-
-                    // Request a state file synchronization in case file watchers are disabled
-                    m_archive.SynchronizeStateFile();
-
-                    // Wait for the metabase to synchronize, up to five seconds
-                    int waitCounts = 0;
-
-                    while (m_archive.StateFile.RecordsOnDisk != m_archive.MetadataFile.RecordsOnDisk || waitCounts < 50)
-                    {
-                        Thread.Sleep(100);
-                        waitCounts++;
-                    }
-                }
+                throw;
             }
-            finally
+            catch (Exception ex)
             {
-                m_metadataRefreshComplete.Set();
-
-                if (queueEnabled)
-                    InternalProcessQueue.Start();
+                OnProcessException(ex);
             }
         }
 

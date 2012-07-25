@@ -72,7 +72,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using TimeSeriesFramework;
 using TVA.Communication;
 using TVA.IO;
@@ -699,6 +698,7 @@ namespace TVA.PhasorProtocols
         private int m_allowedParsingExceptions;
         private Ticks m_parsingExceptionWindow;
         private IConnectionParameters m_connectionParameters;
+        private ManualResetEventSlim m_streamStopDataHandle;
         private SpinLock m_writeLock;
         private int m_connectionAttempts;
         private bool m_enabled;
@@ -725,6 +725,7 @@ namespace TVA.PhasorProtocols
             m_allowedParsingExceptions = DefaultAllowedParsingExceptions;
             m_parsingExceptionWindow = DefaultParsingExceptionWindow;
             m_rateCalcTimer = new System.Timers.Timer();
+            m_streamStopDataHandle = new ManualResetEventSlim(false);
             m_writeLock = new SpinLock();
 
             m_phasorProtocol = PhasorProtocol.IeeeC37_118V1;
@@ -1549,6 +1550,11 @@ namespace TVA.PhasorProtocols
                         }
                         m_rateCalcTimer = null;
 
+                        if ((object)m_streamStopDataHandle != null)
+                            m_streamStopDataHandle.Dispose();
+
+                        m_streamStopDataHandle = null;
+
                         // Clear minimum timer resolution.
                         PrecisionTimer.ClearMinimumTimerResolution(1);
                     }
@@ -2265,13 +2271,17 @@ namespace TVA.PhasorProtocols
         }
 
         // Starts data parsing sequence.
-        private void StartDataParsingSequence()
+        private void StartDataParsingSequence(object state)
         {
             try
             {
                 // Attempt to stop real-time data, waiting a maximum of three seconds for this activity
                 if (!m_skipDisableRealTimeData && m_phasorProtocol != PhasorProtocol.Iec61850_90_5)
-                    Task.Factory.StartNew(AttemptToStopRealTimeData).Wait(3000);
+                {
+                    m_streamStopDataHandle.Reset();
+                    ThreadPool.QueueUserWorkItem(AttemptToStopRealTimeData);
+                    m_streamStopDataHandle.Wait(3000);
+                }
 
                 m_initiatingDataStream = false;
 
@@ -2309,31 +2319,45 @@ namespace TVA.PhasorProtocols
             }
             catch (Exception ex)
             {
-                if (!(ex is ObjectDisposedException))
-                    OnParsingException(ex);
+                OnParsingException(ex);
             }
         }
 
-        private void AttemptToStopRealTimeData()
+        private void AttemptToStopRealTimeData(object state)
         {
-            // Some devices will only send a config frame once data streaming has been disabled, so
-            // we use this code to disable real-time data and wait for data to stop streaming...
-            int attempts = 0;
-
-            // Make sure data stream is disabled
-            SendDeviceCommand(DeviceCommand.DisableRealTimeData);
-
-            Thread.Sleep(1000);
-
-            // Wait for real-time data stream to cease for up to two seconds
-            while (m_initialBytesReceived > 0)
+            try
             {
-                m_initialBytesReceived = 0;
-                Thread.Sleep(100);
+                // Some devices will only send a config frame once data streaming has been disabled, so
+                // we use this code to disable real-time data and wait for data to stop streaming...
+                int attempts = 0;
 
-                attempts++;
-                if (attempts >= 20)
-                    break;
+                // Make sure data stream is disabled
+                SendDeviceCommand(DeviceCommand.DisableRealTimeData);
+
+                Thread.Sleep(1000);
+
+                // Wait for real-time data stream to cease for up to two seconds
+                while (m_initialBytesReceived > 0)
+                {
+                    m_initialBytesReceived = 0;
+                    Thread.Sleep(100);
+
+                    attempts++;
+                    if (attempts >= 20)
+                        break;
+                }
+            }
+            catch (ThreadAbortException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                OnParsingException(ex);
+            }
+            finally
+            {
+                m_streamStopDataHandle.Set();
             }
         }
 
@@ -2369,15 +2393,26 @@ namespace TVA.PhasorProtocols
         // Handles needed start-up actions once a client is connected
         private void ClientConnectedHandler()
         {
-            if (ConnectionEstablished != null)
-                ConnectionEstablished(this, EventArgs.Empty);
-
-            // Begin data parsing sequence to handle reception of configuration frame
-            if (m_deviceSupportsCommands && m_autoStartDataParsingSequence)
+            try
             {
-                m_initialBytesReceived = 0;
-                m_initiatingDataStream = true;
-                Task.Factory.StartNew(StartDataParsingSequence);
+                if (ConnectionEstablished != null)
+                    ConnectionEstablished(this, EventArgs.Empty);
+
+                // Begin data parsing sequence to handle reception of configuration frame
+                if (m_deviceSupportsCommands && m_autoStartDataParsingSequence)
+                {
+                    m_initialBytesReceived = 0;
+                    m_initiatingDataStream = true;
+                    ThreadPool.QueueUserWorkItem(StartDataParsingSequence);
+                }
+            }
+            catch (ThreadAbortException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                OnParsingException(ex);
             }
         }
 

@@ -1465,7 +1465,7 @@ namespace TVA.PhasorProtocols
                             {
                                 // Restart connection if a socket exception occurs
                                 OnProcessException(new InvalidOperationException(string.Format("Socket exception occurred while attempting to send client data: {0}", ex.Message), ex));
-                                Task.Factory.StartNew(ReinitializeSocketLayer);
+                                ThreadPool.QueueUserWorkItem(ReinitializeSocketLayer);
                             }
 
                             Thread.Sleep(FramesPerSecond / 2);
@@ -1494,7 +1494,7 @@ namespace TVA.PhasorProtocols
                 {
                     // Restart connection if a socket exception occurs
                     OnProcessException(new InvalidOperationException(string.Format("Socket exception occurred while attempting to send client data: {0}", ex.Message), ex));
-                    Task.Factory.StartNew(ReinitializeSocketLayer);
+                    ThreadPool.QueueUserWorkItem(ReinitializeSocketLayer);
                 }
 
                 // Track latency statistics against system time - in order for these statistics
@@ -1512,7 +1512,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        private void ReinitializeSocketLayer()
+        private void ReinitializeSocketLayer(object state)
         {
             if (!m_disposed && Monitor.TryEnter(m_reinitializationLock))
             {
@@ -1569,7 +1569,7 @@ namespace TVA.PhasorProtocols
                 }
 
                 if (retry)
-                    Task.Factory.StartNew(ReinitializeSocketLayer);
+                    ThreadPool.QueueUserWorkItem(ReinitializeSocketLayer);
             }
         }
 
