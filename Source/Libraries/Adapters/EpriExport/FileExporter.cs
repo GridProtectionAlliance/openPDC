@@ -370,8 +370,8 @@ namespace EpriExport
                     // Export measurement value making any needed adjustments based on signal type
                     if (signalType == SignalType.VPHM)
                     {
-                        // Typical voltages from PMU's are line-to-neutral volts so we convert them to line-to-line and covert to base units
-                        m_fileData.Append(measurementValue * SqrtOf3 / m_baseVoltages[inputMeasurementKey]);
+                        // Convert voltages to base units
+                        m_fileData.Append(measurementValue / m_baseVoltages[inputMeasurementKey]);
                     }
                     else
                     {
