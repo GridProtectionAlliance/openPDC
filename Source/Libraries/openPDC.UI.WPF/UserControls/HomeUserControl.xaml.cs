@@ -18,7 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  11/09/2011 - Mehulbhai P Thakkar
 //       Generated original version of source code.
-//
+// 30/07/2012 - Aniket Salver
+//       Remembers the last graph selection. 
 //******************************************************************************************************
 
 using System;
@@ -76,7 +77,7 @@ namespace openPDC.UI.UserControls
         private LineGraph m_lineGraph;
         private int m_numberOfPointsToPlot = 60;
         private bool m_eventHandlerRegistered = false;
-
+        private TimeSeriesFramework.UI.DataModels.Measurement m_selectedMeasurement;
         #endregion
 
         #region [ Constructor ]
@@ -132,6 +133,8 @@ namespace openPDC.UI.UserControls
 
             if (!CommonFunctions.CurrentPrincipal.IsInRole("Administrator,Editor"))
                 ButtonInputWizard.IsEnabled = false;
+
+            
 
             m_windowsServiceClient = CommonFunctions.GetWindowsServiceClient();
 
@@ -205,8 +208,12 @@ namespace openPDC.UI.UserControls
             m_xAxisBindingCollection.SetXMapping(x => x);
 
             ComboBoxDevice.ItemsSource = Device.GetLookupList(null);
-            if (ComboBoxDevice.Items.Count > 0)
+
+            if (Application.Current.Resources.Contains("SelectedDevice_Home"))
+                ComboBoxDevice.SelectedIndex = (int)Application.Current.Resources["SelectedDevice_Home"];
+            else
                 ComboBoxDevice.SelectedIndex = 0;
+            
         }
 
         void m_refreshTimer_Tick(object sender, EventArgs e)
@@ -367,14 +374,24 @@ namespace openPDC.UI.UserControls
         {
             if (ComboBoxMeasurement.Items.Count > 0)
             {
-                TimeSeriesFramework.UI.DataModels.Measurement selectedMeasurement = (TimeSeriesFramework.UI.DataModels.Measurement)ComboBoxMeasurement.SelectedItem;
-                if (selectedMeasurement != null)
-                {
-                    m_signalID = selectedMeasurement.SignalID.ToString();
+                m_selectedMeasurement = (TimeSeriesFramework.UI.DataModels.Measurement)ComboBoxMeasurement.SelectedItem;
 
-                    if (selectedMeasurement.SignalSuffix == "PA")
+                // Capture's the Selected index of measurement Combo Box
+                if (Application.Current.Resources.Contains("SelectedMeasurement_Home"))
+                {
+                    Application.Current.Resources.Remove("SelectedMeasurement_Home");
+                    Application.Current.Resources.Add("SelectedMeasurement_Home", ComboBoxMeasurement.SelectedIndex);
+                }
+                else
+                    Application.Current.Resources.Add("SelectedMeasurement_Home", ComboBoxMeasurement.SelectedIndex);
+
+                if (m_selectedMeasurement != null)
+                {
+                    m_signalID = m_selectedMeasurement.SignalID.ToString();
+
+                    if (m_selectedMeasurement.SignalSuffix == "PA")
                         ChartPlotterDynamic.Visible = DataRect.Create(0, -180, m_numberOfPointsToPlot, 180);
-                    else if (selectedMeasurement.SignalSuffix == "FQ")
+                    else if (m_selectedMeasurement.SignalSuffix == "FQ")
                         ChartPlotterDynamic.Visible = DataRect.Create(0, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin")), m_numberOfPointsToPlot, Convert.ToDouble(IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax")));
                 }
             }
@@ -386,10 +403,31 @@ namespace openPDC.UI.UserControls
 
         private void ComboBoxDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Capture's the Selected index of Device Combo Box
+            if (Application.Current.Resources.Contains("SelectedDevice_Home"))
+            {
+                Application.Current.Resources.Remove("SelectedDevice_Home");
+                Application.Current.Resources.Add("SelectedDevice_Home", ComboBoxDevice.SelectedIndex);
+            }
+            else
+                Application.Current.Resources.Add("SelectedDevice_Home", ComboBoxDevice.SelectedIndex);
+
             ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement> measurements = TimeSeriesFramework.UI.DataModels.Measurement.Load(null, ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
             ComboBoxMeasurement.ItemsSource = new ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement>(measurements.Where(m => m.SignalSuffix == "PA" || m.SignalSuffix == "FQ"));
-            if (ComboBoxMeasurement.Items.Count > 0)
+            
+
+            // assign selected value to device combo box
+            if (Application.Current.Resources.Contains("SelectedDevice_Home"))
+                ComboBoxDevice.SelectedIndex = (int)Application.Current.Resources["SelectedDevice_Home"];
+            else
+                ComboBoxDevice.SelectedIndex = 0;
+
+            // assign selected value to measurement combo box
+            if (Application.Current.Resources.Contains("SelectedMeasurement_Home"))
+                ComboBoxMeasurement.SelectedIndex = (int)Application.Current.Resources["SelectedMeasurement_Home"];
+            else
                 ComboBoxMeasurement.SelectedIndex = 0;
+            
         }
 
         #region [ Unsynchronized Subscription ]
