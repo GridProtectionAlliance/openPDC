@@ -1626,37 +1626,32 @@ namespace TVA.PhasorProtocols
                 {
                     IPEndPoint remoteEndPoint = null;
                     TcpServer commandChannel = server as TcpServer;
+                    TransportProvider<Socket> tcpClient;
+                    TransportProvider<EndPoint> udpClient;
 
-                    if (commandChannel != null)
+                    if ((object)commandChannel != null)
                     {
-                        remoteEndPoint = commandChannel.Client(clientID).Provider.RemoteEndPoint as IPEndPoint;
+                        if (commandChannel.TryGetClient(clientID, out tcpClient))
+                            remoteEndPoint = tcpClient.Provider.RemoteEndPoint as IPEndPoint;
                     }
                     else
                     {
                         UdpServer dataChannel = server as UdpServer;
 
-                        if (dataChannel != null)
-                            remoteEndPoint = dataChannel.Client(clientID).Provider as IPEndPoint;
+                        if ((object)dataChannel != null && dataChannel.TryGetClient(clientID, out udpClient))
+                            remoteEndPoint = udpClient.Provider as IPEndPoint;
                     }
 
-                    if (remoteEndPoint != null)
+                    if ((object)remoteEndPoint != null)
                     {
                         if (remoteEndPoint.AddressFamily == AddressFamily.InterNetworkV6)
                             connectionID = "[" + remoteEndPoint.Address + "]:" + remoteEndPoint.Port;
                         else
                             connectionID = remoteEndPoint.Address + ":" + remoteEndPoint.Port;
 
-                        try
-                        {
-                            IPHostEntry ipHost = Dns.GetHostEntry(remoteEndPoint.Address);
-
-                            if (!string.IsNullOrWhiteSpace(ipHost.HostName))
-                                connectionID = ipHost.HostName + " (" + connectionID + ")";
-                        }
-                        catch
-                        {
-                            // Just ignoring possible DNS lookup failures...
-                        }
+                        // Cache value for future lookup
+                        m_connectionIDCache.TryAdd(clientID, connectionID);
+                        ThreadPool.QueueUserWorkItem(LookupHostName, new Tuple<Guid, string, IPEndPoint>(clientID, connectionID, remoteEndPoint));
                     }
                 }
                 catch (Exception ex)
@@ -1666,12 +1661,25 @@ namespace TVA.PhasorProtocols
 
                 if (string.IsNullOrEmpty(connectionID))
                     connectionID = "unavailable";
-
-                // Cache value for future lookup
-                m_connectionIDCache.TryAdd(clientID, connectionID);
             }
 
             return connectionID;
+        }
+
+        private void LookupHostName(object state)
+        {
+            try
+            {
+                Tuple<Guid, string, IPEndPoint> parameters = (Tuple<Guid, string, IPEndPoint>)state;
+                IPHostEntry ipHost = Dns.GetHostEntry(parameters.Item3.Address);
+
+                if (!string.IsNullOrWhiteSpace(ipHost.HostName))
+                    m_connectionIDCache[parameters.Item1] = ipHost.HostName + " (" + parameters.Item2 + ")";
+            }
+            catch
+            {
+                // Just ignoring possible DNS lookup failures...
+            }
         }
 
         /// <summary>
