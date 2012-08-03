@@ -57,6 +57,11 @@
             Gets or sets value that determines if the CSV input file data should be replayed repeatedly.
             </summary>
         </member>
+        <member name="P:CsvAdapters.CsvInputAdapter.SkipRows">
+            <summary>
+            Gets or sets number of lines to skip in the source file before the header line is encountered.
+            </summary>
+        </member>
         <member name="P:CsvAdapters.CsvInputAdapter.UseHighResolutionInputTimer">
             <summary>
             Gets or sets flag that determines if a high-resolution precision timer should be used for CSV file based input.
