@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -49,6 +50,7 @@ namespace TVA.PhasorProtocols
     /// <remarks>
     /// Typically class should be implemented as a singleton since one instance will suffice.
     /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class CommonPhasorServices : FacileActionAdapterBase
     {
         #region [ Members ]

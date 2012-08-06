@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -44,6 +45,8 @@ namespace TVA.PhasorProtocols
     /// Represents an <see cref="IInputAdapter"/> used to map measured values from a connection
     /// to a phasor measurement device to new <see cref="IMeasurement"/> values.
     /// </summary>
+    //private const double SqrtOf3 = 1.7320508075688772935274463415059D;
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class PhasorMeasurementMapper : InputAdapterBase
     {
         #region [ Members ]

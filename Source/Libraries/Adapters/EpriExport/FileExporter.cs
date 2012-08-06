@@ -50,8 +50,8 @@ namespace EpriExport
 
         // Constants
         private const string RowCountMarker = "<RCM>";
-        private const double SqrtOf3 = 1.7320508075688772935274463415059D;
         private readonly double[] BaseKVs = { -1.0D, -1.0D, 69.0D * SI.Kilo, 115.0D * SI.Kilo, 138.0D * SI.Kilo, 161.0D * SI.Kilo, 230.0D * SI.Kilo, 345.0D * SI.Kilo, 500.0D * SI.Kilo, 765.0D * SI.Kilo };
+        //private const double SqrtOf3 = 1.7320508075688772935274463415059D;
 
         // Fields
         private string m_fileExportPath;

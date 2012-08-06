@@ -35,6 +35,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Net;
@@ -55,6 +56,7 @@ namespace TVA.PhasorProtocols
     /// Represents an <see cref="IActionAdapter"/> used to generate and transmit concentrated stream
     /// of phasor measurements in a specific phasor protocol.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public abstract class PhasorDataConcentratorBase : ActionAdapterBase
     {
         #region [ Design Notes ]
