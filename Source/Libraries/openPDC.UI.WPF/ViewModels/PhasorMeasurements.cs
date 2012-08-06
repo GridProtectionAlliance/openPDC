@@ -45,7 +45,6 @@ namespace openPDC.UI.ViewModels
 
         private bool m_canLoad;
         private Dictionary<int, string> m_deviceLookupList;
-        private Dictionary<int, string> m_phasorLookupList;
         private int m_deviceID;
 
         #endregion
@@ -58,7 +57,6 @@ namespace openPDC.UI.ViewModels
             m_canLoad = true;
             m_deviceID = deviceID;
             m_deviceLookupList = Device.GetLookupList(null, DeviceType.All, true, true);
-            PhasorLookupList = Phasor.GetLookupList(null, m_deviceID);
             Load();
         }
 
@@ -84,22 +82,6 @@ namespace openPDC.UI.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets <see cref="Dictionary{T1,T2}"/> type collection of phasors defined in the database.
-        /// </summary>
-        public Dictionary<int, string> PhasorLookupList
-        {
-            get
-            {
-                return m_phasorLookupList;
-            }
-            set
-            {
-                m_phasorLookupList = value;
-                OnPropertyChanged("PhasorLookupList");
-            }
-        }
-
         #endregion
 
         #region [ Methods ]
@@ -113,9 +95,6 @@ namespace openPDC.UI.ViewModels
 
             if (m_deviceLookupList.Count > 0)
                 CurrentItem.DeviceID = m_deviceLookupList.First().Key;
-
-            if (m_phasorLookupList.Count > 0)
-                CurrentItem.PhasorSourceIndex = m_phasorLookupList.First().Key;
         }
 
         public override void Save()
@@ -155,11 +134,10 @@ namespace openPDC.UI.ViewModels
             if (m_canLoad)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
+
                 try
                 {
-                    AllMeasurements = TimeSeriesFramework.UI.DataModels.Measurement.Load(null, m_deviceID);
-                    ItemsSource = AllMeasurements;
-                    PhasorLookupList = Phasor.GetLookupList(null, CurrentItem.DeviceID == null ? 0 : (int)CurrentItem.DeviceID);
+                    base.Load();
                 }
                 catch (Exception ex)
                 {
@@ -179,19 +157,6 @@ namespace openPDC.UI.ViewModels
                     Mouse.OverrideCursor = null;
                 }
             }
-        }
-
-        /// <summary>
-        /// Handles PropertyChanged event on CurrentItem. If DeviceID is changed then get the associated phasors list.
-        /// </summary>
-        /// <param name="sender">Source of the event.</param>
-        /// <param name="e">Event arguments.</param>
-        protected override void m_currentItem_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            base.m_currentItem_PropertyChanged(sender, e);
-
-            if (string.Compare(e.PropertyName, "DeviceID", true) == 0)
-                PhasorLookupList = Phasor.GetLookupList(null, CurrentItem.DeviceID == null ? 0 : (int)CurrentItem.DeviceID);
         }
 
         #endregion
