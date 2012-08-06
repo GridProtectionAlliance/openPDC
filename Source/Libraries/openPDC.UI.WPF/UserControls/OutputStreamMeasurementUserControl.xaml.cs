@@ -118,7 +118,7 @@ namespace openPDC.UI.UserControls
             //OutputStreamDevice.AddDevices(null, m_outputStreamID, new ObservableCollection<Device>(m_newDevices.Where(d => d.Enabled == true)),
             //    (bool)CheckBoxAddDigitals.IsChecked, (bool)CheckBoxAddAnalogs.IsChecked);
 
-            OutputStreamMeasurement.AddMeasurements(null, m_outputStreamID, new ObservableCollection<Measurement>(m_newMeasurements.Where(m => m.Enabled == true)));
+            OutputStreamMeasurement.AddMeasurements(null, m_outputStreamID, new ObservableCollection<Measurement>(m_newMeasurements.Where(m => m.Selected == true)));
             m_dataContext = new OutputStreamMeasurements(m_outputStreamID, 24);
             this.DataContext = m_dataContext;
             PopupAddMore.IsOpen = false;

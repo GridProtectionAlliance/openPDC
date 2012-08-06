@@ -38,7 +38,7 @@
 
                         <sdk:DataGrid.Columns>
 
-                            <sdk:DataGridCheckBoxColumn Width="*" Binding="{tsfBinding:Column Path=Enabled}" CellStyle="{StaticResource CenterAlignCellStyle}">
+                            <sdk:DataGridCheckBoxColumn Width="*" Binding="{tsfBinding:Column Path=Selected}" CellStyle="{StaticResource CenterAlignCellStyle}">
                                 <sdk:DataGridCheckBoxColumn.HeaderTemplate>
                                     <DataTemplate>
                                         <CheckBox Checked="CheckBoxAddMore_Checked" Unchecked="CheckBoxAddMore_Unchecked"/>
