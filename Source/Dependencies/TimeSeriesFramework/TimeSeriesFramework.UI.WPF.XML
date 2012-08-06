@@ -465,6 +465,11 @@
             Gets or sets number of items to be displayed per page.
             </summary>
         </member>
+        <member name="P:TimeSeriesFramework.UI.PagedViewModelBase`2.ItemsKeys">
+            <summary>
+            Gets or sets the collection of primary keys retrieved fromt he database.
+            </summary>
+        </member>
         <member name="P:TimeSeriesFramework.UI.PagedViewModelBase`2.ItemsSource">
             <summary>
             Gets or sets the entire collection retrieved from the database.
@@ -1933,7 +1938,7 @@
             <summary>
             Hanldes <see cref="P:TimeSeriesFramework.UI.ViewModels.Measurements.SearchCommand"/>.
             </summary>
-            <param name="paramter">string value to search for in measurement collection.</param>
+            <param name="parameter">string value to search for in measurement collection.</param>
         </member>
         <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.ShowAll">
             <summary>
@@ -1963,11 +1968,6 @@
         <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.ShowAllCommand">
             <summary>
             Gets <see cref="T:System.Windows.Input.ICommand"/> to show all measurements.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.AllMeasurements">
-            <summary>
-            Gets or sets all the measurements retrieved during Load().
             </summary>
         </member>
         <member name="M:TimeSeriesFramework.UI.ViewModels.Nodes.#ctor(System.Int32,System.Boolean)">

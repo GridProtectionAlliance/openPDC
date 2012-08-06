@@ -1682,6 +1682,24 @@
             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> information as defined in the database.
             </summary>
         </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.LoadSignalIDs(TVA.Data.AdoDataConnection,System.Int32,System.Boolean,System.Boolean,System.String)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> signal IDs as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="deviceID">ID of the Device to filter data.</param>
+            <param name="filterByInternalFlag">boolean flag to indicate if only non internal data requested.</param>
+            <param name="includeInternal">boolean flag to indicate if internal measurements are included.</param>
+            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.LoadFromKeys(TVA.Data.AdoDataConnection,System.Collections.Generic.List{System.Guid})">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="keys">Keys of the measurements to be loaded from the database.</param>
+            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/>.</returns>
+        </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.Load(TVA.Data.AdoDataConnection,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
