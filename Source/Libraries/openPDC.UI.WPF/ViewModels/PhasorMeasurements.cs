@@ -103,8 +103,8 @@ namespace openPDC.UI.ViewModels
             {
                 if (CurrentItem.HistorianID != null && (int)CurrentItem.HistorianID > 0)
                 {
-                    CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)CurrentItem.HistorianID) + " RefreshMetadata");
                     base.Save();
+                    CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)CurrentItem.HistorianID) + " RefreshMetadata");
                 }
                 else
                 {
