@@ -1713,8 +1713,7 @@ namespace TVA.PhasorProtocols
             try
             {
                 // Cache configuration on an independent thread in case this takes some time
-                ThreadPool.QueueUserWorkItem(TVA.PhasorProtocols.Anonymous.ConfigurationFrame.Cache,
-                    new EventArgs<IConfigurationFrame, Action<Exception>, string>(configurationFrame, OnProcessException, name));
+                Anonymous.ConfigurationFrame.Cache(configurationFrame, OnProcessException, name);
             }
             catch (Exception ex)
             {

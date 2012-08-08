@@ -31,6 +31,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
+using System.Threading;
 using TVA.Configuration;
 using TVA.IO;
 using TVA.IO.Checksums;
@@ -165,27 +166,28 @@ namespace TVA.PhasorProtocols.Anonymous
         // Static Methods
 
         /// <summary>
-        /// Serialize configuration frame to cache folder for later use (if needed).
+        /// Serializes configuration frame to cache folder on an independent thread for later use (if needed).
         /// </summary>
-        /// <param name="state">
-        /// Reference to a <see cref="EventArgs{T1, T2, T3}"/> instance containing the following:<br/>
-        /// a reference to <see cref="IConfigurationFrame"/> (as T1),<br/>
-        /// a <see cref="Action{T}"/> delegate to handle process exceptions (as T2),<br/>
-        /// and a <see cref="string"/> representing the configuration name (as T3).
-        /// </param>
-        /// <remarks>
-        /// It is expected that this function will be called from the <see cref="System.Threading.ThreadPool"/>.
-        /// </remarks>
-        public static void Cache(object state)
+        /// <param name="configurationFrame">Reference to <see cref="IConfigurationFrame"/>.</param>
+        /// <param name="exceptionHandler"><see cref="Action{T}"/> delegate to handle process exceptions.</param>
+        /// <param name="configurationName"><see cref="string"/> representing the configuration name.</param>
+        public static void Cache(IConfigurationFrame configurationFrame, Action<Exception> exceptionHandler, string configurationName)
         {
-            EventArgs<IConfigurationFrame, Action<Exception>, string> e = state as EventArgs<IConfigurationFrame, Action<Exception>, string>;
+            Tuple<IConfigurationFrame, Action<Exception>, string> state = new Tuple<IConfigurationFrame, Action<Exception>, string>(configurationFrame, exceptionHandler, configurationName);
+            ThreadPool.QueueUserWorkItem(Cache, (object)state);
+        }
 
-            if (e != null)
+        // Cache configuration file
+        private static void Cache(object state)
+        {
+            Tuple<IConfigurationFrame, Action<Exception>, string> args = state as Tuple<IConfigurationFrame, Action<Exception>, string>;
+
+            if (args != null)
             {
                 FileStream configFile = null;
-                IConfigurationFrame configurationFrame = e.Argument1;
-                Action<Exception> exceptionHandler = e.Argument2;
-                string configurationName = e.Argument3;
+                IConfigurationFrame configurationFrame = args.Item1;
+                Action<Exception> exceptionHandler = args.Item2;
+                string configurationName = args.Item3;
                 string configurationCacheFileName = GetConfigurationCacheFileName(configurationName);
 
                 try

@@ -30,7 +30,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using TimeSeriesFramework;
 using TimeSeriesFramework.Adapters;
 using TimeSeriesFramework.Transport;
@@ -1021,9 +1020,6 @@ namespace TVA.PhasorProtocols
             //else
             //    frameParser.ExecuteParseOnSeparateThread = true;
 
-            if (settings.TryGetValue("configurationFile", out setting))
-                LoadConfiguration(setting);
-
             if (!(settings.TryGetValue("lagTime", out setting) && double.TryParse(setting, out m_lagTime)))
                 m_lagTime = 10.0D;
 
@@ -1039,6 +1035,10 @@ namespace TVA.PhasorProtocols
 
             // Assign reference to frame parser for this connection and attach to needed events
             this.FrameParser = frameParser;
+
+            // Load specific configuration file if one was specified
+            if (settings.TryGetValue("configurationFile", out setting))
+                LoadConfiguration(setting);
 
             // Load input devices associated with this connection
             LoadInputDevices();
@@ -1397,8 +1397,7 @@ namespace TVA.PhasorProtocols
                     try
                     {
                         // Cache this configuration frame since its being loaded as the new last known good configuration
-                        ThreadPool.QueueUserWorkItem(ConfigurationFrame.Cache,
-                            new EventArgs<IConfigurationFrame, Action<Exception>, string>(configFrame, OnProcessException, Name));
+                        ConfigurationFrame.Cache(configFrame, OnProcessException, Name);
                     }
                     catch (Exception ex)
                     {
@@ -1848,8 +1847,7 @@ namespace TVA.PhasorProtocols
                 try
                 {
                     // Cache configuration on an independent thread in case this takes some time
-                    ThreadPool.QueueUserWorkItem(ConfigurationFrame.Cache,
-                        new EventArgs<IConfigurationFrame, Action<Exception>, string>(e.Argument, OnProcessException, Name));
+                    ConfigurationFrame.Cache(e.Argument, OnProcessException, Name);
                 }
                 catch (Exception ex)
                 {
