@@ -29,7 +29,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.ViewModels;
@@ -45,7 +44,6 @@ namespace openPDC.UI.ViewModels
 
         private bool m_canLoad;
         private Dictionary<int, string> m_deviceLookupList;
-        private int m_deviceID;
 
         #endregion
 
@@ -55,12 +53,9 @@ namespace openPDC.UI.ViewModels
             : base(deviceID, itemsPerPage, autosave)     // Set ItemsPerPage to zero to avoid load() in the base class.
         {
             m_canLoad = true;
-            m_deviceID = deviceID;
             m_deviceLookupList = Device.GetLookupList(null, DeviceType.All, true, true);
             Load();
         }
-
-
 
         #endregion
 
@@ -132,31 +127,7 @@ namespace openPDC.UI.ViewModels
         public override void Load()
         {
             if (m_canLoad)
-            {
-                Mouse.OverrideCursor = Cursors.Wait;
-
-                try
-                {
-                    base.Load();
-                }
-                catch (Exception ex)
-                {
-                    if (ex.InnerException != null)
-                    {
-                        Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
-                        CommonFunctions.LogException(null, "Load " + DataModelName, ex.InnerException);
-                    }
-                    else
-                    {
-                        Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
-                        CommonFunctions.LogException(null, "Load " + DataModelName, ex);
-                    }
-                }
-                finally
-                {
-                    Mouse.OverrideCursor = null;
-                }
-            }
+                base.Load();
         }
 
         #endregion
