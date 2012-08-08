@@ -400,6 +400,13 @@
             </summary>
             <param name="sortMemberPath">Member path for sorting.</param>
         </member>
+        <member name="M:TimeSeriesFramework.UI.PagedViewModelBase`2.SortData(System.String,System.ComponentModel.ListSortDirection)">
+            <summary>
+            Sorts model data.
+            </summary>
+            <param name="sortMemberPath">Member path for sorting.</param>
+            <param name="sortDirection">Ascending or descending.</param>
+        </member>
         <member name="E:TimeSeriesFramework.UI.PagedViewModelBase`2.PropertyChanged">
             <summary>
             Raised when a property on this object has a new value.
@@ -556,6 +563,16 @@
         <member name="P:TimeSeriesFramework.UI.PagedViewModelBase`2.IsNewRecord">
             <summary>
             Gets flag that determines if <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.PagedViewModelBase`2.SortMember">
+            <summary>
+            Gets or sets the member by which to sort the page.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.PagedViewModelBase`2.SortDirection">
+            <summary>
+            Gets or sets the direction in which to sort the page.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.Properties.Resources">
@@ -1929,6 +1946,11 @@
             Creates a new instance of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> and assigns it to CurrentItem.
             </summary>
         </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.Initialize">
+            <summary>
+            Initialization to be done before the initial call to <see cref="M:TimeSeriesFramework.UI.ViewModels.Measurements.Load"/>.
+            </summary>
+        </member>
         <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.Load">
             <summary>
             Loads collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> defined in the database.
@@ -1944,6 +1966,13 @@
             <summary>
             Handles <see cref="P:TimeSeriesFramework.UI.ViewModels.Measurements.ShowAllCommand"/>.
             </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.SortData(System.String,System.ComponentModel.ListSortDirection)">
+            <summary>
+            Sorts the keys by the given sort member in the given direction.
+            </summary>
+            <param name="sortMember">The member by which to sort the data.</param>
+            <param name="sortDirection">The direction in which to sort the data.</param>
         </member>
         <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.IsNewRecord">
             <summary>
@@ -1968,6 +1997,11 @@
         <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.ShowAllCommand">
             <summary>
             Gets <see cref="T:System.Windows.Input.ICommand"/> to show all measurements.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.AllKeys">
+            <summary>
+            Gets or sets the list of all keys without the search text applied.
             </summary>
         </member>
         <member name="M:TimeSeriesFramework.UI.ViewModels.Nodes.#ctor(System.Int32,System.Boolean)">

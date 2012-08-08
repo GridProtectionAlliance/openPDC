@@ -1682,7 +1682,7 @@
             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.LoadSignalIDs(TVA.Data.AdoDataConnection,System.Int32,System.Boolean,System.Boolean,System.String)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.LoadSignalIDs(TVA.Data.AdoDataConnection,System.Int32,System.Boolean,System.Boolean,System.String,System.String,System.String)">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> signal IDs as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
@@ -1690,6 +1690,9 @@
             <param name="deviceID">ID of the Device to filter data.</param>
             <param name="filterByInternalFlag">boolean flag to indicate if only non internal data requested.</param>
             <param name="includeInternal">boolean flag to indicate if internal measurements are included.</param>
+            <param name="searchText">The text to search by.</param>
+            <param name="sortMember">The field to sort by.</param>
+            <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
             <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/>.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.LoadFromKeys(TVA.Data.AdoDataConnection,System.Collections.Generic.List{System.Guid})">
