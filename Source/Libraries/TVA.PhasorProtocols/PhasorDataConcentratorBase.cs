@@ -1458,19 +1458,10 @@ namespace TVA.PhasorProtocols
                             m_configurationFrame.Timestamp = dataFrame.Timestamp;
 
                             image = m_configurationFrame.BinaryImage();
+                            m_publishChannel.MulticastAsync(image, 0, image.Length);
 
-                            try
-                            {
-                                m_publishChannel.MulticastAsync(image, 0, image.Length);
-                            }
-                            catch (SocketException ex)
-                            {
-                                // Restart connection if a socket exception occurs
-                                OnProcessException(new InvalidOperationException(string.Format("Socket exception occurred while attempting to send client data: {0}", ex.Message), ex));
-                                ThreadPool.QueueUserWorkItem(ReinitializeSocketLayer);
-                            }
-
-                            Thread.Sleep(FramesPerSecond / 2);
+                            // Sleep for a moment between config frame and data frame transmissions
+                            Thread.Sleep(1);
                         }
                     }
                 }
@@ -1487,17 +1478,7 @@ namespace TVA.PhasorProtocols
 
                 // Publish data frame binary image
                 image = dataFrame.BinaryImage();
-
-                try
-                {
-                    m_publishChannel.MulticastAsync(image, 0, image.Length);
-                }
-                catch (SocketException ex)
-                {
-                    // Restart connection if a socket exception occurs
-                    OnProcessException(new InvalidOperationException(string.Format("Socket exception occurred while attempting to send client data: {0}", ex.Message), ex));
-                    ThreadPool.QueueUserWorkItem(ReinitializeSocketLayer);
-                }
+                m_publishChannel.MulticastAsync(image, 0, image.Length);
 
                 // Track latency statistics against system time - in order for these statistics
                 // to be useful, the local clock must be fairly accurate
@@ -1805,7 +1786,17 @@ namespace TVA.PhasorProtocols
         private void m_dataChannel_SendClientDataException(object sender, EventArgs<Guid, Exception> e)
         {
             Exception ex = e.Argument2;
-            OnProcessException(new InvalidOperationException(string.Format("Data channel exception occurred while sending client data to \"{0}\": {1}", GetConnectionID(m_dataChannel, e.Argument1), ex.Message), ex));
+
+            if (ex is SocketException)
+            {
+                // Restart connection if a socket exception occurs
+                OnProcessException(new InvalidOperationException(string.Format("Socket exception occurred on the data channel while attempting to send client data to \"{0}\": {1}", GetConnectionID(m_dataChannel, e.Argument1), ex.Message), ex));
+                ThreadPool.QueueUserWorkItem(ReinitializeSocketLayer);
+            }
+            else
+            {
+                OnProcessException(new InvalidOperationException(string.Format("Data channel exception occurred while sending client data to \"{0}\": {1}", GetConnectionID(m_dataChannel, e.Argument1), ex.Message), ex));
+            }
         }
 
         private void m_dataChannel_ServerStarted(object sender, EventArgs e)
@@ -1853,7 +1844,17 @@ namespace TVA.PhasorProtocols
         private void m_commandChannel_SendClientDataException(object sender, EventArgs<Guid, Exception> e)
         {
             Exception ex = e.Argument2;
-            OnProcessException(new InvalidOperationException(string.Format("Command channel exception occurred while sending client data to \"{0}\": {1}", GetConnectionID(m_commandChannel, e.Argument1), ex.Message), ex));
+
+            if (ex is SocketException)
+            {
+                // Restart connection if a socket exception occurs
+                OnProcessException(new InvalidOperationException(string.Format("Socket exception occurred on the command channel while attempting to send client data to \"{0}\": {1}", GetConnectionID(m_dataChannel, e.Argument1), ex.Message), ex));
+                ThreadPool.QueueUserWorkItem(ReinitializeSocketLayer);
+            }
+            else
+            {
+                OnProcessException(new InvalidOperationException(string.Format("Command channel exception occurred while sending client data to \"{0}\": {1}", GetConnectionID(m_commandChannel, e.Argument1), ex.Message), ex));
+            }
         }
 
         private void m_commandChannel_ServerStarted(object sender, EventArgs e)
