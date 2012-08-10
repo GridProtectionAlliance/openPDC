@@ -41,6 +41,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using TimeSeriesFramework.UI;
 using TVA.Data;
+using System.Linq;
 
 namespace openPDC.UI.DataModels
 {
@@ -569,11 +570,50 @@ namespace openPDC.UI.DataModels
         // Static Methods
 
         /// <summary>
+        /// LoadKeys <see cref="CalculatedMeasurement"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>        
+        /// <param name="sortMember">The field to sort by.</param>
+        /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+        /// <returns>Collection of <see cref="CalculatedMeasurement"/>.</returns>
+        public static IList<int> LoadKeys(AdoDataConnection database,  string sortMember,string sortDirection)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                IList<int> calculatedMeasurementList = new List<int>();
+                DataTable calculatedMeasurementTable;
+
+                string sortClause = string.Empty;
+
+                if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
+                    sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
+
+                calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType,string.Format("SELECT ID From CalculatedMeasurementDetail {0}",sortClause));
+
+                foreach (DataRow row in calculatedMeasurementTable.Rows)
+                {
+                    calculatedMeasurementList.Add((row.ConvertField<int>("ID")));
+                }
+
+                return calculatedMeasurementList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Loads <see cref="CalculatedMeasurement"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>        
         /// <returns>Collection of <see cref="CalculatedMeasurement"/>.</returns>
-        public static ObservableCollection<CalculatedMeasurement> Load(AdoDataConnection database)
+        public static ObservableCollection<CalculatedMeasurement> Load(AdoDataConnection database,IList<int> keys)
         {
             bool createdConnection = false;
 
@@ -582,43 +622,51 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<CalculatedMeasurement> calculatedMeasurementList = new ObservableCollection<CalculatedMeasurement>();
-                string query = database.ParameterizedQueryString("SELECT NodeID, ID, Acronym, Name, AssemblyName, " +
+                DataTable calculatedMeasurementTable;
+                string query;
+                string commaSeparatedKeys;
+
+                if ((object)keys != null && keys.Count > 0)
+                {
+                    commaSeparatedKeys = keys.Select(key => key.ToString()).Aggregate((str1, str2) => str1 + "," + str2);
+                    query = string.Format("SELECT NodeID, ID, Acronym, Name, AssemblyName, " +
                     "TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, " +
                     "LeadTime, UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, " +
-                    "DownSamplingMethod, NodeName, PerformTimeReasonabilityCheck From CalculatedMeasurementDetail WHERE NodeID = {0} ORDER BY LoadOrder", "nodeID");
-                DataTable calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
+                    "DownSamplingMethod, NodeName, PerformTimeReasonabilityCheck From CalculatedMeasurementDetail WHERE ID IN ({0})", commaSeparatedKeys);
 
-                foreach (DataRow row in calculatedMeasurementTable.Rows)
-                {
-                    calculatedMeasurementList.Add(new CalculatedMeasurement()
+                    calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query);
+
+                    foreach (DataRow row in calculatedMeasurementTable.Rows)
                     {
-                        NodeID = database.Guid(row, "NodeID"),
-                        ID = row.ConvertField<int>("ID"),
-                        Acronym = row.Field<string>("Acronym"),
-                        Name = row.Field<string>("Name"),
-                        AssemblyName = row.Field<string>("AssemblyName"),
-                        TypeName = row.Field<string>("TypeName"),
-                        ConnectionString = row.Field<string>("ConnectionString"),
-                        ConfigSection = row.Field<string>("ConfigSection"),
-                        InputMeasurements = row.Field<string>("InputMeasurements"),
-                        OutputMeasurements = row.Field<string>("OutputMeasurements"),
-                        MinimumMeasurementsToUse = row.ConvertField<int>("MinimumMeasurementsToUse"),
-                        FramesPerSecond = Convert.ToInt32(row.Field<object>("FramesPerSecond") ?? 30),
-                        LagTime = row.ConvertField<double>("LagTime"),
-                        LeadTime = row.ConvertField<double>("LeadTime"),
-                        UseLocalClockAsRealTime = Convert.ToBoolean(row.Field<object>("UseLocalClockAsRealTime")),
-                        AllowSortsByArrival = Convert.ToBoolean(row.Field<object>("AllowSortsByArrival")),
-                        LoadOrder = row.ConvertField<int>("LoadOrder"),
-                        Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
-                        IgnoreBadTimeStamps = Convert.ToBoolean(row.Field<object>("IgnoreBadTimeStamps")),
-                        TimeResolution = Convert.ToInt32(row.Field<object>("TimeResolution")),
-                        AllowPreemptivePublishing = Convert.ToBoolean(row.Field<object>("AllowPreemptivePublishing")),
-                        DownsamplingMethod = row.Field<string>("DownSamplingMethod"),
-                        m_nodeName = row.Field<string>("NodeName"),
-                        PerformTimestampReasonabilityCheck = Convert.ToBoolean(row.Field<object>("PerformTimeReasonabilityCheck"))
-                    });
+                        calculatedMeasurementList.Add(new CalculatedMeasurement()
+                        {
+                            NodeID = database.Guid(row, "NodeID"),
+                            ID = row.ConvertField<int>("ID"),
+                            Acronym = row.Field<string>("Acronym"),
+                            Name = row.Field<string>("Name"),
+                            AssemblyName = row.Field<string>("AssemblyName"),
+                            TypeName = row.Field<string>("TypeName"),
+                            ConnectionString = row.Field<string>("ConnectionString"),
+                            ConfigSection = row.Field<string>("ConfigSection"),
+                            InputMeasurements = row.Field<string>("InputMeasurements"),
+                            OutputMeasurements = row.Field<string>("OutputMeasurements"),
+                            MinimumMeasurementsToUse = row.ConvertField<int>("MinimumMeasurementsToUse"),
+                            FramesPerSecond = Convert.ToInt32(row.Field<object>("FramesPerSecond") ?? 30),
+                            LagTime = row.ConvertField<double>("LagTime"),
+                            LeadTime = row.ConvertField<double>("LeadTime"),
+                            UseLocalClockAsRealTime = Convert.ToBoolean(row.Field<object>("UseLocalClockAsRealTime")),
+                            AllowSortsByArrival = Convert.ToBoolean(row.Field<object>("AllowSortsByArrival")),
+                            LoadOrder = row.ConvertField<int>("LoadOrder"),
+                            Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
+                            IgnoreBadTimeStamps = Convert.ToBoolean(row.Field<object>("IgnoreBadTimeStamps")),
+                            TimeResolution = Convert.ToInt32(row.Field<object>("TimeResolution")),
+                            AllowPreemptivePublishing = Convert.ToBoolean(row.Field<object>("AllowPreemptivePublishing")),
+                            DownsamplingMethod = row.Field<string>("DownSamplingMethod"),
+                            m_nodeName = row.Field<string>("NodeName"),
+                            PerformTimestampReasonabilityCheck = Convert.ToBoolean(row.Field<object>("PerformTimeReasonabilityCheck"))
+                        });
+                    }
                 }
-
                 return calculatedMeasurementList;
             }
             finally
