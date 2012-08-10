@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Linq;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 
@@ -42,6 +43,7 @@ namespace openPDC.UI.ViewModels
         private Dictionary<string, string> m_phaseLookupList;
         private Dictionary<string, string> m_typeLookupList;
         private int m_deviceID;
+        
 
         #endregion
 
@@ -140,8 +142,14 @@ namespace openPDC.UI.ViewModels
         {
             try
             {
+                List<int> pageKeys = null;
+                if ((object)ItemsKeys == null)
+                    ItemsKeys = DataModels.Phasor.LoadKeys(null, SortMember, SortDirection);
+  
+                 pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
+                
                 if (m_deviceID > 0)
-                    ItemsSource = Phasor.Load(null, m_deviceID);
+                    ItemsSource = Phasor.Load(null, m_deviceID, pageKeys);
 
                 if (ItemsSource != null && ItemsSource.Count == 0 && CurrentItem != null)
                     CurrentItem.DeviceID = m_deviceID;

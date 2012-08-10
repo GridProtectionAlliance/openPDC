@@ -38,6 +38,7 @@ using System.Data;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.DataModels;
 using TVA.Data;
+using System.Linq;
 
 namespace openPDC.UI.DataModels
 {
@@ -308,12 +309,51 @@ namespace openPDC.UI.DataModels
         // Static Methods
 
         /// <summary>
+        /// LoadKeys <see cref="Phasor"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="deviceID">ID of the <see cref="Device"/> to filter data.</param>
+        /// <param name="sortMember">The field to sort by.</param>
+        /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+        /// <returns>Collection of <see cref="Phasor"/>.</returns>
+        public static IList<int> LoadKeys(AdoDataConnection database,string sortMember, string sortDirection)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                IList<int> phasorList = new List<int>();
+                DataTable phasorTable;
+
+                string sortClause = string.Empty;
+
+                if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
+                    sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
+
+                phasorTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From PhasorDetail {0}", sortClause));
+
+                foreach (DataRow row in phasorTable.Rows)
+                {
+                    phasorList.Add(row.ConvertField<int>("ID"));
+                }
+                return phasorList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Loads <see cref="Phasor"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="deviceID">ID of the <see cref="Device"/> to filter data.</param>
         /// <returns>Collection of <see cref="Phasor"/>.</returns>
-        public static ObservableCollection<Phasor> Load(AdoDataConnection database, int deviceID)
+        public static ObservableCollection<Phasor> Load(AdoDataConnection database, int deviceID, IList<int> Keys)
         {
             bool createdConnection = false;
 
@@ -322,22 +362,30 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<Phasor> phasorList = new ObservableCollection<Phasor>();
-                string query = database.ParameterizedQueryString("SELECT ID, DeviceID, Label, Type, Phase, DestinationPhasorID, SourceIndex, " +
-                    "CreatedBy, CreatedOn, UpdatedBy, UpdatedOn FROM Phasor WHERE DeviceID = {0} ORDER BY DeviceID", "deviceID");
-                DataTable phasorTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, deviceID);
+                DataTable phasorTable;
+                string query;
+                string commaSeparatedKeys;
 
-                foreach (DataRow row in phasorTable.Rows)
+                if ((object)Keys != null && Keys.Count > 0)
                 {
-                    phasorList.Add(new Phasor()
+                    commaSeparatedKeys = Keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    query = string.Format("SELECT ID, DeviceID, Label, Type, Phase, DestinationPhasorID, SourceIndex, CreatedBy, CreatedOn, UpdatedBy, UpdatedOn FROM Phasor WHERE ID IN ({0})", commaSeparatedKeys);
+
+                    phasorTable = database.Connection.RetrieveData(database.AdapterType, query);
+
+                    foreach (DataRow row in phasorTable.Rows)
                     {
-                        ID = row.ConvertField<int>("ID"),
-                        DeviceID = row.ConvertField<int>("DeviceID"),
-                        Label = row.Field<string>("Label"),
-                        Type = row.Field<string>("Type"),
-                        Phase = row.Field<string>("Phase"),
-                        //DestinationPhasorID = row.ConvertField<int>("DestinationPhasorID"),
-                        SourceIndex = row.ConvertField<int>("SourceIndex")
-                    });
+                        phasorList.Add(new Phasor()
+                        {
+                            ID = row.ConvertField<int>("ID"),
+                            DeviceID = row.ConvertField<int>("DeviceID"),
+                            Label = row.Field<string>("Label"),
+                            Type = row.Field<string>("Type"),
+                            Phase = row.Field<string>("Phase"),
+                            //DestinationPhasorID = row.ConvertField<int>("DestinationPhasorID"),
+                            SourceIndex = row.ConvertField<int>("SourceIndex")
+                        });
+                    }
                 }
 
                 return phasorList;
