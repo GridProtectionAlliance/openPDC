@@ -607,7 +607,8 @@ namespace openPDC.UI.DataModels
 
                     if (outputStreamDevice != null)
                     {
-                        ObservableCollection<Phasor> phasors = Phasor.Load(database, device.ID);
+                        IList<int> keys = null;
+                        ObservableCollection<Phasor> phasors = Phasor.Load(database, device.ID, keys);
                         foreach (Phasor phasor in phasors)
                         {
                             OutputStreamDevicePhasor outputStreamDevicePhasor = new OutputStreamDevicePhasor();

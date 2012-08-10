@@ -611,7 +611,8 @@ namespace openPDC.UI.DataModels
         /// <summary>
         /// Loads <see cref="CalculatedMeasurement"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
-        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>        
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>      
+        /// <param name="keys"> Keys of the measurement to be loaded from  the database</param>
         /// <returns>Collection of <see cref="CalculatedMeasurement"/>.</returns>
         public static ObservableCollection<CalculatedMeasurement> Load(AdoDataConnection database,IList<int> keys)
         {

@@ -1308,7 +1308,9 @@ namespace openPDC.UI.DataModels
                 // Nothing will change in phasor itself.
                 if (device.ID > 0)
                 {
-                    foreach (Phasor phasor in Phasor.Load(database, device.ID))
+                    IList<int> keys = null;
+
+                    foreach (Phasor phasor in Phasor.Load(database, device.ID, keys))
                     {
                         Phasor.Save(database, phasor);
                     }
