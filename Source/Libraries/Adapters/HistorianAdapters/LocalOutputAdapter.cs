@@ -797,7 +797,7 @@ namespace HistorianAdapters
         // Static Methods
 
         // Apply historian configuration optimizations at start-up
-        private static void OptimizeLocalHistorianSettings(IDbConnection connection, Type adapterType, string nodeIDQueryString, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
+        private static void OptimizeLocalHistorianSettings(IDbConnection connection, Type adapterType, string nodeIDQueryString, string arguments, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
             // Make sure setting exists to allow user to by-pass local historian optimizations at startup
             ConfigurationFile configFile = ConfigurationFile.Current;

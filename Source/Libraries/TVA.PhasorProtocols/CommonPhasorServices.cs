@@ -718,7 +718,7 @@ namespace TVA.PhasorProtocols
         /// <param name="statusMessage">The delegate which will display a status message to the user.</param>
         /// <param name="processException">The delegate which will handle exception logging.</param>
         [SuppressMessage("Microsoft.Maintainability", "CA1502"), SuppressMessage("Microsoft.Maintainability", "CA1505")]
-        private static void PhasorDataSourceValidation(IDbConnection connection, Type adapterType, string nodeIDQueryString, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
+        private static void PhasorDataSourceValidation(IDbConnection connection, Type adapterType, string nodeIDQueryString, string arguments, Action<object, EventArgs<string>> statusMessage, Action<object, EventArgs<Exception>> processException)
         {
             // Make sure setting exists to allow user to by-pass phasor data source validation at startup
             ConfigurationFile configFile = ConfigurationFile.Current;
@@ -728,6 +728,16 @@ namespace TVA.PhasorProtocols
             // See if this node should process phasor source validation
             if (settings["ProcessPhasorDataSourceValidation"].ValueAsBoolean())
             {
+                Dictionary<string, string> args = new Dictionary<string, string>();
+                bool skipOptimization = false;
+                string arg;
+
+                if (!string.IsNullOrEmpty(arguments))
+                    args = arguments.ParseKeyValuePairs();
+
+                if (args.TryGetValue("skipOptimization", out arg))
+                    skipOptimization = arg.ParseBoolean();
+
                 // Verify data publisher settings are set to no compression
                 settings = configFile.Settings["datapublisher"];
                 settings["Compression", true].Update("NoCompression");
@@ -938,7 +948,7 @@ namespace TVA.PhasorProtocols
                         else
                         {
                             // To reduce time required to execute these steps, only first statistic is verfied to exist
-                            if (firstStatisticExisted)
+                            if (!skipOptimization && firstStatisticExisted)
                                 break;
                         }
                     }
@@ -980,7 +990,7 @@ namespace TVA.PhasorProtocols
                         else
                         {
                             // To reduce time required to execute these steps, only first statistic is verfied to exist
-                            if (firstStatisticExisted)
+                            if (!skipOptimization && firstStatisticExisted)
                                 break;
                         }
                     }
@@ -999,7 +1009,7 @@ namespace TVA.PhasorProtocols
                         signalReference = SignalReference.ToString(acronym, SignalKind.Statistic, signalIndex);
 
                         // To reduce time required to execute these steps, only first statistic is verfied to exist
-                        if (!firstStatisticExisted)
+                        if (!skipOptimization && !firstStatisticExisted)
                         {
                             firstStatisticExisted = (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}'", signalReference))) == 0);
 
@@ -1050,7 +1060,7 @@ namespace TVA.PhasorProtocols
                         else
                         {
                             // To reduce time required to execute these steps, only first statistic is verfied to exist
-                            if (firstStatisticExisted)
+                            if (!skipOptimization && firstStatisticExisted)
                                 break;
                         }
                     }
