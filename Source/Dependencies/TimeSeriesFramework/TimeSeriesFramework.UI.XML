@@ -917,12 +917,23 @@
             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Adapter"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Adapter.Load(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.AdapterType)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Adapter.LoadIDs(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.AdapterType,System.String,System.String)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Adapter"/> IDs as an <see cref="T:System.Collections.Generic.IList`1"/>.
+            </summary>        
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="adapterType"><see cref="T:TimeSeriesFramework.UI.DataModels.AdapterType"/> collection to be returned.</param>      
+            <param name="sortMember">The field to sort by.</param>
+            <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>  
+            <returns>Collection of <see cref="T:System.Int32"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Adapter.Load(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.AdapterType,System.Collections.Generic.IList{System.Int32})">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Adapter"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>        
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="adapterType"><see cref="T:TimeSeriesFramework.UI.DataModels.AdapterType"/> collection to be returned.</param>        
+            <param name="adapterType"><see cref="T:TimeSeriesFramework.UI.DataModels.AdapterType"/> collection to be returned.</param>     
+            <param name="keys">Keys of the adapters to be loaded from the database.</param>   
             <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Adapter"/>.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Adapter.GetLookupList(TVA.Data.AdoDataConnection,TimeSeriesFramework.UI.DataModels.AdapterType,System.Boolean)">
@@ -1031,11 +1042,21 @@
             Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> class.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Alarm.Load(TVA.Data.AdoDataConnection)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Alarm.LoadKeys(TVA.Data.AdoDataConnection,System.String,System.String)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> IDs as an <see cref="T:System.Collections.Generic.IList`1"/>.
+            </summary>        
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="sortMember">The field to sort by.</param>
+            <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+            <returns>Collection of <see cref="T:System.Int32"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Alarm.Load(TVA.Data.AdoDataConnection,System.Collections.Generic.IList{System.Int32})">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>        
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="keys">Keys of the adapters to be loaded from the database.</param>
             <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/>.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Alarm.GetAlarm(TVA.Data.AdoDataConnection,System.String)">
@@ -1359,11 +1380,21 @@
             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Company.Load(TVA.Data.AdoDataConnection)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Company.LoadKeys(TVA.Data.AdoDataConnection,System.String,System.String)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> IDs as an <see cref="T:System.Collections.Generic.IList`1"/>.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="sortMember">The field to sort by.</param>
+            <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+            <returns>Collection of <see cref="T:System.Int32"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Company.Load(TVA.Data.AdoDataConnection,System.Collections.Generic.IList{System.Int32})">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="keys">Keys of the companies to be loaded from the database.</param>
             <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Company"/>.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Company.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
@@ -1480,7 +1511,16 @@
             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Historian"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Historian.Load(TVA.Data.AdoDataConnection)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Historian.LoadKeys(TVA.Data.AdoDataConnection,System.String,System.String)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Historian"/> IDs as an <see cref="T:System.Collections.Generic.IList`1"/>.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="sortMember">The field to sort by.</param>
+            <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+            <returns>Collection of <see cref="T:System.Int32"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Historian.Load(TVA.Data.AdoDataConnection,System.Collections.Generic.IList{System.Int32})">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Historian"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
@@ -1684,7 +1724,7 @@
         </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.LoadSignalIDs(TVA.Data.AdoDataConnection,System.Int32,System.Boolean,System.Boolean,System.String,System.String,System.String)">
             <summary>
-            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> signal IDs as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/> signal IDs as an <see cref="T:System.Collections.Generic.IList`1"/>.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
             <param name="deviceID">ID of the Device to filter data.</param>
@@ -1693,7 +1733,7 @@
             <param name="searchText">The text to search by.</param>
             <param name="sortMember">The field to sort by.</param>
             <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
-            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Measurement"/>.</returns>
+            <returns>Collection of <see cref="T:System.Guid"/>.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Measurement.LoadFromKeys(TVA.Data.AdoDataConnection,System.Collections.Generic.List{System.Guid})">
             <summary>
@@ -1956,11 +1996,21 @@
             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Node.Load(TVA.Data.AdoDataConnection)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Node.LoadKeys(TVA.Data.AdoDataConnection,System.String,System.String)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> IDs as an <see cref="T:System.Collections.Generic.IList`1"/>.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="sortMember">The field to sort by.</param>
+            <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+            <returns>Collection of <see cref="T:System.Guid"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Node.Load(TVA.Data.AdoDataConnection,System.Collections.Generic.IList{System.Guid})">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
-            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>        
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="keys">Keys of the nodes to be loaded from the database.</param>
             <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Node"/>.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Node.GetCurrentNode(TVA.Data.AdoDataConnection)">

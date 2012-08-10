@@ -346,6 +346,12 @@
             Method to check if property has changed and if so then either save or ask user's confirmation.
             </summary>
         </member>
+        <member name="M:TimeSeriesFramework.UI.PagedViewModelBase`2.SetCurrentPageNumber(System.Int32)">
+            <summary>
+            Sets the current page number without initiating a call to <see cref="M:TimeSeriesFramework.UI.PagedViewModelBase`2.Load"/>.
+            </summary>
+            <param name="currentPageNumber">The new value for the current page number.</param>
+        </member>
         <member name="M:TimeSeriesFramework.UI.PagedViewModelBase`2.OnPropertyChanged(System.String)">
             <summary>
             Raises the <see cref="E:TimeSeriesFramework.UI.PagedViewModelBase`2.PropertyChanged"/> event.
@@ -1788,12 +1794,19 @@
             Also sorts the data if sort is applied before refresh.
             </summary>
         </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.SortData(System.String,System.ComponentModel.ListSortDirection)">
+            <summary>
+            Sorts model data.
+            </summary>
+            <param name="sortMemberPath">Member path for sorting.</param>
+            <param name="sortDirection">Ascending or descending.</param>
+        </member>
         <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.Sort(System.Int32)">
             <summary>
             Initiates parent sortmethod.
             Set current selected item after sort based on display index.
             </summary>
-            <param name="idxCurItem">Index of selected item before sort</param>
+            <param name="currentItemKey">Index of selected item before sort</param>
         </member>
         <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.ShowErrorLog">
             <summary>
@@ -1819,11 +1832,6 @@
             Get current item index.
             </summary>
             <returns>Returns String representation of current index.</returns>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.LastSortMemberPath">
-            <summary>
-            Gets or sets <see cref="P:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.LastSortMemberPath"/> Sort Member Path of DataGrid.
-            </summary>
         </member>
         <member name="P:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.Monitor">
             <summary>
@@ -2102,11 +2110,12 @@
             Does nothing.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.SortData(System.String)">
+        <member name="M:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.SortData(System.String,System.ComponentModel.ListSortDirection)">
             <summary>
             Sorts model data.
             </summary>
             <param name="sortMemberPath">Member path for sorting.</param>
+            <param name="sortDirection">Ascending or descending.</param>
         </member>
         <member name="P:TimeSeriesFramework.UI.ViewModels.RaisedAlarms.Monitor">
             <summary>
