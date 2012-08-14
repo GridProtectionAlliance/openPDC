@@ -435,7 +435,7 @@ namespace openPDC.UI.UserControls
         private void m_unsynchronizedSubscriber_ConnectionTerminated(object sender, EventArgs e)
         {
             m_subscribedUnsynchronized = false;
-            UnsubscribeUnsynchronizedData();
+            StopUnsynchronizedSubscription();
             try
             {
                 ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
