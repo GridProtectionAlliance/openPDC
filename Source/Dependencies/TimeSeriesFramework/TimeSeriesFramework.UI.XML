@@ -1186,6 +1186,11 @@
             Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> OperationDescription
             </summary>
         </member>
+        <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.SeverityName">
+            <summary>
+            Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> SeverityName
+            </summary>
+        </member>
         <member name="P:TimeSeriesFramework.UI.DataModels.Alarm.CreateAssociatedMeasurement">
             <summary>
             Gets or sets <see cref="T:TimeSeriesFramework.UI.DataModels.Alarm"/> CreateAssociatedMeasurement
@@ -2553,11 +2558,22 @@
              Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.Load(TVA.Data.AdoDataConnection)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.LoadKeys(TVA.Data.AdoDataConnection,System.String,System.String)">
+            <summary>
+            LoadKeys <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="deviceID">ID of the <see cref="!:Device"/> to filter data.</param>
+            <param name="sortMember">The field to sort by.</param>
+            <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+            <returns>Collection of <see cref="!:Phasor"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.Load(TVA.Data.AdoDataConnection,System.Collections.Generic.IList{System.Int32})">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="Keys">Keys of the Measurement to be loaded from the database</param>
             <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.Vendor"/>.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.Vendor.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
@@ -2639,11 +2655,22 @@
             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.VendorDevice"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.DataModels.VendorDevice.Load(TVA.Data.AdoDataConnection)">
+        <member name="M:TimeSeriesFramework.UI.DataModels.VendorDevice.LoadKeys(TVA.Data.AdoDataConnection,System.String,System.String)">
+            <summary>
+            LoadKeys <see cref="T:TimeSeriesFramework.UI.DataModels.VendorDevice"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="deviceID">ID of the <see cref="!:Device"/> to filter data.</param>
+            <param name="sortMember">The field to sort by.</param>
+            <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+            <returns>Collection of <see cref="!:Phasor"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.VendorDevice.Load(TVA.Data.AdoDataConnection,System.Collections.Generic.IList{System.Int32})">
             <summary>
             Loads <see cref="T:TimeSeriesFramework.UI.DataModels.VendorDevice"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
             <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="Keys">Keys of the Measurement to be loaded from the database</param>
             <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.VendorDevice"/>.</returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.DataModels.VendorDevice.GetLookupList(TVA.Data.AdoDataConnection,System.Boolean)">
