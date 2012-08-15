@@ -278,9 +278,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpriExport", "Libraries\Ada
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMUConnectionTester", "Libraries\PMUConnectionTester\PMUConnectionTester.csproj", "{AFFE84C3-9703-4DDA-8733-39B9894A2848}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPG.UI", "Libraries\openPG.UI\openPG.UI.csproj", "{94F36768-E9A0-4783-BB0F-8C2C1771352E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPG.UI.WPF", "Libraries\openPG.UI.WPF\openPG.UI.WPF.csproj", "{134819C5-C1BB-4ED1-BE23-49AB5FB33744}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 21
+		SccNumberOfProjects = 23
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -364,6 +368,14 @@ Global
 		SccProjectTopLevelParentUniqueName20 = Synchrophasor.sln
 		SccProjectName20 = Libraries/PMUConnectionTester
 		SccLocalPath20 = Libraries\\PMUConnectionTester
+		SccProjectUniqueName21 = Libraries\\openPG.UI\\openPG.UI.csproj
+		SccProjectTopLevelParentUniqueName21 = Synchrophasor.sln
+		SccProjectName21 = Libraries/openPG.UI
+		SccLocalPath21 = Libraries\\openPG.UI
+		SccProjectUniqueName22 = Libraries\\openPG.UI.WPF\\openPG.UI.WPF.csproj
+		SccProjectTopLevelParentUniqueName22 = Synchrophasor.sln
+		SccProjectName22 = Libraries/openPG.UI.WPF
+		SccLocalPath22 = Libraries\\openPG.UI.WPF
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
@@ -726,6 +738,42 @@ Global
 		{AFFE84C3-9703-4DDA-8733-39B9894A2848}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AFFE84C3-9703-4DDA-8733-39B9894A2848}.Release|x86.ActiveCfg = Release|x86
 		{AFFE84C3-9703-4DDA-8733-39B9894A2848}.Release|x86.Build.0 = Release|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|x86.ActiveCfg = Debug|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|x86.Build.0 = Debug|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Deploy|Any CPU.Build.0 = Release|Any CPU
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Deploy|Mixed Platforms.ActiveCfg = Debug|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Deploy|Mixed Platforms.Build.0 = Debug|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Deploy|x86.ActiveCfg = Release|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Deploy|x86.Build.0 = Release|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Release|Mixed Platforms.Build.0 = Release|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Release|x86.ActiveCfg = Release|x86
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Release|x86.Build.0 = Release|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Debug|x86.ActiveCfg = Debug|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Debug|x86.Build.0 = Debug|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Deploy|Any CPU.Build.0 = Release|Any CPU
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Deploy|Mixed Platforms.ActiveCfg = Debug|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Deploy|Mixed Platforms.Build.0 = Debug|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Deploy|x86.ActiveCfg = Release|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Deploy|x86.Build.0 = Release|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|Any CPU.Build.0 = Release|Any CPU
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|Mixed Platforms.Build.0 = Release|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|x86.ActiveCfg = Release|x86
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -747,6 +795,8 @@ Global
 		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{57261E91-7636-4F92-8D93-744A4AAD7EB0} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{AFFE84C3-9703-4DDA-8733-39B9894A2848} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
+		{94F36768-E9A0-4783-BB0F-8C2C1771352E} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
+		{134819C5-C1BB-4ED1-BE23-49AB5FB33744} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{D71CBFB5-291F-484E-9DAE-7442F4CA746A} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
