@@ -18,10 +18,12 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/10/2011 - Aniket Salver
 //       Generated original version of source code.
-//   09/19/2011 - Mehulbhai P Thakkar
+//  09/19/2011 - Mehulbhai P Thakkar
 //       Added OnPropertyChanged() on all properties to reflect changes on UI.
 //       Fixed Load() and GetLookupList() static methods.
-//  09/15/2012 - Aniket Salver 
+//  06/27/2012- Vijay Sukhavasi
+//        Modified Delete() to delete measurements associated with digital 
+//  08/15/2012 - Aniket Salver 
 //          Added paging and sorting technique. 
 //
 //******************************************************************************************************
@@ -428,6 +430,10 @@ namespace openPDC.UI.DataModels
         public static string Delete(AdoDataConnection database, int OutputStreamDeviceDigitalID)
         {
             bool createdConnection = false;
+            string digitalSignalReference;
+            int outputStreamDeviceID;
+            string nextdigitalSignalReference = "";
+            bool digitaldeleted = false;
 
             try
             {
@@ -436,7 +442,41 @@ namespace openPDC.UI.DataModels
                 // Setup current user context for any delete triggers
                 CommonFunctions.SetCurrentUserContext(database);
 
+                GetToDeleteMeasurementDetails(database, "WHERE ID = " + OutputStreamDeviceDigitalID, out digitalSignalReference, out outputStreamDeviceID);
+                int lastnumofdeletedSignalReference = getSignalReferenceLastNumber(digitalSignalReference);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamMeasurement WHERE SignalReference = {0}", "signalReference"), DefaultTimeout, digitalSignalReference);
+                int presentDeviceDigitalcount = database.Connection.RetrieveData(database.AdapterType, "SELECT * FROM OutputStreamDeviceDigital WHERE OutputStreamDeviceID= " + outputStreamDeviceID).Rows.Count;
+                //using signal reference of measurement deleted build the next signal reference(increment by 1 ) 
+                nextdigitalSignalReference = digitalSignalReference.Substring(0, digitalSignalReference.Length - 1) + (lastnumofdeletedSignalReference + 1).ToString();
+                for (int i = lastnumofdeletedSignalReference; i < presentDeviceDigitalcount; i++)
+                {
+
+                    ////obtain details of measurements of the deleted measurements,then modify the signal reference(decrement by 1) and put it back
+                    OutputStreamMeasurement outputStreamMeasurement = obtainMeasurementDetails(database, nextdigitalSignalReference);
+                    outputStreamMeasurement.SignalReference = nextdigitalSignalReference.Substring(0, nextdigitalSignalReference.Length - (i + 1).ToString().Length) + i.ToString();
+                    nextdigitalSignalReference = nextdigitalSignalReference.Substring(0, nextdigitalSignalReference.Length - (i + 1).ToString().Length) + (i + 2).ToString();//fixed for sigrefnum>10 svk_7/20/12
+                    OutputStreamMeasurement.Save(database, outputStreamMeasurement);
+                }
+
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamDeviceDigital WHERE ID = {0}", "outputStreamDeviceDigitalID"), DefaultTimeout, OutputStreamDeviceDigitalID);
+                
+                digitaldeleted = true;
+                return "OutputStreamDeviceDigital and its Measurements deleted successfully";
+            }
+            catch (Exception Ex)
+            {
+                if (nextdigitalSignalReference == "")
+                {
+                    MessageBox.Show("No Digital deleted  and None of  measurements effected");
+                }
+                else
+                {
+                    MessageBox.Show("Digital deleted and last effected Measurements are /n" + nextdigitalSignalReference + "effected");
+                }
+                CommonFunctions.LogException(database, "OutputStreamDeviceDigital.Delete", Ex);
+                DialogResult dialogResult = MessageBox.Show("Could not delete or modify measurements" + "\n Please Check Measurements" + " \n Do you want to delete this Digital ? ", "", MessageBoxButtons.YesNo);
+                if ((dialogResult == DialogResult.Yes) && digitaldeleted)
+                {
 
                 return "OutputStreamDeviceDigital deleted successfully";
             }

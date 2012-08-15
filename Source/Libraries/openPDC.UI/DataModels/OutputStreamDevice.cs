@@ -16,15 +16,17 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//   08/4/2011 - Aniket Salver
+//   08/04/2011 - Aniket Salver
 //       Generated original version of source code.
 //   09/19/2011 - Mehulbhai P Thakkar
 //       Added OnPropertyChanged() on all properties to reflect changes on UI.
 //       Fixed Load() and GetLookupList() static methods.
 //   09/21/2011 - Aniket Salver
-//       Fixed Bug, which helps in enabling the save button on the screen 
-//  09/14/2012 - Aniket Salver 
-//          Added paging and sorting technique. 
+//       Fixed Bug, which helps in enabling the save button on the screen
+//   08/03/2012 - Vijay Sukhavasi
+//       Fix add digitals/analogs check boxes while configuring output stream
+//   08/14/2012 - Aniket Salver 
+//       Added paging and sorting technique.
 //******************************************************************************************************
 
 using System;
@@ -658,7 +660,7 @@ namespace openPDC.UI.DataModels
 
                     outputStreamDevice = GetOutputStreamDevice(database, "WHERE Acronym = '" + outputStreamDevice.Acronym + "' AND AdapterID = " + outputStreamID);
 
-                    if (outputStreamDevice != null)
+                    if ((object)outputStreamDevice != null)
                     {
                         IList<int> Keys = null;
                         ObservableCollection<Phasor> phasors = Phasor.Load(database, device.ID, Keys);
@@ -682,13 +684,16 @@ namespace openPDC.UI.DataModels
                             {
                                 measurement.SignalReference = measurement.SignalReference.Substring(measurement.SignalReference.LastIndexOf("!") + 1);
 
-                                OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
-                                outputStreamMeasurement.NodeID = device.NodeID;
-                                outputStreamMeasurement.AdapterID = outputStreamID;
-                                outputStreamMeasurement.HistorianID = measurement.HistorianID;
-                                outputStreamMeasurement.PointID = measurement.PointID;
-                                outputStreamMeasurement.SignalReference = measurement.SignalReference;
-                                OutputStreamMeasurement.Save(database, outputStreamMeasurement);
+                                if ((measurement.SignalAcronym != "ALOG" && measurement.SignalAcronym != "DIGI") || (measurement.SignalAcronym == "ALOG" && addAnalogs) || (measurement.SignalAcronym == "DIGI" && addDigitals))
+                                {
+                                    OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
+                                    outputStreamMeasurement.NodeID = device.NodeID;
+                                    outputStreamMeasurement.AdapterID = outputStreamID;
+                                    outputStreamMeasurement.HistorianID = measurement.HistorianID;
+                                    outputStreamMeasurement.PointID = measurement.PointID;
+                                    outputStreamMeasurement.SignalReference = measurement.SignalReference;
+                                    OutputStreamMeasurement.Save(database, outputStreamMeasurement);
+                                }
 
                                 if (addAnalogs && measurement.SignalAcronym == "ALOG")
                                 {
