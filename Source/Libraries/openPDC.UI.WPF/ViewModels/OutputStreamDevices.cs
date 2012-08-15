@@ -23,6 +23,8 @@
 //  09/16/2011 - Mehulbhai P Thakkar
 //       Modified Load() method to display binding properly.
 //       Added commands to go to other screens.
+//  09/14/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //
 //******************************************************************************************************
 
@@ -35,6 +37,7 @@ using openPDC.UI.UserControls;
 using openPDCManager.UI.DataModels;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
+using System.Linq;
 
 namespace openPDC.UI.ViewModels
 {
@@ -272,8 +275,16 @@ namespace openPDC.UI.ViewModels
         {
             try
             {
-                ItemsSource = OutputStreamDevice.Load(null, OutputStreamID);
+                List<int> pageKeys = null;
+                if ((object)ItemsKeys == null)
+           
+                    ItemsKeys = OutputStreamDevice.LoadKeys(null, OutputStreamID, SortMember, SortDirection);
+
+                pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
+
+                ItemsSource = OutputStreamDevice.Load(null, OutputStreamID, pageKeys);
                 CurrentItem.AdapterID = m_outputStreamID;
+                
             }
             catch (Exception ex)
             {
