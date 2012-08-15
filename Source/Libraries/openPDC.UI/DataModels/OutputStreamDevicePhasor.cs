@@ -23,6 +23,8 @@
 //   09/19/2011 - Mehulbhai P Thakkar
 //       Added OnPropertyChanged() on all properties to reflect changes on UI.
 //       Fixed Load() and GetLookupList() static methods.
+//  09/15/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //
 //******************************************************************************************************
 
@@ -34,6 +36,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using TimeSeriesFramework.UI;
 using TVA.Data;
+using System.Linq;
 
 namespace openPDC.UI.DataModels
 {
@@ -295,12 +298,54 @@ namespace openPDC.UI.DataModels
         // Static Methods      
 
         /// <summary>
+        /// LoadKeys <see cref="OutputStreamDevicePhasor"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamDeviceID">ID of the output stream device to filter data.</param>
+        /// <param name="sortMember">The field to sort by.</param>
+        /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+        /// <returns>Collection of <see cref="OutputStreamDevicePhasor"/>.</returns>
+        public static IList<int> LoadKeys(AdoDataConnection database, int outputStreamDeviceID, string sortMember, string sortDirection)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                IList<int> outputStreamDevicePhasorList = new List<int>();
+                DataTable OutputStreamDevicePhasorTable;
+
+                string sortClause = string.Empty;
+
+                if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
+                    sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
+
+                OutputStreamDevicePhasorTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID FROM OutputStreamDevicePhasor WHERE ID IN = {1} {0}", sortClause, outputStreamDeviceID));
+
+                foreach (DataRow row in OutputStreamDevicePhasorTable.Rows)
+                {
+                    outputStreamDevicePhasorList.Add((row.ConvertField<int>("ID")));
+                }
+
+
+                return outputStreamDevicePhasorList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Loads <see cref="OutputStreamDevicePhasor"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="outputStreamDeviceID">ID of the output stream device to filter data.</param>
+        /// <param name="Keys">Keys of the measuremnets to be loaded from the database</param>
         /// <returns>Collection of <see cref="OutputStreamDevicePhasor"/>.</returns>
-        public static ObservableCollection<OutputStreamDevicePhasor> Load(AdoDataConnection database, int outputStreamDeviceID)
+        public static ObservableCollection<OutputStreamDevicePhasor> Load(AdoDataConnection database, int outputStreamDeviceID, IList<int> Keys)
         {
             bool createdConnection = false;
 
@@ -309,30 +354,36 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<OutputStreamDevicePhasor> OutputStreamDevicePhasorList = new ObservableCollection<OutputStreamDevicePhasor>();
-                string query = database.ParameterizedQueryString("SELECT NodeID, OutputStreamDeviceID, ID, Label, Type, Phase, ScalingValue, LoadOrder " +
-                    "FROM OutputStreamDevicePhasor WHERE OutputStreamDeviceID = {0} ORDER BY LoadOrder", "id");
-                DataTable OutputStreamDevicePhasorTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamDeviceID);
+                DataTable OutputStreamDevicePhasorTable;
+                string query;
+                string commaSeparatedKeys;
 
-
-                foreach (DataRow row in OutputStreamDevicePhasorTable.Rows)
+                if ((object)Keys != null && Keys.Count > 0)
                 {
-                    OutputStreamDevicePhasorList.Add(new OutputStreamDevicePhasor()
-                    {
-                        NodeID = row.ConvertField<Guid>("NodeID"),
-                        OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
-                        ID = row.ConvertField<int>("ID"),
-                        Label = row.Field<string>("Label"),
-                        Type = row.Field<string>("Type"),
-                        Phase = row.Field<string>("Phase"),
-                        ScalingValue = row.ConvertField<int>("ScalingValue"),
-                        LoadOrder = row.ConvertField<int>("LoadOrder"),
-                        m_phaseType = row.Field<string>("Phase") == "+" ? "Positive Sequence" : row.Field<string>("Phase") == "-" ? "Negative Sequence" :
-                                                                row.Field<string>("Phase") == "0" ? "Zero Sequence" : row.Field<string>("Phase") == "A" ? "Phase A" :
-                                                                row.Field<string>("Phase") == "B" ? "Phase B" : "Phase C",
-                        m_phasorType = row.Field<string>("Type") == "V" ? "Voltage" : "Current"
-                    });
-                }
+                    commaSeparatedKeys = Keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    query = database.ParameterizedQueryString(string.Format("SELECT NodeID, OutputStreamDeviceID, ID, Label, Type, Phase, ScalingValue, LoadOrder " +
+                          "FROM OutputStreamDevicePhasor WHERE ID IN ({0})", commaSeparatedKeys));
+                    OutputStreamDevicePhasorTable = database.Connection.RetrieveData(database.AdapterType, query);
 
+                    foreach (DataRow row in OutputStreamDevicePhasorTable.Rows)
+                    {
+                        OutputStreamDevicePhasorList.Add(new OutputStreamDevicePhasor()
+                        {
+                            NodeID = row.ConvertField<Guid>("NodeID"),
+                            OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
+                            ID = row.ConvertField<int>("ID"),
+                            Label = row.Field<string>("Label"),
+                            Type = row.Field<string>("Type"),
+                            Phase = row.Field<string>("Phase"),
+                            ScalingValue = row.ConvertField<int>("ScalingValue"),
+                            LoadOrder = row.ConvertField<int>("LoadOrder"),
+                            m_phaseType = row.Field<string>("Phase") == "+" ? "Positive Sequence" : row.Field<string>("Phase") == "-" ? "Negative Sequence" :
+                                                                    row.Field<string>("Phase") == "0" ? "Zero Sequence" : row.Field<string>("Phase") == "A" ? "Phase A" :
+                                                                    row.Field<string>("Phase") == "B" ? "Phase B" : "Phase C",
+                            m_phasorType = row.Field<string>("Type") == "V" ? "Voltage" : "Current"
+                        });
+                    }
+                }
                 return OutputStreamDevicePhasorList;
             }
             finally

@@ -23,6 +23,8 @@
 //  09/16/2011 - Mehulbhai P Thakkar
 //       Modified constructor to filter data by output stream device id.
 //       Overrode Load() method to apply above metioned filter.
+//  09/15/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //
 //******************************************************************************************************
 
@@ -31,6 +33,7 @@ using System.Collections.Generic;
 using System.Windows;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
+using System.Linq;
 
 namespace openPDC.UI.ViewModels
 {
@@ -164,8 +167,13 @@ namespace openPDC.UI.ViewModels
         {
             try
             {
-                ItemsSource = OutputStreamDevicePhasor.Load(null, m_outputStreamDeviceID);
-                CurrentItem.OutputStreamDeviceID = m_outputStreamDeviceID;
+                List<int> pageKeys = null;
+                if ((object)ItemsKeys == null)
+                    ItemsKeys = OutputStreamDevicePhasor.LoadKeys(null,m_outputStreamDeviceID, SortMember, SortDirection);
+
+                pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
+
+                ItemsSource = OutputStreamDevicePhasor.Load(null, m_outputStreamDeviceID,pageKeys);
             }
             catch (Exception ex)
             {
