@@ -26,10 +26,10 @@
             <Button Content="Show All" Command="{Binding Path=ShowAllCommand}" ToolTip="Show all devices" Margin="2"/>
         </StackPanel>
         
-        <sdk:DataGrid ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" 
+        <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" 
                       PreviewKeyDown="DataGrid_PreviewKeyDown" Sorting="DataGrid_Sorting">
             <sdk:DataGrid.Columns>
-                <sdk:DataGridTemplateColumn Header="Acronym" Width="3*">
+                <sdk:DataGridTemplateColumn Header="Acronym" Width="3*" SortMemberPath="Acronym">
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="{tsfBinding:Column Path=Acronym}" 
@@ -39,7 +39,7 @@
                     </sdk:DataGridTemplateColumn.CellTemplate>
                 </sdk:DataGridTemplateColumn>
                 <sdk:DataGridCheckBoxColumn Header="Concentrator" Width="2*" Binding="{tsfBinding:Column Path=IsConcentrator}" CellStyle="{StaticResource CenterAlignCellStyle}" IsReadOnly="True"/>
-                <sdk:DataGridTemplateColumn Header="Enabled" Width="*">
+                <sdk:DataGridTemplateColumn Header="Enabled" Width="*" SortMemberPath="Enabled" >
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <CheckBox IsChecked="{tsfBinding:Column Path=Enabled}" HorizontalAlignment="Center"/>

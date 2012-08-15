@@ -34,7 +34,8 @@
 //       Modified Save method to create or update associated measurements.
 //  09/23/2011 - Mehulbhai P Thakkar
 //       Added static method to retrieve new devices for output stream.
-//
+//  09/14/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //******************************************************************************************************
 
 using System;
@@ -47,6 +48,7 @@ using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.DataModels;
 using TVA;
 using TVA.Data;
+using System.Linq;
 
 namespace openPDC.UI.DataModels
 {
@@ -915,13 +917,53 @@ namespace openPDC.UI.DataModels
 
         // Static Methods
 
+         /// <summary>
+        /// LoadKeys <see cref="Phasor"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="deviceID">ID of the <see cref="Device"/> to filter data.</param>
+        /// <param name="sortMember">The field to sort by.</param>
+        /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+        /// <returns>Collection of <see cref="Phasor"/>.</returns>
+        public static IList<int> LoadKeys(AdoDataConnection database,string sortMember, string sortDirection)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                IList<int> deviceList = new List<int>();
+                DataTable deviceTable;
+
+                string sortClause = string.Empty;
+
+                if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
+                    sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
+
+                deviceTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From DeviceDetail {0}", sortClause));
+
+                foreach (DataRow row in deviceTable.Rows)
+                {
+                    deviceList.Add(row.ConvertField<int>("ID"));
+                }
+                return deviceList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
         /// <summary>
         /// Loads <see cref="Device"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>        
         /// <param name="parentID">ID of the parent device to filter data.</param>
+        /// <param name="Keys">Keys of the measurement to be loaded from the database</param>
         /// <returns>Collection of <see cref="Device"/>.</returns>
-        public static ObservableCollection<Device> Load(AdoDataConnection database, int parentID = 0)
+        public static ObservableCollection<Device> Load(AdoDataConnection database,List<int> Keys,int parentID = 0)
         {
             bool createdConnection = false;
 
@@ -932,70 +974,83 @@ namespace openPDC.UI.DataModels
                 ObservableCollection<Device> deviceList = new ObservableCollection<Device>();
                 DataTable deviceTable;
                 string query;
+                string commaSeparatedKeys;
+                string conditionClause;
 
-                if (parentID > 0)
+                if ((object)Keys != null && Keys.Count > 0)
                 {
-                    query = database.ParameterizedQueryString("SELECT * FROM DeviceDetail WHERE NodeID = {0} AND ParentID = {1} ORDER BY Acronym", "nodeID", "parentID");
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), parentID);
-                }
-                else
-                {
-                    query = database.ParameterizedQueryString("SELECT * FROM DeviceDetail WHERE NodeID = {0} ORDER BY Acronym", "nodeID");
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
-                }
+                    commaSeparatedKeys = Keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    conditionClause = "ID IN (" + commaSeparatedKeys + ")";
 
-                foreach (DataRow row in deviceTable.Rows)
-                {
-                    deviceList.Add(new Device()
+                    if (parentID > 0)
                     {
-                        NodeID = database.Guid(row, "NodeID"),
-                        ID = row.ConvertField<int>("ID"),
-                        ParentID = row.ConvertNullableField<int>("ParentID"),
-                        UniqueID = database.Guid(row, "UniqueID"),
-                        Acronym = row.Field<string>("Acronym"),
-                        Name = row.Field<string>("Name"),
-                        IsConcentrator = Convert.ToBoolean(row.Field<object>("IsConcentrator")),
-                        CompanyID = row.ConvertNullableField<int>("CompanyID"),
-                        HistorianID = row.ConvertNullableField<int>("HistorianID"),
-                        AccessID = row.ConvertField<int>("AccessID"),
-                        VendorDeviceID = row.ConvertNullableField<int>("VendorDeviceID"),
-                        ProtocolID = row.ConvertNullableField<int>("ProtocolID"),
-                        Longitude = row.ConvertNullableField<decimal>("Longitude"),
-                        Latitude = row.ConvertNullableField<decimal>("Latitude"),
-                        InterconnectionID = row.ConvertNullableField<int>("InterconnectionID"),
-                        ConnectionString = ParseConnectionString(row.Field<string>("ConnectionString").ToNonNullString()),
-                        AlternateCommandChannel = ParseAlternateCommand(row.Field<string>("ConnectionString").ToNonNullString()),
-                        TimeZone = row.Field<string>("TimeZone"),
-                        FramesPerSecond = Convert.ToInt32(row.Field<object>("FramesPerSecond") ?? 30),
-                        TimeAdjustmentTicks = Convert.ToInt64(row.Field<object>("TimeAdjustmentTicks")),
-                        DataLossInterval = row.ConvertField<double>("DataLossInterval"),
-                        ContactList = row.Field<string>("ContactList"),
-                        MeasuredLines = row.ConvertNullableField<int>("MeasuredLines"),
-                        LoadOrder = row.ConvertField<int>("LoadOrder"),
-                        Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
-                        CreatedOn = row.Field<DateTime>("CreatedOn"),
-                        AllowedParsingExceptions = Convert.ToInt32(row.Field<object>("AllowedParsingExceptions")),
-                        ParsingExceptionWindow = row.ConvertField<double>("ParsingExceptionWindow"),
-                        DelayedConnectionInterval = row.ConvertField<double>("DelayedConnectionInterval"),
-                        AllowUseOfCachedConfiguration = Convert.ToBoolean(row.Field<object>("AllowUseOfCachedConfiguration")),
-                        AutoStartDataParsingSequence = Convert.ToBoolean(row.Field<object>("AutoStartDataParsingSequence")),
-                        SkipDisableRealTimeData = Convert.ToBoolean(row.Field<object>("SkipDisableRealTimeData")),
-                        MeasurementReportingInterval = Convert.ToInt32(row.Field<object>("MeasurementReportingInterval")),
-                        ConnectOnDemand = Convert.ToBoolean(row.Field<object>("ConnectOnDemand")),
-                        m_companyName = row.Field<string>("CompanyName"),
-                        m_companyAcronym = row.Field<string>("CompanyAcronym"),
-                        m_historianAcronym = row.Field<string>("HistorianAcronym"),
-                        m_vendorDeviceName = row.Field<string>("VendorDeviceName"),
-                        m_vendorAcronym = row.Field<string>("VendorAcronym"),
-                        m_protocolName = row.Field<string>("ProtocolName"),
-                        m_protocolCategory = row.Field<string>("Category"),
-                        m_interconnectionName = row.Field<string>("InterconnectionName"),
-                        m_nodeName = row.Field<string>("NodeName"),
-                        m_parentAcronym = row.Field<string>("ParentAcronym"),
-                        m_originalSource = row.Field<string>("OriginalSource")
-                    });
-                }
+                        query = string.Format("SELECT * FROM DeviceDetail WHERE NodeID = {{0}} AND ParentID = {{1}} and {0} ", conditionClause);
+                        query = database.ParameterizedQueryString(query, "nodeID", "parentID");
+                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID(), parentID);
 
+                    }
+                    else
+                    {
+                        query = string.Format("SELECT * FROM DeviceDetail WHERE NodeID = {{0}} AND {0} ", conditionClause);
+                        query = database.ParameterizedQueryString(query, "nodeID");
+                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID());
+                      
+                    }
+
+                    foreach (DataRow row in deviceTable.Rows)
+                    {
+                        deviceList.Add(new Device()
+                        {
+                            NodeID = database.Guid(row, "NodeID"),
+                            ID = row.ConvertField<int>("ID"),
+                            ParentID = row.ConvertNullableField<int>("ParentID"),
+                            UniqueID = database.Guid(row, "UniqueID"),
+                            Acronym = row.Field<string>("Acronym"),
+                            Name = row.Field<string>("Name"),
+                            IsConcentrator = Convert.ToBoolean(row.Field<object>("IsConcentrator")),
+                            CompanyID = row.ConvertNullableField<int>("CompanyID"),
+                            HistorianID = row.ConvertNullableField<int>("HistorianID"),
+                            AccessID = row.ConvertField<int>("AccessID"),
+                            VendorDeviceID = row.ConvertNullableField<int>("VendorDeviceID"),
+                            ProtocolID = row.ConvertNullableField<int>("ProtocolID"),
+                            Longitude = row.ConvertNullableField<decimal>("Longitude"),
+                            Latitude = row.ConvertNullableField<decimal>("Latitude"),
+                            InterconnectionID = row.ConvertNullableField<int>("InterconnectionID"),
+                            ConnectionString = ParseConnectionString(row.Field<string>("ConnectionString").ToNonNullString()),
+                            AlternateCommandChannel = ParseAlternateCommand(row.Field<string>("ConnectionString").ToNonNullString()),
+                            TimeZone = row.Field<string>("TimeZone"),
+                            FramesPerSecond = Convert.ToInt32(row.Field<object>("FramesPerSecond") ?? 30),
+                            TimeAdjustmentTicks = Convert.ToInt64(row.Field<object>("TimeAdjustmentTicks")),
+                            DataLossInterval = row.ConvertField<double>("DataLossInterval"),
+                            ContactList = row.Field<string>("ContactList"),
+                            MeasuredLines = row.ConvertNullableField<int>("MeasuredLines"),
+                            LoadOrder = row.ConvertField<int>("LoadOrder"),
+                            Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
+                            CreatedOn = row.Field<DateTime>("CreatedOn"),
+                            AllowedParsingExceptions = Convert.ToInt32(row.Field<object>("AllowedParsingExceptions")),
+                            ParsingExceptionWindow = row.ConvertField<double>("ParsingExceptionWindow"),
+                            DelayedConnectionInterval = row.ConvertField<double>("DelayedConnectionInterval"),
+                            AllowUseOfCachedConfiguration = Convert.ToBoolean(row.Field<object>("AllowUseOfCachedConfiguration")),
+                            AutoStartDataParsingSequence = Convert.ToBoolean(row.Field<object>("AutoStartDataParsingSequence")),
+                            SkipDisableRealTimeData = Convert.ToBoolean(row.Field<object>("SkipDisableRealTimeData")),
+                            MeasurementReportingInterval = Convert.ToInt32(row.Field<object>("MeasurementReportingInterval")),
+                            ConnectOnDemand = Convert.ToBoolean(row.Field<object>("ConnectOnDemand")),
+                            m_companyName = row.Field<string>("CompanyName"),
+                            m_companyAcronym = row.Field<string>("CompanyAcronym"),
+                            m_historianAcronym = row.Field<string>("HistorianAcronym"),
+                            m_vendorDeviceName = row.Field<string>("VendorDeviceName"),
+                            m_vendorAcronym = row.Field<string>("VendorAcronym"),
+                            m_protocolName = row.Field<string>("ProtocolName"),
+                            m_protocolCategory = row.Field<string>("Category"),
+                            m_interconnectionName = row.Field<string>("InterconnectionName"),
+                            m_nodeName = row.Field<string>("NodeName"),
+                            m_parentAcronym = row.Field<string>("ParentAcronym"),
+                            m_originalSource = row.Field<string>("OriginalSource")
+                        });
+                    }
+
+                    return deviceList;
+                }
                 return deviceList;
             }
             finally
@@ -1308,9 +1363,9 @@ namespace openPDC.UI.DataModels
                 // Nothing will change in phasor itself.
                 if (device.ID > 0)
                 {
-                    IList<int> keys = null;
+                    IList<int> Keys = null;
 
-                    foreach (Phasor phasor in Phasor.Load(database, device.ID, keys))
+                    foreach (Phasor phasor in Phasor.Load(database, device.ID, Keys))
                     {
                         Phasor.Save(database, phasor);
                     }

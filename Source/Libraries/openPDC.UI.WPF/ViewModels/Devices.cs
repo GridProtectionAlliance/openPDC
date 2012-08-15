@@ -464,8 +464,13 @@ namespace openPDC.UI.ViewModels
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
-                m_devices = Device.Load(null);
-                ItemsSource = m_devices;
+                List<int> pageKeys = null;
+                if ((object)ItemsKeys == null)
+                    ItemsKeys = DataModels.Device.LoadKeys(null, SortMember, SortDirection);
+
+                pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
+
+                ItemsSource = Device.Load(null, pageKeys);
             }
             catch (Exception ex)
             {
@@ -718,7 +723,8 @@ namespace openPDC.UI.ViewModels
             {
                 if (CurrentItem.IsConcentrator)
                 {
-                    ObservableCollection<Device> deviceList = Device.Load(null, CurrentItem.ID);
+                    List<int> keys = new List<int>();
+                    ObservableCollection<Device> deviceList = Device.Load(null,keys, CurrentItem.ID);
                     int outputStreamDeviceCount = 0;
                     foreach (Device device in deviceList)
                     {
