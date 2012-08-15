@@ -332,7 +332,7 @@ namespace openPDC.UI.DataModels
                 {
                     commaSeparatedKeys = Keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
                     query = database.ParameterizedQueryString(string.Format("SELECT NodeID, OutputStreamDeviceID, ID, Label, Type, ScalingValue, LoadOrder " +
-                                        "FROM OutputStreamDeviceAnalog WHERE ID IN ({0})", commaSeparatedKeys));
+                                        "FROM OutputStreamDeviceAnalog WHERE ID IN ({0}) AND OutputStreamDeviceID = {1} ", commaSeparatedKeys, outputStreamDeviceID));
                     outputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, query);
 
                     foreach (DataRow row in outputStreamDeviceAnalogTable.Rows)

@@ -20,13 +20,16 @@
 //       Generated original version of source code.
 //  09/16/2011 - Mehulbhai P Thakkar
 //       Modified load method to do proper binding.
-//
+//  09/15/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //******************************************************************************************************
 
 using System;
 using System.Windows;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace openPDC.UI.ViewModels
 {
@@ -129,7 +132,13 @@ namespace openPDC.UI.ViewModels
         {
             try
             {
-                ItemsSource = OutputStreamMeasurement.Load(null, OutputStreamID);
+                List<int> pageKeys = null;
+                if ((object)ItemsKeys == null)
+                    ItemsKeys = OutputStreamMeasurement.LoadKeys(null, m_outputStreamID, SortMember, SortDirection);
+
+                pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
+
+                ItemsSource = OutputStreamMeasurement.Load(null, m_outputStreamID, pageKeys);
             }
             catch (Exception ex)
             {

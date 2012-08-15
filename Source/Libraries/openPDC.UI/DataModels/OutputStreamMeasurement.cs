@@ -25,6 +25,8 @@
 //       Fixed Load() and GetLookupList() static methods.
 //   09/21/2011 - Aniket Salver
 //       Fixed Bug, which helps in enabling the save button  on the screen.
+//  09/15/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //
 //******************************************************************************************************
 using System;
@@ -35,6 +37,7 @@ using System.Data;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.DataModels;
 using TVA.Data;
+using System.Linq;
 
 namespace openPDC.UI.DataModels
 {
@@ -252,12 +255,52 @@ namespace openPDC.UI.DataModels
         // Static Methods
 
         /// <summary>
+        /// LoadKeys <see cref="OutputStreamMeasurement"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamID">ID of the <see cref="Device"/> to filter data.</param>
+        /// <param name="sortMember">The field to sort by.</param>
+        /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+        /// <returns>Collection of <see cref="Phasor"/>.</returns>
+        public static IList<int> LoadKeys(AdoDataConnection database, int outputStreamID, string sortMember, string sortDirection)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                IList<int> OutputStreamMeasurementList = new List<int>();
+                DataTable outputStreamMeasurementTable;
+
+                string sortClause = string.Empty;
+
+                if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
+                    sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
+
+                outputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From OutputStreamMeasurementDetail where AdapterID = {0}  {1}",outputStreamID, sortClause));
+
+                foreach (DataRow row in outputStreamMeasurementTable.Rows)
+                {
+                    OutputStreamMeasurementList.Add(row.ConvertField<int>("ID"));
+                }
+                return OutputStreamMeasurementList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Loads <see cref="OutputStreamMeasurement"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="outputStreamID">ID of the output stream to fileter data.</param>
+        /// <param name="Keys">Keys of the measurement to be loaded from the database</param>
         /// <returns>Collection of <see cref="OutputStreamMeasurement"/>.</returns>
-        public static ObservableCollection<OutputStreamMeasurement> Load(AdoDataConnection database, int outputStreamID)
+        public static ObservableCollection<OutputStreamMeasurement> Load(AdoDataConnection database, int outputStreamID, IList<int> Keys)
         {
             bool createdConnection = false;
 
@@ -266,25 +309,35 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<OutputStreamMeasurement> OutputStreamMeasurementList = new ObservableCollection<OutputStreamMeasurement>();
-                string query = database.ParameterizedQueryString("SELECT NodeID, AdapterID, ID, HistorianID, PointID, SignalReference, SourcePointTag, HistorianAcronym " +
-                    "FROM OutputStreamMeasurementDetail WHERE AdapterID = {0} ORDER BY SignalReference", "outputStreamID");
-                DataTable outputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
+                DataTable outputStreamMeasurementTable;
+                string query;
+                string commaSeparatedKeys;
 
-                foreach (DataRow row in outputStreamMeasurementTable.Rows)
+                if ((object)Keys != null && Keys.Count > 0)
                 {
-                    OutputStreamMeasurementList.Add(new OutputStreamMeasurement()
-                    {
-                        NodeID = database.Guid(row, "NodeID"),
-                        AdapterID = row.ConvertField<int>("AdapterID"),
-                        ID = row.ConvertField<int>("ID"),
-                        HistorianID = row["HistorianID"] == null ? (int?)null : row.ConvertField<int>("HistorianID"),
-                        PointID = row.ConvertField<int>("PointID"),
-                        SignalReference = row.Field<string>("SignalReference"),
-                        m_sourcePointTag = row.Field<string>("SourcePointTag"),
-                        m_historianAcronym = row.Field<string>("HistorianAcronym")
-                    });
-                }
+                    commaSeparatedKeys = Keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    query = string.Format("SELECT NodeID, AdapterID, ID, HistorianID, PointID, SignalReference, SourcePointTag, HistorianAcronym " +
+                    "FROM OutputStreamMeasurementDetail WHERE ID IN ({0}) AND AdapterID ={{0}}", commaSeparatedKeys);
+                    query = database.ParameterizedQueryString(query, "outputStreamID");
+                    outputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
 
+                    foreach (DataRow row in outputStreamMeasurementTable.Rows)
+                    {
+                        OutputStreamMeasurementList.Add(new OutputStreamMeasurement()
+                        {
+                            NodeID = database.Guid(row, "NodeID"),
+                            AdapterID = row.ConvertField<int>("AdapterID"),
+                            ID = row.ConvertField<int>("ID"),
+                            HistorianID = row["HistorianID"] == null ? (int?)null : row.ConvertField<int>("HistorianID"),
+                            PointID = row.ConvertField<int>("PointID"),
+                            SignalReference = row.Field<string>("SignalReference"),
+                            m_sourcePointTag = row.Field<string>("SourcePointTag"),
+                            m_historianAcronym = row.Field<string>("HistorianAcronym")
+                        });
+                    }
+                    // Please remove the below statemnets.
+                    return OutputStreamMeasurementList;
+                }
                 return OutputStreamMeasurementList;
             }
             finally
