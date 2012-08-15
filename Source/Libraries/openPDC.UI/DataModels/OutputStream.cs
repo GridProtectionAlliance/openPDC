@@ -21,7 +21,8 @@
 //  09/08/2011 - Mehulbhai Thakkar
 //       Modified code to use sql queries directly instead from script file resource.
 //       Added comments to all properties and static methods.
-//
+//  09/14/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //******************************************************************************************************
 
 using System;
@@ -33,6 +34,7 @@ using System.Data;
 using System.Windows;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
+using System.Linq;
 using TimeSeriesFramework.UI.DataModels;
 using TVA.Data;
 
@@ -735,71 +737,117 @@ namespace openPDCManager.UI.DataModels
         /// Loads <see cref="OutputStream"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="enabledOnly">Boolean flag indicating if only enabled <see cref="OutputStream"/>s needed.</param>        
+        /// <param name="sortMember">The field to sort by.</param>
+        /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
         /// <returns>Collection of <see cref="OutputStream"/>.</returns>
-        public static ObservableCollection<OutputStream> Load(AdoDataConnection database, bool enabledOnly)
+        public static IList<int> LoadKeys(AdoDataConnection database, string sortMember, string sortDirection)
         {
             bool createdConnection = false;
             try
             {
                 createdConnection = CreateConnection(ref database);
 
-                ObservableCollection<OutputStream> outputStreamList;
+                IList<int> outputStreamList = new List<int>();
+                DataTable outputStreamTable;
 
-                DataTable resultTable;
+                string sortClause = string.Empty;
 
-                string query;
+                if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
+                    sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
 
-                if (enabledOnly)
+                outputStreamTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID FROM OutputStreamDetail {0}", sortClause));
+                foreach (DataRow row in outputStreamTable.Rows)
                 {
-                    query = database.ParameterizedQueryString("SELECT * FROM OuputStreamDetail WHERE NodeID = {0} AND Enabled = {1} ORDER BY Load Order", "nodeID", "enabled");
-                    resultTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID(), database.Bool(true));
+                    outputStreamList.Add(row.ConvertField<int>("ID"));
                 }
-                else
-                {
-                    query = database.ParameterizedQueryString("SELECT * FROM OutputStreamdetail WHERE NodeID = {0} ORDER BY LoadOrder", "nodeID");
-                    resultTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID());
-                }
-
-                outputStreamList = new ObservableCollection<OutputStream>(from item in resultTable.AsEnumerable()
-                                                                          select new OutputStream()
-                                                                          {
-                                                                              NodeID = database.Guid(item, "NodeID"),
-                                                                              ID = Convert.ToInt32(item.Field<object>("ID")),
-                                                                              Acronym = item.Field<string>("Acronym"),
-                                                                              Name = item.Field<string>("Name"),
-                                                                              Type = Convert.ToInt32(item.Field<object>("Type")),
-                                                                              ConnectionString = item.Field<string>("ConnectionString"),
-                                                                              IDCode = Convert.ToInt32(item.Field<object>("IDCode")),
-                                                                              CommandChannel = item.Field<string>("CommandChannel"),
-                                                                              DataChannel = item.Field<string>("DataChannel"),
-                                                                              AutoPublishConfigFrame = Convert.ToBoolean(item.Field<object>("AutoPublishConfigFrame")),
-                                                                              AutoStartDataChannel = Convert.ToBoolean(item.Field<object>("AutoStartDataChannel")),
-                                                                              NominalFrequency = Convert.ToInt32(item.Field<object>("NominalFrequency")),
-                                                                              FramesPerSecond = Convert.ToInt32(item.Field<object>("FramesPerSecond") ?? 30),
-                                                                              LagTime = item.ConvertField<double>("LagTime"),
-                                                                              LeadTime = item.ConvertField<double>("LeadTime"),
-                                                                              UseLocalClockAsRealTime = Convert.ToBoolean(item.Field<object>("UseLocalClockAsRealTime")),
-                                                                              AllowSortsByArrival = Convert.ToBoolean(item.Field<object>("AllowSortsByArrival")),
-                                                                              LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
-                                                                              Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
-                                                                              m_nodeName = item.Field<string>("NodeName"),
-                                                                              m_typeName = Convert.ToInt32(item.Field<object>("Type")) == 0 ? "IEEE C37.118" : "BPA",
-                                                                              IgnoreBadTimeStamps = Convert.ToBoolean(item.Field<object>("IgnoreBadTimeStamps")),
-                                                                              TimeResolution = Convert.ToInt32(item.Field<object>("TimeResolution")),
-                                                                              AllowPreemptivePublishing = Convert.ToBoolean(item.Field<object>("AllowPreemptivePublishing")),
-                                                                              DownSamplingMethod = item.Field<string>("DownsamplingMethod"),
-                                                                              DataFormat = item.Field<string>("DataFormat"),
-                                                                              CoordinateFormat = item.Field<string>("CoordinateFormat"),
-                                                                              CurrentScalingValue = Convert.ToInt32(item.Field<object>("CurrentScalingValue")),
-                                                                              VoltageScalingValue = Convert.ToInt32(item.Field<object>("VoltageScalingValue")),
-                                                                              AnalogScalingValue = Convert.ToInt32(item.Field<object>("AnalogScalingValue")),
-                                                                              DigitalMaskValue = Convert.ToInt32(item.Field<object>("DigitalMaskValue")),
-                                                                              PerformTimestampReasonabilityCheck = Convert.ToBoolean(item.Field<object>("PerformTimeReasonabilityCheck")),
-                                                                              m_mirroringSourceDevice = GetMirroringSource(database, Convert.ToInt32(item.Field<object>("ID")))
-                                                                          });
                 return outputStreamList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
 
+        /// <summary>
+        /// Loads <see cref="OutputStream"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="enabledOnly">Boolean flag indicating if only enabled <see cref="OutputStream"/>s needed.</param>   
+        /// <param name="Keys">Keys of the measuremnets to be loaded from the database</param>
+        /// <returns>Collection of <see cref="OutputStream"/>.</returns>
+        public static ObservableCollection<OutputStream> Load(AdoDataConnection database, bool enabledOnly, IList<int> Keys)
+        {
+            bool createdConnection = false;
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                ObservableCollection<OutputStream> outputStreamList = new ObservableCollection<OutputStream>();
+                DataTable outputStreamTable;
+                string query;
+                string commaSeparatedKeys;
+                string conditionClause;
+
+                if ((object)Keys != null && Keys.Count > 0)
+                {
+                    commaSeparatedKeys = Keys.Select(key => key.ToString() ).Aggregate((str1, str2) => str1 + "," + str2);
+                    conditionClause = "ID IN (" + commaSeparatedKeys + ")";
+                    if (enabledOnly)
+                    {
+                        query = string.Format("SELECT * FROM OutputStreamDetail WHERE NodeID = {{0}} AND Enabled = {{1}} and {0} ", conditionClause);
+                        query = database.ParameterizedQueryString(query, "nodeID", "enabled");
+                        outputStreamTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID(), database.Bool(true));
+                    }
+                    else
+                    {
+                        query = string.Format("SELECT * FROM OutputStreamDetail WHERE NodeID = {{0}} AND {0} ", conditionClause);
+                        query = database.ParameterizedQueryString(query, "nodeID");
+                        outputStreamTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID());
+
+                    }
+
+                    outputStreamList = new ObservableCollection<OutputStream>(from item in outputStreamTable.AsEnumerable()
+                                                                              select new OutputStream()
+                                                                              {
+                                                                                  NodeID = database.Guid(item, "NodeID"),
+                                                                                  ID = Convert.ToInt32(item.Field<object>("ID")),
+                                                                                  Acronym = item.Field<string>("Acronym"),
+                                                                                  Name = item.Field<string>("Name"),
+                                                                                  Type = Convert.ToInt32(item.Field<object>("Type")),
+                                                                                  ConnectionString = item.Field<string>("ConnectionString"),
+                                                                                  IDCode = Convert.ToInt32(item.Field<object>("IDCode")),
+                                                                                  CommandChannel = item.Field<string>("CommandChannel"),
+                                                                                  DataChannel = item.Field<string>("DataChannel"),
+                                                                                  AutoPublishConfigFrame = Convert.ToBoolean(item.Field<object>("AutoPublishConfigFrame")),
+                                                                                  AutoStartDataChannel = Convert.ToBoolean(item.Field<object>("AutoStartDataChannel")),
+                                                                                  NominalFrequency = Convert.ToInt32(item.Field<object>("NominalFrequency")),
+                                                                                  FramesPerSecond = Convert.ToInt32(item.Field<object>("FramesPerSecond") ?? 30),
+                                                                                  LagTime = item.ConvertField<double>("LagTime"),
+                                                                                  LeadTime = item.ConvertField<double>("LeadTime"),
+                                                                                  UseLocalClockAsRealTime = Convert.ToBoolean(item.Field<object>("UseLocalClockAsRealTime")),
+                                                                                  AllowSortsByArrival = Convert.ToBoolean(item.Field<object>("AllowSortsByArrival")),
+                                                                                  LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
+                                                                                  Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
+                                                                                  m_nodeName = item.Field<string>("NodeName"),
+                                                                                  m_typeName = Convert.ToInt32(item.Field<object>("Type")) == 0 ? "IEEE C37.118" : "BPA",
+                                                                                  IgnoreBadTimeStamps = Convert.ToBoolean(item.Field<object>("IgnoreBadTimeStamps")),
+                                                                                  TimeResolution = Convert.ToInt32(item.Field<object>("TimeResolution")),
+                                                                                  AllowPreemptivePublishing = Convert.ToBoolean(item.Field<object>("AllowPreemptivePublishing")),
+                                                                                  DownSamplingMethod = item.Field<string>("DownsamplingMethod"),
+                                                                                  DataFormat = item.Field<string>("DataFormat"),
+                                                                                  CoordinateFormat = item.Field<string>("CoordinateFormat"),
+                                                                                  CurrentScalingValue = Convert.ToInt32(item.Field<object>("CurrentScalingValue")),
+                                                                                  VoltageScalingValue = Convert.ToInt32(item.Field<object>("VoltageScalingValue")),
+                                                                                  AnalogScalingValue = Convert.ToInt32(item.Field<object>("AnalogScalingValue")),
+                                                                                  DigitalMaskValue = Convert.ToInt32(item.Field<object>("DigitalMaskValue")),
+                                                                                  PerformTimestampReasonabilityCheck = Convert.ToBoolean(item.Field<object>("PerformTimeReasonabilityCheck")),
+                                                                                  m_mirroringSourceDevice = GetMirroringSource(database, Convert.ToInt32(item.Field<object>("ID")))
+                                                                              });
+                    return outputStreamList;
+
+                }
+                return outputStreamList;
             }
             finally
             {
@@ -815,8 +863,10 @@ namespace openPDCManager.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
+                IList<int> Keys = null;
+
                 // Get first output stream device.
-                ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.Load(database, outputStreamID);
+                ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.Load(database, outputStreamID, Keys);
 
                 if (outputStreamDevices.Count == 0)
                     return "";
@@ -920,8 +970,10 @@ namespace openPDCManager.UI.DataModels
                     if (outputStream.ID == 0)
                         outputStream.ID = GetOutputStream(database, " WHERE Acronym = '" + outputStream.Acronym.Replace(" ", "").ToUpper() + "'").ID;
 
+                    IList<int> Keys = null;
+
                     // Get all existing devices associated with output stream and delete them.
-                    ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.Load(database, outputStream.ID);
+                    ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.Load(database, outputStream.ID, Keys);
                     foreach (OutputStreamDevice outputStreamDevice in outputStreamDevices)
                         OutputStreamDevice.Delete(database, outputStream.ID, outputStreamDevice.Acronym);
 

@@ -18,6 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/09/2011 - Mehulbhai Thakkar
 //       Generated original version of source code.
+//  09/14/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //
 //******************************************************************************************************
 
@@ -350,7 +352,13 @@ namespace openPDCManager.UI.ViewModels
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
-                ItemsSource = OutputStream.Load(null, false);
+                List<int> pageKeys = null;
+                if ((object)ItemsKeys == null)
+                    ItemsKeys = DataModels.OutputStream.LoadKeys(null, SortMember, SortDirection);
+
+                pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
+
+                ItemsSource = OutputStream.Load(null, false, pageKeys);
             }
             catch (Exception ex)
             {
