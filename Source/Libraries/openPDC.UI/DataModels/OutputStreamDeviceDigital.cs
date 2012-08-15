@@ -275,7 +275,7 @@ namespace openPDC.UI.DataModels
                 if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
                     sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
 
-                outputStreamDeviceDigitalTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From OutputStreamDeviceDigital WHERE ID IN ={1} {0}", sortClause, outputStreamDeviceID));
+                outputStreamDeviceDigitalTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From OutputStreamDeviceDigital WHERE ID = {1} {0}", sortClause, outputStreamDeviceID));
 
                 foreach (DataRow row in outputStreamDeviceDigitalTable.Rows)
                 {

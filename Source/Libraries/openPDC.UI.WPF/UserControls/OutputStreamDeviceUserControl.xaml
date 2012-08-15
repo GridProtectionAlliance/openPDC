@@ -120,7 +120,7 @@
         <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" Height="Auto" Width="825"
                PreviewKeyDown="DataGrid_PreviewKeyDown" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4" Sorting="DataGrid_Sorting" SelectedIndex="{tsfBinding:Column Path=CurrentSelectedIndex}">
                 <sdk:DataGrid.Columns>
-                <sdk:DataGridTemplateColumn Header="Acronym" Width="*">
+                <sdk:DataGridTemplateColumn Header="Acronym" Width="*" SortMemberPath="Acronym">
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
@@ -132,9 +132,9 @@
                 </sdk:DataGridTemplateColumn>
 
 
-                    <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
+                    <!--<sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{StaticResource CenterAlignCellStyle}"/>-->
                 <sdk:DataGridTextColumn Header=" Name" Width="*" Binding="{tsfBinding:Column Path=Name}" CellStyle="{StaticResource CenterAlignCellStyle}"/>
-                    <sdk:DataGridTemplateColumn Header="Enabled" Width="*">
+                    <sdk:DataGridTemplateColumn Header="Enabled" Width="*" SortMemberPath="Enabled">
                         <sdk:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{tsfBinding:Column Path=Enabled}" HorizontalAlignment="Center" Margin="0" />

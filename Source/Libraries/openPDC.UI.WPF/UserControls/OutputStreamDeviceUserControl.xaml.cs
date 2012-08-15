@@ -62,8 +62,8 @@ namespace openPDC.UI.UserControls
             ButtonDeviceWizard.IsEnabled = !m_mirrorMode;
             UserControlDetailViewFooter.Visibility = m_mirrorMode ? Visibility.Collapsed : Visibility.Visible;
             m_outputStreamID = outputStreamID;
-            m_dataContext.PropertyChanged += new PropertyChangedEventHandler(ViewModel_PropertyChanged);
             this.Loaded += new RoutedEventHandler(OutputStreamDeviceUserControl_Loaded);
+            
         }
 
         #endregion
@@ -74,6 +74,7 @@ namespace openPDC.UI.UserControls
         {
             m_dataContext = new OutputStreamDevices(m_outputStreamID, 10);
             this.DataContext = m_dataContext;
+            m_dataContext.PropertyChanged += new PropertyChangedEventHandler(ViewModel_PropertyChanged);   
         }
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
