@@ -748,11 +748,22 @@ namespace openPDC.UI.UserControls
                                 string stopTime = TextBoxStopTime.Text;
                                 int processingInterval = int.Parse(TextBoxProcessInterval.Text);
 
-                                ModeMessage.Text = "Initializing historical playback...";
+                                if (DateTime.Compare(TimeSeriesFramework.Adapters.AdapterBase.ParseTimeTag(startTime),
+                                                 TimeSeriesFramework.Adapters.AdapterBase.ParseTimeTag(stopTime)) < 0)
+                                {
+                                    ModeMessage.Text = "Initializing historical playback...";
 
-                                //m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps, startTime: TextBoxStartTime.Text, stopTime: TextBoxStopTime.Text, processingInterval: (int)SliderProcessInterval.Value);
-                                m_subscriber.UnsynchronizedSubscribe(true, false, m_selectedSignalIDs, null, true, m_lagTime, m_leadTime, m_useLocalClockAsRealtime, startTime, stopTime, null, processingInterval);
-                                m_waitingForData = true;
+                                    //m_synchronizedSubscriber.SynchronizedSubscribe(true, m_framesPerSecond, m_lagTime, m_leadTime, m_selectedSignalIDs, null, m_useLocalClockAsRealtime, m_ignoreBadTimestamps, startTime: TextBoxStartTime.Text, stopTime: TextBoxStopTime.Text, processingInterval: (int)SliderProcessInterval.Value);
+                                    m_subscriber.UnsynchronizedSubscribe(true, false, m_selectedSignalIDs, null, true,
+                                                                         m_lagTime, m_leadTime,
+                                                                         m_useLocalClockAsRealtime, startTime, stopTime,
+                                                                         null, processingInterval);
+                                    m_waitingForData = true;
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Start time must precede end time");
+                                }
                             }));
                         }
                         else
