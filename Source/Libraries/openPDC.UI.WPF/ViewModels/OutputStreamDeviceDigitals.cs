@@ -18,6 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  08/011/2011 - Aniket Salver
 //       Generated original version of source code.
+//  09/15/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //
 //******************************************************************************************************
 
@@ -25,6 +27,8 @@ using System;
 using System.Windows;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace openPDC.UI.ViewModels
 {
@@ -122,8 +126,15 @@ namespace openPDC.UI.ViewModels
         {
             try
             {
-                ItemsSource = OutputStreamDeviceDigital.Load(null, m_outputStreamDeviceID);
+                List<int> pageKeys = null;
+                if ((object)ItemsKeys == null)
+                    ItemsKeys = OutputStreamDeviceDigital.LoadKeys(null, m_outputStreamDeviceID, SortMember, SortDirection);
+
+                pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
+
+                ItemsSource = OutputStreamDeviceDigital.Load(null, m_outputStreamDeviceID, pageKeys);
                 CurrentItem.OutputStreamDeviceID = m_outputStreamDeviceID;
+
             }
             catch (Exception ex)
             {

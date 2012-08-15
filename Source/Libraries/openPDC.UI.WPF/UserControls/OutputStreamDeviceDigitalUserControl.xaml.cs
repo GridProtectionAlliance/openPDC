@@ -19,11 +19,15 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/14/2011 - Aniket Salver
 //       Generated original version of source code.
+//  09/15/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //
 //******************************************************************************************************
 using System.Windows.Controls;
 using System.Windows.Input;
 using openPDC.UI.ViewModels;
+using System.ComponentModel;
+using System;
 
 namespace openPDC.UI.UserControls
 {
@@ -35,6 +39,9 @@ namespace openPDC.UI.UserControls
         #region [ Members ]
 
         private OutputStreamDeviceDigitals m_dataContext;
+        private DataGridColumn m_sortColumn;
+        private string m_sortMemberPath;
+        private ListSortDirection m_sortDirection;
 
         #endregion
 
@@ -48,6 +55,7 @@ namespace openPDC.UI.UserControls
             InitializeComponent();
             m_dataContext = new OutputStreamDeviceDigitals(outputStreamDeviceID, 5, true);
             this.DataContext = m_dataContext;
+            m_dataContext.PropertyChanged += new PropertyChangedEventHandler(ViewModel_PropertyChanged);
             DataGridList.SelectionChanged += new SelectionChangedEventHandler(DataGridList_SelectionChanged);
         }
 
@@ -75,7 +83,33 @@ namespace openPDC.UI.UserControls
 
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
-            m_dataContext.SortData(e.Column.SortMemberPath);
+            if (e.Column.SortMemberPath != m_sortMemberPath)
+                m_sortDirection = ListSortDirection.Ascending;
+            else if (m_sortDirection == ListSortDirection.Ascending)
+                m_sortDirection = ListSortDirection.Descending;
+            else
+                m_sortDirection = ListSortDirection.Ascending;
+
+            m_sortColumn = e.Column;
+            m_sortMemberPath = e.Column.SortMemberPath;
+            m_dataContext.SortData(m_sortMemberPath, m_sortDirection);
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ItemsSource")
+                Dispatcher.BeginInvoke(new Action(SortDataGrid));
+        }
+
+        private void SortDataGrid()
+        {
+            if ((object)m_sortColumn != null)
+            {
+                m_sortColumn.SortDirection = m_sortDirection;
+                DataGridList.Items.SortDescriptions.Clear();
+                DataGridList.Items.SortDescriptions.Add(new SortDescription(m_sortMemberPath, m_sortDirection));
+                DataGridList.Items.Refresh();
+            }
         }
 
         private void GridDetailView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

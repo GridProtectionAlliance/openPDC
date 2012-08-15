@@ -21,6 +21,8 @@
 //   09/19/2011 - Mehulbhai P Thakkar
 //       Added OnPropertyChanged() on all properties to reflect changes on UI.
 //       Fixed Load() and GetLookupList() static methods.
+//  09/15/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //
 //******************************************************************************************************
 
@@ -250,12 +252,52 @@ namespace openPDC.UI.DataModels
         // Static Methods      
 
         /// <summary>
+        /// LoadKeys <see cref="OutputStreamDeviceDigital"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamDeviceID">ID of the output stream device to filter data.</param>
+        /// <param name="sortMember">The field to sort by.</param>
+        /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+        /// <returns>Collection of <see cref="OutputStreamDeviceDigital"/>.</returns>
+        public static IList<int> LoadKeys(AdoDataConnection database, int outputStreamDeviceID, string sortMember, string sortDirection)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                IList<int> outputStreamDeviceDigitalList = new List<int>();
+                DataTable outputStreamDeviceDigitalTable;
+
+                string sortClause = string.Empty;
+
+                if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
+                    sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
+
+                outputStreamDeviceDigitalTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From OutputStreamDeviceDigital WHERE ID IN ={1} {0}", sortClause, outputStreamDeviceID));
+
+                foreach (DataRow row in outputStreamDeviceDigitalTable.Rows)
+                {
+                    outputStreamDeviceDigitalList.Add(row.ConvertField<int>("ID"));
+                }
+                return outputStreamDeviceDigitalList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Loads <see cref="OutputStreamDeviceDigital"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="outputStreamDeviceID">ID of the output stream device to filter data.</param>
+        /// <param name="Keys">Keys of the measurement to be loaded from  the database</param>
         /// <returns>Collection of <see cref="OutputStreamDeviceDigital"/>.</returns>
-        public static ObservableCollection<OutputStreamDeviceDigital> Load(AdoDataConnection database, int outputStreamDeviceID)
+        public static ObservableCollection<OutputStreamDeviceDigital> Load(AdoDataConnection database, int outputStreamDeviceID, IList<int> Keys)
         {
             bool createdConnection = false;
 
@@ -264,23 +306,31 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<OutputStreamDeviceDigital> outputStreamDeviceDigitalList = new ObservableCollection<OutputStreamDeviceDigital>();
-                string query = database.ParameterizedQueryString("SELECT NodeID, OutputStreamDeviceID, ID, Label, MaskValue, LoadOrder " +
-                    "FROM OutputStreamDeviceDigital WHERE OutputStreamDeviceID = {0} ORDER BY LoadOrder", "id");
-                DataTable outputStreamDeviceDigitalTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamDeviceID);
+                DataTable outputStreamDeviceDigitalTable;
+                string query;
+                string commaSeparatedKeys;
 
-                foreach (DataRow row in outputStreamDeviceDigitalTable.Rows)
+                if ((object)Keys != null && Keys.Count > 0)
                 {
-                    outputStreamDeviceDigitalList.Add(new OutputStreamDeviceDigital()
-                    {
-                        NodeID = row.ConvertField<Guid>("NodeID"),
-                        OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
-                        ID = row.ConvertField<int>("ID"),
-                        Label = row.Field<string>("Label"),
-                        MaskValue = row.ConvertField<int>("MaskValue"),
-                        LoadOrder = row.ConvertField<int>("LoadOrder")
-                    });
-                }
+                    commaSeparatedKeys = Keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    query = database.ParameterizedQueryString(string.Format("SELECT NodeID, OutputStreamDeviceID, ID, Label, MaskValue, LoadOrder " +
+                           "FROM OutputStreamDeviceDigital WHERE ID IN ({0})", commaSeparatedKeys));
 
+                    outputStreamDeviceDigitalTable = database.Connection.RetrieveData(database.AdapterType, query);
+
+                    foreach (DataRow row in outputStreamDeviceDigitalTable.Rows)
+                    {
+                        outputStreamDeviceDigitalList.Add(new OutputStreamDeviceDigital()
+                        {
+                            NodeID = row.ConvertField<Guid>("NodeID"),
+                            OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
+                            ID = row.ConvertField<int>("ID"),
+                            Label = row.Field<string>("Label"),
+                            MaskValue = row.ConvertField<int>("MaskValue"),
+                            LoadOrder = row.ConvertField<int>("LoadOrder")
+                        });
+                    }
+                }
                 return outputStreamDeviceDigitalList;
             }
             finally
