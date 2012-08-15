@@ -26,7 +26,8 @@
 //       Added NULL handling for Save() operation.
 //  05/13/2011 - Mehulbhai P Thakkar
 //       Modified static methods to filter data by device.
-//
+//  09/15/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //******************************************************************************************************
 
 using System;
@@ -352,7 +353,6 @@ namespace openPDC.UI.DataModels
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="deviceID">ID of the <see cref="Device"/> to filter data.</param>
-        /// <param name="keys"> Keys of the measurement to be loaded from  the database</param>
         /// <returns>Collection of <see cref="Phasor"/>.</returns>
         public static ObservableCollection<Phasor> Load(AdoDataConnection database, int deviceID, IList<int> Keys)
         {

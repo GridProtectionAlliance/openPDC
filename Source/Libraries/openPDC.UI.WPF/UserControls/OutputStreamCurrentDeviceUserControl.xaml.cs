@@ -18,7 +18,8 @@
 //  ----------------------------------------------------------------------------------------------------
 //  09/22/2011 - Mehulbhai P Thakkar
 //       Generated original version of source code.
-//
+//  09/14/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //******************************************************************************************************
 
 using System;
@@ -28,6 +29,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
+using TimeSeriesFramework.UI;
+using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace openPDC.UI.UserControls
 {
@@ -42,6 +46,7 @@ namespace openPDC.UI.UserControls
         private string m_outputStreamAcronym;
         private ObservableCollection<OutputStreamDevice> m_currentDevices;
         private ObservableCollection<Device> m_newDevices;
+        private TsfPopup popupSettings;
 
         #endregion
 
@@ -75,7 +80,8 @@ namespace openPDC.UI.UserControls
 
         private void LoadCurrentDevices()
         {
-            m_currentDevices = OutputStreamDevice.Load(null, m_outputStreamID);
+            IList<int> Keys = null;
+            m_currentDevices = OutputStreamDevice.Load(null, m_outputStreamID, Keys);
             DataGridCurrentDevices.ItemsSource = m_currentDevices;
             if (m_currentDevices.Count == 0)
                 PopupAddMore.IsOpen = true;
@@ -112,7 +118,11 @@ namespace openPDC.UI.UserControls
                         LoadNewDevices(string.Empty);
                     }
                 }
-                MessageBox.Show("Selected output stream devices deleted successfully.", "Delete Output Stream Device", MessageBoxButton.OK);
+               // MessageBox.Show("Selected output stream devices deleted successfully.", "Delete Output Stream Device", MessageBoxButton.OK);
+               // m_dataContext.DisplayStatusMessage("Please provide integer value.");
+                if (popupSettings != null)
+                    popupSettings.IsOpen = true;
+                
             }
             catch (Exception ex)
             {

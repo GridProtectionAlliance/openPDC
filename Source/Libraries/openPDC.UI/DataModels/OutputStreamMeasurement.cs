@@ -335,8 +335,6 @@ namespace openPDC.UI.DataModels
                             m_historianAcronym = row.Field<string>("HistorianAcronym")
                         });
                     }
-                    // Please remove the below statemnets.
-                    return OutputStreamMeasurementList;
                 }
                 return OutputStreamMeasurementList;
             }
