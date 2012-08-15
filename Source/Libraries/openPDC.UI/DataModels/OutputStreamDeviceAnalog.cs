@@ -24,6 +24,8 @@
 //       Added OnPropertyChanged() on all properties to reflect changes on UI.
 //       Fixed database queries and collection population.
 //       Fixed Load() and GetLookupList() static methods.
+//  09/14/2012 - Aniket Salver 
+//          Added paging and sorting technique. 
 //
 //******************************************************************************************************
 using System;
@@ -33,6 +35,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using TimeSeriesFramework.UI;
 using TVA.Data;
+using System.Linq;
 
 namespace openPDC.UI.DataModels
 {
@@ -265,12 +268,54 @@ namespace openPDC.UI.DataModels
         // Static Methods
 
         /// <summary>
+        /// LoadKeys <see cref="OutputStreamDeviceAnalog"/> information as an <see cref="ObservableCollection{T}"/> style list.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamDeviceID">ID of the output stream device to filter data.</param>
+        /// <param name="sortMember">The field to sort by.</param>
+        /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+        /// <returns>Collection of <see cref="OutputStreamDevicePhasor"/>.</returns>
+        public static IList<int> LoadKeys(AdoDataConnection database, int outputStreamDeviceID, string sortMember, string sortDirection)
+        {
+            bool createdConnection = false;
+
+            try
+            {
+                createdConnection = CreateConnection(ref database);
+
+                IList<int> outputStreamDeviceAnalogList = new List<int>();
+                DataTable outputStreamDeviceAnalogTable;
+
+                string sortClause = string.Empty;
+
+                if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
+                    sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
+
+                outputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID FROM OutputStreamDeviceAnalog WHERE ID = {1} {0}", sortClause, outputStreamDeviceID));
+
+                foreach (DataRow row in outputStreamDeviceAnalogTable.Rows)
+                {
+                    outputStreamDeviceAnalogList.Add((row.ConvertField<int>("ID")));
+                }
+
+
+                return outputStreamDeviceAnalogList;
+            }
+            finally
+            {
+                if (createdConnection && database != null)
+                    database.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Loads <see cref="OutputStreamDeviceAnalog"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="outputStreamDeviceID">ID of the <see cref="OutputStreamDevice"/> to filter data.</param>
+        /// <param name="Keys">Keys of the measuremnets to be loaded from the database</param>
         /// <returns>Collection of <see cref="OutputStreamDeviceAnalog"/>.</returns>
-        public static ObservableCollection<OutputStreamDeviceAnalog> Load(AdoDataConnection database, int outputStreamDeviceID)
+        public static ObservableCollection<OutputStreamDeviceAnalog> Load(AdoDataConnection database, int outputStreamDeviceID, IList<int> Keys)
         {
             bool createdConnection = false;
 
@@ -279,23 +324,31 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 ObservableCollection<OutputStreamDeviceAnalog> OutputStreamDeviceAnalogList = new ObservableCollection<OutputStreamDeviceAnalog>();
-                string query = database.ParameterizedQueryString("SELECT NodeID, OutputStreamDeviceID, ID, Label, Type, ScalingValue, LoadOrder " +
-                    "FROM OutputStreamDeviceAnalog WHERE OutputStreamDeviceID = {0} ORDER BY LoadOrder", "id");
-                DataTable OutputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamDeviceID);
+                DataTable outputStreamDeviceAnalogTable;
+                string query;
+                string commaSeparatedKeys;
 
-                foreach (DataRow row in OutputStreamDeviceAnalogTable.Rows)
+                if ((object)Keys != null && Keys.Count > 0)
                 {
-                    OutputStreamDeviceAnalogList.Add(new OutputStreamDeviceAnalog()
+                    commaSeparatedKeys = Keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    query = database.ParameterizedQueryString(string.Format("SELECT NodeID, OutputStreamDeviceID, ID, Label, Type, ScalingValue, LoadOrder " +
+                                        "FROM OutputStreamDeviceAnalog WHERE ID IN ({0})", commaSeparatedKeys));
+                    outputStreamDeviceAnalogTable = database.Connection.RetrieveData(database.AdapterType, query);
+
+                    foreach (DataRow row in outputStreamDeviceAnalogTable.Rows)
                     {
-                        NodeID = database.Guid(row, "NodeID"),
-                        OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
-                        ID = row.ConvertField<int>("ID"),
-                        Label = row.Field<string>("Label"),
-                        Type = row.ConvertField<int>("Type"),
-                        ScalingValue = row.ConvertField<int>("ScalingValue"),
-                        LoadOrder = row.ConvertField<int>("LoadOrder"),
-                        m_typeName = row.ConvertField<int>("Type") == 0 ? "Single point-on-wave" : row.ConvertField<int>("Type") == 1 ? "RMS of analog input" : "Peak of analog input"
-                    });
+                        OutputStreamDeviceAnalogList.Add(new OutputStreamDeviceAnalog()
+                        {
+                            NodeID = database.Guid(row, "NodeID"),
+                            OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
+                            ID = row.ConvertField<int>("ID"),
+                            Label = row.Field<string>("Label"),
+                            Type = row.ConvertField<int>("Type"),
+                            ScalingValue = row.ConvertField<int>("ScalingValue"),
+                            LoadOrder = row.ConvertField<int>("LoadOrder"),
+                            m_typeName = row.ConvertField<int>("Type") == 0 ? "Single point-on-wave" : row.ConvertField<int>("Type") == 1 ? "RMS of analog input" : "Peak of analog input"
+                        });
+                    }
                 }
 
                 return OutputStreamDeviceAnalogList;
