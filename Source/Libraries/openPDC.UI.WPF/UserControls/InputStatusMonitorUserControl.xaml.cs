@@ -535,9 +535,13 @@ namespace openPDC.UI.UserControls
         private void ButtonMeasurement_Click(object sender, RoutedEventArgs e)
         {
             TimeSeriesFramework.UI.DataModels.Measurement measurement = TimeSeriesFramework.UI.DataModels.Measurement.GetMeasurement(null, "WHERE SignalReference = '" + ((Button)sender).Content.ToString() + "'");
-            PhasorMeasurementUserControl phasorMeasurementUserControl = new PhasorMeasurementUserControl((int)measurement.DeviceID);
-            ((PhasorMeasurements)phasorMeasurementUserControl.DataContext).CurrentItem = measurement;
-            CommonFunctions.LoadUserControl(phasorMeasurementUserControl, "Manage Measurements for " + measurement.DeviceAcronym);
+
+            if (measurement.DeviceID.HasValue)
+            {
+                PhasorMeasurementUserControl phasorMeasurementUserControl = new PhasorMeasurementUserControl((int)measurement.DeviceID);
+                ((PhasorMeasurements)phasorMeasurementUserControl.DataContext).CurrentItem = measurement;
+                CommonFunctions.LoadUserControl(phasorMeasurementUserControl, "Manage Measurements for " + measurement.DeviceAcronym);
+            }
         }
 
         private void m_subscriber_ConnectionTerminated(object sender, EventArgs e)
