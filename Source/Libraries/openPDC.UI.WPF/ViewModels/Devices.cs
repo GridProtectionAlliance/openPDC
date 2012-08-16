@@ -462,15 +462,20 @@ namespace openPDC.UI.ViewModels
         public override void Load()
         {
             Mouse.OverrideCursor = Cursors.Wait;
+            List<int> pageKeys = null;
+
             try
             {
-                List<int> pageKeys = null;
+                if (OnBeforeLoadCanceled())
+                    throw new OperationCanceledException("Load was canceled.");
+
                 if ((object)ItemsKeys == null)
-                    ItemsKeys = DataModels.Device.LoadKeys(null, SortMember, SortDirection);
+                    ItemsKeys = DataModels.Device.LoadKeys(null, 0, SortMember, SortDirection);
 
                 pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
-
                 ItemsSource = Device.Load(null, pageKeys);
+
+                OnLoaded();
             }
             catch (Exception ex)
             {
@@ -723,9 +728,13 @@ namespace openPDC.UI.ViewModels
             {
                 if (CurrentItem.IsConcentrator)
                 {
-                    List<int> keys = new List<int>();
-                    ObservableCollection<Device> deviceList = Device.Load(null,keys, CurrentItem.ID);
+                    IList<int> keys = Device.LoadKeys(null, CurrentItem.ID);
+                    ObservableCollection<Device> deviceList = Device.Load(null, keys);
                     int outputStreamDeviceCount = 0;
+                    int deletedDeviceID;
+
+                    string result;
+
                     foreach (Device device in deviceList)
                     {
                         outputStreamDeviceCount += OutputStreamDevice.GetOutputStreamDevices(null, "WHERE Acronym = '" + device.Acronym + "'").Count;
@@ -745,9 +754,15 @@ namespace openPDC.UI.ViewModels
                     if (Confirm(confirm, "Delete Device"))
                     {
                         foreach (Device device in deviceList)
+                        {
+                            deletedDeviceID = device.ID;
                             Device.Delete(null, device);
+                            ItemsKeys.Remove(deletedDeviceID);
+                        }
 
-                        string result = Device.Delete(null, CurrentItem);
+                        deletedDeviceID = GetCurrentItemKey();
+                        result = Device.Delete(null, CurrentItem);
+                        ItemsKeys.Remove(deletedDeviceID);
                         DisplayStatusMessage(result);
                     }
                 }

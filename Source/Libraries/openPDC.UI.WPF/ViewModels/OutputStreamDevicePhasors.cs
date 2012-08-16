@@ -31,6 +31,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Input;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 using System.Linq;
@@ -165,15 +166,26 @@ namespace openPDC.UI.ViewModels
         /// </summary>
         public override void Load()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
+            List<int> pageKeys = null;
+
             try
             {
-                List<int> pageKeys = null;
-                if ((object)ItemsKeys == null)
-                    ItemsKeys = OutputStreamDevicePhasor.LoadKeys(null,m_outputStreamDeviceID, SortMember, SortDirection);
+                if (OnBeforeLoadCanceled())
+                    throw new OperationCanceledException("Load was canceled.");
 
+                // Load keys if LoadKeys method exists in data model
+                if ((object)ItemsKeys == null)
+                    ItemsKeys = OutputStreamDevicePhasor.LoadKeys(null, m_outputStreamDeviceID, SortMember, SortDirection);
+
+                // Extract a single page of keys
                 pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
 
-                ItemsSource = OutputStreamDevicePhasor.Load(null, m_outputStreamDeviceID,pageKeys);
+                // If we were able to extract a page of keys, load only that page.
+                // Otherwise, load the whole recordset.
+                ItemsSource = OutputStreamDevicePhasor.Load(null, pageKeys);
+
+                OnLoaded();
             }
             catch (Exception ex)
             {
@@ -187,6 +199,10 @@ namespace openPDC.UI.ViewModels
                     Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
                     CommonFunctions.LogException(null, "Load " + DataModelName, ex);
                 }
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
             }
         }
 

@@ -262,7 +262,7 @@ namespace openPDC.UI.DataModels
         /// <param name="sortMember">The field to sort by.</param>
         /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
         /// <returns>Collection of <see cref="Phasor"/>.</returns>
-        public static IList<int> LoadKeys(AdoDataConnection database, int outputStreamID, string sortMember, string sortDirection)
+        public static IList<int> LoadKeys(AdoDataConnection database, int outputStreamID, string sortMember = "", string sortDirection = "")
         {
             bool createdConnection = false;
 
@@ -270,7 +270,7 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                IList<int> OutputStreamMeasurementList = new List<int>();
+                IList<int> outputStreamMeasurementList = new List<int>();
                 DataTable outputStreamMeasurementTable;
 
                 string sortClause = string.Empty;
@@ -278,13 +278,14 @@ namespace openPDC.UI.DataModels
                 if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
                     sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
 
-                outputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From OutputStreamMeasurementDetail where AdapterID = {0}  {1}",outputStreamID, sortClause));
+                outputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From OutputStreamMeasurementDetail where AdapterID = {0} {1}", outputStreamID, sortClause));
 
                 foreach (DataRow row in outputStreamMeasurementTable.Rows)
                 {
-                    OutputStreamMeasurementList.Add(row.ConvertField<int>("ID"));
+                    outputStreamMeasurementList.Add(row.ConvertField<int>("ID"));
                 }
-                return OutputStreamMeasurementList;
+
+                return outputStreamMeasurementList;
             }
             finally
             {
@@ -297,10 +298,9 @@ namespace openPDC.UI.DataModels
         /// Loads <see cref="OutputStreamMeasurement"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="outputStreamID">ID of the output stream to fileter data.</param>
-        /// <param name="Keys">Keys of the measurement to be loaded from the database</param>
+        /// <param name="keys">Keys of the measurement to be loaded from the database</param>
         /// <returns>Collection of <see cref="OutputStreamMeasurement"/>.</returns>
-        public static ObservableCollection<OutputStreamMeasurement> Load(AdoDataConnection database, int outputStreamID, IList<int> Keys)
+        public static ObservableCollection<OutputStreamMeasurement> Load(AdoDataConnection database, IList<int> keys)
         {
             bool createdConnection = false;
 
@@ -308,22 +308,22 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                ObservableCollection<OutputStreamMeasurement> OutputStreamMeasurementList = new ObservableCollection<OutputStreamMeasurement>();
+                ObservableCollection<OutputStreamMeasurement> outputStreamMeasurementList = new ObservableCollection<OutputStreamMeasurement>();
                 DataTable outputStreamMeasurementTable;
                 string query;
                 string commaSeparatedKeys;
 
-                if ((object)Keys != null && Keys.Count > 0)
+                if ((object)keys != null && keys.Count > 0)
                 {
-                    commaSeparatedKeys = Keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    commaSeparatedKeys = keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
                     query = string.Format("SELECT NodeID, AdapterID, ID, HistorianID, PointID, SignalReference, SourcePointTag, HistorianAcronym " +
-                    "FROM OutputStreamMeasurementDetail WHERE ID IN ({0}) AND AdapterID ={{0}}", commaSeparatedKeys);
-                    query = database.ParameterizedQueryString(query, "outputStreamID");
-                    outputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
+                        "FROM OutputStreamMeasurementDetail WHERE ID IN ({0})", commaSeparatedKeys);
+
+                    outputStreamMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout);
 
                     foreach (DataRow row in outputStreamMeasurementTable.Rows)
                     {
-                        OutputStreamMeasurementList.Add(new OutputStreamMeasurement()
+                        outputStreamMeasurementList.Add(new OutputStreamMeasurement()
                         {
                             NodeID = database.Guid(row, "NodeID"),
                             AdapterID = row.ConvertField<int>("AdapterID"),
@@ -336,7 +336,8 @@ namespace openPDC.UI.DataModels
                         });
                     }
                 }
-                return OutputStreamMeasurementList;
+
+                return outputStreamMeasurementList;
             }
             finally
             {

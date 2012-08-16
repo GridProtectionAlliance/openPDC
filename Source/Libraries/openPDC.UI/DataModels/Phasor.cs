@@ -317,7 +317,7 @@ namespace openPDC.UI.DataModels
         /// <param name="sortMember">The field to sort by.</param>
         /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
         /// <returns>Collection of <see cref="Phasor"/>.</returns>
-        public static IList<int> LoadKeys(AdoDataConnection database,string sortMember, string sortDirection)
+        public static IList<int> LoadKeys(AdoDataConnection database, int deviceID, string sortMember = "", string sortDirection = "")
         {
             bool createdConnection = false;
 
@@ -327,13 +327,15 @@ namespace openPDC.UI.DataModels
 
                 IList<int> phasorList = new List<int>();
                 DataTable phasorTable;
+                string query;
 
                 string sortClause = string.Empty;
 
                 if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
                     sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
 
-                phasorTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From PhasorDetail {0}", sortClause));
+                query = database.ParameterizedQueryString(string.Format("SELECT ID From PhasorDetail WHERE DeviceID = {{0}} {0}", sortClause), "deviceID");
+                phasorTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, deviceID);
 
                 foreach (DataRow row in phasorTable.Rows)
                 {
@@ -352,9 +354,9 @@ namespace openPDC.UI.DataModels
         /// Loads <see cref="Phasor"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="deviceID">ID of the <see cref="Device"/> to filter data.</param>
+        /// <param name="keys">Keys of the phasors to be loaded from the database</param>
         /// <returns>Collection of <see cref="Phasor"/>.</returns>
-        public static ObservableCollection<Phasor> Load(AdoDataConnection database, int deviceID, IList<int> Keys)
+        public static ObservableCollection<Phasor> Load(AdoDataConnection database, IList<int> keys)
         {
             bool createdConnection = false;
 
@@ -367,12 +369,12 @@ namespace openPDC.UI.DataModels
                 string query;
                 string commaSeparatedKeys;
 
-                if ((object)Keys != null && Keys.Count > 0)
+                if ((object)keys != null && keys.Count > 0)
                 {
-                    commaSeparatedKeys = Keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    commaSeparatedKeys = keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
                     query = string.Format("SELECT ID, DeviceID, Label, Type, Phase, DestinationPhasorID, SourceIndex, CreatedBy, CreatedOn, UpdatedBy, UpdatedOn FROM Phasor WHERE ID IN ({0})", commaSeparatedKeys);
 
-                    phasorTable = database.Connection.RetrieveData(database.AdapterType, query);
+                    phasorTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout);
 
                     foreach (DataRow row in phasorTable.Rows)
                     {

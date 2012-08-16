@@ -80,8 +80,8 @@ namespace openPDC.UI.UserControls
 
         private void LoadCurrentDevices()
         {
-            IList<int> Keys = null;
-            m_currentDevices = OutputStreamDevice.Load(null, m_outputStreamID, Keys);
+            IList<int> keys = OutputStreamDevice.LoadKeys(null, m_outputStreamID);
+            m_currentDevices = OutputStreamDevice.Load(null, keys);
             DataGridCurrentDevices.ItemsSource = m_currentDevices;
             if (m_currentDevices.Count == 0)
                 PopupAddMore.IsOpen = true;
@@ -118,11 +118,9 @@ namespace openPDC.UI.UserControls
                         LoadNewDevices(string.Empty);
                     }
                 }
-               // MessageBox.Show("Selected output stream devices deleted successfully.", "Delete Output Stream Device", MessageBoxButton.OK);
-               // m_dataContext.DisplayStatusMessage("Please provide integer value.");
+
                 if (popupSettings != null)
                     popupSettings.IsOpen = true;
-                
             }
             catch (Exception ex)
             {

@@ -576,7 +576,7 @@ namespace openPDC.UI.DataModels
         /// <param name="sortMember">The field to sort by.</param>
         /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
         /// <returns>Collection of <see cref="CalculatedMeasurement"/>.</returns>
-        public static IList<int> LoadKeys(AdoDataConnection database,  string sortMember,string sortDirection)
+        public static IList<int> LoadKeys(AdoDataConnection database, string sortMember = "", string sortDirection = "")
         {
             bool createdConnection = false;
 
@@ -592,7 +592,7 @@ namespace openPDC.UI.DataModels
                 if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
                     sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
 
-                calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType,string.Format("SELECT ID From CalculatedMeasurementDetail {0}",sortClause));
+                calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From CalculatedMeasurementDetail {0}", sortClause));
 
                 foreach (DataRow row in calculatedMeasurementTable.Rows)
                 {
@@ -631,9 +631,9 @@ namespace openPDC.UI.DataModels
                 {
                     commaSeparatedKeys = keys.Select(key => key.ToString()).Aggregate((str1, str2) => str1 + "," + str2);
                     query = string.Format("SELECT NodeID, ID, Acronym, Name, AssemblyName, " +
-                    "TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, " +
-                    "LeadTime, UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, " +
-                    "DownSamplingMethod, NodeName, PerformTimeReasonabilityCheck From CalculatedMeasurementDetail WHERE ID IN ({0})", commaSeparatedKeys);
+                        "TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, " +
+                        "LeadTime, UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, " +
+                        "DownSamplingMethod, NodeName, PerformTimeReasonabilityCheck From CalculatedMeasurementDetail WHERE ID IN ({0})", commaSeparatedKeys);
 
                     calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query);
 

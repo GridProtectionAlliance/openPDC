@@ -350,15 +350,20 @@ namespace openPDCManager.UI.ViewModels
         public override void Load()
         {
             Mouse.OverrideCursor = Cursors.Wait;
+            List<int> pageKeys = null;
+
             try
             {
-                List<int> pageKeys = null;
+                if (OnBeforeLoadCanceled())
+                    throw new OperationCanceledException("Load was canceled.");
+
                 if ((object)ItemsKeys == null)
-                    ItemsKeys = DataModels.OutputStream.LoadKeys(null, SortMember, SortDirection);
+                    ItemsKeys = DataModels.OutputStream.LoadKeys(null, false, SortMember, SortDirection);
 
                 pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
 
-                ItemsSource = OutputStream.Load(null, false, pageKeys);
+                ItemsSource = OutputStream.Load(null, pageKeys);
+                OnLoaded();
             }
             catch (Exception ex)
             {
@@ -556,32 +561,48 @@ namespace openPDCManager.UI.ViewModels
 
         public override void Save()
         {
-            Mouse.OverrideCursor = Cursors.Wait;
-            try
+            if (CanSave)
             {
-                string result = OutputStream.Save(null, CurrentItem, m_mirrorMode);
-                CurrentItemPropertyChanged = false;
-                if (!DisplayStatusMessage(result))
-                    Popup(result, "Save " + DataModelName, MessageBoxImage.Information);
+                try
+                {
+                    Mouse.OverrideCursor = Cursors.Wait;
 
-                Load();
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null)
-                {
-                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Save " + DataModelName + " Exception:", MessageBoxImage.Error);
-                    CommonFunctions.LogException(null, "Save " + DataModelName, ex.InnerException);
+                    if (OnBeforeSaveCanceled())
+                        throw new OperationCanceledException("Save was canceled.");
+
+                    bool isNewRecord = IsNewRecord;
+                    string result = OutputStream.Save(null, CurrentItem, m_mirrorMode);
+
+                    OnSaved();
+
+                    CurrentItemPropertyChanged = false;
+
+                    if (!DisplayStatusMessage(result))
+                        Popup(result, "Save " + DataModelName, MessageBoxImage.Information);
+
+                    if (isNewRecord)
+                    {
+                        ItemsKeys = null;
+                        Load();
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Popup(ex.Message, "Save " + DataModelName + " Exception:", MessageBoxImage.Error);
-                    CommonFunctions.LogException(null, "Save " + DataModelName, ex);
+                    if (ex.InnerException != null)
+                    {
+                        Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Save " + DataModelName + " Exception:", MessageBoxImage.Error);
+                        CommonFunctions.LogException(null, "Save " + DataModelName, ex.InnerException);
+                    }
+                    else
+                    {
+                        Popup(ex.Message, "Save " + DataModelName + " Exception:", MessageBoxImage.Error);
+                        CommonFunctions.LogException(null, "Save " + DataModelName, ex);
+                    }
                 }
-            }
-            finally
-            {
-                Mouse.OverrideCursor = null;
+                finally
+                {
+                    Mouse.OverrideCursor = null;
+                }
             }
         }
 

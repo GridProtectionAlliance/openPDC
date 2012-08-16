@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Linq;
+using System.Windows.Input;
 using openPDC.UI.DataModels;
 using TimeSeriesFramework.UI;
 
@@ -140,19 +141,26 @@ namespace openPDC.UI.ViewModels
         /// </summary>
         public override void Load()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
+            List<int> pageKeys = null;
+
             try
             {
-                List<int> pageKeys = null;
-                if ((object)ItemsKeys == null)
-                    ItemsKeys = DataModels.Phasor.LoadKeys(null, SortMember, SortDirection);
-  
-                 pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
-                
-                if (m_deviceID > 0)
-                    ItemsSource = Phasor.Load(null, m_deviceID, pageKeys);
+                if (OnBeforeLoadCanceled())
+                    throw new OperationCanceledException("Load was canceled.");
+
+                if ((object)ItemsKeys == null && m_deviceID > 0)
+                    ItemsKeys = DataModels.Phasor.LoadKeys(null, m_deviceID, SortMember, SortDirection);
+
+                if ((object)ItemsKeys != null)
+                    pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
+
+                ItemsSource = Phasor.Load(null, pageKeys);
 
                 if (ItemsSource != null && ItemsSource.Count == 0 && CurrentItem != null)
                     CurrentItem.DeviceID = m_deviceID;
+
+                OnLoaded();
             }
             catch (Exception ex)
             {
@@ -166,6 +174,10 @@ namespace openPDC.UI.ViewModels
                     Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
                     CommonFunctions.LogException(null, "Load " + DataModelName, ex);
                 }
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
             }
         }
 

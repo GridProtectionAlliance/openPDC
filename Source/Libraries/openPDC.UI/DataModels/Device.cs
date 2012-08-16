@@ -921,11 +921,11 @@ namespace openPDC.UI.DataModels
         /// LoadKeys <see cref="Phasor"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="deviceID">ID of the <see cref="Device"/> to filter data.</param>
+        /// <param name="parentID">ID of the parent device to filter data.</param>
         /// <param name="sortMember">The field to sort by.</param>
         /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
         /// <returns>Collection of <see cref="Phasor"/>.</returns>
-        public static IList<int> LoadKeys(AdoDataConnection database,string sortMember, string sortDirection)
+        public static IList<int> LoadKeys(AdoDataConnection database, int parentID = 0, string sortMember = "", string sortDirection = "")
         {
             bool createdConnection = false;
 
@@ -935,18 +935,29 @@ namespace openPDC.UI.DataModels
 
                 IList<int> deviceList = new List<int>();
                 DataTable deviceTable;
+                string query;
 
                 string sortClause = string.Empty;
 
                 if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
                     sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
 
-                deviceTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From DeviceDetail {0}", sortClause));
+                if (parentID > 0)
+                {
+                    query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} AND ParentID = {{1}} {0}", sortClause), "nodeID", "parentID");
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), parentID);
+                }
+                else
+                {
+                    query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} {0}", sortClause), "nodeID");
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
+                }
 
                 foreach (DataRow row in deviceTable.Rows)
                 {
                     deviceList.Add(row.ConvertField<int>("ID"));
                 }
+
                 return deviceList;
             }
             finally
@@ -959,11 +970,10 @@ namespace openPDC.UI.DataModels
         /// <summary>
         /// Loads <see cref="Device"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
-        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>        
-        /// <param name="parentID">ID of the parent device to filter data.</param>
-        /// <param name="Keys">Keys of the measurement to be loaded from the database</param>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="keys">Keys of the measurement to be loaded from the database</param>
         /// <returns>Collection of <see cref="Device"/>.</returns>
-        public static ObservableCollection<Device> Load(AdoDataConnection database,List<int> Keys,int parentID = 0)
+        public static ObservableCollection<Device> Load(AdoDataConnection database, IList<int> keys)
         {
             bool createdConnection = false;
 
@@ -975,27 +985,12 @@ namespace openPDC.UI.DataModels
                 DataTable deviceTable;
                 string query;
                 string commaSeparatedKeys;
-                string conditionClause;
 
-                if ((object)Keys != null && Keys.Count > 0)
+                if ((object)keys != null && keys.Count > 0)
                 {
-                    commaSeparatedKeys = Keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
-                    conditionClause = "ID IN (" + commaSeparatedKeys + ")";
-
-                    if (parentID > 0)
-                    {
-                        query = string.Format("SELECT * FROM DeviceDetail WHERE NodeID = {{0}} AND ParentID = {{1}} and {0} ", conditionClause);
-                        query = database.ParameterizedQueryString(query, "nodeID", "parentID");
-                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID(), parentID);
-
-                    }
-                    else
-                    {
-                        query = string.Format("SELECT * FROM DeviceDetail WHERE NodeID = {{0}} AND {0} ", conditionClause);
-                        query = database.ParameterizedQueryString(query, "nodeID");
-                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID());
-                      
-                    }
+                    commaSeparatedKeys = keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    query = string.Format("SELECT * FROM DeviceDetail WHERE ID IN ({0})", commaSeparatedKeys);
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout);
 
                     foreach (DataRow row in deviceTable.Rows)
                     {
@@ -1048,9 +1043,8 @@ namespace openPDC.UI.DataModels
                             m_originalSource = row.Field<string>("OriginalSource")
                         });
                     }
-
-                    return deviceList;
                 }
+
                 return deviceList;
             }
             finally
@@ -1363,9 +1357,9 @@ namespace openPDC.UI.DataModels
                 // Nothing will change in phasor itself.
                 if (device.ID > 0)
                 {
-                    IList<int> Keys = null;
+                    IList<int> keys = Phasor.LoadKeys(database, device.ID);
 
-                    foreach (Phasor phasor in Phasor.Load(database, device.ID, Keys))
+                    foreach (Phasor phasor in Phasor.Load(database, keys))
                     {
                         Phasor.Save(database, phasor);
                     }

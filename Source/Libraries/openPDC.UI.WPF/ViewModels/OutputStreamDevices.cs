@@ -273,18 +273,21 @@ namespace openPDC.UI.ViewModels
         /// </summary>
         public override void Load()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
+            List<int> pageKeys = null;
+
             try
             {
-                List<int> pageKeys = null;
+                if (OnBeforeLoadCanceled())
+                    throw new OperationCanceledException("Load was canceled.");
+
                 if ((object)ItemsKeys == null)
-           
                     ItemsKeys = OutputStreamDevice.LoadKeys(null, OutputStreamID, SortMember, SortDirection);
 
                 pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
-
-                ItemsSource = OutputStreamDevice.Load(null, OutputStreamID, pageKeys);
+                ItemsSource = OutputStreamDevice.Load(null, pageKeys);
                 CurrentItem.AdapterID = m_outputStreamID;
-                
+                OnLoaded();
             }
             catch (Exception ex)
             {
@@ -298,6 +301,10 @@ namespace openPDC.UI.ViewModels
                     Popup(ex.Message, "Load " + DataModelName + " Exception:", MessageBoxImage.Error);
                     CommonFunctions.LogException(null, "Load " + DataModelName, ex);
                 }
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
             }
         }
 
@@ -323,7 +330,9 @@ namespace openPDC.UI.ViewModels
                     if (OnBeforeDeleteCanceled())
                         throw new OperationCanceledException("Delete was canceled.");
 
+                    int currentItemKey = GetCurrentItemKey();
                     string result = OutputStreamDevice.Delete(null, m_outputStreamID, CurrentItem.Acronym);
+                    ItemsKeys.Remove(currentItemKey);
 
                     OnDeleted();
 

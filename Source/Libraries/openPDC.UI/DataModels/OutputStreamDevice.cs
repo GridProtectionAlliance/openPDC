@@ -16,15 +16,17 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//   08/4/2011 - Aniket Salver
+//   08/04/2011 - Aniket Salver
 //       Generated original version of source code.
 //   09/19/2011 - Mehulbhai P Thakkar
 //       Added OnPropertyChanged() on all properties to reflect changes on UI.
 //       Fixed Load() and GetLookupList() static methods.
 //   09/21/2011 - Aniket Salver
-//       Fixed Bug, which helps in enabling the save button on the screen 
-//  09/14/2012 - Aniket Salver 
-//          Added paging and sorting technique. 
+//       Fixed Bug, which helps in enabling the save button on the screen
+//   08/03/2012 - Vijay Sukhavasi
+//       Fix add digitals/analogs check boxes while configuring output stream
+//   08/14/2012 - Aniket Salver 
+//       Added paging and sorting technique.
 //******************************************************************************************************
 
 using System;
@@ -395,10 +397,11 @@ namespace openPDC.UI.DataModels
         /// LoadKeys <see cref="OutputStreamDevice"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="outputStreamID">ID of the OutputStream to filter data.</param>
         /// <param name="sortMember">The field to sort by.</param>
         /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
         /// <returns>Collection of <see cref="Phasor"/>.</returns>
-        public static IList<int> LoadKeys(AdoDataConnection database, int outputstreamID, string sortMember, string sortDirection)
+        public static IList<int> LoadKeys(AdoDataConnection database, int outputStreamID, string sortMember = "", string sortDirection = "")
         {
             bool createdConnection = false;
 
@@ -414,12 +417,13 @@ namespace openPDC.UI.DataModels
                 if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
                     sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
 
-                outputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From OutputStreamDeviceDetail WHERE ID ={1} {0}", sortClause, outputstreamID));
+                outputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID From OutputStreamDeviceDetail WHERE AdapterID = {1} {0}", sortClause, outputStreamID));
 
                 foreach (DataRow row in outputStreamDeviceTable.Rows)
                 {
                     outputStreamDeviceList.Add(row.ConvertField<int>("ID"));
                 }
+
                 return outputStreamDeviceList;
             }
             finally
@@ -433,10 +437,9 @@ namespace openPDC.UI.DataModels
         /// Loads <see cref="OutputStreamDevice"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="outputStreamID">ID of the OutputStream to filter data.</param>
-        /// <param name="Keys">Keys of the measurement to be loaded from the datbase</param>
+        /// <param name="keys">Keys of the measurement to be loaded from the datbase</param>
         /// <returns>Collection of <see cref="OutputStreamDevice"/>.</returns>
-        public static ObservableCollection<OutputStreamDevice> Load(AdoDataConnection database, int outputStreamID, IList<int> Keys)
+        public static ObservableCollection<OutputStreamDevice> Load(AdoDataConnection database, IList<int> keys)
         {
             bool createdConnection = false;
 
@@ -449,15 +452,14 @@ namespace openPDC.UI.DataModels
                 string query;
                 string commaSeparatedKeys;
 
-                if ((object)Keys != null && Keys.Count > 0)
+                if ((object)keys != null && keys.Count > 0)
                 {
-                    commaSeparatedKeys = Keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
-                    query = database.ParameterizedQueryString(string.Format("SELECT NodeID, AdapterID, ID, IDCode, Acronym, BpaAcronym, " +
-                      "Name, PhasorDataFormat, FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, LoadOrder, Enabled, Virtual " +
-                      "FROM OutputStreamDeviceDetail WHERE AdapterID = {{0}} AND ID IN ({0})", commaSeparatedKeys), "outputStreamID");
+                    commaSeparatedKeys = keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    query = string.Format("SELECT NodeID, AdapterID, ID, IDCode, Acronym, BpaAcronym, Name, PhasorDataFormat, " +
+                        "FrequencyDataFormat, AnalogDataFormat, CoordinateFormat, LoadOrder, Enabled, Virtual " +
+                        "FROM OutputStreamDeviceDetail WHERE ID IN ({0})", commaSeparatedKeys);
 
-                    outputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, outputStreamID);
-
+                    outputStreamDeviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout);
 
                     foreach (DataRow row in outputStreamDeviceTable.Rows)
                     {
@@ -570,8 +572,9 @@ namespace openPDC.UI.DataModels
                     if (originalDevice != null && originalDevice.Acronym != outputStreamDevice.Acronym)
                     {
 
-                        IList<int> keys = null;
-                        foreach (OutputStreamMeasurement measurement in OutputStreamMeasurement.Load(database, originalDevice.AdapterID, keys))
+                        IList<int> keys = OutputStreamMeasurement.LoadKeys(database, originalDevice.AdapterID);
+
+                        foreach (OutputStreamMeasurement measurement in OutputStreamMeasurement.Load(database, keys))
                         {
                             measurement.SignalReference = measurement.SignalReference.Replace(originalDevice.Acronym + "-", outputStreamDevice.Acronym + "-");
                             OutputStreamMeasurement.Save(database, measurement);
@@ -658,10 +661,10 @@ namespace openPDC.UI.DataModels
 
                     outputStreamDevice = GetOutputStreamDevice(database, "WHERE Acronym = '" + outputStreamDevice.Acronym + "' AND AdapterID = " + outputStreamID);
 
-                    if (outputStreamDevice != null)
+                    if ((object)outputStreamDevice != null)
                     {
-                        IList<int> Keys = null;
-                        ObservableCollection<Phasor> phasors = Phasor.Load(database, device.ID, Keys);
+                        IList<int> keys = Phasor.LoadKeys(database, device.ID);
+                        ObservableCollection<Phasor> phasors = Phasor.Load(database, keys);
                         foreach (Phasor phasor in phasors)
                         {
                             OutputStreamDevicePhasor outputStreamDevicePhasor = new OutputStreamDevicePhasor();
@@ -682,13 +685,16 @@ namespace openPDC.UI.DataModels
                             {
                                 measurement.SignalReference = measurement.SignalReference.Substring(measurement.SignalReference.LastIndexOf("!") + 1);
 
-                                OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
-                                outputStreamMeasurement.NodeID = device.NodeID;
-                                outputStreamMeasurement.AdapterID = outputStreamID;
-                                outputStreamMeasurement.HistorianID = measurement.HistorianID;
-                                outputStreamMeasurement.PointID = measurement.PointID;
-                                outputStreamMeasurement.SignalReference = measurement.SignalReference;
-                                OutputStreamMeasurement.Save(database, outputStreamMeasurement);
+                                if ((measurement.SignalAcronym != "ALOG" && measurement.SignalAcronym != "DIGI") || (measurement.SignalAcronym == "ALOG" && addAnalogs) || (measurement.SignalAcronym == "DIGI" && addDigitals))
+                                {
+                                    OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement();
+                                    outputStreamMeasurement.NodeID = device.NodeID;
+                                    outputStreamMeasurement.AdapterID = outputStreamID;
+                                    outputStreamMeasurement.HistorianID = measurement.HistorianID;
+                                    outputStreamMeasurement.PointID = measurement.PointID;
+                                    outputStreamMeasurement.SignalReference = measurement.SignalReference;
+                                    OutputStreamMeasurement.Save(database, outputStreamMeasurement);
+                                }
 
                                 if (addAnalogs && measurement.SignalAcronym == "ALOG")
                                 {

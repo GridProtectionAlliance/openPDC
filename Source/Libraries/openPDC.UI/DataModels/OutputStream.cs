@@ -737,10 +737,11 @@ namespace openPDCManager.UI.DataModels
         /// Loads <see cref="OutputStream"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="enabledOnly">Boolean flag indicating if only enabled <see cref="OutputStream"/>s needed.</param>   
         /// <param name="sortMember">The field to sort by.</param>
         /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
         /// <returns>Collection of <see cref="OutputStream"/>.</returns>
-        public static IList<int> LoadKeys(AdoDataConnection database, string sortMember, string sortDirection)
+        public static IList<int> LoadKeys(AdoDataConnection database, bool enabledOnly, string sortMember, string sortDirection)
         {
             bool createdConnection = false;
             try
@@ -749,17 +750,29 @@ namespace openPDCManager.UI.DataModels
 
                 IList<int> outputStreamList = new List<int>();
                 DataTable outputStreamTable;
+                string query;
 
                 string sortClause = string.Empty;
 
                 if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
                     sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
 
-                outputStreamTable = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT ID FROM OutputStreamDetail {0}", sortClause));
+                if (enabledOnly)
+                {
+                    query = database.ParameterizedQueryString(string.Format("SELECT ID FROM OutputStreamDetail WHERE NodeID = {{0}} AND Enabled = {{1}} {0}", sortClause), "nodeID", "enabled");
+                    outputStreamTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID(), database.Bool(true));
+                }
+                else
+                {
+                    query = database.ParameterizedQueryString(string.Format("SELECT * FROM OutputStreamDetail WHERE NodeID = {{0}} {0}", sortClause), "nodeID");
+                    outputStreamTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID());
+                }
+
                 foreach (DataRow row in outputStreamTable.Rows)
                 {
                     outputStreamList.Add(row.ConvertField<int>("ID"));
                 }
+
                 return outputStreamList;
             }
             finally
@@ -773,10 +786,9 @@ namespace openPDCManager.UI.DataModels
         /// Loads <see cref="OutputStream"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="enabledOnly">Boolean flag indicating if only enabled <see cref="OutputStream"/>s needed.</param>   
-        /// <param name="Keys">Keys of the measuremnets to be loaded from the database</param>
+        /// <param name="keys">Keys of the measuremnets to be loaded from the database</param>
         /// <returns>Collection of <see cref="OutputStream"/>.</returns>
-        public static ObservableCollection<OutputStream> Load(AdoDataConnection database, bool enabledOnly, IList<int> Keys)
+        public static ObservableCollection<OutputStream> Load(AdoDataConnection database, IList<int> keys)
         {
             bool createdConnection = false;
             try
@@ -787,25 +799,12 @@ namespace openPDCManager.UI.DataModels
                 DataTable outputStreamTable;
                 string query;
                 string commaSeparatedKeys;
-                string conditionClause;
 
-                if ((object)Keys != null && Keys.Count > 0)
+                if ((object)keys != null && keys.Count > 0)
                 {
-                    commaSeparatedKeys = Keys.Select(key => key.ToString() ).Aggregate((str1, str2) => str1 + "," + str2);
-                    conditionClause = "ID IN (" + commaSeparatedKeys + ")";
-                    if (enabledOnly)
-                    {
-                        query = string.Format("SELECT * FROM OutputStreamDetail WHERE NodeID = {{0}} AND Enabled = {{1}} and {0} ", conditionClause);
-                        query = database.ParameterizedQueryString(query, "nodeID", "enabled");
-                        outputStreamTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID(), database.Bool(true));
-                    }
-                    else
-                    {
-                        query = string.Format("SELECT * FROM OutputStreamDetail WHERE NodeID = {{0}} AND {0} ", conditionClause);
-                        query = database.ParameterizedQueryString(query, "nodeID");
-                        outputStreamTable = database.Connection.RetrieveData(database.AdapterType, query, database.CurrentNodeID());
-
-                    }
+                    commaSeparatedKeys = keys.Select(key => key.ToString() ).Aggregate((str1, str2) => str1 + "," + str2);
+                    query = string.Format("SELECT * FROM OutputStreamDetail WHERE ID IN ({0})", commaSeparatedKeys);
+                    outputStreamTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout);
 
                     outputStreamList = new ObservableCollection<OutputStream>(from item in outputStreamTable.AsEnumerable()
                                                                               select new OutputStream()
@@ -863,10 +862,10 @@ namespace openPDCManager.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                IList<int> Keys = null;
+                IList<int> keys = OutputStreamDevice.LoadKeys(database, outputStreamID);
 
                 // Get first output stream device.
-                ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.Load(database, outputStreamID, Keys);
+                ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.Load(database, keys);
 
                 if (outputStreamDevices.Count == 0)
                     return "";
@@ -970,10 +969,10 @@ namespace openPDCManager.UI.DataModels
                     if (outputStream.ID == 0)
                         outputStream.ID = GetOutputStream(database, " WHERE Acronym = '" + outputStream.Acronym.Replace(" ", "").ToUpper() + "'").ID;
 
-                    IList<int> Keys = null;
+                    IList<int> keys = OutputStreamDevice.LoadKeys(database, outputStream.ID);
 
                     // Get all existing devices associated with output stream and delete them.
-                    ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.Load(database, outputStream.ID, Keys);
+                    ObservableCollection<OutputStreamDevice> outputStreamDevices = OutputStreamDevice.Load(database, keys);
                     foreach (OutputStreamDevice outputStreamDevice in outputStreamDevices)
                         OutputStreamDevice.Delete(database, outputStream.ID, outputStreamDevice.Acronym);
 
