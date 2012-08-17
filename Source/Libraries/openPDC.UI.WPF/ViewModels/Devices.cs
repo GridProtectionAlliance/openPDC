@@ -67,6 +67,8 @@ namespace openPDC.UI.ViewModels
         private RelayCommand m_showAllCommand;
         private bool m_stayOnConfigurationScreen;
         private ObservableCollection<Device> m_pdcDevices;
+        private string m_searchText;
+        private IList<int> m_allKeys;
 
         #endregion
 
@@ -385,6 +387,21 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        public IList<int> AllKeys
+        {
+            get
+            {
+                if ((object)m_allKeys == null)
+                    m_allKeys = DataModels.Device.LoadKeys(null, 0, "", SortMember, SortDirection);
+
+                return m_allKeys;
+            }
+            set
+            {
+                m_allKeys = value;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -470,7 +487,12 @@ namespace openPDC.UI.ViewModels
                     throw new OperationCanceledException("Load was canceled.");
 
                 if ((object)ItemsKeys == null)
-                    ItemsKeys = DataModels.Device.LoadKeys(null, 0, SortMember, SortDirection);
+                {
+                    ItemsKeys = DataModels.Device.LoadKeys(null, 0, m_searchText, SortMember, SortDirection);
+
+                    if (string.IsNullOrEmpty(m_searchText))
+                        AllKeys = ItemsKeys;
+                }
 
                 pageKeys = ItemsKeys.Skip((CurrentPageNumber - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
                 ItemsSource = Device.Load(null, pageKeys);
@@ -731,7 +753,6 @@ namespace openPDC.UI.ViewModels
                     IList<int> keys = Device.LoadKeys(null, CurrentItem.ID);
                     ObservableCollection<Device> deviceList = Device.Load(null, keys);
                     int outputStreamDeviceCount = 0;
-                    int deletedDeviceID;
 
                     string result;
 
@@ -754,15 +775,9 @@ namespace openPDC.UI.ViewModels
                     if (Confirm(confirm, "Delete Device"))
                     {
                         foreach (Device device in deviceList)
-                        {
-                            deletedDeviceID = device.ID;
                             Device.Delete(null, device);
-                            ItemsKeys.Remove(deletedDeviceID);
-                        }
 
-                        deletedDeviceID = GetCurrentItemKey();
                         result = Device.Delete(null, CurrentItem);
-                        ItemsKeys.Remove(deletedDeviceID);
                         DisplayStatusMessage(result);
                     }
                 }
@@ -805,17 +820,15 @@ namespace openPDC.UI.ViewModels
         /// <summary>
         /// Hanldes <see cref="SearchCommand"/>.
         /// </summary>
-        /// <param name="paramter">string value to search for in measurement collection.</param>
-        public void Search(object paramter)
+        /// <param name="parameter">string value to search for in measurement collection.</param>
+        public void Search(object parameter)
         {
-            if (paramter != null && !string.IsNullOrEmpty(paramter.ToString()))
+            if ((object)parameter != null && !string.IsNullOrEmpty(parameter.ToString()))
             {
-                string searchText = paramter.ToString().ToLower();
-                ItemsSource = new ObservableCollection<Device>
-                    (m_devices.Where(d => d.Acronym.ToLower().Contains(searchText) ||
-                                     d.Name.ToLower().Contains(searchText) ||
-                                     d.CompanyAcronym.ToLower().Contains(searchText) ||
-                                     d.CompanyName.ToLower().Contains(searchText)));
+                SetCurrentPageNumber(1);
+                m_searchText = parameter.ToString();
+                ItemsKeys = null;
+                Load();
             }
         }
 
@@ -824,7 +837,13 @@ namespace openPDC.UI.ViewModels
         /// </summary>
         public void ShowAll()
         {
-            ItemsSource = m_devices;
+            if (AllKeys != ItemsKeys)
+            {
+                SetCurrentPageNumber(1);
+                m_searchText = null;
+                ItemsKeys = AllKeys;
+                Load();
+            }
         }
 
         protected override void m_currentItem_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

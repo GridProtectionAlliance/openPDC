@@ -917,15 +917,16 @@ namespace openPDC.UI.DataModels
 
         // Static Methods
 
-         /// <summary>
+        /// <summary>
         /// LoadKeys <see cref="Phasor"/> information as an <see cref="ObservableCollection{T}"/> style list.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
         /// <param name="parentID">ID of the parent device to filter data.</param>
+        /// <param name="searchText">The text to search by.</param>
         /// <param name="sortMember">The field to sort by.</param>
         /// <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
         /// <returns>Collection of <see cref="Phasor"/>.</returns>
-        public static IList<int> LoadKeys(AdoDataConnection database, int parentID = 0, string sortMember = "", string sortDirection = "")
+        public static IList<int> LoadKeys(AdoDataConnection database, int parentID = 0, string searchText = "", string sortMember = "", string sortDirection = "")
         {
             bool createdConnection = false;
 
@@ -937,20 +938,51 @@ namespace openPDC.UI.DataModels
                 DataTable deviceTable;
                 string query;
 
+                string searchParam = null;
+                string searchQuery = null;
+
                 string sortClause = string.Empty;
+
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    searchParam = string.Format("%{0}%", searchText);
+                    searchQuery = database.ParameterizedQueryString("ID LIKE {0} OR UPPER(UniqueID) LIKE UPPER({0}) OR UPPER(Acronym) LIKE UPPER({0}) " +
+                        "OR UPPER(Name) LIKE UPPER({0}) OR UPPER(OriginalSource) LIKE UPPER({0}) OR Longitude LIKE {0} OR Latitude LIKE {0} " +
+                        "OR UPPER(ConnectionString) LIKE UPPER({0}) OR UPPER(TimeZone) LIKE UPPER({0}) OR FramesPerSecond LIKE {0} " +
+                        "OR UPPER(ContactList) LIKE UPPER({0}) OR UPPER(CompanyName) LIKE UPPER({0}) OR UPPER(CompanyAcronym) LIKE UPPER({0}) " +
+                        "OR UPPER(CompanyMapAcronym) LIKE UPPER({0}) OR UPPER(HistorianAcronym) LIKE UPPER({0}) OR UPPER(VendorAcronym) LIKE UPPER({0}) " +
+                        "OR UPPER(VendorDeviceName) LIKE UPPER({0}) OR UPPER(ProtocolName) LIKE UPPER({0}) OR UPPER(InterconnectionName) LIKE UPPER({0})",
+                        "searchParam");
+                }
 
                 if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
                     sortClause = string.Format("ORDER BY {0} {1}", sortMember, sortDirection);
 
                 if (parentID > 0)
                 {
-                    query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} AND ParentID = {{1}} {0}", sortClause), "nodeID", "parentID");
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), parentID);
+                    if (string.IsNullOrEmpty(searchText))
+                    {
+                        query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} AND ParentID = {{1}} {0}", sortClause), "nodeID", "parentID");
+                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), parentID);
+                    }
+                    else
+                    {
+                        query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} AND ParentID = {{1}} AND ({0}) {1}", searchText, sortClause), "nodeID", "parentID");
+                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), parentID, searchParam);
+                    }
                 }
                 else
                 {
-                    query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} {0}", sortClause), "nodeID");
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
+                    if (string.IsNullOrEmpty(searchText))
+                    {
+                        query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} {0}", sortClause), "nodeID");
+                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
+                    }
+                    else
+                    {
+                        query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} AND ({0}) {1}", searchQuery, sortClause), "nodeID");
+                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), searchParam);
+                    }
                 }
 
                 foreach (DataRow row in deviceTable.Rows)
