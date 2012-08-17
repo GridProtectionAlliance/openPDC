@@ -133,5 +133,15 @@ namespace openPDC.UI.UserControls
             PopupSettings.IsOpen = false;
             CommonFunctions.LoadUserControl(new RealTimeMeasurementUserControl(), "Real-Time Device Measurements");
         }
+
+        private void ButtonStatusFlagReference_Click(object sender, RoutedEventArgs e)
+        {
+            ShowuserStatusDoc.IsOpen = true;
+        }
+
+        private void ButtonCancelShowuserStatusDoc_Click(object sender, RoutedEventArgs e)
+        {
+            ShowuserStatusDoc.IsOpen = false;
+        }
     }
 }

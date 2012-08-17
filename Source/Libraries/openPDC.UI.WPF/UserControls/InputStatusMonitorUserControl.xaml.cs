@@ -945,6 +945,18 @@ namespace openPDC.UI.UserControls
             }
         }
 
+        private void ButtonStatusBitReference_Click(object sender, RoutedEventArgs e)//svk_7/23/12
+        {
+            ShowuserStatusDoc.Placement = PlacementMode.Center;
+            ShowuserStatusDoc.IsOpen = true;
+        }
+
+
+        private void ButtonCancelShowuserStatusDoc_Click(object sender, RoutedEventArgs e)
+        {
+            ShowuserStatusDoc.IsOpen = false;
+        }
+
         #endregion
     }
 }

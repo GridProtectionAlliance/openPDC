@@ -19,7 +19,7 @@
 //  07/21/2011 - Mehulbhai P Thakkar
 //       Generated original version of source code.
 //  03/06/2012 - J. Ritchie Carroll
-//       Added virual device for subscribed measurements when two nodes share a single database.
+//       Added virtual device for subscribed measurements when two nodes share a single database.
 //
 //******************************************************************************************************
 
@@ -330,7 +330,7 @@ namespace openPDC.UI.DataModels
                                                     Description = measurement.Field<string>("description"),
                                                     SignalName = measurement.Field<string>("SignalName"),
                                                     SignalAcronym = measurement.Field<string>("SignalAcronym"),
-                                                    EngineeringUnit = measurement.Field<string>("EngineeringUnits"),
+                                                    EngineeringUnit = measurement.Field<string>("SignalAcronym") == "FLAG" ? "Hex" : measurement.Field<string>("EngineeringUnits"),
                                                     Expanded = false,
                                                     Selected = false,
                                                     Selectable = measurement.Field<string>("SignalAcronym") == "IPHM" ? true : measurement.Field<string>("SignalAcronym") == "IPHA" ? true : measurement.Field<string>("SignalAcronym") == "VPHM" ? true : measurement.Field<string>("SignalAcronym") == "VPHA" ? true : measurement.Field<string>("SignalAcronym") == "FREQ" ? true : false,
@@ -872,6 +872,7 @@ namespace openPDC.UI.DataModels
             {
                 m_engineeringUnit = value;
                 OnPropertyChanged("EngineeringUnit");
+                OnPropertyChanged("Value");
             }
         }
 
@@ -946,6 +947,14 @@ namespace openPDC.UI.DataModels
         {
             get
             {
+                bool hex;
+                int hexValue;
+
+                hex = m_engineeringUnit.ToNonNullString().Trim().ToUpperInvariant() == "HEX";
+
+                if (hex && int.TryParse(m_value, out hexValue))
+                    return hexValue.ToString("X");
+
                 return m_value;
             }
             set
