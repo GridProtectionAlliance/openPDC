@@ -213,7 +213,11 @@ namespace openPDC.UI.UserControls
                 ComboBoxDevice.SelectedIndex = (int)Application.Current.Resources["SelectedDevice_Home"];
             else
                 ComboBoxDevice.SelectedIndex = 0;
-            
+
+            if (Application.Current.Resources.Contains("SelectedMeasurement_Home"))
+                ComboBoxMeasurement.SelectedIndex = (int)Application.Current.Resources["SelectedMeasurement_Home"];
+            else
+            ComboBoxMeasurement.SelectedIndex = 0;
         }
 
         void m_refreshTimer_Tick(object sender, EventArgs e)
@@ -412,6 +416,11 @@ namespace openPDC.UI.UserControls
             else
                 Application.Current.Resources.Add("SelectedDevice_Home", ComboBoxDevice.SelectedIndex);
 
+            //if (m_selectedMeasurement = null)
+            //{
+            //    m_signalID = m_selectedMeasurement.SignalID.ToString();
+            //}
+
             ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement> measurements = TimeSeriesFramework.UI.DataModels.Measurement.Load(null, ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
             ComboBoxMeasurement.ItemsSource = new ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement>(measurements.Where(m => m.SignalSuffix == "PA" || m.SignalSuffix == "FQ"));
             
@@ -423,7 +432,7 @@ namespace openPDC.UI.UserControls
                 ComboBoxDevice.SelectedIndex = 0;
 
             // assign selected value to measurement combo box
-            if (Application.Current.Resources.Contains("SelectedMeasurement_Home"))
+            if (Application.Current.Resources.Contains("SelectedMeasurement_Home") && (int)Application.Current.Resources["SelectedMeasurement_Home"] != -1)
                 ComboBoxMeasurement.SelectedIndex = (int)Application.Current.Resources["SelectedMeasurement_Home"];
             else
                 ComboBoxMeasurement.SelectedIndex = 0;
@@ -435,7 +444,7 @@ namespace openPDC.UI.UserControls
         private void m_unsynchronizedSubscriber_ConnectionTerminated(object sender, EventArgs e)
         {
             m_subscribedUnsynchronized = false;
-            StopUnsynchronizedSubscription();
+            UnsubscribeUnsynchronizedData();
             try
             {
                 ChartPlotterDynamic.Dispatcher.BeginInvoke((Action)delegate()
