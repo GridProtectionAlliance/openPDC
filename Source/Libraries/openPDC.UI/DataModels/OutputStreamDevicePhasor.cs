@@ -36,6 +36,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Text.RegularExpressions;
 using System.Windows;
 using TVA;
 using TimeSeriesFramework.UI;
@@ -484,20 +485,26 @@ namespace openPDC.UI.DataModels
         /// Deletes specified <see cref="OutputStreamDevicePhasor"/> record and its associated measurements from database.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="OutputStreamDevicePhasorID">ID of the record to be deleted.</param>
+        /// <param name="outputStreamDevicePhasorID">ID of the record to be deleted.</param>
         /// <returns>String, for display use, indicating success.</returns>
-        public static string Delete(AdoDataConnection database, int OutputStreamDevicePhasorID)
+        public static string Delete(AdoDataConnection database, int outputStreamDevicePhasorID)
         {
             bool createdConnection = false;
 
+            int adapterID;
             int outputStreamDeviceID;
             int deletedSignalReferenceIndex;
             int presentDevicePhasorCount;
 
             string angleSignalReference;
+            string angleSignalReferenceBase;
             string magnitudeSignalReference;
-            string nextMagnitudeSignalReference = string.Empty;
+            string magnitudeSignalReferenceBase;
+
+            string previousAngleSignalReference;
+            string previousMagnitudeSignalReference;
             string nextAngleSignalReference = string.Empty;
+            string nextMagnitudeSignalReference = string.Empty;
             string lastAffectedMeasurementsMessage = string.Empty;
 
             try
@@ -507,49 +514,53 @@ namespace openPDC.UI.DataModels
                 // Setup current user context for any delete triggers
                 CommonFunctions.SetCurrentUserContext(database);
 
-                GetDeleteMeasurementDetails(database, "WHERE ID = " + OutputStreamDevicePhasorID, out angleSignalReference, out magnitudeSignalReference, out outputStreamDeviceID);//svk_6/22/12  
-                deletedSignalReferenceIndex = GetSignalReferenceIndex(magnitudeSignalReference);
+                GetDeleteMeasurementDetails(database, outputStreamDevicePhasorID, out angleSignalReference, out magnitudeSignalReference, out adapterID, out outputStreamDeviceID);
 
                 // Delete angle/magnitude of measurements if they exist
-                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamMeasurement WHERE SignalReference = {0}", "signalReference"), DefaultTimeout, angleSignalReference);
-                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamMeasurement WHERE SignalReference = {0}", "signalReference"), DefaultTimeout, magnitudeSignalReference);
-                presentDevicePhasorCount = Convert.ToInt32(database.Connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM OutputStreamDevicePhasor WHERE OutputStreamDeviceID = {0}", outputStreamDeviceID)));
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamMeasurement WHERE SignalReference = {0} AND AdapterID = {1}", "signalReference", "adapterID"), DefaultTimeout, angleSignalReference, adapterID);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamMeasurement WHERE SignalReference = {0} AND AdapterID = {1}", "signalReference", "adapterID"), DefaultTimeout, magnitudeSignalReference, adapterID);
+                presentDevicePhasorCount = Convert.ToInt32(database.Connection.ExecuteScalar(database.ParameterizedQueryString("SELECT COUNT(*) FROM OutputStreamDevicePhasor WHERE OutputStreamDeviceID = {0}", "outputStreamDeviceID"), DefaultTimeout, outputStreamDeviceID));
 
                 // Using signal reference angle/mag deleted build the next signal reference (increment by 1)
-                nextMagnitudeSignalReference = magnitudeSignalReference.Substring(0, magnitudeSignalReference.Length - deletedSignalReferenceIndex.ToString().Length) + (deletedSignalReferenceIndex + 1).ToString();
-                nextAngleSignalReference = angleSignalReference.Substring(0, angleSignalReference.Length - deletedSignalReferenceIndex.ToString().Length) + (deletedSignalReferenceIndex + 1).ToString();//fixed for sigrefnum>10 svk_7/20/12
+                int.TryParse(Regex.Match(magnitudeSignalReference, @"\d+$").Value, out deletedSignalReferenceIndex);
+                angleSignalReferenceBase = Regex.Replace(angleSignalReference, @"\d+$", "");
+                magnitudeSignalReferenceBase = Regex.Replace(magnitudeSignalReference, @"\d+$", "");
 
                 for (int i = deletedSignalReferenceIndex; i < presentDevicePhasorCount; i++)
                 {
-                    // For magnitude...
-                    // Obtain details of measurements after the deleted measurements, then modify the signal reference (decrement by 1) and put it back
-                    OutputStreamMeasurement outputStreamMeasurement = GetOutputMeasurementDetails(database, nextMagnitudeSignalReference);
-                    outputStreamMeasurement.SignalReference = nextMagnitudeSignalReference.Substring(0, nextMagnitudeSignalReference.Length - (i + 1).ToString().Length) + i.ToString();
-                    nextMagnitudeSignalReference = nextMagnitudeSignalReference.Substring(0, nextMagnitudeSignalReference.Length - (i + 1).ToString().Length) + (i + 2).ToString();
-                    OutputStreamMeasurement.Save(database, outputStreamMeasurement);
+                    // We will be modifying the measurements with signal reference index i+1 to have signal refrence index i.
+                    previousAngleSignalReference = string.Format("{0}{1}", angleSignalReferenceBase, i);
+                    nextAngleSignalReference = string.Format("{0}{1}", angleSignalReferenceBase, i + 1);
+                    previousMagnitudeSignalReference = string.Format("{0}{1}", magnitudeSignalReferenceBase, i);
+                    nextMagnitudeSignalReference = string.Format("{0}{1}", magnitudeSignalReferenceBase, i + 1);
 
                     // For angle...
-                    outputStreamMeasurement = GetOutputMeasurementDetails(database, nextAngleSignalReference);
-                    outputStreamMeasurement.SignalReference = nextAngleSignalReference.Substring(0, nextAngleSignalReference.Length - (i + 1).ToString().Length) + i.ToString();
-                    nextAngleSignalReference = nextAngleSignalReference.Substring(0, nextAngleSignalReference.Length - (i + 1).ToString().Length) + (i + 2).ToString();
+                    // Obtain details of measurements after the deleted measurements, then modify the signal reference (decrement by 1) and put it back
+                    OutputStreamMeasurement outputStreamMeasurement = GetOutputMeasurementDetails(database, nextAngleSignalReference, adapterID);
+                    outputStreamMeasurement.SignalReference = previousAngleSignalReference;
+                    OutputStreamMeasurement.Save(database, outputStreamMeasurement);
+
+                    // For magnitude...
+                    outputStreamMeasurement = GetOutputMeasurementDetails(database, nextMagnitudeSignalReference, adapterID);
+                    outputStreamMeasurement.SignalReference = previousMagnitudeSignalReference;
                     OutputStreamMeasurement.Save(database, outputStreamMeasurement);
                 }
 
-                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamDevicePhasor WHERE ID = {0}", "outputStreamDevicePhasorID"), DefaultTimeout, OutputStreamDevicePhasorID);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamDevicePhasor WHERE ID = {0}", "outputStreamDevicePhasorID"), DefaultTimeout, outputStreamDevicePhasorID);
 
                 return "OutputStreamDevicePhasor deleted successfully";
             }
             catch (Exception ex)
             {
                 if (!string.IsNullOrEmpty(nextMagnitudeSignalReference))
-                    lastAffectedMeasurementsMessage = string.Format("Last affected measurements: {0} {1}", nextMagnitudeSignalReference, nextAngleSignalReference);
+                    lastAffectedMeasurementsMessage = string.Format("{0}(Last affected measurements: {1} {2})", Environment.NewLine, nextMagnitudeSignalReference, nextAngleSignalReference);
 
                 CommonFunctions.LogException(database, "OutputStreamDevicePhasor.Delete", ex);
-                MessageBoxResult dialogResult = MessageBox.Show(string.Format("Could not delete or modify measurements.{0}Do you still wish to delete this Phasor?{0}({1})", Environment.NewLine, lastAffectedMeasurementsMessage), "", MessageBoxButton.YesNo);
+                MessageBoxResult dialogResult = MessageBox.Show(string.Format("Could not delete or modify measurements.{0}Do you still wish to delete this Phasor?{1}", Environment.NewLine, lastAffectedMeasurementsMessage), "", MessageBoxButton.YesNo);
 
                 if (dialogResult == MessageBoxResult.Yes)
                 {
-                    database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamDevicePhasor WHERE ID = {0}", "outputStreamDevicePhasorID"), DefaultTimeout, OutputStreamDevicePhasorID);
+                    database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamDevicePhasor WHERE ID = {0}", "outputStreamDevicePhasorID"), DefaultTimeout, outputStreamDevicePhasorID);
                     return "OutputStreamDevicePhasor deleted successfully but failed to modify all measurements ";
                 }
                 else
@@ -565,23 +576,7 @@ namespace openPDC.UI.DataModels
             }
         }
 
-        private static int GetSignalReferenceIndex(string magnitudeSignalReference)
-        {
-            int deletedSignalReferenceIndex;
-
-            try
-            {
-                deletedSignalReferenceIndex = Convert.ToInt16(magnitudeSignalReference.Substring(magnitudeSignalReference.Length - 2, 2));
-            }
-            catch
-            {
-                deletedSignalReferenceIndex = Convert.ToInt16(magnitudeSignalReference.Substring(magnitudeSignalReference.Length - 1, 1));
-            }
-
-            return deletedSignalReferenceIndex;
-        }
-
-        private static OutputStreamMeasurement GetOutputMeasurementDetails(AdoDataConnection database, string signalReference)
+        private static OutputStreamMeasurement GetOutputMeasurementDetails(AdoDataConnection database, string signalReference, int adapterID)
         {
             bool createdConnection = false;
 
@@ -589,7 +584,8 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                DataRow row = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT * FROM OutputStreamMeasurement WHERE SignalReference='{0}'", signalReference)).Rows[0];
+                string query = database.ParameterizedQueryString("SELECT * FROM OutputStreamMeasurement WHERE SignalReference = {0} AND AdapterID = {1}", "signalReference", "adapterID");
+                DataRow row = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, signalReference, adapterID).Rows[0];
 
                 OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement()
                 {
@@ -619,10 +615,10 @@ namespace openPDC.UI.DataModels
             }
         }
 
-        private static void GetDeleteMeasurementDetails(AdoDataConnection database, string whereClause, out string angleSignalReference, out string magnitudeSignalReference, out int outputStreamDeviceID)
+        private static void GetDeleteMeasurementDetails(AdoDataConnection database, int outputStreamDevicePhasorID, out string angleSignalReference, out string magnitudeSignalReference, out int adapterID, out int outputStreamDeviceID)
         {
-            const string outputPhasorFormat = "SELECT Label, OutputStreamDeviceID FROM OutputStreamDevicePhasor {0}";
-            const string outputDeviceFormat = "SELECT Acronym FROM OutputStreamDevice WHERE ID = {0}";
+            const string outputPhasorFormat = "SELECT Label, OutputStreamDeviceID FROM OutputStreamDevicePhasor WHERE ID = {0}";
+            const string outputDeviceFormat = "SELECT Acronym, AdapterID FROM OutputStreamDevice WHERE ID = {0}";
             const string measurementDetailFormat = "SELECT PointTag FROM MeasurementDetail WHERE DeviceAcronym = '{0}' AND PhasorLabel = '{1}' AND SignalTypeSuffix = '{2}'";
             const string outputMeasurementDetailFormat = "SELECT SignalReference FROM OutputStreamMeasurementDetail WHERE SourcePointTag = '{0}'";
 
@@ -632,20 +628,22 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                DataTable outputphasorTable;
                 DataRow outputPhasorRecord;
+                DataRow outputDeviceRecord;
 
                 string labelName;
                 string deviceName;
                 string anglePointTag;
                 string magnitudePointTag;
 
-                outputphasorTable = database.Connection.RetrieveData(database.AdapterType, string.Format(outputPhasorFormat, whereClause));
-                outputPhasorRecord = outputphasorTable.Rows[0];
+                outputPhasorRecord = database.Connection.RetrieveData(database.AdapterType, string.Format(outputPhasorFormat, outputStreamDevicePhasorID)).Rows[0];
                 labelName = outputPhasorRecord.Field<string>("Label");
-                outputStreamDeviceID = outputPhasorRecord.Field<int>("OutputStreamDeviceID");
+                outputStreamDeviceID = outputPhasorRecord.ConvertField<int>("OutputStreamDeviceID");
 
-                deviceName = database.Connection.ExecuteScalar(string.Format(outputDeviceFormat, outputStreamDeviceID)).ToNonNullString();
+                outputDeviceRecord = database.Connection.RetrieveData(database.AdapterType, string.Format(outputDeviceFormat, outputStreamDeviceID)).Rows[0];
+                deviceName = outputDeviceRecord.Field<string>("Acronym");
+                adapterID = outputDeviceRecord.ConvertField<int>("AdapterID");
+
                 anglePointTag = database.Connection.ExecuteScalar(string.Format(measurementDetailFormat, deviceName, labelName, "PA")).ToNonNullString();
                 angleSignalReference = database.Connection.ExecuteScalar(string.Format(outputMeasurementDetailFormat, anglePointTag)).ToNonNullString();
                 magnitudePointTag = database.Connection.ExecuteScalar(string.Format(measurementDetailFormat, deviceName, labelName, "PM")).ToNonNullString();

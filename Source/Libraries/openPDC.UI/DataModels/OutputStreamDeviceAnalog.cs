@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Text.RegularExpressions;
 using System.Windows;
 using TVA;
 using TimeSeriesFramework.UI;
@@ -458,11 +459,14 @@ namespace openPDC.UI.DataModels
         {
             bool createdConnection = false;
 
+            int adapterID;
             int outputStreamDeviceID;
             int deletedSignalReferenceIndex;
             int presentDeviceAnalogCount;
 
             string analogSignalReference;
+            string signalReferenceBase;
+            string previousAnalogSignalReference;
             string nextAnalogSignalReference = string.Empty;
             string lastAffectedMeasurementMessage = string.Empty;
 
@@ -473,20 +477,23 @@ namespace openPDC.UI.DataModels
                 // Setup current user context for any delete triggers
                 CommonFunctions.SetCurrentUserContext(database);
 
-                GetDeleteMeasurementDetails(database, string.Format("WHERE ID = {0}", outputStreamDeviceAnalogID), out analogSignalReference, out outputStreamDeviceID);
-                deletedSignalReferenceIndex = GetSignalReferenceIndex(analogSignalReference);
-                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamMeasurement WHERE SignalReference = {0}", "signalReference"), DefaultTimeout, analogSignalReference);
-                presentDeviceAnalogCount = Convert.ToInt32(database.Connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM OutputStreamDeviceAnalog WHERE OutputStreamDeviceID = {0}", outputStreamDeviceID)));
+                GetDeleteMeasurementDetails(database, outputStreamDeviceAnalogID, out analogSignalReference, out adapterID, out outputStreamDeviceID);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamMeasurement WHERE SignalReference = {0} AND AdapterID = {1}", "signalReference", "adapterID"), DefaultTimeout, analogSignalReference, adapterID);
+                presentDeviceAnalogCount = Convert.ToInt32(database.Connection.ExecuteScalar(database.ParameterizedQueryString("SELECT COUNT(*) FROM OutputStreamDeviceAnalog WHERE OutputStreamDeviceID = {0}", "outputStreamDeviceID"), DefaultTimeout, outputStreamDeviceID));
 
-                // Using signal reference of measurement deleted build the next signal reference (increment by 1) 
-                nextAnalogSignalReference = analogSignalReference.Substring(0, analogSignalReference.Length - 1) + (deletedSignalReferenceIndex + 1).ToString();
+                // Using signal reference of measurement deleted build the next signal reference (increment by 1)
+                int.TryParse(Regex.Match(analogSignalReference, @"\d+$").Value, out deletedSignalReferenceIndex);
+                signalReferenceBase = Regex.Replace(analogSignalReference, @"\d+$", "");
 
-                for (int i = deletedSignalReferenceIndex; i < presentDeviceAnalogCount; i++)
+                for (int i = deletedSignalReferenceIndex; i <= presentDeviceAnalogCount; i++)
                 {
+                    // We will be modifying the measurement with signal reference index i+1 to have signal reference index i.
+                    previousAnalogSignalReference = string.Format("{0}{1}", signalReferenceBase, i);
+                    nextAnalogSignalReference = string.Format("{0}{1}", signalReferenceBase, i + 1);
+
                     // Obtain details of measurements of the deleted measurements, then modify the signal reference (decrement by 1) and put it back
-                    OutputStreamMeasurement outputStreamMeasurement = GetOutputMeasurementDetails(database, nextAnalogSignalReference);
-                    outputStreamMeasurement.SignalReference = nextAnalogSignalReference.Substring(0, nextAnalogSignalReference.Length - (i + 1).ToString().Length) + i.ToString();
-                    nextAnalogSignalReference = nextAnalogSignalReference.Substring(0, nextAnalogSignalReference.Length - (i + 1).ToString().Length) + (i + 2).ToString();
+                    OutputStreamMeasurement outputStreamMeasurement = GetOutputMeasurementDetails(database, nextAnalogSignalReference, adapterID);
+                    outputStreamMeasurement.SignalReference = previousAnalogSignalReference;
                     OutputStreamMeasurement.Save(database, outputStreamMeasurement);
                 }
 
@@ -497,10 +504,10 @@ namespace openPDC.UI.DataModels
             catch (Exception ex)
             {
                 if (!string.IsNullOrEmpty(nextAnalogSignalReference))
-                    lastAffectedMeasurementMessage = string.Format("Last affected measurement: {0}", nextAnalogSignalReference);
+                    lastAffectedMeasurementMessage = string.Format("{0}(Last affected measurement: {1})", Environment.NewLine, nextAnalogSignalReference);
 
                 CommonFunctions.LogException(database, "OutputStreamDeviceAnalog.Delete", ex);
-                MessageBoxResult dialogResult = MessageBox.Show(string.Format("Could not delete or modify measurements.{0}Do you still wish to delete this Analog?{0}({1})", Environment.NewLine, lastAffectedMeasurementMessage), "", MessageBoxButton.YesNo);
+                MessageBoxResult dialogResult = MessageBox.Show(string.Format("Could not delete or modify measurements.{0}Do you still wish to delete this Analog?{1}", Environment.NewLine, lastAffectedMeasurementMessage), "", MessageBoxButton.YesNo);
 
                 if ((dialogResult == MessageBoxResult.Yes))
                 {
@@ -520,23 +527,7 @@ namespace openPDC.UI.DataModels
             }
         }
 
-        private static int GetSignalReferenceIndex(string analogSignalReference)
-        {
-            int deletedSignalReferenceIndex;
-
-            try
-            {
-                deletedSignalReferenceIndex = Convert.ToInt16(analogSignalReference.Substring(analogSignalReference.Length - 2, 2));
-            }
-            catch
-            {
-                deletedSignalReferenceIndex = Convert.ToInt16(analogSignalReference.Substring(analogSignalReference.Length - 1, 1));
-            }
-
-            return deletedSignalReferenceIndex;
-        }
-
-        private static OutputStreamMeasurement GetOutputMeasurementDetails(AdoDataConnection database, string signalReference)
+        private static OutputStreamMeasurement GetOutputMeasurementDetails(AdoDataConnection database, string signalReference, int adapterID)
         {
             bool createdConnection = false;
 
@@ -544,7 +535,8 @@ namespace openPDC.UI.DataModels
             {
                 createdConnection = CreateConnection(ref database);
 
-                DataRow row = database.Connection.RetrieveData(database.AdapterType, string.Format("SELECT * FROM OutputStreamMeasurement WHERE SignalReference='{0}'", signalReference)).Rows[0];
+                string query = database.ParameterizedQueryString("SELECT * FROM OutputStreamMeasurement WHERE SignalReference = {0} AND AdapterID = {1}", "signalReference", "adapterID");
+                DataRow row = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, signalReference, adapterID).Rows[0];
 
                 OutputStreamMeasurement outputStreamMeasurement = new OutputStreamMeasurement()
                 {
@@ -574,10 +566,10 @@ namespace openPDC.UI.DataModels
             }
         }
 
-        private static void GetDeleteMeasurementDetails(AdoDataConnection database, string whereClause, out string analogSignalReference, out int outputStreamDeviceID)
+        private static void GetDeleteMeasurementDetails(AdoDataConnection database, int outputStreamDeviceAnalogID, out string analogSignalReference, out int adapterID, out int outputStreamDeviceID)
         {
-            const string outputAnalogFormat = "SELECT Label, OutputStreamDeviceID FROM OutputStreamDeviceAnalog {0}";
-            const string outputDeviceFormat = "SELECT Acronym FROM OutputStreamDevice WHERE ID = {0}";
+            const string outputAnalogFormat = "SELECT Label, OutputStreamDeviceID FROM OutputStreamDeviceAnalog WHERE ID = {0}";
+            const string outputDeviceFormat = "SELECT Acronym, AdapterID FROM OutputStreamDevice WHERE ID = {0}";
             const string measurementDetailFormat = "SELECT PointTag FROM MeasurementDetail WHERE DeviceAcronym = '{0}' AND AlternateTag = '{1}' AND SignalTypeSuffix = 'AV'";
             const string outputMeasurementDetailFormat = "SELECT SignalReference FROM OutputStreamMeasurementDetail WHERE SourcePointTag = '{0}'";
 
@@ -585,8 +577,8 @@ namespace openPDC.UI.DataModels
 
             try
             {
-                DataTable outputAnalogTable;
                 DataRow outputAnalogRecord;
+                DataRow outputDeviceRecord;
 
                 string labelName;
                 string deviceName;
@@ -594,12 +586,14 @@ namespace openPDC.UI.DataModels
 
                 createdConnection = CreateConnection(ref database);
 
-                outputAnalogTable = database.Connection.RetrieveData(database.AdapterType, string.Format(outputAnalogFormat, whereClause));
-                outputAnalogRecord = outputAnalogTable.Rows[0];
+                outputAnalogRecord = database.Connection.RetrieveData(database.AdapterType, string.Format(outputAnalogFormat, outputStreamDeviceAnalogID)).Rows[0];
                 labelName = outputAnalogRecord.Field<string>("Label");
-                outputStreamDeviceID = outputAnalogRecord.Field<int>("OutputStreamDeviceID");
+                outputStreamDeviceID = outputAnalogRecord.ConvertField<int>("OutputStreamDeviceID");
 
-                deviceName = database.Connection.ExecuteScalar(string.Format(outputDeviceFormat, outputStreamDeviceID)).ToNonNullString();
+                outputDeviceRecord = database.Connection.RetrieveData(database.AdapterType, string.Format(outputDeviceFormat, outputStreamDeviceID)).Rows[0];
+                deviceName = outputDeviceRecord.Field<string>("Acronym");
+                adapterID = outputDeviceRecord.ConvertField<int>("AdapterID");
+
                 analogPointTag = database.Connection.ExecuteScalar(string.Format(measurementDetailFormat, deviceName, labelName)).ToNonNullString();
                 analogSignalReference = database.Connection.ExecuteScalar(string.Format(outputMeasurementDetailFormat, analogPointTag)).ToNonNullString();
             }
