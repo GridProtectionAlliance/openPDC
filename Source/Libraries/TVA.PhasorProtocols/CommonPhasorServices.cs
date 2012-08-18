@@ -1011,7 +1011,7 @@ namespace TVA.PhasorProtocols
                         // To reduce time required to execute these steps, only first statistic is verfied to exist
                         if (!skipOptimization && !firstStatisticExisted)
                         {
-                            firstStatisticExisted = (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}'", signalReference))) == 0);
+                            firstStatisticExisted = (Convert.ToInt32(connection.ExecuteScalar(string.Format("SELECT COUNT(*) FROM Measurement WHERE SignalReference='{0}'", signalReference))) > 0);
 
                             // If the first extraneous input statistic doesn't exist, we assume no others do as well
                             if (!firstStatisticExisted)
