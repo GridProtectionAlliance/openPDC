@@ -386,18 +386,25 @@ namespace openPDCManager.UI.ViewModels
 
         private void InitializeOutputStream()
         {
-            if (Confirm("Do you want to send Initialize Command?", "Output Stream: " + CurrentItem.Acronym))
+            if (!CommonFunctions.CurrentPrincipal.IsInRole("Administrator, Editor"))
             {
-                try
+                // Do nothing, If it is Accessed stays diabled.
+            }
+            else
+            {
+                if (Confirm("Do you want to send Initialize Command?", "Output Stream: " + CurrentItem.Acronym))
                 {
-                    var result = CommonFunctions.SendCommandToService("Initialize " + RuntimeID);
-                    Popup(result, "", System.Windows.MessageBoxImage.Information);
-                    CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
-                }
-                catch (Exception ex)
-                {
-                    CommonFunctions.LogException(null, "WPF.SendInitialize", ex);
-                    Popup("Failed to Send Initialize Command", ex.Message, System.Windows.MessageBoxImage.Error);
+                    try
+                    {
+                        var result = CommonFunctions.SendCommandToService("Initialize " + RuntimeID);
+                        Popup(result, "", System.Windows.MessageBoxImage.Information);
+                        CommonFunctions.SendCommandToService("Invoke 0 ReloadStatistics");
+                    }
+                    catch (Exception ex)
+                    {
+                        CommonFunctions.LogException(null, "WPF.SendInitialize", ex);
+                        Popup("Failed to Send Initialize Command", ex.Message, System.Windows.MessageBoxImage.Error);
+                    }
                 }
             }
         }
@@ -462,19 +469,27 @@ namespace openPDCManager.UI.ViewModels
 
         private void UpdateConfiguration()
         {
-            try
+            if (!CommonFunctions.CurrentPrincipal.IsInRole("Administrator, Editor"))
             {
-                if (Confirm("Do you want to update configuration?", ""))
-                {
-                    string runtimeID = CommonFunctions.GetRuntimeID("OutputStream", CurrentItem.ID);
-                    string result = CommonFunctions.SendCommandToService("reloadconfig");
-                    result = CommonFunctions.SendCommandToService("Invoke " + runtimeID + " UpdateConfiguration");
-                    Popup(result, "", MessageBoxImage.Information);
-                }
+                // Do nothing.It will avoid the Message Box to poping up,When the applucation is Viewed as a Viewer.
             }
-            catch (Exception ex)
+
+            else
             {
-                Popup("Failed to UpdateConfiguration", ex.Message, MessageBoxImage.Error);
+                try
+                {
+                    if (Confirm("Do you want to update configuration?", ""))
+                    {
+                        string runtimeID = CommonFunctions.GetRuntimeID("OutputStream", CurrentItem.ID);
+                        string result = CommonFunctions.SendCommandToService("reloadconfig");
+                        result = CommonFunctions.SendCommandToService("Invoke " + runtimeID + " UpdateConfiguration");
+                        Popup(result, "", MessageBoxImage.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Popup("Failed to UpdateConfiguration", ex.Message, MessageBoxImage.Error);
+                }
             }
         }
 
@@ -524,13 +539,19 @@ namespace openPDCManager.UI.ViewModels
 
         private void LaunchDeviceWizard(object parameter)
         {
-            if (!MirrorMode)
+            if (!CommonFunctions.CurrentPrincipal.IsInRole("Administrator,Editor"))
             {
-                OutputStreamCurrentDeviceUserControl outputStreamCurrentDeviceUserControl = new OutputStreamCurrentDeviceUserControl(CurrentItem.ID, CurrentItem.Acronym);
-                CommonFunctions.LoadUserControl(outputStreamCurrentDeviceUserControl, "Current Devices for " + CurrentItem.Acronym);
+                // This will Disable the Device Wizard button, If we view it as a Viewer
+            }
+            else
+            {
+                if (!MirrorMode)
+                {
+                    OutputStreamCurrentDeviceUserControl outputStreamCurrentDeviceUserControl = new OutputStreamCurrentDeviceUserControl(CurrentItem.ID, CurrentItem.Acronym);
+                    CommonFunctions.LoadUserControl(outputStreamCurrentDeviceUserControl, "Current Devices for " + CurrentItem.Acronym);
+                }
             }
         }
-
         private void GoToMeasurements(object parameter)
         {
             OutputStreamMeasurementUserControl outputStreamMeasurementUserControl = new OutputStreamMeasurementUserControl(CurrentItem.ID);
@@ -557,6 +578,8 @@ namespace openPDCManager.UI.ViewModels
 
             }
             base.m_currentItem_PropertyChanged(sender, e);
+            if (ItemsPerPage > 0 && string.Compare(e.PropertyName, "Enabled", true) == 0)
+                ProcessPropertyChange();
         }
 
         public override void Save()
