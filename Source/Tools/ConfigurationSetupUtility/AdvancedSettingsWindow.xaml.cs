@@ -33,6 +33,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace ConfigurationSetupUtility
 {
@@ -41,21 +42,6 @@ namespace ConfigurationSetupUtility
     /// </summary>
     public partial class AdvancedSettingsWindow : Window
     {
-
-        #region [ Members ]
-
-        // Nested Types
-
-        // Constants
-
-        // Delegates
-
-        // Events
-
-        // Fields
-
-        #endregion
-
         #region [ Constructors ]
 
         /// <summary>
@@ -119,21 +105,21 @@ namespace ConfigurationSetupUtility
             this.Close();
         }
 
-        #endregion
+        private void MysqlPathBrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            bool? result;
 
-        #region [ Operators ]
+            fileDialog.Filter = "Executables|*.exe|All Files|*.*";
+            fileDialog.DefaultExt = ".exe";
+            fileDialog.CheckPathExists = true;
+            fileDialog.CheckFileExists = true;
+            fileDialog.Multiselect = false;
+            result = fileDialog.ShowDialog();
 
-        #endregion
-
-        #region [ Static ]
-
-        // Static Fields
-
-        // Static Constructor
-
-        // Static Properties
-
-        // Static Methods
+            if (result.HasValue && result.Value)
+                MysqlPathTextBox.Text = fileDialog.FileName;
+        }
 
         #endregion
     }

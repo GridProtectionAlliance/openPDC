@@ -69,11 +69,11 @@ namespace ConfigurationSetupUtility.Screens
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(MySqlDatabaseSetupScreen_Loaded);
 
-            string[] mySQLConnectorNetVersions = { "6.5.4.0", "6.5.3.0", "6.5.2.0", "6.5.1.0", "6.5.0.0",
-                                                   "6.4.4.0", "6.4.3.0", "6.4.2.0", "6.4.1.0", "6.4.0.0",
-                                                   "6.3.8.0", "6.3.7.0", "6.3.6.0", "6.3.5.0", "6.3.4.0", "6.3.3.0", "6.3.2.0", "6.3.1.0", "6.3.0.0",
-                                                   "6.2.5.0", "6.2.4.0", "6.2.3.0", "6.2.2.0", "6.2.1.0", "6.2.0.0",
-                                                   "6.1.6.0", "6.1.5.0", "6.1.4.0", "6.1.3.0", "6.1.2.0", "6.1.1.0", "6.1.0.0" };
+            string[] mySQLConnectorNetVersions = { "6.5.9.0", "6.5.8.0", "6.5.7.0", "6.5.6.0", "6.5.5.0", "6.5.4.0", "6.5.3.0", "6.5.2.0", "6.5.1.0", "6.5.0.0",
+                                                   "6.4.9.0", "6.4.8.0", "6.4.7.0", "6.4.6.0", "6.4.5.0", "6.4.4.0", "6.4.3.0", "6.4.2.0", "6.4.1.0", "6.4.0.0",
+                                                   "6.3.9.0", "6.3.8.0", "6.3.7.0", "6.3.6.0", "6.3.5.0", "6.3.4.0", "6.3.3.0", "6.3.2.0", "6.3.1.0", "6.3.0.0",
+                                                   "6.2.9.0", "6.2.8.0", "6.2.7.0", "6.2.6.0", "6.2.5.0", "6.2.4.0", "6.2.3.0", "6.2.2.0", "6.2.1.0", "6.2.0.0",
+                                                   "6.1.9.0", "6.1.8.0", "6.1.7.0", "6.1.6.0", "6.1.5.0", "6.1.4.0", "6.1.3.0", "6.1.2.0", "6.1.1.0", "6.1.0.0" };
 
             string assemblyNamePrefix = "MySql.Data, Version=";
             string assemblyNameSuffix = ", Culture=neutral, PublicKeyToken=c5687fc88969c44d";
@@ -519,10 +519,15 @@ namespace ConfigurationSetupUtility.Screens
                 m_mySqlSetup.Password = null;
                 connectionString = m_mySqlSetup.ConnectionString;
                 advancedWindow = new AdvancedSettingsWindow(connectionString, dataProviderString, encrypt);
-                advancedWindow.Owner = App.Current.MainWindow;
+                advancedWindow.MysqlPathLabel.Visibility = Visibility.Visible;
+                advancedWindow.MysqlPathTextBox.Visibility = Visibility.Visible;
+                advancedWindow.MysqlPathBrowseButton.Visibility = Visibility.Visible;
+                advancedWindow.MysqlPathTextBox.Text = m_mySqlSetup.MysqlExe;
+                advancedWindow.Owner = Application.Current.MainWindow;
 
                 if (advancedWindow.ShowDialog() == true)
                 {
+                    m_mySqlSetup.MysqlExe = advancedWindow.MysqlPathTextBox.Text;
                     m_mySqlSetup.ConnectionString = advancedWindow.ConnectionString;
                     m_state["mySqlDataProviderString"] = advancedWindow.DataProviderString;
                     m_state["encryptMySqlConnectionStrings"] = advancedWindow.Encrypt;
