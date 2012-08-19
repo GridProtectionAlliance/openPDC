@@ -1375,6 +1375,18 @@ namespace openPDC.UI.ViewModels
 
         #endregion
 
+        public Boolean validatePDCDetails()
+        {
+            if (ItemsSource.Count > 1 && string.IsNullOrEmpty(PdcAcronym))
+            {
+                System.Windows.Forms.MessageBox.Show("Please provide the Pdc Acronym Name and  proceed to the next step");
+                return false;
+            }
+            else
+                return true;
+        }
+
+
         #region [ Static ]
 
         // Fields

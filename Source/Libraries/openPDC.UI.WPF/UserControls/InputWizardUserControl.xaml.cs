@@ -175,11 +175,16 @@ namespace openPDC.UI.UserControls
             }
             else if (ExpanderStep2.IsExpanded)
             {
-                ExpanderStep3.IsExpanded = true;
-                m_dataContext.SavePDC();
+                Boolean b;
+                b= m_dataContext.validatePDCDetails();
+                if (b == true)
+                {
+                    ExpanderStep3.IsExpanded = true;
+                }
             }
             else if (ExpanderStep3.IsExpanded)
             {
+                m_dataContext.SavePDC();
                 m_dataContext.SaveConfiguration();
             }
         }
