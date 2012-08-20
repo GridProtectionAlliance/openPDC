@@ -336,8 +336,8 @@ namespace openPDC.UI.ViewModels
                 m_dataModel = new DataModel();
 
                 calculatorNames = m_dataModel.Adapters
-                    .Where(adapter => adapter.AssemblyName == "FrequencyAverager.dll")
-                    .Where(adapter => adapter.TypeName == "FrequencyAverager.FrequencyAverager")
+                    .Where(adapter => adapter.AssemblyName == "OneSecondFrequencyAverager.dll")
+                    .Where(adapter => adapter.TypeName == "OneSecondFrequencyAverager.OneSecondFrequencyAverager")
                     .Select(adapter => adapter.AdapterName);
 
                 virtualDeviceNames = m_dataModel.Devices
