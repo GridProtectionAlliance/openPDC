@@ -4,36 +4,6 @@
         <name>Dnp3Adapters</name>
     </assembly>
     <members>
-        <member name="F:Dnp3Adapters.MasterConfiguration.client">
-            <summary>
-            All of the settings for the connection
-            </summary>
-        </member>
-        <member name="F:Dnp3Adapters.MasterConfiguration.master">
-            <summary>
-            All of the settings for the master
-            </summary>
-        </member>
-        <member name="F:Dnp3Adapters.TcpClientConfig.address">
-            <summary>
-            IP address of host
-            </summary>
-        </member>
-        <member name="F:Dnp3Adapters.TcpClientConfig.port">
-            <summary>
-            TCP port for connection
-            </summary>
-        </member>
-        <member name="F:Dnp3Adapters.TcpClientConfig.retryMs">
-            <summary>
-            Connection retry interval in milliseconds
-            </summary>
-        </member>
-        <member name="F:Dnp3Adapters.TcpClientConfig.level">
-            <summary>
-            DNP3 filter level for port messages
-            </summary>
-        </member>
         <member name="F:Dnp3Adapters.Dnp3InputAdapter.m_Manager">
             <summary>
             DNP3 manager shared across all of the DNP3 input adapters
@@ -85,14 +55,44 @@
             Gets or sets the name of the xml file from which the measurement mapping is read
             </summary>
         </member>
-        <member name="T:Dnp3Adapters.TsfDataObserver">
+        <member name="F:Dnp3Adapters.MasterConfiguration.client">
             <summary>
-            This is the data adapter that converts data from the dnp3 world to the TSF
+            All of the settings for the connection
+            </summary>
+        </member>
+        <member name="F:Dnp3Adapters.MasterConfiguration.master">
+            <summary>
+            All of the settings for the master
+            </summary>
+        </member>
+        <member name="F:Dnp3Adapters.TcpClientConfig.address">
+            <summary>
+            IP address of host
+            </summary>
+        </member>
+        <member name="F:Dnp3Adapters.TcpClientConfig.port">
+            <summary>
+            TCP port for connection
+            </summary>
+        </member>
+        <member name="F:Dnp3Adapters.TcpClientConfig.retryMs">
+            <summary>
+            Connection retry interval in milliseconds
+            </summary>
+        </member>
+        <member name="F:Dnp3Adapters.TcpClientConfig.level">
+            <summary>
+            DNP3 filter level for port messages
             </summary>
         </member>
         <member name="T:Dnp3Adapters.MeasurementLookup">
             <summary>
             Helper class that converts measurements and provides a lookup capbility
+            </summary>
+        </member>
+        <member name="T:Dnp3Adapters.TsfDataObserver">
+            <summary>
+            This is the data adapter that converts data from the dnp3 world to the TSF
             </summary>
         </member>
     </members>
