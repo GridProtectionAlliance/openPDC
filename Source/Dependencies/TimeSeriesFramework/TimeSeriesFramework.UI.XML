@@ -430,6 +430,11 @@
             Used to notify main window that connection to service has changed.
             </summary>
         </member>
+        <member name="P:TimeSeriesFramework.UI.CommonFunctions.Popup">
+            <summary>
+            Gets a message box to display message to users.
+            </summary>
+        </member>
         <member name="T:TimeSeriesFramework.UI.Converters.DictionaryToKeyValuePairConverter">
             <summary>
             Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes <see cref="T:System.Collections.Generic.Dictionary`2"/> collection and returns <see cref="T:System.Collections.Generic.KeyValuePair`2"/>    
