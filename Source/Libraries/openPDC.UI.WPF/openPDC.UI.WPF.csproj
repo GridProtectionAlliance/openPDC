@@ -153,6 +153,9 @@
       <DependentUpon>HistorianViewChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControls\AverageFrequencyUserControl.xaml.cs">
+      <DependentUpon>AverageFrequencyUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\CalculatedMeasurementUserControl.xaml.cs">
       <DependentUpon>CalculatedMeasurementUserControl.xaml</DependentUpon>
     </Compile>
@@ -210,6 +213,7 @@
     <Compile Include="UserControls\RealTimeStatisticUserControl.xaml.cs">
       <DependentUpon>RealTimeStatisticUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\AverageFrequencyViewModel.cs" />
     <Compile Include="ViewModels\CalculatedMeasurements.cs" />
     <Compile Include="ViewModels\Devices.cs" />
     <Compile Include="ViewModels\InputWizardDevices.cs" />
@@ -250,6 +254,10 @@
     <Page Include="Modal\HistorianViewChart.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\AverageFrequencyUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\CalculatedMeasurementUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
