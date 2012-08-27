@@ -13,7 +13,7 @@
       <MenuDataItem Icon="" MenuText="_Concentrator Output Streams" Description="Manage Output Streams" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OutputStreamUserControl" />
       <MenuDataItem Icon="" MenuText="_Historians" Description="Manage Historians" Roles="*" UserControlAssembly="TimeSeriesFramework.UI.WPF.dll" UserControlPath="TimeSeriesFramework.UI.UserControls.HistorianUserControl" />
       <MenuDataItem Icon="" MenuText="" Description="" Roles="*" UserControlAssembly="" UserControlPath="" />
-      <MenuDataItem Icon="" MenuText="_One-second Average Frequency" Description="Manage One-second Average Frequency" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.OneSecondAverageFrequency" />
+      <MenuDataItem Icon="" MenuText="_One-second Average Frequency" Description="Manage One-second Average Frequency" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.AverageFrequencyUserControl" />
     </SubMenuItems>
   </MenuDataItem>
   <MenuDataItem Icon="" MenuText="_Gateway" Description="" Roles="*" UserControlAssembly="" UserControlPath="">
