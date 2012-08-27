@@ -26,6 +26,7 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     
                     <Grid.ColumnDefinitions>
@@ -39,7 +40,9 @@
                     <CheckBox x:Name="CheckboxEstablishServer" Content="Establish TCP Server" Grid.Row="0" Grid.Column="2"/>
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Port" />
                     <TextBox x:Name="TextBoxPort" Grid.Row="1" Grid.Column="1" Text="4712" Width="75" />
-                    <Button x:Name="ButtonSaveTCP" Grid.Row="2" Grid.Column="2" Content="Save" Click="ButtonSaveTCP_Click"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0">Max Send <LineBreak /> Queue Size</TextBlock>
+                    <TextBox x:Name="TextBoxMaxSendQueueSize" Grid.Row="2" Grid.Column="1" Text="-1" Width="75" Margin="5,5,0,5" />
+                    <Button x:Name="ButtonSaveTCP" Grid.Row="3" Grid.Column="2" Content="Save" Click="ButtonSaveTCP_Click"/>
                 
                 </Grid>
 

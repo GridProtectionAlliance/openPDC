@@ -378,6 +378,7 @@ namespace openPDC.UI.Modal
         private void ButtonSaveTCP_Click(object sender, RoutedEventArgs e)
         {
             m_keyvaluepairs["port"] = String.IsNullOrEmpty(TextBoxPort.Text) ? "4712" : TextBoxPort.Text;
+            m_keyvaluepairs["maxSendQueueSize"] = String.IsNullOrEmpty(TextBoxMaxSendQueueSize.Text) ? "-1" : TextBoxMaxSendQueueSize.Text;
 
             if (m_connectionType != ConnectionType.CommandChannel)
             {
@@ -478,6 +479,8 @@ namespace openPDC.UI.Modal
                     }
                     if (m_keyvaluepairs.ContainsKey("port"))
                         TextBoxPort.Text = m_keyvaluepairs["port"];
+                    if (m_keyvaluepairs.ContainsKey("maxSendQueueSize"))
+                        TextBoxMaxSendQueueSize.Text = m_keyvaluepairs["maxSendQueueSize"];
                     if (m_keyvaluepairs.ContainsKey("islistener") && m_keyvaluepairs["islistener"].ToLower() == "true")
                         CheckboxEstablishServer.IsChecked = true;
                     else
