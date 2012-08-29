@@ -373,7 +373,7 @@ namespace openPDC.UI.DataModels
                     {
                         outputStreamDevicePhasorList.Add(new OutputStreamDevicePhasor()
                         {
-                            NodeID = row.ConvertField<Guid>("NodeID"),
+                            NodeID = database.Guid(row, "NodeID"),
                             OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
                             ID = row.ConvertField<int>("ID"),
                             Label = row.Field<string>("Label"),
