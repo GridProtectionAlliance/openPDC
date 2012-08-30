@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfTimeSeriesDataPoint">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TimeSeriesDataPoint" nillable="true" type="tns:TimeSeriesDataPoint" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTimeSeriesDataPoint" nillable="true" type="tns:ArrayOfTimeSeriesDataPoint" />
+  <xs:complexType name="TimeSeriesDataPoint">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Index" type="xs:long" />
+      <xs:element minOccurs="0" name="Value" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TimeSeriesDataPoint" nillable="true" type="tns:TimeSeriesDataPoint" />
+  <xs:complexType name="ArrayOfInterconnectionStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="InterconnectionStatus" nillable="true" type="tns:InterconnectionStatus" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfInterconnectionStatus" nillable="true" type="tns:ArrayOfInterconnectionStatus" />
+  <xs:complexType name="InterconnectionStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="InterConnection" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MemberStatusList" nillable="true" type="tns:ArrayOfMemberStatus" />
+      <xs:element minOccurs="0" name="TotalDevices" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="InterconnectionStatus" nillable="true" type="tns:InterconnectionStatus" />
+  <xs:complexType name="ArrayOfMemberStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MemberStatus" nillable="true" type="tns:MemberStatus" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMemberStatus" nillable="true" type="tns:ArrayOfMemberStatus" />
+  <xs:complexType name="MemberStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CompanyAcronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CompanyName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MeasuredLines" type="xs:int" />
+      <xs:element minOccurs="0" name="TotalDevices" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MemberStatus" nillable="true" type="tns:MemberStatus" />
+  <xs:complexType name="TimeTaggedMeasurement">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CurrentValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Quality" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TimeTag" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TimeTaggedMeasurement" nillable="true" type="tns:TimeTaggedMeasurement" />
+</xs:schema>

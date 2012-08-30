@@ -1,0 +1,8 @@
+﻿<UserControl x:Class="openPDCManager.UserControls.SelectNode"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    >
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <ComboBox x:Name="ComboboxNode" Margin="5" ItemsSource="{Binding}" DisplayMemberPath="Name" Width="{StaticResource LargerItemSize}" />
+    </Grid>
+</UserControl>

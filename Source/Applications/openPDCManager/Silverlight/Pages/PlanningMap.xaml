@@ -1,0 +1,44 @@
+﻿<navigation:Page x:Class="openPDCManager.Silverlight.Pages.PlanningMap" 
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           mc:Ignorable="d"
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
+           d:DesignWidth="640" d:DesignHeight="480"
+           xmlns:VirtualEarth="clr-namespace:Microsoft.VirtualEarth.MapControl;assembly=Microsoft.VirtualEarth.MapControl"
+           Title="PlanningMap Page">
+    <Canvas x:Name="ActiveMapLayoutRoot">
+        <Border Style="{StaticResource PortletBorderStyle}" Canvas.Top="5" Canvas.Left="5">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Planning Map" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="12" Padding="5" />
+                <Border Style="{StaticResource HeaderRowBorderStyle}" Width="1170" Height="765">
+                    <VirtualEarth:Map x:Name="VirtualEarthPlanningMap" Mode="AerialWithLabels" ZoomLevel="4">
+                        <VirtualEarth:Map.Children>
+                            <VirtualEarth:MapLayer x:Name="PushpinLayer">
+                            </VirtualEarth:MapLayer>
+                        </VirtualEarth:Map.Children>
+                    </VirtualEarth:Map>
+                </Border>
+            </StackPanel>
+        </Border>
+        <Border Canvas.Left="1075" Canvas.Top="665" Height="75" Width="95" Background="Black">
+            <Border Margin="2" BorderBrush="#FFFFFFFF" BorderThickness="2" CornerRadius="10">
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <StackPanel Orientation="Horizontal" Height="19">
+                        <Ellipse Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Width="16" Fill="{StaticResource YellowRadialGradientBrush}" />                            
+                        <TextBlock Text=" Proposed" Foreground="#FFFFF7F7"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Height="19">
+                        <Ellipse Height="16" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="16" Fill="{StaticResource WhiteRadialGradientBrush}"/>
+                        <TextBlock Text=" Pending" Foreground="#FFFFF7F7"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse  Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Width="16" Fill="{StaticResource BlueRadialGradientBrush}"/>
+                        <TextBlock Text=" Installed" Foreground="#FFFFF7F7"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Canvas>
+</navigation:Page>

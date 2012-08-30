@@ -1,0 +1,13 @@
+﻿<Window x:Class="openPDCManager.ModalDialogs.HelpMeChoose"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:panandzoom="clr-namespace:openPDCManager.Utilities" ShowInTaskbar="False"
+        Title="openPDC Manager: Help Me Choose (Use mouse-wheel to zoom in and out, use mouse left button to drag)" Height="600" Width="600">    
+        
+    <panandzoom:PanAndZoomViewer>
+        <Canvas>
+            <Image Name="ImageHelpMeChoose"/>
+        </Canvas>
+    </panandzoom:PanAndZoomViewer>
+    
+</Window>

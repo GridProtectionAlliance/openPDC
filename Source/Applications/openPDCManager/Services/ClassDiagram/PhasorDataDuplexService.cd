@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="openPDCManager.Services.DuplexService.ConnectMessage">
+    <Position X="1" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAIAAAAAAAAAAAAAgACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\ConnectMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="openPDCManager.Services.DuplexService.DisconnectMessage">
+    <Position X="3.25" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\DisconnectMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="openPDCManager.Services.DuplexService.DuplexMessage" Collapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\DuplexMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="openPDCManager.Services.DuplexService.DuplexService">
+    <Position X="3.75" Y="3.5" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="openPDCManager.Services.DuplexService.DuplexService.PushMessageState">
+        <TypeIdentifier>
+          <NewMemberFileName>DuplexService\DuplexService.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>EAAQAAJACCABAAAQAAAGAAAgQAAAABICAACAICQACYg=</HashCode>
+      <FileName>DuplexService\DuplexService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="openPDCManager.Services.DuplexService.DuplexServiceFactory&lt;T&gt;">
+    <Position X="1" Y="5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\DuplexServiceFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="openPDCManager.Services.DuplexService.LivePhasorDataMessage">
+    <Position X="5.75" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\LivePhasorDataMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="openPDCManager.Services.DuplexService.LivePhasorDataService">
+    <Position X="6.75" Y="6.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AQABAAAAACAAgAAAAAgUAAACAAhAABAAACAEgAAAAAA=</HashCode>
+      <FileName>DuplexService\LivePhasorDataService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="openPDCManager.Services.DuplexService.PhasorDataDuplexServiceFactory" Collapsed="true">
+    <Position X="1" Y="7.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\PhasorDataDuplexServiceFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="openPDCManager.Services.DuplexService.ServiceRequestMessage">
+    <Position X="15.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\ServiceRequestMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="openPDCManager.Services.DuplexService.ServiceUpdateMessage">
+    <Position X="10.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\ServiceUpdateMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="openPDCManager.Services.DuplexService.TimeSeriesDataMessage">
+    <Position X="13" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\TimeSeriesDataMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="openPDCManager.Services.DuplexService.TimeTaggedDataMessage">
+    <Position X="8.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\TimeTaggedDataMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="openPDCManager.Services.Service.PhasorDataService">
+    <Position X="13" Y="3.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>6gpYEB0tAABDAAZEJEogBAqAJEJUAkB0AQAEQAw5SkA=</HashCode>
+      <FileName>Service\PhasorDataService.svc.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="openPDCManager.Services.DuplexService.IUniversalDuplexCallbackContract">
+    <Position X="6.75" Y="3.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAEAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\IUniversalDuplexCallbackContract.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="openPDCManager.Services.DuplexService.IUniversalDuplexContract">
+    <Position X="6.75" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DuplexService\IUniversalDuplexContract.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="openPDCManager.Services.Service.IPhasorDataService">
+    <Position X="10" Y="3.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>6gpYEB0tAABDAAZEJEogBAqAJEJUAkB0AQAEQAw5SkA=</HashCode>
+      <FileName>Service\IPhasorDataService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

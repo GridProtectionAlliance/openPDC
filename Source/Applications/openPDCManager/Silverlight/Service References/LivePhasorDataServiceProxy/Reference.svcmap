@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="f761aaf1-351c-4eff-abd5-b1bb74e3508c" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.ObjectModel.ObservableCollection`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>false</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="701fea48-78c1-43d8-83c7-972c2f8a995e" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="10d3ced6-cae8-4440-8ecb-880a3393dead" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="85d132c4-6299-48e9-86c0-ee66e90d0fd1" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
+    <MetadataFile FileName="duplex.xsd" MetadataType="Schema" ID="b43dd0f2-4976-4db4-8d15-d6d1558a9c15" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
+    <MetadataFile FileName="openPDCManager.Services.DuplexService.xsd" MetadataType="Schema" ID="702d3bf8-a027-40fe-8951-6e3d58b0ffa6" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
+    <MetadataFile FileName="TVA.Services.xsd" MetadataType="Schema" ID="783013f9-77a5-439f-ab59-835eb3dc0833" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
+    <MetadataFile FileName="openPDCManager.Data.BusinessObjects1.xsd" MetadataType="Schema" ID="881bc530-b0fd-49a7-b5cd-8840c565465c" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="c6f270b4-6d2a-4019-83cf-bb78b4663bbc" SourceId="1" SourceUrl="http://localhost:1068/DuplexService/PhasorDataDuplexService.svc/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

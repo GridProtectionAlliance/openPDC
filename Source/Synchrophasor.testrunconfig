@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRunConfiguration name="Synchrophasor Test Configuration" id="3fd62a0f-5bcc-4694-8b37-7c48a3353fdc" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Description>Configuration for all test runs.</Description>
+  <TestTypeSpecific />
+</TestRunConfiguration>

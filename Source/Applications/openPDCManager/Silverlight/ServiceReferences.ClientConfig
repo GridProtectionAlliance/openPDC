@@ -1,0 +1,18 @@
+﻿<configuration>
+    <system.serviceModel>
+        <bindings>
+            <customBinding>
+                <binding name="CustomBinding_IPhasorDataService" closeTimeout="00:20:00"
+                    openTimeout="00:20:00" receiveTimeout="00:20:00" sendTimeout="00:20:00">
+                    <binaryMessageEncoding />
+                    <httpTransport maxReceivedMessageSize="3276800" />
+                </binding>
+            </customBinding>
+        </bindings>
+        <client>
+            <endpoint address="http://localhost:1068/Service/PhasorDataService.svc"
+                binding="customBinding" bindingConfiguration="CustomBinding_IPhasorDataService"
+                contract="PhasorDataServiceProxy.IPhasorDataService" name="CustomBinding_IPhasorDataService" />
+        </client>
+    </system.serviceModel>
+</configuration>

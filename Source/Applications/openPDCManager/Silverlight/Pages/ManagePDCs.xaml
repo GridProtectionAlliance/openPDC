@@ -1,0 +1,200 @@
+﻿<navigation:Page x:Class="openPDCManager.Silverlight.Pages.ManagePDCs" 
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           mc:Ignorable="d"
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
+           d:DesignWidth="640" d:DesignHeight="480"
+           Title="ManagePDCs Page">
+    
+    <Canvas x:Name="ManaagePdcsLayoutRoot">
+        <Border Style="{StaticResource PortletBorderStyle}" Canvas.Top="5" Canvas.Left="70">            
+            <StackPanel Orientation="Vertical">                
+                <TextBlock Text="Manage PDCs" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="12" Padding="5" />
+                <Border Background="{StaticResource PortletBackgroundBrush}" Height="425">
+                    <Grid x:Name="GridPdcDetail" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="85" />
+                            <RowDefinition Height="75" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="25" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="135" />
+                            <ColumnDefinition Width="425" />
+                            <ColumnDefinition Width="160" />
+                            <ColumnDefinition Width="250" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Acronym" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="2"/>
+                        <TextBox x:Name="TextBoxAcronym" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Acronym}" Width="100" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Company" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <ComboBox x:Name="ComboBoxCompany" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" Width="300" DisplayMemberPath="Value"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Vendor" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <ComboBox x:Name="ComboBoxVendor" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" Width="300" DisplayMemberPath="Value"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Longitude" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <TextBox x:Name="TextBoxLongitude" Grid.Row="3" Grid.Column="1" Text="{Binding Path=Longitude}" Width="100" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Time Zone" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <ComboBox x:Name="ComboBoxTimeZone" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" Width="400" DisplayMemberPath="Key" />
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Connect String" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <TextBox x:Name="TextBoxConnectionString" Grid.Row="5" Grid.Column="1" Text="{Binding Path=ConnectionString}" Width="300" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2"/>
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Transport Protocol" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <ComboBox x:Name="ComboBoxTransportProtocol" Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" Width="100"/>
+                        <Border x:Name="BorderTcp" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="7"  Style="{StaticResource PortletBorderStyle}" Background="{StaticResource PortletBackgroundBrush}" Height="75">
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="150"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="26" />
+                                    <RowDefinition Height="26" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="IP Address" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TextBoxIPAddress" Grid.Column="1" Grid.Row="0" Height="21" VerticalAlignment="Center" Width="125"/>
+                                <TextBlock Text="Port" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TextBoxTCPPort" Grid.Column="3" Grid.Row="0" Height="21" VerticalAlignment="Center" Width="125"/>
+                                <CheckBox x:Name="CheckBoxEstablishServer" Content="Establish TCP Server" Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <Border x:Name="BorderUdp" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="7" Style="{StaticResource PortletBorderStyle}" Background="{StaticResource PortletBackgroundBrush}" Height="75">
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="150"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="26" />
+                                    <RowDefinition Height="26" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Local Port" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TextBoxLocalPort" Grid.Column="1" Grid.Row="0" Height="21" VerticalAlignment="Center" Width="125"/>
+                                <CheckBox x:Name="CheckBoxListenOnUdp" Content="Remote device listens on UDP" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" VerticalAlignment="Center"/>
+                                <TextBlock Text="IP Address" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TextBoxUdpIpAddress" Grid.Column="3" Grid.Row="1" Height="21" VerticalAlignment="Center" Width="125"/>
+                                <TextBlock Text="Remote Port" Grid.Column="4" Grid.Row="1" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TextBoxRemotePort" Grid.Column="5" Grid.Row="1" Height="21" VerticalAlignment="Center" Width="125"/>
+                            </Grid>
+                        </Border>
+                        <Border x:Name="BorderSerial" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="7" Style="{StaticResource PortletBorderStyle}" Background="{StaticResource PortletBackgroundBrush}" Height="75">
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="150"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="26" />
+                                    <RowDefinition Height="26" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Port" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"/>
+                                <ComboBox x:Name="ComboBoxSerialPort" Grid.Column="1" Grid.Row="0" Height="21" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Baud Rate" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"/>
+                                <ComboBox x:Name="ComboBoxBaudRate" Grid.Column="1" Grid.Row="1" Height="21" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Parity" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center"/>
+                                <ComboBox x:Name="ComboBoxParity" Grid.Column="3" Grid.Row="0" Height="21" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Stop Bits" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center"/>
+                                <ComboBox x:Name="ComboBoxStopBits" Grid.Column="3" Grid.Row="1" Height="21" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <TextBlock Text="Data Bits" Grid.Column="4" Grid.Row="0" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TextBoxDataBits" Grid.Column="5" Grid.Row="0" Height="21" VerticalAlignment="Center"/>
+                                <CheckBox x:Name="CheckBoxDTR" Content="DTR" Grid.Column="4" Grid.Row="1" VerticalAlignment="Center" />
+                                <CheckBox x:Name="CheckBoxRTS" Content="RTS" Grid.Column="5" Grid.Row="1" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Email List" VerticalAlignment="Top" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <TextBox x:Name="TextBoxEmailList" Grid.Row="8" Grid.Column="1" Text="{Binding Path=EmailList}" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" Width="300" HorizontalAlignment="Left" Padding="2"/>
+                                                
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Name" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <TextBox x:Name="TextBoxName" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Name}" Width="200" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Access ID" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <TextBox x:Name="TextBoxAccessID" Grid.Row="1" Grid.Column="3" Text="{Binding Path=AccessID}" Width="100" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2"/>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Protocol" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <ComboBox x:Name="ComboBoxProtocol" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" Width="150" DisplayMemberPath="Value"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="Latitude" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <TextBox x:Name="TextBoxLatitude" Grid.Row="3" Grid.Column="3" Text="{Binding Path=Latitude}" Width="100" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2"/>
+                        <TextBlock Grid.Row="4" Grid.Column="2" Text="Offset Ticks" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <TextBox x:Name="TextBoxOffsetTicks" Grid.Row="4" Grid.Column="3" Text="{Binding Path=OffsetTicks}" Width="100" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2"/>
+                        <TextBlock Grid.Row="5" Grid.Column="2" Text="Additional Connect Info" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <TextBox x:Name="TextBoxAdditionalConnectionInfo" Grid.Row="5" Grid.Column="3" Text="{Binding Path=AdditionalConnectionInfo}" Width="200" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2"/>
+                        <TextBlock Grid.Row="6" Grid.Column="2" Text="Frames Per Second" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>                        
+                        <TextBox x:Name="TextBoxFramesPerSecond" Grid.Row="6" Grid.Column="3" Text="{Binding Path=FramesPerSecond}" Width="100" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2"/>
+                        <TextBlock Grid.Row="8" Grid.Column="2" Text="Enabled" VerticalAlignment="Top" HorizontalAlignment="Left" Padding="2" FontWeight="Bold"/>
+                        <CheckBox x:Name="CheckBoxEnabled" IsChecked="{Binding Enabled}" Grid.Row="8" Grid.Column="3" VerticalAlignment="Top" Padding="2"></CheckBox>                        
+                        <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Button x:Name="ButtonClear" Content="../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="5" />
+                            <TextBlock Text="     "/>
+                            <Button x:Name="ButtonSave" Content="../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="5" />
+                        </StackPanel>    
+                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="9"/>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource HeaderRowBorderStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Acronym" Width="125" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="PDC Name" Width="300" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Company" Width="300" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Device" Width="100" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Protocol" Width="125" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>                         
+                        <TextBlock Text="Enabled" Width="100" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </StackPanel>                
+                </Border>
+                <Border Background="{StaticResource PortletBackgroundBrush}">
+                    <ListBox x:Name="ListBoxPdcList" Margin="0" Padding="0" Height="290" SelectionChanged="ListBoxPdcList_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <TextBlock Text="{Binding Path=Acronym}" Width="125" TextAlignment="Center" Margin="0"/>
+                                    </Border>
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <TextBlock Text="{Binding Path=Name}" Width="300" TextAlignment="Left" Margin="0"/>
+                                    </Border>
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <TextBlock Text="{Binding Path=CompanyName}" Width="300" TextAlignment="Left" Margin="0"/>
+                                    </Border>
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <TextBlock Text="{Binding Path=VendorDeviceName}" Width="100" TextAlignment="Left" Margin="0"/>
+                                    </Border>
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <TextBlock Text="{Binding Path=ProtocolName}" Width="125" TextAlignment="Left" Margin="0"/>
+                                    </Border>
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="100">
+                                        <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled}" IsEnabled="False" />                                        
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>                    
+                </Border>
+            </StackPanel>
+        </Border>
+    </Canvas>
+</navigation:Page>

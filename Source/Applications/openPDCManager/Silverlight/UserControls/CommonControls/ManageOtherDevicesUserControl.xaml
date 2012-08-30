@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="openPDCManager.UserControls.CommonControls.ManageOtherDevicesUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    >
+    <Border Style="{StaticResource PortletBorderStyle}">
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="Manage Planned Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+            <Border Background="{StaticResource PortletBackgroundBrush}">
+                <Grid x:Name="GridOtherDeviceDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="2*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+                        <TextBlock Text="Acronym" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxAcronym" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Acronym}" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="16"/>
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Name" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBox x:Name="TextBoxName" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="100"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Company" Style="{StaticResource GenericLabelStyle}"/>
+                    <ComboBox x:Name="ComboboxCompany" Grid.Row="1" Grid.Column="1" Margin="5" DisplayMemberPath="Value" Width="{StaticResource XLargeItemSize}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Interconnection" Style="{StaticResource GenericLabelStyle}"/>
+                    <ComboBox x:Name="ComboboxInterconnection" Grid.Row="1" Grid.Column="3" Margin="5" DisplayMemberPath="Value"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Device Vendor" Style="{StaticResource GenericLabelStyle}"/>
+                    <ComboBox x:Name="ComboboxVendorDevice" Grid.Row="2" Grid.Column="1" Margin="5" DisplayMemberPath="Value" Width="{StaticResource XLargeItemSize}"/>
+                    <CheckBox x:Name="CheckboxConcentrator" Grid.Row="2" Grid.Column="3" IsChecked="{Binding Path=IsConcentrator}" Content="Concentrator" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Longitude" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBox x:Name="TextBoxLongitude" Grid.Row="3" Grid.Column="1" Text="{Binding Path=Longitude}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Row="3" Grid.Column="2" Text="Latitude" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBox x:Name="TextBoxLatitude" Grid.Row="3" Grid.Column="3" Text="{Binding Path=Latitude}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <CheckBox x:Name="CheckboxPlanned" Grid.Row="4" Grid.Column="1" IsChecked="{Binding Path=Planned}" Content="Planned" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                    <CheckBox x:Name="CheckboxDesired" Grid.Row="4" Grid.Column="2" IsChecked="{Binding Path=Desired}" Content="Desired" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                    <CheckBox x:Name="CheckboxInProgress" Grid.Row="4" Grid.Column="3" IsChecked="{Binding Path=InProgress}" Content="In Progress" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                        <TextBlock Text="     "/>
+                        <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonSaveTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5"/>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </Border>
+</UserControl>

@@ -1,0 +1,5 @@
+[autorun]
+icon=System\GPA.ico
+open=setup.exe
+label=GPA openPDC Setup
+action=Install the openPDC

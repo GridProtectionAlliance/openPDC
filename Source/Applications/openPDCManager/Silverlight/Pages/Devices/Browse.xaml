@@ -1,0 +1,121 @@
+﻿<navigation:Page x:Class="openPDCManager.Pages.Devices.Browse" 
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           mc:Ignorable="d"
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"      
+           xmlns:data="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data" 
+           xmlns:DefaultButton="clr-namespace:openPDCManager.Utilities" 
+           Title="Browse Devices">    
+    <Grid x:Name="GridBrowseDevices">
+        <Border Style="{StaticResource PortletBorderStyle}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Browse Devices" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                <Border Style="{StaticResource HeaderRowBorderStyle}">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <TextBox x:Name="TextBoxSearch" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" Margin="2"  DefaultButton:DefaultButtonService.DefaultButton="{Binding ElementName=ButtonSearch}"/>
+                        <Button x:Name="ButtonSearch" Content="../../Images/Search.png" Tag="Search" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="2" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonSearchTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                        <Button x:Name="ButtonShowAll" Content="../../Images/CancelSearch.png" Tag="Show All" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" Margin="2" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonShowAllTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource HeaderRowBorderStyle}">
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <HyperlinkButton Content="Acronym" HorizontalContentAlignment="Center" Width="{StaticResource SmallItemSize}" FontSize="{StaticResource LargeTextSize}" Foreground="#FF000000" FontWeight="Bold" Click="HyperlinkButtonAcronym_Click" />
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Name" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Concentrator" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Protocol" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Company" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <!--<Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Vendor Device" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>-->
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Phasors" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Measurements" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Enabled" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <HyperlinkButton Content="Created On" HorizontalContentAlignment="Center" Width="{StaticResource LargeItemSize}" FontSize="{StaticResource LargeTextSize}" Foreground="#FF000000" FontWeight="Bold" Click="HyperlinkButtonCreatedOn_Click" />
+                        </Border>
+                        <TextBlock Text="" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Background="{StaticResource PortletBackgroundBrush}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0" Height="700">
+                        <ScrollViewer.Content>
+                            <ListBox x:Name="ListBoxDeviceList" Margin="0" Padding="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <HyperlinkButton Content="{Binding Path=Acronym}" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="HyperlinkButton_Click"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=Name}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallerItemSize}">
+                                                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=IsConcentrator}" IsEnabled="False" />
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=ProtocolName}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" Padding="0"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=CompanyAcronym}" ToolTipService.ToolTip="{Binding Path=CompanyName}" Width="{StaticResource XSmallItemSize}" TextAlignment="Left" Padding="0"/>
+                                            </Border>
+                                            <!--<Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=VendorDeviceName}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Padding="0"/>
+                                            </Border>-->
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <HyperlinkButton Content="Phasors" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" Click="HyperlinkButtonPhasors_Click"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <HyperlinkButton Content="Measurements" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Width="{StaticResource SmallItemSize}" Click="HyperlinkButtonMeasurements_Click"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
+                                                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled, Mode=TwoWay}" IsEnabled="True" />
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                <TextBlock Text="{Binding Path=CreatedOn}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="0"/>
+                                            </Border>
+                                            <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XXSmallItemSize}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button x:Name="ButtonCopy" Content="../../Images/Copy.png" Tag="" ToolTipService.ToolTip="Click Here to Make a Copy of Device" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="0, 0, 3, 0" Click="ButtonCopy_Click" />
+                                                    <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="" ToolTipService.ToolTip="Click Here to Save Changes" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="3, 0, 3, 0" Click="ButtonSave_Click" />
+                                                    <Button x:Name="ButtonDelete" Content="../../Images/Cancel.png" Tag="" ToolTipService.ToolTip="Click Here to Delete Device" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand" Margin="3, 0, 0, 0" Click="ButtonDelete_Click" />
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer.Content>
+                    </ScrollViewer>
+                </Border>
+                <data:DataPager x:Name="DataPagerDevices" PageSize="25" AutoEllipsis="True" NumericButtonCount="3" DisplayMode="FirstLastPreviousNext"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+    
+</navigation:Page>

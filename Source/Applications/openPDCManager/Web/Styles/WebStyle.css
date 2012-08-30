@@ -1,0 +1,16 @@
+﻿body
+{
+	margin: 0; 
+	background-color: #095188;
+	background-image: url('../Images/Background.png'); 
+	background-repeat: repeat-x; 	
+	height: 100%;
+	font-family: Tahoma;
+	color: White;
+	font-size: 14px;
+}
+#silverlightControlHost 
+{
+	height: 100%;
+}
+

@@ -1,0 +1,5 @@
+﻿<%@ServiceHost 
+    Language="C#" 
+    Debug="true" 
+    Factory="openPDCManager.Services.DuplexService.PhasorDataDuplexServiceFactory" 
+    Service="openPDCManager.Services.DuplexService.LivePhasorDataService" %>

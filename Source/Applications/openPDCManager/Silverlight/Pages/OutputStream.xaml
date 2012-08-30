@@ -1,0 +1,97 @@
+﻿<navigation:Page x:Class="openPDCManager.Silverlight.Pages.OutputStream" 
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           mc:Ignorable="d"
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
+           d:DesignWidth="640" d:DesignHeight="480"
+           Title="OutputStream Page">
+    <Canvas x:Name="CalculatedMeasurementLayoutRoot">
+        <Border Style="{StaticResource PortletBorderStyle}" Canvas.Top="5" Canvas.Left="100">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Output Stream" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="12" Padding="5" />
+                <Border Background="{StaticResource PortletBackgroundBrush}" Height="250">
+                    <Grid x:Name="GridOutputStreamDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="50" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="300" />
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="300" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="2"/>
+                        <TextBox x:Name="TextBoxName" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Name}" Width="275" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2" />
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Output Protocol" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="2"/>
+                        <TextBox x:Name="TextBoxOutputProtocol" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Type}" Width="275" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Configuration String" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="2"/>
+                        <TextBox x:Name="TextBoxConfigurationString" Grid.Row="1" Grid.Column="1" Text="{Binding Path=ConnectionString}" Width="275" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2" />
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="PMU Filter SQL" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="2"/>
+                        <TextBox x:Name="TextBoxPmuFilterSql" Grid.Row="1" Grid.Column="3" Text="{Binding Path=PmuFilterSql}" Width="275" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="ID Code" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="2"/>
+                        <TextBox x:Name="TextBoxIDCode" Grid.Row="2" Grid.Column="1" Text="{Binding Path=IDCode}" Width="50" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2"/>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Frame Rate" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="2"/>
+                        <TextBox x:Name="TextBoxFrameRate" Grid.Row="2" Grid.Column="3" Text="{Binding Path=FrameRate}" Width="50" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2" />
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Lag Time" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="2"/>
+                        <TextBox x:Name="TextBoxLagTime" Grid.Row="3" Grid.Column="1" Text="{Binding Path=LagTime}" Width="50" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2" />
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="Lead Time" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="2"/>
+                        <TextBox x:Name="TextBoxLeadTime" Grid.Row="3" Grid.Column="3" Text="{Binding Path=LeadTime}" Width="50" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2" />
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Nominal Frequency" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="2"/>
+                        <TextBox x:Name="TextBoxNominalFrequency" Grid.Row="4" Grid.Column="1" Text="{Binding Path=NominalFrequency}" Width="50" Height="23" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Padding="2" />
+                        <CheckBox x:Name="CheckBoxEnabled" IsChecked="{Binding Path=Enabled}" Content="Enabled" Grid.Row="4" Grid.Column="3" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Button x:Name="ButtonClear" Content="../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="5" />
+                            <TextBlock Text="     "/>
+                            <Button x:Name="ButtonSave" Content="../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="5" />
+                        </StackPanel>
+                        <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5"/>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource HeaderRowBorderStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Name" Width="150" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Type Name" Width="150" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="ConnectionString" Width="600" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <TextBlock Text="Enabled" Width="100" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Background="{StaticResource PortletBackgroundBrush}">
+                    <ListBox x:Name="ListBoxOutputStream" Margin="0" Padding="0" Height="290" SelectionChanged="ListBoxOutputStream_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <TextBlock Text="{Binding Path=Name}" Width="150" TextAlignment="Left" Margin="0,4,0,4"/>
+                                    </Border>
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <TextBlock Text="{Binding Path=Type}" Width="150" TextAlignment="Left" Margin="0,4,0,4"/>
+                                    </Border>
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <TextBlock Text="{Binding Path=ConnectionString}" Width="600" TextAlignment="Left" Margin="0,4,0,4"/>
+                                    </Border>
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="100">
+                                        <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled}" IsEnabled="False" />
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+            </StackPanel>
+        </Border>
+    </Canvas>
+</navigation:Page>

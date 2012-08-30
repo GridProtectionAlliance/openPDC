@@ -1,0 +1,26 @@
+﻿<navigation:Page x:Class="openPDCManager.Silverlight.Pages.ActiveMap" 
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           mc:Ignorable="d"
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
+           d:DesignWidth="640" d:DesignHeight="480"
+           xmlns:VirtualEarth="clr-namespace:Microsoft.VirtualEarth.MapControl;assembly=Microsoft.VirtualEarth.MapControl"
+           Title="ActiveMap Page">
+    <Canvas x:Name="ActiveMapLayoutRoot">
+        <Border Style="{StaticResource PortletBorderStyle}" Canvas.Top="5" Canvas.Left="5">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Active Map" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="12" Padding="5" />                
+                <Border Style="{StaticResource HeaderRowBorderStyle}" Width="1170" Height="765">
+                    <VirtualEarth:Map x:Name="VirtualEarthActiveMap" Mode="AerialWithLabels"  ZoomLevel="4" MouseClick="VirtualEarthActiveMap_MouseClick">
+                        <VirtualEarth:Map.Children>
+                            <VirtualEarth:MapLayer x:Name="PushpinLayer">
+                            </VirtualEarth:MapLayer>
+                        </VirtualEarth:Map.Children>
+                    </VirtualEarth:Map>
+                </Border>
+            </StackPanel>
+        </Border>
+    </Canvas>
+</navigation:Page>

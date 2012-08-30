@@ -1,0 +1,160 @@
+﻿<controls:ChildWindow x:Class="openPDCManager.ModalDialogs.ConnectionStringBuilder"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls"           
+           Title="openPDC Connection String Builder">
+    <Grid x:Name="GridConnectionStringBuilder">
+        <Border Style="{StaticResource PortletBorderStyle}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Build Connection String" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                <Border Background="{StaticResource PortletBackgroundBrush}" Padding="5">
+                    <StackPanel Orientation="Vertical">
+                        <CheckBox x:Name="CheckboxForceIPv4" Content="Force IPv4" FontWeight="Bold" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0"/>
+                        <controls:TabControl x:Name="TabControlOptions">
+                            <controls:TabItem Header="TCP" x:Name="TabItemTCP">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock x:Name="TextBlockHostIP" Grid.Row="0" Grid.Column="0" Text="Host IP" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBox x:Name="TextBoxHostIP" Grid.Row="0" Grid.Column="1" Text="127.0.0.1" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                    <CheckBox x:Name="CheckboxEstablishServer" Content="Establish TCP Server" FontWeight="Bold" Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom" Margin="5"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Port" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBox x:Name="TextBoxPort" Grid.Row="1" Grid.Column="1" Text="4712" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                    <Button x:Name="ButtonSaveTCP" Grid.Row="2" Grid.Column="2" Content="../../Images/Save.png" Tag="Save Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
+                                </Grid>
+                            </controls:TabItem>
+                            <controls:TabItem Header="UDP" x:Name="TabItemUDP">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Local Port" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBox x:Name="TextBoxLocalPort" Grid.Row="0" Grid.Column="1" Text="4712" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                    <CheckBox x:Name="CheckboxEnableMulticast" Content="Enable Multicast/Remote Udp" FontWeight="Bold" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
+                                    <StackPanel x:Name="StackPanelMulticastOptions" Orientation="Vertical" Grid.Row="1" Grid.Column="2" Visibility="Collapsed">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Host IP" Width="{StaticResource SmallerItemSize}" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                            <TextBox x:Name="TextBoxHostIPUdp" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Remote Port" Width="{StaticResource SmallerItemSize}" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                            <TextBox x:Name="TextBoxRemotePort" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Button x:Name="ButtonSaveUDP" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Content="../../Images/Save.png" Tag="Save Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
+                                </Grid>
+                            </controls:TabItem>
+                            <controls:TabItem Header="Serial" x:Name="TabItemSerial">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Port" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <ComboBox x:Name="ComboboxPort" Grid.Row="0" Grid.Column="1" Width="{StaticResource SmallItemSize}" HorizontalAlignment="Left" Margin="2"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Stop Bits" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <ComboBox x:Name="ComboboxStopBits" Grid.Row="0" Grid.Column="3" Width="{StaticResource SmallItemSize}" HorizontalAlignment="Left" Margin="2"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Baud Rate" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <ComboBox x:Name="ComboboxBaudRate" Grid.Row="1" Grid.Column="1" Width="{StaticResource SmallItemSize}" HorizontalAlignment="Left" Margin="2"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Data Bits" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBox x:Name="TextBoxDataBits" Grid.Row="1" Grid.Column="3" Text="8" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Parity" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <ComboBox x:Name="ComboboxParity" Grid.Row="2" Grid.Column="1" Width="{StaticResource SmallItemSize}" HorizontalAlignment="Left" Margin="2"/>
+                                    <CheckBox x:Name="CheckboxDTR" Content="DTR" FontWeight="Bold" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
+                                    <CheckBox x:Name="CheckboxRTS" Content="RTS" FontWeight="Bold" Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
+                                    <Button x:Name="ButtonSaveSerial" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Content="../../Images/Save.png" Tag="Save Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
+                                </Grid>
+                            </controls:TabItem>
+                            <controls:TabItem Header="File" x:Name="TabItemFile">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="File Name" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                                        <TextBox x:Name="TextBoxFile" Width="{StaticResource XXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                        <Button x:Name="ButtonBrowseFile" Content="../../Images/Browse.png" Tag="Browse" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Frame Rate" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBox x:Name="TextBoxFrameRate" Grid.Row="1" Grid.Column="1" Text="30" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                    <CheckBox x:Name="CheckboxAutoRepeat" Content="Auto-repeat captured file playback" IsChecked="True" FontWeight="Bold" Grid.Row="2" Grid.Column="1" VerticalAlignment="Bottom" Margin="5"/>
+                                    <CheckBox x:Name="CheckboxSimulateTimeStamp" Content="Simulate Timestamp" IsChecked="True" FontWeight="Bold" Grid.Row="3" Grid.Column="1" VerticalAlignment="Bottom" Margin="5"/>
+                                    <Button x:Name="ButtonSaveFile" Grid.Row="4" Grid.Column="1" Content="../../Images/Save.png" Tag="Save Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
+                                </Grid>
+                            </controls:TabItem>
+                            <controls:TabItem Header="Udp Server" x:Name="TabItemUdpServer">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*" />
+                                        <ColumnDefinition Width="3*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Text="Broadcast Destinations:" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Host IP" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBox x:Name="TextBoxHostIP1" Grid.Row="1" Grid.Column="1" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Port" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBox x:Name="TextBoxHostPort1" Text="4712" Grid.Row="1" Grid.Column="3" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Host IP" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBox x:Name="TextBoxHostIP2" Grid.Row="2" Grid.Column="1" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="Port" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBox x:Name="TextBoxHostPort2" Text="4712" Grid.Row="2" Grid.Column="3" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Host IP" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBox x:Name="TextBoxHostIP3" Grid.Row="3" Grid.Column="1" Width="{StaticResource LargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+                                    <TextBlock Grid.Row="3" Grid.Column="2" Text="Port" FontWeight="Bold" HorizontalAlignment="Left" Margin="2" />
+                                    <TextBox x:Name="TextBoxHostPort3" Text="4712" Grid.Row="3" Grid.Column="3" Width="{StaticResource SmallerItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="2"/>
+
+                                    <Button x:Name="ButtonSaveUdpServer" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Content="../../Images/Save.png" Tag="Save Settings" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
+                                </Grid>
+                            </controls:TabItem>
+                        </controls:TabControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+    </Grid>
+</controls:ChildWindow>

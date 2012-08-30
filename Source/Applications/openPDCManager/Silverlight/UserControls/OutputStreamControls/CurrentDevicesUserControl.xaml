@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="openPDCManager.UserControls.OutputStreamControls.CurrentDevicesUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:converter="clr-namespace:openPDCManager.Converters" 
+    >
+    <Border Background="{StaticResource PortletBackgroundBrush}">
+        <StackPanel Orientation="Vertical" x:Name="StackPanelCurrentDevices">
+            <StackPanel.Resources>
+                <converter:InvertBooleanConverter x:Key="invertBooleanConverter" />
+            </StackPanel.Resources>
+            <CheckBox x:Name="CheckAll" Content="" Margin="5, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="CheckAll_Checked" Unchecked="CheckAll_Unchecked" />
+            <ScrollViewer BorderThickness="0" Padding="0" Height="{StaticResource XXXLargeItemSize}">
+                <ScrollViewer.Content>
+                    <ListBox x:Name="ListBoxOutputStreamDeviceList" Margin="0" Padding="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox HorizontalAlignment="Center" Content="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Width="{StaticResource XLargeItemSize}" 
+                                               IsEnabled="{Binding Path=Virtual, Converter={StaticResource invertBooleanConverter}}" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer.Content>
+            </ScrollViewer>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="ButtonDelete" Content="../../Images/Cancel.png" Tag="Delete Selected" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                    <Button.RenderTransform>
+                        <ScaleTransform x:Name="ButtonDeleteTransform" ScaleX="1" ScaleY="1" />
+                    </Button.RenderTransform>
+                </Button>
+                <TextBlock Text="     "/>
+                <Button x:Name="ButtonAdd" Content="../../Images/Add.png" Tag="Add New" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                    <Button.RenderTransform>
+                        <ScaleTransform x:Name="ButtonAddTransform" ScaleX="1" ScaleY="1" />
+                    </Button.RenderTransform>
+                </Button>
+            </StackPanel>
+
+        </StackPanel>
+    </Border>
+</UserControl>

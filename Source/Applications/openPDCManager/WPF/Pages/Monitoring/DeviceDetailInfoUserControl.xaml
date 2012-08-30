@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="openPDCManager.Pages.Monitoring.DeviceDetailInfoUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converter="clr-namespace:openPDCManager.Converters"
+             mc:Ignorable="d" Background="Transparent" Height="250" Width="770"
+             >
+    <Grid Background="Transparent" x:Name="GridDeviceInfo">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Acronym" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0" Style="{StaticResource GenericLabelStyle}" />
+        <TextBlock Text="{Binding Path=Acronym}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0"/>
+        <TextBlock Text="Name" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Grid.Row="0" Style="{StaticResource GenericLabelStyle}"/>
+        <TextBlock Text="{Binding Path=Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="3" Grid.Row="0" />
+        <TextBlock Text="Protocol" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1" Style="{StaticResource GenericLabelStyle}" />
+        <TextBlock Text="{Binding Path=ProtocolName}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" />
+        <TextBlock Text="Vendor" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Grid.Row="1" Style="{StaticResource GenericLabelStyle}" />
+        <TextBlock Text="{Binding Path=VendorDeviceName}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1" />
+        <TextBlock Text="Frames/Sec" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2" Style="{StaticResource GenericLabelStyle}" />
+        <TextBlock Text="{Binding Path=FramesPerSecond}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" Grid.Row="2" />
+        <TextBlock Text="Measured Lines" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Grid.Row="2" Style="{StaticResource GenericLabelStyle}" />
+        <TextBlock Text="{Binding Path=MeasuredLines}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="3" Grid.Row="2" />
+
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4">
+            <TextBlock Text="Run-Time Statistics" FontWeight="Bold" />
+            <TextBlock x:Name="TextBlockRefreshInterval" Text="" />
+        </StackPanel>
+        
+        <ListBox x:Name="ListBoxStatisticsList" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Background="Transparent" Height="130">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <StackPanel.Resources>
+                            <converter:StringToColorConverter x:Key="stringToColorConverter" />
+                        </StackPanel.Resources>
+                        <TextBlock Text="{Binding Path=SignalReference}" ToolTipService.ToolTip="{Binding Path=PointTag}" Width="{StaticResource SmallItemSize}" TextAlignment="Left" FontSize="{StaticResource SmallTextSize}" />
+                        <StackPanel Orientation="Horizontal" DataContext="{Binding Path=Statistics}">
+                            <TextBlock Text="{Binding Path=Name}" ToolTipService.ToolTip="{Binding Path=Description}" Width="{StaticResource LargerItemSize}" TextAlignment="Left" FontSize="{StaticResource LargeTextSize}" />
+                            <TextBlock Text="{Binding Path=Value}" Foreground="{Binding Quality, Converter={StaticResource stringToColorConverter}}" ToolTipService.ToolTip="{Binding Path=Quality}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold" />
+                            <TextBlock Text="{Binding Path=TimeTag}" Width="{StaticResource LargerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+                    
+    </Grid>
+</UserControl>

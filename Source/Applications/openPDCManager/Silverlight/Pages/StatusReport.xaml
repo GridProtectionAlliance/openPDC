@@ -1,0 +1,97 @@
+﻿<navigation:Page x:Class="openPDCManager.Silverlight.Pages.StatusReport" 
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           xmlns:converter="clr-namespace:openPDCManager.Silverlight.Converters"
+           mc:Ignorable="d"
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
+           Title="StatusReport Page">
+    
+    <UserControl.Resources>
+        <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>        
+    </UserControl.Resources>
+    
+    <Canvas x:Name="PmuListLayoutRoot">
+        
+        <Border Style="{StaticResource PortletBorderStyle}" Canvas.Top="5" Canvas.Left="75">
+
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Status Report" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="12" Padding="5" />
+                <Border Style="{StaticResource HeaderRowBorderStyle}">                    
+                    <StackPanel Orientation="Horizontal">
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Status" Width="100" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>
+                        <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                            <TextBlock Text="Company ID" Width="100" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                        </Border>                        
+                        <TextBlock Text="Company Name" Width="500" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                
+                <ScrollViewer BorderThickness="0" Height="743" Padding="0">
+                    <ScrollViewer.Content>
+                        <Border Background="{StaticResource PortletBackgroundBrush}">
+                            <ItemsControl x:Name="ItemControlCompanyStatus">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Ellipse Width="14" Height="14" Fill="{Binding Path=Status, Converter={StaticResource ConvertStringToSymbol}}" Margin="0,4,0,4"/>                                                
+                                                </Border>
+                                                <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                    <TextBlock Text="{Binding Path=Acronym}" Width="100" TextAlignment="Center" Margin="0,4,0,4" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                </Border>
+                                                <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                    <TextBlock Text="{Binding Path=CompanyName}" Width="700" TextAlignment="Left" Margin="0,4,0,4" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <Border Style="{StaticResource HeaderRowBorderStyle}" Margin="100, 0, 0, 0">
+                                                <StackPanel Orientation="Horizontal">                                                                                                        
+                                                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                                        <TextBlock Text="PMU ID" Width="200" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                    </Border>
+                                                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                                        <TextBlock Text="PMU Name" Width="250" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                    </Border>
+                                                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                                        <TextBlock Text="Device Description" Width="200" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                    </Border>
+                                                    <TextBlock Text="Protocol" Width="200" TextAlignment="Center" Padding="5" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <ItemsControl x:Name="ItemControlPmusStatus" ItemsSource="{Binding Path=PmusStatus}" Margin="100, 0, 0, 0">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal" Background="{Binding Path=StatusColor, Converter={StaticResource ConvertStringToSymbol}}">                                                                                                            
+                                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                                <TextBlock Text="{Binding Path=Acronym}" Width="200" TextAlignment="Left" Margin="0,4,0,4"/>
+                                                            </Border>
+                                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                                <TextBlock Text="{Binding Path=Name}" Width="250" TextAlignment="Left" Margin="0,4,0,4"/>
+                                                            </Border>
+                                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                                <TextBlock Text="{Binding Path=DeviceDescription}" Width="200" TextAlignment="Left" Margin="0,4,0,4"/>
+                                                            </Border>
+                                                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                                                <TextBlock Text="{Binding Path=ProtocolName}" Width="200" TextAlignment="Left" Margin="0,4,0,4"/>
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+                    </ScrollViewer.Content>
+                </ScrollViewer>
+            </StackPanel>
+            
+        </Border>
+
+    </Canvas>
+</navigation:Page>

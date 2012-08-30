@@ -1,0 +1,108 @@
+﻿<UserControl x:Class="openPDCManager.UserControls.AdapterUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    >
+    <!--<Grid x:Name="LayoutRoot" Background="White">-->
+    <StackPanel Orientation="Vertical">
+        <Border Background="{StaticResource PortletBackgroundBrush}">
+            <Grid x:Name="GridAdapterDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="2*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+                    <TextBlock Text="Adapter Name" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                </StackPanel>
+                <TextBox x:Name="TextBoxAdapterName" Grid.Row="0" Grid.Column="1" Text="{Binding Path=AdapterName}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="50"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Node" Style="{StaticResource GenericLabelStyle}"/>
+                <ComboBox x:Name="ComboboxNode" Grid.Row="0" Grid.Column="3" Margin="5" DisplayMemberPath="Value"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+                    <TextBlock Text="Assembly Name" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                </StackPanel>
+                <TextBox x:Name="TextBoxAssemblyName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=AssemblyName}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2">
+                    <TextBlock Text="Type Name" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                </StackPanel>
+                <TextBox x:Name="TextBoxTypeName" Grid.Row="1" Grid.Column="3" Text="{Binding Path=TypeName}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Connection String" Style="{StaticResource GenericLabelStyle}"/>
+                <TextBox x:Name="TextBoxConnectionString" Grid.Row="2" Grid.Column="1" Text="{Binding Path=ConnectionString}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2">
+                    <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />                
+                </StackPanel>
+                <TextBox x:Name="TextBoxLoadOrder" Grid.Row="2" Grid.Column="3" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                <CheckBox x:Name="CheckboxEnabled" Grid.Row="3" Grid.Column="3" IsChecked="{Binding Path=Enabled}" Content="Enabled" VerticalAlignment="Center" FontWeight="Bold" Margin="5"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                        <Button.RenderTransform>
+                            <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />
+                        </Button.RenderTransform>
+                    </Button>
+                    <TextBlock Text="     "/>
+                    <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                        <Button.RenderTransform>
+                            <ScaleTransform x:Name="ButtonSaveTransform" ScaleX="1" ScaleY="1" />
+                        </Button.RenderTransform>
+                    </Button>
+                </StackPanel>
+                <TextBlock x:Name="TextBlockMessage" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4"/>
+            </Grid>
+
+        </Border>
+
+        <Border Style="{StaticResource HeaderRowBorderStyle}">
+            <StackPanel Orientation="Horizontal" Margin="2">
+                <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                    <TextBlock Text="Adapter Name" Width="{StaticResource XLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                </Border>
+                <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                    <TextBlock Text="Assembly Name" Width="{StaticResource XXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                </Border>
+                <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                    <TextBlock Text="Type Name" Width="{StaticResource XXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                </Border>
+                <TextBlock Text="Enabled" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+            </StackPanel>
+        </Border>
+        <Border Background="{StaticResource PortletBackgroundBrush}">
+            <ScrollViewer BorderThickness="0" Padding="0" Height="578">
+                <ScrollViewer.Content>
+                    <ListBox x:Name="ListBoxAdapterList" Margin="0" Padding="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <TextBlock Text="{Binding Path=AdapterName}" Width="{StaticResource XLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                    </Border>
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <TextBlock Text="{Binding Path=AssemblyName}" Width="{StaticResource XXLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                    </Border>
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                        <TextBlock Text="{Binding Path=TypeName}" Width="{StaticResource XXLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                    </Border>
+                                    <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallerItemSize}">
+                                        <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled}" IsEnabled="False" />
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer.Content>
+            </ScrollViewer>
+        </Border>
+    </StackPanel>
+    <!--</Grid>-->
+</UserControl>

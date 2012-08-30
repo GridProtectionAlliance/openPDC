@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="openPDCManager.UserControls.PopupControls.ActivityWindowUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    >
+    <Border Background="#AA07426F" BorderThickness="1" BorderBrush="#FF07426F" CornerRadius="5">
+        <StackPanel Orientation="Vertical" Background="Transparent">
+            <StackPanel Orientation="Horizontal">
+                <Image x:Name="ImageInformation" Source="../Images/Information.png" Margin="5"/>
+                <TextBlock x:Name="TextBlockMessage" Text="Processing Request... Please Wait..." Style="{StaticResource LargeWhiteTextWithEffectStyle}" Margin="5" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

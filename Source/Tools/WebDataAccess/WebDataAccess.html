@@ -1,0 +1,70 @@
+<html>
+<head>
+    <script type="text/javascript" src="jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="jquery.gchart.js"></script>
+    <script language="javascript" type="text/javascript">
+	<!--
+        var dataID = 2;
+		var rootURL = "http://localhost:6152/Historian/TimeSeriesData/Read";
+        var liveData = [$.gchart.series('Frequency', [], 'green')]
+
+        $(document).ready(
+			function()
+			{
+				initializeChart();
+				refreshFrame();
+			});
+
+        function initializeChart()
+        {
+            $.get(rootURL + "/Historic/" + dataID + "/*-30s/*/json", initializeChartCallback);
+        }
+
+        function initializeChartCallback(data)
+        {
+            response = eval("(" + data + ")");
+
+            for (var i = 0; i < 100; i++)
+			{
+                liveData[0].data[i] = parseFloat(response.TimeSeriesDataPoints[i].Value);
+            }
+
+            $('#liveChart').gchart({ title: 'Real-time Data for point ID ' + dataID, type: 'line', minValue: 59.9, maxValue: 60.1, series: liveData });
+            setInterval(refreshChart, 1000);
+        }
+
+        function refreshChart()
+        {
+            $.get(rootURL + "/Current/" + dataID + "/json", refreshChartCallback);
+        }
+
+        function refreshChartCallback(data)
+        {
+            response = eval("(" + data + ")");
+            liveData[0].data.shift();
+            liveData[0].data.push(parseFloat(response.TimeSeriesDataPoints[0].Value));
+            $('#liveChart').gchart('change', { series: liveData });
+        }
+		
+		function refreshFrame()
+		{
+			document.getElementById("metaData").src = "http://localhost:6151/historian/metadata/read/" + dataID + "/xml";
+		}
+	// -->
+    </script>
+</head>
+<body>
+	<table>
+		<tr>
+			<td><img src="openPDC_200.png"></td>
+			<td valign="center"><h1>Web Based Real-time Data Access</h1></td>
+		</tr>
+	</table>
+	<div id="liveChart" style="height: 300px; width: 400px;"></div>
+	Point Meta Data:<br/>
+	<iframe src="about:blank" id="metaData" style="height: 300px; width: 640px;"></iframe>
+	<br/>
+	TODO: Add an input box that will allow user to specify point ID and then<br/>
+	dyanmically access meta-data (below) to update chart title and min / max values...
+</body>
+</html>

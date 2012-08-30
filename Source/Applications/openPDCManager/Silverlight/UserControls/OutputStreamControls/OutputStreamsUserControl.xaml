@@ -1,0 +1,265 @@
+﻿<UserControl x:Class="openPDCManager.UserControls.OutputStreamControls.OutputStreamsUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    >
+    <Border Style="{StaticResource PortletBorderStyle}">
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="Manage Output Streams" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+            <Border Background="{StaticResource PortletBackgroundBrush}">
+                <Grid x:Name="GridOutputStreamDetail" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" x:Name="RowDefinitionOptional1" />
+                        <RowDefinition Height="*" x:Name="RowDefinitionOptional2" />
+                        <RowDefinition Height="*" x:Name="RowDefinitionOptional3" />
+                        <RowDefinition Height="*" x:Name="RowDefinitionOptional4" />
+                        <RowDefinition Height="*" x:Name="RowDefinitionOptional5" />
+                        <RowDefinition Height="*" x:Name="RowDefinitionOptional6" />
+                        <RowDefinition Height="*" x:Name="RowDefinitionOptional7" />
+                        <RowDefinition Height="*" x:Name="RowDefinitionOptional8" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Node" Style="{StaticResource GenericLabelStyle}"/>
+                    <ComboBox x:Name="ComboBoxNode" Grid.Row="0" Grid.Column="1" DisplayMemberPath="Value" Margin="5"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
+                        <TextBlock Text="Acronym" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxAcronym" Grid.Row="0" Grid.Column="3" Text="{Binding Path=Acronym}" Width="{StaticResource SmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="50"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Name}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" MaxLength="100"/>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Type" Style="{StaticResource GenericLabelStyle}"/>
+                    <ComboBox x:Name="ComboBoxType" Grid.Row="1" Grid.Column="3" DisplayMemberPath="Value" Margin="5"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">
+                        <TextBlock Text="ID Code" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxIDCode" Grid.Row="2" Grid.Column="1" Text="{Binding Path=IDCode}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Row="2" Grid.Column="2" Text="Connection String" Style="{StaticResource GenericLabelStyle}"/>
+                    <TextBox x:Name="TextBoxConnectionString" Grid.Row="2" Grid.Column="3" Text="{Binding Path=ConnectionString}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="TCP Channel" Style="{StaticResource GenericLabelStyle}" VerticalAlignment="Top"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" VerticalAlignment="Top">
+                        <TextBox x:Name="TextBoxCommandChannel" Text="{Binding Path=CommandChannel}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap"/>
+                        <Button x:Name="ButtonBuildCommandChannel" Content="../../Images/Add.png" Tag="..." ToolTipService.ToolTip="Build Command Channel String" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="3" Grid.Column="2" Text="UDP Channel" Style="{StaticResource GenericLabelStyle}" VerticalAlignment="Top"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3" VerticalAlignment="Top">
+                        <TextBox x:Name="TextBoxDataChannel" Text="{Binding Path=DataChannel}" Width="{StaticResource XLargeItemSize}" Height="{StaticResource XSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap"/>
+                        <Button x:Name="ButtonBuildDataChannel" Content="../../Images/Add.png" Tag="..." ToolTipService.ToolTip="Build Data Channel String" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Cursor="Hand"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0">
+                        <TextBlock Text="Nominal Frequency" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxNominalFrequency" Grid.Row="4" Grid.Column="1" Text="{Binding Path=NominalFrequency}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2">
+                        <TextBlock Text="Frames Per Second" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxFramesPerSecond" Grid.Row="4" Grid.Column="3" Text="{Binding Path=FramesPerSecond}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0">
+                        <TextBlock Text="Lag Time" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonLagTimeHelp"  Content="?" Margin="2,0,0,0" Tag="HMC - Lag Time.png" ToolTipService.ToolTip="Click here for help on Lag Time" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxLagTime" Grid.Row="5" Grid.Column="1" Text="{Binding Path=LagTime}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="2">
+                        <TextBlock Text="Lead Time" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonLeadTimeHelp"  Content="?" Margin="2,0,0,0" Tag="HMC - Lead Time.png" ToolTipService.ToolTip="Click here for help on Lead Time" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxLeadTime" Grid.Row="5" Grid.Column="3" Text="{Binding Path=LeadTime}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+
+                    <Button x:Name="ButtonAdvancedOptions" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="4" Content="Advanced Concentration Options" Template="{StaticResource HyperlinkStyleButtonTemplate}" Foreground="#FF095188" Margin="2" Click="ButtonAdvancedOptions_Click"/>
+                    
+                    <StackPanel x:Name="StackPanelTimeResolution" Orientation="Horizontal" Grid.Row="7" Grid.Column="0">
+                        <TextBlock x:Name="TextBloclTimeResolution" Text="Time Resolution" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonTimeResolutionHelp"  Content="?" Margin="2,0,0,0" Tag="HMC - Time Resolution.png" ToolTipService.ToolTip="Click here for help on Time Resolution" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock x:Name="TextBloclTimeResolutionR" Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxTimeResolution" Grid.Row="7" Grid.Column="1" Text="{Binding Path=TimeResolution}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <StackPanel x:Name="StackPanelDownsamplingMethod" Orientation="Horizontal" Grid.Row="7" Grid.Column="2">
+                        <TextBlock x:Name="TextBlockDownsamplingMethod" Text="Downsampling Method" Style="{StaticResource GenericLabelStyle}"/>
+                        <Button x:Name="ButtonDownsamplingMethodHelp"  Content="?" Margin="2,0,0,0" Tag="HMC - Downsampling Method.png" ToolTipService.ToolTip="Click here for help on Downsampling Method" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock x:Name="TextBlockDownsamplingMethodR" Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <ComboBox x:Name="ComboboxDownsamplingMethod" Grid.Row="7" Grid.Column="3" Margin="5"/>
+                    <StackPanel x:Name="StackPanelDataFormat" Orientation="Horizontal" Grid.Row="8" Grid.Column="0">
+                        <TextBlock x:Name="TextBlockDataFormat" Text="Data Format" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock x:Name="TextBlockDataFormatR" Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <ComboBox x:Name="ComboboxDataFormat" Grid.Row="8" Grid.Column="1" Margin="5"/>
+                    <StackPanel x:Name="StackPanelCoordinateFormat" Orientation="Horizontal" Grid.Row="8" Grid.Column="2">
+                        <TextBlock x:Name="TextBlockCoordinateFormat" Text="Coordinate Format" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock x:Name="TextBlockCoordinateFormatR" Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <ComboBox x:Name="ComboboxCoordinateFormat" Grid.Row="8" Grid.Column="3" Margin="5"/>
+                    <StackPanel x:Name="StackPanelCurrentScalingValue" Orientation="Horizontal" Grid.Row="9" Grid.Column="0">
+                        <TextBlock x:Name="TextBlockCurrentScalingValue" Text="Current Scaling Value" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock x:Name="TextBlockCurrentScalingValueR" Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxCurrentScalingValue" Grid.Row="9" Grid.Column="1" Text="{Binding Path=CurrentScalingValue}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <StackPanel x:Name="StackPanelVoltageScalingValue" Orientation="Horizontal" Grid.Row="9" Grid.Column="2">
+                        <TextBlock x:Name="TextBlockVoltageScalingValue" Text="Voltage Scaling Value" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock x:Name="TextBlockVoltageScalingValueR" Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxVoltageScalingValue" Grid.Row="9" Grid.Column="3" Text="{Binding Path=VoltageScalingValue}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <StackPanel x:Name="StackPanelAnalogScalingValue" Orientation="Horizontal" Grid.Row="10" Grid.Column="0">
+                        <TextBlock  Text="Analog Scaling Value" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxAnalogScalingValue" Grid.Row="10" Grid.Column="1" Text="{Binding Path=AnalogScalingValue}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <StackPanel x:Name="StackPanelDigitalMaskValue" Orientation="Horizontal" Grid.Row="10" Grid.Column="2">
+                        <TextBlock x:Name="TextBlockDigitalMaskValue" Text="Digital Mask Value" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock x:Name="TextBlockDigitalMaskValueR" Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxDigitalMaskValue" Grid.Row="10" Grid.Column="3" Text="{Binding Path=DigitalMaskValue}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="1">
+                        <CheckBox x:Name="CheckBoxAutoStartDataChannel"  Content="Auto Start Data Channel" IsChecked="{Binding Path=AutoStartDataChannel}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonStartDataChannelHelp"  Content="?" Margin="2,0,0,0" Tag="HMC - Auto Start Data Channel.png" ToolTipService.ToolTip="Click here for help on Auto Start Data Channel" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="3">
+                        <CheckBox x:Name="CheckBoxAutoPublishConfigFrame" Content="Auto Publish Config Frame" IsChecked="{Binding Path=AutoPublishConfigFrame}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonAutoPublishConfigFrameHelp"  Content="?" Margin="2,0,0,0" Tag="HMC - Auto Publish Config Frame.png" ToolTipService.ToolTip="Click here for help on Auto Publish Config Frame" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="12" Grid.Column="1">
+                        <CheckBox x:Name="CheckBoxAllowSortsByArrival" Content="Allow Sorts By Arrival" IsChecked="{Binding Path=AllowSortsByArrival}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonAllowSortsByArrivalHelp"  Content="?" Margin="2,0,0,0" Tag="HMC - Allow Sorts By Arrival.png" ToolTipService.ToolTip="Click here for help on Allow Sorts By Arrival" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="12" Grid.Column="3">
+                        <CheckBox x:Name="CheckBoxUseLocalClockAsRealTime" Content="Use Local Clock As Real-time" IsChecked="{Binding Path=UseLocalClockAsRealTime}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonUseLocalClockAsRealTimeHelp"  Content="?" Margin="2,0,0,0" Tag="HMC - Use Local Clock as RealTime.png" ToolTipService.ToolTip="Click here for help on Use Local Clock As Real-time" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="13" Grid.Column="1">
+                        <CheckBox x:Name="CheckBoxAllowPreemptivePublishing" Content="Allow Preemptive Publishing" IsChecked="{Binding Path=AllowPreemptivePublishing}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonAllowPreemptivePublishingHelp"  Content="?" Margin="2,0,0,0" Tag="HMC - Allow Preemptive Publishing.png" ToolTipService.ToolTip="Click here for help on Allow Preemptive Publishing" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="13" Grid.Column="3">
+                        <CheckBox x:Name="CheckBoxIgnoreBadTimeStamps" Content="Ignore Bad Timestamps" IsChecked="{Binding Path=IgnoreBadTimeStamps}" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button x:Name="ButtonIgnoreBadTimeStampsHelp"  Content="?" Margin="2,0,0,0" Tag="HMC - Ignore Bad Timestamps.png" ToolTipService.ToolTip="Click here for help on Ignore Bad Timestamps" Template="{StaticResource RoundButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand" Click="ButtonHelp_Click" Width="12" Height="12" Background="{StaticResource BlueRadialGradientBrush}" FontSize="8" FontWeight="Bold" Foreground="White"/>
+                    </StackPanel>
+                    <CheckBox x:Name="CheckBoxPerformTimestampCheck" Grid.Row="14" Grid.Column="1" Content="Perform Timestamp Reasonability Check" IsChecked="{Binding Path=PerformTimestampReasonabilityCheck}" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="15" Grid.Column="0">
+                        <TextBlock Text="Load Order" Style="{StaticResource GenericLabelStyle}"/>
+                        <TextBlock Text="*" Foreground="#FFCC0000" Style="{StaticResource GenericLabelStyle}" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxLoadOrder" Grid.Row="15" Grid.Column="1" Text="{Binding Path=LoadOrder}" Width="{StaticResource XSmallItemSize}" Height="{StaticResource XXXSmallItemSize}" HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <CheckBox x:Name="CheckBoxEnabled" Grid.Row="15" Grid.Column="3" Content="Enabled" IsChecked="{Binding Path=Enabled}" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="16" Grid.Column="0" Text="Runtime ID" Style="{StaticResource GenericLabelStyle}"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="16" Grid.Column="1">
+                        <TextBlock x:Name="TextBlockRuntimeID" VerticalAlignment="Center"/>
+                        <TextBlock Text="" Width="{StaticResource BlankItemSize}" />
+                        <Button Content="Initialize" x:Name="ButtonInitialize" Tag="{Binding Path=Acronym}" Template="{StaticResource HyperlinkStyleButtonTemplate}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" VerticalAlignment="Center" Click="ButtonInitialize_Click" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="16" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button x:Name="ButtonClear" Content="../../Images/Cancel.png" Tag="Clear" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonClearTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                        <TextBlock Text="     "/>
+                        <Button x:Name="ButtonSave" Content="../../Images/Save.png" Tag="Save" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonSaveTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </StackPanel>                    
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource HeaderRowBorderStyle}">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="Acronym" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="Name" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="Type" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="Enabled" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="Devices" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="Measurements" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>                    
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="" Width="{StaticResource XSmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="" Width="{StaticResource SmallItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                        <TextBlock Text="" Width="{StaticResource SmallerItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                    </Border>
+                    <TextBlock Text="" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>                    
+                </StackPanel>
+            </Border>
+            <Border Background="{StaticResource PortletBackgroundBrush}">
+                <ScrollViewer x:Name="ScrollViewerList" BorderThickness="0" Padding="0" Height="385">
+                    <ScrollViewer.Content>
+                        <ListBox x:Name="ListBoxOutputStreamList" Margin="0" Padding="0">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <TextBlock Text="{Binding Path=Acronym}" Width="{StaticResource LargeItemSize}" TextAlignment="Center" Padding="1"/>
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <TextBlock Text="{Binding Path=Name}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                            <TextBlock Text="{Binding Path=TypeName}" Width="{StaticResource SmallerItemSize}" TextAlignment="Left" Padding="1"/>
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
+                                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Enabled}" IsEnabled="False" />
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
+                                            <!--<HyperlinkButton Content="Devices" HorizontalContentAlignment="Center" Name="{Binding Path=Acronym}" Foreground="#FF095188" Width="{StaticResource XSmallItemSize}" Click="HyperlinkButtonDevices_Click"/>-->
+                                            <Button Template="{StaticResource HyperlinkStyleButtonTemplate}" Content="Devices" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" HorizontalAlignment="Center" Click="ButtonDevices_Click"></Button>
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallItemSize}">
+                                            <Button Content="Measurements" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="ButtonMeasurements_Click"/>
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource LargeItemSize}">
+                                            <Button Content="Launch Device Wizard" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="ButtonWizard_Click" />
+                                        </Border>                                        
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallItemSize}">
+                                            <Button Content="Update Configuration" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="ButtonUpdateConfig_Click" />
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource SmallerItemSize}">
+                                            <Button Content="Make Copy" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="ButtonMakeCopy_Click" />
+                                        </Border>
+                                        <Border Style="{StaticResource ContentRowCellBorderStyle}" Width="{StaticResource XSmallItemSize}">
+                                            <Button Content="Delete" Template="{StaticResource HyperlinkStyleButtonTemplate}" HorizontalAlignment="Center" ToolTipService.ToolTip="{Binding Path=Acronym}" Tag="{Binding Path=ID}" Foreground="#FF095188" Click="ButtonDelete_Click" />
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer.Content>
+                </ScrollViewer>
+            </Border>
+
+        </StackPanel>
+    </Border>
+</UserControl>

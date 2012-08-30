@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/TVA.PhasorProtocols" />
+  <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/TVA.Communication" />
+  <xs:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Data.Entities" />
+  <xs:complexType name="CustomServiceFault">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="SystemMessage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UserMessage" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CustomServiceFault" nillable="true" type="tns:CustomServiceFault" />
+  <xs:complexType name="ArrayOfDeviceMeasurementData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DeviceMeasurementData" nillable="true" type="tns:DeviceMeasurementData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDeviceMeasurementData" nillable="true" type="tns:ArrayOfDeviceMeasurementData" />
+  <xs:complexType name="DeviceMeasurementData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CompanyName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DeviceList" nillable="true" type="tns:ArrayOfDeviceInfo" />
+      <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ID" type="xs:int" />
+      <xs:element minOccurs="0" name="IsExpanded" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StatusColor" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DeviceMeasurementData" nillable="true" type="tns:DeviceMeasurementData" />
+  <xs:complexType name="ArrayOfDeviceInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DeviceInfo" nillable="true" type="tns:DeviceInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDeviceInfo" nillable="true" type="tns:ArrayOfDeviceInfo" />
+  <xs:complexType name="DeviceInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CompanyName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ID" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="IsExpanded" type="xs:boolean" />
+      <xs:element minOccurs="0" name="MeasurementList" nillable="true" type="tns:ArrayOfMeasurementInfo" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ParentAcronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProtocolName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StatusColor" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="VendorDeviceName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DeviceInfo" nillable="true" type="tns:DeviceInfo" />
+  <xs:complexType name="ArrayOfMeasurementInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MeasurementInfo" nillable="true" type="tns:MeasurementInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMeasurementInfo" nillable="true" type="tns:ArrayOfMeasurementInfo" />
+  <xs:complexType name="MeasurementInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CurrentQuality" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CurrentTimeTag" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CurrentValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DeviceID" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="EngineeringUnits" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="HistorianAcronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsExpanded" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsSelected" type="xs:boolean" />
+      <xs:element minOccurs="0" name="PointID" type="xs:int" />
+      <xs:element minOccurs="0" name="PointTag" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SignalAcronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SignalID" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SignalName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SignalReference" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MeasurementInfo" nillable="true" type="tns:MeasurementInfo" />
+  <xs:simpleType name="MapType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Active" />
+      <xs:enumeration value="Planning" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="MapType" nillable="true" type="tns:MapType" />
+  <xs:complexType name="ArrayOfMapData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MapData" nillable="true" type="tns:MapData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMapData" nillable="true" type="tns:ArrayOfMapData" />
+  <xs:complexType name="MapData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CompanyMapAcronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CompanyName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Desired" type="xs:boolean" />
+      <xs:element minOccurs="0" name="DeviceType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ID" type="xs:int" />
+      <xs:element minOccurs="0" name="InProgress" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Latitude" nillable="true" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Longitude" nillable="true" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NodeID" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Planned" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Reporting" type="xs:boolean" />
+      <xs:element minOccurs="0" name="VendorDeviceName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MapData" nillable="true" type="tns:MapData" />
+  <xs:complexType name="ConnectionSettings">
+    <xs:sequence>
+      <xs:element name="AutoRepeatPlayback" type="xs:boolean" />
+      <xs:element name="ByteEncodingDisplayFormat" type="xs:int" />
+      <xs:element name="ConnectionParameters" nillable="true" type="xs:anyType" />
+      <xs:element name="ConnectionString" nillable="true" type="xs:string" />
+      <xs:element name="FrameRate" type="xs:int" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/TVA.PhasorProtocols" name="PhasorProtocol" type="q1:PhasorProtocol" />
+      <xs:element name="PmuID" type="xs:int" />
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/TVA.Communication" name="TransportProtocol" type="q2:TransportProtocol" />
+      <xs:element name="configurationFileName" nillable="true" type="xs:string" />
+      <xs:element name="parseWordCountFromByte" type="xs:boolean" />
+      <xs:element name="refreshConfigurationFileOnChange" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConnectionSettings" nillable="true" type="tns:ConnectionSettings" />
+  <xs:complexType name="ArrayOfWizardDeviceInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="WizardDeviceInfo" nillable="true" type="tns:WizardDeviceInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfWizardDeviceInfo" nillable="true" type="tns:ArrayOfWizardDeviceInfo" />
+  <xs:complexType name="WizardDeviceInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AccessID" type="xs:int" />
+      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AddAnalogs" type="xs:boolean" />
+      <xs:element minOccurs="0" name="AddDigitals" type="xs:boolean" />
+      <xs:element minOccurs="0" name="AnalogCount" type="xs:int" />
+      <xs:element minOccurs="0" name="DigitalCount" type="xs:int" />
+      <xs:element minOccurs="0" name="Include" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Latitude" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Longitude" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ParentAccessID" type="xs:int" />
+      <xs:element minOccurs="0" name="PhasorList" nillable="true" type="tns:ArrayOfPhasorInfo" />
+      <xs:element minOccurs="0" name="VendorDeviceID" nillable="true" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="WizardDeviceInfo" nillable="true" type="tns:WizardDeviceInfo" />
+  <xs:complexType name="ArrayOfPhasorInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PhasorInfo" nillable="true" type="tns:PhasorInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPhasorInfo" nillable="true" type="tns:ArrayOfPhasorInfo" />
+  <xs:complexType name="PhasorInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DestinationLabel" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Include" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Label" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Phase" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PhasorInfo" nillable="true" type="tns:PhasorInfo" />
+  <xs:complexType name="ArrayOfStatisticMeasurementData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="StatisticMeasurementData" nillable="true" type="tns:StatisticMeasurementData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfStatisticMeasurementData" nillable="true" type="tns:ArrayOfStatisticMeasurementData" />
+  <xs:complexType name="StatisticMeasurementData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="IsExpanded" type="xs:boolean" />
+      <xs:element minOccurs="0" name="SourceStreamInfoList" nillable="true" type="tns:ArrayOfStreamInfo" />
+      <xs:element minOccurs="0" name="SourceType" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="StatisticMeasurementData" nillable="true" type="tns:StatisticMeasurementData" />
+  <xs:complexType name="ArrayOfStreamInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="StreamInfo" nillable="true" type="tns:StreamInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfStreamInfo" nillable="true" type="tns:ArrayOfStreamInfo" />
+  <xs:complexType name="StreamInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DeviceStatisticList" nillable="true" type="tns:ArrayOfDeviceStatistic" />
+      <xs:element minOccurs="0" name="ID" type="xs:int" />
+      <xs:element minOccurs="0" name="IsExpanded" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StatisticList" nillable="true" type="tns:ArrayOfDetailStatisticInfo" />
+      <xs:element minOccurs="0" name="StatusColor" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="StreamInfo" nillable="true" type="tns:StreamInfo" />
+  <xs:complexType name="ArrayOfDeviceStatistic">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DeviceStatistic" nillable="true" type="tns:DeviceStatistic" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDeviceStatistic" nillable="true" type="tns:ArrayOfDeviceStatistic" />
+  <xs:complexType name="DeviceStatistic">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Acronym" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ID" type="xs:int" />
+      <xs:element minOccurs="0" name="IsExpanded" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StatisticList" nillable="true" type="tns:ArrayOfDetailStatisticInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DeviceStatistic" nillable="true" type="tns:DeviceStatistic" />
+  <xs:complexType name="ArrayOfDetailStatisticInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DetailStatisticInfo" nillable="true" type="tns:DetailStatisticInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDetailStatisticInfo" nillable="true" type="tns:ArrayOfDetailStatisticInfo" />
+  <xs:complexType name="DetailStatisticInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DeviceID" type="xs:int" />
+      <xs:element minOccurs="0" name="IsExpanded" type="xs:boolean" />
+      <xs:element minOccurs="0" name="PointID" type="xs:int" />
+      <xs:element minOccurs="0" name="PointTag" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SignalReference" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Statistics" nillable="true" type="tns:BasicStatisticInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DetailStatisticInfo" nillable="true" type="tns:DetailStatisticInfo" />
+  <xs:complexType name="BasicStatisticInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DataType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DisplayFormat" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsConnectedState" type="xs:boolean" />
+      <xs:element minOccurs="0" name="LoadOrder" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Quality" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Source" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TimeTag" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BasicStatisticInfo" nillable="true" type="tns:BasicStatisticInfo" />
+  <xs:complexType name="ArrayOfIaonTree">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="IaonTree" nillable="true" type="tns:IaonTree" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfIaonTree" nillable="true" type="tns:ArrayOfIaonTree" />
+  <xs:complexType name="IaonTree">
+    <xs:sequence>
+      <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/openPDCManager.Data.Entities" minOccurs="0" name="AdapterList" nillable="true" type="q3:ArrayOfAdapter" />
+      <xs:element minOccurs="0" name="AdapterType" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="IaonTree" nillable="true" type="tns:IaonTree" />
+</xs:schema>

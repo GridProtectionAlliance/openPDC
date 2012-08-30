@@ -1,0 +1,65 @@
+﻿<navigation:Page x:Class="openPDCManager.Pages.Adapters.IaonTree" 
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           mc:Ignorable="d"
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"             
+                  xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls"
+    xmlns:common="clr-namespace:System.Windows;assembly=System.Windows.Controls"
+           Title="Iaon Tree View">
+    <Grid x:Name="LayoutRoot">
+        <Border Style="{StaticResource PortletBorderStyle}">
+            <StackPanel Orientation="Vertical">
+                <StackPanel.Resources>
+                    <common:HierarchicalDataTemplate x:Key="ChildNodeTemplate">
+                        <StackPanel Orientation="Horizontal">
+                            <ToolTipService.ToolTip>
+                                <TextBlock Text="{Binding Path=ConnectionString}" Width="500" TextWrapping="Wrap"/>
+                            </ToolTipService.ToolTip>
+                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                <TextBlock Text="{Binding Path=AdapterName}" Width="{StaticResource LargeItemSize}" TextAlignment="Left" Padding="1"/>
+                            </Border>
+                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                <TextBlock Text="{Binding Path=AssemblyName}" Width="{StaticResource XXLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                            </Border>
+                            <Border Style="{StaticResource ContentRowCellBorderStyle}">
+                                <TextBlock Text="{Binding Path=TypeName}" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Left" Padding="1"/>
+                            </Border>
+                        </StackPanel>
+                    </common:HierarchicalDataTemplate>
+                    <common:HierarchicalDataTemplate x:Key="RootNodeTemplate" ItemTemplate="{StaticResource ChildNodeTemplate}" ItemsSource="{Binding Path=AdapterList}">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding Path=AdapterType}" FontSize="{StaticResource LargerTextSize}" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Margin="5"/>
+                            <Border Style="{StaticResource HeaderRowBorderStyle}">
+                                <StackPanel Orientation="Horizontal" Margin="2">
+                                    <TextBlock Text="" Width="{StaticResource BlankItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold"/>
+                                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                        <TextBlock Text="Adapter Name" Width="{StaticResource LargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold" Padding="1"/>
+                                    </Border>
+                                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                        <TextBlock Text="Assembly Name" Width="{StaticResource XXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold" Padding="1"/>
+                                    </Border>
+                                    <Border Style="{StaticResource HeaderRowCellBorderStyle}">
+                                        <TextBlock Text="Type Name" Width="{StaticResource XXXLargeItemSize}" TextAlignment="Center" FontSize="{StaticResource LargeTextSize}" FontWeight="Bold" Padding="1"/>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </common:HierarchicalDataTemplate>
+                    <Style x:Key="ExpandedItemStyle" TargetType="controls:TreeViewItem">
+                        <Setter Property="IsExpanded" Value="True" />
+                    </Style>
+                </StackPanel.Resources>
+
+                <TextBlock Text="View Iaon Tree" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                <!--<ScrollViewer BorderThickness="0" Padding="0">
+                    <ScrollViewer.Content>-->
+                <controls:TreeView x:Name="TreeViewIaon" Background="{StaticResource PortletBackgroundBrush}" ItemTemplate="{StaticResource RootNodeTemplate}" Height="772" ItemContainerStyle="{StaticResource ExpandedItemStyle}" />
+                <!--</ScrollViewer.Content>
+                </ScrollViewer>-->
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</navigation:Page>

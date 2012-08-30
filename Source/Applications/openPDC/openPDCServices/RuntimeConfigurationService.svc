@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="openPDCServices.RuntimeConfigurationService" CodeBehind="RuntimeConfigurationService.svc.cs" %>

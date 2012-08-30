@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/TVA.PhasorProtocols" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/TVA.PhasorProtocols" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="PhasorProtocol">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="IeeeC37_118V1" />
+      <xs:enumeration value="IeeeC37_118D6" />
+      <xs:enumeration value="Ieee1344" />
+      <xs:enumeration value="BpaPdcStream" />
+      <xs:enumeration value="FNet" />
+      <xs:enumeration value="SelFastMessage" />
+      <xs:enumeration value="Macrodyne" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="PhasorProtocol" nillable="true" type="tns:PhasorProtocol" />
+</xs:schema>

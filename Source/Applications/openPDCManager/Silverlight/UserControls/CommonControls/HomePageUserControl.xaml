@@ -1,0 +1,224 @@
+﻿<UserControl x:Class="openPDCManager.UserControls.CommonControls.HomePageUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:converter="clr-namespace:openPDCManager.Converters"
+           xmlns:layoutToolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"  
+           xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+   >
+    <UserControl.Resources>
+        <converter:StringToSymbolConverter x:Key="ConvertStringToSymbol"/>
+        <ControlTemplate x:Key="CommonLineSeriesDataPointTemplate" TargetType="chartingToolkit:LineDataPoint">
+            <!--Comment out data points from the default template; just an empty template-->
+            <Grid x:Name="Root" Opacity="1">
+                <!--<ToolTipService.ToolTip> 
+            <StackPanel Margin="2,2,2,2"> 
+                <ContentControl Content="{TemplateBinding FormattedDependentValue}" /> 
+                <ContentControl Content="{TemplateBinding FormattedIndependentValue}" />-->
+                <!--Example of how to access the bound business object-->
+                <!--<ContentControl Content="{Binding Amount}" DataContext="{TemplateBinding DataContext}" />-->
+                <!--</StackPanel> 
+        </ToolTipService.ToolTip>-->
+                <!--<Ellipse StrokeThickness="{TemplateBinding BorderThickness}" Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}" />-->
+            </Grid>
+        </ControlTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="HomePageLayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>            
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.4*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Vertical" Grid.Column="0">            
+            <Border Style="{StaticResource PortletBorderStyle}" CornerRadius="5" VerticalAlignment="Bottom">
+                <StackPanel Orientation="Vertical" Margin="0" >
+                    <TextBlock Text="Quick Links" Style="{StaticResource LargeWhiteTextStyle}" Padding="5"/>
+                    <Border BorderThickness="0" Background="{StaticResource PortletBackgroundBrush}">
+                        <StackPanel Orientation="Vertical">
+                            <Button x:Name="ButtonInputStatus" Content="Input Status &amp; Monitor" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Padding="3" Margin="3" Width="{StaticResource XXLargeItemSize}" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" Click="ButtonInputStatus_Click"/>
+                            <Button x:Name="ButtonRuntimeStatistics" Content="Runtime Statistics" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Padding="3" Margin="3" Width="{StaticResource XXLargeItemSize}" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" Click="ButtonRuntimeStatistics_Click"/>
+                            <Button x:Name="ButtonAddDevice" Content="Add New Device" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Padding="3" Margin="3" Width="{StaticResource XXLargeItemSize}" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" Click="ButtonAddDevice_Click"/>
+                            <Button x:Name="ButtonDevices" Content="Manage Devices" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Padding="3" Margin="3" Width="{StaticResource XXLargeItemSize}" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" Click="ButtonDevices_Click"/>
+                            <Button x:Name="ButtonOutputStreams" Content="Manage Output Streams" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Padding="3" Margin="3" Width="{StaticResource XXLargeItemSize}" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" Click="ButtonOutputStreams_Click"/>
+                            <Button x:Name="ButtonSystemConsole" Content="System Console" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Padding="3" Margin="3" Width="{StaticResource XXLargeItemSize}" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" Click="ButtonSystemConsole_Click"/>
+                            <Button x:Name="ButtonRestartOpenPDC" Content="Restart openPDC" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Padding="3" Margin="3" Width="{StaticResource XXLargeItemSize}" FontWeight="Bold" FontSize="{StaticResource XLargeTextSize}" Click="ButtonRestartOpenPDC_Click"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="BorderInterconnectionStatus" Style="{StaticResource PortletBorderStyle}" CornerRadius="5" VerticalAlignment="Stretch" Margin="0,5,0,0">
+                <StackPanel Orientation="Vertical" Margin="0" >
+                    <TextBlock Text="Currently processing PMU data from the following companies" Style="{StaticResource LargeWhiteTextStyle}" Padding="5"/>
+                    <ScrollViewer x:Name="ScrollViewerStatus" BorderThickness="0" Padding="0" Height="533">
+                        <ScrollViewer.Content>
+                            <Border BorderThickness="0" Background="{StaticResource PortletBackgroundBrush}">
+                                <ItemsControl x:Name="ItemControlInterconnectionStatus" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical">
+                                                <Border Style="{StaticResource HeaderRowBorderStyle}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Path=InterConnection}" Style="{StaticResource HeaderRowTextStyle}" Width="525" />
+                                                        <TextBlock Text="{Binding Path=TotalDevices}" Style="{StaticResource HeaderRowTextStyle}" Width="150" TextAlignment="Center"/>
+                                                    </StackPanel>
+                                                </Border>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text=" " Width="{StaticResource BlankItemSize}" Padding="1"/>
+                                                    <TextBlock Text="Company / Region" Width="{StaticResource XLargeItemSize}" Style="{StaticResource HeaderRowTextStyle}"/>
+                                                    <TextBlock Text="Measured Lines" Width="{StaticResource SmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                                                    <TextBlock Text="Total" Width="{StaticResource XSmallItemSize}"  Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                                                    <!--<TextBlock Text="Validated" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                                                <TextBlock Text="Reporting" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                                                <TextBlock Text="Status" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>-->
+                                                </StackPanel>
+                                                <ItemsControl ItemsSource="{Binding Path=MemberStatusList}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal" Margin="0">
+                                                                <TextBlock Text=" " Width="{StaticResource BlankItemSize}" Padding="1"/>
+                                                                <TextBlock Width="{StaticResource XLargeItemSize}" Text="{Binding Path=CompanyName}" Padding="1"></TextBlock>
+                                                                <TextBlock Width="{StaticResource SmallItemSize}" Text="{Binding Path=MeasuredLines}" TextAlignment="Center" Padding="1"></TextBlock>
+                                                                <TextBlock Width="{StaticResource XSmallItemSize}" Text="{Binding Path=TotalDevices}" TextAlignment="Center" Padding="1"></TextBlock>
+                                                                <!--<TextBlock Width="{StaticResource XSmallItemSize}" Text="{Binding Path=ValidatedDevices}" TextAlignment="Center" Padding="1"></TextBlock>
+                                                            <TextBlock Width="{StaticResource XSmallItemSize}" Text="{Binding Path=ReportingDevices}" TextAlignment="Center" Padding="1"></TextBlock>
+                                                            <Border Width="{StaticResource XSmallItemSize}" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <Ellipse Width="14" Height="14" Fill="{Binding Path=Status, Converter={StaticResource ConvertStringToSymbol}}"/>
+                                                            </Border>-->
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Border>
+                        </ScrollViewer.Content>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Column="1">
+            <Border x:Name="BorderLiveData" Grid.Row="0" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Top" Margin="5,0,0,5">
+                <StackPanel Orientation="Vertical" Margin="0" VerticalAlignment="Top">
+                    <TextBlock Text="Real-Time Data" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="5" />
+                    <StackPanel Orientation="Horizontal" Margin="1,0,1,0" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Top" >
+                        <ComboBox x:Name="ComboBoxDevice" Padding="5" Width="{StaticResource LargeItemSize}" DisplayMemberPath="Value"/>
+                        <ComboBox x:Name="ComboBoxMeasurements" Padding="5" Width="{StaticResource LargerItemSize}" DisplayMemberPath="PointTag" />
+                        <Button x:Name="ButtonGetData" Content="../../Images/RequestData.png" Tag="Get Data" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonGetDataTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </StackPanel>
+                    <chartingToolkit:Chart x:Name="ChartRealTimeData" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Top" Height="216" >
+                        <chartingToolkit:Chart.LegendStyle>
+                            <Style TargetType="Control">
+                                <Setter Property="Width" Value="0"/>
+                                <Setter Property="Height" Value="0"/>
+                            </Style>
+                        </chartingToolkit:Chart.LegendStyle>
+                        <chartingToolkit:Chart.Axes>
+                            <chartingToolkit:LinearAxis Orientation="X">
+                                <chartingToolkit:LinearAxis.MajorTickMarkStyle>
+                                    <Style TargetType="Line">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </Style>
+                                </chartingToolkit:LinearAxis.MajorTickMarkStyle>
+                                <chartingToolkit:LinearAxis.AxisLabelStyle>
+                                    <Style TargetType="chartingToolkit:AxisLabel">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </Style>
+                                </chartingToolkit:LinearAxis.AxisLabelStyle>
+                            </chartingToolkit:LinearAxis>
+                            <chartingToolkit:LinearAxis Orientation="Y" ShowGridLines="True"/>                            
+                        </chartingToolkit:Chart.Axes>
+                        <chartingToolkit:Chart.Series>
+                            <chartingToolkit:LineSeries Title="Real-Time Data" ItemsSource="{Binding}" IndependentValuePath="Index" DependentValuePath="Value" IsSelectionEnabled="False" AnimationSequence="FirstToLast">
+                                <chartingToolkit:LineSeries.DataPointStyle>
+                                    <Style TargetType="chartingToolkit:LineDataPoint">
+                                        <Setter Property="Background" Value="Blue"/>
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Setter Property="Template" Value="{StaticResource CommonLineSeriesDataPointTemplate}"/>
+                                    </Style>
+                                </chartingToolkit:LineSeries.DataPointStyle>
+                                <chartingToolkit:LineSeries.PolylineStyle>
+                                    <Style TargetType="Polyline">
+                                        <Setter Property="StrokeThickness" Value="1"/>
+                                    </Style>
+                                </chartingToolkit:LineSeries.PolylineStyle>
+                            </chartingToolkit:LineSeries>
+                        </chartingToolkit:Chart.Series>
+                    </chartingToolkit:Chart>
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="BorderDeviceDistribution" Grid.Row="1" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Bottom" Margin="5,1,0,5">
+                <StackPanel Orientation="Vertical" Margin="0" VerticalAlignment="Top">
+                    <TextBlock Text="Vendor Device Distribution" Style="{StaticResource LargeWhiteTextStyle}" HorizontalAlignment="Center" Padding="5" />
+                    <chartingToolkit:Chart x:Name="ChartDeviceDistribution" Style="{StaticResource PieChartStyle}" Foreground="Black" Background="{StaticResource PortletBackgroundBrush}" VerticalAlignment="Top" Height="{StaticResource XLargeItemSize}">
+                        <chartingToolkit:Chart.Series>
+                            <chartingToolkit:PieSeries ItemsSource="{Binding}" DependentValueBinding="{Binding Value}" IndependentValueBinding="{Binding Key}" Title="Device Distribution" 
+                            IsSelectionEnabled="False">
+                                <!--<chartingToolkit:PieSeries.DataPointStyle>
+                                <Style TargetType="chartingToolkit:PieDataPoint">
+                                    <Setter Property="Template" Value="{StaticResource PieDataPointTemplate}"/>
+                                </Style>
+                            </chartingToolkit:PieSeries.DataPointStyle>-->
+                            </chartingToolkit:PieSeries>
+                        </chartingToolkit:Chart.Series>
+                    </chartingToolkit:Chart>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        
+
+        
+
+       
+
+        <!-- Style="{StaticResource PieChartStyle}"
+        <Border x:Name="BorderPMUDistribution" Grid.Row="2" Grid.Column="1" Style="{StaticResource PortletBorderStyle}" VerticalAlignment="Stretch" Margin="5,5,0,5">
+            <StackPanel Orientation="Vertical" Margin="0">
+                <TextBlock Text="PMUs Distribution" HorizontalAlignment="Center" Style="{StaticResource LargeWhiteTextStyle}" Padding="5" />
+                <Border BorderThickness="0" Background="{StaticResource PortletBackgroundBrush}">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="" Width="{StaticResource XSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Left"/>
+                            <TextBlock Text="Eastern" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Western" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Texas" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Quebec" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Alaskan" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Hawaii" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                            <TextBlock Text="Total" Width="{StaticResource XXSmallItemSize}" Style="{StaticResource HeaderRowTextStyle}" TextAlignment="Center"/>
+                        </StackPanel>
+                        <ItemsControl x:Name="ItemsControlPmuDistribution">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Path=Status}" Width="{StaticResource XSmallItemSize}" TextAlignment="Left" Style="{StaticResource HeaderRowTextStyle}"/>
+                                        <TextBlock Text="{Binding Path=EasternCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=WesternCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=TexasCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=QuebecCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=AlaskanCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=HawaiiCount}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                        <TextBlock Text="{Binding Path=Total}" Width="{StaticResource XXSmallItemSize}" TextAlignment="Center" Margin="0,4,0,4"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>-->
+
+    </Grid>
+</UserControl>

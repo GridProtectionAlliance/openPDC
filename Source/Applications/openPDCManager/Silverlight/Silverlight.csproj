@@ -1,0 +1,999 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3D0DC382-3C00-48A7-B9FF-D3154F8BEDF1}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>openPDCManager</RootNamespace>
+    <AssemblyName>openPDCManager</AssemblyName>
+    <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
+    <SilverlightApplication>true</SilverlightApplication>
+    <SupportedCultures>
+    </SupportedCultures>
+    <XapOutputs>true</XapOutputs>
+    <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
+    <XapFilename>openPDCManager.Silverlight.xap</XapFilename>
+    <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
+    <SilverlightAppEntry>openPDCManager.App</SilverlightAppEntry>
+    <TestPageFileName>TestPage.html</TestPageFileName>
+    <CreateTestPage>true</CreateTestPage>
+    <ValidateXaml>true</ValidateXaml>
+    <EnableOutOfBrowser>true</EnableOutOfBrowser>
+    <OutOfBrowserSettingsFile>Properties\OutOfBrowserSettings.xml</OutOfBrowserSettingsFile>
+    <UsePlatformExtensions>false</UsePlatformExtensions>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <LinkedServerProject>
+    </LinkedServerProject>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Infragistics.Silverlight.XamWebMenu.v9.1">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.XamWebMenu.v9.1.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Maps.MapControl">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Maps.MapControl.Common">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.PollingDuplex, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows" />
+    <Reference Include="mscorlib" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Controls, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\Microsoft\Silverlight\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Controls.Layout.Toolkit">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\Microsoft\Silverlight\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Controls.Navigation, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Controls.Toolkit">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\Microsoft\Silverlight\System.Windows.Controls.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Windows.Browser" />
+    <Reference Include="System.Xml.Linq, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\BooleanToColorConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\InvertBooleanConverter.cs" />
+    <Compile Include="Converters\StringToColorConverter.cs" />
+    <Compile Include="Converters\StringToDictionaryConverter.cs" />
+    <Compile Include="Converters\StringToPhaseConverter.cs" />
+    <Compile Include="Converters\StringToPhasorTypeConverter.cs" />
+    <Compile Include="Converters\StringToSymbolConverter.cs" />
+    <Compile Include="MasterLayoutControl.xaml.cs">
+      <DependentUpon>MasterLayoutControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\ActivityWindow.xaml.cs">
+      <DependentUpon>ActivityWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\ConnectionStringBuilder.xaml.cs">
+      <DependentUpon>ConnectionStringBuilder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamDeviceAnalogs.xaml.cs">
+      <DependentUpon>OutputStreamDeviceAnalogs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamDeviceDigitals.xaml.cs">
+      <DependentUpon>OutputStreamDeviceDigitals.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamDevicePhasors.xaml.cs">
+      <DependentUpon>OutputStreamDevicePhasors.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamDevices.xaml.cs">
+      <DependentUpon>OutputStreamDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamMeasurements.xaml.cs">
+      <DependentUpon>OutputStreamMeasurements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamWizard\AddDevices.xaml.cs">
+      <DependentUpon>AddDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\OutputStreamWizard\CurrentDevices.xaml.cs">
+      <DependentUpon>CurrentDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\Phasors.xaml.cs">
+      <DependentUpon>Phasors.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\SelectMeasurement.xaml.cs">
+      <DependentUpon>SelectMeasurement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModalDialogs\SystemMessages.xaml.cs">
+      <DependentUpon>SystemMessages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\ActionAdapters.xaml.cs">
+      <DependentUpon>ActionAdapters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\CalculatedMeasurements.xaml.cs">
+      <DependentUpon>CalculatedMeasurements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\DeviceMeasurements.xaml.cs">
+      <DependentUpon>DeviceMeasurements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\Historians.xaml.cs">
+      <DependentUpon>Historians.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\IaonTree.xaml.cs">
+      <DependentUpon>IaonTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\InputAdapters.xaml.cs">
+      <DependentUpon>InputAdapters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\OutputAdapters.xaml.cs">
+      <DependentUpon>OutputAdapters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\OutputStreams.xaml.cs">
+      <DependentUpon>OutputStreams.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Adapters\RealTimeStatistics.xaml.cs">
+      <DependentUpon>RealTimeStatistics.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\ActiveMap.xaml.cs">
+      <DependentUpon>ActiveMap.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\AddNew.xaml.cs">
+      <DependentUpon>AddNew.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\Browse.xaml.cs">
+      <DependentUpon>Browse.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\InputWizard.xaml.cs">
+      <DependentUpon>InputWizard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\ManageOtherDevices.xaml.cs">
+      <DependentUpon>ManageOtherDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\OtherDevices.xaml.cs">
+      <DependentUpon>OtherDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Devices\PlanningMap.xaml.cs">
+      <DependentUpon>PlanningMap.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Manage\Companies.xaml.cs">
+      <DependentUpon>Companies.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Manage\Measurements.xaml.cs">
+      <DependentUpon>Measurements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Manage\Nodes.xaml.cs">
+      <DependentUpon>Nodes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Manage\SystemSettings.xaml.cs">
+      <DependentUpon>SystemSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Manage\VendorDevices.xaml.cs">
+      <DependentUpon>VendorDevices.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Manage\Vendors.xaml.cs">
+      <DependentUpon>Vendors.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Monitor.xaml.cs">
+      <DependentUpon>Monitor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControls\CommonControls\AdapterUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\AdapterUserControl.xaml.cs">
+      <DependentUpon>AdapterUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\CalculatedMeasurementsUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\CalculatedMeasurementsUserControl.xaml.cs">
+      <DependentUpon>CalculatedMeasurementsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\CompaniesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\CompaniesUserControl.xaml.cs">
+      <DependentUpon>CompaniesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\HistoriansUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\HistoriansUserControl.xaml.cs">
+      <DependentUpon>HistoriansUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\HomePageUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\HomePageUserControl.xaml.cs">
+      <DependentUpon>HomePageUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\InputWizardUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\InputWizardUserControl.xaml.cs">
+      <DependentUpon>InputWizardUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\ManageDevicesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\ManageDevicesUserControl.xaml.cs">
+      <DependentUpon>ManageDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\ManageOtherDevicesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\ManageOtherDevicesUserControl.xaml.cs">
+      <DependentUpon>ManageOtherDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\MonitorUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\MonitorUserControl.xaml.cs">
+      <DependentUpon>MonitorUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\NodesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\NodesUserControl.xaml.cs">
+      <DependentUpon>NodesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\OtherDevicesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\OtherDevicesUserControl.xaml.cs">
+      <DependentUpon>OtherDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\PhasorsUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\PhasorsUserControl.xaml.cs">
+      <DependentUpon>PhasorsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\SelectNode.cs" />
+    <Compile Include="UserControls\CommonControls\SelectNode.xaml.cs">
+      <DependentUpon>SelectNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\VendorDevicesUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\VendorDevicesUserControl.xaml.cs">
+      <DependentUpon>VendorDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CommonControls\VendorUserControl.cs" />
+    <Compile Include="UserControls\CommonControls\VendorUserControl.xaml.cs">
+      <DependentUpon>VendorUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\OutputStreamControls\AddDevicesUserControl.cs" />
+    <Compile Include="UserControls\OutputStreamControls\AddDevicesUserControl.xaml.cs">
+      <DependentUpon>AddDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\OutputStreamControls\CurrentDevicesUserControl.cs" />
+    <Compile Include="UserControls\OutputStreamControls\CurrentDevicesUserControl.xaml.cs">
+      <DependentUpon>CurrentDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\OutputStreamControls\OutputStreamsUserControl.cs" />
+    <Compile Include="UserControls\OutputStreamControls\OutputStreamsUserControl.xaml.cs">
+      <DependentUpon>OutputStreamsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PopupControls\ActivityWindowUserControl.xaml.cs">
+      <DependentUpon>ActivityWindowUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PopupControls\OutputStreamDeviceAnalogsUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamDeviceAnalogsUserControl.xaml.cs">
+      <DependentUpon>OutputStreamDeviceAnalogsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PopupControls\OutputStreamDeviceDigitalsUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamDeviceDigitalsUserControl.xaml.cs">
+      <DependentUpon>OutputStreamDeviceDigitalsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PopupControls\OutputStreamDevicePhasorsUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamDevicePhasorsUserControl.xaml.cs">
+      <DependentUpon>OutputStreamDevicePhasorsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PopupControls\OutputStreamDevicesUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamDevicesUserControl.xaml.cs">
+      <DependentUpon>OutputStreamDevicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PopupControls\OutputStreamMeasurementsUserControl.cs" />
+    <Compile Include="UserControls\PopupControls\OutputStreamMeasurementsUserControl.xaml.cs">
+      <DependentUpon>OutputStreamMeasurementsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PopupControls\SelectMeasurementUserControl.xaml.cs">
+      <DependentUpon>SelectMeasurementUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PopupControls\SystemMessagesUserControl.xaml.cs">
+      <DependentUpon>SystemMessagesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\Common.cs" />
+    <Compile Include="Utilities\DefaultButtonService.cs" />
+    <Compile Include="Utilities\IsolatedStorageManager.cs" />
+    <Compile Include="Utilities\Message.cs" />
+    <Compile Include="Service References\LivePhasorDataServiceProxy\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PhasorDataServiceProxy\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\AdapterUserControl.xaml.cs">
+      <DependentUpon>AdapterUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SelectNode.xaml.cs">
+      <DependentUpon>SelectNode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\ProxyClient.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="MasterLayoutControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\ActivityWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\ConnectionStringBuilder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamDeviceAnalogs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamDeviceDigitals.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamDevicePhasors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamMeasurements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamWizard\AddDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\OutputStreamWizard\CurrentDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\Phasors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\SelectMeasurement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModalDialogs\SystemMessages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Adapters\ActionAdapters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Adapters\CalculatedMeasurements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Adapters\DeviceMeasurements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Adapters\Historians.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Adapters\IaonTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Adapters\InputAdapters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Adapters\OutputAdapters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Adapters\OutputStreams.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Adapters\RealTimeStatistics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Devices\ActiveMap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Devices\AddNew.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Devices\Browse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Devices\InputWizard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Devices\ManageOtherDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Devices\OtherDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Devices\PlanningMap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Manage\Companies.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Manage\Measurements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Manage\Nodes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Manage\SystemSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Manage\VendorDevices.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Manage\Vendors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Monitor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\CommonResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\ResourceAccordianStyle.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\ResourceMenuItemStyle.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\ResourcePieChartStyle.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\AdapterUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\AdapterUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\CalculatedMeasurementsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\CompaniesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\HistoriansUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\HomePageUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\InputWizardUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\CommonControls\ManageDevicesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\ManageOtherDevicesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\MonitorUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\NodesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\OtherDevicesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\PhasorsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\SelectNode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\VendorDevicesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CommonControls\VendorUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\OutputStreamControls\AddDevicesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\OutputStreamControls\CurrentDevicesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\OutputStreamControls\OutputStreamsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\PopupControls\ActivityWindowUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\PopupControls\OutputStreamDeviceAnalogsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PopupControls\OutputStreamDeviceDigitalsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PopupControls\OutputStreamDevicePhasorsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PopupControls\OutputStreamDevicesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\PopupControls\OutputStreamMeasurementsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\PopupControls\SelectMeasurementUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\PopupControls\SystemMessagesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\SelectNode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\AppManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Add.png" />
+    <Resource Include="Images\Configuration.png" />
+    <Resource Include="Images\Earth.png" />
+    <Resource Include="Images\List.png" />
+    <Resource Include="Images\Mode.png" />
+    <Resource Include="Images\Pmu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\OutOfBrowserSettings.xml" />
+    <None Include="Service References\LivePhasorDataServiceProxy\configuration91.svcinfo" />
+    <None Include="Service References\LivePhasorDataServiceProxy\configuration.svcinfo" />
+    <None Include="Service References\LivePhasorDataServiceProxy\openPDCManager.Data.BusinessObjects1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\LivePhasorDataServiceProxy\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\configuration91.svcinfo" />
+    <None Include="Service References\PhasorDataServiceProxy\configuration.svcinfo" />
+    <None Include="Service References\PhasorDataServiceProxy\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Resource Include="Images\Cancel.png" />
+    <Resource Include="Images\Save.png" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService1.disco" />
+    <Resource Include="Images\Action.png" />
+    <Resource Include="Images\Calculation.png" />
+    <Resource Include="Images\CancelSearch.png" />
+    <Resource Include="Images\Computers.png" />
+    <Resource Include="Images\Input.png" />
+    <Resource Include="Images\Output.png" />
+    <Resource Include="Images\Search.png" />
+    <Resource Include="Images\Tree.png" />
+    <Resource Include="Images\Company.png" />
+    <Resource Include="Images\Measure.png" />
+    <Resource Include="Images\Vendor.png" />
+    <Resource Include="Images\Browse.png" />
+    <Resource Include="Images\Next.png" />
+    <Resource Include="Images\Previous.png" />
+    <Resource Include="Images\Error.png" />
+    <Resource Include="Images\Information.png" />
+    <Resource Include="Images\Ok.png" />
+    <Resource Include="Images\Success.png" />
+    <Resource Include="Images\Warning.png" />
+    <Resource Include="Images\RequestData.png" />
+    <Resource Include="Images\Chart.png" />
+    <Resource Include="Images\Console.png" />
+    <Resource Include="Images\Log.png" />
+    <Resource Include="Images\Copy.png" />
+    <Resource Include="Images\GPALock.png" />
+    <Resource Include="Images\Secure.png" />
+    <Content Include="ServiceReferences.ClientConfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\LivePhasorDataServiceProxy\" />
+    <WCFMetadataStorage Include="Service References\PhasorDataServiceProxy\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\LivePhasorDataServiceProxy\Arrays.xsd" />
+    <None Include="Service References\LivePhasorDataServiceProxy\duplex.xsd" />
+    <None Include="Service References\LivePhasorDataServiceProxy\openPDCManager.Services.DuplexService.xsd" />
+    <None Include="Service References\LivePhasorDataServiceProxy\openPDCManager.Web.Data.BusinessObjects.xsd" />
+    <None Include="Service References\LivePhasorDataServiceProxy\service.wsdl" />
+    <None Include="Service References\LivePhasorDataServiceProxy\service.xsd" />
+    <None Include="Service References\LivePhasorDataServiceProxy\service1.xsd" />
+    <None Include="Service References\LivePhasorDataServiceProxy\TVA.Services.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.Adapter.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.CalculatedMeasurement.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.Company.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.ConnectionSettings.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.Device.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.DeviceMeasurementData.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.Historian.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.IaonTree.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.MapData.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.Measurement.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.Node.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.OtherDevice.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.OutputStream.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.OutputStreamDevice.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.OutputStreamDeviceAnalog.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.OutputStreamDeviceDigital.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.OutputStreamDevicePhasor.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.OutputStreamMeasurement.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.Phasor.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.StatisticMeasurementData.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.Vendor.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.VendorDevice.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\openPDCManager.PhasorDataServiceProxy.WizardDeviceInfo.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService1.wsdl" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService1.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService2.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService3.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService4.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService5.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService51.xsd" />
+    <None Include="Service References\PhasorDataServiceProxy\PhasorDataService52.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UserControls\Configurator\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

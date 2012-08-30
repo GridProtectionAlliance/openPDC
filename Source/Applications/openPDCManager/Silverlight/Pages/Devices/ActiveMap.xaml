@@ -1,0 +1,28 @@
+﻿<navigation:Page x:Class="openPDCManager.Pages.Devices.ActiveMap" 
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           mc:Ignorable="d"
+           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"             
+           xmlns:m="clr-namespace:Microsoft.Maps.MapControl;assembly=Microsoft.Maps.MapControl"
+           Title="Active Map">
+    <Grid x:Name="GridActiveMap">
+        <Border Style="{StaticResource PortletBorderStyle}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Active Map" Foreground="#FFFFFFFF" HorizontalAlignment="Center" FontSize="{StaticResource LargerTextSize}" Padding="5" />
+                <Border Style="{StaticResource HeaderRowBorderStyle}" Width="1170" Height="768">
+                    <m:Map x:Name="VirtualEarthActiveMap" ZoomLevel="4">
+                        <m:Map.Mode>
+                            <m:AerialMode Labels="True" FadingLabels="True" />
+                        </m:Map.Mode>
+                        <m:Map.Children>
+                            <m:MapLayer x:Name="PushpinLayer">
+                            </m:MapLayer>
+                        </m:Map.Children>
+                    </m:Map>
+                </Border>
+            </StackPanel>
+        </Border>
+    </Grid>
+</navigation:Page>

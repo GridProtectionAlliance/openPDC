@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://samples.microsoft.com/silverlight2/duplex" />
+  <xs:element name="SendToService">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://samples.microsoft.com/silverlight2/duplex" minOccurs="0" name="msg" nillable="true" type="q1:DuplexMessage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SendToClient">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://samples.microsoft.com/silverlight2/duplex" minOccurs="0" name="msg" nillable="true" type="q2:DuplexMessage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

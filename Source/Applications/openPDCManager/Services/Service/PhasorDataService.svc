@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="openPDCManager.Services.Service.PhasorDataService" CodeBehind="PhasorDataService.svc.cs" %>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="8c0bb386-d35d-4add-918d-5636ea948769" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.ObjectModel.ObservableCollection`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>false</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:1068/Service/PhasorDataService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="PhasorDataService52.xsd" MetadataType="Schema" ID="4ab49eca-e9b9-490d-8eea-d2d52a2f85f0" SourceId="1" SourceUrl="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd7" />
+    <MetadataFile FileName="PhasorDataService1.xsd" MetadataType="Schema" ID="3be17c14-aad0-4bc8-bb85-d0f145e20154" SourceId="1" SourceUrl="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd3" />
+    <MetadataFile FileName="PhasorDataService2.xsd" MetadataType="Schema" ID="17663830-ab63-4453-9374-e2ee1f48a53c" SourceId="1" SourceUrl="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd4" />
+    <MetadataFile FileName="PhasorDataService51.xsd" MetadataType="Schema" ID="3bedf821-f5f2-453f-ba00-0f6fc58eda58" SourceId="1" SourceUrl="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd6" />
+    <MetadataFile FileName="PhasorDataService4.xsd" MetadataType="Schema" ID="1b4e108e-6733-4870-a9c9-31c2db062e30" SourceId="1" SourceUrl="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd0" />
+    <MetadataFile FileName="PhasorDataService1.wsdl" MetadataType="Wsdl" ID="731f9f74-c17d-4c88-b90c-87cdd6f66ab3" SourceId="1" SourceUrl="http://localhost:1068/Service/PhasorDataService.svc?wsdl" />
+    <MetadataFile FileName="PhasorDataService3.xsd" MetadataType="Schema" ID="63734f62-254d-4880-9693-9af171b474f7" SourceId="1" SourceUrl="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd2" />
+    <MetadataFile FileName="PhasorDataService1.disco" MetadataType="Disco" ID="d09d19a0-f92f-4d93-b84a-a8a88914ec4e" SourceId="1" SourceUrl="http://localhost:1068/Service/PhasorDataService.svc?disco" />
+    <MetadataFile FileName="PhasorDataService5.xsd" MetadataType="Schema" ID="d827639d-fa06-4277-939a-b79f25281ff6" SourceId="1" SourceUrl="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd5" />
+    <MetadataFile FileName="PhasorDataService.xsd" MetadataType="Schema" ID="da0074f0-c3b5-481a-aa1e-8ef5d35059df" SourceId="1" SourceUrl="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

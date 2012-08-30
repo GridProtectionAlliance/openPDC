@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/openPDCManager.Services.DuplexService" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/TVA.Services" />
+  <xs:import namespace="http://samples.microsoft.com/silverlight2/duplex" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" />
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:complexType name="ServiceUpdateMessage">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://samples.microsoft.com/silverlight2/duplex" base="q1:DuplexMessage">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ServiceUpdate" nillable="true" type="xs:string" />
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/TVA.Services" minOccurs="0" name="ServiceUpdateType" type="q2:UpdateType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ServiceUpdateMessage" nillable="true" type="tns:ServiceUpdateMessage" />
+  <xs:complexType name="TimeSeriesDataMessage">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q3="http://samples.microsoft.com/silverlight2/duplex" base="q3:DuplexMessage">
+        <xs:sequence>
+          <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" minOccurs="0" name="TimeSeriesData" nillable="true" type="q4:ArrayOfTimeSeriesDataPoint" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TimeSeriesDataMessage" nillable="true" type="tns:TimeSeriesDataMessage" />
+  <xs:simpleType name="DisplayType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Home" />
+      <xs:enumeration value="ServiceClient" />
+      <xs:enumeration value="DeviceMeasurements" />
+      <xs:enumeration value="RealTimeStatistics" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="DisplayType" nillable="true" type="tns:DisplayType" />
+  <xs:complexType name="LivePhasorDataMessage">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q5="http://samples.microsoft.com/silverlight2/duplex" base="q5:DuplexMessage">
+        <xs:sequence>
+          <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DeviceDistributionList" nillable="true" type="q6:ArrayOfKeyValueOfstringint" />
+          <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" minOccurs="0" name="InterconnectionStatusList" nillable="true" type="q7:ArrayOfInterconnectionStatus" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="LivePhasorDataMessage" nillable="true" type="tns:LivePhasorDataMessage" />
+  <xs:complexType name="TimeTaggedDataMessage">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q8="http://samples.microsoft.com/silverlight2/duplex" base="q8:DuplexMessage">
+        <xs:sequence>
+          <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="TimeTaggedMeasurements" nillable="true" type="q9:ArrayOfKeyValueOfintTimeTaggedMeasurement1hccmswE" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TimeTaggedDataMessage" nillable="true" type="tns:TimeTaggedDataMessage" />
+  <xs:complexType name="ServiceRequestMessage">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q10="http://samples.microsoft.com/silverlight2/duplex" base="q10:DuplexMessage">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Request" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ServiceRequestMessage" nillable="true" type="tns:ServiceRequestMessage" />
+</xs:schema>

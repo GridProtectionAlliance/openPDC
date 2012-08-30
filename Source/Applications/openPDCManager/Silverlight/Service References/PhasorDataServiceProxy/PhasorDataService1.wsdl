@@ -1,0 +1,1964 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="PhasorDataService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="CustomBinding_IPhasorDataService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/openPDCManager.Data.Entities" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/Message" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/TVA.PhasorProtocols" />
+      <xsd:import schemaLocation="http://localhost:1068/Service/PhasorDataService.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/TVA.Communication" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDevicePhasor_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStreamDevicePhasor" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDevicePhasor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStreamDevicePhasorResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDevicePhasor_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q1:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDeviceAnalogList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamDeviceAnalogList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDeviceAnalogList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamDeviceAnalogListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDeviceAnalogList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q2:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDeviceAnalog_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStreamDeviceAnalog" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDeviceAnalog_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStreamDeviceAnalogResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDeviceAnalog_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q3:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDeviceDigitalList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamDeviceDigitalList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDeviceDigitalList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamDeviceDigitalListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDeviceDigitalList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q4:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDeviceDigital_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStreamDeviceDigital" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDeviceDigital_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStreamDeviceDigitalResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDeviceDigital_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q5:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceMeasurementData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceMeasurementData" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceMeasurementData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceMeasurementDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceMeasurementData_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q6:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetTimeZones_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTimeZones" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetTimeZones_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTimeZonesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetTimeZones_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q7="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q7:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMapData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMapData" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMapData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMapDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMapData_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q8="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q8:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetConnectionSettings_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetConnectionSettings" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetConnectionSettings_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetConnectionSettingsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetConnectionSettings_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q9="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q9:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetWizardConfigurationInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetWizardConfigurationInfo" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetWizardConfigurationInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetWizardConfigurationInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetWizardConfigurationInfo_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q10="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q10:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_RetrieveConfigurationFrame_InputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveConfigurationFrame" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_RetrieveConfigurationFrame_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RetrieveConfigurationFrameResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_RetrieveConfigurationFrame_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q11="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q11:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveWizardConfigurationInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveWizardConfigurationInfo" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveWizardConfigurationInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveWizardConfigurationInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveWizardConfigurationInfo_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q12="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q12:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetExecutingAssemblyPath_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetExecutingAssemblyPath" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetExecutingAssemblyPath_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetExecutingAssemblyPathResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetExecutingAssemblyPath_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q13="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q13:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveIniFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveIniFile" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveIniFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveIniFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveIniFile_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q14="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q14:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetStopBits_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetStopBits" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetStopBits_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetStopBitsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetStopBits_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q15="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q15:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetParities_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetParities" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetParities_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetParitiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetParities_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q16="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q16:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetStatisticMeasurementData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetStatisticMeasurementData" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetStatisticMeasurementData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetStatisticMeasurementDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetStatisticMeasurementData_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q17="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q17:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetRuntimeID_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetRuntimeID" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetRuntimeID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetRuntimeIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetRuntimeID_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q18="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q18:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMeasurementList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMeasurementList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMeasurementList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMeasurementListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMeasurementList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q19="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q19:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetFilteredMeasurementsByDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFilteredMeasurementsByDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetFilteredMeasurementsByDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFilteredMeasurementsByDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetFilteredMeasurementsByDevice_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q20="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q20:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveMeasurement_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveMeasurement" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveMeasurement_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveMeasurementResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveMeasurement_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q21="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q21:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMeasurementsByDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMeasurementsByDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMeasurementsByDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMeasurementsByDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMeasurementsByDevice_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q22="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q22:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMeasurementsForOutputStream_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMeasurementsForOutputStream" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMeasurementsForOutputStream_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMeasurementsForOutputStreamResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetMeasurementsForOutputStream_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q23="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q23:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOtherDeviceList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOtherDeviceList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOtherDeviceList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOtherDeviceListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOtherDeviceList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q24="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q24:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOtherDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOtherDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOtherDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOtherDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOtherDevice_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q25="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q25:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOtherDeviceByDeviceID_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOtherDeviceByDeviceID" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOtherDeviceByDeviceID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOtherDeviceByDeviceIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOtherDeviceByDeviceID_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q26="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q26:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetInterconnections_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetInterconnections" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetInterconnections_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetInterconnectionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetInterconnections_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q27="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q27:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocols_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocols" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocols_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocols_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q28="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q28:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocolIDByAcronym_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolIDByAcronym" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocolIDByAcronym_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolIDByAcronymResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetProtocolIDByAcronym_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q29="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q29:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetSignalTypes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSignalTypes" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetSignalTypes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSignalTypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetSignalTypes_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q30="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q30:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCalculatedMeasurementList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCalculatedMeasurementList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCalculatedMeasurementList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCalculatedMeasurementListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCalculatedMeasurementList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q31="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q31:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveCalculatedMeasurement_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveCalculatedMeasurement" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveCalculatedMeasurement_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveCalculatedMeasurementResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveCalculatedMeasurement_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q32="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q32:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetAdapterList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAdapterList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetAdapterList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAdapterListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetAdapterList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q33="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q33:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveAdapter_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveAdapter" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveAdapter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveAdapterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveAdapter_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q34="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q34:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetIaonTreeData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetIaonTreeData" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetIaonTreeData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetIaonTreeDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetIaonTreeData_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q35="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q35:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q36="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q36:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStream_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStream" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStream_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStreamResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStream_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q37="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q37:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteOutputStream_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteOutputStream" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteOutputStream_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteOutputStreamResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteOutputStream_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q38="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q38:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDeviceList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamDeviceList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDeviceList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamDeviceListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDeviceList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q39="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q39:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStreamDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStreamDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamDevice_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q40="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q40:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteOutputStreamDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteOutputStreamDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteOutputStreamDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteOutputStreamDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteOutputStreamDevice_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q41="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q41:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_AddDevices_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddDevices" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_AddDevices_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddDevicesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_AddDevices_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q42="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q42:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamMeasurementList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamMeasurementList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamMeasurementList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamMeasurementListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamMeasurementList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q43="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q43:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamMeasurement_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStreamMeasurement" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamMeasurement_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveOutputStreamMeasurementResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveOutputStreamMeasurement_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q44="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q44:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteOutputStreamMeasurement_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteOutputStreamMeasurement" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteOutputStreamMeasurement_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteOutputStreamMeasurementResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteOutputStreamMeasurement_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q45="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q45:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDevicePhasorList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamDevicePhasorList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDevicePhasorList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOutputStreamDevicePhasorListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetOutputStreamDevicePhasorList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q46="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q46:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetNodeList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetNodeList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetNodeList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetNodeListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetNodeList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q47="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q47:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetNodes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetNodes" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetNodes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetNodesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetNodes_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q48="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q48:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveNode_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveNode" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveNode_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveNodeResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveNode_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q49="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q49:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetNodeByID_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetNodeByID" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetNodeByID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetNodeByIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetNodeByID_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q50="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q50:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCompanyList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCompanyList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCompanyList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCompanyListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCompanyList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q51="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q51:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCompanies_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCompanies" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCompanies_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCompaniesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetCompanies_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q52="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q52:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveCompany_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveCompany" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveCompany_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveCompanyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveCompany_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q53="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q53:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetHistorianList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetHistorianList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetHistorianList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetHistorianListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetHistorianList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q54="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q54:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveHistorian_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveHistorian" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveHistorian_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveHistorianResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveHistorian_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q55="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q55:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetHistorians_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetHistorians" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetHistorians_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetHistoriansResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetHistorians_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q56="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q56:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendorList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVendorList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendorList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVendorListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendorList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q57="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q57:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendors_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVendors" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendors_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVendorsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendors_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q58="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q58:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveVendor_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveVendor" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveVendor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveVendorResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveVendor_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q59="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q59:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendorDeviceList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVendorDeviceList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendorDeviceList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVendorDeviceListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendorDeviceList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q60="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q60:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveVendorDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveVendorDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveVendorDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveVendorDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveVendorDevice_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q61="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q61:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendorDevices_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVendorDevices" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendorDevices_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVendorDevicesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetVendorDevices_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q62="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q62:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q63="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q63:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceListByParentID_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceListByParentID" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceListByParentID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceListByParentIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceListByParentID_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q64="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q64:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDevices_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDevices" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDevices_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDevicesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDevices_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q65="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q65:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SaveDevice_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q66="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q66:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceByDeviceID_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceByDeviceID" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceByDeviceID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceByDeviceIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceByDeviceID_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q67="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q67:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceByAcronym_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceByAcronym" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceByAcronym_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDeviceByAcronymResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDeviceByAcronym_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q68="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q68:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDevicesForOutputStream_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDevicesForOutputStream" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDevicesForOutputStream_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDevicesForOutputStreamResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetDevicesForOutputStream_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q69="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q69:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetConcentratorDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetConcentratorDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetConcentratorDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetConcentratorDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetConcentratorDevice_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q70="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q70:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteDevice" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_DeleteDevice_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q71="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q71:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetPhasorList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPhasorList" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetPhasorList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPhasorListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetPhasorList_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q72="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q72:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetPhasors_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPhasors" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetPhasors_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPhasorsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_GetPhasors_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q73="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q73:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SavePhasor_InputMessage">
+    <wsdl:part name="parameters" element="tns:SavePhasor" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SavePhasor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SavePhasorResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPhasorDataService_SavePhasor_CustomServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q74="http://schemas.datacontract.org/2004/07/openPDCManager.Data.BusinessObjects" name="detail" element="q74:CustomServiceFault" />
+  </wsdl:message>
+  <wsdl:portType name="IPhasorDataService">
+    <wsdl:operation name="SaveOutputStreamDevicePhasor">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDevicePhasor" message="tns:IPhasorDataService_SaveOutputStreamDevicePhasor_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDevicePhasorResponse" message="tns:IPhasorDataService_SaveOutputStreamDevicePhasor_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDevicePhasorCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveOutputStreamDevicePhasor_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamDeviceAnalogList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceAnalogList" message="tns:IPhasorDataService_GetOutputStreamDeviceAnalogList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceAnalogListResponse" message="tns:IPhasorDataService_GetOutputStreamDeviceAnalogList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceAnalogListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetOutputStreamDeviceAnalogList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveOutputStreamDeviceAnalog">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceAnalog" message="tns:IPhasorDataService_SaveOutputStreamDeviceAnalog_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceAnalogResponse" message="tns:IPhasorDataService_SaveOutputStreamDeviceAnalog_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceAnalogCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveOutputStreamDeviceAnalog_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamDeviceDigitalList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceDigitalList" message="tns:IPhasorDataService_GetOutputStreamDeviceDigitalList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceDigitalListResponse" message="tns:IPhasorDataService_GetOutputStreamDeviceDigitalList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceDigitalListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetOutputStreamDeviceDigitalList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveOutputStreamDeviceDigital">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceDigital" message="tns:IPhasorDataService_SaveOutputStreamDeviceDigital_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceDigitalResponse" message="tns:IPhasorDataService_SaveOutputStreamDeviceDigital_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceDigitalCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveOutputStreamDeviceDigital_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDeviceMeasurementData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceMeasurementData" message="tns:IPhasorDataService_GetDeviceMeasurementData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceMeasurementDataResponse" message="tns:IPhasorDataService_GetDeviceMeasurementData_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceMeasurementDataCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetDeviceMeasurementData_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTimeZones">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetTimeZones" message="tns:IPhasorDataService_GetTimeZones_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetTimeZonesResponse" message="tns:IPhasorDataService_GetTimeZones_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetTimeZonesCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetTimeZones_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMapData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetMapData" message="tns:IPhasorDataService_GetMapData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetMapDataResponse" message="tns:IPhasorDataService_GetMapData_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetMapDataCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetMapData_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetConnectionSettings">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetConnectionSettings" message="tns:IPhasorDataService_GetConnectionSettings_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetConnectionSettingsResponse" message="tns:IPhasorDataService_GetConnectionSettings_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetConnectionSettingsCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetConnectionSettings_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetWizardConfigurationInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetWizardConfigurationInfo" message="tns:IPhasorDataService_GetWizardConfigurationInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetWizardConfigurationInfoResponse" message="tns:IPhasorDataService_GetWizardConfigurationInfo_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetWizardConfigurationInfoCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetWizardConfigurationInfo_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveConfigurationFrame">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/RetrieveConfigurationFrame" message="tns:IPhasorDataService_RetrieveConfigurationFrame_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/RetrieveConfigurationFrameResponse" message="tns:IPhasorDataService_RetrieveConfigurationFrame_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/RetrieveConfigurationFrameCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_RetrieveConfigurationFrame_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveWizardConfigurationInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfo" message="tns:IPhasorDataService_SaveWizardConfigurationInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfoResponse" message="tns:IPhasorDataService_SaveWizardConfigurationInfo_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfoCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveWizardConfigurationInfo_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetExecutingAssemblyPath">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetExecutingAssemblyPath" message="tns:IPhasorDataService_GetExecutingAssemblyPath_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetExecutingAssemblyPathResponse" message="tns:IPhasorDataService_GetExecutingAssemblyPath_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetExecutingAssemblyPathCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetExecutingAssemblyPath_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveIniFile">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveIniFile" message="tns:IPhasorDataService_SaveIniFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveIniFileResponse" message="tns:IPhasorDataService_SaveIniFile_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveIniFileCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveIniFile_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStopBits">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetStopBits" message="tns:IPhasorDataService_GetStopBits_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetStopBitsResponse" message="tns:IPhasorDataService_GetStopBits_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetStopBitsCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetStopBits_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetParities">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetParities" message="tns:IPhasorDataService_GetParities_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetParitiesResponse" message="tns:IPhasorDataService_GetParities_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetParitiesCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetParities_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStatisticMeasurementData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetStatisticMeasurementData" message="tns:IPhasorDataService_GetStatisticMeasurementData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetStatisticMeasurementDataResponse" message="tns:IPhasorDataService_GetStatisticMeasurementData_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetStatisticMeasurementDataCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetStatisticMeasurementData_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRuntimeID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetRuntimeID" message="tns:IPhasorDataService_GetRuntimeID_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetRuntimeIDResponse" message="tns:IPhasorDataService_GetRuntimeID_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetRuntimeIDCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetRuntimeID_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMeasurementList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetMeasurementList" message="tns:IPhasorDataService_GetMeasurementList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetMeasurementListResponse" message="tns:IPhasorDataService_GetMeasurementList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetMeasurementListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetMeasurementList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFilteredMeasurementsByDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetFilteredMeasurementsByDevice" message="tns:IPhasorDataService_GetFilteredMeasurementsByDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetFilteredMeasurementsByDeviceResponse" message="tns:IPhasorDataService_GetFilteredMeasurementsByDevice_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetFilteredMeasurementsByDeviceCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetFilteredMeasurementsByDevice_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveMeasurement">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveMeasurement" message="tns:IPhasorDataService_SaveMeasurement_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveMeasurementResponse" message="tns:IPhasorDataService_SaveMeasurement_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveMeasurementCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveMeasurement_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMeasurementsByDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetMeasurementsByDevice" message="tns:IPhasorDataService_GetMeasurementsByDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetMeasurementsByDeviceResponse" message="tns:IPhasorDataService_GetMeasurementsByDevice_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetMeasurementsByDeviceCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetMeasurementsByDevice_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMeasurementsForOutputStream">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStream" message="tns:IPhasorDataService_GetMeasurementsForOutputStream_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStreamResponse" message="tns:IPhasorDataService_GetMeasurementsForOutputStream_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStreamCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetMeasurementsForOutputStream_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOtherDeviceList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceList" message="tns:IPhasorDataService_GetOtherDeviceList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceListResponse" message="tns:IPhasorDataService_GetOtherDeviceList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetOtherDeviceList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveOtherDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOtherDevice" message="tns:IPhasorDataService_SaveOtherDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOtherDeviceResponse" message="tns:IPhasorDataService_SaveOtherDevice_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOtherDeviceCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveOtherDevice_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOtherDeviceByDeviceID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceID" message="tns:IPhasorDataService_GetOtherDeviceByDeviceID_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceIDResponse" message="tns:IPhasorDataService_GetOtherDeviceByDeviceID_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceIDCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetOtherDeviceByDeviceID_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetInterconnections">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetInterconnections" message="tns:IPhasorDataService_GetInterconnections_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetInterconnectionsResponse" message="tns:IPhasorDataService_GetInterconnections_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetInterconnectionsCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetInterconnections_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocols">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocols" message="tns:IPhasorDataService_GetProtocols_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolsResponse" message="tns:IPhasorDataService_GetProtocols_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolsCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetProtocols_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocolIDByAcronym">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolIDByAcronym" message="tns:IPhasorDataService_GetProtocolIDByAcronym_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolIDByAcronymResponse" message="tns:IPhasorDataService_GetProtocolIDByAcronym_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetProtocolIDByAcronymCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetProtocolIDByAcronym_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSignalTypes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetSignalTypes" message="tns:IPhasorDataService_GetSignalTypes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetSignalTypesResponse" message="tns:IPhasorDataService_GetSignalTypes_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetSignalTypesCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetSignalTypes_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCalculatedMeasurementList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetCalculatedMeasurementList" message="tns:IPhasorDataService_GetCalculatedMeasurementList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetCalculatedMeasurementListResponse" message="tns:IPhasorDataService_GetCalculatedMeasurementList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetCalculatedMeasurementListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetCalculatedMeasurementList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveCalculatedMeasurement">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveCalculatedMeasurement" message="tns:IPhasorDataService_SaveCalculatedMeasurement_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveCalculatedMeasurementResponse" message="tns:IPhasorDataService_SaveCalculatedMeasurement_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveCalculatedMeasurementCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveCalculatedMeasurement_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAdapterList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetAdapterList" message="tns:IPhasorDataService_GetAdapterList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetAdapterListResponse" message="tns:IPhasorDataService_GetAdapterList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetAdapterListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetAdapterList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveAdapter">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveAdapter" message="tns:IPhasorDataService_SaveAdapter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveAdapterResponse" message="tns:IPhasorDataService_SaveAdapter_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveAdapterCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveAdapter_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIaonTreeData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetIaonTreeData" message="tns:IPhasorDataService_GetIaonTreeData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetIaonTreeDataResponse" message="tns:IPhasorDataService_GetIaonTreeData_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetIaonTreeDataCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetIaonTreeData_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamList" message="tns:IPhasorDataService_GetOutputStreamList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamListResponse" message="tns:IPhasorDataService_GetOutputStreamList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetOutputStreamList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveOutputStream">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStream" message="tns:IPhasorDataService_SaveOutputStream_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamResponse" message="tns:IPhasorDataService_SaveOutputStream_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveOutputStream_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteOutputStream">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteOutputStream" message="tns:IPhasorDataService_DeleteOutputStream_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteOutputStreamResponse" message="tns:IPhasorDataService_DeleteOutputStream_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteOutputStreamCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_DeleteOutputStream_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamDeviceList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceList" message="tns:IPhasorDataService_GetOutputStreamDeviceList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceListResponse" message="tns:IPhasorDataService_GetOutputStreamDeviceList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetOutputStreamDeviceList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveOutputStreamDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDevice" message="tns:IPhasorDataService_SaveOutputStreamDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceResponse" message="tns:IPhasorDataService_SaveOutputStreamDevice_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveOutputStreamDevice_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteOutputStreamDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteOutputStreamDevice" message="tns:IPhasorDataService_DeleteOutputStreamDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteOutputStreamDeviceResponse" message="tns:IPhasorDataService_DeleteOutputStreamDevice_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteOutputStreamDeviceCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_DeleteOutputStreamDevice_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddDevices">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/AddDevices" message="tns:IPhasorDataService_AddDevices_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/AddDevicesResponse" message="tns:IPhasorDataService_AddDevices_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/AddDevicesCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_AddDevices_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamMeasurementList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamMeasurementList" message="tns:IPhasorDataService_GetOutputStreamMeasurementList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamMeasurementListResponse" message="tns:IPhasorDataService_GetOutputStreamMeasurementList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamMeasurementListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetOutputStreamMeasurementList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveOutputStreamMeasurement">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamMeasurement" message="tns:IPhasorDataService_SaveOutputStreamMeasurement_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamMeasurementResponse" message="tns:IPhasorDataService_SaveOutputStreamMeasurement_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveOutputStreamMeasurementCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveOutputStreamMeasurement_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteOutputStreamMeasurement">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteOutputStreamMeasurement" message="tns:IPhasorDataService_DeleteOutputStreamMeasurement_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteOutputStreamMeasurementResponse" message="tns:IPhasorDataService_DeleteOutputStreamMeasurement_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteOutputStreamMeasurementCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_DeleteOutputStreamMeasurement_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamDevicePhasorList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDevicePhasorList" message="tns:IPhasorDataService_GetOutputStreamDevicePhasorList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDevicePhasorListResponse" message="tns:IPhasorDataService_GetOutputStreamDevicePhasorList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetOutputStreamDevicePhasorListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetOutputStreamDevicePhasorList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNodeList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodeList" message="tns:IPhasorDataService_GetNodeList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodeListResponse" message="tns:IPhasorDataService_GetNodeList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodeListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetNodeList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNodes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodes" message="tns:IPhasorDataService_GetNodes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodesResponse" message="tns:IPhasorDataService_GetNodes_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodesCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetNodes_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveNode">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveNode" message="tns:IPhasorDataService_SaveNode_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveNodeResponse" message="tns:IPhasorDataService_SaveNode_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveNodeCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveNode_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNodeByID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodeByID" message="tns:IPhasorDataService_GetNodeByID_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodeByIDResponse" message="tns:IPhasorDataService_GetNodeByID_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetNodeByIDCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetNodeByID_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompanyList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetCompanyList" message="tns:IPhasorDataService_GetCompanyList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetCompanyListResponse" message="tns:IPhasorDataService_GetCompanyList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetCompanyListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetCompanyList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCompanies">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetCompanies" message="tns:IPhasorDataService_GetCompanies_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetCompaniesResponse" message="tns:IPhasorDataService_GetCompanies_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetCompaniesCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetCompanies_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveCompany">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveCompany" message="tns:IPhasorDataService_SaveCompany_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveCompanyResponse" message="tns:IPhasorDataService_SaveCompany_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveCompanyCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveCompany_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetHistorianList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetHistorianList" message="tns:IPhasorDataService_GetHistorianList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetHistorianListResponse" message="tns:IPhasorDataService_GetHistorianList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetHistorianListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetHistorianList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveHistorian">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveHistorian" message="tns:IPhasorDataService_SaveHistorian_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveHistorianResponse" message="tns:IPhasorDataService_SaveHistorian_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveHistorianCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveHistorian_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetHistorians">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetHistorians" message="tns:IPhasorDataService_GetHistorians_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetHistoriansResponse" message="tns:IPhasorDataService_GetHistorians_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetHistoriansCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetHistorians_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVendorList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorList" message="tns:IPhasorDataService_GetVendorList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorListResponse" message="tns:IPhasorDataService_GetVendorList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetVendorList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVendors">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendors" message="tns:IPhasorDataService_GetVendors_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorsResponse" message="tns:IPhasorDataService_GetVendors_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorsCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetVendors_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveVendor">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveVendor" message="tns:IPhasorDataService_SaveVendor_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveVendorResponse" message="tns:IPhasorDataService_SaveVendor_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveVendorCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveVendor_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVendorDeviceList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorDeviceList" message="tns:IPhasorDataService_GetVendorDeviceList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorDeviceListResponse" message="tns:IPhasorDataService_GetVendorDeviceList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorDeviceListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetVendorDeviceList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveVendorDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveVendorDevice" message="tns:IPhasorDataService_SaveVendorDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveVendorDeviceResponse" message="tns:IPhasorDataService_SaveVendorDevice_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveVendorDeviceCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveVendorDevice_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVendorDevices">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorDevices" message="tns:IPhasorDataService_GetVendorDevices_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorDevicesResponse" message="tns:IPhasorDataService_GetVendorDevices_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetVendorDevicesCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetVendorDevices_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDeviceList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceList" message="tns:IPhasorDataService_GetDeviceList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceListResponse" message="tns:IPhasorDataService_GetDeviceList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetDeviceList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDeviceListByParentID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceListByParentID" message="tns:IPhasorDataService_GetDeviceListByParentID_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceListByParentIDResponse" message="tns:IPhasorDataService_GetDeviceListByParentID_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceListByParentIDCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetDeviceListByParentID_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDevices">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDevices" message="tns:IPhasorDataService_GetDevices_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDevicesResponse" message="tns:IPhasorDataService_GetDevices_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetDevicesCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetDevices_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SaveDevice" message="tns:IPhasorDataService_SaveDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SaveDeviceResponse" message="tns:IPhasorDataService_SaveDevice_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SaveDeviceCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SaveDevice_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDeviceByDeviceID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceByDeviceID" message="tns:IPhasorDataService_GetDeviceByDeviceID_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceByDeviceIDResponse" message="tns:IPhasorDataService_GetDeviceByDeviceID_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceByDeviceIDCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetDeviceByDeviceID_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDeviceByAcronym">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceByAcronym" message="tns:IPhasorDataService_GetDeviceByAcronym_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceByAcronymResponse" message="tns:IPhasorDataService_GetDeviceByAcronym_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetDeviceByAcronymCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetDeviceByAcronym_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDevicesForOutputStream">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStream" message="tns:IPhasorDataService_GetDevicesForOutputStream_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStreamResponse" message="tns:IPhasorDataService_GetDevicesForOutputStream_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStreamCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetDevicesForOutputStream_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetConcentratorDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetConcentratorDevice" message="tns:IPhasorDataService_GetConcentratorDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetConcentratorDeviceResponse" message="tns:IPhasorDataService_GetConcentratorDevice_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetConcentratorDeviceCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetConcentratorDevice_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteDevice" message="tns:IPhasorDataService_DeleteDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteDeviceResponse" message="tns:IPhasorDataService_DeleteDevice_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/DeleteDeviceCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_DeleteDevice_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPhasorList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetPhasorList" message="tns:IPhasorDataService_GetPhasorList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetPhasorListResponse" message="tns:IPhasorDataService_GetPhasorList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetPhasorListCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetPhasorList_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPhasors">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/GetPhasors" message="tns:IPhasorDataService_GetPhasors_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/GetPhasorsResponse" message="tns:IPhasorDataService_GetPhasors_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/GetPhasorsCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_GetPhasors_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SavePhasor">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPhasorDataService/SavePhasor" message="tns:IPhasorDataService_SavePhasor_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPhasorDataService/SavePhasorResponse" message="tns:IPhasorDataService_SavePhasor_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IPhasorDataService/SavePhasorCustomServiceFaultFault" name="CustomServiceFaultFault" message="tns:IPhasorDataService_SavePhasor_CustomServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CustomBinding_IPhasorDataService" type="tns:IPhasorDataService">
+    <wsp:PolicyReference URI="#CustomBinding_IPhasorDataService_policy" />
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SaveOutputStreamDevicePhasor">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDevicePhasor" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamDeviceAnalogList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceAnalogList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOutputStreamDeviceAnalog">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceAnalog" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamDeviceDigitalList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceDigitalList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOutputStreamDeviceDigital">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDeviceDigital" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDeviceMeasurementData">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceMeasurementData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetTimeZones">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetTimeZones" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetMapData">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetMapData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetConnectionSettings">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetConnectionSettings" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetWizardConfigurationInfo">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetWizardConfigurationInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveConfigurationFrame">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/RetrieveConfigurationFrame" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveWizardConfigurationInfo">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveWizardConfigurationInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetExecutingAssemblyPath">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetExecutingAssemblyPath" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveIniFile">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveIniFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetStopBits">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetStopBits" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetParities">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetParities" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetStatisticMeasurementData">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetStatisticMeasurementData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetRuntimeID">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetRuntimeID" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetMeasurementList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetMeasurementList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetFilteredMeasurementsByDevice">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetFilteredMeasurementsByDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveMeasurement">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveMeasurement" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetMeasurementsByDevice">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetMeasurementsByDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetMeasurementsForOutputStream">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetMeasurementsForOutputStream" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOtherDeviceList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOtherDeviceList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOtherDevice">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOtherDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOtherDeviceByDeviceID">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOtherDeviceByDeviceID" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetInterconnections">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetInterconnections" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocols">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetProtocols" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocolIDByAcronym">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetProtocolIDByAcronym" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetSignalTypes">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetSignalTypes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetCalculatedMeasurementList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetCalculatedMeasurementList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveCalculatedMeasurement">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveCalculatedMeasurement" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetAdapterList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetAdapterList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveAdapter">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveAdapter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetIaonTreeData">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetIaonTreeData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOutputStream">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStream" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteOutputStream">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/DeleteOutputStream" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamDeviceList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDeviceList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOutputStreamDevice">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteOutputStreamDevice">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/DeleteOutputStreamDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AddDevices">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/AddDevices" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamMeasurementList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamMeasurementList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveOutputStreamMeasurement">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveOutputStreamMeasurement" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteOutputStreamMeasurement">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/DeleteOutputStreamMeasurement" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOutputStreamDevicePhasorList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetOutputStreamDevicePhasorList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetNodeList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetNodeList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetNodes">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetNodes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveNode">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveNode" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetNodeByID">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetNodeByID" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompanyList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetCompanyList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetCompanies">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetCompanies" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveCompany">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveCompany" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetHistorianList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetHistorianList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveHistorian">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveHistorian" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetHistorians">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetHistorians" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetVendorList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendorList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetVendors">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendors" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveVendor">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveVendor" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetVendorDeviceList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendorDeviceList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveVendorDevice">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveVendorDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetVendorDevices">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetVendorDevices" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDeviceList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDeviceListByParentID">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceListByParentID" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDevices">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDevices" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveDevice">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SaveDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDeviceByDeviceID">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceByDeviceID" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDeviceByAcronym">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDeviceByAcronym" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetDevicesForOutputStream">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetDevicesForOutputStream" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetConcentratorDevice">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetConcentratorDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteDevice">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/DeleteDevice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetPhasorList">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetPhasorList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetPhasors">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/GetPhasors" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SavePhasor">
+      <soap12:operation soapAction="http://tempuri.org/IPhasorDataService/SavePhasor" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="CustomServiceFaultFault">
+        <soap12:fault use="literal" name="CustomServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PhasorDataService">
+    <wsdl:port name="CustomBinding_IPhasorDataService" binding="tns:CustomBinding_IPhasorDataService">
+      <soap12:address location="http://localhost:1068/Service/PhasorDataService.svc" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>http://localhost:1068/Service/PhasorDataService.svc</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Dns>localhost</Dns>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

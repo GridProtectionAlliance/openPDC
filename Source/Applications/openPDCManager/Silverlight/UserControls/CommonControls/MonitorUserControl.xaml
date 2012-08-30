@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="openPDCManager.UserControls.CommonControls.MonitorUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:DefaultButton="clr-namespace:openPDCManager.Utilities"
+             >
+    <Grid x:Name="MonitorLayoutRoot">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15*"/>
+            <RowDefinition Height="*"/>            
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>            
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border x:Name="BorderInterconnectionStatus" Style="{StaticResource ContentBorderStyle}" CornerRadius="5" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch">
+            <StackPanel Orientation="Vertical" Margin="0" >
+                <TextBlock Text="Remote Console" HorizontalAlignment="Center" Style="{StaticResource LargeWhiteTextStyle}" Padding="5"/>
+                <Border BorderThickness="0" Background="{StaticResource PortletBackgroundBrush}">
+                    <ScrollViewer x:Name="ScrollViewerMonitor" Background="Black" Margin="2,2,2,0" BorderThickness="0" Padding="0" Height="720" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top">
+                        <ScrollViewer.Content>
+                            <TextBlock x:Name="TextBoxServiceStatus" HorizontalAlignment="Left" Foreground="White" TextWrapping="Wrap" Margin="2" Height="Auto" FontFamily="Courier New" 
+                                FontSize="{StaticResource LargerTextSize}"/>
+                            <!--<TextBox x:Name="TextBoxServiceStatus" AcceptsReturn="True" Background="Black"  Margin="2" TextWrapping="NoWrap"  Foreground="White"  
+                                     FontFamily="Courier New" FontSize="{StaticResource LargeTextSize}" />-->
+                        </ScrollViewer.Content>
+                    </ScrollViewer>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!--<Border Style="{StaticResource PortletBorderStyle}" CornerRadius="5" Grid.Row="1" Grid.Column="1" Height="80" VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical" Margin="0">
+                <TextBlock Text="Service Command" HorizontalAlignment="Center" Style="{StaticResource LargeWhiteTextStyle}" Padding="5"/>-->
+        <Border BorderThickness="2" Style="{StaticResource ContentBorderStyle}" CornerRadius="5" Background="{StaticResource PortletBackgroundBrush}" Grid.Row="1" Margin="0,5,0,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBox x:Name="TextBoxServiceRequest" Width="{StaticResource XXXLargeItemSize}" Height="{StaticResource XXXSmallItemSize}" TextAlignment="Left"
+                                  VerticalAlignment="Center" Margin="5"  BorderThickness="1" DefaultButton:DefaultButtonService.DefaultButton="{Binding ElementName=ButtonSendServiceRequest}"/>
+                        <Button x:Name="ButtonSendServiceRequest" Content="../../Images/Input.png" Tag="Send Command" Template="{StaticResource ImageButtonTemplate}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Cursor="Hand">
+                            <Button.RenderTransform>
+                                <ScaleTransform x:Name="ButtonSendServiceRequestTransform" ScaleX="1" ScaleY="1" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            <!--</StackPanel>
+        </Border>-->
+
+    </Grid>
+</UserControl>
