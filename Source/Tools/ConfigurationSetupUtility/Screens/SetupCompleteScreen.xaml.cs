@@ -255,19 +255,7 @@ namespace ConfigurationSetupUtility.Screens
                         // If the user requested it, start the openPDC Manager.
                         if (m_managerStartCheckBox.IsChecked.Value)
                         {
-                            if (UserAccountControl.IsUacEnabled && UserAccountControl.IsCurrentProcessElevated)
-                            {
-                                try
-                                {
-                                    UserAccountControl.CreateProcessAsStandardUser("openPDCManager.exe");
-                                }
-                                catch
-                                {
-                                    Process.Start("openPDCManager.exe");
-                                }
-                            }
-                            else
-                                Process.Start("openPDCManager.exe");
+                            Process.Start("openPDCManager.exe");
                         }
                     }
                     finally

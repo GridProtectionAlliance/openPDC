@@ -1,0 +1,88 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<PropertyGroup>
+		<!-- Select a Product Configuration -->
+		<InstallShieldProductConfiguration>Default Configuration</InstallShieldProductConfiguration>
+		<!-- Select a Visual Studio Configuration / InstallShield Release -->
+		<Configuration>Debug</Configuration>
+		<InstallShieldRelease>$(Configuration)</InstallShieldRelease>
+	</PropertyGroup>
+	<ItemGroup>
+		<!-- The InstallShieldProject item selects the project to build -->
+		<InstallShieldProject Include="$(MSBuildProjectDirectory)\$(MSBuildProjectName).ism"/>
+		<!-- The InstallShieldReleaseFlags sets Release Flags -->
+		<!--<InstallShieldReleaseFlags Include=""/>-->
+		<!-- The InstallShieldMergeModulePath specifies what directories are
+		searched for Merge Modules -->
+		<!--<InstallShieldMergeModulePath Include=""/>-->
+	</ItemGroup>
+	<ItemGroup>
+		<!-- The ProjectReference items refer to any Visual Studio solutions you want to automatically probe for Project Output Groups.  -->
+	</ItemGroup>
+	<ItemGroup>
+		<!-- The TaggedOutputs items allow you to explicitly add extra files to output groups. Each item must include both Name and OutputGroup, as well as TargetPath metadata values. -->
+		<!--<TaggedOutputs Include="C:\My Test Exe.exe">
+			<Name>My Test Project</Name>
+			<OutputGroup>Primary output</OutputGroup>
+			<TargetPath>My Test Exe.exe</TargetPath>
+		</TaggedOutputs> -->
+	</ItemGroup>
+	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2012Spring\InstallShield.targets"/>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Libraries\Adapters\COMTRADE\Comtrade.csproj">
+			<Name>Comtrade</Name>
+			<Project>{9B93C212-786C-45C9-9B90-8CEFD24EF19D}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Tools\ConfigurationSetupUtility\ConfigurationSetupUtility.csproj">
+			<Name>ConfigurationSetupUtility</Name>
+			<Project>{2A74EACF-8291-47C7-A2ED-0D58771F24E2}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Libraries\Adapters\HistorianAdapters\HistorianAdapters.csproj">
+			<Name>HistorianAdapters</Name>
+			<Project>{8A1BCFAA-19E8-408A-8C72-170B1211DC27}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Libraries\Adapters\ICCPExport\ICCPExport.csproj">
+			<Name>ICCPExport</Name>
+			<Project>{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Tools\MacrodyneController\MacrodyneController.csproj">
+			<Name>MacrodyneController</Name>
+			<Project>{334BA160-26D6-4A3B-92E2-42DEB4381176}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Libraries\Adapters\PowerCalculations\PowerCalculations.csproj">
+			<Name>PowerCalculations</Name>
+			<Project>{B74CF4DA-2972-489B-AF08-419560EE57EF}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Libraries\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
+			<Name>TVA.PhasorProtocols</Name>
+			<Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\openPDC\openPDC.csproj">
+			<Name>openPDC</Name>
+			<Project>{0BF2447E-252D-4712-B154-E350AF463081}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Libraries\openPDC.UI\openPDC.UI.csproj">
+			<Name>openPDC.UI</Name>
+			<Project>{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Libraries\openPDC.UI.WPF\openPDC.UI.WPF.csproj">
+			<Name>openPDC.UI.WPF</Name>
+			<Project>{57261E91-7636-4F92-8D93-744A4AAD7EB0}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\openPDCConsole\openPDCConsole.csproj">
+			<Name>openPDCConsole</Name>
+			<Project>{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\openPDCManager\openPDCManager\openPDCManager.csproj">
+			<Name>openPDCManager</Name>
+			<Project>{6903507C-C289-4F8F-887C-C2D94C72BA99}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Libraries\openPG.UI\openPG.UI.csproj">
+			<Name>openPG.UI</Name>
+			<Project>{94F36768-E9A0-4783-BB0F-8C2C1771352E}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\Libraries\openPG.UI.WPF\openPG.UI.WPF.csproj">
+			<Name>openPG.UI.WPF</Name>
+			<Project>{134819C5-C1BB-4ED1-BE23-49AB5FB33744}</Project>
+		</ProjectReference>
+	</ItemGroup>
+</Project>

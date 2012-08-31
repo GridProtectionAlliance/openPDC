@@ -69,54 +69,54 @@ namespace Setup
         {
             bool runSetup = false;
 
-            // Verify that .NET 4.0 is installed
+            // Verify that .NET 4.5 is installed
             try
             {
-                RegistryKey net40 = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\.NETFramework\\v4.0.30319");
+                RegistryKey net45 = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\.NETFramework\\v4.0.30319\\SKUs\\.NETFramework,Version=v4.5");
 
-                if (net40 == null)
+                if (net45 == null)
                 {
-                    if (MessageBox.Show("Microsoft .NET 4.0 does not appear to be installed on this computer. The .NET 4.0 framework is required to be installed before you continue installation. Would you like to install it now?", ".NET 4.0 Check", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    if (MessageBox.Show("Microsoft .NET 4.5 does not appear to be installed on this computer. The .NET 4.5 framework is required to be installed before you continue installation. Would you like to install it now?", ".NET 4.5 Check", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
-                        Process net40Install;
-                        string netInstallPath = "Installers\\dotNetFx40_Full_x86_x64.exe";
+                        Process net45Install;
+                        string netInstallPath = "Installers\\dotNetFx45_Full_setup.exe";
 
                         if (File.Exists(netInstallPath))
                         {
                             try
                             {
-                                // Attempt to launch .NET 4.0 installer...
-                                net40Install = new Process();
-                                net40Install.StartInfo.FileName = netInstallPath;
-                                net40Install.StartInfo.UseShellExecute = false;
-                                net40Install.Start();
+                                // Attempt to launch .NET 4.5 installer...
+                                net45Install = new Process();
+                                net45Install.StartInfo.FileName = netInstallPath;
+                                net45Install.StartInfo.UseShellExecute = false;
+                                net45Install.Start();
                             }
                             catch
                             {
-                                // At a minimum open folder containing .NET 4.0 installer since its available to run...
-                                net40Install = new Process();
-                                net40Install.StartInfo.FileName = Directory.GetCurrentDirectory() + "\\Installers\\";
-                                net40Install.StartInfo.UseShellExecute = true;
-                                net40Install.Start();
+                                // At a minimum open folder containing .NET 4.5 installer since its available to run...
+                                net45Install = new Process();
+                                net45Install.StartInfo.FileName = Directory.GetCurrentDirectory() + "\\Installers\\";
+                                net45Install.StartInfo.UseShellExecute = true;
+                                net45Install.Start();
                             }
                         }
                         else
                         {
-                            net40Install = new Process();
-                            net40Install.StartInfo.FileName = "http://www.microsoft.com/downloads/en/details.aspx?FamilyID=9cfb2d51-5ff4-4491-b0e5-b386f32c0992&displaylang=en";
-                            net40Install.StartInfo.UseShellExecute = true;
-                            net40Install.Start();
+                            net45Install = new Process();
+                            net45Install.StartInfo.FileName = "http://www.microsoft.com/downloads/en/details.aspx?FamilyID=9cfb2d51-5ff4-4491-b0e5-b386f32c0992&displaylang=en";
+                            net45Install.StartInfo.UseShellExecute = true;
+                            net45Install.Start();
                         }
                     }
                     else
-                        runSetup = (MessageBox.Show("Would you like to attempt installation anyway?", ".NET 4.0 Check", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
+                        runSetup = (MessageBox.Show("Would you like to attempt installation anyway?", ".NET 4.5 Check", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
                 }
                 else
                     runSetup = true;
             }
             catch
             {
-                runSetup = (MessageBox.Show("The setup program was not able to determine if Microsoft .NET 4.0 is installed on this computer. The .NET 4.0 framework is required to be installed before you continue installation. Would you like to attempt installation anyway?", ".NET 4.0 Check", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
+                runSetup = (MessageBox.Show("The setup program was not able to determine if Microsoft .NET 4.5 is installed on this computer. The .NET 4.5 framework is required to be installed before you continue installation. Would you like to attempt installation anyway?", ".NET 4.5 Check", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
             }
 
             // See if an existing version is currently installed
