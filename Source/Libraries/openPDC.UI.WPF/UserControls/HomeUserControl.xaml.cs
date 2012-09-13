@@ -208,7 +208,7 @@ namespace openPDC.UI.UserControls
             m_xAxisBindingCollection.SetXMapping(x => x);
 
             ComboBoxDevice.ItemsSource = Device.GetLookupList(null);
-
+            ComboBoxDevice.SelectedIndex = 0;
             if (Application.Current.Resources.Contains("SelectedDevice_Home"))
                 ComboBoxDevice.SelectedIndex = (int)Application.Current.Resources["SelectedDevice_Home"];
             else
