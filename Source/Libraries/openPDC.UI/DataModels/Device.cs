@@ -216,7 +216,7 @@ namespace openPDC.UI.DataModels
         /// </summary>
         [Required(ErrorMessage = "Device acronym is a required field, please provide value.")]
         [StringLength(200, ErrorMessage = "Device Acronym cannot exceed 200 characters.")]
-        [RegularExpression("^[A-Z0-9-'!'_'@#\\$]+$", ErrorMessage = "Only upper case letters, numbers, '!', '-', '@', '#', '_' and '$' are allowed.")]
+        [RegularExpression("^[A-Z0-9-'!'_''.' @#\\$]+$", ErrorMessage = "Only upper case letters, numbers, '!', '-', '@', '#', '_' , '.'and '$' are allowed.")]
         public string Acronym
         {
             get
@@ -1111,17 +1111,17 @@ namespace openPDC.UI.DataModels
 
                 if (deviceType == DeviceType.Concentrator)
                 {
-                    query = database.ParameterizedQueryString("SELECT ID, Acronym FROM Device WHERE IsConcentrator = {0} AND NodeID = {1} ORDER BY LoadOrder",
-                        "isConcentrator", "nodeID");
+                    query = database.ParameterizedQueryString("SELECT ID, Acronym FROM Device WHERE IsConcentrator = {0} AND NodeID = {1} AND Enabled= {2} ORDER BY LoadOrder",
+                        "isConcentrator", "nodeID","Enabled");
 
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.Bool(true), database.CurrentNodeID());
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.Bool(true), database.CurrentNodeID(), database.Bool(true));
                 }
                 else if (deviceType == DeviceType.DirectConnected)
                 {
-                    query = database.ParameterizedQueryString("SELECT ID, Acronym FROM Device WHERE IsConcentrator = {0} AND NodeID = {1} ORDER BY LoadOrder",
-                        "isConcentrator", "nodeID");
+                    query = database.ParameterizedQueryString("SELECT ID, Acronym FROM Device WHERE IsConcentrator = {0} AND NodeID = {1} AND Enabled= {2} ORDER BY LoadOrder",
+                        "isConcentrator", "nodeID", "Enabled");
 
-                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.Bool(false), database.CurrentNodeID());
+                    deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.Bool(false), database.CurrentNodeID(), database.Bool(true));
                 }
                 else
                 {
