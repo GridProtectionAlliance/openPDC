@@ -595,84 +595,6 @@
             <returns>string value.</returns>
             <remarks>This method is not implemented.</remarks>
         </member>
-        <member name="T:TimeSeriesFramework.UI.ErrorMonitor">
-            <summary>
-            Provides Error Monitor that checks the ErrorLog
-            to keep the Error Log list updated.
-            </summary>
-            <remarks>
-            Typically class should be implemented as a singleton since one instance will create.
-            </remarks>
-        </member>
-        <member name="F:TimeSeriesFramework.UI.ErrorMonitor.DefaultErrorLogSize">
-            <summary>
-            Specifies the default value for the <see cref="F:TimeSeriesFramework.UI.ErrorMonitor.DefaultErrorLogSize"/> property.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ErrorMonitor.#ctor(System.Boolean)">
-            <summary>
-            Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.ErrorMonitor"/> class.
-            </summary>
-            <param name="singleton">Indicates whether this instance should 
-            be singleton. Default value false</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ErrorMonitor.ResetRefreshInterval">
-            <summary>
-            Reset the refresh interval of Error Monitor to 
-            default value =  10 sec(s)
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ErrorMonitor.Start">
-            <summary>
-            Starts the refresh timer that checks recent errors.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ErrorMonitor.Stop">
-            <summary>
-            Stops the refresh timer.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ErrorMonitor.GetRecentErrors">
-            <summary>
-            Gets current Errors.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ErrorMonitor.Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or
-            resetting unmanaged resources.
-            </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ErrorMonitor.Dispose(System.Boolean)">
-            <summary>
-            Releases the unmanaged resources used by the <see cref="T:TimeSeriesFramework.UI.ErrorMonitor"/> 
-            object and optionally releases the managed resources.
-            </summary>
-            <param name="disposing">true to release both managed and unmanaged resources;
-            false to release only unmanaged resources.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ErrorMonitor.RefreshErrorsList">
-            <summary>
-            Fetch recent error details from ErrorLog table.
-            </summary>
-        </member>
-        <member name="E:TimeSeriesFramework.UI.ErrorMonitor.UpdatedErrors">
-            <summary>
-            Event raised when the ErrorList is updated.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ErrorMonitor.RefreshInterval">
-            <summary>
-            Gets or sets the interval, in seconds,
-            between refreshing the error list.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ErrorMonitor.Default">
-            <summary>
-            Gets ErrorMonitor object.
-            </summary>
-        </member>
         <member name="T:TimeSeriesFramework.UI.SubscriberStatusQuery">
             <summary>
             Represents an object that will query the external DataPublisher for real-time subscriber status.
@@ -1485,6 +1407,23 @@
             <summary>
             Represents a record of <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> information as defined in the database.
             </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.ErrorLog.LoadKeys(TVA.Data.AdoDataConnection,System.String,System.String)">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> IDs as an <see cref="T:System.Collections.Generic.IList`1"/>.
+            </summary>        
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="sortMember">The field to sort by.</param>
+            <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
+            <returns>Collection of <see cref="T:System.Int32"/>.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.DataModels.ErrorLog.Load(TVA.Data.AdoDataConnection,System.Collections.Generic.IList{System.Int32})">
+            <summary>
+            Loads <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
+            </summary>
+            <param name="database"><see cref="T:TVA.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="keys">Keys of the ErrorLogs to be loaded from the database.</param>
+            <returns>Collection of <see cref="T:TimeSeriesFramework.UI.DataModels.ErrorLog"/>.</returns>
         </member>
         <member name="P:TimeSeriesFramework.UI.DataModels.ErrorLog.ID">
             <summary>

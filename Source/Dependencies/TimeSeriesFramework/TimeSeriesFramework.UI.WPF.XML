@@ -1788,30 +1788,13 @@
             <param name="itemsPerPage"> No of Maximum items in each page.</param>
             <param name="autoSave">Default value true.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.LoadErrors">
-            <summary>
-            Update the DataGrid with latest error list.
-            Also sorts the data if sort is applied before refresh.
-            </summary>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.Initialize" -->
         <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.SortData(System.String,System.ComponentModel.ListSortDirection)">
             <summary>
             Sorts model data.
             </summary>
             <param name="sortMemberPath">Member path for sorting.</param>
             <param name="sortDirection">Ascending or descending.</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.Sort(System.Int32)">
-            <summary>
-            Initiates parent sortmethod.
-            Set current selected item after sort based on display index.
-            </summary>
-            <param name="currentItemKey">Index of selected item before sort</param>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.ShowErrorLog">
-            <summary>
-            Show brief error log details.
-            </summary>
         </member>
         <member name="M:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.Load">
             <summary>
@@ -1832,17 +1815,6 @@
             Get current item index.
             </summary>
             <returns>Returns String representation of current index.</returns>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.Monitor">
-            <summary>
-            Gets or sets the <see cref="T:TimeSeriesFramework.UI.ErrorMonitor"/> used to receive
-            updates about recent Errors.
-            </summary>
-        </member>
-        <member name="P:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.ShowCommand">
-            <summary>
-            Gets Show command.
-            </summary>
         </member>
         <member name="P:TimeSeriesFramework.UI.ViewModels.ErrorLogViewModel.IsNewRecord">
             <summary>
