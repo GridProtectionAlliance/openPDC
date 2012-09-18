@@ -715,6 +715,7 @@ namespace TVA.PhasorProtocols
         /// <param name="connection">The database connection.</param>
         /// <param name="adapterType">The database adapter type.</param>
         /// <param name="nodeIDQueryString">Current node ID in proper query format.</param>
+        /// <param name="arguments">Arguments, if any, to be used but the data source validation.</param>
         /// <param name="statusMessage">The delegate which will display a status message to the user.</param>
         /// <param name="processException">The delegate which will handle exception logging.</param>
         [SuppressMessage("Microsoft.Maintainability", "CA1502"), SuppressMessage("Microsoft.Maintainability", "CA1505")]
