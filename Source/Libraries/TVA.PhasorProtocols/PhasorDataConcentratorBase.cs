@@ -174,6 +174,7 @@ namespace TVA.PhasorProtocols
         private long m_maximumLatency;
         private long m_latencyMeasurements;
         private int m_hashCode;
+        private bool m_useAdjustedValue;
         private bool m_disposed;
 
         #endregion
@@ -949,6 +950,15 @@ namespace TVA.PhasorProtocols
                 m_replaceWithSpaceChar = Char.MinValue;
             }
 
+            if (settings.TryGetValue("useAdjustedValue", out setting))
+            {
+                m_useAdjustedValue = Boolean.Parse(setting);
+            }
+            else
+            {
+                m_useAdjustedValue = true;
+            }
+
             // Initialize data channel if defined
             if (!string.IsNullOrEmpty(dataChannel))
                 this.DataChannel = new UdpServer(dataChannel);
@@ -1359,6 +1369,7 @@ namespace TVA.PhasorProtocols
                 SignalReference signal = signalMeasurement.SignalReference;
                 IDataCell dataCell = dataFrame.Cells[signal.CellIndex];
                 int signalIndex = signal.Index;
+                double signalValue = m_useAdjustedValue ? signalMeasurement.AdjustedValue : signalMeasurement.Value;
 
                 // Assign measurement to its destination field in the data cell based on signal type
                 switch (signal.Kind)
@@ -1367,25 +1378,25 @@ namespace TVA.PhasorProtocols
                         // Assign "phase angle" measurement to data cell
                         phasorValues = dataCell.PhasorValues;
                         if (phasorValues.Count >= signalIndex)
-                            phasorValues[signalIndex - 1].Angle = Angle.FromDegrees(signalMeasurement.AdjustedValue);
+                            phasorValues[signalIndex - 1].Angle = Angle.FromDegrees(signalValue);
                         break;
                     case SignalKind.Magnitude:
                         // Assign "phase magnitude" measurement to data cell
                         phasorValues = dataCell.PhasorValues;
                         if (phasorValues.Count >= signalIndex)
-                            phasorValues[signalIndex - 1].Magnitude = signalMeasurement.AdjustedValue;
+                            phasorValues[signalIndex - 1].Magnitude = signalValue;
                         break;
                     case SignalKind.Frequency:
                         // Assign "frequency" measurement to data cell
-                        dataCell.FrequencyValue.Frequency = signalMeasurement.AdjustedValue;
+                        dataCell.FrequencyValue.Frequency = signalValue;
                         break;
                     case SignalKind.DfDt:
                         // Assign "dF/dt" measurement to data cell
-                        dataCell.FrequencyValue.DfDt = signalMeasurement.AdjustedValue;
+                        dataCell.FrequencyValue.DfDt = signalValue;
                         break;
                     case SignalKind.Status:
                         // Assign "common status flags" measurement to data cell
-                        dataCell.CommonStatusFlags = unchecked((uint)signalMeasurement.AdjustedValue);
+                        dataCell.CommonStatusFlags = unchecked((uint)signalValue);
 
                         // Assign by arrival sorting flag for bad synchronization
                         if (!dataCell.SynchronizationIsValid && AllowSortsByArrival && !IgnoreBadTimestamps)
@@ -1395,13 +1406,13 @@ namespace TVA.PhasorProtocols
                         // Assign "digital" measurement to data cell
                         DigitalValueCollection digitalValues = dataCell.DigitalValues;
                         if (digitalValues.Count >= signalIndex)
-                            digitalValues[signalIndex - 1].Value = unchecked((ushort)signalMeasurement.AdjustedValue);
+                            digitalValues[signalIndex - 1].Value = unchecked((ushort)signalValue);
                         break;
                     case SignalKind.Analog:
                         // Assign "analog" measurement to data cell
                         AnalogValueCollection analogValues = dataCell.AnalogValues;
                         if (analogValues.Count >= signalIndex)
-                            analogValues[signalIndex - 1].Value = signalMeasurement.AdjustedValue;
+                            analogValues[signalIndex - 1].Value = signalValue;
                         break;
                 }
 
