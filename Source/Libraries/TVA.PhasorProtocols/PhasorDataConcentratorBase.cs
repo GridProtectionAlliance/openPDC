@@ -523,6 +523,7 @@ namespace TVA.PhasorProtocols
                 if (m_dataChannel != null)
                 {
                     // Detach from events on existing data channel reference
+                    m_dataChannel.ReceiveClientDataComplete -= m_dataChannel_ReceiveClientDataComplete;
                     m_dataChannel.SendClientDataException -= m_dataChannel_SendClientDataException;
                     m_dataChannel.ServerStarted -= m_dataChannel_ServerStarted;
                     m_dataChannel.ServerStopped -= m_dataChannel_ServerStopped;
@@ -537,6 +538,7 @@ namespace TVA.PhasorProtocols
                 if (m_dataChannel != null)
                 {
                     // Attach to events on new data channel reference
+                    m_dataChannel.ReceiveClientDataComplete += m_dataChannel_ReceiveClientDataComplete;
                     m_dataChannel.SendClientDataException += m_dataChannel_SendClientDataException;
                     m_dataChannel.ServerStarted += m_dataChannel_ServerStarted;
                     m_dataChannel.ServerStopped += m_dataChannel_ServerStopped;
@@ -755,7 +757,7 @@ namespace TVA.PhasorProtocols
             if (WaitForInitialize(InitializationTimeout))
             {
                 // Start communications servers
-                if (m_autoStartDataChannel && m_dataChannel != null && m_dataChannel.CurrentState == ServerState.NotRunning)
+                if ((m_autoStartDataChannel || m_commandChannel == null) && m_dataChannel != null && m_dataChannel.CurrentState == ServerState.NotRunning)
                     m_dataChannel.Start();
 
                 if (m_commandChannel != null && m_commandChannel.CurrentState == ServerState.NotRunning)
@@ -809,15 +811,24 @@ namespace TVA.PhasorProtocols
             EstablishPublicationChannel();
 
             // Make sure publication channel has started
-            if (m_publishChannel != null && m_publishChannel.CurrentState == ServerState.NotRunning)
+            if (m_publishChannel != null)
             {
-                try
+                if (m_publishChannel.CurrentState == ServerState.NotRunning)
                 {
-                    m_publishChannel.Start();
+                    try
+                    {
+                        m_publishChannel.Start();
+                    }
+                    catch (Exception ex)
+                    {
+                        OnProcessException(new InvalidOperationException("Failed to start publication channel: " + ex.Message, ex));
+                    }
                 }
-                catch (Exception ex)
+
+                if (!Enabled)
                 {
-                    OnProcessException(new InvalidOperationException("Failed to start publication channel: " + ex.Message, ex));
+                    // Start concentration engine
+                    base.Start();
                 }
             }
         }
@@ -1794,6 +1805,15 @@ namespace TVA.PhasorProtocols
 
         #region [ Data Channel Event Handlers ]
 
+        private void m_dataChannel_ReceiveClientDataComplete(object sender, EventArgs<Guid, byte[], int> e)
+        {
+            // Queue up derived class device command handling on a different thread since this will
+            // often engage sending data back on the same command channel and we want this async
+            // thread to complete gracefully...
+            if ((object)m_commandChannel == null)
+                ThreadPool.QueueUserWorkItem(DeviceCommandHandlerProc, e);
+        }
+
         private void m_dataChannel_SendClientDataException(object sender, EventArgs<Guid, Exception> e)
         {
             Exception ex = e.Argument2;
@@ -1813,9 +1833,10 @@ namespace TVA.PhasorProtocols
         private void m_dataChannel_ServerStarted(object sender, EventArgs e)
         {
             // Start concentration engine
-            base.Start();
-            m_activeConnections++;
+            if (m_autoStartDataChannel)
+                base.Start();
 
+            m_activeConnections++;
             OnStatusMessage("Data channel started.");
         }
 
@@ -1849,7 +1870,7 @@ namespace TVA.PhasorProtocols
             // Queue up derived class device command handling on a different thread since this will
             // often engage sending data back on the same command channel and we want this async
             // thread to complete gracefully...
-            Task.Factory.StartNew(DeviceCommandHandlerProc, e);
+            ThreadPool.QueueUserWorkItem(DeviceCommandHandlerProc, e);
         }
 
         private void m_commandChannel_SendClientDataException(object sender, EventArgs<Guid, Exception> e)

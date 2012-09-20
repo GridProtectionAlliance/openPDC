@@ -1934,13 +1934,20 @@ namespace TVA.PhasorProtocols
         /// </summary>
         public void Stop()
         {
+            WaitHandle commandWaitHandle;
+
             m_enabled = false;
             m_rateCalcTimer.Enabled = false;
             m_configurationFrame = null;
 
             // Make sure data stream is disabled
             if (!m_skipDisableRealTimeData)
-                SendDeviceCommand(DeviceCommand.DisableRealTimeData);
+            {
+                commandWaitHandle = SendDeviceCommand(DeviceCommand.DisableRealTimeData);
+
+                if ((object)commandWaitHandle != null)
+                    commandWaitHandle.WaitOne();
+            }
 
             if (m_dataChannel != null)
             {
