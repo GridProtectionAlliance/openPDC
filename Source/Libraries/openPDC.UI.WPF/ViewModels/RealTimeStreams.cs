@@ -312,7 +312,7 @@ namespace openPDC.UI.ViewModels
         private void m_unsynchronizedSubscriber_ConnectionTerminated(object sender, EventArgs e)
         {
             m_subscribedUnsynchronized = false;
-            UnsubscribeUnsynchronizedData();
+            TerminateSubscription();
             if (RestartConnectionCycle)
                 InitializeUnsynchronizedSubscription();
         }
@@ -477,7 +477,26 @@ namespace openPDC.UI.ViewModels
             }
 
             if (m_statistics == null)
-                m_statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => m_statistics = new RealTimeStatistics(1, m_statisticRefreshInterval)));
+        }
+
+        /// <summary>
+        /// Unsubscribes data from the service.
+        /// </summary>
+        public void TerminateSubscription()
+        {
+            try
+            {
+                if (m_unsynchronizedSubscriber != null)
+                {
+                    m_unsynchronizedSubscriber.Unsubscribe();
+                    StopUnsynchronizedSubscription();
+                }
+            }
+            catch
+            {
+                m_unsynchronizedSubscriber = null;
+            }
         }
 
         /// <summary>
