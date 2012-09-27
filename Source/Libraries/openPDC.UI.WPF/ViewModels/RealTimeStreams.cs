@@ -84,7 +84,7 @@ namespace openPDC.UI.ViewModels
             StatisticMeasurements = new ObservableCollection<StatisticMeasurement>();
 
             int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticRefreshInterval);
-            m_statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
+            Statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
 
             CheckTemporalSupport();
         }
@@ -213,6 +213,24 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        private RealTimeStatistics Statistics
+        {
+            get
+            {
+                return m_statistics;
+            }
+            set
+            {
+                if ((object)m_statistics != null)
+                    m_statistics.NewMeasurements -= m_statistics_NewMeasurements;
+
+                m_statistics = value;
+
+                if ((object)m_statistics != null)
+                    m_statistics.NewMeasurements += m_statistics_NewMeasurements;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -304,6 +322,57 @@ namespace openPDC.UI.ViewModels
             catch (Exception ex)
             {
                 Popup("Failed to retrieve statistics." + Environment.NewLine + ex.Message, "ERROR! Get Statistics", MessageBoxImage.Error);
+            }
+        }
+
+        private void m_statistics_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
+        {
+            if (0 == Interlocked.Exchange(ref m_processingUnsynchronizedMeasurements, 1))
+            {
+                try
+                {
+                    ObservableCollection<StatisticMeasurement> statisticMeasurements;
+                    StreamStatistic streamStatistic;
+
+                    foreach (RealTimeStream stream in ItemsSource)
+                    {
+                        if (stream.ID > 0 && RealTimeStatistic.InputStreamStatistics.TryGetValue(stream.ID, out streamStatistic))
+                        {
+                            stream.StatusColor = streamStatistic.StatusColor;
+                        }
+
+                        foreach (RealTimeDevice device in stream.DeviceList)
+                        {
+                            if (device.ID != null && device.ID > 0)
+                            {
+                                if (stream.StatusColor == "Red")
+                                {
+                                    device.StatusColor = stream.StatusColor;
+                                }
+                                else if (RealTimeStatistic.InputStreamStatistics.TryGetValue((int)device.ID, out streamStatistic))
+                                {
+                                    device.StatusColor = streamStatistic.StatusColor;
+                                }
+                                else if (RealTimeStatistic.DevicesWithStatisticMeasurements.TryGetValue((int)device.ID, out statisticMeasurements))
+                                {
+                                    device.StatusColor = "Green";
+                                    foreach (StatisticMeasurement statisticMeasurement in statisticMeasurements)
+                                    {
+                                        int value;
+                                        if (int.TryParse(statisticMeasurement.Value, out value) && value > 0)
+                                        {
+                                            device.StatusColor = "Yellow";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref m_processingUnsynchronizedMeasurements, 0);
+                }
             }
         }
 
@@ -477,7 +546,7 @@ namespace openPDC.UI.ViewModels
             }
 
             if (m_statistics == null)
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => m_statistics = new RealTimeStatistics(1, m_statisticRefreshInterval)));
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => Statistics = new RealTimeStatistics(1, m_statisticRefreshInterval)));
         }
 
         /// <summary>
@@ -513,7 +582,7 @@ namespace openPDC.UI.ViewModels
                     if (m_statistics != null)
                     {
                         m_statistics.Stop();
-                        m_statistics = null;
+                        Statistics = null;
                     }
                 }
             }

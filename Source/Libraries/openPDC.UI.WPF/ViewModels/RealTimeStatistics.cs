@@ -39,6 +39,14 @@ namespace openPDC.UI.ViewModels
     {
         #region [ Members ]
 
+        // Events
+
+        /// <summary>
+        /// When new measurements are received from the unsynchronized subscriber.
+        /// </summary>
+        public event EventHandler<EventArgs<ICollection<IMeasurement>>> NewMeasurements;
+
+        // Fields
         private int m_statisticDataRefreshInterval = 5;
         private string m_lastRefresh;
         private bool m_restartConnectionCycle;
@@ -155,12 +163,10 @@ namespace openPDC.UI.ViewModels
                                         (measurement.Source == "Publisher" && RealTimeStatistic.DataPublisherStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
                                         (measurement.Source == "OutputStream" && RealTimeStatistic.OutputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)))
                                     {
-                                        if (newMeasurement.ValueQualityIsGood() && newMeasurement.TimestampQualityIsGood())
+                                        if (Convert.ToBoolean(newMeasurement.AdjustedValue))
                                             streamStatistic.StatusColor = "Green";
-                                        else if (!newMeasurement.ValueQualityIsGood() && !newMeasurement.TimestampQualityIsGood())
-                                            streamStatistic.StatusColor = "Red";
                                         else
-                                            streamStatistic.StatusColor = "Yellow";
+                                            streamStatistic.StatusColor = "Red";
                                     }
                                 }
                             }
@@ -168,6 +174,9 @@ namespace openPDC.UI.ViewModels
                     }
 
                     LastRefresh = "Last Refresh: " + DateTime.UtcNow.ToString("HH:mm:ss.fff");
+
+                    if ((object)NewMeasurements != null)
+                        NewMeasurements(this, e);
                 }
                 finally
                 {
