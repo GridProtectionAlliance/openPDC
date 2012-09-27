@@ -44,7 +44,7 @@ namespace openPDCManager
         private ErrorLogger m_errorLogger;
         private Func<string> m_defaultErrorText;
         private string m_title;
-
+        
         #endregion
 
         #region [ Constructors ]
@@ -78,13 +78,36 @@ namespace openPDCManager
 
             try
             {
+
                 database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
                 MeasurementKey.EstablishDefaultCache(database.Connection, database.AdapterType);
+            }
+            
+            catch (InvalidOperationException ex)
+            {
+                // Wpf does not support Displaying message boxes, Until the window is open;
+                // Creating a dummy window to display the message box.
+                Window WpfBugWindow = new Window()
+                {
+                    AllowsTransparency = true,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    WindowStyle = WindowStyle.None,
+                    Top = 0,
+                    Left = 0,
+                    Width = 1,
+                    Height = 1,
+                    ShowInTaskbar = false
+                };
+
+                WpfBugWindow.Show();
+                MessageBox.Show(ex.Message.ToString(),"Failed to Subscribe",MessageBoxButton.OK,MessageBoxImage.Error);
+                WpfBugWindow.Close();
             }
             catch (Exception ex)
             {
                 // Log and display error, then exit application - manager must connect to database to continue
                 m_errorLogger.Log(new InvalidOperationException(string.Format("{0} cannot connect to database: {1}", m_title, ex.Message), ex), true);
+
             }
             finally
             {
