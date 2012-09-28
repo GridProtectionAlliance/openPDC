@@ -1282,6 +1282,7 @@ namespace TVA.PhasorProtocols
         private System.Timers.Timer m_rateCalcTimer;
         private IConfigurationFrame m_configurationFrame;
         private long m_dataStreamStartTime;
+        private bool m_keepCommandChannelOpen;
         private bool m_executeParseOnSeparateThread;
         private bool m_autoRepeatCapturedPlayback;
         private bool m_injectSimulatedTimestamp;
@@ -1337,6 +1338,7 @@ namespace TVA.PhasorProtocols
             m_autoStartDataParsingSequence = DefaultAutoStartDataParsingSequence;
             m_allowedParsingExceptions = DefaultAllowedParsingExceptions;
             m_parsingExceptionWindow = DefaultParsingExceptionWindow;
+            m_keepCommandChannelOpen = true;
             m_rateCalcTimer = new System.Timers.Timer();
             m_streamStopDataHandle = new ManualResetEventSlim(false);
             m_writeLock = new SpinLock();
@@ -1456,7 +1458,26 @@ namespace TVA.PhasorProtocols
                 if (settings.TryGetValue("transportProtocol", out setting) || settings.TryGetValue("protocol", out setting))
                     TransportProtocol = (TransportProtocol)Enum.Parse(typeof(TransportProtocol), setting, true);
 
+                if (settings.TryGetValue("keepCommandChannelOpen", out setting))
+                    m_keepCommandChannelOpen = setting.ParseBoolean();
+
                 m_deviceSupportsCommands = DeriveCommandSupport();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets flag that determines whether to keep the
+        /// command channel open after the initial startup sequence.
+        /// </summary>
+        public bool KeepCommandChannelOpen
+        {
+            get
+            {
+                return m_keepCommandChannelOpen;
+            }
+            set
+            {
+                m_keepCommandChannelOpen = value;
             }
         }
 
@@ -1812,7 +1833,7 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                if (m_commandChannel != null)
+                if (m_commandChannel != null && m_keepCommandChannelOpen)
                     return (m_commandChannel.CurrentState == ClientState.Connected);
                 else if (m_dataChannel != null)
                     return (m_dataChannel.CurrentState == ClientState.Connected);
@@ -2756,6 +2777,13 @@ namespace TVA.PhasorProtocols
                         if (m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected)
                         {
                             handle = m_commandChannel.SendAsync(buffer, 0, buffer.Length);
+
+                            // Shut down command channel at the end of the startup sequence
+                            if (!m_keepCommandChannelOpen && command == DeviceCommand.EnableRealTimeData)
+                            {
+                                handle.WaitOne(1000);
+                                m_commandChannel.Disconnect();
+                            }
                         }
                         else if (m_dataChannel != null && m_dataChannel.CurrentState == ClientState.Connected)
                         {
@@ -3413,8 +3441,11 @@ namespace TVA.PhasorProtocols
 
         private void m_commandChannel_ConnectionTerminated(object sender, EventArgs e)
         {
-            if (ConnectionTerminated != null)
-                ConnectionTerminated(this, EventArgs.Empty);
+            if (m_keepCommandChannelOpen)
+            {
+                if (ConnectionTerminated != null)
+                    ConnectionTerminated(this, EventArgs.Empty);
+            }
         }
 
         private void m_commandChannel_SendDataException(object sender, EventArgs<Exception> e)
