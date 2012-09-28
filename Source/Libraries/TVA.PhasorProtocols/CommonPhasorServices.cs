@@ -102,6 +102,7 @@ namespace TVA.PhasorProtocols
             m_dataPublisher = new DataPublisher();
             m_dataPublisher.Name = "dataPublisher";
             m_dataPublisher.UseBaseTimeOffsets = true;
+            m_dataPublisher.ConnectionString = "cacheMeasurementKeys={FILTER ActiveMeasurements WHERE SignalType = 'STAT'}";
 
             // Attach to events on new data publishing server reference
             m_dataPublisher.StatusMessage += m_dataPublisher_StatusMessage;

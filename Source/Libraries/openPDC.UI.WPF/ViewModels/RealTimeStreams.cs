@@ -534,15 +534,30 @@ namespace openPDC.UI.ViewModels
 
         public void SubscribeUnsynchronizedData(bool historical)
         {
+            UnsynchronizedSubscriptionInfo info;
+
             if (m_unsynchronizedSubscriber == null)
                 InitializeUnsynchronizedSubscription();
 
             if (m_subscribedUnsynchronized && !string.IsNullOrEmpty(m_allSignalIDs))
             {
-                if (!historical)
-                    m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true, m_refreshInterval);
-                else
-                    m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true, m_refreshInterval, startTime: StartTime, stopTime: StopTime, processingInterval: m_refreshInterval * 1000);
+                info = new UnsynchronizedSubscriptionInfo(true);
+
+                info.UseCompactMeasurementFormat = true;
+                info.FilterExpression = m_allSignalIDs;
+                info.IncludeTime = true;
+                info.LagTime = 60.0D;
+                info.LeadTime = 60.0D;
+                info.PublishInterval = m_refreshInterval;
+
+                if (historical)
+                {
+                    info.StartTime = StartTime;
+                    info.StopTime = StopTime;
+                    info.ProcessingInterval = m_refreshInterval * 1000;
+                }
+
+                m_unsynchronizedSubscriber.Subscribe(info);
             }
 
             if (m_statistics == null)

@@ -244,11 +244,24 @@ namespace openPDC.UI.ViewModels
 
         private void SubscribeUnsynchronizedData()
         {
+            UnsynchronizedSubscriptionInfo info;
+
             if (m_unsynchronizedSubscriber == null)
                 InitializeUnsynchronizedSubscription();
 
             if (m_subscribedUnsynchronized && !string.IsNullOrEmpty(m_allSignalIDs))
-                m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true, m_statisticDataRefreshInterval);
+            {
+                info = new UnsynchronizedSubscriptionInfo(true);
+
+                info.UseCompactMeasurementFormat = true;
+                info.FilterExpression = m_allSignalIDs;
+                info.IncludeTime = true;
+                info.LagTime = 60.0D;
+                info.LeadTime = 60.0D;
+                info.PublishInterval = m_statisticDataRefreshInterval;
+
+                m_unsynchronizedSubscriber.UnsynchronizedSubscribe(info);
+            }
         }
 
         /// <summary>
