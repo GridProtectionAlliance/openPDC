@@ -1454,7 +1454,10 @@ namespace openPDC.UI.DataModels
 
                 // Setup current user context for any delete triggers
                 TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
-
+                // Does not delete the Parent Device
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("UPDATE Device SET ParentID = null WHERE ParentID = {0}","OldParentID", "NewParentID"), DefaultTimeout,  device.ID);
+                // Deletes the Parent Device 
+                //database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Device WHERE ParentID = {0}", "ParentID"), DefaultTimeout, device.ID);
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Device WHERE ID = {0}", "deviceID"), DefaultTimeout, device.ID);
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStreamDevice WHERE Acronym = {0}", "deviceAcronym"), DefaultTimeout, device.Acronym);
 
