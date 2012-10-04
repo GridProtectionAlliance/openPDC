@@ -846,10 +846,23 @@
             <see cref="T:System.Windows.DependencyProperty"/> to bind to <see cref="P:TimeSeriesFramework.UI.UserControls.DataPagerUserControl.LastCommand"/>.
             </summary>
         </member>
+        <member name="F:TimeSeriesFramework.UI.UserControls.DataPagerUserControl.ShowPageSizeProperty">
+            <summary>
+            <see cref="T:System.Windows.DependencyProperty"/> to bind to <see cref="P:TimeSeriesFramework.UI.UserControls.DataPagerUserControl.ShowPageSize"/>.
+            </summary>
+        </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.DataPagerUserControl.#ctor">
             <summary>
             Creates a new instance of <see cref="T:TimeSeriesFramework.UI.UserControls.DataPagerUserControl"/>.
             </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.DataPagerUserControl.OnPropertyChanged(System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Invoked whenever the effective value of any dependency property on this <see cref="T:System.Windows.FrameworkElement"/>
+            has been updated. The specific dependency property that changed is reported in the arguments parameter.
+            Overrides <see cref="M:System.Windows.DependencyObject.OnPropertyChanged(System.Windows.DependencyPropertyChangedEventArgs)"/>.
+            </summary>
+            <param name="e">The event data that describes the property that changed, as well as old and new values.</param>
         </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.DataPagerUserControl.InitializeComponent">
             <summary>
@@ -884,6 +897,12 @@
         <member name="P:TimeSeriesFramework.UI.UserControls.DataPagerUserControl.LastCommand">
             <summary>
             Gets or sets <see cref="T:System.Windows.Input.ICommand"/> for moving to the last page.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.DataPagerUserControl.ShowPageSize">
+            <summary>
+            Gets or sets the boolean flag which determines whether
+            the page size should be shown on the control.
             </summary>
         </member>
         <member name="T:TimeSeriesFramework.UI.UserControls.DetailViewFooterUserControl">
@@ -1066,6 +1085,16 @@
             label to reflect the total number of selected measurements.
             </summary>
         </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.ClearSelections">
+            <summary>
+            Causes all selections to be cleared from the data grid.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.ReloadDataGrid">
+            <summary>
+            Causes the data grid to be reloaded with a new set of data.
+            </summary>
+        </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.OnPropertyChanged(System.Windows.DependencyPropertyChangedEventArgs)">
             <summary>
             Invoked whenever the effective value of any dependency property on this <see cref="T:System.Windows.FrameworkElement"/>
@@ -1092,6 +1121,11 @@
         <member name="F:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.SearchableProperty">
             <summary>
             <see cref="T:System.Windows.DependencyProperty"/> for the <see cref="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.Searchable"/> property.
+            </summary>
+        </member>
+        <member name="F:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.ShowPageSizeProperty">
+            <summary>
+            <see cref="T:System.Windows.DependencyProperty"/> for the <see cref="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.ShowPageSize"/> property.
             </summary>
         </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.InitializeComponent">
@@ -1122,9 +1156,20 @@
             this control can be filtered by a search expression.
             </summary>
         </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.ShowPageSize">
+            <summary>
+            Gets or sets the boolean flag which determines whether
+            the page size should be shown on the control.
+            </summary>
+        </member>
         <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.DataGridColumns">
             <summary>
             Gets the collection of data grid columns to be displayed.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.CurrentItem">
+            <summary>
+            Gets the currently highlighted item on the data grid.
             </summary>
         </member>
         <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.SelectedMeasurements">
