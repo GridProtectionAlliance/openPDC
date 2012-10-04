@@ -1046,6 +1046,92 @@
             InitializeComponent
             </summary>
         </member>
+        <member name="T:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl">
+            <summary>
+            Interaction logic for MeasurementPagerUserControl.xaml
+            </summary>
+            <summary>
+            MeasurementPagerUserControl
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl"/>.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.UpdateSelections">
+            <summary>
+            Updates the collection of selected measurements based on which items are selected
+            or unselected on the current page. This method also updates the selected measurements
+            label to reflect the total number of selected measurements.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.OnPropertyChanged(System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Invoked whenever the effective value of any dependency property on this <see cref="T:System.Windows.FrameworkElement"/>
+            has been updated. The specific dependency property that changed is reported in the arguments parameter.
+            Overrides <see cref="M:System.Windows.DependencyObject.OnPropertyChanged(System.Windows.DependencyPropertyChangedEventArgs)"/>.
+            </summary>
+            <param name="e">The event data that describes the property that changed, as well as old and new values.</param>
+        </member>
+        <member name="F:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.ItemsPerPageProperty">
+            <summary>
+            <see cref="T:System.Windows.DependencyProperty"/> for the <see cref="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.ItemsPerPage"/> property.
+            </summary>
+        </member>
+        <member name="F:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.FilterExpressionProperty">
+            <summary>
+            <see cref="T:System.Windows.DependencyProperty"/> for the <see cref="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.FilterExpression"/> property.
+            </summary>
+        </member>
+        <member name="F:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.SelectableProperty">
+            <summary>
+            <see cref="T:System.Windows.DependencyProperty"/> for the <see cref="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.Selectable"/> property.
+            </summary>
+        </member>
+        <member name="F:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.SearchableProperty">
+            <summary>
+            <see cref="T:System.Windows.DependencyProperty"/> for the <see cref="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.Searchable"/> property.
+            </summary>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.ItemsPerPage">
+            <summary>
+            Gets or sets the number of measurements displayed on the data grid per page.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.FilterExpression">
+            <summary>
+            Gets or sets the filter expression used when reading measurements from the database.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.Selectable">
+            <summary>
+            Gets or sets the boolean flag which determines whether this control
+            provides checkboxes that allow the user to select measurements to
+            be placed in the <see cref="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.SelectedMeasurements"/> set.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.Searchable">
+            <summary>
+            Gets or sets the boolean flag which determines whether
+            this control can be filtered by a search expression.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.DataGridColumns">
+            <summary>
+            Gets the collection of data grid columns to be displayed.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.SelectedMeasurements">
+            <summary>
+            Gets the set of selected measurements.
+            </summary>
+        </member>
         <member name="T:TimeSeriesFramework.UI.UserControls.MeasurementUserControl">
             <summary>
             Interaction logic for MeasurementUserControl.xaml
@@ -1909,6 +1995,12 @@
             <param name="itemsPerPage">The number of measurements to display on each page of the data grid.</param>
             <param name="autosave">Determines whether the current item is saved automatically when a new item is selected.</param>
         </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.#ctor(System.Boolean)">
+            <summary>
+            Creates a new instance of the <see cref="T:TimeSeriesFramework.UI.ViewModels.Measurements"/> class.
+            </summary>
+            <param name="autosave">Determines whether the current item is saved automatically when a new item is selected.</param>
+        </member>
         <member name="M:TimeSeriesFramework.UI.ViewModels.Measurements.GetCurrentItemKey">
             <summary>
             Gets the primary key value of the <see cref="P:TimeSeriesFramework.UI.PagedViewModelBase`2.CurrentItem"/>.
@@ -1953,6 +2045,11 @@
             </summary>
             <param name="sortMember">The member by which to sort the data.</param>
             <param name="sortDirection">The direction in which to sort the data.</param>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.FilterExpression">
+            <summary>
+            Gets or sets the filter expression used when querying records from the database.
+            </summary>
         </member>
         <member name="P:TimeSeriesFramework.UI.ViewModels.Measurements.IsNewRecord">
             <summary>
