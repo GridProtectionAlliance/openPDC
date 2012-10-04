@@ -20,38 +20,19 @@
 
     <StackPanel Orientation="Vertical">
 
-        <tsf:TsfPopup x:Name="PopupAddMore" Placement="Center" Height="500" Topmost="False">
+        <tsf:TsfPopup x:Name="PopupAddMore" Placement="Center" Width="500" Height="500" Topmost="False">
 
             <Border CornerRadius="5" BorderThickness="2" Background="White" BorderBrush="Blue">
 
                 <StackPanel Orientation="Vertical" Margin="5">
-
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-
-                        <TextBox x:Name="TextBoxSearch"/>
-                        <Button Content="Search" Width="Auto" Click="ButtonSearch_Click" Margin="5,0,5,0"/>
-                        <Button Content="Show All" Width="Auto" Click="ButtonShowAll_Click"/>
-
-                    </StackPanel>
-
-                    <sdk:DataGrid x:Name="DataGridAddMeasurements" Height="420" Width="600" SelectionUnit="Cell">
-
-                        <sdk:DataGrid.Columns>
-
-                            <sdk:DataGridCheckBoxColumn Width="*" Binding="{tsfBinding:Column Path=Selected}" CellStyle="{StaticResource CenterAlignCellStyle}">
-                                <sdk:DataGridCheckBoxColumn.HeaderTemplate>
-                                    <DataTemplate>
-                                        <CheckBox Checked="CheckBoxAddMore_Checked" Unchecked="CheckBoxAddMore_Unchecked"/>
-                                    </DataTemplate>
-                                </sdk:DataGridCheckBoxColumn.HeaderTemplate>
-                            </sdk:DataGridCheckBoxColumn>
+                    
+                    <uc:MeasurementPagerUserControl Name="MeasurementPager" ItemsPerPage="18" FilterExpression="SignalAcronym != 'STAT'" Selectable="True" Searchable="True">
+                        <uc:MeasurementPagerUserControl.DataGridColumns>
                             <sdk:DataGridTextColumn Header="ID" Width="2*" Binding="{Binding Path=ID}" IsReadOnly="True" ToolTipService.ToolTip="{Binding Path=SignalReference}"/>
                             <sdk:DataGridTextColumn Header="Description" Width="9*" Binding="{Binding Path=Description}" IsReadOnly="True"
                                                     ToolTipService.ToolTip="{Binding Path=Description}"/>
-
-                        </sdk:DataGrid.Columns>
-
-                    </sdk:DataGrid>
+                        </uc:MeasurementPagerUserControl.DataGridColumns>
+                    </uc:MeasurementPagerUserControl>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 

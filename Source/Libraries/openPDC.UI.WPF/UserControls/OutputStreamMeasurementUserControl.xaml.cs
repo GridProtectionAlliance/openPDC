@@ -36,6 +36,7 @@ using openPDC.UI.ViewModels;
 using TimeSeriesFramework.UI.DataModels;
 using System.ComponentModel;
 using System;
+using System.Collections.Generic;
 
 namespace openPDC.UI.UserControls
 {
@@ -87,46 +88,26 @@ namespace openPDC.UI.UserControls
             }
         }
 
-        #region [ Popup Code]
-
-        private void LoadNewMeasurements(string filterText)
-        {
-            if (string.IsNullOrEmpty(filterText))
-            {
-                m_newMeasurements = Measurement.GetNewOutputStreamMeasurements(null, m_outputStreamID);
-            }
-            else
-            {
-                filterText = filterText.ToLower();
-                m_newMeasurements = new ObservableCollection<Measurement>(
-                        Measurement.GetNewOutputStreamMeasurements(null, m_outputStreamID).Where(m => m.Description.Contains(filterText) ||
-                                                                                                    m.SignalAcronym.Contains(filterText) ||
-                                                                                                    m.PointTag.Contains(filterText) ||
-                                                                                                    m.SignalReference.Contains(filterText))
-                    );
-            }
-
-            DataGridAddMeasurements.ItemsSource = m_newMeasurements;
-        }
-
-        private void CheckBoxAddMore_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            foreach (Measurement measurement in m_newMeasurements)
-                measurement.Enabled = true;
-        }
-
-        private void CheckBoxAddMore_Unchecked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            foreach (Measurement measurement in m_newMeasurements)
-                measurement.Enabled = false;
-        }
+        #region [ Popup Code ]
 
         private void ButtonAddMore_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            //OutputStreamDevice.AddDevices(null, m_outputStreamID, new ObservableCollection<Device>(m_newDevices.Where(d => d.Enabled == true)),
-            //    (bool)CheckBoxAddDigitals.IsChecked, (bool)CheckBoxAddAnalogs.IsChecked);
+            IList<int> outputMeasurementKeys;
+            IEnumerable<int> pointIDs;
+            
+            IEnumerable<Measurement> selectedMeasurements;
+            ObservableCollection<Measurement> addedMeasurements;
 
-            OutputStreamMeasurement.AddMeasurements(null, m_outputStreamID, new ObservableCollection<Measurement>(m_newMeasurements.Where(m => m.Selected == true)));
+            // Get the list of point IDs that are defined for this output stream
+            outputMeasurementKeys = OutputStreamMeasurement.LoadKeys(null, m_outputStreamID);
+            pointIDs = OutputStreamMeasurement.Load(null, outputMeasurementKeys).Select(outputMeasurement => outputMeasurement.PointID);
+
+            // Determine which of the selected measurements have been added to the output stream measurements
+            selectedMeasurements = Measurement.LoadFromKeys(null, MeasurementPager.SelectedMeasurements.ToList());
+            addedMeasurements = new ObservableCollection<Measurement>(selectedMeasurements.Where(measurement => !pointIDs.Any(id => measurement.PointID == id)));
+
+            // Add measurements to output stream measurements
+            OutputStreamMeasurement.AddMeasurements(null, m_outputStreamID, addedMeasurements);
             m_dataContext = new OutputStreamMeasurements(m_outputStreamID, 24);
             this.DataContext = m_dataContext;
             PopupAddMore.IsOpen = false;
@@ -139,21 +120,32 @@ namespace openPDC.UI.UserControls
             PopupAddMore.IsOpen = false;
         }
 
-        private void ButtonSearch_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            LoadNewMeasurements(TextBoxSearch.Text.Replace("'", "").Replace("%", ""));
-        }
-
-        private void ButtonShowAll_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            LoadNewMeasurements(string.Empty);
-        }
-
         #endregion
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            LoadNewMeasurements(string.Empty);
+            IList<int> outputMeasurementKeys;
+            IEnumerable<int> pointIDs;
+
+            string pointIDList;
+            IList<Guid> signalIDs;
+
+            // Get the list of point IDs that are defined for this output stream
+            outputMeasurementKeys = OutputStreamMeasurement.LoadKeys(null, m_outputStreamID);
+            pointIDs = OutputStreamMeasurement.Load(null, outputMeasurementKeys).Select(outputMeasurement => outputMeasurement.PointID);
+
+            // Get the signal IDs of the measurements to be automatically selected
+            pointIDList = pointIDs.Select(id => id.ToString()).Aggregate((str1, str2) => str1 + "," + str2);
+            signalIDs = Measurement.LoadSignalIDs(null, string.Format("PointID IN ({0})", pointIDList));
+
+            // Clear out the set of selected measurements
+            MeasurementPager.SelectedMeasurements.Clear();
+
+            // Add the measurements which are defined for this output stream
+            foreach (Guid signalID in signalIDs)
+                MeasurementPager.SelectedMeasurements.Add(signalID);
+
+            MeasurementPager.UpdateSelections();
             PopupAddMore.IsOpen = true;
         }
 
