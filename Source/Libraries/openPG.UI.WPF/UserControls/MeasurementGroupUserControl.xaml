@@ -93,18 +93,15 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Column="0" Grid.Row="0" Text="Member Measurements" HorizontalAlignment="Left" FontWeight="Bold"/>
+            <uc:MeasurementPagerUserControl Grid.Column="0" Grid.Row="1" Name="MemberMeasurementsPager" ItemsPerPage="22" Selectable="True" Searchable="True" ShowPageSize="False" Width="400" Height="550" VerticalAlignment="Top" Margin="0" />
 
-            <myuc:SelectMeasurementUserControl x:Name="UserControlSelectMeasurements" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" ItemsPerPage="15" Width="455" Height="550" VerticalAlignment="Top" Margin="0,0,0,0"/>
-                                        
-            <ListBox x:Name="ListBoxCurrentMeasurements" Grid.Column="0" Grid.Row="1" ItemsSource="{tsfBinding:Column Path=CurrentMeasurements}" DisplayMemberPath="Value" />
-            
             <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Content="&gt;&gt;" Command="{Binding Path=DataContext.RemoveMeasurementCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}" CommandParameter="{Binding ElementName=ListBoxCurrentMeasurements, Path=SelectedItems}" ToolTip="Remove Measurements" Width="Auto" Margin="2"/>
-                <Button Content="&lt;&lt;" Command="{Binding Path=DataContext.AddMeasurementCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}}" CommandParameter="{tsfBinding:Column Path=PossibleMeasurements}" ToolTip="Add Measurements" Width="Auto" Margin="2"/> 
+                <Button Content="&gt;&gt;" ToolTip="Remove Measurements" Width="Auto" Margin="2" Click="RemoveMeasurementsButton_Click"/>
+                <Button Content="&lt;&lt;" ToolTip="Add Measurements" Width="Auto" Margin="2" Click="AddMeasurementsButton_Click"/>
             </StackPanel>
-                    
+
+            <TextBlock Grid.Column="2" Grid.Row="0" Text="Available Measurements" HorizontalAlignment="Left" FontWeight="Bold"/>
+            <uc:MeasurementPagerUserControl Grid.Column="2" Grid.Row="1" Name="AvailableMeasurementsPager" ItemsPerPage="22" Selectable="True" Searchable="True" ShowPageSize="False" Width="400" Height="550" VerticalAlignment="Top" Margin="0" />
         </Grid>
-                
     </StackPanel>    
-            
 </UserControl>

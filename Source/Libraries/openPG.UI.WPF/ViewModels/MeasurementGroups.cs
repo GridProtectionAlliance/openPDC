@@ -24,12 +24,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using openPG.UI.DataModels;
 using TimeSeriesFramework.UI;
 using TimeSeriesFramework.UI.Commands;
 using TimeSeriesFramework.UI.DataModels;
+using TVA.Data;
 
 namespace openPG.UI.ViewModels
 {
@@ -41,25 +43,21 @@ namespace openPG.UI.ViewModels
         #region [ Members ]
 
         // Fields
+        private string m_memberFilterExpression;
 
-        private RelayCommand m_addMeasurementCommand;
-        private RelayCommand m_removeMeasurementCommand;
+        #endregion
 
-        // Delegates
-
-        /// <summary>
-        /// Method signature for a function which handles MeasurementsAdded event.
-        /// </summary>
-        /// <param name="sender">Source of an event.</param>
-        /// <param name="e">Event arguments.</param>
-        public delegate void OnMeasurementsAdded(object sender, RoutedEventArgs e);
-
-        // Event
+        #region [ Constructor ]
 
         /// <summary>
-        /// Event to notify subscribers that measurements have been added to the group.
+        /// Creates an instance of <see cref="MeasurementGroups"/> class.
         /// </summary>
-        public event OnMeasurementsAdded MeasurementsAdded;
+        /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
+        /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
+        public MeasurementGroups(int itemsPerPage, bool autoSave = true)
+            : base(itemsPerPage, autoSave)
+        {
+        }
 
         #endregion
 
@@ -74,48 +72,6 @@ namespace openPG.UI.ViewModels
             {
                 return CurrentItem.ID == 0;
             }
-        }
-
-        /// <summary>
-        /// Gets <see cref="ICommand"/> for add measurements operation.
-        /// </summary>
-        public ICommand AddMeasurementCommand
-        {
-            get
-            {
-                if (m_addMeasurementCommand == null)
-                    m_addMeasurementCommand = new RelayCommand(AddMeasurement, (param) => CanSave);
-
-                return m_addMeasurementCommand;
-            }
-        }
-
-        /// <summary>
-        /// Gets <see cref="ICommand"/> to remove measurements operation.
-        /// </summary>
-        public ICommand RemoveMeasurementCommand
-        {
-            get
-            {
-                if (m_removeMeasurementCommand == null)
-                    m_removeMeasurementCommand = new RelayCommand(RemoveMeasurement, (param) => CanSave);
-
-                return m_removeMeasurementCommand;
-            }
-        }
-
-        #endregion
-
-        #region [ Constructor ]
-
-        /// <summary>
-        /// Creates an instance of <see cref="MeasurementGroups"/> class.
-        /// </summary>
-        /// <param name="itemsPerPage">Integer value to determine number of items per page.</param>
-        /// <param name="autoSave">Boolean value to determine is user changes should be saved automatically.</param>
-        public MeasurementGroups(int itemsPerPage, bool autoSave = true)
-            : base(itemsPerPage, autoSave)
-        {
         }
 
         #endregion
@@ -150,63 +106,39 @@ namespace openPG.UI.ViewModels
         }
 
         /// <summary>
-        /// Handles <see cref="AddMeasurementCommand"/>.
+        /// Adds the measurements identified by the given collection to the measurement group.
         /// </summary>
-        /// <param name="parameter">Collection of measurements to be added.</param>
-        private void AddMeasurement(object parameter)
+        /// <param name="measurementIDs">Collection of signal identifiers for the measurements to be added.</param>
+        public void AddMeasurement(ICollection<Guid> measurementIDs)
         {
-            ObservableCollection<Measurement> measurementsToBeAdded = (ObservableCollection<Measurement>)parameter;
+            List<Guid> filteredIDs = measurementIDs.Where(id => !CurrentItem.CurrentMeasurements.ContainsKey(id)).ToList();
 
-            if (measurementsToBeAdded != null && measurementsToBeAdded.Count > 0)
+            if (measurementIDs.Count > 0)
             {
-                List<Guid> measurementIDs = new List<Guid>();
-
-                foreach (Measurement measurement in measurementsToBeAdded)
-                {
-                    if (!CurrentItem.CurrentMeasurements.ContainsKey(measurement.SignalID) && measurement.Selected)
-                        measurementIDs.Add(measurement.SignalID);
-                }
-
-                if (measurementIDs.Count > 0)
-                {
-                    string result = openPG.UI.DataModels.MeasurementGroup.AddMeasurements(null, CurrentItem.ID, measurementIDs);
-                    Popup(result, "Add Group Measurements", MessageBoxImage.Information);
-                }
-                else
-                {
-                    Popup("Selected measurements already exists in group or no measurements were selected.", "Add Group Measurements", MessageBoxImage.Information);
-                }
-
-                if (MeasurementsAdded != null)
-                    MeasurementsAdded(this, null);
-
-                CurrentItem.CurrentMeasurements = openPG.UI.DataModels.MeasurementGroup.GetCurrentMeasurements(null, CurrentItem.ID);
-                CurrentItem.PossibleMeasurements = openPG.UI.DataModels.MeasurementGroup.GetPossibleMeasurements(null, CurrentItem.ID);
+                string result = openPG.UI.DataModels.MeasurementGroup.AddMeasurements(null, CurrentItem.ID, filteredIDs);
+                Popup(result, "Add Group Measurements", MessageBoxImage.Information);
             }
+            else
+            {
+                Popup("Selected measurements already exist in group or no measurements were selected.", "Add Group Measurements", MessageBoxImage.Information);
+            }
+
+            CurrentItem.CurrentMeasurements = openPG.UI.DataModels.MeasurementGroup.GetCurrentMeasurements(null, CurrentItem.ID);
+            CurrentItem.PossibleMeasurements = openPG.UI.DataModels.MeasurementGroup.GetPossibleMeasurements(null, CurrentItem.ID);
         }
 
         /// <summary>
-        /// Handles <see cref="RemoveMeasurementCommand"/>.
+        /// Removes the measurements identified by the given collection from the measurement group.
         /// </summary>
-        /// <param name="parameter">Collection of measurements to be removed.</param>
-        private void RemoveMeasurement(object parameter)
+        /// <param name="measurementIDs">Collection of signal identifiers for the measurements to be removed.</param>
+        public void RemoveMeasurement(ICollection<Guid> measurementIDs)
         {
-            ObservableCollection<object> measurementsToBeRemoved = (ObservableCollection<object>)parameter;
+            string result = openPG.UI.DataModels.MeasurementGroup.RemoveMeasurements(null, CurrentItem.ID, measurementIDs.ToList());
 
-            if (measurementsToBeRemoved != null && measurementsToBeRemoved.Count > 0)
-            {
-                List<Guid> measurementIDs = new List<Guid>();
+            Popup(result, "Remove Group Measurements", MessageBoxImage.Information);
 
-                foreach (object item in measurementsToBeRemoved)
-                    measurementIDs.Add(((KeyValuePair<Guid, string>)item).Key);
-
-                string result = openPG.UI.DataModels.MeasurementGroup.RemoveMeasurements(null, CurrentItem.ID, measurementIDs);
-
-                Popup(result, "Remove Group Measurements", MessageBoxImage.Information);
-
-                CurrentItem.CurrentMeasurements = openPG.UI.DataModels.MeasurementGroup.GetCurrentMeasurements(null, CurrentItem.ID);
-                CurrentItem.PossibleMeasurements = openPG.UI.DataModels.MeasurementGroup.GetPossibleMeasurements(null, CurrentItem.ID);
-            }
+            CurrentItem.CurrentMeasurements = openPG.UI.DataModels.MeasurementGroup.GetCurrentMeasurements(null, CurrentItem.ID);
+            CurrentItem.PossibleMeasurements = openPG.UI.DataModels.MeasurementGroup.GetPossibleMeasurements(null, CurrentItem.ID);
         }
 
         #endregion
