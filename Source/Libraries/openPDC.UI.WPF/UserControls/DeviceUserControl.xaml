@@ -117,7 +117,7 @@
                 <TextBlock Text="ID Code (Access ID)" Style="{StaticResource RequiredLabel}" />
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{tsfBinding:Column Path=AccessID}" Width="35" />
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{tsfBinding:Column Path=AccessID}" Width="{StaticResource XSmallItemSize}"/>
 
             <TextBlock Text="Frames Per Second" Grid.Row="3" Grid.Column="2" />
             <TextBox Grid.Row="3" Grid.Column="3" Text="{tsfBinding:Column Path=FramesPerSecond}" Width="35" />

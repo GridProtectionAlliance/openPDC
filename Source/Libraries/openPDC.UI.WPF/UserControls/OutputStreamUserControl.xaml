@@ -70,7 +70,7 @@
                 <TextBlock Text="ID Code" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}" />
             </StackPanel>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=IDCode}" Width="35"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=IDCode}" Width="{StaticResource XSmallItemSize}"/>
             <TextBlock Grid.Row="1" Grid.Column="2" Text="Type" />
             <ComboBox Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Source={StaticResource TypeLookupList}}" DisplayMemberPath="Value" 
                       SelectedItem="{tsfBinding:Column Path=Type, Converter={StaticResource DictionaryToKeyValuePairConverter}, ConverterParameter={StaticResource TypeLookupList}}"/>
