@@ -59,16 +59,10 @@ namespace openPG.UI.UserControls
         {
             MeasurementGroup currentItem = m_dataContext.CurrentItem;
             string propertyName = e.PropertyName;
-            string nodeIDQueryString;
 
             if (propertyName == "CurrentItem")
             {
-                using (AdoDataConnection database = new AdoDataConnection("systemSettings"))
-                {
-                    nodeIDQueryString = database.IsJetEngine ? string.Format("{{{0}}}", currentItem.NodeID) : string.Format("'{0}'", currentItem.NodeID);
-                }
-
-                MemberMeasurementsPager.FilterExpression = string.Format("SignalID IN (SELECT SignalID FROM MeasurementGroupMeasurement WHERE NodeID = {0} AND MeasurementGroupID = {1})", nodeIDQueryString, currentItem.ID);
+                MemberMeasurementsPager.FilterExpression = string.Format("SignalID IN (SELECT SignalID FROM MeasurementGroupMeasurement WHERE NodeID = '{0}' AND MeasurementGroupID = {1})", currentItem.NodeID.ToString().ToUpper(), currentItem.ID);
                 MemberMeasurementsPager.ReloadDataGrid();
             }
         }

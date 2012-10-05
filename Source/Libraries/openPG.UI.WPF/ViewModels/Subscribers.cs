@@ -120,62 +120,6 @@ namespace openPG.UI.ViewModels
         }
 
         /// <summary>
-        /// Gets <see cref="ICommand"/> to add allowed measurements.
-        /// </summary>
-        public ICommand AddAllowedMeasurementCommand
-        {
-            get
-            {
-                if (m_addAllowedMeasurementCommand == null)
-                    m_addAllowedMeasurementCommand = new RelayCommand(AddAllowedMeasurement, (param) => CanSave);
-
-                return m_addAllowedMeasurementCommand;
-            }
-        }
-
-        /// <summary>
-        /// Gets <see cref="ICommand"/> to remove allowed measurements.
-        /// </summary>
-        public ICommand RemoveAllowedMeasurementCommand
-        {
-            get
-            {
-                if (m_removeAllowedMeasurementCommand == null)
-                    m_removeAllowedMeasurementCommand = new RelayCommand(RemoveAllowedMeasurement, (param) => CanSave);
-
-                return m_removeAllowedMeasurementCommand;
-            }
-        }
-
-        /// <summary>
-        /// Gets <see cref="ICommand"/> to add denied measurements.
-        /// </summary>
-        public ICommand AddDeniedMeasurementCommand
-        {
-            get
-            {
-                if (m_addDeniedMeasurementCommand == null)
-                    m_addDeniedMeasurementCommand = new RelayCommand(AddDeniedMeasurement, (param) => CanSave);
-
-                return m_addDeniedMeasurementCommand;
-            }
-        }
-
-        /// <summary>
-        /// Gets <see cref="ICommand"/> to remove denied measurements.
-        /// </summary>
-        public ICommand RemoveDeniedMeasurementCommand
-        {
-            get
-            {
-                if (m_removeDeniedMeasurementCommand == null)
-                    m_removeDeniedMeasurementCommand = new RelayCommand(RemoveDeniedMeasurement, (param) => CanSave);
-
-                return m_removeDeniedMeasurementCommand;
-            }
-        }
-
-        /// <summary>
         /// Gets <see cref="ICommand"/> to add allowed measurement groups.
         /// </summary>
         public ICommand AddAllowedMeasurementGroupCommand
@@ -340,46 +284,37 @@ namespace openPG.UI.ViewModels
         /// Handles <see cref="AddAllowedMeasurementCommand"/>.
         /// </summary>
         /// <param name="parameter">Collection of measurements to be allowed.</param>
-        private void AddAllowedMeasurement(object parameter)
+        public void AddAllowedMeasurements(ICollection<Guid> measurementIDs)
         {
-            ObservableCollection<Measurement> measurementsToBeAdded = (ObservableCollection<Measurement>)parameter;
+            List<Guid> filteredIDs = measurementIDs
+                .Where(id => !CurrentItem.AllowedMeasurements.ContainsKey(id))
+                .Where(id => !CurrentItem.DeniedMeasurements.ContainsKey(id))
+                .ToList();
 
-            if (measurementsToBeAdded != null && measurementsToBeAdded.Count > 0)
+            if (measurementIDs.Count > 0)
             {
-                List<Guid> measurementIDs = new List<Guid>();
+                string result = openPG.UI.DataModels.Subscriber.AddMeasurements(null, CurrentItem.ID, filteredIDs, true);
+                //Popup(result, "Allow Measurements", MessageBoxImage.Information);
+                DisplayStatusMessage(result);
+            }
+            else
+            {
+                Popup("Selected measurements already exists or no measurements were selected.", "Allow Measurements", MessageBoxImage.Information);
+            }
 
-                foreach (Measurement measurement in measurementsToBeAdded)
-                {
-                    if (!CurrentItem.AllowedMeasurements.ContainsKey(measurement.SignalID) &&
-                        !CurrentItem.DeniedMeasurements.ContainsKey(measurement.SignalID) && measurement.Selected)
-                        measurementIDs.Add(measurement.SignalID);
-                }
+            if (MeasurementsAdded != null)
+                MeasurementsAdded(this, null);
 
-                if (measurementIDs.Count > 0)
-                {
-                    string result = openPG.UI.DataModels.Subscriber.AddMeasurements(null, CurrentItem.ID, measurementIDs, true);
-                    //Popup(result, "Allow Measurements", MessageBoxImage.Information);
-                    DisplayStatusMessage(result);
-                }
-                else
-                {
-                    Popup("Selected measurements already exists or no measurements were selected.", "Allow Measurements", MessageBoxImage.Information);
-                }
+            CurrentItem.AllowedMeasurements = openPG.UI.DataModels.Subscriber.GetAllowedMeasurements(null, CurrentItem.ID);
+            CurrentItem.AvailableMeasurements = openPG.UI.DataModels.Subscriber.GetAvailableMeasurements(null, CurrentItem.ID);
 
-                if (MeasurementsAdded != null)
-                    MeasurementsAdded(this, null);
-
-                CurrentItem.AllowedMeasurements = openPG.UI.DataModels.Subscriber.GetAllowedMeasurements(null, CurrentItem.ID);
-                CurrentItem.AvailableMeasurements = openPG.UI.DataModels.Subscriber.GetAvailableMeasurements(null, CurrentItem.ID);
-
-                try
-                {
-                    CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
-                }
-                catch (Exception ex)
-                {
-                    CommonFunctions.LogException(null, "", ex);
-                }
+            try
+            {
+                CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "", ex);
             }
         }
 
@@ -387,32 +322,22 @@ namespace openPG.UI.ViewModels
         /// Handles <see cref="RemoveAllowedMeasurementCommand"/>.
         /// </summary>
         /// <param name="parameter">Collection of measurements to be disallowed.</param>
-        private void RemoveAllowedMeasurement(object parameter)
+        public void RemoveAllowedMeasurements(ICollection<Guid> measurementIDs)
         {
-            ObservableCollection<object> items = (ObservableCollection<object>)parameter;
+            string result = openPG.UI.DataModels.Subscriber.RemoveMeasurements(null, CurrentItem.ID, measurementIDs.ToList());
 
-            if (items != null && items.Count > 0)
+            //Popup(result, "Remove Measurements", MessageBoxImage.Information);
+            DisplayStatusMessage(result);
+
+            CurrentItem.AllowedMeasurements = openPG.UI.DataModels.Subscriber.GetAllowedMeasurements(null, CurrentItem.ID);
+
+            try
             {
-                List<Guid> measurementIDs = new List<Guid>();
-
-                foreach (object item in items)
-                    measurementIDs.Add(((KeyValuePair<Guid, string>)item).Key);
-
-                string result = openPG.UI.DataModels.Subscriber.RemoveMeasurements(null, CurrentItem.ID, measurementIDs);
-
-                //Popup(result, "Remove Measurements", MessageBoxImage.Information);
-                DisplayStatusMessage(result);
-
-                CurrentItem.AllowedMeasurements = openPG.UI.DataModels.Subscriber.GetAllowedMeasurements(null, CurrentItem.ID);
-
-                try
-                {
-                    CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
-                }
-                catch (Exception ex)
-                {
-                    CommonFunctions.LogException(null, "", ex);
-                }
+                CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "", ex);
             }
         }
 
@@ -420,46 +345,37 @@ namespace openPG.UI.ViewModels
         /// Handles <see cref="AddDeniedMeasurementCommand"/>.
         /// </summary>
         /// <param name="parameter">Collection of measurements to be denied.</param>
-        private void AddDeniedMeasurement(object parameter)
+        public void AddDeniedMeasurements(ICollection<Guid> measurementIDs)
         {
-            ObservableCollection<Measurement> measurementsToBeAdded = (ObservableCollection<Measurement>)parameter;
+            List<Guid> filteredIDs = measurementIDs
+                .Where(id => !CurrentItem.AllowedMeasurements.ContainsKey(id))
+                .Where(id => !CurrentItem.DeniedMeasurements.ContainsKey(id))
+                .ToList();
 
-            if (measurementsToBeAdded != null && measurementsToBeAdded.Count > 0)
+            if (measurementIDs.Count > 0)
             {
-                List<Guid> measurementIDs = new List<Guid>();
+                string result = openPG.UI.DataModels.Subscriber.AddMeasurements(null, CurrentItem.ID, filteredIDs, false);
+                //Popup(result, "Allow Measurements", MessageBoxImage.Information);
+                DisplayStatusMessage(result);
+            }
+            else
+            {
+                Popup("Selected measurements already exists or no measurements were selected.", "Allow Measurements", MessageBoxImage.Information);
+            }
 
-                foreach (Measurement measurement in measurementsToBeAdded)
-                {
-                    if (!CurrentItem.AllowedMeasurements.ContainsKey(measurement.SignalID) &&
-                        !CurrentItem.DeniedMeasurements.ContainsKey(measurement.SignalID) && measurement.Selected)
-                        measurementIDs.Add(measurement.SignalID);
-                }
+            if (MeasurementsAdded != null)
+                MeasurementsAdded(this, null);
 
-                if (measurementIDs.Count > 0)
-                {
-                    string result = openPG.UI.DataModels.Subscriber.AddMeasurements(null, CurrentItem.ID, measurementIDs, false);
-                    //Popup(result, "Allow Measurements", MessageBoxImage.Information);
-                    DisplayStatusMessage(result);
-                }
-                else
-                {
-                    Popup("Selected measurements already exists or no measurements were selected.", "Allow Measurements", MessageBoxImage.Information);
-                }
+            CurrentItem.DeniedMeasurements = openPG.UI.DataModels.Subscriber.GetDeniedMeasurements(null, CurrentItem.ID);
+            CurrentItem.AvailableMeasurements = openPG.UI.DataModels.Subscriber.GetAvailableMeasurements(null, CurrentItem.ID);
 
-                if (MeasurementsAdded != null)
-                    MeasurementsAdded(this, null);
-
-                CurrentItem.DeniedMeasurements = openPG.UI.DataModels.Subscriber.GetDeniedMeasurements(null, CurrentItem.ID);
-                CurrentItem.AvailableMeasurements = openPG.UI.DataModels.Subscriber.GetAvailableMeasurements(null, CurrentItem.ID);
-
-                try
-                {
-                    CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
-                }
-                catch (Exception ex)
-                {
-                    CommonFunctions.LogException(null, "", ex);
-                }
+            try
+            {
+                CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "", ex);
             }
         }
 
@@ -467,32 +383,22 @@ namespace openPG.UI.ViewModels
         /// Handles <see cref="RemoveDeniedMeasurementCommand"/>
         /// </summary>
         /// <param name="parameter">Collection of measurements to be removed.</param>
-        private void RemoveDeniedMeasurement(object parameter)
+        public void RemoveDeniedMeasurements(ICollection<Guid> measurementIDs)
         {
-            ObservableCollection<object> items = (ObservableCollection<object>)parameter;
+            string result = openPG.UI.DataModels.Subscriber.RemoveMeasurements(null, CurrentItem.ID, measurementIDs.ToList());
 
-            if (items != null && items.Count > 0)
+            //Popup(result, "Remove Measurements", MessageBoxImage.Information);
+            DisplayStatusMessage(result);
+
+            CurrentItem.DeniedMeasurements = openPG.UI.DataModels.Subscriber.GetDeniedMeasurements(null, CurrentItem.ID);
+
+            try
             {
-                List<Guid> measurementIDs = new List<Guid>();
-
-                foreach (object item in items)
-                    measurementIDs.Add(((KeyValuePair<Guid, string>)item).Key);
-
-                string result = openPG.UI.DataModels.Subscriber.RemoveMeasurements(null, CurrentItem.ID, measurementIDs);
-
-                //Popup(result, "Remove Measurements", MessageBoxImage.Information);
-                DisplayStatusMessage(result);
-
-                CurrentItem.DeniedMeasurements = openPG.UI.DataModels.Subscriber.GetDeniedMeasurements(null, CurrentItem.ID);
-
-                try
-                {
-                    CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
-                }
-                catch (Exception ex)
-                {
-                    CommonFunctions.LogException(null, "", ex);
-                }
+                CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+            }
+            catch (Exception ex)
+            {
+                CommonFunctions.LogException(null, "", ex);
             }
         }
 
