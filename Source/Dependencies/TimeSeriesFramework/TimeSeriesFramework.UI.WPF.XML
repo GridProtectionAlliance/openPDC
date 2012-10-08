@@ -1133,6 +1133,21 @@
             InitializeComponent
             </summary>
         </member>
+        <member name="E:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.CurrentPageChanged">
+            <summary>
+            Event triggered whenever the current page changes.
+            </summary>
+        </member>
+        <member name="E:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.CurrentItemChanged">
+            <summary>
+            Event triggered whenever the currently highlighted item changes.
+            </summary>
+        </member>
+        <member name="E:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.SelectedMeasurementsChanged">
+            <summary>
+            Event triggered whenever the set of selected measurements changes.
+            </summary>
+        </member>
         <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.ItemsPerPage">
             <summary>
             Gets or sets the number of measurements displayed on the data grid per page.
@@ -1165,6 +1180,11 @@
         <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.DataGridColumns">
             <summary>
             Gets the collection of data grid columns to be displayed.
+            </summary>
+        </member>
+        <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.CurrentPage">
+            <summary>
+            Gets the current page of measurements in the measurement pager.
             </summary>
         </member>
         <member name="P:TimeSeriesFramework.UI.UserControls.MeasurementPagerUserControl.CurrentItem">
