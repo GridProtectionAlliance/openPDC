@@ -200,6 +200,12 @@ namespace ConfigurationSetupUtility.Screens
                         // Always make sure time series startup operations are defined in the database.
                         ValidateTimeSeriesStartupOperations();
 
+                        // Always make sure skipOptimization is true after an upgrade
+                        if (migrate)
+                        {
+                            ValidatePhasorDataSourceValidation();
+                        }
+
                         // Always make sure new configuration entity records are defined in the database.
                         ValidateConfigurationEntity();
 
@@ -355,6 +361,23 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (timeSeriesStartupOperationsCount == 0)
                     connection.ExecuteNonQuery(insertQuery);
+            }
+            finally
+            {
+                if (connection != null)
+                    connection.Dispose();
+            }
+        }
+
+        private void ValidatePhasorDataSourceValidation()
+        {
+            const string updateQuery = "UPDATE DataOperation SET Arguments = 'skipOptimization = True' WHERE AssemblyName = 'TVA.PhasorProtocols.dll' AND TypeName = 'TVA.PhasorProtocols.CommonPhasorServices' AND MethodName = 'PhasorDataSourceValidation'";
+            IDbConnection connection = null;
+
+            try
+            {
+                connection = OpenNewConnection();
+                connection.ExecuteNonQuery(updateQuery);
             }
             finally
             {

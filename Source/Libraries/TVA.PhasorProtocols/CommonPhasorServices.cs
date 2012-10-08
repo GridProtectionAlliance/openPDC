@@ -1126,6 +1126,17 @@ namespace TVA.PhasorProtocols
                     statConnectionString = statSettings.JoinKeyValuePairs();
                     connection.ExecuteNonQuery(updateQuery, statConnectionString);
                 }
+
+                if (skipOptimization)
+                {
+                    // If skipOptimization is set to true, automatically set it back to false
+                    string unskipOptimizationQuery = "UPDATE DataOperation SET Arguments = '' " +
+                        "WHERE AssemblyName = 'TVA.PhasorProtocols.dll' " +
+                        "AND TypeName = 'TVA.PhasorProtocols.CommonPhasorServices' " +
+                        "AND MethodName = 'PhasorDataSourceValidation'";
+
+                    connection.ExecuteNonQuery(unskipOptimizationQuery);
+                }
             }
         }
 
