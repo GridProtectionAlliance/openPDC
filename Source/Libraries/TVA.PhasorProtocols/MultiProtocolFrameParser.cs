@@ -2939,9 +2939,24 @@ namespace TVA.PhasorProtocols
                     }
                     else if (m_transportProtocol == TransportProtocol.Udp)
                     {
+                        string server;
+                        Match endPoint;
+                        IPAddress serverAddress;
+
                         // IEEE protocols "can" use UDP connection to support devices commands, but only
                         // when remote device acts as a UDP listener (i.e., a "server" connection)
-                        return settings.ContainsKey("server");
+                        // and remote device is not a multicast end point
+                        if (settings.TryGetValue("server", out server))
+                        {
+                            if (!settings.ContainsKey("remotePort"))
+                            {
+                                endPoint = Regex.Match(server, Transport.EndpointFormatRegex);
+                                server = endPoint.Groups["host"].Value;
+                            }
+
+                            if (IPAddress.TryParse(server, out serverAddress))
+                                return !Transport.IsMulticastIP(serverAddress);
+                        }
                     }
                 }
             }
