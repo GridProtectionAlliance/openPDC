@@ -2641,6 +2641,12 @@
             <param name="historianID">Historian identifier.</param>
             <returns>A <see cref="T:System.Byte"/> array containing <see cref="T:TVA.Historian.Files.StateRecordSummary"/> of <see cref="T:TVA.Historian.Files.StateRecordSummary"/> if found; otherwise null.</returns>
         </member>
+        <member name="M:TVA.Historian.Files.ArchiveFile.WaitForReadersRelease">
+            <summary>
+            Waits for all readers to relinquish read locks on active file.
+            </summary>
+            <returns>True if readers released read locks in timely fashion.</returns>
+        </member>
         <member name="M:TVA.Historian.Files.ArchiveFile.OnFileFull">
             <summary>
             Raises the <see cref="E:TVA.Historian.Files.ArchiveFile.FileFull"/> event.
@@ -2931,6 +2937,7 @@
         <member name="P:TVA.Historian.Files.ArchiveFile.ArchiveOffloadLocation">
             <summary>
             Gets or sets the path to the directory where historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>s are to be offloaded to make space in the primary archive location.
+            Set to *DELETE* to remove historic files instead of moving them to an offload location.
             </summary>
         </member>
         <member name="P:TVA.Historian.Files.ArchiveFile.ArchiveOffloadThreshold">
@@ -3055,6 +3062,11 @@
         <member name="P:TVA.Historian.Files.ArchiveFile.OutOfSequenceWriteStatistics">
             <summary>
             Gets the <see cref="T:TVA.Collections.ProcessQueueStatistics"/> for the internal out-of-sequence data write <see cref="T:TVA.Collections.ProcessQueue`1"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Files.ArchiveFile.RolloverWaitHandle">
+            <summary>
+            Gets wait handle used to synchronize roll-over access.
             </summary>
         </member>
         <member name="P:TVA.Historian.Files.ArchiveFile.StandbyArchiveFileName">
@@ -3364,6 +3376,250 @@
         <member name="M:TVA.Historian.Files.ArchiveFileStatistics.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:TVA.Historian.Files.ArchiveFileStatistics"/> class.
+            </summary>
+        </member>
+        <member name="T:TVA.Historian.Files.ArchiveReader">
+            <summary>
+            Opens a local set of historian files for reading with active archive file being monitored for roll-over.
+            </summary>
+            <remarks>
+            This class is expected to be used as an out-of-process instance of the <see cref="T:TVA.Historian.Files.ArchiveFile"/> that
+            will properly open archive files as read-only and yield to roll-over processing.
+            </remarks>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.#ctor">
+            <summary>
+            Creates a new <see cref="T:TVA.Historian.Files.ArchiveReader"/>.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.Finalize">
+            <summary>
+            Releases the unmanaged resources before the <see cref="T:TVA.Historian.Files.ArchiveReader"/> object is reclaimed by <see cref="T:System.GC"/>.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.Dispose">
+            <summary>
+            Releases all the resources used by the <see cref="T:TVA.Historian.Files.ArchiveReader"/> object.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:TVA.Historian.Files.ArchiveReader"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.Open(System.String)">
+            <summary>
+            Opens the <see cref="T:TVA.Historian.Files.ArchiveFile"/> for use.
+            </summary>
+            <param name="fileName">Archive .D archive file name.</param>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Int32)">
+            <summary>
+            Reads all <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/> for the specified <paramref name="historianID"/>.
+            </summary>
+            <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Reads all <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/> for the specified <paramref name="historianIDs"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Int32,System.String)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Collections.Generic.IEnumerable{System.Int32},System.String)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Int32,System.String,System.String)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime"><see cref="T:System.String"/> representation of the end time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Collections.Generic.IEnumerable{System.Int32},System.String,System.String)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime"><see cref="T:System.String"/> representation of the start time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime"><see cref="T:System.String"/> representation of the end time (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Int32,System.DateTime)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Collections.Generic.IEnumerable{System.Int32},System.DateTime)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Int32,System.DateTime,System.DateTime)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime">End <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Collections.Generic.IEnumerable{System.Int32},System.DateTime,System.DateTime)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime">End <see cref="T:System.DateTime"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Int32,TVA.Historian.TimeTag)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Collections.Generic.IEnumerable{System.Int32},TVA.Historian.TimeTag)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Int32,TVA.Historian.TimeTag,TVA.Historian.TimeTag)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianID">Historian identifier for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime">End <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.ReadData(System.Collections.Generic.IEnumerable{System.Int32},TVA.Historian.TimeTag,TVA.Historian.TimeTag)">
+            <summary>
+            Reads <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+            <param name="historianIDs">Historian identifiers for which <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s are to be retrieved.</param>
+            <param name="startTime">Start <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <param name="endTime">End <see cref="T:TVA.Historian.TimeTag"/> (in UTC) for the <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s to be retrieved.</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/> object containing zero or more <see cref="T:TVA.Historian.Files.ArchiveDataPoint"/>s.</returns>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.OnRolloverStart">
+            <summary>
+            Raises the <see cref="E:TVA.Historian.Files.ArchiveReader.RolloverStart"/> event.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.OnRolloverComplete">
+            <summary>
+            Raises the <see cref="E:TVA.Historian.Files.ArchiveReader.RolloverComplete"/> event.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.OnHistoricFileListBuildStart">
+            <summary>
+            Raises the <see cref="E:TVA.Historian.Files.ArchiveReader.HistoricFileListBuildStart"/> event.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.OnHistoricFileListBuildComplete">
+            <summary>
+            Raises the <see cref="E:TVA.Historian.Files.ArchiveReader.HistoricFileListBuildComplete"/> event.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.OnHistoricFileListBuildException(System.Exception)">
+            <summary>
+            Raise the <see cref="E:TVA.Historian.Files.ArchiveReader.HistoricFileListBuildException"/> event.
+            </summary>
+            <param name="ex"><see cref="T:System.Exception"/> to send to <see cref="E:TVA.Historian.Files.ArchiveReader.HistoricFileListBuildException"/> event.</param>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.OnHistoricFileListUpdated">
+            <summary>
+            Raises the <see cref="E:TVA.Historian.Files.ArchiveReader.HistoricFileListUpdated"/> event.
+            </summary>
+        </member>
+        <member name="M:TVA.Historian.Files.ArchiveReader.OnDataReadException(System.Exception)">
+            <summary>
+            Raises the <see cref="E:TVA.Historian.Files.ArchiveReader.DataReadException"/> event.
+            </summary>
+            <param name="ex"><see cref="T:System.Exception"/> to send to <see cref="E:TVA.Historian.Files.ArchiveReader.DataReadException"/> event.</param>
+        </member>
+        <member name="E:TVA.Historian.Files.ArchiveReader.RolloverStart">
+            <summary>
+            Occurs when <see cref="M:TVA.Historian.Files.ArchiveFile.Rollover"/> to a new <see cref="T:TVA.Historian.Files.ArchiveFile"/> is started.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Files.ArchiveReader.RolloverComplete">
+            <summary>
+            Occurs when <see cref="M:TVA.Historian.Files.ArchiveFile.Rollover"/> to a new <see cref="T:TVA.Historian.Files.ArchiveFile"/> is complete.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Files.ArchiveReader.HistoricFileListBuildStart">
+            <summary>
+            Occurs when the process of building historic <see cref="T:TVA.Historian.Files.ArchiveFile"/> list is started.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Files.ArchiveReader.HistoricFileListBuildComplete">
+            <summary>
+            Occurs when the process of building historic <see cref="T:TVA.Historian.Files.ArchiveFile"/> list is complete.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Files.ArchiveReader.HistoricFileListBuildException">
+            <summary>
+            Occurs when an <see cref="T:System.Exception"/> is encountered in historic <see cref="T:TVA.Historian.Files.ArchiveFile"/> list building process.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Files.ArchiveReader.HistoricFileListUpdated">
+            <summary>
+            Occurs when the historic <see cref="T:TVA.Historian.Files.ArchiveFile"/> list is updated to reflect addition or deletion of historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>s.
+            </summary>
+        </member>
+        <member name="E:TVA.Historian.Files.ArchiveReader.DataReadException">
+            <summary>
+            Occurs when an <see cref="T:System.Exception"/> is encountered while reading <see cref="T:TVA.Historian.IDataPoint"/> from the current or historic <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Files.ArchiveReader.FileName">
+            <summary>
+            Gets the name of the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Files.ArchiveReader.StateFile">
+            <summary>
+            Gets the <see cref="P:TVA.Historian.Files.ArchiveReader.StateFile"/> used by the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Files.ArchiveReader.MetadataFile">
+            <summary>
+            Gets the <see cref="P:TVA.Historian.Files.ArchiveReader.MetadataFile"/> used by the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
+            </summary>
+        </member>
+        <member name="P:TVA.Historian.Files.ArchiveReader.IntercomFile">
+            <summary>
+            Gets the <see cref="P:TVA.Historian.Files.ArchiveReader.IntercomFile"/> used by the <see cref="T:TVA.Historian.Files.ArchiveFile"/>.
             </summary>
         </member>
         <member name="T:TVA.Historian.Files.IntercomFile">
@@ -4517,7 +4773,7 @@
             Reads a series of data points from an <see cref="T:TVA.Historian.Files.ArchiveFile"/> in sorted order.
             </summary>
         </member>
-        <member name="M:TVA.Historian.Files.TimeSortedDataPointScanner.#ctor(TVA.Historian.Files.ArchiveFileAllocationTable,System.Collections.Generic.IEnumerable{System.Int32},TVA.Historian.TimeTag,TVA.Historian.TimeTag,System.EventHandler{TVA.EventArgs{System.Exception}})">
+        <member name="M:TVA.Historian.Files.TimeSortedDataPointScanner.#ctor(TVA.Historian.Files.ArchiveFileAllocationTable,System.Collections.Generic.IEnumerable{System.Int32},TVA.Historian.TimeTag,TVA.Historian.TimeTag,System.Int32,System.EventHandler{TVA.EventArgs{System.Exception}})">
             <summary>
             Creates a new instance of the <see cref="T:TVA.Historian.Files.TimeSortedDataPointScanner"/>. 
             </summary>
@@ -4525,6 +4781,7 @@
             <param name="historianIDs">Historian ID's to scan.</param>
             <param name="startTime">Desired start time.</param>
             <param name="endTime">Desired end time.</param>
+            <param name="lastHistorianID">Last read historian ID, or -1 to begin scan at first ID.</param>
             <param name="dataReadExceptionHandler">Read exception handler.</param>
         </member>
         <member name="M:TVA.Historian.Files.TimeSortedDataPointScanner.Read">
@@ -4553,6 +4810,11 @@
             Reads all <see cref="T:TVA.Historian.IDataPoint"/>s from the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s.
             </summary>
             <returns>Each <see cref="T:TVA.Historian.IDataPoint"/> read from the <see cref="T:TVA.Historian.Files.ArchiveDataBlock"/>s.</returns>
+        </member>
+        <member name="P:TVA.Historian.Files.TimeSortedDataPointScanner.DataPointScanner.HistorianID">
+            <summary>
+            Gets the historian ID associated with this <see cref="T:TVA.Historian.Files.TimeSortedDataPointScanner.DataPointScanner"/>.
+            </summary>
         </member>
         <member name="T:TVA.Historian.Files.StateFile">
             <summary>
