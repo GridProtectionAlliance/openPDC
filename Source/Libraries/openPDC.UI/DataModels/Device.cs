@@ -946,13 +946,28 @@ namespace openPDC.UI.DataModels
                 if (!string.IsNullOrEmpty(searchText))
                 {
                     searchParam = string.Format("%{0}%", searchText);
-                    searchQuery = database.ParameterizedQueryString("ID LIKE {0} OR UPPER(UniqueID) LIKE UPPER({0}) OR UPPER(Acronym) LIKE UPPER({0}) " +
-                        "OR UPPER(Name) LIKE UPPER({0}) OR UPPER(OriginalSource) LIKE UPPER({0}) OR Longitude LIKE {0} OR Latitude LIKE {0} " +
-                        "OR UPPER(ConnectionString) LIKE UPPER({0}) OR UPPER(TimeZone) LIKE UPPER({0}) OR FramesPerSecond LIKE {0} " +
-                        "OR UPPER(ContactList) LIKE UPPER({0}) OR UPPER(CompanyName) LIKE UPPER({0}) OR UPPER(CompanyAcronym) LIKE UPPER({0}) " +
-                        "OR UPPER(CompanyMapAcronym) LIKE UPPER({0}) OR UPPER(HistorianAcronym) LIKE UPPER({0}) OR UPPER(VendorAcronym) LIKE UPPER({0}) " +
-                        "OR UPPER(VendorDeviceName) LIKE UPPER({0}) OR UPPER(ProtocolName) LIKE UPPER({0}) OR UPPER(InterconnectionName) LIKE UPPER({0})",
-                        "searchParam");
+
+                    if (database.IsJetEngine)
+                    {
+                        // Access queries do not support UPPER but are case-insensitive anyway
+                        searchQuery = string.Format("ID LIKE '{0}' OR UniqueID LIKE '{0}' OR Acronym LIKE '{0}' " +
+                            "OR Name LIKE '{0}' OR OriginalSource LIKE '{0}' OR Longitude LIKE '{0}' OR Latitude LIKE '{0}' " +
+                            "OR ConnectionString LIKE '{0}' OR TimeZone LIKE '{0}' OR FramesPerSecond LIKE '{0}' " +
+                            "OR ContactList LIKE '{0}' OR CompanyName LIKE '{0}' OR CompanyAcronym LIKE '{0}' " +
+                            "OR CompanyMapAcronym LIKE '{0}' OR HistorianAcronym LIKE '{0}' OR VendorAcronym LIKE '{0}' " +
+                            "OR VendorDeviceName LIKE '{0}' OR ProtocolName LIKE '{0}' OR InterconnectionName LIKE '{0}'",
+                            searchParam.Replace("'", "''"));
+                    }
+                    else
+                    {
+                        searchQuery = database.ParameterizedQueryString("ID LIKE {0} OR UPPER(UniqueID) LIKE UPPER({0}) OR UPPER(Acronym) LIKE UPPER({0}) " +
+                            "OR UPPER(Name) LIKE UPPER({0}) OR UPPER(OriginalSource) LIKE UPPER({0}) OR Longitude LIKE {0} OR Latitude LIKE {0} " +
+                            "OR UPPER(ConnectionString) LIKE UPPER({0}) OR UPPER(TimeZone) LIKE UPPER({0}) OR FramesPerSecond LIKE {0} " +
+                            "OR UPPER(ContactList) LIKE UPPER({0}) OR UPPER(CompanyName) LIKE UPPER({0}) OR UPPER(CompanyAcronym) LIKE UPPER({0}) " +
+                            "OR UPPER(CompanyMapAcronym) LIKE UPPER({0}) OR UPPER(HistorianAcronym) LIKE UPPER({0}) OR UPPER(VendorAcronym) LIKE UPPER({0}) " +
+                            "OR UPPER(VendorDeviceName) LIKE UPPER({0}) OR UPPER(ProtocolName) LIKE UPPER({0}) OR UPPER(InterconnectionName) LIKE UPPER({0})",
+                            "searchParam");
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(sortMember) || !string.IsNullOrEmpty(sortDirection))
@@ -965,10 +980,15 @@ namespace openPDC.UI.DataModels
                         query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} AND ParentID = {{1}} {0}", sortClause), "nodeID", "parentID");
                         deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), parentID);
                     }
-                    else
+                    else if (!database.IsJetEngine)
                     {
                         query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} AND ParentID = {{1}} AND ({0}) {1}", searchText, sortClause), "nodeID", "parentID");
                         deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), parentID, searchParam);
+                    }
+                    else
+                    {
+                        query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} AND ParentID = {{1}} AND ({0}) {1}", searchText, sortClause), "nodeID", "parentID");
+                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), parentID);
                     }
                 }
                 else
@@ -978,10 +998,15 @@ namespace openPDC.UI.DataModels
                         query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} {0}", sortClause), "nodeID");
                         deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
                     }
-                    else
+                    else if (!database.IsJetEngine)
                     {
                         query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} AND ({0}) {1}", searchQuery, sortClause), "nodeID");
                         deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID(), searchParam);
+                    }
+                    else
+                    {
+                        query = database.ParameterizedQueryString(string.Format("SELECT ID From DeviceDetail WHERE NodeID = {{0}} AND ({0}) {1}", searchQuery, sortClause), "nodeID");
+                        deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
                     }
                 }
 
@@ -1020,7 +1045,7 @@ namespace openPDC.UI.DataModels
 
                 if ((object)keys != null && keys.Count > 0)
                 {
-                    commaSeparatedKeys = keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    commaSeparatedKeys = keys.Select(key => key.ToString()).Aggregate((str1, str2) => str1 + "," + str2);
                     query = string.Format("SELECT * FROM DeviceDetail WHERE ID IN ({0})", commaSeparatedKeys);
                     deviceTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout);
 
