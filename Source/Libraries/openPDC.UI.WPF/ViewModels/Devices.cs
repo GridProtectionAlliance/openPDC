@@ -846,13 +846,6 @@ namespace openPDC.UI.ViewModels
             }
         }
 
-        protected override void m_currentItem_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            base.m_currentItem_PropertyChanged(sender, e);
-            if (ItemsPerPage > 0 && string.Compare(e.PropertyName, "Enabled", true) == 0)
-                ProcessPropertyChange();
-        }
-
         private void ConfigureConcentrator()
         {
             if (CurrentItem.ParentID != null && CurrentItem.ParentID > 0)

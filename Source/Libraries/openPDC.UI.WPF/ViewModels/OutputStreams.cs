@@ -577,9 +577,8 @@ namespace openPDCManager.UI.ViewModels
             {
 
             }
+
             base.m_currentItem_PropertyChanged(sender, e);
-            if (ItemsPerPage > 0 && string.Compare(e.PropertyName, "Enabled", true) == 0)
-                ProcessPropertyChange();
         }
 
         public override void Save()

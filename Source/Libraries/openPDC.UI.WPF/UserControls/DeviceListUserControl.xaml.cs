@@ -39,6 +39,7 @@ namespace openPDC.UI.UserControls
     {
         #region [ Members ]
 
+        private bool m_committing;
         private Devices m_dataContext;
         private DataGridColumn m_sortColumn;
         private string m_sortMemberPath;
@@ -85,6 +86,22 @@ namespace openPDC.UI.UserControls
                         e.Handled = true;
                 }
             }
+        }
+
+        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (!m_committing && e.EditAction == DataGridEditAction.Commit)
+            {
+                m_committing = true;
+                DataGridList.CommitEdit(DataGridEditingUnit.Row, true);
+                m_dataContext.ProcessPropertyChange();
+                m_committing = false;
+            }
+        }
+
+        private void DataGridEnabledCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            m_dataContext.ProcessPropertyChange();
         }
 
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)

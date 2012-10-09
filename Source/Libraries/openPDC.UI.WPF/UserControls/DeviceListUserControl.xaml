@@ -27,7 +27,7 @@
         </StackPanel>
         
         <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" 
-                      PreviewKeyDown="DataGrid_PreviewKeyDown" Sorting="DataGrid_Sorting">
+                      PreviewKeyDown="DataGrid_PreviewKeyDown" Sorting="DataGrid_Sorting" CellEditEnding="DataGrid_CellEditEnding">
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTemplateColumn Header="Acronym" Width="3*" SortMemberPath="Acronym">
                     <sdk:DataGridTemplateColumn.CellTemplate>
@@ -42,7 +42,7 @@
                 <sdk:DataGridTemplateColumn Header="Enabled" Width="*" SortMemberPath="Enabled" >
                     <sdk:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox IsChecked="{tsfBinding:Column Path=Enabled}" HorizontalAlignment="Center"/>
+                            <CheckBox IsChecked="{tsfBinding:Column Path=Enabled}" HorizontalAlignment="Center" Click="DataGridEnabledCheckBox_Click"/>
                         </DataTemplate>
                     </sdk:DataGridTemplateColumn.CellTemplate>
                 </sdk:DataGridTemplateColumn>
