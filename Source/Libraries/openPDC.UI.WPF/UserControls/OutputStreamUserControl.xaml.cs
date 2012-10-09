@@ -147,9 +147,6 @@ namespace openPDC.UI.UserControls
             // Get a reference to the enabled checkbox that was clicked
             CheckBox enabledCheckBox = sender as CheckBox;
 
-            // Process changes to the output stream
-            m_dataContext.ProcessPropertyChange();
-
             if ((object)enabledCheckBox != null)
             {
                 // Get the runtime ID of the currently selected output stream
@@ -157,10 +154,23 @@ namespace openPDC.UI.UserControls
 
                 if (!string.IsNullOrWhiteSpace(runtimeID))
                 {
-                    if (enabledCheckBox.IsChecked.GetValueOrDefault())
-                        TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + runtimeID);
-                    else
-                        TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                    try
+                    {
+                        // Auto-save changes to the output stream
+                        m_dataContext.ProcessPropertyChange();
+
+                        if (enabledCheckBox.IsChecked.GetValueOrDefault())
+                            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + runtimeID);
+                        else
+                            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                    }
+                    catch (Exception ex)
+                    {
+                        if ((object)ex.InnerException != null)
+                            TimeSeriesFramework.UI.CommonFunctions.LogException(null, "Output Stream Autosave", ex.InnerException);
+                        else
+                            TimeSeriesFramework.UI.CommonFunctions.LogException(null, "Output Stream Autosave", ex);
+                    }
                 }
             }
         }

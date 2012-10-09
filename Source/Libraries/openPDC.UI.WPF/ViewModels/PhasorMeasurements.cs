@@ -94,30 +94,25 @@ namespace openPDC.UI.ViewModels
 
         public override void Save()
         {
-            try
+            if (CurrentItem.HistorianID != null && (int)CurrentItem.HistorianID > 0)
             {
-                if (CurrentItem.HistorianID != null && (int)CurrentItem.HistorianID > 0)
+                base.Save();
+
+                try
                 {
-                    base.Save();
                     CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)CurrentItem.HistorianID) + " RefreshMetadata");
                 }
-                else
+                catch (Exception ex)
                 {
-                    base.Save();
+                    if ((object)ex.InnerException != null)
+                        CommonFunctions.LogException(null, "Save " + DataModelName, ex.InnerException);
+                    else
+                        CommonFunctions.LogException(null, "Save " + DataModelName, ex);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                if (ex.InnerException != null)
-                {
-                    Popup(ex.Message + Environment.NewLine + "Inner Exception: " + ex.InnerException.Message, "Save " + DataModelName + ", Refresh Metadata Exception:", MessageBoxImage.Error);
-                    CommonFunctions.LogException(null, "Save " + DataModelName, ex.InnerException);
-                }
-                else
-                {
-                    Popup(ex.Message, "Save " + DataModelName + ", Refresh Metadata Exception:", MessageBoxImage.Error);
-                    CommonFunctions.LogException(null, "Save " + DataModelName, ex);
-                }
+                base.Save();
             }
         }
 
