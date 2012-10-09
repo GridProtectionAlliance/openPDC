@@ -1277,7 +1277,7 @@ namespace TVA.PhasorProtocols
         private IClient m_dataChannel;
         private IServer m_serverBasedDataChannel;
         private IClient m_commandChannel;
-        private EndPoint m_receiveFromEndPoint;
+        private IPAddress m_receiveFromAddress;
         private PrecisionInputTimer m_inputTimer;
         private System.Timers.Timer m_rateCalcTimer;
         private IConfigurationFrame m_configurationFrame;
@@ -2566,9 +2566,7 @@ namespace TVA.PhasorProtocols
         private void InitializeUdpDataChannel(Dictionary<string, string> settings)
         {
             SharedUdpClientReference udpRef;
-            Match endPointMatch;
             IPStack ipStack;
-            int receiveFromPort;
 
             string receiveFromSetting;
 
@@ -2578,14 +2576,8 @@ namespace TVA.PhasorProtocols
             }
             else
             {
-                // Set up receive-from end point
-                endPointMatch = Regex.Match(receiveFromSetting, Transport.EndpointFormatRegex);
-
-                if (!int.TryParse(endPointMatch.Groups["port"].Value, out receiveFromPort))
-                    throw new InvalidOperationException(string.Format("Unable to properly parse connection string setting: receiveFrom={0}", receiveFromSetting));
-
                 ipStack = Transport.GetInterfaceIPStack(settings);
-                m_receiveFromEndPoint = Transport.CreateEndPoint(endPointMatch.Groups["host"].Value, receiveFromPort, ipStack);
+                m_receiveFromAddress = Transport.CreateEndPoint(receiveFromSetting, 0, ipStack).Address;
 
                 // Set up data channel
                 udpRef = new SharedUdpClientReference();
@@ -3243,11 +3235,14 @@ namespace TVA.PhasorProtocols
 
         private void m_dataChannel_ReceiveDataFrom(object sender, EventArgs<EndPoint, int> e)
         {
-            EndPoint remoteEndPoint = e.Argument1;
+            IPEndPoint remoteEndPoint = e.Argument1 as IPEndPoint;
             int length = e.Argument2;
             byte[] buffer = null;
 
-            if (!remoteEndPoint.Equals(m_receiveFromEndPoint))
+            if ((object)remoteEndPoint == null)
+                return;
+
+            if (!remoteEndPoint.Address.Equals(m_receiveFromAddress))
                 return;
 
             try
