@@ -26,7 +26,7 @@
 
                 <StackPanel Orientation="Vertical" Margin="5">
                     
-                    <uc:MeasurementPagerUserControl Name="MeasurementPager" ItemsPerPage="18" FilterExpression="SignalAcronym != 'STAT'" Selectable="True" Searchable="True">
+                    <uc:MeasurementPagerUserControl Name="MeasurementPager" ItemsPerPage="18" FilterExpression="SignalAcronym &lt;&gt; 'STAT'" Selectable="True" Searchable="True">
                         <uc:MeasurementPagerUserControl.DataGridColumns>
                             <sdk:DataGridTextColumn Header="ID" Width="2*" Binding="{Binding Path=ID}" IsReadOnly="True" ToolTipService.ToolTip="{Binding Path=SignalReference}"/>
                             <sdk:DataGridTextColumn Header="Description" Width="9*" Binding="{Binding Path=Description}" IsReadOnly="True"
