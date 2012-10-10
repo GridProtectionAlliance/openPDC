@@ -653,13 +653,6 @@
             Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.AdapterUserControl"/> class.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.AdapterUserControl.AdapterUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles unload event of the <see cref="T:TimeSeriesFramework.UI.UserControls.AdapterUserControl"/>.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Argument of the event.</param>
-        </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.AdapterUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
             Handles PreviewKeyDown event on the datagrid.
@@ -734,13 +727,6 @@
             <summary>
             Creates a new instance of <see cref="T:TimeSeriesFramework.UI.UserControls.CompanyUserControl"/>.
             </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.CompanyUserControl.CompanyUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles unload event of the <see cref="T:TimeSeriesFramework.UI.UserControls.CompanyUserControl"/>.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments for the event.</param>
         </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.CompanyUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
@@ -995,13 +981,6 @@
             Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.HistorianUserControl"/> class.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.HistorianUserControl.HistorianUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles unload event of the <see cref="T:TimeSeriesFramework.UI.UserControls.HistorianUserControl"/>.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments for the event.</param>
-        </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.HistorianUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
             Handles PreviewKeyDown event on the datagrid.
@@ -1216,13 +1195,6 @@
             </summary>
             <param name="deviceID">ID of the device to filter measurements.</param>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.MeasurementUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles unloaded event.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments of the event.</param>
-        </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.MeasurementUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
             Handles key down event on the datagrid object.
@@ -1320,13 +1292,6 @@
             Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.NodeUserControl"/> class.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.NodeUserControl.NodeUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles unload event of the <see cref="T:TimeSeriesFramework.UI.UserControls.NodeUserControl"/>.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments for the event.</param>
-        </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.NodeUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
             Handles PreviewKeyDown event on the datagrid.
@@ -1372,13 +1337,6 @@
             Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl"/> class.
             </summary> 
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl.ProtocolGroupUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles unloaded event.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments of the event.</param>
-        </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.ProtocolGroupUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
             Handles key down event on the datagrid object.
@@ -1422,13 +1380,6 @@
             Creates an instance of <see cref="T:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl"/> class.
             </summary>
         </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl.VendorDeviceUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Hanldes unloaded event of the <see cref="T:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl"/>.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments of the event.</param>
-        </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.VendorDeviceUserControl.InitializeComponent">
             <summary>
             InitializeComponent
@@ -1446,13 +1397,6 @@
             <summary>
             Creates a new instance of <see cref="T:TimeSeriesFramework.UI.UserControls.VendorUserControl"/>.
             </summary>
-        </member>
-        <member name="M:TimeSeriesFramework.UI.UserControls.VendorUserControl.VendorUserControl_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Handles unload event of the <see cref="T:TimeSeriesFramework.UI.UserControls.VendorUserControl"/>.
-            </summary>
-            <param name="sender">Source of the event.</param>
-            <param name="e">Arguments for the event.</param>
         </member>
         <member name="M:TimeSeriesFramework.UI.UserControls.VendorUserControl.DataGrid_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
@@ -1808,6 +1752,18 @@
             <param name="searchDirectory">The directory in which to search for assemblies.</param>
             <param name="adapterType">The type to be searched for in the assemblies.</param>
             <returns>The collection of types found as well as their descriptions.</returns>
+        </member>
+        <member name="M:TimeSeriesFramework.UI.ViewModels.Adapters.GetEditorBrowsableState(System.Type)">
+            <summary>
+            Gets the editor browsable state of the given type. This method will
+            search for a <see cref="T:System.ComponentModel.EditorBrowsableAttribute"/> using reflection.
+            If none is found, it will default to <see cref="F:System.ComponentModel.EditorBrowsableState.Always"/>.
+            </summary>
+            <param name="type">The type for which an editor browsable state is found.</param>
+            <returns>
+            Either the editor browsable state as defined by an <see cref="T:System.ComponentModel.EditorBrowsableAttribute"/>
+            or else <see cref="F:System.ComponentModel.EditorBrowsableState.Always"/>.
+            </returns>
         </member>
         <member name="M:TimeSeriesFramework.UI.ViewModels.Adapters.GetDescription(System.Type)">
             <summary>
