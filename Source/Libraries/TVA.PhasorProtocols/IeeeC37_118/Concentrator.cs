@@ -208,7 +208,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             {
                 // Interpret data received from a client as a command frame
                 CommandFrame commandFrame = new CommandFrame(commandBuffer, 0, length);
-                TcpServer commandChannel = CommandChannel;
+                IServer commandChannel = (IServer)CommandChannel ?? DataChannel;
 
                 // Validate incoming ID code if requested
                 if (!m_validateIDCode || commandFrame.IDCode == this.IDCode)
@@ -219,7 +219,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                         case DeviceCommand.SendConfigurationFrame2:
                             if (commandChannel != null)
                             {
-                                commandChannel.SendToAsync(clientID, m_configurationFrame.BinaryImage);
+                                commandChannel.SendToAsync(clientID, m_configurationFrame.BinaryImage, 0, m_configurationFrame.BinaryLength);
                                 OnStatusMessage("Received request for \"{0}\" from \"{1}\" - frame was returned.", commandFrame.Command, connectionID);
                             }
                             break;
@@ -234,7 +234,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                                 status.AppendFormat("       Dervied system time: {0} UTC\r\n", ((DateTime)RealTime).ToString("yyyy-MM-dd HH:mm:ss.fff"));
 
                                 HeaderFrame headerFrame = new HeaderFrame(status.ToString());
-                                commandChannel.SendToAsync(clientID, headerFrame.BinaryImage);
+                                commandChannel.SendToAsync(clientID, headerFrame.BinaryImage, 0, headerFrame.BinaryLength);
                                 OnStatusMessage("Received request for \"SendHeaderFrame\" from \"{0}\" - frame was returned.", connectionID);
                             }
                             break;

@@ -21,9 +21,13 @@
 //
 //******************************************************************************************************
 
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using openPG.UI.ViewModels;
+using TimeSeriesFramework.UI.DataModels;
+using TVA.Data;
+using openPG.UI.DataModels;
 
 namespace openPG.UI.UserControls
 {
@@ -43,43 +47,38 @@ namespace openPG.UI.UserControls
         {
             InitializeComponent();
             m_dataContext = new MeasurementGroups(1);
-            m_dataContext.MeasurementsAdded += new MeasurementGroups.OnMeasurementsAdded(m_dataContext_MeasurementsAdded);
+            m_dataContext.PropertyChanged += DataContext_PropertyChanged;
             StackPanelManageMeasurementGroup.DataContext = m_dataContext;
-            this.Loaded += new System.Windows.RoutedEventHandler(MeasurementGroupUserControl_Loaded);
         }
 
         #endregion
 
         #region [ Methods ]
 
-        /// <summary>
-        /// Handles MeasurementsAdded event raised by MeasurementGroups view model class.
-        /// </summary>
-        /// <param name="sender">Source of the event.</param>
-        /// <param name="e">Event arguments.</param>
-        private void m_dataContext_MeasurementsAdded(object sender, RoutedEventArgs e)
+        private void DataContext_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            UserControlSelectMeasurements.UncheckSelection();
+            MeasurementGroup currentItem = m_dataContext.CurrentItem;
+            string propertyName = e.PropertyName;
+
+            if (propertyName == "CurrentItem")
+            {
+                MemberMeasurementsPager.FilterExpression = string.Format("SignalID IN (SELECT SignalID FROM MeasurementGroupMeasurement WHERE NodeID = '{0}' AND MeasurementGroupID = {1})", currentItem.NodeID.ToString().ToUpper(), currentItem.ID);
+                MemberMeasurementsPager.ReloadDataGrid();
+            }
         }
 
-        /// <summary>
-        /// Hanldes Loaded event of <see cref="MeasurementGroupUserControl"/>.
-        /// </summary>
-        /// <param name="sender">Source of the event.</param>
-        /// <param name="e">Event arguments</param>
-        private void MeasurementGroupUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void AddMeasurementsButton_Click(object sender, RoutedEventArgs e)
         {
-            UserControlSelectMeasurements.SourceCollectionChanged += new SelectMeasurementUserControl.OnSourceCollectionChanged(UpdatePossibleMeasurements);
+            m_dataContext.AddMeasurement(AvailableMeasurementsPager.SelectedMeasurements);
+            AvailableMeasurementsPager.ClearSelections();
+            MemberMeasurementsPager.ReloadDataGrid();
         }
 
-        /// <summary>
-        /// Method to retireve user's selection in the SelectMeasurementUserControl.
-        /// </summary>
-        /// <param name="sender">Source of the event.</param>
-        /// <param name="e">Event arguments</param>
-        private void UpdatePossibleMeasurements(object sender, RoutedEventArgs e)
+        private void RemoveMeasurementsButton_Click(object sender, RoutedEventArgs e)
         {
-            m_dataContext.CurrentItem.PossibleMeasurements = UserControlSelectMeasurements.UpdatedMeasurements;
+            m_dataContext.RemoveMeasurement(MemberMeasurementsPager.SelectedMeasurements);
+            MemberMeasurementsPager.ReloadDataGrid();
+            MemberMeasurementsPager.ClearSelections();
         }
 
         #endregion

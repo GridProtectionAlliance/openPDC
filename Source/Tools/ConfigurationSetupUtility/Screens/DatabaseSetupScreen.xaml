@@ -23,8 +23,8 @@
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Center">
                     <StackPanel>
-                        <CheckBox Content="Run initial data script" Height="18" IsChecked="True" Name="m_initialDataScriptCheckBox" Checked="InitialDataScriptCheckBox_Checked" Unchecked="InitialDataScriptCheckBox_Unchecked" ToolTip="Check this box to load initial settings (e.g., default signal types, etc.) into the new database." />
-                        <CheckBox Content="Run sample data script" Height="18" Margin="15,0,0,0" IsEnabled="{Binding ElementName=m_initialDataScriptCheckBox, Path=IsChecked}" Checked="SampleDataScriptCheckBox_Checked" Unchecked="SampleDataScriptCheckBox_Unchecked" Name="m_sampleDataScriptCheckBox" ToolTip="Check this box to load one sample device into the new database." Click="SampleDataScriptCheckBox_Click" />
+                        <CheckBox Content="Run initial data script" Height="18" IsChecked="True" Visibility="Collapsed" IsEnabled="False" Name="m_initialDataScriptCheckBox" Checked="InitialDataScriptCheckBox_Checked" Unchecked="InitialDataScriptCheckBox_Unchecked" ToolTip="Check this box to load initial settings (e.g., default signal types, etc.) into the new database." />
+                        <CheckBox Content="Run sample data script" Height="18" Margin="0,0,0,0" IsEnabled="{Binding ElementName=m_initialDataScriptCheckBox, Path=IsChecked}" Checked="SampleDataScriptCheckBox_Checked" Unchecked="SampleDataScriptCheckBox_Unchecked" Name="m_sampleDataScriptCheckBox" ToolTip="Check this box to load one sample device into the new database." Click="SampleDataScriptCheckBox_Click" />
                         <CheckBox Content="Run audit log trigger scripts" Height="18" Margin="0,0,0,0" Checked="EnableAuditLogCheckBox_Checked" Unchecked="EnableAuditLogCheckBox_Unchecked" Name="m_enableAuditLogCheckBox" Click="EnableAuditLogCheckBox_Click">
                             <CheckBox.ToolTip>
                                 <TextBlock>                            

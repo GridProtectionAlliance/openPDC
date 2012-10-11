@@ -174,6 +174,7 @@ namespace TVA.PhasorProtocols
         private long m_maximumLatency;
         private long m_latencyMeasurements;
         private int m_hashCode;
+        private bool m_useAdjustedValue;
         private bool m_disposed;
 
         #endregion
@@ -522,6 +523,7 @@ namespace TVA.PhasorProtocols
                 if (m_dataChannel != null)
                 {
                     // Detach from events on existing data channel reference
+                    m_dataChannel.ReceiveClientDataComplete -= m_dataChannel_ReceiveClientDataComplete;
                     m_dataChannel.SendClientDataException -= m_dataChannel_SendClientDataException;
                     m_dataChannel.ServerStarted -= m_dataChannel_ServerStarted;
                     m_dataChannel.ServerStopped -= m_dataChannel_ServerStopped;
@@ -536,6 +538,7 @@ namespace TVA.PhasorProtocols
                 if (m_dataChannel != null)
                 {
                     // Attach to events on new data channel reference
+                    m_dataChannel.ReceiveClientDataComplete += m_dataChannel_ReceiveClientDataComplete;
                     m_dataChannel.SendClientDataException += m_dataChannel_SendClientDataException;
                     m_dataChannel.ServerStarted += m_dataChannel_ServerStarted;
                     m_dataChannel.ServerStopped += m_dataChannel_ServerStopped;
@@ -754,7 +757,7 @@ namespace TVA.PhasorProtocols
             if (WaitForInitialize(InitializationTimeout))
             {
                 // Start communications servers
-                if (m_autoStartDataChannel && m_dataChannel != null && m_dataChannel.CurrentState == ServerState.NotRunning)
+                if ((m_autoStartDataChannel || m_commandChannel == null) && m_dataChannel != null && m_dataChannel.CurrentState == ServerState.NotRunning)
                     m_dataChannel.Start();
 
                 if (m_commandChannel != null && m_commandChannel.CurrentState == ServerState.NotRunning)
@@ -808,15 +811,24 @@ namespace TVA.PhasorProtocols
             EstablishPublicationChannel();
 
             // Make sure publication channel has started
-            if (m_publishChannel != null && m_publishChannel.CurrentState == ServerState.NotRunning)
+            if (m_publishChannel != null)
             {
-                try
+                if (m_publishChannel.CurrentState == ServerState.NotRunning)
                 {
-                    m_publishChannel.Start();
+                    try
+                    {
+                        m_publishChannel.Start();
+                    }
+                    catch (Exception ex)
+                    {
+                        OnProcessException(new InvalidOperationException("Failed to start publication channel: " + ex.Message, ex));
+                    }
                 }
-                catch (Exception ex)
+
+                if (!Enabled)
                 {
-                    OnProcessException(new InvalidOperationException("Failed to start publication channel: " + ex.Message, ex));
+                    // Start concentration engine
+                    base.Start();
                 }
             }
         }
@@ -947,6 +959,15 @@ namespace TVA.PhasorProtocols
             else
             {
                 m_replaceWithSpaceChar = Char.MinValue;
+            }
+
+            if (settings.TryGetValue("useAdjustedValue", out setting))
+            {
+                m_useAdjustedValue = Boolean.Parse(setting);
+            }
+            else
+            {
+                m_useAdjustedValue = true;
             }
 
             // Initialize data channel if defined
@@ -1359,6 +1380,7 @@ namespace TVA.PhasorProtocols
                 SignalReference signal = signalMeasurement.SignalReference;
                 IDataCell dataCell = dataFrame.Cells[signal.CellIndex];
                 int signalIndex = signal.Index;
+                double signalValue = m_useAdjustedValue ? signalMeasurement.AdjustedValue : signalMeasurement.Value;
 
                 // Assign measurement to its destination field in the data cell based on signal type
                 switch (signal.Kind)
@@ -1367,25 +1389,25 @@ namespace TVA.PhasorProtocols
                         // Assign "phase angle" measurement to data cell
                         phasorValues = dataCell.PhasorValues;
                         if (phasorValues.Count >= signalIndex)
-                            phasorValues[signalIndex - 1].Angle = Angle.FromDegrees(signalMeasurement.AdjustedValue);
+                            phasorValues[signalIndex - 1].Angle = Angle.FromDegrees(signalValue);
                         break;
                     case SignalKind.Magnitude:
                         // Assign "phase magnitude" measurement to data cell
                         phasorValues = dataCell.PhasorValues;
                         if (phasorValues.Count >= signalIndex)
-                            phasorValues[signalIndex - 1].Magnitude = signalMeasurement.AdjustedValue;
+                            phasorValues[signalIndex - 1].Magnitude = signalValue;
                         break;
                     case SignalKind.Frequency:
                         // Assign "frequency" measurement to data cell
-                        dataCell.FrequencyValue.Frequency = signalMeasurement.AdjustedValue;
+                        dataCell.FrequencyValue.Frequency = signalValue;
                         break;
                     case SignalKind.DfDt:
                         // Assign "dF/dt" measurement to data cell
-                        dataCell.FrequencyValue.DfDt = signalMeasurement.AdjustedValue;
+                        dataCell.FrequencyValue.DfDt = signalValue;
                         break;
                     case SignalKind.Status:
                         // Assign "common status flags" measurement to data cell
-                        dataCell.CommonStatusFlags = unchecked((uint)signalMeasurement.AdjustedValue);
+                        dataCell.CommonStatusFlags = unchecked((uint)signalValue);
 
                         // Assign by arrival sorting flag for bad synchronization
                         if (!dataCell.SynchronizationIsValid && AllowSortsByArrival && !IgnoreBadTimestamps)
@@ -1395,13 +1417,13 @@ namespace TVA.PhasorProtocols
                         // Assign "digital" measurement to data cell
                         DigitalValueCollection digitalValues = dataCell.DigitalValues;
                         if (digitalValues.Count >= signalIndex)
-                            digitalValues[signalIndex - 1].Value = unchecked((ushort)signalMeasurement.AdjustedValue);
+                            digitalValues[signalIndex - 1].Value = unchecked((ushort)signalValue);
                         break;
                     case SignalKind.Analog:
                         // Assign "analog" measurement to data cell
                         AnalogValueCollection analogValues = dataCell.AnalogValues;
                         if (analogValues.Count >= signalIndex)
-                            analogValues[signalIndex - 1].Value = signalMeasurement.AdjustedValue;
+                            analogValues[signalIndex - 1].Value = signalValue;
                         break;
                 }
 
@@ -1783,6 +1805,15 @@ namespace TVA.PhasorProtocols
 
         #region [ Data Channel Event Handlers ]
 
+        private void m_dataChannel_ReceiveClientDataComplete(object sender, EventArgs<Guid, byte[], int> e)
+        {
+            // Queue up derived class device command handling on a different thread since this will
+            // often engage sending data back on the same command channel and we want this async
+            // thread to complete gracefully...
+            if ((object)m_commandChannel == null)
+                ThreadPool.QueueUserWorkItem(DeviceCommandHandlerProc, e);
+        }
+
         private void m_dataChannel_SendClientDataException(object sender, EventArgs<Guid, Exception> e)
         {
             Exception ex = e.Argument2;
@@ -1802,9 +1833,10 @@ namespace TVA.PhasorProtocols
         private void m_dataChannel_ServerStarted(object sender, EventArgs e)
         {
             // Start concentration engine
-            base.Start();
-            m_activeConnections++;
+            if (m_autoStartDataChannel)
+                base.Start();
 
+            m_activeConnections++;
             OnStatusMessage("Data channel started.");
         }
 
@@ -1838,7 +1870,7 @@ namespace TVA.PhasorProtocols
             // Queue up derived class device command handling on a different thread since this will
             // often engage sending data back on the same command channel and we want this async
             // thread to complete gracefully...
-            Task.Factory.StartNew(DeviceCommandHandlerProc, e);
+            ThreadPool.QueueUserWorkItem(DeviceCommandHandlerProc, e);
         }
 
         private void m_commandChannel_SendClientDataException(object sender, EventArgs<Guid, Exception> e)

@@ -316,7 +316,7 @@ namespace openPDC.UI.DataModels
 
                 if ((object)keys != null && keys.Count > 0)
                 {
-                    commaSeparatedKeys = keys.Select(key => "'" + key.ToString() + "'").Aggregate((str1, str2) => str1 + "," + str2);
+                    commaSeparatedKeys = keys.Select(key => "" + key.ToString() + "").Aggregate((str1, str2) => str1 + "," + str2);
                     query = string.Format("SELECT NodeID, OutputStreamDeviceID, ID, Label, MaskValue, LoadOrder " +
                            "FROM OutputStreamDeviceDigital WHERE ID IN ({0})", commaSeparatedKeys);
 

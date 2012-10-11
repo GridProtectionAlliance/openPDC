@@ -84,7 +84,7 @@ namespace openPDC.UI.ViewModels
             StatisticMeasurements = new ObservableCollection<StatisticMeasurement>();
 
             int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticRefreshInterval);
-            m_statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
+            Statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
 
             CheckTemporalSupport();
         }
@@ -213,6 +213,24 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        private RealTimeStatistics Statistics
+        {
+            get
+            {
+                return m_statistics;
+            }
+            set
+            {
+                if ((object)m_statistics != null)
+                    m_statistics.NewMeasurements -= m_statistics_NewMeasurements;
+
+                m_statistics = value;
+
+                if ((object)m_statistics != null)
+                    m_statistics.NewMeasurements += m_statistics_NewMeasurements;
+            }
+        }
+
         #endregion
 
         #region [ Methods ]
@@ -307,12 +325,63 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        private void m_statistics_NewMeasurements(object sender, EventArgs<ICollection<IMeasurement>> e)
+        {
+            if (0 == Interlocked.Exchange(ref m_processingUnsynchronizedMeasurements, 1))
+            {
+                try
+                {
+                    ObservableCollection<StatisticMeasurement> statisticMeasurements;
+                    StreamStatistic streamStatistic;
+
+                    foreach (RealTimeStream stream in ItemsSource)
+                    {
+                        if (stream.ID > 0 && RealTimeStatistic.InputStreamStatistics.TryGetValue(stream.ID, out streamStatistic))
+                        {
+                            stream.StatusColor = streamStatistic.StatusColor;
+                        }
+
+                        foreach (RealTimeDevice device in stream.DeviceList)
+                        {
+                            if (device.ID != null && device.ID > 0)
+                            {
+                                if (stream.StatusColor == "Red")
+                                {
+                                    device.StatusColor = stream.StatusColor;
+                                }
+                                else if (RealTimeStatistic.InputStreamStatistics.TryGetValue((int)device.ID, out streamStatistic))
+                                {
+                                    device.StatusColor = streamStatistic.StatusColor;
+                                }
+                                else if (RealTimeStatistic.DevicesWithStatisticMeasurements.TryGetValue((int)device.ID, out statisticMeasurements))
+                                {
+                                    device.StatusColor = "Green";
+                                    foreach (StatisticMeasurement statisticMeasurement in statisticMeasurements)
+                                    {
+                                        int value;
+                                        if (int.TryParse(statisticMeasurement.Value, out value) && value > 0)
+                                        {
+                                            device.StatusColor = "Yellow";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref m_processingUnsynchronizedMeasurements, 0);
+                }
+            }
+        }
+
         #region [ Unsynchronized Subscription ]
 
         private void m_unsynchronizedSubscriber_ConnectionTerminated(object sender, EventArgs e)
         {
             m_subscribedUnsynchronized = false;
-            UnsubscribeUnsynchronizedData();
+            TerminateSubscription();
             if (RestartConnectionCycle)
                 InitializeUnsynchronizedSubscription();
         }
@@ -465,19 +534,53 @@ namespace openPDC.UI.ViewModels
 
         public void SubscribeUnsynchronizedData(bool historical)
         {
+            UnsynchronizedSubscriptionInfo info;
+
             if (m_unsynchronizedSubscriber == null)
                 InitializeUnsynchronizedSubscription();
 
             if (m_subscribedUnsynchronized && !string.IsNullOrEmpty(m_allSignalIDs))
             {
-                if (!historical)
-                    m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true, m_refreshInterval);
-                else
-                    m_unsynchronizedSubscriber.UnsynchronizedSubscribe(true, true, m_allSignalIDs, null, true, m_refreshInterval, startTime: StartTime, stopTime: StopTime, processingInterval: m_refreshInterval * 1000);
+                info = new UnsynchronizedSubscriptionInfo(true);
+
+                info.UseCompactMeasurementFormat = true;
+                info.FilterExpression = m_allSignalIDs;
+                info.IncludeTime = true;
+                info.LagTime = 60.0D;
+                info.LeadTime = 60.0D;
+                info.PublishInterval = m_refreshInterval;
+
+                if (historical)
+                {
+                    info.StartTime = StartTime;
+                    info.StopTime = StopTime;
+                    info.ProcessingInterval = m_refreshInterval * 1000;
+                }
+
+                m_unsynchronizedSubscriber.Subscribe(info);
             }
 
             if (m_statistics == null)
-                m_statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => Statistics = new RealTimeStatistics(1, m_statisticRefreshInterval)));
+        }
+
+        /// <summary>
+        /// Unsubscribes data from the service.
+        /// </summary>
+        public void TerminateSubscription()
+        {
+            try
+            {
+                if (m_unsynchronizedSubscriber != null)
+                {
+                    m_unsynchronizedSubscriber.Unsubscribe();
+                    StopUnsynchronizedSubscription();
+                }
+            }
+            catch
+            {
+                m_unsynchronizedSubscriber = null;
+            }
         }
 
         /// <summary>
@@ -494,7 +597,7 @@ namespace openPDC.UI.ViewModels
                     if (m_statistics != null)
                     {
                         m_statistics.Stop();
-                        m_statistics = null;
+                        Statistics = null;
                     }
                 }
             }

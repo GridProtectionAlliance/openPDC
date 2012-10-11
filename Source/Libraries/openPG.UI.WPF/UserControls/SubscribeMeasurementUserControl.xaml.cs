@@ -46,10 +46,8 @@ namespace openPG.UI.UserControls
         {
             InitializeComponent();
             m_dataContext = new SubscribeMeasurements(1);
-            m_dataContext.SubscriptionChanged += new SubscribeMeasurements.OnSubscriptionChanged(m_dataContext_MeasurementsSubscribed);
-            m_dataContext.CurrentDeviceChanged += new SubscribeMeasurements.OnCurrentDeviceChanged(m_dataContext_CurrentDeviceChanged);
+            m_dataContext.PropertyChanged += DataContext_PropertyChanged;
             StackPanelSubscribeMeasurements.DataContext = m_dataContext;
-            this.Loaded += new System.Windows.RoutedEventHandler(SubscribeMeasurementUserControl_Loaded);
             this.Unloaded += new System.Windows.RoutedEventHandler(SubscribeMeasurementUserControl_Unloaded);
         }
 
@@ -57,9 +55,34 @@ namespace openPG.UI.UserControls
 
         #region [ Methods ]
 
-        private void SubscribeMeasurementUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void SubscribedMeasurementsPager_CurrentPageChanged(object sender, System.EventArgs e)
         {
-            UserControlSelectMeasurements.SourceCollectionChanged += new SelectMeasurementUserControl.OnSourceCollectionChanged(UserControlSelectMeasurements_SourceCollectionChanged);
+            m_dataContext.CurrentSubscribedMeasurementsPage = SubscribedMeasurementsPager.CurrentPage;
+        }
+
+        private void DataContext_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "CurrentItem")
+                UpdateAvailableFilterExpression();
+        }
+
+        private void DisplayInternalCheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            UpdateAvailableFilterExpression();
+        }
+
+        private void AddSubscribedMeasurementsButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            m_dataContext.AddSubscribedMeasurements(AvailableMeasurementsPager.SelectedMeasurements);
+            AvailableMeasurementsPager.ClearSelections();
+            SubscribedMeasurementsPager.ReloadDataGrid();
+        }
+
+        private void RemoveSubscribedMeasurementsButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            m_dataContext.RemoveSubscribedMeasurements(SubscribedMeasurementsPager.SelectedMeasurements);
+            SubscribedMeasurementsPager.ReloadDataGrid();
+            SubscribedMeasurementsPager.ClearSelections();
         }
 
         private void SubscribeMeasurementUserControl_Unloaded(object sender, System.Windows.RoutedEventArgs e)
@@ -67,21 +90,21 @@ namespace openPG.UI.UserControls
             m_dataContext.Unload();
         }
 
-        private void UserControlSelectMeasurements_SourceCollectionChanged(object sender, System.Windows.RoutedEventArgs e)
+        private void UpdateAvailableFilterExpression()
         {
-            m_dataContext.MeasurementsToBeSubscribed = UserControlSelectMeasurements.UpdatedMeasurements;
-        }
+            bool displayInternal = DisplayInternalCheckBox.IsChecked ?? false;
+            int deviceID = m_dataContext.CurrentDevice.Key;
 
-        private void m_dataContext_CurrentDeviceChanged(object sender, System.Windows.RoutedEventArgs e)
-        {
-            UserControlSelectMeasurements.CurrentDeviceID = m_dataContext.CurrentDeviceID;
-            UserControlSelectMeasurements.Refresh(m_dataContext.CurrentDeviceID);
-        }
+            if (!displayInternal && deviceID > 0)
+                AvailableMeasurementsPager.FilterExpression = string.Format("Internal = 0 AND DeviceID = {0}", deviceID);
+            else if (!displayInternal)
+                AvailableMeasurementsPager.FilterExpression = "Internal = 0";
+            else if (deviceID > 0)
+                AvailableMeasurementsPager.FilterExpression = string.Format("DeviceID = {0}", deviceID);
+            else
+                AvailableMeasurementsPager.FilterExpression = string.Empty;
 
-        private void m_dataContext_MeasurementsSubscribed(object sender, System.Windows.RoutedEventArgs e)
-        {
-            UserControlSelectMeasurements.UncheckSelection();
-            UserControlSelectMeasurements.Refresh();
+            AvailableMeasurementsPager.ReloadDataGrid();
         }
 
         #endregion

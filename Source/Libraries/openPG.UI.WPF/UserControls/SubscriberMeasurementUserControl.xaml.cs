@@ -24,6 +24,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using openPG.UI.ViewModels;
+using openPG.UI.DataModels;
 
 namespace openPG.UI.UserControls
 {
@@ -47,43 +48,65 @@ namespace openPG.UI.UserControls
         {
             InitializeComponent();
             m_dataContext = new Subscribers(1);
-            m_dataContext.MeasurementsAdded += new Subscribers.OnMeasurementsAdded(m_dataContext_MeasurementsAdded);
+            m_dataContext.PropertyChanged += DataContext_PropertyChanged;
             StackPanelManageSubscriberMeasurements.DataContext = m_dataContext;
-            this.Loaded += new System.Windows.RoutedEventHandler(SubscriberMeasurementUserControl_Loaded);
+            UpdateFilterExpressions();
         }
 
         #endregion
 
         #region [ Methods ]
 
-        /// <summary>
-        /// Handles MeasurementsAdded event raised by MeasurementGroups view model class.
-        /// </summary>
-        /// <param name="sender">Source of the event.</param>
-        /// <param name="e">Event arguments.</param>
-        void m_dataContext_MeasurementsAdded(object sender, System.Windows.RoutedEventArgs e)
+        private void DataContext_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            UserControlSelectMeasurements.UncheckSelection();
+            if (e.PropertyName == "CurrentItem")
+                UpdateFilterExpressions();
         }
 
-        /// <summary>
-        /// Hanldes Loaded event of <see cref="SubscriberMeasurementUserControl"/>.
-        /// </summary>
-        /// <param name="sender">Source of the event.</param>
-        /// <param name="e">Event arguments</param>
-        void SubscriberMeasurementUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void AddMeasurementsButton_Click(object sender, RoutedEventArgs e)
         {
-            UserControlSelectMeasurements.SourceCollectionChanged += new SelectMeasurementUserControl.OnSourceCollectionChanged(UpdatePossibleMeasurements);
+            if (AllowedTab.IsSelected)
+            {
+                m_dataContext.AddAllowedMeasurements(AvailableMeasurementsPager.SelectedMeasurements);
+                AllowedMeasurementsPager.ReloadDataGrid();
+            }
+            else
+            {
+                m_dataContext.AddDeniedMeasurements(AvailableMeasurementsPager.SelectedMeasurements);
+                DeniedMeasurementsPager.ReloadDataGrid();
+            }
+
+            AvailableMeasurementsPager.ClearSelections();
         }
 
-        /// <summary>
-        /// Method to retireve user's selection in the SelectMeasurementUserControl.
-        /// </summary>
-        /// <param name="sender">Source of the event.</param>
-        /// <param name="e">Event arguments</param>
-        private void UpdatePossibleMeasurements(object sender, RoutedEventArgs e)
+        private void RemoveMeasurementsButton_Click(object sender, RoutedEventArgs e)
         {
-            m_dataContext.CurrentItem.AvailableMeasurements = UserControlSelectMeasurements.UpdatedMeasurements;
+            if (AllowedTab.IsSelected)
+            {
+                m_dataContext.RemoveAllowedMeasurements(AllowedMeasurementsPager.SelectedMeasurements);
+                AllowedMeasurementsPager.ReloadDataGrid();
+                AllowedMeasurementsPager.ClearSelections();
+            }
+            else
+            {
+                m_dataContext.RemoveDeniedMeasurements(DeniedMeasurementsPager.SelectedMeasurements);
+                DeniedMeasurementsPager.ReloadDataGrid();
+                DeniedMeasurementsPager.ClearSelections();
+            }
+        }
+
+        private void UpdateFilterExpressions()
+        {
+            Subscriber currentItem = m_dataContext.CurrentItem;
+
+            AllowedMeasurementsPager.FilterExpression = string.Format("SignalID IN (SELECT SignalID FROM SubscriberMeasurement WHERE NodeID = '{0}' AND SubscriberID = '{1}' AND Allowed <> 0)", currentItem.NodeID.ToString().ToUpper(), currentItem.ID.ToString().ToUpper());
+            DeniedMeasurementsPager.FilterExpression = string.Format("SignalID IN (SELECT SignalID FROM SubscriberMeasurement WHERE NodeID = '{0}' AND SubscriberID = '{1}' AND Allowed = 0)", currentItem.NodeID.ToString().ToUpper(), currentItem.ID.ToString().ToUpper());
+
+            if (AllowedMeasurementsPager.IsLoaded)
+                AllowedMeasurementsPager.ReloadDataGrid();
+
+            if (DeniedMeasurementsPager.IsLoaded)
+                DeniedMeasurementsPager.ReloadDataGrid();
         }
 
         #endregion

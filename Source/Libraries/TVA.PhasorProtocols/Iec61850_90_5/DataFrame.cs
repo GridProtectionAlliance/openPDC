@@ -362,8 +362,9 @@ namespace TVA.PhasorProtocols.Iec61850_90_5
                     m_stationName = "IEC61850Dataset";
                 }
 
-                // Parse dataset name
-                m_dataSet = buffer.ParseStringTag(SampledValueTag.Dataset, ref index);
+                //// Dataset name has been removed as per implemenation agreement
+                //// Parse dataset name
+                //m_dataSet = buffer.ParseStringTag(SampledValueTag.Dataset, ref index);
 
                 // Parse sample count (for some reason this is coming in as 3 bytes)
                 m_sampleCount = buffer.ParseUInt16Tag(SampledValueTag.SmpCnt, ref index);

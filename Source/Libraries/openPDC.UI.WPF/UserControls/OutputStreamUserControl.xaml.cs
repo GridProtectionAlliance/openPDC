@@ -43,6 +43,7 @@ namespace openPDC.UI.UserControls
     {
         #region [ Members ]
 
+        private bool m_committing;
         private OutputStreams m_dataContext;
         private DataGridColumn m_sortColumn;
         private string m_sortMemberPath;
@@ -88,6 +89,17 @@ namespace openPDC.UI.UserControls
             }
         }
 
+        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (!m_committing && e.EditAction == DataGridEditAction.Commit)
+            {
+                m_committing = true;
+                DataGridList.CommitEdit(DataGridEditingUnit.Row, true);
+                m_dataContext.ProcessPropertyChange();
+                m_committing = false;
+            }
+        }
+
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBoxMirrorSource.SelectedItem = new KeyValuePair<string, string>(m_dataContext.CurrentItem.MirroringSourceDevice, m_dataContext.CurrentItem.MirroringSourceDevice);
@@ -130,22 +142,35 @@ namespace openPDC.UI.UserControls
                 DataGridList.SelectedIndex = -1;
         }
 
-        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        private void DataGridEnabledCheckBox_Click(object sender, RoutedEventArgs e)
         {
+            // Get a reference to the enabled checkbox that was clicked
             CheckBox enabledCheckBox = sender as CheckBox;
 
             if ((object)enabledCheckBox != null)
             {
+                // Get the runtime ID of the currently selected output stream
                 string runtimeID = m_dataContext.RuntimeID;
 
                 if (!string.IsNullOrWhiteSpace(runtimeID))
                 {
-                    m_dataContext.Save();
+                    try
+                    {
+                        // Auto-save changes to the output stream
+                        m_dataContext.ProcessPropertyChange();
 
-                    if (enabledCheckBox.IsChecked.GetValueOrDefault())
-                        TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + runtimeID);
-                    else
-                        TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                        if (enabledCheckBox.IsChecked.GetValueOrDefault())
+                            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + runtimeID);
+                        else
+                            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                    }
+                    catch (Exception ex)
+                    {
+                        if ((object)ex.InnerException != null)
+                            TimeSeriesFramework.UI.CommonFunctions.LogException(null, "Output Stream Autosave", ex.InnerException);
+                        else
+                            TimeSeriesFramework.UI.CommonFunctions.LogException(null, "Output Stream Autosave", ex);
+                    }
                 }
             }
         }

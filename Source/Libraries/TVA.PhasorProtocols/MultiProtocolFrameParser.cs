@@ -70,7 +70,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using TimeSeriesFramework;
 using TVA.Communication;
@@ -509,6 +511,616 @@ namespace TVA.PhasorProtocols
             #endregion
         }
 
+        /// <summary>
+        /// Shared UDP client reference.
+        /// </summary>
+        /// <remarks>
+        /// This class is used to create multiple IClient instances which share a single UDP client.<br/>
+        /// One shared UDP client instance will be created per local end point.
+        /// </remarks>
+        private class SharedUdpClientReference : IClient
+        {
+            #region [ Members ]
+
+            // Events
+            public event EventHandler ConnectionAttempt;
+            public event EventHandler ConnectionEstablished;
+            public event EventHandler ConnectionTerminated;
+            public event EventHandler<EventArgs<Exception>> ConnectionException;
+
+            public event EventHandler SendDataStart;
+            public event EventHandler SendDataComplete;
+            public event EventHandler<EventArgs<Exception>> SendDataException;
+
+            public event EventHandler<EventArgs<int>> ReceiveData;
+            public event EventHandler<EventArgs<byte[], int>> ReceiveDataComplete;
+            public event EventHandler<EventArgs<EndPoint, int>> ReceiveDataFrom;
+            public event EventHandler<EventArgs<Exception>> ReceiveDataException;
+
+            public event EventHandler<EventArgs<Exception>> UnhandledUserException;
+            public event EventHandler Disposed;
+
+            // Fields
+            private UdpClient m_udpClient;
+            private EndPoint m_sendDestination;
+            private string m_connectionString;
+            private int m_receiveBufferSize;
+            private int m_maxConnectionAttempts;
+
+            #endregion
+
+            #region [ Properties ]
+
+            /// <summary>
+            /// Gets or sets the data required by the client to connect to the server.
+            /// </summary>
+            public string ConnectionString
+            {
+                get
+                {
+                    return m_connectionString;
+                }
+                set
+                {
+                    m_connectionString = value;
+                }
+            }
+
+            /// <summary>
+            /// Gets the <see cref="Time"/> for which the client has been connected to the server.
+            /// </summary>
+            public Time ConnectionTime
+            {
+                get
+                {
+                    if ((object)m_udpClient != null)
+                        return m_udpClient.ConnectionTime;
+
+                    return 0.0D;
+                }
+            }
+
+            /// <summary>
+            /// Gets the current <see cref="ClientState"/>.
+            /// </summary>
+            public ClientState CurrentState
+            {
+                get
+                {
+                    if ((object)m_udpClient != null)
+                        return m_udpClient.CurrentState;
+
+                    return ClientState.Disconnected;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets the maximum number of times the client will attempt to connect to the server.
+            /// </summary>
+            /// <remarks>Set <see cref="MaxConnectionAttempts"/> to -1 for infinite connection attempts.</remarks>
+            public int MaxConnectionAttempts
+            {
+                get
+                {
+                    return m_maxConnectionAttempts;
+                }
+                set
+                {
+                    m_maxConnectionAttempts = value;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets the size of the buffer used by the client for receiving data from the server.
+            /// </summary>
+            /// <exception cref="ArgumentException">The value being assigned is either zero or negative.</exception>
+            public int ReceiveBufferSize
+            {
+                get
+                {
+                    return m_receiveBufferSize;
+                }
+                set
+                {
+                    m_receiveBufferSize = value;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets the size of the buffer used by the client for sending data to the server.
+            /// </summary>
+            /// <exception cref="ArgumentException">The value being assigned is either zero or negative.</exception>
+            public int SendBufferSize
+            {
+                get
+                {
+                    if ((object)m_udpClient != null)
+                        return m_udpClient.SendBufferSize;
+
+                    return 0;
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            /// <summary>
+            /// Gets the server URI.
+            /// </summary>
+            public string ServerUri
+            {
+                get
+                {
+                    if ((object)m_udpClient != null)
+                        return m_udpClient.ServerUri;
+
+                    return null;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets the <see cref="Encoding"/> to be used for the text sent to the server.
+            /// </summary>
+            public Encoding TextEncoding
+            {
+                get
+                {
+                    if ((object)m_udpClient != null)
+                        return m_udpClient.TextEncoding;
+
+                    return null;
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            /// <summary>
+            /// Gets the <see cref="TransportProtocol"/> used by the client for the transportation of data with the server.
+            /// </summary>
+            public TransportProtocol TransportProtocol
+            {
+                get
+                {
+                    return TransportProtocol.Udp;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets a boolean value that indicates whether the client is currently enabled.
+            /// </summary>
+            /// <remarks>
+            /// Setting <see cref="Enabled"/> to true will start connection cycle for the client if it
+            /// is not connected, setting to false will disconnect the client if it is connected.
+            /// </remarks>
+            public bool Enabled
+            {
+                get
+                {
+                    if ((object)m_udpClient != null)
+                        return m_udpClient.Enabled;
+
+                    return false;
+                }
+                set
+                {
+                    if ((object)m_udpClient != null)
+                        m_udpClient.Enabled = value;
+                }
+            }
+
+            /// <summary>
+            /// Gets the unique identifier of the client.
+            /// </summary>
+            public string Name
+            {
+                get
+                {
+                    if ((object)m_udpClient != null)
+                        return m_udpClient.Name;
+
+                    return null;
+                }
+            }
+
+            /// <summary>
+            /// Gets the descriptive status of the client.
+            /// </summary>
+            public string Status
+            {
+                get
+                {
+                    if ((object)m_udpClient != null)
+                        return m_udpClient.Status;
+
+                    return string.Empty;
+                }
+            }
+
+            #endregion
+
+            #region [ Methods ]
+
+            /// <summary>
+            /// Connects the client to the server synchronously.
+            /// </summary>
+            public void Connect()
+            {
+                ConnectAsync();
+            }
+
+            /// <summary>
+            /// Connects the client to the server asynchronously.
+            /// </summary>
+            /// <exception cref="FormatException">Server property in <see cref="ConnectionString"/> is invalid.</exception>
+            /// <exception cref="InvalidOperationException">Attempt is made to connect the client when it is not disconnected.</exception>
+            /// <returns><see cref="WaitHandle"/> for the asynchronous operation.</returns>
+            /// <remarks>
+            /// Derived classes are expected to override this method with protocol specific connection operations. Call the base class
+            /// method to obtain an operational wait handle if protocol connection operation doesn't provide one already.
+            /// </remarks>
+            public WaitHandle ConnectAsync()
+            {
+                Dictionary<string, string> settings = m_connectionString.ParseKeyValuePairs();
+                Match endPointMatch;
+                IPStack ipStack;
+                string serverSetting;
+                string remotePortSetting;
+                int remotePort;
+
+                // Set up destination used for send operations
+                if (settings.TryGetValue("server", out serverSetting))
+                {
+                    if (settings.TryGetValue("remoteport", out remotePortSetting))
+                        serverSetting = string.Format("{0}:{1}", serverSetting, remotePortSetting);
+
+                    endPointMatch = Regex.Match(serverSetting, Transport.EndpointFormatRegex);
+
+                    if (int.TryParse(endPointMatch.Groups["port"].Value, out remotePort))
+                    {
+                        ipStack = Transport.GetInterfaceIPStack(settings);
+                        m_sendDestination = Transport.CreateEndPoint(endPointMatch.Groups["host"].Value, remotePort, ipStack);
+                    }
+                }
+
+                m_udpClient = GetSharedClient();
+                return null;
+            }
+
+            /// <summary>
+            /// When overridden in a derived class, disconnects client from the server synchronously.
+            /// </summary>
+            public void Disconnect()
+            {
+                ReturnSharedClient();
+            }
+
+            /// <summary>
+            /// Reads a number of bytes from the current received data buffer and writes those bytes into a byte array at the specified offset.
+            /// </summary>
+            /// <param name="buffer">Destination buffer used to hold copied bytes.</param>
+            /// <param name="startIndex">0-based starting index into destination <paramref name="buffer"/> to begin writing data.</param>
+            /// <param name="length">The number of bytes to read from current received data buffer and write into <paramref name="buffer"/>.</param>
+            /// <returns>The number of bytes read.</returns>
+            /// <remarks>
+            /// This function should only be called from within the <see cref="ClientBase.ReceiveData"/> event handler. Calling this method outside
+            /// this event will have unexpected results.
+            /// </remarks>
+            /// <exception cref="InvalidOperationException">No received data buffer has been defined to read.</exception>
+            /// <exception cref="ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            /// <exception cref="ArgumentOutOfRangeException">
+            /// <paramref name="startIndex"/> or <paramref name="length"/> is less than 0 -or- 
+            /// <paramref name="startIndex"/> and <paramref name="length"/> will exceed <paramref name="buffer"/> length.
+            /// </exception>
+            public int Read(byte[] buffer, int startIndex, int length)
+            {
+                if ((object)m_udpClient != null)
+                    return m_udpClient.Read(buffer, startIndex, length);
+
+                return 0;
+            }
+
+            /// <summary>
+            /// Sends data to the server synchronously.
+            /// </summary>
+            /// <param name="data">The buffer that contains the binary data to be sent.</param>
+            /// <param name="offset">The zero-based position in the <paramref name="data"/> at which to begin sending data.</param>
+            /// <param name="length">The number of bytes to be sent from <paramref name="data"/> starting at the <paramref name="offset"/>.</param>
+            public void Send(byte[] data, int offset, int length)
+            {
+                SendAsync(data, offset, length).WaitOne();
+            }
+
+            /// <summary>
+            /// Sends data to the server asynchronously.
+            /// </summary>
+            /// <param name="data">The buffer that contains the binary data to be sent.</param>
+            /// <param name="offset">The zero-based position in the <paramref name="data"/> at which to begin sending data.</param>
+            /// <param name="length">The number of bytes to be sent from <paramref name="data"/> starting at the <paramref name="offset"/>.</param>
+            /// <returns><see cref="WaitHandle"/> for the asynchronous operation.</returns>
+            public WaitHandle SendAsync(byte[] data, int offset, int length)
+            {
+                if ((object)m_sendDestination != null)
+                    return m_udpClient.SendDataToAsync(data, offset, length, m_sendDestination);
+
+                return new ManualResetEvent(true);
+            }
+
+            /// <summary>
+            /// Initializes the client.
+            /// </summary>
+            /// <remarks>
+            /// <see cref="Initialize()"/> is to be called by user-code directly only if the client is not consumed through the designer surface of the IDE.
+            /// </remarks>
+            public void Initialize()
+            {
+            }
+
+            /// <summary>
+            /// Releases the unmanaged resources used by the client and optionally releases the managed resources.
+            /// </summary>
+            public void Dispose()
+            {
+                ReturnSharedClient();
+            }
+
+            /// <summary>
+            /// Gets a reference to the shared client listening
+            /// on this client's local end point.
+            /// </summary>
+            /// <returns>A reference to a shared client.</returns>
+            private UdpClient GetSharedClient()
+            {
+                const string ConfigurationMismatchError = "Configuration mismatch detected between parsers using shared UDP client: {0}";
+
+                bool sharing;
+                EndPoint localEndPoint;
+                UdpClient sharedClient;
+
+                lock (s_sharedClients)
+                {
+                    localEndPoint = GetLocalEndPoint();
+                    sharing = s_sharedClients.TryGetValue(localEndPoint, out sharedClient);
+
+                    if (sharing)
+                    {
+                        // Validate settings to ensure that they match
+                        if (sharedClient.ReceiveBufferSize != m_receiveBufferSize)
+                            throw new InvalidOperationException(string.Format(ConfigurationMismatchError, "Receive buffer size"));
+
+                        if (sharedClient.MaxConnectionAttempts != m_maxConnectionAttempts)
+                            throw new InvalidOperationException(string.Format(ConfigurationMismatchError, "Max connection attempts"));
+                    }
+                    else
+                    {
+                        // Create new client and add it to the shared list
+                        sharedClient = new UdpClient();
+                        s_sharedClients.Add(localEndPoint, sharedClient);
+                        s_sharedReferenceCount.Add(localEndPoint, 0);
+                    }
+
+                    // Attach to event handlers
+                    sharedClient.ConnectionAttempt += SharedClient_ConnectionAttempt;
+                    sharedClient.ConnectionEstablished += SharedClient_ConnectionEstablished;
+                    sharedClient.ConnectionException += SharedClient_ConnectionException;
+                    sharedClient.ConnectionTerminated += SharedClient_ConnectionTerminated;
+                    sharedClient.ReceiveDataException += SharedClient_ReceiveDataException;
+                    sharedClient.ReceiveDataFrom += SharedClient_ReceiveDataFrom;
+                    sharedClient.SendDataException += SharedClient_SendDataException;
+
+                    if (!sharing)
+                    {
+                        // Initialize settings and connect
+                        sharedClient.ConnectionString = m_connectionString;
+                        sharedClient.ReceiveBufferSize = m_receiveBufferSize;
+                        sharedClient.MaxConnectionAttempts = m_maxConnectionAttempts;
+                        sharedClient.ConnectAsync();
+                    }
+
+                    // Increment reference count
+                    s_sharedReferenceCount[localEndPoint]++;
+                }
+
+                if (sharing && sharedClient.CurrentState == ClientState.Connected)
+                    OnConnectionEstablished();
+
+                return sharedClient;
+            }
+
+            /// <summary>
+            /// Releases a reference to this client's shared client,
+            /// and disposes of the shared client if nobody is using it.
+            /// </summary>
+            private void ReturnSharedClient()
+            {
+                EndPoint localEndPoint;
+
+                lock (s_sharedClients)
+                {
+                    if ((object)m_udpClient == null)
+                        return;
+
+                    // Detach from event handlers
+                    m_udpClient.ConnectionAttempt -= SharedClient_ConnectionAttempt;
+                    m_udpClient.ConnectionEstablished -= SharedClient_ConnectionEstablished;
+                    m_udpClient.ConnectionException -= SharedClient_ConnectionException;
+                    m_udpClient.ConnectionTerminated -= SharedClient_ConnectionTerminated;
+                    m_udpClient.ReceiveDataException -= SharedClient_ReceiveDataException;
+                    m_udpClient.ReceiveDataFrom -= SharedClient_ReceiveDataFrom;
+                    m_udpClient.SendDataException -= SharedClient_SendDataException;
+
+                    // Decrement reference count
+                    localEndPoint = GetLocalEndPoint();
+                    s_sharedReferenceCount[localEndPoint]--;
+
+                    if (s_sharedReferenceCount[localEndPoint] == 0)
+                    {
+                        // No more references to UDP client
+                        // exist so dispose of it
+                        m_udpClient.Disconnect();
+                        m_udpClient.Dispose();
+                        s_sharedClients.Remove(localEndPoint);
+                        s_sharedReferenceCount.Remove(localEndPoint);
+                    }
+
+                    // Release reference to UDP client
+                    m_udpClient = null;
+                }
+            }
+
+            /// <summary>
+            /// Terminates the client as quickly as possible and
+            /// removes it from the collection of shared clients.
+            /// </summary>
+            private void TerminateSharedClient()
+            {
+                EndPoint localEndPoint;
+                UdpClient sharedClient;
+
+                lock (s_sharedClients)
+                {
+                    localEndPoint = GetLocalEndPoint();
+
+                    if (s_sharedClients.TryGetValue(localEndPoint, out sharedClient))
+                    {
+                        // If the wrapped client and the shared client are the same,
+                        // no one has terminated the shared client yet
+                        if (m_udpClient == sharedClient)
+                        {
+                            // Disconnect and dispose of the old client
+                            m_udpClient.Disconnect();
+                            m_udpClient.Dispose();
+
+                            // Remove the old client from the
+                            // collection of shared clients
+                            localEndPoint = GetLocalEndPoint();
+                            s_sharedClients.Remove(localEndPoint);
+                            s_sharedReferenceCount.Remove(localEndPoint);
+                        }
+                    }
+
+                    m_udpClient = null;
+                }
+            }
+
+            /// <summary>
+            /// Determines the local end point this client intends
+            /// to listen on via connection string properties.
+            /// </summary>
+            /// <returns>The local end point.</returns>
+            private EndPoint GetLocalEndPoint()
+            {
+                Dictionary<string, string> settings;
+                IPStack ipStack;
+                string localInterface;
+                string localPortSetting;
+                int localPort;
+
+                settings = m_connectionString.ParseKeyValuePairs();
+                ipStack = Transport.GetInterfaceIPStack(settings);
+
+                if (!settings.TryGetValue("interface", out localInterface))
+                    localInterface = string.Empty;
+
+                if (!settings.TryGetValue("localport", out localPortSetting) && !settings.TryGetValue("port", out localPortSetting))
+                    throw new InvalidOperationException(string.Format("Local port property missing from connection string: {0}", m_connectionString));
+
+                if (!int.TryParse(localPortSetting, out localPort))
+                    throw new InvalidOperationException(string.Format("Unable to parse local port from \"{0}\".", localPortSetting));
+
+                return Transport.CreateEndPoint(localInterface, localPort, ipStack);
+            }
+
+            // Triggers the ConnectionEstablished event.
+            private void OnConnectionEstablished()
+            {
+                if ((object)ConnectionEstablished != null)
+                    ConnectionEstablished(this, new EventArgs());
+            }
+
+            // Shared client connection attempt handler.
+            // Forwards event to users attached to this client.
+            private void SharedClient_ConnectionAttempt(object sender, EventArgs e)
+            {
+                if ((object)ConnectionAttempt != null)
+                    ConnectionAttempt(this, e);
+            }
+
+            // Shared client connection established handler.
+            // Forwards event to users attached to this client.
+            private void SharedClient_ConnectionEstablished(object sender, EventArgs e)
+            {
+                OnConnectionEstablished();
+            }
+
+            // Shared client connection exception handler.
+            // Forwards event to users attached to this client.
+            private void SharedClient_ConnectionException(object sender, EventArgs<Exception> e)
+            {
+                // Terminate before propagating the exception to
+                // ensure that subsequent calls to ReturnSharedClient
+                // and GetSharedClient will work properly
+                TerminateSharedClient();
+
+                if ((object)ConnectionException != null)
+                    ConnectionException(this, e);
+            }
+
+            // Shared client connection terminated handler.
+            // Forwards event to users attached to this client.
+            private void SharedClient_ConnectionTerminated(object sender, EventArgs e)
+            {
+                if ((object)ConnectionTerminated != null)
+                    ConnectionTerminated(this, e);
+            }
+
+            // Shared client receive data exception handler.
+            // Forwards event to users attached to this client.
+            private void SharedClient_ReceiveDataException(object sender, EventArgs<Exception> e)
+            {
+                // Terminate before propagating the exception to
+                // ensure that subsequent calls to ReturnSharedClient
+                // and GetSharedClient will work properly
+                TerminateSharedClient();
+
+                if ((object)ReceiveDataException != null)
+                    ReceiveDataException(this, e);
+            }
+
+            // Shared client receive data from handler.
+            // Forwards event to users attached to this client.
+            private void SharedClient_ReceiveDataFrom(object sender, EventArgs<EndPoint, int> e)
+            {
+                if ((object)ReceiveDataFrom != null)
+                    ReceiveDataFrom(this, e);
+            }
+
+            // Shared client send data handler.
+            // Forwards event to users attached to this client.
+            private void SharedClient_SendDataException(object sender, EventArgs<Exception> e)
+            {
+                // Terminate before propagating the exception to
+                // ensure that subsequent calls to ReturnSharedClient
+                // and GetSharedClient will work properly
+                TerminateSharedClient();
+                
+                if ((object)SendDataException != null)
+                    SendDataException(this, e);
+            }
+
+            #endregion
+
+            #region [ Static ]
+
+            // Static Fields
+            private static Dictionary<EndPoint, UdpClient> s_sharedClients = new Dictionary<EndPoint, UdpClient>();
+            private static Dictionary<EndPoint, int> s_sharedReferenceCount = new Dictionary<EndPoint, int>();
+
+            #endregion
+        }
+
         // Constants
 
         /// <summary>
@@ -665,10 +1277,12 @@ namespace TVA.PhasorProtocols
         private IClient m_dataChannel;
         private IServer m_serverBasedDataChannel;
         private IClient m_commandChannel;
+        private IPAddress m_receiveFromAddress;
         private PrecisionInputTimer m_inputTimer;
         private System.Timers.Timer m_rateCalcTimer;
         private IConfigurationFrame m_configurationFrame;
         private long m_dataStreamStartTime;
+        private bool m_keepCommandChannelOpen;
         private bool m_executeParseOnSeparateThread;
         private bool m_autoRepeatCapturedPlayback;
         private bool m_injectSimulatedTimestamp;
@@ -724,6 +1338,7 @@ namespace TVA.PhasorProtocols
             m_autoStartDataParsingSequence = DefaultAutoStartDataParsingSequence;
             m_allowedParsingExceptions = DefaultAllowedParsingExceptions;
             m_parsingExceptionWindow = DefaultParsingExceptionWindow;
+            m_keepCommandChannelOpen = true;
             m_rateCalcTimer = new System.Timers.Timer();
             m_streamStopDataHandle = new ManualResetEventSlim(false);
             m_writeLock = new SpinLock();
@@ -843,7 +1458,26 @@ namespace TVA.PhasorProtocols
                 if (settings.TryGetValue("transportProtocol", out setting) || settings.TryGetValue("protocol", out setting))
                     TransportProtocol = (TransportProtocol)Enum.Parse(typeof(TransportProtocol), setting, true);
 
+                if (settings.TryGetValue("keepCommandChannelOpen", out setting))
+                    m_keepCommandChannelOpen = setting.ParseBoolean();
+
                 m_deviceSupportsCommands = DeriveCommandSupport();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets flag that determines whether to keep the
+        /// command channel open after the initial startup sequence.
+        /// </summary>
+        public bool KeepCommandChannelOpen
+        {
+            get
+            {
+                return m_keepCommandChannelOpen;
+            }
+            set
+            {
+                m_keepCommandChannelOpen = value;
             }
         }
 
@@ -1199,7 +1833,7 @@ namespace TVA.PhasorProtocols
         {
             get
             {
-                if (m_commandChannel != null)
+                if (m_commandChannel != null && m_keepCommandChannelOpen)
                     return (m_commandChannel.CurrentState == ClientState.Connected);
                 else if (m_dataChannel != null)
                     return (m_dataChannel.CurrentState == ClientState.Connected);
@@ -1865,7 +2499,7 @@ namespace TVA.PhasorProtocols
                     }
                     break;
                 case TransportProtocol.Udp:
-                    m_dataChannel = new UdpClient();
+                    InitializeUdpDataChannel(settings);
                     break;
                 case TransportProtocol.Serial:
                     m_dataChannel = new SerialClient();
@@ -1929,18 +2563,48 @@ namespace TVA.PhasorProtocols
                 throw new InvalidOperationException("No data channel was initialized, cannot start frame parser");
         }
 
+        private void InitializeUdpDataChannel(Dictionary<string, string> settings)
+        {
+            SharedUdpClientReference udpRef;
+            IPStack ipStack;
+
+            string receiveFromSetting;
+
+            if (!settings.TryGetValue("receiveFrom", out receiveFromSetting))
+            {
+                m_dataChannel = new UdpClient();
+            }
+            else
+            {
+                ipStack = Transport.GetInterfaceIPStack(settings);
+                m_receiveFromAddress = Transport.CreateEndPoint(receiveFromSetting, 0, ipStack).Address;
+
+                // Set up data channel
+                udpRef = new SharedUdpClientReference();
+                udpRef.ReceiveDataFrom += m_dataChannel_ReceiveDataFrom;
+                m_dataChannel = udpRef;
+            }
+        }
+
         /// <summary>
         /// Stops the <see cref="MultiProtocolFrameParser"/>.
         /// </summary>
         public void Stop()
         {
+            WaitHandle commandWaitHandle;
+
             m_enabled = false;
             m_rateCalcTimer.Enabled = false;
             m_configurationFrame = null;
 
             // Make sure data stream is disabled
             if (!m_skipDisableRealTimeData)
-                SendDeviceCommand(DeviceCommand.DisableRealTimeData);
+            {
+                commandWaitHandle = SendDeviceCommand(DeviceCommand.DisableRealTimeData);
+
+                if ((object)commandWaitHandle != null)
+                    commandWaitHandle.WaitOne(1000);
+            }
 
             if (m_dataChannel != null)
             {
@@ -2105,6 +2769,13 @@ namespace TVA.PhasorProtocols
                         if (m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected)
                         {
                             handle = m_commandChannel.SendAsync(buffer, 0, buffer.Length);
+
+                            // Shut down command channel at the end of the startup sequence
+                            if (!m_keepCommandChannelOpen && command == DeviceCommand.EnableRealTimeData)
+                            {
+                                handle.WaitOne(1000);
+                                m_commandChannel.Disconnect();
+                            }
                         }
                         else if (m_dataChannel != null && m_dataChannel.CurrentState == ClientState.Connected)
                         {
@@ -2260,9 +2931,24 @@ namespace TVA.PhasorProtocols
                     }
                     else if (m_transportProtocol == TransportProtocol.Udp)
                     {
+                        string server;
+                        Match endPoint;
+                        IPAddress serverAddress;
+
                         // IEEE protocols "can" use UDP connection to support devices commands, but only
                         // when remote device acts as a UDP listener (i.e., a "server" connection)
-                        return settings.ContainsKey("server");
+                        // and remote device is not a multicast end point
+                        if (settings.TryGetValue("server", out server))
+                        {
+                            if (!settings.ContainsKey("remotePort"))
+                            {
+                                endPoint = Regex.Match(server, Transport.EndpointFormatRegex);
+                                server = endPoint.Groups["host"].Value;
+                            }
+
+                            if (IPAddress.TryParse(server, out serverAddress))
+                                return !Transport.IsMulticastIP(serverAddress);
+                        }
                     }
                 }
             }
@@ -2357,7 +3043,8 @@ namespace TVA.PhasorProtocols
             }
             finally
             {
-                m_streamStopDataHandle.Set();
+                if ((object)m_streamStopDataHandle != null)
+                    m_streamStopDataHandle.Set();
             }
         }
 
@@ -2545,6 +3232,31 @@ namespace TVA.PhasorProtocols
         }
 
         #region [ Data Channel Event Handlers ]
+
+        private void m_dataChannel_ReceiveDataFrom(object sender, EventArgs<EndPoint, int> e)
+        {
+            IPEndPoint remoteEndPoint = e.Argument1 as IPEndPoint;
+            int length = e.Argument2;
+            byte[] buffer = null;
+
+            if ((object)remoteEndPoint == null)
+                return;
+
+            if (!remoteEndPoint.Address.Equals(m_receiveFromAddress))
+                return;
+
+            try
+            {
+                buffer = BufferPool.TakeBuffer(length);
+                length = m_dataChannel.Read(buffer, 0, length);
+                Write(buffer, 0, length);
+            }
+            finally
+            {
+                if (buffer != null)
+                    BufferPool.ReturnBuffer(buffer);
+            }
+        }
 
         private void m_dataChannel_ReceiveData(object sender, EventArgs<int> e)
         {
@@ -2739,8 +3451,11 @@ namespace TVA.PhasorProtocols
 
         private void m_commandChannel_ConnectionTerminated(object sender, EventArgs e)
         {
-            if (ConnectionTerminated != null)
-                ConnectionTerminated(this, EventArgs.Empty);
+            if (m_keepCommandChannelOpen)
+            {
+                if (ConnectionTerminated != null)
+                    ConnectionTerminated(this, EventArgs.Empty);
+            }
         }
 
         private void m_commandChannel_SendDataException(object sender, EventArgs<Exception> e)

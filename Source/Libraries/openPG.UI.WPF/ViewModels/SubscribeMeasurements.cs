@@ -44,7 +44,7 @@ namespace openPG.UI.ViewModels
 
         // Fields
         private Dictionary<int, string> m_deviceList;
-        private ObservableCollection<Measurement> m_subscribedMeasurements;
+        private ICollection<Measurement> m_currentSubscribedMeasurementsPage;
         private object m_subscribedMeasurementsLock;
         private RelayCommand m_subscribeMeasurementCommand;
         private RelayCommand m_unsubscribeMeasurementCommand;
@@ -127,51 +127,23 @@ namespace openPG.UI.ViewModels
         /// <summary>
         /// Gets or sets measurements with Subscribed flag set to true.
         /// </summary>
-        public ObservableCollection<Measurement> SubscribedMeasurements
+        public ICollection<Measurement> CurrentSubscribedMeasurementsPage
         {
             get
             {
                 lock (m_subscribedMeasurementsLock)
                 {
                     // Return a copy of the measurements since we can't request consumer to lock the collection
-                    return new ObservableCollection<Measurement>(m_subscribedMeasurements);
+                    return new ObservableCollection<Measurement>(m_currentSubscribedMeasurementsPage);
                 }
             }
             set
             {
                 lock (m_subscribedMeasurementsLock)
                 {
-                    m_subscribedMeasurements = value;
+                    m_currentSubscribedMeasurementsPage = value;
                 }
                 OnPropertyChanged("SubscribedMeasurements");
-            }
-        }
-
-        /// <summary>
-        /// Gets <see cref="ICommand"/> object to subscribe measurements.
-        /// </summary>
-        public ICommand SubscribeMeasurementCommand
-        {
-            get
-            {
-                if (m_subscribeMeasurementCommand == null)
-                    m_subscribeMeasurementCommand = new RelayCommand(SubscribeMeasurement, (param) => CanSave);
-
-                return m_subscribeMeasurementCommand;
-            }
-        }
-
-        /// <summary>
-        /// Gets <see cref="ICommand"/> object to unsubscribe measurements.
-        /// </summary>
-        public ICommand UnsubscribeMeasurementCommand
-        {
-            get
-            {
-                if (m_unsubscribeMeasurementCommand == null)
-                    m_unsubscribeMeasurementCommand = new RelayCommand(UnsubscribeMeasurement, (param) => CanSave);
-
-                return m_unsubscribeMeasurementCommand;
             }
         }
 
@@ -273,13 +245,15 @@ namespace openPG.UI.ViewModels
         {
             try
             {
-                SubscribedMeasurements = Measurement.GetSubscribedMeasurements(null);
                 DeviceList = openPDC.UI.DataModels.Device.GetLookupList(null, "Measurement", true);
                 CurrentDevice = DeviceList.First();
+
                 lock (m_subscribedMeasurementsLock)
                 {
-                    m_authorizationQuery.RequestAuthorizationStatus(m_subscribedMeasurements.Select(measurement => measurement.SignalID));
+                    if ((object)m_currentSubscribedMeasurementsPage != null && m_currentSubscribedMeasurementsPage.Count > 0)
+                        m_authorizationQuery.RequestAuthorizationStatus(m_currentSubscribedMeasurementsPage.Select(measurement => measurement.SignalID));
                 }
+
                 m_refreshTimer.Start();
             }
             catch (Exception ex)
@@ -328,36 +302,34 @@ namespace openPG.UI.ViewModels
             // Do Nothing.
         }
 
-        private void SubscribeMeasurement(object parameter)
+        public void AddSubscribedMeasurements(ICollection<Guid> measurementIDs)
         {
-            ObservableCollection<Measurement> measurementsToBeAdded = (ObservableCollection<Measurement>)parameter;
             ObservableCollection<int> deviceIDsForMeasurementsToBeAdded = new ObservableCollection<int>();
+            ObservableCollection<Measurement> measurementsToBeAdded;
 
             //If All Devices is not selected on the screen and a specific device is selected then we will just initialize that device.
             //Otherwise, maintain a list of unique device ids for which measurements are being subscribed and initialize all of them.
             if (CurrentDevice.Key > 0)
                 deviceIDsForMeasurementsToBeAdded.Add(CurrentDevice.Key);
 
-            if (measurementsToBeAdded != null && measurementsToBeAdded.Count > 0)
+            if (measurementIDs != null && measurementIDs.Count > 0)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
                 try
                 {
+                    measurementsToBeAdded = Measurement.LoadFromKeys(database, measurementIDs.ToList());
+
                     foreach (Measurement measurement in measurementsToBeAdded)
                     {
-                        if (measurement.Selected)
+                        measurement.Subscribed = true;
+
+                        Measurement.Save(database, measurement);
+
+                        if (CurrentDevice.Key == 0 && measurement.DeviceID != null)
                         {
-                            //measurement.Internal = false;
-                            measurement.Subscribed = true;
-
-                            Measurement.Save(database, measurement);
-
-                            if (CurrentDevice.Key == 0 && measurement.DeviceID != null)
-                            {
-                                if (!deviceIDsForMeasurementsToBeAdded.Contains((int)measurement.DeviceID))
-                                    deviceIDsForMeasurementsToBeAdded.Add((int)measurement.DeviceID);
-                            }
+                            if (!deviceIDsForMeasurementsToBeAdded.Contains((int)measurement.DeviceID))
+                                deviceIDsForMeasurementsToBeAdded.Add((int)measurement.DeviceID);
                         }
                     }
 
@@ -366,9 +338,6 @@ namespace openPG.UI.ViewModels
 
                     if (deviceIDsForMeasurementsToBeAdded.Count > 0)
                         ThreadPool.QueueUserWorkItem(InitializeDeviceConnection, deviceIDsForMeasurementsToBeAdded);
-
-                    SubscribedMeasurements = Measurement.GetSubscribedMeasurements(database);
-
                 }
                 catch (Exception ex)
                 {
@@ -384,25 +353,26 @@ namespace openPG.UI.ViewModels
             }
         }
 
-        private void UnsubscribeMeasurement(object parameter)
+        public void RemoveSubscribedMeasurements(ICollection<Guid> measurementIDs)
         {
-            ObservableCollection<object> measurementsToBeRemoved = (ObservableCollection<object>)parameter;
             ObservableCollection<int> deviceIDsForMeasurementsToBeAdded = new ObservableCollection<int>();
+            ObservableCollection<Measurement> measurementsToBeRemoved;
 
             //If All Devices is not selected on the screen and a specific device is selected then we will just initialize that device.
             //Otherwise, maintain a list of unique device ids for which measurements are being subscribed and initialize all of them.
             if (CurrentDevice.Key > 0)
                 deviceIDsForMeasurementsToBeAdded.Add(CurrentDevice.Key);
 
-            if (measurementsToBeRemoved != null && measurementsToBeRemoved.Count > 0)
+            if (measurementIDs != null && measurementIDs.Count > 0)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
                 try
                 {
+                    measurementsToBeRemoved = Measurement.LoadFromKeys(database, measurementIDs.ToList());
+
                     foreach (Measurement measurement in measurementsToBeRemoved)
                     {
-                        //measurement.Internal = false;
                         measurement.Subscribed = false;
 
                         Measurement.Save(database, measurement);
@@ -419,8 +389,6 @@ namespace openPG.UI.ViewModels
 
                     if (deviceIDsForMeasurementsToBeAdded.Count > 0)
                         ThreadPool.QueueUserWorkItem(InitializeDeviceConnection, deviceIDsForMeasurementsToBeAdded);
-
-                    SubscribedMeasurements = Measurement.GetSubscribedMeasurements(database);
                 }
                 catch (Exception ex)
                 {
@@ -472,7 +440,7 @@ namespace openPG.UI.ViewModels
 
             lock (m_subscribedMeasurementsLock)
             {
-                foreach (Measurement measurement in m_subscribedMeasurements)
+                foreach (Measurement measurement in m_currentSubscribedMeasurementsPage)
                 {
                     measurement.Selected = (authorizedMeasurements.BinarySearch(measurement.SignalID) >= 0);
                 }
@@ -486,7 +454,7 @@ namespace openPG.UI.ViewModels
         {
             lock (m_subscribedMeasurementsLock)
             {
-                m_authorizationQuery.RequestAuthorizationStatus(m_subscribedMeasurements.Select(measurement => measurement.SignalID));
+                m_authorizationQuery.RequestAuthorizationStatus(m_currentSubscribedMeasurementsPage.Select(measurement => measurement.SignalID));
             }
         }
 

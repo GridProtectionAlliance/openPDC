@@ -1253,13 +1253,13 @@ namespace openPDC.UI.ViewModels
                 {
                     if (inputWizardDevice.Include)
                     {
-                        Device device = Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "'");
+                        // Included NodeID to find devices
+                        Device device = Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "' and NodeID = '"+ database.CurrentNodeID() + "'");
                         if (device == null)
                         {
                             device = new Device();
                             device.Acronym = inputWizardDevice.Acronym.ToUpper();
                         }
-
                         device.Name = inputWizardDevice.Name;
                         device.CompanyID = CompanyID == 0 ? (int?)null : CompanyID;
                         device.HistorianID = HistorianID == 0 ? (int?)null : HistorianID;

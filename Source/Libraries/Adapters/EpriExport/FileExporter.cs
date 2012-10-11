@@ -50,7 +50,7 @@ namespace EpriExport
 
         // Constants
         private const string RowCountMarker = "<RCM>";
-        private readonly double[] BaseKVs = { -1.0D, -1.0D, 69.0D * SI.Kilo, 115.0D * SI.Kilo, 138.0D * SI.Kilo, 161.0D * SI.Kilo, 230.0D * SI.Kilo, 345.0D * SI.Kilo, 500.0D * SI.Kilo, 765.0D * SI.Kilo };
+        //private readonly double[] BaseKVs = { -1.0D, -1.0D, 69.0D * SI.Kilo, 115.0D * SI.Kilo, 138.0D * SI.Kilo, 161.0D * SI.Kilo, 230.0D * SI.Kilo, 345.0D * SI.Kilo, 500.0D * SI.Kilo, 765.0D * SI.Kilo };
         //private const double SqrtOf3 = 1.7320508075688772935274463415059D;
 
         // Fields
@@ -66,7 +66,7 @@ namespace EpriExport
         private Ticks m_startTime;
         private long m_rowCount;
         private long m_totalExports;
-        private Dictionary<MeasurementKey, double> m_baseVoltages;
+        //private Dictionary<MeasurementKey, double> m_baseVoltages;
 
         #endregion
 
@@ -235,16 +235,18 @@ namespace EpriExport
             if (!settings.TryGetValue("modelIdentifier", out setting))
                 throw new ArgumentException(string.Format(errorMessage, "modelIdentifier"));
 
+            ModelIdentifier = setting;
+
             // We enable tracking of latest measurements so we can use these values if points are missing - since we are using
             // latest measurement tracking, we sort all incoming points even though most of them will be thrown out...
             TrackLatestMeasurements = true;
 
-            // Create a new dictionary of base voltages
-            m_baseVoltages = new Dictionary<MeasurementKey, double>();
+            //// Create a new dictionary of base voltages
+            //m_baseVoltages = new Dictionary<MeasurementKey, double>();
 
             StringBuilder header = new StringBuilder();
-            MeasurementKey voltageMagnitudeKey;
-            double baseKV;
+            //MeasurementKey voltageMagnitudeKey;
+            //double baseKV;
 
             // Write header row
             header.Append("TimeStamp");
@@ -271,27 +273,27 @@ namespace EpriExport
                             header.AppendFormat(",{0} |V|", deviceName);
                             tieLines++;
 
-                            voltageMagnitudeKey = InputMeasurementKeys[i];
+                            //voltageMagnitudeKey = InputMeasurementKeys[i];
 
-                            if (settings.TryGetValue(voltageMagnitudeKey + "BaseKV", out setting) && double.TryParse(setting, out baseKV))
-                            {
-                                m_baseVoltages.Add(voltageMagnitudeKey, baseKV * SI.Kilo);
-                            }
-                            else
-                            {
-                                int baseKVCode;
+                            //if (settings.TryGetValue(voltageMagnitudeKey + "BaseKV", out setting) && double.TryParse(setting, out baseKV))
+                            //{
+                            //    m_baseVoltages.Add(voltageMagnitudeKey, baseKV * SI.Kilo);
+                            //}
+                            //else
+                            //{
+                            //    int baseKVCode;
 
-                                // Second check if base KV can be inferred from device name suffixed KV index
-                                if (int.TryParse(deviceName[deviceName.Length - 1].ToString(), out baseKVCode) && baseKVCode > 1 && baseKVCode < BaseKVs.Length)
-                                {
-                                    m_baseVoltages.Add(voltageMagnitudeKey, BaseKVs[baseKVCode]);
-                                }
-                                else
-                                {
-                                    OnStatusMessage("WARNING: Did not find a valid base KV setting for voltage magnitude {0}, assumed 500KV", voltageMagnitudeKey.ToString());
-                                    m_baseVoltages.Add(voltageMagnitudeKey, 500.0D * SI.Kilo);
-                                }
-                            }
+                            //    // Second check if base KV can be inferred from device name suffixed KV index
+                            //    if (int.TryParse(deviceName[deviceName.Length - 1].ToString(), out baseKVCode) && baseKVCode > 1 && baseKVCode < BaseKVs.Length)
+                            //    {
+                            //        m_baseVoltages.Add(voltageMagnitudeKey, BaseKVs[baseKVCode]);
+                            //    }
+                            //    else
+                            //    {
+                            //        OnStatusMessage("WARNING: Did not find a valid base KV setting for voltage magnitude {0}, assumed 500KV", voltageMagnitudeKey.ToString());
+                            //        m_baseVoltages.Add(voltageMagnitudeKey, 500.0D * SI.Kilo);
+                            //    }
+                            //}
                             break;
                         case SignalType.VPHA:
                             header.AppendFormat(",{0} Voltage Angle", deviceName);
@@ -308,10 +310,16 @@ namespace EpriExport
                     }
             }
 
-            string row3 = header.ToString();
+            string row5 = header.ToString();
             header = new StringBuilder();
 
             // Add row 1
+            header.AppendFormat("Comments: {0}\r\n", Comments);
+
+            // Add row 2
+            header.AppendFormat("Model Identifier: {0}\r\n", ModelIdentifier);
+
+            // Add row 3
             header.Append("Datapoints,Tielines,TimeStep");
 
             if (InputMeasurementKeys.Length - 3 > 0)
@@ -319,12 +327,12 @@ namespace EpriExport
 
             header.AppendLine();
 
-            // Add row 2
+            // Add row 4
             header.AppendFormat("{0},{1},{2}", RowCountMarker, tieLines, 1.0D / FramesPerSecond);
             header.AppendLine();
 
-            // Add row 3
-            header.AppendLine(row3);
+            // Add row 5
+            header.AppendLine(row5);
 
             // Cache header for each file export
             m_header = header.ToString();
@@ -355,7 +363,8 @@ namespace EpriExport
                     m_rowCount = 0;
                 }
 
-                m_fileData.AppendFormat("{0}", (timestamp - m_startTime).ToSeconds());
+                //m_fileData.AppendFormat("{0}", (timestamp - m_startTime).ToSeconds());
+                m_fileData.AppendFormat("{0}", timestamp.ToString("dd-MMM-yyyy HH:mm:ss.fff"));
 
                 // Export all defined input measurements
                 for (int i = 0; i < InputMeasurementKeys.Length; i++)
@@ -371,7 +380,7 @@ namespace EpriExport
                     if (signalType == SignalType.VPHM)
                     {
                         // Convert voltages to base units
-                        m_fileData.Append(measurementValue / m_baseVoltages[inputMeasurementKey]);
+                        m_fileData.Append(measurementValue / SI.Kilo);
                     }
                     else
                     {

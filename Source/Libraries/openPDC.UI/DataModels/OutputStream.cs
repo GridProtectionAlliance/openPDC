@@ -802,7 +802,7 @@ namespace openPDCManager.UI.DataModels
 
                 if ((object)keys != null && keys.Count > 0)
                 {
-                    commaSeparatedKeys = keys.Select(key => key.ToString() ).Aggregate((str1, str2) => str1 + "," + str2);
+                    commaSeparatedKeys = keys.Select(key => "" + key.ToString() + "").Aggregate((str1, str2) => str1 + "," + str2);
                     query = string.Format("SELECT * FROM OutputStreamDetail WHERE ID IN ({0})", commaSeparatedKeys);
                     outputStreamTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout);
 
@@ -873,7 +873,7 @@ namespace openPDCManager.UI.DataModels
                 OutputStreamDevice outputStreamDevice = outputStreamDevices[0];
 
                 // Get OriginalSource value for the above outputstreamdevice from the input Device table.
-                Device device = Device.GetDevice(database, " WHERE Acronym LIKE '%" + outputStreamDevice.Acronym + "'");
+                 Device device = Device.GetDevice(database, " WHERE Acronym LIKE '%" + outputStreamDevice.Acronym + "'");
 
                 if (device == null)
                     return "";
@@ -1046,7 +1046,7 @@ namespace openPDCManager.UI.DataModels
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM OutputStream WHERE ID = {0}", "outputStreamID"), DefaultTimeout, outputStreamID);
 
                 // Delete statistic measurements from database using the output stream acronym we have just deleted
-                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Measurement WHERE SignalReference LIKE '" + outputStreamAcronym.Rows[0].Field<string>("Acronym") + "$!OS-ST%' escape'$'"), DefaultTimeout);
+                database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Measurement WHERE SignalReference LIKE '" + outputStreamAcronym.Rows[0].Field<string>("Acronym") + "!OS-ST%'"), DefaultTimeout);
                 
                 TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
 
