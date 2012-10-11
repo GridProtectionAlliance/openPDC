@@ -231,7 +231,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace TVA.PhasorProtocols.Anonymous
+namespace PhasorProtocols.Anonymous
 {
     /// <summary>
     /// Contains a generic implementation of phasor classes used to represent phasor data that isn’t associated with any particular protocol.

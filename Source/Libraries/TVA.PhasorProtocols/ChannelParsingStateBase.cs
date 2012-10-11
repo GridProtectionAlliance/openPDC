@@ -26,7 +26,7 @@
 //******************************************************************************************************
 
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents the common implementation of the protocol independent parsing state class used by any kind of data.<br/>

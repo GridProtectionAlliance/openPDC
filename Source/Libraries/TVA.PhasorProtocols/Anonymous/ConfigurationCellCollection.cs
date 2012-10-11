@@ -234,13 +234,13 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.Anonymous
+namespace PhasorProtocols.Anonymous
 {
     /// <summary>
     /// Represents a protocol independent implementation of a collection of <see cref="IConfigurationCell"/> objects.
     /// </summary>
     [Serializable()]
-    public class ConfigurationCellCollection : TVA.PhasorProtocols.ConfigurationCellCollection
+    public class ConfigurationCellCollection : PhasorProtocols.ConfigurationCellCollection
     {
         #region [ Constructors ]
 

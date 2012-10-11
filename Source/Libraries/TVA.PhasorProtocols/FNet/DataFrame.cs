@@ -235,9 +235,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using TVA.Parsing;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.FNet
+namespace PhasorProtocols.FNet
 {
     /// <summary>
     /// Represents the F-NET implementation of a <see cref="IDataFrame"/> that can be sent or received.

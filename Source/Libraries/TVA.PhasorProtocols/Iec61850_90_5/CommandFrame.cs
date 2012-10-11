@@ -24,10 +24,11 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using TVA.IO.Checksums;
-using TVA.Parsing;
+using GSF.IO.Checksums;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.Iec61850_90_5
+namespace PhasorProtocols.Iec61850_90_5
 {
     /// <summary>
     /// Represents the IEC 61850-90-5 implementation of a <see cref="ICommandFrame"/> that can be sent or received.

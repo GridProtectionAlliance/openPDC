@@ -234,10 +234,11 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using TVA.IO.Checksums;
-using TVA.Parsing;
+using GSF.IO.Checksums;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.IeeeC37_118
+namespace PhasorProtocols.IeeeC37_118
 {
     /// <summary>
     /// Represents the IEEE C37.118 implementation of a <see cref="ICommandFrame"/> that can be sent or received.

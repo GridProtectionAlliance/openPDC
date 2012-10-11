@@ -235,10 +235,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using TVA.IO.Checksums;
-using TVA.Parsing;
+using GSF.IO.Checksums;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.Ieee1344
+namespace PhasorProtocols.Ieee1344
 {
     /// <summary>
     /// Represents the IEEE 1344 implementation of a <see cref="IConfigurationFrame"/> that can be sent or received.

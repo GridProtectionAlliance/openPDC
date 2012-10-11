@@ -29,9 +29,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
-using TVA.Parsing;
+using GSF.Parsing;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents the protocol independent common implementation of any <see cref="IHeaderFrame"/> that can be sent or received.

@@ -236,10 +236,11 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using TVA.IO.Checksums;
-using TVA.Parsing;
+using GSF.IO.Checksums;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.Ieee1344
+namespace PhasorProtocols.Ieee1344
 {
     /// <summary>
     /// Represents the common header for all IEEE 1344 frames of data.

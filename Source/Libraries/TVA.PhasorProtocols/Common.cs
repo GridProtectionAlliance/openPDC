@@ -31,10 +31,11 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
-using TimeSeriesFramework;
-using TVA.Parsing;
+using GSF;
+using GSF.TimeSeries;
+using GSF.Parsing;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Common constants, functions and extensions for phasor classes.
@@ -122,8 +123,8 @@ namespace TVA.PhasorProtocols
 
             // TODO: When project is renamed to "PhasorProtocols.dll", uncomment the following:
             //string xmlFile = Encoding.Default.GetString(configStream.ReadStream());            
-            //xmlFile = xmlFile.Replace("TVA.Phasors", "PhasorProtocols");
-            //xmlFile = xmlFile.Replace("TVA.PhasorProtocols", "PhasorProtocols");
+            //xmlFile = xmlFile.Replace("GSF.Phasors", "PhasorProtocols");
+            //xmlFile = xmlFile.Replace("PhasorProtocols", "PhasorProtocols");
 
             xmlSerializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
             xmlSerializer.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;

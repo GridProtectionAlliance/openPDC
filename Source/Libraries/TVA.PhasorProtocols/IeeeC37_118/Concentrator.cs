@@ -29,11 +29,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TVA.Communication;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
+using GSF.Communication;
+using GSF;
 
-namespace TVA.PhasorProtocols.IeeeC37_118
+namespace PhasorProtocols.IeeeC37_118
 {
     /// <summary>
     /// Represents an IEEE C37.118 phasor data concentrator.
@@ -133,9 +134,9 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Creates a new IEEE C37.118 specific <see cref="IConfigurationFrame"/> based on provided protocol independent <paramref name="baseConfigurationFrame"/>.
         /// </summary>
-        /// <param name="baseConfigurationFrame">Protocol independent <see cref="TVA.PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
+        /// <param name="baseConfigurationFrame">Protocol independent <see cref="PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
         /// <returns>A new IEEE C37.118 specific <see cref="IConfigurationFrame"/>.</returns>
-        protected override IConfigurationFrame CreateNewConfigurationFrame(TVA.PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame)
+        protected override IConfigurationFrame CreateNewConfigurationFrame(PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame)
         {
             // Create a new IEEE C37.118 configuration frame 2 using base configuration
             ConfigurationFrame2 configurationFrame = Concentrator.CreateConfigurationFrame(baseConfigurationFrame, m_timeBase, base.NominalFrequency);
@@ -283,11 +284,11 @@ namespace TVA.PhasorProtocols.IeeeC37_118
         /// <summary>
         /// Creates a new IEEE C37.118 <see cref="ConfigurationFrame2"/> based on provided protocol independent <paramref name="baseConfigurationFrame"/>.
         /// </summary>
-        /// <param name="baseConfigurationFrame">Protocol independent <see cref="TVA.PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
+        /// <param name="baseConfigurationFrame">Protocol independent <see cref="PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
         /// <param name="timeBase">Timebase to use for fraction second resolution.</param>
         /// <param name="nominalFrequency">The nominal <see cref="LineFrequency"/> to use for the new <see cref="ConfigurationFrame2"/></param>.
         /// <returns>A new IEEE C37.118 <see cref="ConfigurationFrame2"/>.</returns>
-        public static ConfigurationFrame2 CreateConfigurationFrame(TVA.PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame, uint timeBase, LineFrequency nominalFrequency)
+        public static ConfigurationFrame2 CreateConfigurationFrame(PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame, uint timeBase, LineFrequency nominalFrequency)
         {
             ConfigurationCell newCell;
             uint maskValue;
@@ -295,7 +296,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
             // Create a new IEEE C37.118 configuration frame 2 using base configuration
             ConfigurationFrame2 configurationFrame = new ConfigurationFrame2(timeBase, baseConfigurationFrame.IDCode, DateTime.UtcNow.Ticks, baseConfigurationFrame.FrameRate);
 
-            foreach (TVA.PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
+            foreach (PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
             {
                 // Create a new IEEE C37.118 configuration cell (i.e., a PMU configuration)
                 newCell = new ConfigurationCell(configurationFrame, baseCell.IDCode, nominalFrequency);
@@ -327,7 +328,7 @@ namespace TVA.PhasorProtocols.IeeeC37_118
                 foreach (IDigitalDefinition digitalDefinition in baseCell.DigitalDefinitions)
                 {
                     // Attempt to derive user defined mask value if available
-                    TVA.PhasorProtocols.Anonymous.DigitalDefinition anonymousDigitalDefinition = digitalDefinition as TVA.PhasorProtocols.Anonymous.DigitalDefinition;
+                    PhasorProtocols.Anonymous.DigitalDefinition anonymousDigitalDefinition = digitalDefinition as PhasorProtocols.Anonymous.DigitalDefinition;
 
                     if (anonymousDigitalDefinition != null)
                         maskValue = anonymousDigitalDefinition.MaskValue;

@@ -27,10 +27,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using TimeSeriesFramework;
-using TVA.Parsing;
+using GSF.TimeSeries;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents the protocol independent common implementation of any frame of data that can be sent or received.
@@ -508,7 +509,7 @@ namespace TVA.PhasorProtocols
         /// <example>
         /// This example provides a CRC-CCITT checksum:
         /// <code>
-        /// using TVA.IO.Checksums;
+        /// using GSF.IO.Checksums;
         /// 
         /// protected override ushort CalculateChecksum(byte[] buffer, int offset, int length)
         /// {

@@ -242,9 +242,9 @@
       <Project>{AFFE84C3-9703-4DDA-8733-39B9894A2848}</Project>
       <Name>PMUConnectionTester</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TVA.PhasorProtocols\TVA.PhasorProtocols.csproj">
+    <ProjectReference Include="..\TVA.PhasorProtocols\PhasorProtocols.csproj">
       <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
-      <Name>TVA.PhasorProtocols</Name>
+      <Name>PhasorProtocols</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

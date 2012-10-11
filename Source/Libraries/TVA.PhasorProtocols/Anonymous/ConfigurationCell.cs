@@ -23,11 +23,12 @@
 //
 //******************************************************************************************************
 
+using GSF;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.Anonymous
+namespace PhasorProtocols.Anonymous
 {
     /// <summary>
     /// Represents a protocol independent implementation of a <see cref="IConfigurationCell"/> that can be sent or received.

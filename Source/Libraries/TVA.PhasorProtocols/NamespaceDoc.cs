@@ -231,7 +231,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Contains fundamental classes and interfaces used by all phasor protocol parsing and generating code.

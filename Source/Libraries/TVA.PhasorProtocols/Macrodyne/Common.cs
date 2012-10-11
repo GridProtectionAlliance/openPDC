@@ -23,9 +23,10 @@
 //
 //******************************************************************************************************
 
+using GSF;
 using System;
 
-namespace TVA.PhasorProtocols.Macrodyne
+namespace PhasorProtocols.Macrodyne
 {
     #region [ Enumerations ]
 

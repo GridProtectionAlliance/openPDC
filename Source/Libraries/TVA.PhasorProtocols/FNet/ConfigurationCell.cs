@@ -231,11 +231,12 @@
 */
 #endregion
 
+using GSF;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.FNet
+namespace PhasorProtocols.FNet
 {
     /// <summary>
     /// Represents the F-NET implementation of a <see cref="IConfigurationCell"/> that can be sent or received.

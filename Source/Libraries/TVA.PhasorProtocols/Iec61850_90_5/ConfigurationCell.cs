@@ -21,12 +21,13 @@
 //
 //******************************************************************************************************
 
+using GSF;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.Iec61850_90_5
+namespace PhasorProtocols.Iec61850_90_5
 {
     /// <summary>
     /// Represents the IEC 61850-90-5 implementation of a <see cref="IConfigurationCell"/> that can be sent or received.

@@ -233,9 +233,10 @@
 
 using System;
 using System.Runtime.Serialization;
-using TVA.Parsing;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.SelFastMessage
+namespace PhasorProtocols.SelFastMessage
 {
     /// <summary>
     /// Represents the common header for all SEL Fast Message frames of data.

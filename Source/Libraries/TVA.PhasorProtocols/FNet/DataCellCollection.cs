@@ -234,7 +234,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.FNet
+namespace PhasorProtocols.FNet
 {
     /// <summary>
     /// Represents a F-NET implementation of a collection of <see cref="IDataCell"/> objects.

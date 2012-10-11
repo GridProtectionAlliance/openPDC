@@ -43,14 +43,15 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TVA.Communication;
-using TVA.Parsing;
-using TVA.PhasorProtocols.Anonymous;
-using TVA.Units;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
+using GSF.Communication;
+using GSF.Parsing;
+using PhasorProtocols.Anonymous;
+using GSF.Units;
+using GSF;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents an <see cref="IActionAdapter"/> used to generate and transmit concentrated stream

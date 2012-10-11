@@ -31,12 +31,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
-using TVA.Interop;
-using TVA.IO.Checksums;
-using TVA.Parsing;
-using TVA.Reflection;
+using GSF;
+using GSF.Interop;
+using GSF.IO.Checksums;
+using GSF.Parsing;
+using GSF.Reflection;
 
-namespace TVA.PhasorProtocols.Macrodyne
+namespace PhasorProtocols.Macrodyne
 {
     /// <summary>
     /// Represents the Macrodyne implementation of a <see cref="IConfigurationFrame"/> that can be sent or received.

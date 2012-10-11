@@ -233,7 +233,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace TVA.PhasorProtocols.FNet
+namespace PhasorProtocols.FNet
 {
     #region [ Enumerations ]
 

@@ -232,9 +232,9 @@
 #endregion
 
 using System;
-using TimeSeriesFramework;
+using GSF.TimeSeries;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     #region [ Enumerations ]
 

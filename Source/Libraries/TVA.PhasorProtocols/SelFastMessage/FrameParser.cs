@@ -233,9 +233,10 @@
 
 using System;
 using System.Text;
-using TVA.Parsing;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.SelFastMessage
+namespace PhasorProtocols.SelFastMessage
 {
     /// <summary>
     /// Represents a frame parser for a SEL Fast Message binary data stream that returns parsed data via events.

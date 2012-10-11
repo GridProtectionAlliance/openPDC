@@ -19,7 +19,7 @@
 //  03/16/2006 - J. Ritchie Carroll
 //       Initial version of source generated.
 //  06/26/2006 - Pinal C. Patel
-//       Changed out the socket code with TcpClient and UdpClient components from TVA.Communication.
+//       Changed out the socket code with TcpClient and UdpClient components from GSF.Communication.
 //  01/31/2007 - J. Ritchie Carroll
 //       Added TCP "server" support to allow listening connections from devices that act as data
 //       clients, e.g., F-NET devices.
@@ -74,13 +74,14 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using TimeSeriesFramework;
-using TVA.Communication;
-using TVA.IO;
-using TVA.Parsing;
-using TVA.Units;
+using GSF.TimeSeries;
+using GSF.Communication;
+using GSF.IO;
+using GSF.Parsing;
+using GSF.Units;
+using GSF;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     #region [ Enumerations ]
 

@@ -24,12 +24,13 @@
 //******************************************************************************************************
 
 
+using GSF;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents an implementation of <see cref="IConfigurationFrame"/> that by existance only denotes an error state.
@@ -188,7 +189,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        int TVA.Parsing.ISupportBinaryImage.BinaryLength
+        int GSF.Parsing.ISupportBinaryImage.BinaryLength
         {
             get
             {
@@ -196,17 +197,17 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        int TVA.Parsing.ISupportBinaryImage.ParseBinaryImage(byte[] buffer, int startIndex, int length)
+        int GSF.Parsing.ISupportBinaryImage.ParseBinaryImage(byte[] buffer, int startIndex, int length)
         {
             return 0;
         }
 
-        int TVA.Parsing.ISupportBinaryImage.GenerateBinaryImage(byte[] buffer, int startIndex)
+        int GSF.Parsing.ISupportBinaryImage.GenerateBinaryImage(byte[] buffer, int startIndex)
         {
             return 0;
         }
 
-        TimeSeriesFramework.IMeasurement TimeSeriesFramework.IFrame.LastSortedMeasurement
+        GSF.TimeSeries.IMeasurement GSF.TimeSeries.IFrame.LastSortedMeasurement
         {
             get
             {
@@ -218,7 +219,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        ConcurrentDictionary<TimeSeriesFramework.MeasurementKey, TimeSeriesFramework.IMeasurement> TimeSeriesFramework.IFrame.Measurements
+        ConcurrentDictionary<GSF.TimeSeries.MeasurementKey, GSF.TimeSeries.IMeasurement> GSF.TimeSeries.IFrame.Measurements
         {
             get
             {
@@ -226,7 +227,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        bool TimeSeriesFramework.IFrame.Published
+        bool GSF.TimeSeries.IFrame.Published
         {
             get
             {
@@ -238,7 +239,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        int TimeSeriesFramework.IFrame.SortedMeasurements
+        int GSF.TimeSeries.IFrame.SortedMeasurements
         {
             get
             {
@@ -250,7 +251,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        Ticks TimeSeriesFramework.IFrame.Timestamp
+        Ticks GSF.TimeSeries.IFrame.Timestamp
         {
             get
             {
@@ -262,7 +263,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        Ticks TimeSeriesFramework.IFrame.ReceivedTimestamp
+        Ticks GSF.TimeSeries.IFrame.ReceivedTimestamp
         {
             get
             {
@@ -274,7 +275,7 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        Ticks TimeSeriesFramework.IFrame.PublishedTimestamp
+        Ticks GSF.TimeSeries.IFrame.PublishedTimestamp
         {
             get
             {
@@ -286,12 +287,12 @@ namespace TVA.PhasorProtocols
             }
         }
 
-        bool IEquatable<TimeSeriesFramework.IFrame>.Equals(TimeSeriesFramework.IFrame other)
+        bool IEquatable<GSF.TimeSeries.IFrame>.Equals(GSF.TimeSeries.IFrame other)
         {
             return false;
         }
 
-        int IComparable<TimeSeriesFramework.IFrame>.CompareTo(TimeSeriesFramework.IFrame other)
+        int IComparable<GSF.TimeSeries.IFrame>.CompareTo(GSF.TimeSeries.IFrame other)
         {
             return 1;
         }

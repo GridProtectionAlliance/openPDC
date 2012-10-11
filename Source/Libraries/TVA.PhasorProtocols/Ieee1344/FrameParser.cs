@@ -232,9 +232,10 @@
 #endregion
 
 using System;
-using TVA.Parsing;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.Ieee1344
+namespace PhasorProtocols.Ieee1344
 {
     /// <summary>
     /// Represents a frame parser for an IEEE 1344 binary data stream that returns parsed data via events.

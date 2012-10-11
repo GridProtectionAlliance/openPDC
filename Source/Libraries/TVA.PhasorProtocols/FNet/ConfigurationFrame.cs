@@ -233,10 +233,11 @@
 */
 #endregion
 
+using GSF;
 using System;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.FNet
+namespace PhasorProtocols.FNet
 {
     /// <summary>
     /// Represents the F-NET implementation of a <see cref="IConfigurationFrame"/> that can be sent or received.

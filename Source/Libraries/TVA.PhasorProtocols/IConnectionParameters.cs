@@ -233,7 +233,7 @@
 
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents a protocol independent interface representation of custom connection parameters.

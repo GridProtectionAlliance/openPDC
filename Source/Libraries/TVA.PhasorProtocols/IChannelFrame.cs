@@ -27,9 +27,10 @@
 
 using System;
 using System.Runtime.Serialization;
-using TimeSeriesFramework;
+using GSF.TimeSeries;
+using GSF;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     #region [ Enumerations ]
 

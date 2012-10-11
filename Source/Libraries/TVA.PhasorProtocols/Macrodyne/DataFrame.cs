@@ -26,10 +26,11 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using TVA.IO.Checksums;
-using TVA.Parsing;
+using GSF.IO.Checksums;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.Macrodyne
+namespace PhasorProtocols.Macrodyne
 {
     /// <summary>
     /// Represents the Macrodyne implementation of a <see cref="IDataFrame"/> that can be sent or received.

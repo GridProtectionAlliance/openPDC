@@ -231,7 +231,7 @@
 */
 #endregion
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Defines function signature for creating new <see cref="IChannelValue{T}"/> objects.

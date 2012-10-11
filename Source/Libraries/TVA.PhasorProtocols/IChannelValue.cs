@@ -234,9 +234,9 @@
 #endregion
 
 using System.Runtime.Serialization;
-using TimeSeriesFramework;
+using GSF.TimeSeries;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents a protocol independent interface representation any kind of <see cref="IChannel"/> data value.

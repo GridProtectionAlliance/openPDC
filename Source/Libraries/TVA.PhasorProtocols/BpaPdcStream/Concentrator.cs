@@ -235,11 +235,12 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TVA.IO;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
+using GSF.IO;
+using GSF;
 
-namespace TVA.PhasorProtocols.BpaPdcStream
+namespace PhasorProtocols.BpaPdcStream
 {
     /// <summary>
     /// Represents a BPA PDCstream phasor data concentrator.
@@ -320,15 +321,15 @@ namespace TVA.PhasorProtocols.BpaPdcStream
         /// <summary>
         /// Creates a new BPA PDCstream specific <see cref="IConfigurationFrame"/> based on provided protocol independent <paramref name="baseConfigurationFrame"/>.
         /// </summary>
-        /// <param name="baseConfigurationFrame">Protocol independent <see cref="TVA.PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
+        /// <param name="baseConfigurationFrame">Protocol independent <see cref="PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
         /// <returns>A new BPA PDCstream specific <see cref="IConfigurationFrame"/>.</returns>
-        protected override IConfigurationFrame CreateNewConfigurationFrame(TVA.PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame)
+        protected override IConfigurationFrame CreateNewConfigurationFrame(PhasorProtocols.Anonymous.ConfigurationFrame baseConfigurationFrame)
         {
             ConfigurationCell newCell;
             int count = 0;
 
             // Fix ID labels to use BPA PDCstream 4 character label
-            foreach (TVA.PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
+            foreach (PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
             {
                 baseCell.StationName = baseCell.IDLabel.TruncateLeft(baseCell.MaximumStationNameLength);
                 baseCell.IDLabel = DataSource.Tables["OutputStreamDevices"].Select(string.Format("ID={0}", baseCell.IDCode))[0]["BpaAcronym"].ToNonNullString(baseCell.IDLabel).TruncateLeft(4);
@@ -360,7 +361,7 @@ namespace TVA.PhasorProtocols.BpaPdcStream
             // Create a new BPA PDCstream configuration frame using base configuration
             ConfigurationFrame configurationFrame = new ConfigurationFrame(DateTime.UtcNow.Ticks, m_iniFileName, 1, RevisionNumber.Revision2, StreamType.Compact);
 
-            foreach (TVA.PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
+            foreach (PhasorProtocols.Anonymous.ConfigurationCell baseCell in baseConfigurationFrame.Cells)
             {
                 // Create a new BPA PDCstream configuration cell (i.e., a PMU configuration)
                 newCell = new ConfigurationCell(configurationFrame, baseCell.IDCode, base.NominalFrequency);

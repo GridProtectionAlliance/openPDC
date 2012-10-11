@@ -33,7 +33,7 @@ using System.Runtime.Serialization;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace TVA.PhasorProtocols.BpaPdcStream
+namespace PhasorProtocols.BpaPdcStream
 {
     /// <summary>
     /// INI file name browser used with BPA PDCstream <see cref="ConnectionParameters"/>.

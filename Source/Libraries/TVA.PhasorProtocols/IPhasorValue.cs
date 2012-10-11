@@ -21,9 +21,9 @@
 //
 //******************************************************************************************************
 
-using TVA.Units;
+using GSF.Units;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents a protocol independent interface representation of a phasor value.
@@ -55,7 +55,7 @@ namespace TVA.PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="TVA.Units.Angle"/> value (a.k.a., the argument) of this <see cref="IPhasorValue"/>, in radians.
+        /// Gets or sets the <see cref="GSF.Units.Angle"/> value (a.k.a., the argument) of this <see cref="IPhasorValue"/>, in radians.
         /// </summary>
         Angle Angle
         {

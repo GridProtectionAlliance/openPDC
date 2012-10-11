@@ -1,5 +1,5 @@
 //******************************************************************************************************
-//  C:\Projects\openPDC\Synchrophasor\Current Version\Source\Libraries\TVA.PhasorProtocols\FrameParserBase.cs - Gbtc
+//  C:\Projects\openPDC\Synchrophasor\Current Version\Source\Libraries\PhasorProtocols\FrameParserBase.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -35,10 +35,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using TVA.Collections;
-using TVA.Parsing;
+using GSF.Collections;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents a frame parser that defines the basic functionality for a protocol to parse a binary data stream and return the parsed data via events.

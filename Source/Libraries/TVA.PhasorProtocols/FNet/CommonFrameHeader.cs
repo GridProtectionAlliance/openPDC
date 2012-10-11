@@ -233,9 +233,10 @@
 
 using System;
 using System.Text;
-using TVA.Parsing;
+using GSF;
+using GSF.Parsing;
 
-namespace TVA.PhasorProtocols.FNet
+namespace PhasorProtocols.FNet
 {
     /// <summary>
     /// Represents the common header for a F-NET frame of data.

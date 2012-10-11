@@ -234,9 +234,10 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using TVA.Parsing;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.IeeeC37_118
+namespace PhasorProtocols.IeeeC37_118
 {
     /// <summary>
     /// Represents the common header for all IEEE C37.118 frames of data.

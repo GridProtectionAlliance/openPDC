@@ -234,7 +234,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents a protocol independent collection of <see cref="IPhasorValue"/> objects.

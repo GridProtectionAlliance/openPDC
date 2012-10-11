@@ -16,9 +16,9 @@ using System.Runtime.InteropServices;
 #else
 [assembly: AssemblyConfiguration("Release Build")]
 #endif
-[assembly: AssemblyDefaultAlias("TVA.PhasorProtocols")]
+[assembly: AssemblyDefaultAlias("PhasorProtocols")]
 [assembly: AssemblyDescription("Standard phasor protocol implementations.")]
-[assembly: AssemblyTitle("TVA.PhasorProtocols")]
+[assembly: AssemblyTitle("PhasorProtocols")]
 
 // Other configuration attributes.
 [assembly: CLSCompliant(false)]

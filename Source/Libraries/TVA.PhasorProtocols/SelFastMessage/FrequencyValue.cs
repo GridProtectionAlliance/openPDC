@@ -231,10 +231,11 @@
 */
 #endregion
 
+using GSF;
 using System;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.SelFastMessage
+namespace PhasorProtocols.SelFastMessage
 {
     /// <summary>
     /// Represents the SEL Fast Message implementation of a <see cref="IFrequencyValue"/>.

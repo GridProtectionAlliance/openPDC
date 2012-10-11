@@ -26,10 +26,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
-using TVA.IO;
-using TVA.Parsing;
+using GSF.IO;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.Iec61850_90_5
+namespace PhasorProtocols.Iec61850_90_5
 {
     /// <summary>
     /// Represents the IEC 61850-90-5 implementation of a <see cref="IDataFrame"/> that can be sent or received.

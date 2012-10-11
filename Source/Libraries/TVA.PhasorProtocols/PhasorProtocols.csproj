@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>TVA.PhasorProtocols</RootNamespace>
-    <AssemblyName>TVA.PhasorProtocols</AssemblyName>
+    <RootNamespace>PhasorProtocols</RootNamespace>
+    <AssemblyName>PhasorProtocols</AssemblyName>
     <MyType>Windows</MyType>
     <OptionStrict>Off</OptionStrict>
     <SignAssembly>false</SignAssembly>
@@ -75,6 +75,15 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GSF.Communication">
+      <HintPath>..\..\Dependencies\GSF\GSF.Communication.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.Core">
+      <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.TimeSeries">
+      <HintPath>..\..\Dependencies\GSF\GSF.TimeSeries.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -91,20 +100,6 @@
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TimeSeriesFramework">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Communication">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath Condition=" '$(SignAssembly)' != 'true' ">..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
-      <HintPath Condition=" '$(SignAssembly)' == 'true' ">..\..\Dependencies\TVA\Signed\TVA.Communication.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Core">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath Condition=" '$(SignAssembly)' != 'true' ">..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
-      <HintPath Condition=" '$(SignAssembly)' == 'true' ">..\..\Dependencies\TVA\Signed\TVA.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

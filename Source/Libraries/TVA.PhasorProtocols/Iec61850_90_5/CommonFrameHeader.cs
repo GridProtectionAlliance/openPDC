@@ -25,9 +25,10 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
-using TVA.Parsing;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.Iec61850_90_5
+namespace PhasorProtocols.Iec61850_90_5
 {
     /// <summary>
     /// Represents the common header for all IEC 61850-90-5 frames of data.

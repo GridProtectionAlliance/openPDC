@@ -232,9 +232,10 @@
 #endregion
 
 using System;
-using TimeSeriesFramework;
+using GSF.TimeSeries;
+using GSF;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents an <see cref="IMeasurement"/> wrapper that is associated with a <see cref="SignalReference"/>.

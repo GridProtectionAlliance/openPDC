@@ -28,9 +28,9 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
-using TVA.Collections;
+using GSF.Collections;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents a protocol independent collection of <see cref="IConfigurationCell"/> objects.

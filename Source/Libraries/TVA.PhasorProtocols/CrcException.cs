@@ -26,7 +26,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// The exception that is thrown when an object's CRC check fails.

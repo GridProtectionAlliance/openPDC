@@ -231,7 +231,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace TVA.PhasorProtocols.Ieee1344
+namespace PhasorProtocols.Ieee1344
 {
     /// <summary>
     /// Contains an implementation of the phasor classes used to parse or generate a stream of data in the IEEE 1344-1995 standard format.

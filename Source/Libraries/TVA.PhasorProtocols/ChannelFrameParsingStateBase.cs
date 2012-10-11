@@ -28,7 +28,7 @@
 
 using System;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents the protocol independent common implementation of the parsing state used by any <see cref="IChannelFrame"/>.

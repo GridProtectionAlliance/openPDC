@@ -28,11 +28,12 @@
 //******************************************************************************************************
 
 
+using GSF;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents the common implementation of the protocol independent representation of an analog value.

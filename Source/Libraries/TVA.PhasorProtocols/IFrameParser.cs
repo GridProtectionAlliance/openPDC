@@ -1,5 +1,5 @@
 //******************************************************************************************************
-//  C:\Projects\openPDC\Synchrophasor\Current Version\Source\Libraries\TVA.PhasorProtocols\IFrameParser.cs - Gbtc
+//  C:\Projects\openPDC\Synchrophasor\Current Version\Source\Libraries\PhasorProtocols\IFrameParser.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -24,9 +24,10 @@
 //******************************************************************************************************
 
 using System;
-using TVA.Parsing;
+using GSF;
+using GSF.Parsing;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents a protocol independent representation of a frame parser.

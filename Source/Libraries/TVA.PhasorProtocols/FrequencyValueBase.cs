@@ -25,11 +25,12 @@
 //
 //******************************************************************************************************
 
+using GSF;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     #region [ Enumerations ]
 

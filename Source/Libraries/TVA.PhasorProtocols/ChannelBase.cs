@@ -25,9 +25,10 @@
 
 using System;
 using System.Collections.Generic;
-using TVA.Parsing;
+using GSF;
+using GSF.Parsing;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents the common implementation of the protocol independent definition of any kind

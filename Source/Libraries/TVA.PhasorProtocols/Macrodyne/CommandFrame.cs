@@ -25,9 +25,10 @@
 
 using System;
 using System.Runtime.Serialization;
-using TVA.Parsing;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.Macrodyne
+namespace PhasorProtocols.Macrodyne
 {
     /// <summary>
     /// Represents the Macrodyne implementation of a <see cref="ICommandFrame"/> that can be sent or received.

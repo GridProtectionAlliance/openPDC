@@ -26,12 +26,13 @@
 //******************************************************************************************************
 
 
+using GSF;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents the common implementation of the protocol independent definition of any kind of <see cref="IChannel"/> data.

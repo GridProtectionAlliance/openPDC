@@ -30,9 +30,10 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using TimeSeriesFramework;
+using GSF.TimeSeries;
+using GSF;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents the common implementation of the protocol independent representation of a digital value.

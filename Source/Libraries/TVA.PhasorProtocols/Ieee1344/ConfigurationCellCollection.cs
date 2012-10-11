@@ -234,7 +234,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.Ieee1344
+namespace PhasorProtocols.Ieee1344
 {
     /// <summary>
     /// Represents a IEEE 1344 implementation of a collection of <see cref="IConfigurationCell"/> objects.

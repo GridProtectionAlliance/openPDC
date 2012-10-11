@@ -30,15 +30,16 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TimeSeriesFramework.Transport;
-using TVA.Communication;
-using TVA.IO;
-using TVA.PhasorProtocols.Anonymous;
-using TVA.Units;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
+using GSF.TimeSeries.Transport;
+using GSF.Communication;
+using GSF.IO;
+using PhasorProtocols.Anonymous;
+using GSF.Units;
+using GSF;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents an <see cref="IInputAdapter"/> used to map measured values from a connection

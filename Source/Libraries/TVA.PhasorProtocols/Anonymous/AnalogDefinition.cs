@@ -234,7 +234,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.Anonymous
+namespace PhasorProtocols.Anonymous
 {
     /// <summary>
     /// Represents a protocol independent implementation of an <see cref="IAnalogDefinition"/>.

@@ -231,9 +231,10 @@
 */
 #endregion
 
+using GSF;
 using System;
 
-namespace TVA.PhasorProtocols.Ieee1344
+namespace PhasorProtocols.Ieee1344
 {
     #region [ Enumerations ]
 

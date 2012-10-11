@@ -32,11 +32,12 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Threading;
-using TVA.Configuration;
-using TVA.IO;
-using TVA.IO.Checksums;
+using GSF.Configuration;
+using GSF.IO;
+using GSF.IO.Checksums;
+using GSF;
 
-namespace TVA.PhasorProtocols.Anonymous
+namespace PhasorProtocols.Anonymous
 {
     /// <summary>
     /// Represents a protocol independent implementation of a <see cref="IConfigurationFrame"/> that can be sent or received.

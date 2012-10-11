@@ -231,7 +231,7 @@
 */
 #endregion
 
-namespace TVA.PhasorProtocols.BpaPdcStream
+namespace PhasorProtocols.BpaPdcStream
 {
     /// <summary>
     /// Represents the BPA PDCstream protocol implementation of the parsing state used by a <see cref="DataFrame"/>.

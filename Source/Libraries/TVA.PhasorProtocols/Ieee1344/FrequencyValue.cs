@@ -231,10 +231,11 @@
 */
 #endregion
 
+using GSF;
 using System;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.Ieee1344
+namespace PhasorProtocols.Ieee1344
 {
     /// <summary>
     /// Represents the IEEE 1344 implementation of a <see cref="IFrequencyValue"/>.

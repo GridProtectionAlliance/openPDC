@@ -23,9 +23,10 @@
 
 using System;
 using System.Text;
-using TVA.Parsing;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.Iec61850_90_5
+namespace PhasorProtocols.Iec61850_90_5
 {
     /// <summary>
     /// Represents a frame parser for an IEC 61850-90-5 binary data stream and returns parsed data via events.

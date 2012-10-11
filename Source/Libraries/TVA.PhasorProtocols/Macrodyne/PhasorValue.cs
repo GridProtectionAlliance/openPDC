@@ -25,9 +25,9 @@
 
 using System;
 using System.Runtime.Serialization;
-using TVA.Units;
+using GSF.Units;
 
-namespace TVA.PhasorProtocols.Macrodyne
+namespace PhasorProtocols.Macrodyne
 {
     /// <summary>
     /// Represents the Macrodyne implementation of a <see cref="IPhasorValue"/>.
@@ -64,7 +64,7 @@ namespace TVA.PhasorProtocols.Macrodyne
         /// </summary>
         /// <param name="parent">The <see cref="DataCell"/> parent of this <see cref="PhasorValue"/>.</param>
         /// <param name="phasorDefinition">The <see cref="PhasorDefinition"/> associated with this <see cref="PhasorValue"/>.</param>
-        /// <param name="angle">The <see cref="TVA.Units.Angle"/> value (a.k.a., the argument) of this <see cref="PhasorValue"/>, in radians.</param>
+        /// <param name="angle">The <see cref="GSF.Units.Angle"/> value (a.k.a., the argument) of this <see cref="PhasorValue"/>, in radians.</param>
         /// <param name="magnitude">The magnitude value (a.k.a., the absolute value or modulus) of this <see cref="PhasorValue"/>.</param>
         public PhasorValue(DataCell parent, PhasorDefinition phasorDefinition, Angle angle, double magnitude)
             : base(parent, phasorDefinition, angle, magnitude)

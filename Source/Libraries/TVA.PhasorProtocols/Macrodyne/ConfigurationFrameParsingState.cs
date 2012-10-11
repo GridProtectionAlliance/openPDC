@@ -21,7 +21,7 @@
 //
 //******************************************************************************************************
 
-namespace TVA.PhasorProtocols.Macrodyne
+namespace PhasorProtocols.Macrodyne
 {
     /// <summary>
     /// Represents the Macrodyne implementation of the parsing state used by a <see cref="ConfigurationFrame"/>.

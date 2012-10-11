@@ -27,10 +27,11 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading;
-using TVA.IO;
-using TVA.Parsing;
+using GSF.IO;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.Macrodyne
+namespace PhasorProtocols.Macrodyne
 {
     /// <summary>
     /// Represents a frame parser for a Macrodyne binary data stream that returns parsed data via events.

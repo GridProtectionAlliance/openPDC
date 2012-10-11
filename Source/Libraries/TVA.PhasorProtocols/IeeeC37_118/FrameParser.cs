@@ -233,9 +233,10 @@
 
 using System;
 using System.Text;
-using TVA.Parsing;
+using GSF.Parsing;
+using GSF;
 
-namespace TVA.PhasorProtocols.IeeeC37_118
+namespace PhasorProtocols.IeeeC37_118
 {
     /// <summary>
     /// Represents a frame parser for an IEEE C37.118 binary data stream and returns parsed data via events.

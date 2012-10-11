@@ -25,10 +25,11 @@
 //
 //******************************************************************************************************
 
+using GSF;
 using System;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents the protocol independent common implementation of any <see cref="IDataFrame"/> that can be sent or received.

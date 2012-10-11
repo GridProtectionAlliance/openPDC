@@ -235,7 +235,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.SelFastMessage
+namespace PhasorProtocols.SelFastMessage
 {
     /// <summary>
     /// Represents the extra connection parameters required for a connection to a SEL device.

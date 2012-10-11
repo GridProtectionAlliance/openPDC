@@ -24,7 +24,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace TVA.PhasorProtocols.Iec61850_90_5
+namespace PhasorProtocols.Iec61850_90_5
 {
     /// <summary>
     /// Represents the IEC 61850-90-5 implementation of a <see cref="IDigitalValue"/>.

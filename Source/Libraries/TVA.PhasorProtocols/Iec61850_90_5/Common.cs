@@ -23,8 +23,9 @@
 
 using System;
 using System.Text;
+using GSF;
 
-namespace TVA.PhasorProtocols.Iec61850_90_5
+namespace PhasorProtocols.Iec61850_90_5
 {
     #region [ Enumerations ]
 

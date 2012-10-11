@@ -25,9 +25,10 @@
 //
 //******************************************************************************************************
 
+using GSF;
 using System;
 
-namespace TVA.PhasorProtocols.BpaPdcStream
+namespace PhasorProtocols.BpaPdcStream
 {
     #region [ Enumerations ]
 

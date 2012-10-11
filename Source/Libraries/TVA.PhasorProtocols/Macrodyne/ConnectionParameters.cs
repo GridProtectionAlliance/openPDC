@@ -29,7 +29,7 @@ using System.Runtime.Serialization;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace TVA.PhasorProtocols.Macrodyne
+namespace PhasorProtocols.Macrodyne
 {
     /// <summary>
     /// INI file name browser used with Macrodyne <see cref="ConnectionParameters"/>.

@@ -28,10 +28,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
+using GSF;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     #region [ Enumerations ]
 

@@ -29,9 +29,10 @@
 
 using System;
 using System.ComponentModel;
-using TimeSeriesFramework;
+using GSF.TimeSeries;
+using GSF;
 
-namespace TVA.PhasorProtocols
+namespace PhasorProtocols
 {
     /// <summary>
     /// Represents a <see cref="IMeasurement"/> implementation for composite values of a given <see cref="IChannelValue{T}"/>.

@@ -231,9 +231,10 @@
 */
 #endregion
 
+using GSF;
 using System;
 
-namespace TVA.PhasorProtocols.SelFastMessage
+namespace PhasorProtocols.SelFastMessage
 {
     #region [ Enumerations ]
 
