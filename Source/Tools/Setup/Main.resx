@@ -569,7 +569,7 @@
     <value>17, 17</value>
   </metadata>
   <data name="labelNotes.Text" xml:space="preserve">
-    <value>During the installation process you will be asked to choose a configuration type. A database is recommended for typical deployments of the openPDC. The openPDC Manager application requires a database to function. The web service and XML configurations available to the openPDC are typically used in combination with a master database configuration that is maintained using the openPDC Manager. For simple installations you can choose an Access database for your configuration. However, Access is not recommended for a production installation and is also not available if you choose a 64-bit installation. Both SQL Server and MySQL are available with versions that may be installed for free.</value>
+    <value>During the installation process you will be asked to choose a configuration type. A database is recommended for typical deployments of the openPDC. The openPDC Manager application requires a database to function. The web service and XML configurations available to the openPDC are typically used in combination with a master database configuration that is maintained using the openPDC Manager. For simple installations you can choose an Access database for your configuration. However, Access is not recommended for a production installation and is also not available if you choose a 64-bit installation. SQL Server, MySQL and SQLite are available with versions that may be installed for free.</value>
   </data>
   <data name="pictureBoxLogo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
