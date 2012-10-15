@@ -29,8 +29,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using GSF.Historian;
-using GSF.Historian.Files;
+using TVA.Historian;
+using TVA.Historian.Files;
 using System.Windows.Controls.DataVisualization.Charting;
 
 namespace openPDC.UI.UserControls

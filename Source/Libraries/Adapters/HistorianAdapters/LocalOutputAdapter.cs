@@ -72,10 +72,10 @@ using GSF.TimeSeries.Adapters;
 using GSF;
 using GSF.Configuration;
 using GSF.Data;
-using GSF.Historian.DataServices;
-using GSF.Historian.Files;
-using GSF.Historian.MetadataProviders;
-using GSF.Historian.Replication;
+using TVA.Historian.DataServices;
+using TVA.Historian.Files;
+using TVA.Historian.MetadataProviders;
+using TVA.Historian.Replication;
 using GSF.IO;
 
 namespace HistorianAdapters

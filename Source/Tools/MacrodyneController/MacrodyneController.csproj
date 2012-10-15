@@ -94,6 +94,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GSF.Communication">
+      <HintPath>..\..\Dependencies\GSF\GSF.Communication.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.Core">
+      <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -109,14 +115,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TVA.Communication">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Core">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandItem.cs" />

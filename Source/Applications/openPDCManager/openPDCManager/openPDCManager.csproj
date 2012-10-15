@@ -95,6 +95,30 @@
     <ApplicationIcon>openPDCManager.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GSF.Communication">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.Communication.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.Core">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.Security">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.ServiceProcess">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.ServiceProcess.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.TimeSeries">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.TimeSeries.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.TimeSeries.UI">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.TimeSeries.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.TimeSeries.UI.WPF">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.TimeSeries.UI.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.Windows">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
@@ -106,30 +130,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="TimeSeriesFramework">
-      <HintPath>..\..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="TimeSeriesFramework.UI">
-      <HintPath>..\..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="TimeSeriesFramework.UI.WPF">
-      <HintPath>..\..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Communication">
-      <HintPath>..\..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Core">
-      <HintPath>..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Security">
-      <HintPath>..\..\..\Dependencies\TVA\TVA.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.ServiceProcess">
-      <HintPath>..\..\..\Dependencies\TVA\TVA.ServiceProcess.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Windows">
-      <HintPath>..\..\..\Dependencies\TVA\TVA.Windows.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />

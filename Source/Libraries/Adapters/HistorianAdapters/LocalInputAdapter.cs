@@ -31,8 +31,8 @@ using System.Threading;
 using GSF.TimeSeries;
 using GSF.TimeSeries.Adapters;
 using GSF;
-using GSF.Historian;
-using GSF.Historian.Files;
+using TVA.Historian;
+using TVA.Historian.Files;
 using GSF.IO;
 
 namespace HistorianAdapters

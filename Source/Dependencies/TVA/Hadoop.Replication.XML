@@ -6,7 +6,7 @@
     <members>
         <member name="T:Hadoop.Replication.HadoopReplicationProvider">
             <summary>
-            Represents a provider of replication for the <see cref="T:GSF.Historian.IArchive"/> to Hadoop using FTP channel.
+            Represents a provider of replication for the <see cref="T:TVA.Historian.IArchive"/> to Hadoop using FTP channel.
             </summary>
         </member>
         <member name="F:Hadoop.Replication.HadoopReplicationProvider.DefaultBytesPerCrc32">
@@ -66,7 +66,7 @@
         </member>
         <member name="M:Hadoop.Replication.HadoopReplicationProvider.ReplicateArchive">
             <summary>
-            Replicates the <see cref="T:GSF.Historian.IArchive"/>.
+            Replicates the <see cref="T:TVA.Historian.IArchive"/>.
             </summary>
         </member>
         <member name="M:Hadoop.Replication.HadoopReplicationProvider.ComputeHdfsFileHash(System.String,System.Int32,System.Int32,System.Boolean)">
