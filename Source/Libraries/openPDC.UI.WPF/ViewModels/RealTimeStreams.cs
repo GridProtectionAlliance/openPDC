@@ -30,12 +30,12 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Transport;
-using TimeSeriesFramework.UI;
-using TVA;
-using TVA.Data;
-using TVA.ServiceProcess;
+using GSF.TimeSeries;
+using GSF.Timeseries.Transport;
+using GSF.Timeseries.UI;
+using GSF;
+using GSF.Data;
+using GSF.ServiceProcess;
 
 namespace openPDC.UI.ViewModels
 {
@@ -83,7 +83,7 @@ namespace openPDC.UI.ViewModels
             m_restartConnectionCycle = true;
             StatisticMeasurements = new ObservableCollection<StatisticMeasurement>();
 
-            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticRefreshInterval);
+            int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticRefreshInterval);
             Statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
 
             CheckTemporalSupport();
@@ -616,9 +616,9 @@ namespace openPDC.UI.ViewModels
             {
                 s_responseWaitHandle = new ManualResetEvent(false);
 
-                windowsServiceClient = TimeSeriesFramework.UI.CommonFunctions.GetWindowsServiceClient();
+                windowsServiceClient = GSF.Timeseries.UI.CommonFunctions.GetWindowsServiceClient();
                 if (windowsServiceClient != null && windowsServiceClient.Helper != null &&
-                   windowsServiceClient.Helper.RemotingClient != null && windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                   windowsServiceClient.Helper.RemotingClient != null && windowsServiceClient.Helper.RemotingClient.CurrentState == GSF.Communication.ClientState.Connected)
                 {
                     windowsServiceClient.Helper.ReceivedServiceResponse += Helper_ReceivedServiceResponse;
 

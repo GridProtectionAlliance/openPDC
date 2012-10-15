@@ -30,8 +30,8 @@ namespace openPDC
         static void Main(string[] args)
         {
             // Enable console events.
-            TVA.Console.Events.ConsoleClosing += OnConsoleClosing;
-            TVA.Console.Events.EnableRaisingEvents();
+            GSF.Console.Events.ConsoleClosing += OnConsoleClosing;
+            GSF.Console.Events.EnableRaisingEvents();
 
             // Start the client component.
             s_serviceClient = new ServiceClient();

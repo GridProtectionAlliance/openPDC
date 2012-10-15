@@ -29,11 +29,11 @@ using System.Security.Principal;
 using System.Threading;
 using System.Windows;
 using ConfigurationSetupUtility.Screens;
-using TVA.Collections;
-using TVA.ErrorManagement;
-using TVA.Identity;
-using TVA.IO;
-using TVA.Reflection;
+using GSF.Collections;
+using GSF.ErrorManagement;
+using GSF.Identity;
+using GSF.IO;
+using GSF.Reflection;
 
 namespace ConfigurationSetupUtility
 {

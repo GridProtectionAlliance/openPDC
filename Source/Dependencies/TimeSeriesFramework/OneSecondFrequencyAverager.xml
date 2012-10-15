@@ -15,13 +15,13 @@
             Initializes this <see cref="T:OneSecondFrequencyAverager.OneSecondFrequencyAverager"/>.
             </summary>
         </member>
-        <member name="M:OneSecondFrequencyAverager.OneSecondFrequencyAverager.PublishFrame(TimeSeriesFramework.IFrame,System.Int32)">
+        <member name="M:OneSecondFrequencyAverager.OneSecondFrequencyAverager.PublishFrame(GSF.TimeSeries.IFrame,System.Int32)">
             <summary>
-            Publish <see cref="T:TimeSeriesFramework.IFrame"/> of time-aligned collection of <see cref="T:TimeSeriesFramework.IMeasurement"/> values that arrived within the
-            concentrator's defined <see cref="P:TimeSeriesFramework.ConcentratorBase.LagTime"/>.
+            Publish <see cref="T:GSF.TimeSeries.IFrame"/> of time-aligned collection of <see cref="T:GSF.TimeSeries.IMeasurement"/> values that arrived within the
+            concentrator's defined <see cref="P:GSF.TimeSeries.ConcentratorBase.LagTime"/>.
             </summary>
-            <param name="frame"><see cref="T:TimeSeriesFramework.IFrame"/> of measurements with the same timestamp that arrived within <see cref="P:TimeSeriesFramework.ConcentratorBase.LagTime"/> that are ready for processing.</param>
-            <param name="index">Index of <see cref="T:TimeSeriesFramework.IFrame"/> within a second ranging from zero to <c><see cref="P:TimeSeriesFramework.ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
+            <param name="frame"><see cref="T:GSF.TimeSeries.IFrame"/> of measurements with the same timestamp that arrived within <see cref="P:GSF.TimeSeries.ConcentratorBase.LagTime"/> that are ready for processing.</param>
+            <param name="index">Index of <see cref="T:GSF.TimeSeries.IFrame"/> within a second ranging from zero to <c><see cref="P:GSF.TimeSeries.ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
         </member>
         <member name="P:OneSecondFrequencyAverager.OneSecondFrequencyAverager.SupportsTemporalProcessing">
             <summary>

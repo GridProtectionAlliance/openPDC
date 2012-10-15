@@ -25,7 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using TVA.PhasorProtocols;
+using PhasorProtocols;
 
 namespace Comtrade
 {

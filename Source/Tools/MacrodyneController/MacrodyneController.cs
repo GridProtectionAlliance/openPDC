@@ -18,12 +18,12 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using TVA;
-using TVA.Communication;
-using TVA.IO.Checksums;
-using TVA.PhasorProtocols.Macrodyne;
-using TVA.Reflection;
-using TVA.Windows.Forms;
+using GSF;
+using GSF.Communication;
+using GSF.IO.Checksums;
+using GSF.PhasorProtocols.Macrodyne;
+using GSF.Reflection;
+using GSF.Windows.Forms;
 
 namespace MacrodyneController
 {

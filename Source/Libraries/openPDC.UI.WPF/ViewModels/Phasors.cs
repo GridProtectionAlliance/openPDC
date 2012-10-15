@@ -29,7 +29,7 @@ using System.Windows;
 using System.Linq;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework.UI;
+using GSF.Timeseries.UI;
 
 namespace openPDC.UI.ViewModels
 {

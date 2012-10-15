@@ -38,12 +38,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Threading;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TVA;
-using TVA.Communication;
-using TVA.Historian.Packets;
-using TVA.Parsing;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
+using GSF;
+using GSF.Communication;
+using GSF.Historian.Packets;
+using GSF.Parsing;
 
 namespace HistorianAdapters
 {

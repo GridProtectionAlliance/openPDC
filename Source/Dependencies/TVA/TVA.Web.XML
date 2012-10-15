@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>TVA.Web</name>
+        <name>GSF.Web</name>
     </assembly>
     <members>
-        <member name="T:TVA.Web.Embedded.NamespaceDoc">
+        <member name="T:GSF.Web.Embedded.NamespaceDoc">
             <summary>
             Contains embedded ASP.NET web pages and WCF web services that support the implementation of role-based security in .NET and non-.NET based development platforms.
             </summary>
         </member>
-        <member name="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute">
+        <member name="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute">
             <summary>
             Attribute indicating the location of an embedded resource that should be
-            served by the <see cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>.
+            served by the <see cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>.
             </summary>
             <remarks>
             <para>
-            This attribute is used by the <see cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            This attribute is used by the <see cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
             module/path provider to retrieve the list of embedded resources from an assembly
             that should be considered a part of the virtual filesystem.
             </para>
@@ -24,34 +24,34 @@
             <example>
             <para>
             Below is an example of what it might look like to embed a web form and a
-            user control in an assembly to be served up with the <see cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>:
+            user control in an assembly to be served up with the <see cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>:
             </para>
             <code lang="C#">
             [assembly: EmbeddedResourceFileAttribute("MyNamespace.WebForm1.aspx", "MyNamespace")]
             [assembly: EmbeddedResourceFileAttribute("MyNamespace.UserControl1.ascx", "MyNamespace")]
             </code>
             </example>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="F:TVA.Web.Hosting.EmbeddedResourceFileAttribute.m_resourceNamespace">
+        <member name="F:GSF.Web.Hosting.EmbeddedResourceFileAttribute.m_resourceNamespace">
             <summary>
             Internal storage for the
-            <see cref="P:TVA.Web.Hosting.EmbeddedResourceFileAttribute.ResourceNamespace"/>
+            <see cref="P:GSF.Web.Hosting.EmbeddedResourceFileAttribute.ResourceNamespace"/>
             property.
             </summary>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
         </member>
-        <member name="F:TVA.Web.Hosting.EmbeddedResourceFileAttribute.m_resourcePath">
+        <member name="F:GSF.Web.Hosting.EmbeddedResourceFileAttribute.m_resourcePath">
             <summary>
             Internal storage for the
-            <see cref="P:TVA.Web.Hosting.EmbeddedResourceFileAttribute.ResourcePath"/>
+            <see cref="P:GSF.Web.Hosting.EmbeddedResourceFileAttribute.ResourcePath"/>
             property.
             </summary>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourceFileAttribute.#ctor(System.String,System.String)">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourceFileAttribute.#ctor(System.String,System.String)">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/> class.
+            Initializes a new instance of the <see cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/> class.
             </summary>
             <param name="resourcePath">The path to the embedded resource.  Used to get the resource as a stream from the assembly.</param>
             <param name="resourceNamespace">The namespace the resource is in.  This will generally be removed from the full resource path to calculate the "application path" for the embedded resource.</param>
@@ -76,28 +76,28 @@
             If the <paramref name="resourcePath"/> is <c>RootNS.SubNS.AppRoot.Folder.File.aspx</c>
             and the <paramref name="resourceNamespace"/> is <c>RootNS.SubNS.AppRoot</c>,
             the virtual "path" to the embedded file will be <c>Folder.File.aspx</c>
-            (which will be converted by the <see cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            (which will be converted by the <see cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
             to <c>~/Folder/File.aspx</c>).
             </para>
             </example>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourceFileAttribute.RemoveMalformedEndChars(System.String)">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourceFileAttribute.RemoveMalformedEndChars(System.String)">
             <summary>
             Removes leading and trailing dots and spaces from a string.
             </summary>
             <param name="toFix">The <see cref="T:System.String"/> to be cleaned up.</param>
             <returns>A version of <paramref name="toFix"/> with leading and trailing dots and spaces removed.</returns>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
         </member>
-        <member name="F:TVA.Web.Hosting.EmbeddedResourceFileAttribute.MalformedEndCharExpression">
+        <member name="F:GSF.Web.Hosting.EmbeddedResourceFileAttribute.MalformedEndCharExpression">
             <summary>
             Regular expression indicating the characters that can't start or end a resource.
             </summary>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/>
-            <seealso cref="M:TVA.Web.Hosting.EmbeddedResourceFileAttribute.RemoveMalformedEndChars(System.String)"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
+            <seealso cref="M:GSF.Web.Hosting.EmbeddedResourceFileAttribute.RemoveMalformedEndChars(System.String)"/>
         </member>
-        <member name="P:TVA.Web.Hosting.EmbeddedResourceFileAttribute.ResourceNamespace">
+        <member name="P:GSF.Web.Hosting.EmbeddedResourceFileAttribute.ResourceNamespace">
             <summary>
             Gets the namespace for the embedded resource.
             </summary>
@@ -106,13 +106,13 @@
             </value>
             <remarks>
             <para>
-            This namespace will be removed from the full <see cref="P:TVA.Web.Hosting.EmbeddedResourceFileAttribute.ResourcePath"/>
+            This namespace will be removed from the full <see cref="P:GSF.Web.Hosting.EmbeddedResourceFileAttribute.ResourcePath"/>
             to create the virtual application path for the resource.
             </para>
             </remarks>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
         </member>
-        <member name="P:TVA.Web.Hosting.EmbeddedResourceFileAttribute.ResourcePath">
+        <member name="P:GSF.Web.Hosting.EmbeddedResourceFileAttribute.ResourcePath">
             <summary>
             Gets the path to the embedded resource.
             </summary>
@@ -126,9 +126,9 @@
             it up.
             </para>
             </remarks>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
         </member>
-        <member name="T:TVA.Web.Hosting.EmbeddedResourcePathProvider">
+        <member name="T:GSF.Web.Hosting.EmbeddedResourcePathProvider">
             <summary>
             A <see cref="T:System.Web.Hosting.VirtualPathProvider"/> that allows serving
             pages from embedded resources.
@@ -170,7 +170,7 @@
             <para>
             Second, in your <c>AssemblyInfo.cs</c> file (or whichever file you are
             declaring your assembly attributes in) you need to add one
-            <see cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/> for
+            <see cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/> for
             every file you plan on serving.  This lets the provider know which embedded
             resources are available and which are actually resources for other purposes.
             Your assembly attributes will look something like this:
@@ -196,7 +196,7 @@
             <code>
             &lt;configuration&gt;
               &lt;configSections&gt;
-                &lt;section name="embeddedFileAssemblies" type="TVA.Configuration.StringCollectionSectionHandler, TVA.Web.Hosting.EmbeddedResourcePathProvider"/&gt;
+                &lt;section name="embeddedFileAssemblies" type="GSF.Configuration.StringCollectionSectionHandler, GSF.Web.Hosting.EmbeddedResourcePathProvider"/&gt;
               &lt;/configSections&gt;
               &lt;embeddedFileAssemblies&gt;
                 &lt;add value="My.Web.Assembly"/&gt;
@@ -212,8 +212,8 @@
             </para>
             <para>
             File paths are mapped into the application using the
-            <see cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/>
-            declarations and the <see cref="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.MapResourceToWebApplication(System.String,System.String)"/>
+            <see cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
+            declarations and the <see cref="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.MapResourceToWebApplication(System.String,System.String)"/>
             method.  This allows you to set up your web application as normal in
             Visual Studio and the folder structure, which automatically generates
             namespaces for your embedded resources, will translate into virtual folders
@@ -230,7 +230,7 @@
             &lt;configuration&gt;
               &lt;!-- ... other web.config items ... --&gt;
               &lt;appSettings&gt;
-                &lt;add key="TVA.Web.Hosting.EmbeddedResourcePathProvider.AllowOverrides" value="true"/&gt;
+                &lt;add key="GSF.Web.Hosting.EmbeddedResourcePathProvider.AllowOverrides" value="true"/&gt;
               &lt;/appSettings&gt;
             &lt;/configuration&gt;
             </code>
@@ -239,44 +239,44 @@
             <see cref="T:System.Web.Hosting.VirtualPathProvider"/>.
             </para>
             </remarks>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
             <seealso cref="T:System.Web.Hosting.VirtualPathProvider"/>
         </member>
-        <member name="F:TVA.Web.Hosting.EmbeddedResourcePathProvider.ApplicationRootPath">
+        <member name="F:GSF.Web.Hosting.EmbeddedResourcePathProvider.ApplicationRootPath">
             <summary>
             The standard web application "app relative root" path.
             </summary>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="F:TVA.Web.Hosting.EmbeddedResourcePathProvider.ConfigSectionName">
+        <member name="F:GSF.Web.Hosting.EmbeddedResourcePathProvider.ConfigSectionName">
             <summary>
             The name of the configuration section containing the list of assemblies
             that should participate in the virtual filesystem.
             </summary>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="F:TVA.Web.Hosting.EmbeddedResourcePathProvider.ConfigKeyAllowOverrides">
+        <member name="F:GSF.Web.Hosting.EmbeddedResourcePathProvider.ConfigKeyAllowOverrides">
             <summary>
             Appsettings key that indicates if filesystem files should override
             embedded files.
             </summary>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="F:TVA.Web.Hosting.EmbeddedResourcePathProvider._files">
+        <member name="F:GSF.Web.Hosting.EmbeddedResourcePathProvider._files">
             <summary>
             Internal storage for the
-            <see cref="P:TVA.Web.Hosting.EmbeddedResourcePathProvider.Files"/>
+            <see cref="P:GSF.Web.Hosting.EmbeddedResourcePathProvider.Files"/>
             property.
             </summary>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.#ctor">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/> class.
+            Initializes a new instance of the <see cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/> class.
             </summary>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.FileExists(System.String)">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.FileExists(System.String)">
             <summary>
             Gets a value that indicates whether a file exists in the virtual file system.
             </summary>
@@ -296,10 +296,10 @@
             <exception cref="T:System.ArgumentOutOfRangeException">
             Thrown if <paramref name="virtualPath"/> is <see cref="F:System.String.Empty"/>.
             </exception>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
             <seealso cref="M:System.Web.Hosting.VirtualPathProvider.FileExists(System.String)"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.GetCacheDependency(System.String,System.Collections.IEnumerable,System.DateTime)">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.GetCacheDependency(System.String,System.Collections.IEnumerable,System.DateTime)">
             <summary>
             Creates a cache dependency based on the specified virtual paths.
             </summary>
@@ -313,10 +313,10 @@
             <exception cref="T:System.ArgumentOutOfRangeException">
             Thrown if <paramref name="virtualPath"/> is <see cref="F:System.String.Empty"/>.
             </exception>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
             <seealso cref="M:System.Web.Hosting.VirtualPathProvider.GetCacheDependency(System.String,System.Collections.IEnumerable,System.DateTime)"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.GetFile(System.String)">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.GetFile(System.String)">
             <summary>
             Gets a virtual file from the virtual file system.
             </summary>
@@ -328,25 +328,25 @@
             <exception cref="T:System.ArgumentOutOfRangeException">
             Thrown if <paramref name="virtualPath"/> is <see cref="F:System.String.Empty"/>.
             </exception>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
             <seealso cref="M:System.Web.Hosting.VirtualPathProvider.GetFile(System.String)"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.Initialize">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.Initialize">
             <summary>
             Initializes the <see cref="T:System.Web.Hosting.VirtualPathProvider"/> instance.
             </summary>
             <remarks>
             <para>
             The set of assemblies configured to provide embedded resource files
-            are queried for <see cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/>
+            are queried for <see cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
             attributes.  For each one present, the associated embedded resource
             is added to the virtual filesystem served by this provider.
             </para>
             </remarks>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
             <seealso cref="M:System.Web.Hosting.VirtualPathProvider.Initialize"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.GetConfiguredAssemblyNames">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.GetConfiguredAssemblyNames">
             <summary>
             Gets the names of the configured assemblies from configuration.
             </summary>
@@ -355,9 +355,9 @@
             the names of the configured assemblies that should participate in this
             path provider.
             </returns>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.MapResourceToWebApplication(System.String,System.String)">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.MapResourceToWebApplication(System.String,System.String)">
             <summary>
             Maps an embedded resource ID into a web application relative path (~/path).
             </summary>
@@ -431,9 +431,9 @@
             </item>
             </list>
             </exception>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.ValidateResourcePath(System.String,System.String)">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.ValidateResourcePath(System.String,System.String)">
             <summary>
             Validates an embedded resource path or namespace.
             </summary>
@@ -462,9 +462,9 @@
             </item>
             </list>
             </exception>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.FileHandledByBaseProvider(System.String)">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.FileHandledByBaseProvider(System.String)">
             <summary>
             Determines if a file should be handled by the base provider or if
             it should be handled by this provider.
@@ -475,9 +475,9 @@
             <paramref name="absolutePath"/> should be done by the base provider;
             <see langword="false"/> if this provider should handle it.
             </returns>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.ProcessEmbeddedFiles(System.String)">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.ProcessEmbeddedFiles(System.String)">
             <summary>
             Reads in the embedded files from an assembly an processes them into
             the virtual filesystem.
@@ -500,17 +500,17 @@
             found, a <see cref="T:System.IO.FileNotFoundException"/> is thrown.
             </para>
             <para>
-            Once the assembly is retrieved, it is queried for <see cref="T:TVA.Web.Hosting.EmbeddedResourceFileAttribute"/>
+            Once the assembly is retrieved, it is queried for <see cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
             instances.  For each one found, the associated resources are processed
             into virtual files that will be stored in
-            <see cref="P:TVA.Web.Hosting.EmbeddedResourcePathProvider.Files"/>
+            <see cref="P:GSF.Web.Hosting.EmbeddedResourcePathProvider.Files"/>
             for later use.
             </para>
             </remarks>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
-            <seealso cref="M:TVA.Web.Hosting.EmbeddedResourcePathProvider.Initialize"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.Initialize"/>
         </member>
-        <member name="P:TVA.Web.Hosting.EmbeddedResourcePathProvider.AllowOverrides">
+        <member name="P:GSF.Web.Hosting.EmbeddedResourcePathProvider.AllowOverrides">
             <summary>
             Gets a value indicating if embedded files can be overridden.
             </summary>
@@ -522,66 +522,66 @@
             <remarks>
             <para>
             This property uses the <see cref="P:System.Configuration.ConfigurationManager.AppSettings"/>
-            key <see cref="F:TVA.Web.Hosting.EmbeddedResourcePathProvider.ConfigKeyAllowOverrides"/>
+            key <see cref="F:GSF.Web.Hosting.EmbeddedResourcePathProvider.ConfigKeyAllowOverrides"/>
             to determine if overrides are allowed.  If the key is present, it is
             parsed to a <see cref="T:System.Boolean"/> and that value is returned.
             If the key is not present or if any error occurs during the parsing,
             <see langword="false"/> is returned.
             </para>
             </remarks>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="P:TVA.Web.Hosting.EmbeddedResourcePathProvider.Files">
+        <member name="P:GSF.Web.Hosting.EmbeddedResourcePathProvider.Files">
             <summary>
             Gets the collection of files served by this provider.
             </summary>
             <value>
-            A <see cref="T:TVA.Web.Hosting.VirtualFileBaseCollection"/>
+            A <see cref="T:GSF.Web.Hosting.VirtualFileBaseCollection"/>
             that contains all of the files served by this provider.
             </value>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="T:TVA.Web.Hosting.EmbeddedResourceVirtualFile">
+        <member name="T:GSF.Web.Hosting.EmbeddedResourceVirtualFile">
             <summary>
             Represents a file object in embedded resource space.
             </summary>
             <remarks>
             <para>
-            This type is used by the <see cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            This type is used by the <see cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
             to serve embedded resources as virtual files.  The properties on the
             file can be used to retrieve an embedded resource stream from the
-            <see cref="P:TVA.Web.Hosting.EmbeddedResourceVirtualFile.ContainingAssembly"/>
+            <see cref="P:GSF.Web.Hosting.EmbeddedResourceVirtualFile.ContainingAssembly"/>
             at the appropriate
-            <see cref="P:TVA.Web.Hosting.EmbeddedResourceVirtualFile.ResourcePath"/>
+            <see cref="P:GSF.Web.Hosting.EmbeddedResourceVirtualFile.ResourcePath"/>
             using reflection.  As part of the <see cref="T:System.Web.Hosting.VirtualFile"/>
-            interface, you can do this easily via <see cref="M:TVA.Web.Hosting.EmbeddedResourceVirtualFile.Open"/>.
+            interface, you can do this easily via <see cref="M:GSF.Web.Hosting.EmbeddedResourceVirtualFile.Open"/>.
             </para>
             <para>
             For more information on embedded resource virtual filesystem
-            usage, see <see cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            usage, see <see cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
             </para>
             </remarks>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourcePathProvider"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="F:TVA.Web.Hosting.EmbeddedResourceVirtualFile._containingAssembly">
+        <member name="F:GSF.Web.Hosting.EmbeddedResourceVirtualFile._containingAssembly">
             <summary>
             Internal storage for the
-            <see cref="P:TVA.Web.Hosting.EmbeddedResourceVirtualFile.ContainingAssembly"/>
+            <see cref="P:GSF.Web.Hosting.EmbeddedResourceVirtualFile.ContainingAssembly"/>
             property.
             </summary>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceVirtualFile"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceVirtualFile"/>
         </member>
-        <member name="F:TVA.Web.Hosting.EmbeddedResourceVirtualFile._resourcePath">
+        <member name="F:GSF.Web.Hosting.EmbeddedResourceVirtualFile._resourcePath">
             <summary>
             Internal storage for the
-            <see cref="P:TVA.Web.Hosting.EmbeddedResourceVirtualFile.ResourcePath"/>
+            <see cref="P:GSF.Web.Hosting.EmbeddedResourceVirtualFile.ResourcePath"/>
             property.
             </summary>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceVirtualFile"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceVirtualFile"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourceVirtualFile.#ctor(System.String,System.Reflection.Assembly,System.String)">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourceVirtualFile.#ctor(System.String,System.Reflection.Assembly,System.String)">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Web.Hosting.EmbeddedResourceVirtualFile"/> class.
+            Initializes a new instance of the <see cref="T:GSF.Web.Hosting.EmbeddedResourceVirtualFile"/> class.
             </summary>
             <param name="virtualPath">The virtual path to the resource represented by this instance.</param>
             <param name="containingAssembly">The <see cref="T:System.Reflection.Assembly"/> containing the resource represented by this instance.</param>
@@ -592,17 +592,17 @@
             <exception cref="T:System.ArgumentOutOfRangeException">
             Thrown if <paramref name="resourcePath"/> is <see cref="F:System.String.Empty"/>.
             </exception>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceVirtualFile"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceVirtualFile"/>
         </member>
-        <member name="M:TVA.Web.Hosting.EmbeddedResourceVirtualFile.Open">
+        <member name="M:GSF.Web.Hosting.EmbeddedResourceVirtualFile.Open">
             <summary>
             Returns a read-only stream to the virtual resource.
             </summary>
             <returns>A read-only stream to the virtual file.</returns>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceVirtualFile"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceVirtualFile"/>
             <seealso cref="M:System.Web.Hosting.VirtualFile.Open"/>
         </member>
-        <member name="P:TVA.Web.Hosting.EmbeddedResourceVirtualFile.ContainingAssembly">
+        <member name="P:GSF.Web.Hosting.EmbeddedResourceVirtualFile.ContainingAssembly">
             <summary>
             Gets a reference to the assembly containing the virtual file.
             </summary>
@@ -610,25 +610,25 @@
             A <see cref="T:System.Reflection.Assembly"/> that contains the embedded
             resource with the file contents.
             </value>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceVirtualFile"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceVirtualFile"/>
         </member>
-        <member name="P:TVA.Web.Hosting.EmbeddedResourceVirtualFile.ResourcePath">
+        <member name="P:GSF.Web.Hosting.EmbeddedResourceVirtualFile.ResourcePath">
             <summary>
             Gets the path to the embedded resource in the containing assembly.
             </summary>
             <value>
             A <see cref="T:System.String"/> that indicates an embedded resource
-            in the <see cref="P:TVA.Web.Hosting.EmbeddedResourceVirtualFile.ContainingAssembly"/>
+            in the <see cref="P:GSF.Web.Hosting.EmbeddedResourceVirtualFile.ContainingAssembly"/>
             that represents the file for this instance.
             </value>
-            <seealso cref="T:TVA.Web.Hosting.EmbeddedResourceVirtualFile"/>
+            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourceVirtualFile"/>
         </member>
-        <member name="T:TVA.Web.Hosting.NamespaceDoc">
+        <member name="T:GSF.Web.Hosting.NamespaceDoc">
             <summary>
             Contains classes that make-up the framework for serving content embedded in .NET assemblies over the web.
             </summary>
         </member>
-        <member name="T:TVA.Web.Hosting.VirtualFileBaseCollection">
+        <member name="T:GSF.Web.Hosting.VirtualFileBaseCollection">
             <summary>
             A strongly typed <see cref="T:System.Collections.ObjectModel.KeyedCollection`2"/>
             where each element is a <see cref="T:System.Web.Hosting.VirtualFileBase"/> and is keyed
@@ -644,26 +644,26 @@
             </remarks>
             <seealso cref="T:System.Web.Hosting.VirtualFileBase"/>
         </member>
-        <member name="M:TVA.Web.Hosting.VirtualFileBaseCollection.#ctor">
+        <member name="M:GSF.Web.Hosting.VirtualFileBaseCollection.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Web.Hosting.VirtualFileBaseCollection"/> class that uses a case-insensitive comparer.
+            Initializes a new instance of the <see cref="T:GSF.Web.Hosting.VirtualFileBaseCollection"/> class that uses a case-insensitive comparer.
             </summary>
-            <seealso cref="T:TVA.Web.Hosting.VirtualFileBaseCollection"/>
+            <seealso cref="T:GSF.Web.Hosting.VirtualFileBaseCollection"/>
         </member>
-        <member name="M:TVA.Web.Hosting.VirtualFileBaseCollection.#ctor(System.Collections.Generic.IEqualityComparer{System.String})">
+        <member name="M:GSF.Web.Hosting.VirtualFileBaseCollection.#ctor(System.Collections.Generic.IEqualityComparer{System.String})">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Web.Hosting.VirtualFileBaseCollection"/> class that uses the specified equality comparer.
+            Initializes a new instance of the <see cref="T:GSF.Web.Hosting.VirtualFileBaseCollection"/> class that uses the specified equality comparer.
             </summary>
             <param name="comparer">
             The implementation of the <see cref="T:System.Collections.Generic.IEqualityComparer`1"/>
             generic interface to use when comparing keys, or <see langword="null"/> to use the default
             equality comparer for the type of the key, obtained from <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/>.
             </param>
-            <seealso cref="T:TVA.Web.Hosting.VirtualFileBaseCollection"/>
+            <seealso cref="T:GSF.Web.Hosting.VirtualFileBaseCollection"/>
         </member>
-        <member name="M:TVA.Web.Hosting.VirtualFileBaseCollection.#ctor(System.Collections.Generic.IEqualityComparer{System.String},System.Int32)">
+        <member name="M:GSF.Web.Hosting.VirtualFileBaseCollection.#ctor(System.Collections.Generic.IEqualityComparer{System.String},System.Int32)">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Web.Hosting.VirtualFileBaseCollection"/> class that uses the specified equality comparer.
+            Initializes a new instance of the <see cref="T:GSF.Web.Hosting.VirtualFileBaseCollection"/> class that uses the specified equality comparer.
             </summary>
             <param name="comparer">
             The implementation of the <see cref="T:System.Collections.Generic.IEqualityComparer`1"/>
@@ -675,50 +675,50 @@
             (0 creates the lookup dictionary when the first item is added), or ?1 to specify that
             a lookup dictionary is never created.
             </param>
-            <seealso cref="T:TVA.Web.Hosting.VirtualFileBaseCollection"/>
+            <seealso cref="T:GSF.Web.Hosting.VirtualFileBaseCollection"/>
         </member>
-        <member name="M:TVA.Web.Hosting.VirtualFileBaseCollection.GetKeyForItem(System.Web.Hosting.VirtualFileBase)">
+        <member name="M:GSF.Web.Hosting.VirtualFileBaseCollection.GetKeyForItem(System.Web.Hosting.VirtualFileBase)">
             <summary>
             Extracts the key from the specified element.
             </summary>
             <param name="item">
             The <see cref="T:System.Web.Hosting.VirtualFileBase"/> element from which to extract the key (<see cref="P:System.Web.Hosting.VirtualFileBase.VirtualPath"/>).
             </param>
-            <seealso cref="T:TVA.Web.Hosting.VirtualFileBaseCollection"/>
+            <seealso cref="T:GSF.Web.Hosting.VirtualFileBaseCollection"/>
         </member>
-        <member name="T:TVA.Web.Embedded.ISecurityService">
+        <member name="T:GSF.Web.Embedded.ISecurityService">
             <summary>
             Embedded WCF service contract used for securing external facing WCF services.
             </summary>
         </member>
-        <member name="M:TVA.Web.Embedded.ISecurityService.GetUserData">
+        <member name="M:GSF.Web.Embedded.ISecurityService.GetUserData">
             <summary>
             Returns information about the current user. 
             </summary>
-            <returns>An <see cref="T:TVA.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
+            <returns>An <see cref="T:GSF.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
         </member>
-        <member name="M:TVA.Web.Embedded.ISecurityService.RefreshUserData">
+        <member name="M:GSF.Web.Embedded.ISecurityService.RefreshUserData">
             <summary>
             Refreshes and returns information about the current user. 
             </summary>
-            <returns>An <see cref="T:TVA.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
+            <returns>An <see cref="T:GSF.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
         </member>
-        <member name="M:TVA.Web.Embedded.ISecurityService.Authenticate(System.String,System.String)">
+        <member name="M:GSF.Web.Embedded.ISecurityService.Authenticate(System.String,System.String)">
             <summary>
             Authenticates a user and caches the security context upon successful authentication for subsequent use.
             </summary>
             <param name="username">Username of the user.</param>
             <param name="password">Password of the user.</param>
-            <returns>An <see cref="T:TVA.Security.UserData"/> object of the user.</returns>
+            <returns>An <see cref="T:GSF.Security.UserData"/> object of the user.</returns>
         </member>
-        <member name="M:TVA.Web.Embedded.ISecurityService.ResetPassword(System.String)">
+        <member name="M:GSF.Web.Embedded.ISecurityService.ResetPassword(System.String)">
             <summary>
             Resets user password.
             </summary>
             <param name="securityAnswer">Answer to user's security question.</param>
             <returns>true if password is reset, otherwise false.</returns>
         </member>
-        <member name="M:TVA.Web.Embedded.ISecurityService.ChangePassword(System.String,System.String)">
+        <member name="M:GSF.Web.Embedded.ISecurityService.ChangePassword(System.String,System.String)">
             <summary>
             Changes user password.
             </summary>
@@ -726,12 +726,12 @@
             <param name="newPassword">User's new password.</param>
             <returns>true if the password is changed, otherwise false.</returns>
         </member>
-        <member name="T:TVA.Web.NamespaceDoc">
+        <member name="T:GSF.Web.NamespaceDoc">
             <summary>
             Contains classes and extension functions related to .NET web enabled platforms such as ASP.NET and WCF.
             </summary>
         </member>
-        <member name="T:TVA.Web.SecurityModule">
+        <member name="T:GSF.Web.SecurityModule">
             <summary>
             Represents an <see cref="T:System.Web.IHttpModule">HTTP module</see> that can be used to enable site-wide role-based security.
             </summary>
@@ -742,7 +742,7 @@
             <?xml version="1.0"?>
             <configuration>
               <configSections>
-                <section name="categorizedSettings" type="TVA.Configuration.CategorizedSettingsSection, TVA.Core" />
+                <section name="categorizedSettings" type="GSF.Configuration.CategorizedSettingsSection, GSF.Core" />
               </configSections>
               <categorizedSettings>
                 <securityProvider>
@@ -750,7 +750,7 @@
                     encrypted="false" />
                   <add name="ConnectionString" value="" description="Connection string to be used for connection to the backend security datastore."
                     encrypted="false" />
-                  <add name="ProviderType" value="TVA.Security.LdapSecurityProvider, TVA.Security"
+                  <add name="ProviderType" value="GSF.Security.LdapSecurityProvider, GSF.Security"
                     description="The type to be used for enforcing security." encrypted="false" />
                   <add name="IncludedResources" value="*/*.*=*" description="Semicolon delimited list of resources to be secured along with role names."
                     encrypted="false" />
@@ -774,71 +774,71 @@
               <system.web>
                 <authentication mode="Windows"/>
                 <httpModules>
-                  <add name="SecurityModule" type="TVA.Web.SecurityModule, TVA.Web" />
+                  <add name="SecurityModule" type="GSF.Web.SecurityModule, GSF.Web" />
                 </httpModules>
               </system.web>
             </configuration>
             ]]>
             </code>
             </example>
-            <seealso cref="T:TVA.Security.ISecurityProvider"/>
+            <seealso cref="T:GSF.Security.ISecurityProvider"/>
         </member>
-        <member name="M:TVA.Web.SecurityModule.Init(System.Web.HttpApplication)">
+        <member name="M:GSF.Web.SecurityModule.Init(System.Web.HttpApplication)">
             <summary>
-            Initializes the <see cref="T:TVA.Web.SecurityModule"/>.
+            Initializes the <see cref="T:GSF.Web.SecurityModule"/>.
             </summary>
             <param name="context">An <see cref="T:System.Web.HttpApplication"/> object.</param>
         </member>
-        <member name="M:TVA.Web.SecurityModule.Dispose">
+        <member name="M:GSF.Web.SecurityModule.Dispose">
             <summary>
-            Releases the resources used by <see cref="T:TVA.Web.SecurityModule"/>.
+            Releases the resources used by <see cref="T:GSF.Web.SecurityModule"/>.
             </summary>
         </member>
-        <member name="M:TVA.Web.SecurityModule.Redirect(System.Net.HttpStatusCode)">
+        <member name="M:GSF.Web.SecurityModule.Redirect(System.Net.HttpStatusCode)">
             <summary>
             Redirects the client browser based on the specified <paramref name="httpStatusCode"/>
             </summary>
             <param name="httpStatusCode"><see cref="T:System.Net.HttpStatusCode"/> to be used for the redirect.</param>
         </member>
-        <member name="M:TVA.Web.SecurityModule.GetResourceName">
+        <member name="M:GSF.Web.SecurityModule.GetResourceName">
             <summary>
             Gets the name of resource being accessed.
             </summary>
             <returns><see cref="P:System.Web.HttpApplication.Request"/>.<see cref="P:System.Web.HttpRequest.Url"/>.<see cref="P:System.Uri.PathAndQuery"/> property value.</returns>
         </member>
-        <member name="M:TVA.Web.SecurityModule.IsAccessRestricted">
+        <member name="M:GSF.Web.SecurityModule.IsAccessRestricted">
             <summary>
-            Determines if access to the requested resource is restricted by <see cref="T:TVA.Security.RestrictAccessAttribute"/>.
+            Determines if access to the requested resource is restricted by <see cref="T:GSF.Security.RestrictAccessAttribute"/>.
             </summary>
             <returns>true if access to the requested resource is restricted, otherwise false.</returns>
         </member>
-        <member name="P:TVA.Web.SecurityModule.Application">
+        <member name="P:GSF.Web.SecurityModule.Application">
             <summary>
             Gets the current <see cref="T:System.Web.HttpApplication"/> instance.
             </summary>
         </member>
-        <member name="T:TVA.Web.SecurityModule.SessionEnabledHandler">
+        <member name="T:GSF.Web.SecurityModule.SessionEnabledHandler">
             <summary>
             A handler used to force the SessionStateModule to load session state.
             </summary>
         </member>
-        <member name="M:TVA.Web.SecurityModule.SessionEnabledHandler.#ctor(System.Web.IHttpHandler)">
+        <member name="M:GSF.Web.SecurityModule.SessionEnabledHandler.#ctor(System.Web.IHttpHandler)">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.Web.SecurityModule.SessionEnabledHandler"/> class.
+            Initializes a new instance of the <see cref="T:GSF.Web.SecurityModule.SessionEnabledHandler"/> class.
             </summary>
             <param name="originalHandler">The original handler object.</param>
         </member>
-        <member name="M:TVA.Web.SecurityModule.SessionEnabledHandler.ProcessRequest(System.Web.HttpContext)">
+        <member name="M:GSF.Web.SecurityModule.SessionEnabledHandler.ProcessRequest(System.Web.HttpContext)">
             <summary>
             This method will never get called.
             </summary>
         </member>
-        <member name="P:TVA.Web.SecurityModule.SessionEnabledHandler.IsReusable">
+        <member name="P:GSF.Web.SecurityModule.SessionEnabledHandler.IsReusable">
             <summary>
             Returns false since class has a member.
             </summary>
         </member>
-        <member name="T:TVA.Web.Embedded.SecurityPortal">
+        <member name="T:GSF.Web.Embedded.SecurityPortal">
             <summary>
             Embedded web page used by secure ASP.NET web sites for security related tasks.
             </summary>
@@ -849,7 +849,7 @@
             <?xml version="1.0"?>
             <configuration>
               <configSections>
-                <section name="categorizedSettings" type="TVA.Configuration.CategorizedSettingsSection, TVA.Core" />
+                <section name="categorizedSettings" type="GSF.Configuration.CategorizedSettingsSection, GSF.Core" />
               </configSections>
               <categorizedSettings>
                 <securityPortal>
@@ -864,49 +864,49 @@
             </code>
             </example>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityPortal.Page_Load(System.Object,System.EventArgs)">
+        <member name="M:GSF.Web.Embedded.SecurityPortal.Page_Load(System.Object,System.EventArgs)">
             <summary>
             Initializes the web page.
             </summary>
             <param name="sender">Source of this event.</param>
             <param name="e">Arguments of this event.</param>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityPortal.LoginButton_Click(System.Object,System.EventArgs)">
+        <member name="M:GSF.Web.Embedded.SecurityPortal.LoginButton_Click(System.Object,System.EventArgs)">
             <summary>
             Logins the user.
             </summary>
             <param name="sender">Source of this event.</param>
             <param name="e">Arguments of this event.</param>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityPortal.UpdateButton_Click(System.Object,System.EventArgs)">
+        <member name="M:GSF.Web.Embedded.SecurityPortal.UpdateButton_Click(System.Object,System.EventArgs)">
             <summary>
             Updates user data.
             </summary>
             <param name="sender">Source of this event.</param>
             <param name="e">Arguments of this event.</param>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityPortal.ChangeButton_Click(System.Object,System.EventArgs)">
+        <member name="M:GSF.Web.Embedded.SecurityPortal.ChangeButton_Click(System.Object,System.EventArgs)">
             <summary>
             Changes user password.
             </summary>
             <param name="sender">Source of this event.</param>
             <param name="e">Arguments of this event.</param>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityPortal.ResetCheckButton_Click(System.Object,System.EventArgs)">
+        <member name="M:GSF.Web.Embedded.SecurityPortal.ResetCheckButton_Click(System.Object,System.EventArgs)">
             <summary>
             Checks if user password can be reset.
             </summary>
             <param name="sender">Source of this event.</param>
             <param name="e">Arguments of this event.</param>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityPortal.ResetFinalButton_Click(System.Object,System.EventArgs)">
+        <member name="M:GSF.Web.Embedded.SecurityPortal.ResetFinalButton_Click(System.Object,System.EventArgs)">
             <summary>
             Resets user password.
             </summary>
             <param name="sender">Source of this event.</param>
             <param name="e">Arguments of this event.</param>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.StyleSheet">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.StyleSheet">
             <summary>
             StyleSheet control.
             </summary>
@@ -915,7 +915,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.MainForm">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.MainForm">
             <summary>
             MainForm control.
             </summary>
@@ -924,7 +924,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.LogoLink">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.LogoLink">
             <summary>
             LogoLink control.
             </summary>
@@ -933,7 +933,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.LogoImage">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.LogoImage">
             <summary>
             LogoImage control.
             </summary>
@@ -942,7 +942,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.HelpLink">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.HelpLink">
             <summary>
             HelpLink control.
             </summary>
@@ -951,7 +951,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.HelpImage">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.HelpImage">
             <summary>
             HelpImage control.
             </summary>
@@ -960,7 +960,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ContentPlaceHolder">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ContentPlaceHolder">
             <summary>
             ContentPlaceHolder control.
             </summary>
@@ -969,7 +969,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.MessageLabel">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.MessageLabel">
             <summary>
             MessageLabel control.
             </summary>
@@ -978,7 +978,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.FooterLabel">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.FooterLabel">
             <summary>
             FooterLabel control.
             </summary>
@@ -987,7 +987,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.LoginPanel">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.LoginPanel">
             <summary>
             LoginPanel control.
             </summary>
@@ -996,7 +996,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.LoginUsernameValidator">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.LoginUsernameValidator">
             <summary>
             LoginUsernameValidator control.
             </summary>
@@ -1005,7 +1005,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.LoginUsername">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.LoginUsername">
             <summary>
             LoginUsername control.
             </summary>
@@ -1014,7 +1014,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.RememberUsername">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.RememberUsername">
             <summary>
             RememberUsername control.
             </summary>
@@ -1023,7 +1023,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.LoginPasswordValidator">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.LoginPasswordValidator">
             <summary>
             LoginPasswordValidator control.
             </summary>
@@ -1032,7 +1032,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.LoginPassword">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.LoginPassword">
             <summary>
             LoginPassword control.
             </summary>
@@ -1041,7 +1041,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ForgotPassword">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ForgotPassword">
             <summary>
             ForgotPassword control.
             </summary>
@@ -1050,7 +1050,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePassword">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePassword">
             <summary>
             ChangePassword control.
             </summary>
@@ -1059,7 +1059,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.LoginButton">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.LoginButton">
             <summary>
             LoginButton control.
             </summary>
@@ -1068,7 +1068,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ResetPasswordCheckPanel">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ResetPasswordCheckPanel">
             <summary>
             ResetPasswordCheckPanel control.
             </summary>
@@ -1077,7 +1077,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ResetPasswordUsernameValidator">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ResetPasswordUsernameValidator">
             <summary>
             ResetPasswordUsernameValidator control.
             </summary>
@@ -1086,7 +1086,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ResetPasswordUsername">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ResetPasswordUsername">
             <summary>
             ResetPasswordUsername control.
             </summary>
@@ -1095,7 +1095,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ResetCheckButton">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ResetCheckButton">
             <summary>
             ResetCheckButton control.
             </summary>
@@ -1104,7 +1104,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ResetPasswordFinalPanel">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ResetPasswordFinalPanel">
             <summary>
             ResetPasswordFinalPanel control.
             </summary>
@@ -1113,7 +1113,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ResetPasswordSecurityQuestion">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ResetPasswordSecurityQuestion">
             <summary>
             ResetPasswordSecurityQuestion control.
             </summary>
@@ -1122,7 +1122,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ResetPasswordSecurityAnswer">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ResetPasswordSecurityAnswer">
             <summary>
             ResetPasswordSecurityAnswer control.
             </summary>
@@ -1131,7 +1131,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ResetFinalButton">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ResetFinalButton">
             <summary>
             ResetFinalButton control.
             </summary>
@@ -1140,7 +1140,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePasswordPanel">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePasswordPanel">
             <summary>
             ChangePasswordPanel control.
             </summary>
@@ -1149,7 +1149,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePasswordUsernameValidator">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePasswordUsernameValidator">
             <summary>
             ChangePasswordUsernameValidator control.
             </summary>
@@ -1158,7 +1158,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePasswordUsername">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePasswordUsername">
             <summary>
             ChangePasswordUsername control.
             </summary>
@@ -1167,7 +1167,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePasswordOldPasswordValidator">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePasswordOldPasswordValidator">
             <summary>
             ChangePasswordOldPasswordValidator control.
             </summary>
@@ -1176,7 +1176,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePasswordOldPassword">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePasswordOldPassword">
             <summary>
             ChangePasswordOldPassword control.
             </summary>
@@ -1185,7 +1185,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePasswordNewPasswordValidator1">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePasswordNewPasswordValidator1">
             <summary>
             ChangePasswordNewPasswordValidator1 control.
             </summary>
@@ -1194,7 +1194,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePasswordNewPasswordValidator2">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePasswordNewPasswordValidator2">
             <summary>
             ChangePasswordNewPasswordValidator2 control.
             </summary>
@@ -1203,7 +1203,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePasswordNewPassword">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePasswordNewPassword">
             <summary>
             ChangePasswordNewPassword control.
             </summary>
@@ -1212,7 +1212,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePasswordConfirmNewPasswordValidator1">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePasswordConfirmNewPasswordValidator1">
             <summary>
             ChangePasswordConfirmNewPasswordValidator1 control.
             </summary>
@@ -1221,7 +1221,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePasswordConfirmNewPasswordValidator2">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePasswordConfirmNewPasswordValidator2">
             <summary>
             ChangePasswordConfirmNewPasswordValidator2 control.
             </summary>
@@ -1230,7 +1230,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangePasswordConfirmNewPassword">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangePasswordConfirmNewPassword">
             <summary>
             ChangePasswordConfirmNewPassword control.
             </summary>
@@ -1239,7 +1239,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.ChangeButton">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.ChangeButton">
             <summary>
             ChangeButton control.
             </summary>
@@ -1248,7 +1248,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.MyAccountPanel">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.MyAccountPanel">
             <summary>
             MyAccountPanel control.
             </summary>
@@ -1257,7 +1257,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUsername">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUsername">
             <summary>
             AccountUsername control.
             </summary>
@@ -1266,7 +1266,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserCompany">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserCompany">
             <summary>
             AccountUserCompany control.
             </summary>
@@ -1275,7 +1275,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserFirstNameValidator">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserFirstNameValidator">
             <summary>
             AccountUserFirstNameValidator control.
             </summary>
@@ -1284,7 +1284,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserFirstName">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserFirstName">
             <summary>
             AccountUserFirstName control.
             </summary>
@@ -1293,7 +1293,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserLastNameValidator">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserLastNameValidator">
             <summary>
             AccountUserLastNameValidator control.
             </summary>
@@ -1302,7 +1302,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserLastName">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserLastName">
             <summary>
             AccountUserLastName control.
             </summary>
@@ -1311,7 +1311,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserEmailAddressValidator">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserEmailAddressValidator">
             <summary>
             AccountUserEmailAddressValidator control.
             </summary>
@@ -1320,7 +1320,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserEmailAddress">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserEmailAddress">
             <summary>
             AccountUserEmailAddress control.
             </summary>
@@ -1329,7 +1329,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserPhoneNumberAddressValidator">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserPhoneNumberAddressValidator">
             <summary>
             AccountUserPhoneNumberAddressValidator control.
             </summary>
@@ -1338,7 +1338,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserPhoneNumber">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserPhoneNumber">
             <summary>
             AccountUserPhoneNumber control.
             </summary>
@@ -1347,7 +1347,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserSecurityQuestion">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserSecurityQuestion">
             <summary>
             AccountUserSecurityQuestion control.
             </summary>
@@ -1356,7 +1356,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserSecurityAnswerValidator">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserSecurityAnswerValidator">
             <summary>
             AccountUserSecurityAnswerValidator control.
             </summary>
@@ -1365,7 +1365,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccountUserSecurityAnswer">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccountUserSecurityAnswer">
             <summary>
             AccountUserSecurityAnswer control.
             </summary>
@@ -1374,7 +1374,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.UpdateButton">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.UpdateButton">
             <summary>
             UpdateButton control.
             </summary>
@@ -1383,7 +1383,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.AccessDeniedPanel">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.AccessDeniedPanel">
             <summary>
             AccessDeniedPanel control.
             </summary>
@@ -1392,7 +1392,7 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="F:TVA.Web.Embedded.SecurityPortal.WarningImage">
+        <member name="F:GSF.Web.Embedded.SecurityPortal.WarningImage">
             <summary>
             WarningImage control.
             </summary>
@@ -1401,12 +1401,12 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
-        <member name="T:TVA.Web.Embedded.SecurityService">
+        <member name="T:GSF.Web.Embedded.SecurityService">
             <summary>
             Embedded WCF service that can be used for securing applications using role-based security.
             </summary>
             <remarks>
-            This list shows the endpoints exposed by <see cref="T:TVA.Web.Embedded.SecurityService"/>:
+            This list shows the endpoints exposed by <see cref="T:GSF.Web.Embedded.SecurityService"/>:
             <list type="table">
                 <listheader>
                     <term>URI</term>
@@ -1423,7 +1423,7 @@
             </list>
             </remarks>
             <example>
-            This example shows how to consume the REST endpoint of <see cref="T:TVA.Web.Embedded.SecurityService"/> using <a href="http://jquery.com/" target="_blank">jQuery</a>:
+            This example shows how to consume the REST endpoint of <see cref="T:GSF.Web.Embedded.SecurityService"/> using <a href="http://jquery.com/" target="_blank">jQuery</a>:
             <code>
             <![CDATA[
             <script src="jquery.js" type="text/javascript" />
@@ -1473,34 +1473,34 @@
             </code>
             </example>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityService.GetUserData">
+        <member name="M:GSF.Web.Embedded.SecurityService.GetUserData">
             <summary>
             Returns information about the current user. 
             </summary>
-            <returns>An <see cref="T:TVA.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
+            <returns>An <see cref="T:GSF.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityService.RefreshUserData">
+        <member name="M:GSF.Web.Embedded.SecurityService.RefreshUserData">
             <summary>
             Refreshes and returns information about the current user. 
             </summary>
-            <returns>An <see cref="T:TVA.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
+            <returns>An <see cref="T:GSF.Security.UserData"/> object of the user if user's security context has been initialized, otherwise null.</returns>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityService.Authenticate(System.String,System.String)">
+        <member name="M:GSF.Web.Embedded.SecurityService.Authenticate(System.String,System.String)">
             <summary>
             Authenticates a user and caches the security context upon successful authentication for subsequent use.
             </summary>
             <param name="username">Username of the user.</param>
             <param name="password">Password of the user.</param>
-            <returns>An <see cref="T:TVA.Security.UserData"/> object of the user.</returns>
+            <returns>An <see cref="T:GSF.Security.UserData"/> object of the user.</returns>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityService.ResetPassword(System.String)">
+        <member name="M:GSF.Web.Embedded.SecurityService.ResetPassword(System.String)">
             <summary>
             Resets user password.
             </summary>
             <param name="securityAnswer">Answer to user's security question.</param>
             <returns>true if password is reset, otherwise false.</returns>
         </member>
-        <member name="M:TVA.Web.Embedded.SecurityService.ChangePassword(System.String,System.String)">
+        <member name="M:GSF.Web.Embedded.SecurityService.ChangePassword(System.String,System.String)">
             <summary>
             Changes user password.
             </summary>
@@ -1508,147 +1508,147 @@
             <param name="newPassword">User's new password.</param>
             <returns>true if the password is changed, otherwise false.</returns>
         </member>
-        <member name="T:TVA.Web.UI.MsgBoxStyle">
+        <member name="T:GSF.Web.UI.MsgBoxStyle">
             <summary>
             Specifies the buttons to be displayed in a message box.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.OKOnly">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.OKOnly">
             <summary>
             OK Button.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.OKCancel">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.OKCancel">
             <summary>
             OK and Cancel buttons.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.AbortRetryIgnore">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.AbortRetryIgnore">
             <summary>
             Abort,Retry, and Ignore buttons.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.YesNoCancel">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.YesNoCancel">
             <summary>
             Yes, No, and Cancel buttons.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.YesNo">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.YesNo">
             <summary>
             Yes and No buttons.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.RetryCancel">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.RetryCancel">
             <summary>
             Retry and Cancel buttons.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.Critical">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.Critical">
             <summary>
             Critical message.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.Question">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.Question">
             <summary>
             Warning query.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.Exclamation">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.Exclamation">
             <summary>
             Warning message.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.Information">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.Information">
             <summary>
             Information message.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.DefaultButton1">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.DefaultButton1">
             <summary>
             First button is default.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.DefaultButton2">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.DefaultButton2">
             <summary>
             Second button is default.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.DefaultButton3">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.DefaultButton3">
             <summary>
             Third button is default.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.DefaultButton4">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.DefaultButton4">
             <summary>
             Fourth button is default.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.ApplicationModal">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.ApplicationModal">
             <summary>
             Application modal message box.
             </summary>
         </member>
-        <member name="F:TVA.Web.UI.MsgBoxStyle.SystemModal">
+        <member name="F:GSF.Web.UI.MsgBoxStyle.SystemModal">
             <summary>
             System modal message box.
             </summary>
         </member>
-        <member name="T:TVA.Web.UI.ClientSideExtensions">
+        <member name="T:GSF.Web.UI.ClientSideExtensions">
             <summary>
             Defines javascript client-side extensions for web controls.
             </summary>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.JavaScriptEncode(System.String@)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.JavaScriptEncode(System.String@)">
             <summary>
             Performs JavaScript encoding on given string.
             </summary>
             <param name="text">The string to be encoded.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.JavaScriptDecode(System.String@)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.JavaScriptDecode(System.String@)">
             <summary>
             Decodes JavaScript characters from given string.
             </summary>
             <param name="text">The string to be decoded.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.SetDefaultButton(System.Web.UI.WebControls.TextBox,System.Web.UI.Control)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.SetDefaultButton(System.Web.UI.WebControls.TextBox,System.Web.UI.Control)">
             <summary>
             Registers a default button to be activated when the ENTER key is pressed inside this <paramref name="textbox"/>.
             </summary>
             <param name="textbox"><see cref="T:System.Web.UI.WebControls.TextBox"/> for which the default button is to be registered.</param>
             <param name="control">Button <see cref="T:System.Web.UI.Control"/> to be assigned as the default action handler.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.SetSubmitOnce(System.Web.UI.WebControls.Button)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.SetSubmitOnce(System.Web.UI.WebControls.Button)">
             <summary>
             Registers the <paramref name="button"/> to be disabled after one click to prevent multiple postbacks.
             </summary>
             <param name="button"><see cref="T:System.Web.UI.WebControls.Button"/> for which submit once script is to be registered.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.BringToFront(System.Web.UI.Page)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.BringToFront(System.Web.UI.Page)">
             <summary>
             Brings the <paramref name="page"/>'s browser window to the foreground.
             </summary>
             <param name="page"><see cref="T:System.Web.UI.Page"/> to be brought to the foreground.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.PushToBack(System.Web.UI.Page)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.PushToBack(System.Web.UI.Page)">
             <summary>
             Pushes the <paramref name="page"/>'s browser window to the background.
             </summary>
             <param name="page"><see cref="T:System.Web.UI.Page"/> to be pushed to the background.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.Refresh(System.Web.UI.Page,System.Boolean)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.Refresh(System.Web.UI.Page,System.Boolean)">
             <summary>
             Registers this <paramref name="page"/> to perform a page refresh.
             </summary>
             <param name="page"><see cref="T:System.Web.UI.Page"/> to refresh.</param>
             <param name="refreshOnLoad">Refreshes the <paramref name="page"/> after the page content has loaded.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.Refresh(System.Web.UI.Control)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.Refresh(System.Web.UI.Control)">
             <summary>
             Registers the <paramref name="control"/> to perform a page refresh.
             </summary>
             <param name="control"><see cref="T:System.Web.UI.Control"/> that will perform a page refresh when clicked.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.Show(System.Web.UI.Page,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.Show(System.Web.UI.Page,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Shows a modeless popup window for the specified web page <paramref name="url"/> when the <paramref name="page"/> has loaded.
             </summary>
@@ -1663,7 +1663,7 @@
             <param name="resizable">True if the popup window can be resized, otherwise False.</param>
             <param name="status">True if the status bar is to be displayed, otherwise False.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.Show(System.Web.UI.Control,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.Show(System.Web.UI.Control,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Shows a modeless popup window for the specified web page <paramref name="url"/> when the <paramref name="control"/> is clicked.
             </summary>
@@ -1678,7 +1678,7 @@
             <param name="resizable">True if the popup window can be resized, otherwise False.</param>
             <param name="status">True if the status bar is to be displayed, otherwise False.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.ShowDialog(System.Web.UI.Page,System.String,System.Web.UI.Control,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.ShowDialog(System.Web.UI.Page,System.String,System.Web.UI.Control,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Shows a modal popup window for the specified web page <paramref name="url"/> when the <paramref name="page"/> has loaded.
             </summary>
@@ -1694,7 +1694,7 @@
             <param name="resizable">True if the popup window can be resized, otherwise False.</param>
             <param name="status">True if the status bar is to be displayed, otherwise False.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.ShowDialog(System.Web.UI.Control,System.String,System.Web.UI.Control,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.ShowDialog(System.Web.UI.Control,System.String,System.Web.UI.Control,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Shows a modal popup window for the specified web page <paramref name="url"/> when the <paramref name="control"/> is clicked.
             </summary>
@@ -1710,7 +1710,7 @@
             <param name="resizable">True if the popup window can be resized, otherwise False.</param>
             <param name="status">True if the status bar is to be displayed, otherwise False.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.ShowPopup(System.Web.UI.Page,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.ShowPopup(System.Web.UI.Page,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Shows a popup for the specified web page <paramref name="url"/> when the <paramref name="page"/> has loaded.
             </summary>
@@ -1729,7 +1729,7 @@
             <param name="status">True if the status bar is to be displayed, otherwise False.</param>
             <param name="directories">True if the directories buttons (Netscape only) are to be displayed, otherwise False.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.ShowPopup(System.Web.UI.Control,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.ShowPopup(System.Web.UI.Control,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Shows a popup for the specified web page <paramref name="url"/> when the <paramref name="control"/> is clicked.
             </summary>
@@ -1748,21 +1748,21 @@
             <param name="status">True if the status bar is to be displayed, otherwise False.</param>
             <param name="directories">True if the directories buttons (Netscape only) are to be displayed, otherwise False.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.Close(System.Web.UI.Page,System.String)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.Close(System.Web.UI.Page,System.String)">
             <summary>
             Closes the current <paramref name="page"/> when it has finished loading in the browser and returns the specified <paramref name="returnValue"/> to the web page that opened it.
             </summary>
             <param name="page"><see cref="T:System.Web.UI.Page"/> to be closed.</param>
             <param name="returnValue">Value to be returned to the parent web page.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.Close(System.Web.UI.Control,System.String)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.Close(System.Web.UI.Control,System.String)">
             <summary>
             Closes the current page when the <paramref name="control"/> is clicked and returns the specified <paramref name="returnValue"/> to the web page that opened it.
             </summary>
             <param name="control"><see cref="T:System.Web.UI.Control"/> that will close the current web page when clicked.</param>
             <param name="returnValue">Value to be returned to the parent web page.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.MsgBox(System.Web.UI.Page,System.String,System.String,TVA.Web.UI.MsgBoxStyle,System.Boolean)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.MsgBox(System.Web.UI.Page,System.String,System.String,GSF.Web.UI.MsgBoxStyle,System.Boolean)">
             <summary>
             Shows a windows application style message box when the <paramref name="page"/> has loaded.
             </summary>
@@ -1772,7 +1772,7 @@
             <param name="buttons">Buttons to be displayed in the message box.</param>
             <param name="doPostBack">True if a post-back is to be performed when either OK, Retry, or Yes buttons are clicked in the message box, otherwise False.</param>
         </member>
-        <member name="M:TVA.Web.UI.ClientSideExtensions.MsgBox(System.Web.UI.Control,System.String,System.String,TVA.Web.UI.MsgBoxStyle,System.Boolean)">
+        <member name="M:GSF.Web.UI.ClientSideExtensions.MsgBox(System.Web.UI.Control,System.String,System.String,GSF.Web.UI.MsgBoxStyle,System.Boolean)">
             <summary>
             Shows a windows application style message box when the <paramref name="control"/> is clicked.
             </summary>

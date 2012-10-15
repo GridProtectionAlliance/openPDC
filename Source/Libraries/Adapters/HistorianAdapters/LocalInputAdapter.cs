@@ -28,12 +28,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TVA;
-using TVA.Historian;
-using TVA.Historian.Files;
-using TVA.IO;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
+using GSF;
+using GSF.Historian;
+using GSF.Historian.Files;
+using GSF.IO;
 
 namespace HistorianAdapters
 {

@@ -30,13 +30,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TVA;
-using TVA.Collections;
-using TVA.IO;
-using TVA.PhasorProtocols;
-using TVA.Units;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
+using GSF;
+using GSF.Collections;
+using GSF.IO;
+using PhasorProtocols;
+using GSF.Units;
 
 namespace EpriExport
 {

@@ -30,11 +30,11 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.Commands;
-using TimeSeriesFramework.UI.DataModels;
-using TVA;
-using TVA.Data;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.Commands;
+using GSF.TimeSeries.UI.DataModels;
+using GSF;
+using GSF.Data;
 
 namespace openPG.UI.ViewModels
 {

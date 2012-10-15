@@ -23,8 +23,8 @@
 
 using System.ComponentModel;
 using System.Xml;
-using TimeSeriesFramework;
-using TVA.ServiceProcess;
+using GSF.TimeSeries;
+using GSF.ServiceProcess;
 
 namespace openPDC
 {

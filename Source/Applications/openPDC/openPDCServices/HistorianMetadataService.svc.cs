@@ -22,9 +22,9 @@ using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
-using TVA.Configuration;
-using TVA.Data;
-using TVA.ServiceModel;
+using GSF.Configuration;
+using GSF.Data;
+using GSF.ServiceModel;
 
 namespace openPDCServices
 {

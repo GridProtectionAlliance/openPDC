@@ -87,6 +87,14 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GSF.Core, Version=4.0.4.15, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.TimeSeries, Version=1.1.81.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\GSF\GSF.TimeSeries.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -99,15 +107,6 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TimeSeriesFramework">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Core">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath Condition=" '$(SignAssembly)' != 'true' ">..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
-      <HintPath Condition=" '$(SignAssembly)' == 'true' ">..\..\..\Dependencies\TVA\Signed\TVA.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileExporter.cs" />
@@ -131,7 +130,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TVA.PhasorProtocols\PhasorProtocols.csproj">
+    <ProjectReference Include="..\..\PhasorProtocols\PhasorProtocols.csproj">
       <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
       <Name>PhasorProtocols</Name>
     </ProjectReference>

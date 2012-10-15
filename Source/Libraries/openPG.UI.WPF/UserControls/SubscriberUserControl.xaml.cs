@@ -40,11 +40,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using openPG.UI.DataModels;
 using openPG.UI.ViewModels;
-using TimeSeriesFramework.UI;
-using TVA;
-using TVA.Data;
-using TVA.IO;
-using TVA.Security.Cryptography;
+using GSF.TimeSeries.UI;
+using GSF;
+using GSF.Data;
+using GSF.IO;
+using GSF.Security.Cryptography;
 
 namespace openPG.UI.UserControls
 {

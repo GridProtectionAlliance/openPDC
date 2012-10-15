@@ -32,7 +32,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 using System.Xml;
-using TVA;
+using GSF;
 
 namespace ConfigurationSetupUtility.Screens
 {

@@ -23,7 +23,7 @@
 
 using System.IO;
 using System.Linq;
-using TimeSeriesFramework;
+using GSF.TimeSeries;
 
 namespace ProtocolTester
 {

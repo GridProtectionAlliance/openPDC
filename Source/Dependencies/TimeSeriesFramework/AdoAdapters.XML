@@ -115,7 +115,7 @@
             <param name="maxLength">Maximum length of the status message.</param>
             <returns>Text of the status message.</returns>
         </member>
-        <member name="M:AdoAdapters.AdoOutputAdapter.ProcessMeasurements(TimeSeriesFramework.IMeasurement[])">
+        <member name="M:AdoAdapters.AdoOutputAdapter.ProcessMeasurements(GSF.TimeSeries.IMeasurement[])">
             <summary>
             Archives <paramref name="measurements"/> locally.
             </summary>

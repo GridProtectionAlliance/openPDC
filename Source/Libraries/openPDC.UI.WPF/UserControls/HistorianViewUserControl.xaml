@@ -74,17 +74,17 @@
             <MenuItem Header="_File"  Padding="0">
                 <MenuItem Header="Open a_rchive..." InputGestureText="Ctrl+R" Click="OpenArchiveControl_Click">
                     <MenuItem.Icon>
-                        <Image Source="/TimeSeriesFramework.UI;component/Images/CabinetOpen.png" MaxWidth="20" MaxHeight="20" />
+                        <Image Source="/GSF.TimeSeries.UI;component/Images/CabinetOpen.png" MaxWidth="20" MaxHeight="20" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="_Open..." Click="OpenControl_Click" InputGestureText="Ctrl+O">
                     <MenuItem.Icon>
-                        <Image Source="/TimeSeriesFramework.UI;component/Images/Folder.png" MaxWidth="20" MaxHeight="20" />
+                        <Image Source="/GSF.TimeSeries.UI;component/Images/Folder.png" MaxWidth="20" MaxHeight="20" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="_Save" InputGestureText="Ctrl+S" IsEnabled="False" Name="m_saveMenuItem" Click="SaveControl_Click">
                     <MenuItem.Icon>
-                        <Image Source="/TimeSeriesFramework.UI;component/Images/Save.png" MaxWidth="20" MaxHeight="20" />
+                        <Image Source="/GSF.TimeSeries.UI;component/Images/Save.png" MaxWidth="20" MaxHeight="20" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Save _as..." InputGestureText="Ctrl+Shift+S" IsEnabled="False" Name="m_saveAsMenuItem" Click="SaveAsMenuItem_Click" />
@@ -94,12 +94,12 @@
             <MenuItem Header="_Options" Padding="0">
                 <MenuItem Header="Trend" Name="m_trendMenuItem" IsEnabled="False" Click="TrendControl_Click">
                     <MenuItem.Icon>
-                        <Image Source="/TimeSeriesFramework.UI;component/Images/ChartLine.png" MaxWidth="20" MaxHeight="20" />
+                        <Image Source="/GSF.TimeSeries.UI;component/Images/ChartLine.png" MaxWidth="20" MaxHeight="20" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Export..." Name="m_exportMenuItem" IsEnabled="False" Click="ExportControl_Click">
                     <MenuItem.Icon>
-                        <Image Source="/TimeSeriesFramework.UI;component/Images/TableEdit.png" MaxWidth="20" MaxHeight="20" />
+                        <Image Source="/GSF.TimeSeries.UI;component/Images/TableEdit.png" MaxWidth="20" MaxHeight="20" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -127,20 +127,20 @@
                             </Style>
                         </ToolBar.Resources>
                         <Button Width="23" Height="23" ToolTip="Open Archive... (Ctrl+R)" Click="OpenArchiveControl_Click">
-                            <Image Source="/TimeSeriesFramework.UI;component/Images/CabinetOpen.png" />
+                            <Image Source="/GSF.TimeSeries.UI;component/Images/CabinetOpen.png" />
                         </Button>
                         <Button Width="23" Height="23" Click="OpenControl_Click" ToolTip="Open (Ctrl+O)">
-                            <Image Source="/TimeSeriesFramework.UI;component/Images/Folder.png" />
+                            <Image Source="/GSF.TimeSeries.UI;component/Images/Folder.png" />
                         </Button>
                         <Button Width="23" Height="23" ToolTip="Save (Ctrl+S)" IsEnabled="False" Name="m_saveButton" Click="SaveControl_Click" ToolTipService.ShowOnDisabled="True">
-                            <Image Source="/TimeSeriesFramework.UI;component/Images/Save.png" />
+                            <Image Source="/GSF.TimeSeries.UI;component/Images/Save.png" />
                         </Button>
                         <Separator />
                         <Button Width="23" Height="23" Click="TrendControl_Click" ToolTip="Trend" ToolTipService.ShowOnDisabled="True" Name="m_trendButton" IsEnabled="False">
-                            <Image Source="/TimeSeriesFramework.UI;component/Images/ChartLine.png" />
+                            <Image Source="/GSF.TimeSeries.UI;component/Images/ChartLine.png" />
                         </Button>
                         <Button Width="23" Height="23" ToolTip="Export" ToolTipService.ShowOnDisabled="True" Name="m_exportButton" IsEnabled="False" Click="ExportControl_Click">
-                            <Image Source="/TimeSeriesFramework.UI;component/Images/TableEdit.png" />
+                            <Image Source="/GSF.TimeSeries.UI;component/Images/TableEdit.png" />
                         </Button>
                         <Separator />
                         <ToolBarPanel Orientation="Horizontal">

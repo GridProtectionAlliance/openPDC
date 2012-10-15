@@ -134,7 +134,7 @@
             Attempts to disconnect from this <see cref="T:CsvAdapters.CsvOutputAdapter"/>.
             </summary>
         </member>
-        <member name="M:CsvAdapters.CsvOutputAdapter.ProcessMeasurements(TimeSeriesFramework.IMeasurement[])">
+        <member name="M:CsvAdapters.CsvOutputAdapter.ProcessMeasurements(GSF.TimeSeries.IMeasurement[])">
             <summary>
             Archives <paramref name="measurements"/> locally.
             </summary>

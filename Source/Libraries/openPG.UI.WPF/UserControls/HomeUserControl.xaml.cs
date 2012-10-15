@@ -40,15 +40,15 @@ using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.Charts;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Transport;
-using TimeSeriesFramework.UI;
-using TVA;
-using TVA.Configuration;
-using TVA.Data;
-using TVA.IO;
-using TVA.Reflection;
-using TVA.ServiceProcess;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Transport;
+using GSF.TimeSeries.UI;
+using GSF;
+using GSF.Configuration;
+using GSF.Data;
+using GSF.IO;
+using GSF.Reflection;
+using GSF.ServiceProcess;
 
 
 namespace openPG.UI.UserControls
@@ -139,7 +139,7 @@ namespace openPG.UI.UserControls
 
             m_windowsServiceClient = CommonFunctions.GetWindowsServiceClient();
 
-            if (m_windowsServiceClient == null || m_windowsServiceClient.Helper.RemotingClient.CurrentState != TVA.Communication.ClientState.Connected)
+            if (m_windowsServiceClient == null || m_windowsServiceClient.Helper.RemotingClient.CurrentState != GSF.Communication.ClientState.Connected)
             {
                 //ButtonRestart.IsEnabled = false;
             }
@@ -216,7 +216,7 @@ namespace openPG.UI.UserControls
         void m_refreshTimer_Tick(object sender, EventArgs e)
         {
             if (m_windowsServiceClient != null && m_windowsServiceClient.Helper != null &&
-                   m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                   m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == GSF.Communication.ClientState.Connected)
             {
                 try
                 {
@@ -291,7 +291,7 @@ namespace openPG.UI.UserControls
         {
             if (MessageBox.Show("Do you want to restart openpG service?", "Restart openPG Service", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                if (m_windowsServiceClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                if (m_windowsServiceClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == GSF.Communication.ClientState.Connected)
                 {
                     CommonFunctions.SendCommandToService("Restart");
                     MessageBox.Show("Successfully sent RESTART command to openPG service.", "Restart openPG Service", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -358,7 +358,7 @@ namespace openPG.UI.UserControls
         {
             PopupStatus.IsOpen = true;
             if (m_windowsServiceClient != null && m_windowsServiceClient.Helper != null &&
-                   m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                   m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == GSF.Communication.ClientState.Connected)
                 CommonFunctions.SendCommandToService("Status -actionable");
         }
 
@@ -371,7 +371,7 @@ namespace openPG.UI.UserControls
         {
             if (ComboBoxMeasurement.Items.Count > 0)
             {
-                TimeSeriesFramework.UI.DataModels.Measurement selectedMeasurement = (TimeSeriesFramework.UI.DataModels.Measurement)ComboBoxMeasurement.SelectedItem;
+                GSF.TimeSeries.UI.DataModels.Measurement selectedMeasurement = (GSF.TimeSeries.UI.DataModels.Measurement)ComboBoxMeasurement.SelectedItem;
                 if (selectedMeasurement != null)
                 {
                     m_signalID = selectedMeasurement.SignalID.ToString();
@@ -390,8 +390,8 @@ namespace openPG.UI.UserControls
 
         private void ComboBoxDevice_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement> measurements = TimeSeriesFramework.UI.DataModels.Measurement.Load(null, ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
-            ComboBoxMeasurement.ItemsSource = new ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement>(measurements.Where(m => m.SignalSuffix == "PA" || m.SignalSuffix == "FQ"));
+            ObservableCollection<GSF.TimeSeries.UI.DataModels.Measurement> measurements = GSF.TimeSeries.UI.DataModels.Measurement.Load(null, ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
+            ComboBoxMeasurement.ItemsSource = new ObservableCollection<GSF.TimeSeries.UI.DataModels.Measurement>(measurements.Where(m => m.SignalSuffix == "PA" || m.SignalSuffix == "FQ"));
             if (ComboBoxMeasurement.Items.Count > 0)
                 ComboBoxMeasurement.SelectedIndex = 0;
         }

@@ -38,8 +38,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using TVA;
-using TVA.Data;
+using GSF;
+using GSF.Data;
 
 namespace ConfigurationSetupUtility.Screens
 {

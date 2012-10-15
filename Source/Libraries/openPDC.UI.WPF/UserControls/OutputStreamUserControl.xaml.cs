@@ -32,7 +32,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using openPDCManager.UI.ViewModels;
-using TimeSeriesFramework.UI.UserControls;
+using GSF.Timeseries.UI.UserControls;
 
 namespace openPDC.UI.UserControls
 {
@@ -160,16 +160,16 @@ namespace openPDC.UI.UserControls
                         m_dataContext.ProcessPropertyChange();
 
                         if (enabledCheckBox.IsChecked.GetValueOrDefault())
-                            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + runtimeID);
+                            GSF.Timeseries.UI.CommonFunctions.SendCommandToService("Initialize " + runtimeID);
                         else
-                            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                            GSF.Timeseries.UI.CommonFunctions.SendCommandToService("ReloadConfig");
                     }
                     catch (Exception ex)
                     {
                         if ((object)ex.InnerException != null)
-                            TimeSeriesFramework.UI.CommonFunctions.LogException(null, "Output Stream Autosave", ex.InnerException);
+                            GSF.Timeseries.UI.CommonFunctions.LogException(null, "Output Stream Autosave", ex.InnerException);
                         else
-                            TimeSeriesFramework.UI.CommonFunctions.LogException(null, "Output Stream Autosave", ex);
+                            GSF.Timeseries.UI.CommonFunctions.LogException(null, "Output Stream Autosave", ex);
                     }
                 }
             }

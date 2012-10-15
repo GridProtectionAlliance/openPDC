@@ -27,9 +27,9 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Windows.Media;
-using TimeSeriesFramework.Statistics;
-using TimeSeriesFramework.UI;
-using TVA.Data;
+using GSF.TimeSeries.Statistics;
+using GSF.TimeSeries.UI;
+using GSF.Data;
 
 namespace openPDC.UI.DataModels
 {
@@ -140,7 +140,7 @@ namespace openPDC.UI.DataModels
                 resultSet.Tables[2].TableName = "OutputStreams";
 
                 resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, AdapterName FROM CustomActionAdapter WHERE " +
-                    "NodeID = {0} AND TypeName = {1} AND Enabled = {2} ORDER BY AdapterName", "nodeID", "typeName", "enabled"), DefaultTimeout, database.CurrentNodeID(), "TimeSeriesFramework.Transport.DataPublisher", database.Bool(true)).Copy());
+                    "NodeID = {0} AND TypeName = {1} AND Enabled = {2} ORDER BY AdapterName", "nodeID", "typeName", "enabled"), DefaultTimeout, database.CurrentNodeID(), "GSF.TimeSeries.Transport.DataPublisher", database.Bool(true)).Copy());
 
                 resultSet.Tables[3].TableName = "DataPublishers";
 

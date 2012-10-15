@@ -33,12 +33,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Linq;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework.UI;
-using TVA;
-using TVA.Collections;
-using TVA.Data;
-using TVA.IO;
-using TVA.Security.Cryptography;
+using GSF.TimeSeries.UI;
+using GSF;
+using GSF.Collections;
+using GSF.Data;
+using GSF.IO;
+using GSF.Security.Cryptography;
 
 namespace openPG.UI.UserControls
 {
@@ -81,7 +81,7 @@ namespace openPG.UI.UserControls
 
                 // Generate a default shared secret password for subscriber key and initialization vector
                 byte[] buffer = new byte[4];
-                TVA.Security.Cryptography.Random.GetBytes(buffer);
+                GSF.Security.Cryptography.Random.GetBytes(buffer);
 
                 string generatedSecret = Convert.ToBase64String(buffer).RemoveCrLfs();
 
@@ -229,7 +229,7 @@ namespace openPG.UI.UserControls
                     request.ValidIPAddresses = m_validIpAddressesField.Text;
 
                     // Create the request
-                    File.WriteAllBytes(saveFileDialog.FileName, Serialization.Serialize(request, TVA.SerializationFormat.Xml));
+                    File.WriteAllBytes(saveFileDialog.FileName, Serialization.Serialize(request, GSF.SerializationFormat.Xml));
 
                     // Send ReloadCryptoCache to service
                     ReloadServiceCryptoCache();

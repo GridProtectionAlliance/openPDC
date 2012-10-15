@@ -25,8 +25,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Forms;
-using TimeSeriesFramework.UI;
-using TVA;
+using GSF.Timeseries.UI;
+using GSF;
 
 namespace openPDC.UI.Modal
 {

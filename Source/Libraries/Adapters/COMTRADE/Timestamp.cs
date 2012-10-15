@@ -23,7 +23,7 @@
 
 using System;
 using System.Globalization;
-using TVA;
+using GSF;
 
 namespace Comtrade
 {

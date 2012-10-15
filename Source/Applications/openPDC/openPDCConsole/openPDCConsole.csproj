@@ -139,7 +139,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Libraries\TVA.PhasorProtocols\PhasorProtocols.csproj">
+    <ProjectReference Include="..\..\..\Libraries\PhasorProtocols\PhasorProtocols.csproj">
       <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
       <Name>PhasorProtocols</Name>
     </ProjectReference>

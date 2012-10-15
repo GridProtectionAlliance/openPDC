@@ -22,7 +22,7 @@
 //******************************************************************************************************
 
 using System.ComponentModel;
-using TimeSeriesFramework;
+using GSF.TimeSeries;
 
 namespace openPDCManager
 {

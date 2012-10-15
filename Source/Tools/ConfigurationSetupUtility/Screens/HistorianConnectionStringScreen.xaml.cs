@@ -29,9 +29,9 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using TimeSeriesFramework.Adapters;
-using TVA;
-using TVA.Reflection;
+using GSF.TimeSeries.Adapters;
+using GSF;
+using GSF.Reflection;
 using System.IO;
 
 namespace ConfigurationSetupUtility.Screens

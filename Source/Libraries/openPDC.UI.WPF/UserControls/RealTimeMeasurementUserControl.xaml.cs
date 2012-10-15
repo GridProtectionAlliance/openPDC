@@ -26,7 +26,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
 using openPDC.UI.ViewModels;
-using TimeSeriesFramework.UI;
+using GSF.Timeseries.UI;
 
 namespace openPDC.UI.UserControls
 {
@@ -67,7 +67,7 @@ namespace openPDC.UI.UserControls
 
         private void RealTimeMeasurementUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("RealtimeMeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
+            int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("RealtimeMeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
 
             if (m_measurementsDataRefreshInterval == 0)
             {
@@ -109,7 +109,7 @@ namespace openPDC.UI.UserControls
                 m_dataContext.RestartConnectionCycle = false;
                 m_dataContext.UnsubscribeUnsynchronizedData();
                 IsolatedStorageManager.WriteToIsolatedStorage("RealtimeMeasurementsDataRefreshInterval", m_measurementsDataRefreshInterval);
-                int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("RealtimeMeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
+                int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("RealtimeMeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
                 PopupSettings.IsOpen = false;
                 CommonFunctions.LoadUserControl(new RealTimeMeasurementUserControl(), "Real-Time Device Measurements");
             }
@@ -129,7 +129,7 @@ namespace openPDC.UI.UserControls
             m_dataContext.RestartConnectionCycle = false;
             m_dataContext.UnsubscribeUnsynchronizedData();
             IsolatedStorageManager.InitializeStorageForRealTimeMeasurements(true);
-            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("RealtimeMeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
+            int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("RealtimeMeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
             PopupSettings.IsOpen = false;
             CommonFunctions.LoadUserControl(new RealTimeMeasurementUserControl(), "Real-Time Device Measurements");
         }

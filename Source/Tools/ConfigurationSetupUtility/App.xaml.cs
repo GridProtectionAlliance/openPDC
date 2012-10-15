@@ -29,9 +29,9 @@ using System.IO;
 using System.Security.Principal;
 using System.Windows;
 using System.Xml;
-using TVA.ErrorManagement;
-using TVA.IO;
-using TVA.Security.Cryptography;
+using GSF.ErrorManagement;
+using GSF.IO;
+using GSF.Security.Cryptography;
 
 namespace ConfigurationSetupUtility
 {

@@ -30,9 +30,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using TimeSeriesFramework;
-using TVA.PhasorProtocols;
-using TimeSeriesFramework.Adapters;
+using GSF.TimeSeries;
+using PhasorProtocols;
+using GSF.TimeSeries.Adapters;
 
 namespace PowerCalculations.EventDetection
 {

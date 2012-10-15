@@ -30,11 +30,11 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using TimeSeriesFramework.Adapters;
-using TVA;
-using TVA.ErrorManagement;
-using TVA.IO;
-using TVA.Reflection;
+using GSF.TimeSeries.Adapters;
+using GSF;
+using GSF.ErrorManagement;
+using GSF.IO;
+using GSF.Reflection;
 
 namespace ConfigurationSetupUtility.Screens
 {

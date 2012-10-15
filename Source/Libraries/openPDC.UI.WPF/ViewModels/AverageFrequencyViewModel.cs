@@ -27,11 +27,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using TVA;
-using TVA.Data;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.Commands;
-using TimeSeriesFramework.UI.DataModels;
+using GSF;
+using GSF.Data;
+using GSF.Timeseries.UI;
+using GSF.Timeseries.UI.Commands;
+using GSF.Timeseries.UI.DataModels;
 using openPDC.UI.DataModels;
 using openPDC.UI.UserControls;
 

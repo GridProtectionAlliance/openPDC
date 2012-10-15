@@ -31,8 +31,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Microsoft.Win32;
-using TVA;
-using TVA.IO;
+using GSF;
+using GSF.IO;
 
 namespace ConfigurationSetupUtility
 {

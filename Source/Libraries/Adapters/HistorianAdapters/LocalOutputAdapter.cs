@@ -67,16 +67,16 @@ using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TVA;
-using TVA.Configuration;
-using TVA.Data;
-using TVA.Historian.DataServices;
-using TVA.Historian.Files;
-using TVA.Historian.MetadataProviders;
-using TVA.Historian.Replication;
-using TVA.IO;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
+using GSF;
+using GSF.Configuration;
+using GSF.Data;
+using GSF.Historian.DataServices;
+using GSF.Historian.Files;
+using GSF.Historian.MetadataProviders;
+using GSF.Historian.Replication;
+using GSF.IO;
 
 namespace HistorianAdapters
 {

@@ -95,6 +95,21 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GSF.Communication, Version=4.0.4.15, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\GSF\GSF.Communication.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.Core, Version=4.0.4.15, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.ServiceModel">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.ServiceModel.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.TimeSeries, Version=1.1.81.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\GSF\GSF.TimeSeries.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -106,26 +121,9 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.XML" />
-    <Reference Include="TimeSeriesFramework">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Communication">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath Condition=" '$(SignAssembly)' != 'true' ">..\..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>
-      <HintPath Condition=" '$(SignAssembly)' == 'true' ">..\..\..\Dependencies\TVA\Signed\TVA.Communication.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.Core">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath Condition=" '$(SignAssembly)' != 'true' ">..\..\..\Dependencies\TVA\TVA.Core.dll</HintPath>
-      <HintPath Condition=" '$(SignAssembly)' == 'true' ">..\..\..\Dependencies\TVA\Signed\TVA.Core.dll</HintPath>
-    </Reference>
     <Reference Include="TVA.Historian">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\TVA\TVA.Historian.dll</HintPath>
-    </Reference>
-    <Reference Include="TVA.ServiceModel">
-      <HintPath>..\..\..\Dependencies\TVA\TVA.ServiceModel.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

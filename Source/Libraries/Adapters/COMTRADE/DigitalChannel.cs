@@ -22,8 +22,8 @@
 //******************************************************************************************************
 
 using System;
-using TVA;
-using TVA.Collections;
+using GSF;
+using GSF.Collections;
 
 namespace Comtrade
 {

@@ -22,8 +22,8 @@
 //******************************************************************************************************
 
 using System;
-using TVA.Communication;
-using TVA.PhasorProtocols;
+using GSF.Communication;
+using PhasorProtocols;
 
 namespace ConnectionTester
 {

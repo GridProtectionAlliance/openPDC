@@ -39,15 +39,15 @@ using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.Charts;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Transport;
-using TimeSeriesFramework.UI;
-using TVA;
-using TVA.Configuration;
-using TVA.Data;
-using TVA.IO;
-using TVA.Reflection;
-using TVA.ServiceProcess;
+using GSF.TimeSeries;
+using GSF.Timeseries.Transport;
+using GSF.Timeseries.UI;
+using GSF;
+using GSF.Configuration;
+using GSF.Data;
+using GSF.IO;
+using GSF.Reflection;
+using GSF.ServiceProcess;
 
 namespace openPDC.UI.UserControls
 {
@@ -77,7 +77,7 @@ namespace openPDC.UI.UserControls
         private LineGraph m_lineGraph;
         private int m_numberOfPointsToPlot = 60;
         private bool m_eventHandlerRegistered = false;
-        private TimeSeriesFramework.UI.DataModels.Measurement m_selectedMeasurement;
+        private GSF.Timeseries.UI.DataModels.Measurement m_selectedMeasurement;
         #endregion
 
         #region [ Constructor ]
@@ -138,7 +138,7 @@ namespace openPDC.UI.UserControls
 
             m_windowsServiceClient = CommonFunctions.GetWindowsServiceClient();
 
-            if (m_windowsServiceClient == null || m_windowsServiceClient.Helper.RemotingClient.CurrentState != TVA.Communication.ClientState.Connected)
+            if (m_windowsServiceClient == null || m_windowsServiceClient.Helper.RemotingClient.CurrentState != GSF.Communication.ClientState.Connected)
             {
                 ButtonRestart.IsEnabled = false;
             }
@@ -223,7 +223,7 @@ namespace openPDC.UI.UserControls
         void m_refreshTimer_Tick(object sender, EventArgs e)
         {
             if (m_windowsServiceClient != null && m_windowsServiceClient.Helper != null &&
-                   m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                   m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == GSF.Communication.ClientState.Connected)
             {
                 try
                 {
@@ -298,7 +298,7 @@ namespace openPDC.UI.UserControls
         {
             if (MessageBox.Show("Do you want to restart openPDC service?", "Restart openPDC Service", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                if (m_windowsServiceClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                if (m_windowsServiceClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == GSF.Communication.ClientState.Connected)
                 {
                     CommonFunctions.SendCommandToService("Restart");
                     MessageBox.Show("Successfully sent RESTART command to openPDC service.", "Restart openPDC Service", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -365,7 +365,7 @@ namespace openPDC.UI.UserControls
         {
             PopupStatus.IsOpen = true;
             if (m_windowsServiceClient != null && m_windowsServiceClient.Helper != null &&
-                   m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                   m_windowsServiceClient.Helper.RemotingClient != null && m_windowsServiceClient.Helper.RemotingClient.CurrentState == GSF.Communication.ClientState.Connected)
                 CommonFunctions.SendCommandToService("Status -actionable");
         }
 
@@ -378,7 +378,7 @@ namespace openPDC.UI.UserControls
         {
             if (ComboBoxMeasurement.Items.Count > 0)
             {
-                m_selectedMeasurement = (TimeSeriesFramework.UI.DataModels.Measurement)ComboBoxMeasurement.SelectedItem;
+                m_selectedMeasurement = (GSF.Timeseries.UI.DataModels.Measurement)ComboBoxMeasurement.SelectedItem;
 
                 // Capture's the Selected index of measurement Combo Box
                 if (Application.Current.Resources.Contains("SelectedMeasurement_Home"))
@@ -421,8 +421,8 @@ namespace openPDC.UI.UserControls
             //    m_signalID = m_selectedMeasurement.SignalID.ToString();
             //}
 
-            ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement> measurements = TimeSeriesFramework.UI.DataModels.Measurement.Load(null, ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
-            ComboBoxMeasurement.ItemsSource = new ObservableCollection<TimeSeriesFramework.UI.DataModels.Measurement>(measurements.Where(m => m.SignalSuffix == "PA" || m.SignalSuffix == "FQ"));
+            ObservableCollection<GSF.Timeseries.UI.DataModels.Measurement> measurements = GSF.Timeseries.UI.DataModels.Measurement.Load(null, ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
+            ComboBoxMeasurement.ItemsSource = new ObservableCollection<GSF.Timeseries.UI.DataModels.Measurement>(measurements.Where(m => m.SignalSuffix == "PA" || m.SignalSuffix == "FQ"));
             
 
             // assign selected value to device combo box

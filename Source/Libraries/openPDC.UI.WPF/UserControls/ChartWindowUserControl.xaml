@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:tsf="clr-namespace:TimeSeriesFramework.UI;assembly=TimeSeriesFramework.UI.WPF"
+             xmlns:tsf="clr-namespace:GSF.TimeSeries.UI;assembly=GSF.TimeSeries.UI.WPF"
              xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"             
              xmlns:visualizationToolkit="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"              
              xmlns:my="clr-namespace:System.Windows.Controls.DataVisualization.Charting.Primitives;assembly=System.Windows.Controls.DataVisualization.Toolkit"
@@ -49,20 +49,20 @@
                     </Style>
                 </ToolBar.Resources>
                 <Button Width="23" Height="23" IsEnabled="False" Name="m_backButton" Click="BackButton_Click" ToolTip="Back" ToolTipService.ShowOnDisabled="True">
-                    <Image Source="/TimeSeriesFramework.UI;component/Images/ArrowLeftBlue.png" />
+                    <Image Source="/GSF.TimeSeries.UI;component/Images/ArrowLeftBlue.png" />
                 </Button>
                 <Button Width="23" Height="23" IsEnabled="False" Name="m_forwardButton" Click="ForwardButton_Click" ToolTip="Forward" ToolTipService.ShowOnDisabled="True">
-                    <Image Source="/TimeSeriesFramework.UI;component/Images/ArrowRightBlue.png" />
+                    <Image Source="/GSF.TimeSeries.UI;component/Images/ArrowRightBlue.png" />
                 </Button>
                 <Separator />
                 <Button Width="23" Height="23" ToolTip="Zoom in" Click="ZoomInButton_Click">
-                    <Image Source="/TimeSeriesFramework.UI;component/Images/ZoomIn.png" />
+                    <Image Source="/GSF.TimeSeries.UI;component/Images/ZoomIn.png" />
                 </Button>
                 <Button Width="23" Height="23" ToolTip="Zoom out" Click="ZoomOutButton_Click">
-                    <Image Source="/TimeSeriesFramework.UI;component/Images/ZoomOut.png" />
+                    <Image Source="/GSF.TimeSeries.UI;component/Images/ZoomOut.png" />
                 </Button>
                 <Button Width="23" Height="23" ToolTip="Zoom fit" Click="ZoomFitButton_Click">
-                    <Image Source="/TimeSeriesFramework.UI;component/Images/FitToSize.png" />
+                    <Image Source="/GSF.TimeSeries.UI;component/Images/FitToSize.png" />
                 </Button>
             </ToolBar>
         </ToolBarTray>

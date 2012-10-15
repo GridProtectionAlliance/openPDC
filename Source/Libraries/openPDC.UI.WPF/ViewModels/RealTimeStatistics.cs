@@ -27,11 +27,11 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Transport;
-using TimeSeriesFramework.UI;
-using TVA;
-using TVA.Data;
+using GSF.TimeSeries;
+using GSF.Timeseries.Transport;
+using GSF.Timeseries.UI;
+using GSF;
+using GSF.Data;
 
 namespace openPDC.UI.ViewModels
 {

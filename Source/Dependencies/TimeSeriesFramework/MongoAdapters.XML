@@ -14,7 +14,7 @@
             Creates an empty instance of the <see cref="T:MongoAdapters.MeasurementWrapper"/> class.
             </summary>
         </member>
-        <member name="M:MongoAdapters.MeasurementWrapper.#ctor(TimeSeriesFramework.IMeasurement)">
+        <member name="M:MongoAdapters.MeasurementWrapper.#ctor(GSF.TimeSeries.IMeasurement)">
             <summary>
             Creates a new instance of the <see cref="T:MongoAdapters.MeasurementWrapper"/> class.
             </summary>
@@ -171,7 +171,7 @@
             Attempts to disconnect from MongoDB.
             </summary>
         </member>
-        <member name="M:MongoAdapters.MongoOutputAdapter.ProcessMeasurements(TimeSeriesFramework.IMeasurement[])">
+        <member name="M:MongoAdapters.MongoOutputAdapter.ProcessMeasurements(GSF.TimeSeries.IMeasurement[])">
             <summary>
             Stores a collection of measurements in the MongoDB database.
             </summary>

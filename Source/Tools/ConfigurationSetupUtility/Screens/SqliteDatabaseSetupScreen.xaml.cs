@@ -6,9 +6,9 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
-using TVA;
-using TVA.Data;
-using TVA.IO;
+using GSF;
+using GSF.Data;
+using GSF.IO;
 
 namespace ConfigurationSetupUtility.Screens
 {

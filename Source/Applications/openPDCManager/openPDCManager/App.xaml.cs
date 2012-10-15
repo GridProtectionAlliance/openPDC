@@ -24,11 +24,11 @@
 using System;
 using System.Security.Principal;
 using System.Windows;
-using TimeSeriesFramework;
-using TimeSeriesFramework.UI;
-using TVA.Data;
-using TVA.ErrorManagement;
-using TVA.Reflection;
+using GSF.TimeSeries;
+using GSF.TimeSeries.UI;
+using GSF.Data;
+using GSF.ErrorManagement;
+using GSF.Reflection;
 
 namespace openPDCManager
 {

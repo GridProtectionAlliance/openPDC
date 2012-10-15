@@ -87,16 +87,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TimeSeriesFramework">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="TimeSeriesFramework.UI">
-      <HintPath>..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="TimeSeriesFramework.UI.WPF">
-      <HintPath>..\..\Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll</HintPath>
-    </Reference>
     <Reference Include="TVA.Communication">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\TVA\TVA.Communication.dll</HintPath>

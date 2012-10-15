@@ -5,13 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" d:DesignHeight="650" d:DesignWidth="850"
              xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation"             
-             xmlns:tsfBinding="clr-namespace:TimeSeriesFramework.UI.Binding;assembly=TimeSeriesFramework.UI"
+             xmlns:tsfBinding="clr-namespace:GSF.TimeSeries.UI.Binding;assembly=GSF.TimeSeries.UI"
              Background="Transparent">
     
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/TimeSeriesFramework.UI.WPF;Component/Resources/CommonResource.xaml" />
+                <ResourceDictionary Source="/GSF.TimeSeries.UI.WPF;Component/Resources/CommonResource.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -56,7 +56,7 @@
                             ToolTip="Browse to connection file" Width="Auto">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image Source="/TimeSeriesFramework.UI;component/images/Folder.png" Height="24" Width="24" />
+                                <Image Source="/GSF.TimeSeries.UI;component/images/Folder.png" Height="24" Width="24" />
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
@@ -72,7 +72,7 @@
                             VerticalAlignment="Top" ToolTip="Build connection string" Width="Auto">
                             <Button.Template>
                                 <ControlTemplate>
-                                    <Image Source="/TimeSeriesFramework.UI;component/images/Plus.png" Height="24" Width="24" />
+                                    <Image Source="/GSF.TimeSeries.UI;component/images/Plus.png" Height="24" Width="24" />
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
@@ -87,7 +87,7 @@
                             VerticalAlignment="Top" ToolTip="Build alternate command channel" Width="Auto">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image Source="/TimeSeriesFramework.UI;component/images/Plus.png" Height="24" Width="24" />
+                                <Image Source="/GSF.TimeSeries.UI;component/images/Plus.png" Height="24" Width="24" />
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
@@ -157,7 +157,7 @@
                             ToolTip="Browse to configuration file" Width="Auto">
                         <Button.Template>
                             <ControlTemplate>
-                                <Image Source="/TimeSeriesFramework.UI;component/images/Folder.png" Height="24" Width="24" />
+                                <Image Source="/GSF.TimeSeries.UI;component/images/Folder.png" Height="24" Width="24" />
                             </ControlTemplate>
                         </Button.Template>
                     </Button>

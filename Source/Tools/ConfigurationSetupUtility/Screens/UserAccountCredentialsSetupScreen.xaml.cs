@@ -34,7 +34,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using TVA.Identity;
+using GSF.Identity;
 
 namespace ConfigurationSetupUtility.Screens
 {

@@ -27,8 +27,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using TimeSeriesFramework.UI;
-using TVA.Data;
+using GSF.TimeSeries.UI;
+using GSF.Data;
 
 namespace openPDC.UI.DataModels
 {

@@ -30,8 +30,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
-using TimeSeriesFramework;
-using TVA.PhasorProtocols;
+using GSF.TimeSeries;
+using PhasorProtocols;
 
 namespace PowerCalculations
 {

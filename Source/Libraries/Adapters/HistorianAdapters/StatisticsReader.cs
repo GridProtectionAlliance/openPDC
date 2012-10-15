@@ -26,8 +26,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using TVA.Historian;
-using TVA.Historian.Files;
+using GSF.Historian;
+using GSF.Historian.Files;
 
 namespace HistorianAdapters
 {

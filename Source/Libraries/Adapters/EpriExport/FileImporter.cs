@@ -31,10 +31,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TVA;
-using TVA.IO;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
+using GSF;
+using GSF.IO;
 
 namespace EpriExport
 {

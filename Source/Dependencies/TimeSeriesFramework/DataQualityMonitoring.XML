@@ -30,7 +30,7 @@
             </summary>
             <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         </member>
-        <member name="M:DataQualityMonitoring.AlarmAdapter.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{TimeSeriesFramework.IMeasurement})">
+        <member name="M:DataQualityMonitoring.AlarmAdapter.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{GSF.TimeSeries.IMeasurement})">
             <summary>
             Queues a collection of measurements for processing.
             </summary>
@@ -38,10 +38,10 @@
         </member>
         <member name="M:DataQualityMonitoring.AlarmAdapter.GetShortStatus(System.Int32)">
             <summary>
-            Gets a short one-line status of this <see cref="T:TimeSeriesFramework.Adapters.AdapterBase"/>.
+            Gets a short one-line status of this <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
             </summary>
             <param name="maxLength">Maximum number of available characters for display.</param>
-            <returns>A short one-line summary of the current status of this <see cref="T:TimeSeriesFramework.Adapters.AdapterBase"/>.</returns>
+            <returns>A short one-line summary of the current status of this <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.</returns>
         </member>
         <member name="M:DataQualityMonitoring.AlarmAdapter.GetRaisedAlarms">
             <summary>
@@ -84,13 +84,13 @@
             Stops the <see cref="T:DataQualityMonitoring.FlatlineTest"/>.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.FlatlineTest.PublishFrame(TimeSeriesFramework.IFrame,System.Int32)">
+        <member name="M:DataQualityMonitoring.FlatlineTest.PublishFrame(GSF.TimeSeries.IFrame,System.Int32)">
             <summary>
-            Publish <see cref="T:TimeSeriesFramework.IFrame"/> of time-aligned collection of <see cref="T:TimeSeriesFramework.IMeasurement"/> values that arrived within the
-            concentrator's defined <see cref="P:TimeSeriesFramework.ConcentratorBase.LagTime"/>.
+            Publish <see cref="T:GSF.TimeSeries.IFrame"/> of time-aligned collection of <see cref="T:GSF.TimeSeries.IMeasurement"/> values that arrived within the
+            concentrator's defined <see cref="P:GSF.TimeSeries.ConcentratorBase.LagTime"/>.
             </summary>
-            <param name="frame"><see cref="T:TimeSeriesFramework.IFrame"/> of measurements with the same timestamp that arrived within <see cref="P:TimeSeriesFramework.ConcentratorBase.LagTime"/> that are ready for processing.</param>
-            <param name="index">Index of <see cref="T:TimeSeriesFramework.IFrame"/> within a second ranging from zero to <c><see cref="P:TimeSeriesFramework.ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
+            <param name="frame"><see cref="T:GSF.TimeSeries.IFrame"/> of measurements with the same timestamp that arrived within <see cref="P:GSF.TimeSeries.ConcentratorBase.LagTime"/> that are ready for processing.</param>
+            <param name="index">Index of <see cref="T:GSF.TimeSeries.IFrame"/> within a second ranging from zero to <c><see cref="P:GSF.TimeSeries.ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
         </member>
         <member name="M:DataQualityMonitoring.FlatlineTest.GetFlatlinedMeasurements">
             <summary>
@@ -209,38 +209,38 @@
             Stops the <see cref="T:DataQualityMonitoring.RangeTest"/>.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.RangeTest.PublishFrame(TimeSeriesFramework.IFrame,System.Int32)">
+        <member name="M:DataQualityMonitoring.RangeTest.PublishFrame(GSF.TimeSeries.IFrame,System.Int32)">
             <summary>
-            Publish <see cref="T:TimeSeriesFramework.IFrame"/> of time-aligned collection of <see cref="T:TimeSeriesFramework.IMeasurement"/> values that arrived within the
-            concentrator's defined <see cref="P:TimeSeriesFramework.ConcentratorBase.LagTime"/>.
+            Publish <see cref="T:GSF.TimeSeries.IFrame"/> of time-aligned collection of <see cref="T:GSF.TimeSeries.IMeasurement"/> values that arrived within the
+            concentrator's defined <see cref="P:GSF.TimeSeries.ConcentratorBase.LagTime"/>.
             </summary>
-            <param name="frame"><see cref="T:TimeSeriesFramework.IFrame"/> of measurements with the same timestamp that arrived within <see cref="P:TimeSeriesFramework.ConcentratorBase.LagTime"/> that are ready for processing.</param>
-            <param name="index">Index of <see cref="T:TimeSeriesFramework.IFrame"/> within a second ranging from zero to <c><see cref="P:TimeSeriesFramework.ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
+            <param name="frame"><see cref="T:GSF.TimeSeries.IFrame"/> of measurements with the same timestamp that arrived within <see cref="P:GSF.TimeSeries.ConcentratorBase.LagTime"/> that are ready for processing.</param>
+            <param name="index">Index of <see cref="T:GSF.TimeSeries.IFrame"/> within a second ranging from zero to <c><see cref="P:GSF.TimeSeries.ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
             <remarks>
-            If user implemented publication function consistently exceeds available publishing time (i.e., <c>1 / <see cref="P:TimeSeriesFramework.ConcentratorBase.FramesPerSecond"/></c> seconds),
-            concentration will fall behind. A small amount of this time is required by the <see cref="T:TimeSeriesFramework.ConcentratorBase"/> for processing overhead, so actual total time
-            available for user function process will always be slightly less than <c>1 / <see cref="P:TimeSeriesFramework.ConcentratorBase.FramesPerSecond"/></c> seconds.
+            If user implemented publication function consistently exceeds available publishing time (i.e., <c>1 / <see cref="P:GSF.TimeSeries.ConcentratorBase.FramesPerSecond"/></c> seconds),
+            concentration will fall behind. A small amount of this time is required by the <see cref="T:GSF.TimeSeries.ConcentratorBase"/> for processing overhead, so actual total time
+            available for user function process will always be slightly less than <c>1 / <see cref="P:GSF.TimeSeries.ConcentratorBase.FramesPerSecond"/></c> seconds.
             </remarks>
         </member>
         <member name="M:DataQualityMonitoring.RangeTest.GetOutOfRangeCounts">
             <summary>
-            Get a dictionary of <see cref="T:TimeSeriesFramework.MeasurementKey"/>,<see cref="T:System.Int32"/> pairs representing
+            Get a dictionary of <see cref="T:GSF.TimeSeries.MeasurementKey"/>,<see cref="T:System.Int32"/> pairs representing
             the number of times each key received has been out-of-range within the last <see cref="P:DataQualityMonitoring.RangeTest.TimeToPurge"/> seconds.
             </summary>
             <returns>A dictionary of count values for each out-of-range measurement.</returns>
         </member>
         <member name="M:DataQualityMonitoring.RangeTest.GetOutOfRangeMeasurements">
             <summary>
-            Get the full collection of out-of-range <see cref="T:TimeSeriesFramework.IMeasurement"/>s.
+            Get the full collection of out-of-range <see cref="T:GSF.TimeSeries.IMeasurement"/>s.
             </summary>
-            <returns>The full collection of out-of-range <see cref="T:TimeSeriesFramework.IMeasurement"/>s.</returns>
+            <returns>The full collection of out-of-range <see cref="T:GSF.TimeSeries.IMeasurement"/>s.</returns>
         </member>
-        <member name="M:DataQualityMonitoring.RangeTest.GetOutOfRangeMeasurements(TimeSeriesFramework.MeasurementKey)">
+        <member name="M:DataQualityMonitoring.RangeTest.GetOutOfRangeMeasurements(GSF.TimeSeries.MeasurementKey)">
             <summary>
-            Get a collection of out-of-range <see cref="T:TimeSeriesFramework.IMeasurement"/>s with the given key.
+            Get a collection of out-of-range <see cref="T:GSF.TimeSeries.IMeasurement"/>s with the given key.
             </summary>
-            <param name="key">The <see cref="T:TimeSeriesFramework.MeasurementKey"/> corresponding to the desired measurements.</param>
-            <returns>A collection of out-of-range <see cref="T:TimeSeriesFramework.IMeasurement"/>s.</returns>
+            <param name="key">The <see cref="T:GSF.TimeSeries.MeasurementKey"/> corresponding to the desired measurements.</param>
+            <returns>A collection of out-of-range <see cref="T:GSF.TimeSeries.IMeasurement"/>s.</returns>
         </member>
         <member name="P:DataQualityMonitoring.RangeTest.SignalType">
             <summary>
@@ -608,7 +608,7 @@
         </member>
         <member name="T:DataQualityMonitoring.Services.SerializableAlarm">
             <summary>
-            Represents a serializable <see cref="T:TimeSeriesFramework.Alarm"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            Represents a serializable <see cref="T:GSF.TimeSeries.Alarm"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
             </summary>
         </member>
         <member name="M:DataQualityMonitoring.Services.SerializableAlarm.#ctor">
@@ -616,11 +616,11 @@
             Creates a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableAlarm"/> class.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableAlarm.#ctor(TimeSeriesFramework.Alarm)">
+        <member name="M:DataQualityMonitoring.Services.SerializableAlarm.#ctor(GSF.TimeSeries.Alarm)">
             <summary>
             Creates a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableAlarm"/> class.
             </summary>
-            <param name="sourceAlarm"><see cref="T:TimeSeriesFramework.Alarm"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableAlarm"/> is to be initialized.</param>
+            <param name="sourceAlarm"><see cref="T:GSF.TimeSeries.Alarm"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableAlarm"/> is to be initialized.</param>
         </member>
         <member name="P:DataQualityMonitoring.Services.SerializableAlarm.ID">
             <summary>
@@ -706,7 +706,7 @@
             Creates a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> class.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableAlarmCollection.#ctor(System.Collections.Generic.ICollection{TimeSeriesFramework.Alarm})">
+        <member name="M:DataQualityMonitoring.Services.SerializableAlarmCollection.#ctor(System.Collections.Generic.ICollection{GSF.TimeSeries.Alarm})">
             <summary>
             Creates a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/> class.
             </summary>
@@ -719,12 +719,12 @@
         </member>
         <member name="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement">
             <summary>
-            Represents an <see cref="T:TimeSeriesFramework.IMeasurement"/> with a bad timestamp that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            Represents an <see cref="T:GSF.TimeSeries.IMeasurement"/> with a bad timestamp that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
             </summary>
         </member>
         <member name="T:DataQualityMonitoring.SerializableMeasurement">
             <summary>
-            Represents a serializable <see cref="T:TimeSeriesFramework.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            Represents a serializable <see cref="T:GSF.TimeSeries.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
             </summary>
         </member>
         <member name="M:DataQualityMonitoring.SerializableMeasurement.#ctor">
@@ -732,11 +732,11 @@
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.SerializableMeasurement"/> class.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.SerializableMeasurement.#ctor(TimeSeriesFramework.IMeasurement)">
+        <member name="M:DataQualityMonitoring.SerializableMeasurement.#ctor(GSF.TimeSeries.IMeasurement)">
             <summary>
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.SerializableMeasurement"/> class.
             </summary>
-            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.SerializableMeasurement"/> is to be initialized.</param>
+            <param name="measurement"><see cref="T:GSF.TimeSeries.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.SerializableMeasurement"/> is to be initialized.</param>
         </member>
         <member name="M:DataQualityMonitoring.SerializableMeasurement.SetDeviceAndSignalType(System.Data.DataSet)">
             <summary>
@@ -754,36 +754,36 @@
             <summary>
             Occurs when an System.Exception is encountered when processing a request.
             </summary>
-            <remarks><see cref="F:TVA.EventArgs`1.Argument"/> is the exception encountered when processing a request.</remarks>
+            <remarks><see cref="F:GSF.EventArgs`1.Argument"/> is the exception encountered when processing a request.</remarks>
         </member>
         <member name="P:DataQualityMonitoring.SerializableMeasurement.Key">
             <summary>
-            Gets or sets the <see cref="P:TimeSeriesFramework.IMeasurement.Key"/>.
+            Gets or sets the <see cref="P:GSF.TimeSeries.IMeasurement.Key"/>.
             </summary>
         </member>
         <member name="P:DataQualityMonitoring.SerializableMeasurement.SignalID">
             <summary>
-            Gets or sets the <see cref="P:TimeSeriesFramework.ITimeSeriesValue.ID"/>.
+            Gets or sets the <see cref="P:GSF.TimeSeries.ITimeSeriesValue.ID"/>.
             </summary>
         </member>
         <member name="P:DataQualityMonitoring.SerializableMeasurement.Value">
             <summary>
-            Gets or sets the <see cref="P:TimeSeriesFramework.IMeasurement.AdjustedValue"/>.
+            Gets or sets the <see cref="P:GSF.TimeSeries.IMeasurement.AdjustedValue"/>.
             </summary>
         </member>
         <member name="P:DataQualityMonitoring.SerializableMeasurement.Timestamp">
             <summary>
-            Gets or sets the <see cref="P:TimeSeriesFramework.ITimeSeriesValue.Timestamp"/> in <see cref="T:System.DateTime"/> string format.
+            Gets or sets the <see cref="P:GSF.TimeSeries.ITimeSeriesValue.Timestamp"/> in <see cref="T:System.DateTime"/> string format.
             </summary>
         </member>
         <member name="P:DataQualityMonitoring.SerializableMeasurement.SignalType">
             <summary>
-            Gets or sets the signal type of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.
+            Gets or sets the signal type of the <see cref="T:GSF.TimeSeries.IMeasurement"/>.
             </summary>
         </member>
         <member name="P:DataQualityMonitoring.SerializableMeasurement.Device">
             <summary>
-            Gets or sets the device of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.
+            Gets or sets the device of the <see cref="T:GSF.TimeSeries.IMeasurement"/>.
             </summary>
         </member>
         <member name="M:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.#ctor">
@@ -791,21 +791,21 @@
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/> class.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.#ctor(TimeSeriesFramework.IMeasurement,TVA.Ticks)">
+        <member name="M:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.#ctor(GSF.TimeSeries.IMeasurement,GSF.Ticks)">
             <summary>
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/> class.
             </summary>
-            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> is to be initialized.</param>
-            <param name="arrivalTime">The arrival time of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.</param>
+            <param name="measurement"><see cref="T:GSF.TimeSeries.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> is to be initialized.</param>
+            <param name="arrivalTime">The arrival time of the <see cref="T:GSF.TimeSeries.IMeasurement"/>.</param>
         </member>
         <member name="P:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.TimeOfArrival">
             <summary>
-            Gets or sets the arrival time of the <see cref="T:TimeSeriesFramework.IMeasurement"/>.
+            Gets or sets the arrival time of the <see cref="T:GSF.TimeSeries.IMeasurement"/>.
             </summary>
         </member>
         <member name="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement">
             <summary>
-            Represents a flatlined <see cref="T:TimeSeriesFramework.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            Represents a flatlined <see cref="T:GSF.TimeSeries.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
             </summary>
         </member>
         <member name="M:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement.#ctor">
@@ -813,16 +813,16 @@
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/> class.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement.#ctor(TimeSeriesFramework.IMeasurement,System.Int64)">
+        <member name="M:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement.#ctor(GSF.TimeSeries.IMeasurement,System.Int64)">
             <summary>
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/> class.
             </summary>
-            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/> is to be initialized.</param>
+            <param name="measurement"><see cref="T:GSF.TimeSeries.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement"/> is to be initialized.</param>
             <param name="timeSinceLastChange">The amount of time since the flatlined measurement last changed in ticks.</param>
         </member>
         <member name="P:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement.TimeSinceLastChange">
             <summary>
-            Gets or sets the amount of time in seconds since the <see cref="T:TimeSeriesFramework.IMeasurement"/> last changed its value.
+            Gets or sets the amount of time in seconds since the <see cref="T:GSF.TimeSeries.IMeasurement"/> last changed its value.
             </summary>
         </member>
         <member name="T:DataQualityMonitoring.Services.SerializableFlatlineTest">
@@ -835,7 +835,7 @@
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> class.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableFlatlineTest.#ctor(System.Collections.Generic.ICollection{TimeSeriesFramework.IMeasurement},System.Int64)">
+        <member name="M:DataQualityMonitoring.Services.SerializableFlatlineTest.#ctor(System.Collections.Generic.ICollection{GSF.TimeSeries.IMeasurement},System.Int64)">
             <summary>
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableFlatlineTest"/> class.
             </summary>
@@ -849,7 +849,7 @@
         </member>
         <member name="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement">
             <summary>
-            Represents an out-of-range <see cref="T:TimeSeriesFramework.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            Represents an out-of-range <see cref="T:GSF.TimeSeries.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
             </summary>
         </member>
         <member name="M:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.#ctor">
@@ -857,22 +857,22 @@
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> class.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.#ctor(TimeSeriesFramework.IMeasurement,System.Double,System.Double)">
+        <member name="M:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.#ctor(GSF.TimeSeries.IMeasurement,System.Double,System.Double)">
             <summary>
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> class.
             </summary>
-            <param name="measurement"><see cref="T:TimeSeriesFramework.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> is to be initialized.</param>
-            <param name="lowRange">The lower boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.</param>
-            <param name="highRange">The upper boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.</param>
+            <param name="measurement"><see cref="T:GSF.TimeSeries.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> is to be initialized.</param>
+            <param name="lowRange">The lower boundary of the <see cref="T:GSF.TimeSeries.IMeasurement"/>'s value.</param>
+            <param name="highRange">The upper boundary of the <see cref="T:GSF.TimeSeries.IMeasurement"/>'s value.</param>
         </member>
         <member name="P:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.LowRange">
             <summary>
-            Gets or sets the lower boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.
+            Gets or sets the lower boundary of the <see cref="T:GSF.TimeSeries.IMeasurement"/>'s value.
             </summary>
         </member>
         <member name="P:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement.HighRange">
             <summary>
-            Gets or sets the upper boundary of the <see cref="T:TimeSeriesFramework.IMeasurement"/>'s value.
+            Gets or sets the upper boundary of the <see cref="T:GSF.TimeSeries.IMeasurement"/>'s value.
             </summary>
         </member>
         <member name="T:DataQualityMonitoring.Services.SerializableRangeTest">
@@ -891,7 +891,7 @@
             </summary>
             <param name="acronym">The acronym of the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/></param>
         </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableRangeTest.#ctor(System.Collections.Generic.ICollection{TimeSeriesFramework.IMeasurement},System.Double,System.Double)">
+        <member name="M:DataQualityMonitoring.Services.SerializableRangeTest.#ctor(System.Collections.Generic.ICollection{GSF.TimeSeries.IMeasurement},System.Double,System.Double)">
             <summary>
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>.
             </summary>
@@ -929,7 +929,7 @@
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableTimestampTest.#ctor(System.Collections.Generic.Dictionary{TVA.Ticks,System.Collections.Generic.LinkedList{TimeSeriesFramework.IMeasurement}})">
+        <member name="M:DataQualityMonitoring.Services.SerializableTimestampTest.#ctor(System.Collections.Generic.Dictionary{GSF.Ticks,System.Collections.Generic.LinkedList{GSF.TimeSeries.IMeasurement}})">
             <summary>
             Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
             </summary>
@@ -1017,7 +1017,7 @@
             Stops this <see cref="T:DataQualityMonitoring.TimestampTest"/>.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{TimeSeriesFramework.IMeasurement})">
+        <member name="M:DataQualityMonitoring.TimestampTest.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{GSF.TimeSeries.IMeasurement})">
             <summary>
             Queues a collection of measurements for processing.
             </summary>

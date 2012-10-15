@@ -26,9 +26,9 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using openPG.UI.ViewModels;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.DataModels;
-using TVA;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.DataModels;
+using GSF;
 
 namespace openPG.UI.UserControls
 {

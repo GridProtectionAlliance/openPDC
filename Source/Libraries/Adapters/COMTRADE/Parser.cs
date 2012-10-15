@@ -25,8 +25,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using TVA;
-using TVA.IO;
+using GSF;
+using GSF.IO;
 
 namespace Comtrade
 {

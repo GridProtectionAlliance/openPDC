@@ -33,7 +33,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework.UI;
+using GSF.Timeseries.UI;
 using System.Linq;
 
 namespace openPDC.UI.ViewModels

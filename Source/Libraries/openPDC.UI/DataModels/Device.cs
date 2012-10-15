@@ -44,10 +44,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.DataModels;
-using TVA;
-using TVA.Data;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.DataModels;
+using GSF;
+using GSF.Data;
 using System.Linq;
 
 namespace openPDC.UI.DataModels
@@ -1285,8 +1285,8 @@ namespace openPDC.UI.DataModels
                         device.ProtocolID.ToNotNull(), device.Longitude.ToNotNull(), device.Latitude.ToNotNull(), device.InterconnectionID.ToNotNull(),
                         BuildConnectionString(device), device.TimeZone.ToNotNull(), device.FramesPerSecond ?? 30, device.TimeAdjustmentTicks, device.DataLossInterval, device.ContactList.ToNotNull(), device.MeasuredLines.ToNotNull(),
                         device.LoadOrder, database.Bool(device.Enabled), device.AllowedParsingExceptions, device.ParsingExceptionWindow, device.DelayedConnectionInterval, database.Bool(device.AllowUseOfCachedConfiguration),
-                        database.Bool(device.AutoStartDataParsingSequence), database.Bool(device.SkipDisableRealTimeData), device.MeasurementReportingInterval, database.Bool(device.ConnectOnDemand), TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
-                        database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
+                        database.Bool(device.AutoStartDataParsingSequence), database.Bool(device.SkipDisableRealTimeData), device.MeasurementReportingInterval, database.Bool(device.ConnectOnDemand), GSF.TimeSeries.UI.CommonFunctions.CurrentUser,
+                        database.UtcNow(), GSF.TimeSeries.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 }
                 else
                 {
@@ -1310,7 +1310,7 @@ namespace openPDC.UI.DataModels
                         device.ProtocolID.ToNotNull(), device.Longitude.ToNotNull(), device.Latitude.ToNotNull(), device.InterconnectionID.ToNotNull(),
                         BuildConnectionString(device), device.TimeZone.ToNotNull(), device.FramesPerSecond ?? 30, device.TimeAdjustmentTicks, device.DataLossInterval, device.ContactList.ToNotNull(), device.MeasuredLines.ToNotNull(),
                         device.LoadOrder, database.Bool(device.Enabled), device.AllowedParsingExceptions, device.ParsingExceptionWindow, device.DelayedConnectionInterval, database.Bool(device.AllowUseOfCachedConfiguration),
-                        database.Bool(device.AutoStartDataParsingSequence), database.Bool(device.SkipDisableRealTimeData), device.MeasurementReportingInterval, database.Bool(device.ConnectOnDemand), TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
+                        database.Bool(device.AutoStartDataParsingSequence), database.Bool(device.SkipDisableRealTimeData), device.MeasurementReportingInterval, database.Bool(device.ConnectOnDemand), GSF.TimeSeries.UI.CommonFunctions.CurrentUser,
                         database.UtcNow(), device.ID);
                 }
 
@@ -1478,7 +1478,7 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 // Setup current user context for any delete triggers
-                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
+                GSF.TimeSeries.UI.CommonFunctions.SetCurrentUserContext(database);
                 // Does not delete the Parent Device
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("UPDATE Device SET ParentID = null WHERE ParentID = {0}","OldParentID", "NewParentID"), DefaultTimeout,  device.ID);
                 // Deletes the Parent Device 
@@ -1664,32 +1664,32 @@ namespace openPDC.UI.DataModels
                 if (device.Enabled)
                 {
                     if (device.ParentID == null)
-                        TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Device", device.ID));
+                        GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("Initialize " + GSF.TimeSeries.UI.CommonFunctions.GetRuntimeID("Device", device.ID));
                     else
-                        TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Initialize " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Device", (int)device.ParentID));
+                        GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("Initialize " + GSF.TimeSeries.UI.CommonFunctions.GetRuntimeID("Device", (int)device.ParentID));
                 }
                 else
                 {
                     // We do this to make sure all statistical measurements are in the system.
-                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                    GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("ReloadConfig");
                 }
 
                 if (device.HistorianID != null)
-                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID) + " RefreshMetadata");
+                    GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("Invoke " + GSF.TimeSeries.UI.CommonFunctions.GetRuntimeID("Historian", (int)device.HistorianID) + " RefreshMetadata");
             }
             else
             {
-                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("ReloadConfig");
                 if (historianID != null)
-                    TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)historianID) + " RefreshMetadata");
+                    GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("Invoke " + GSF.TimeSeries.UI.CommonFunctions.GetRuntimeID("Historian", (int)historianID) + " RefreshMetadata");
             }
 
             Historian statHistorian = Historian.GetHistorian(null, "WHERE Acronym = 'STAT'");
             if (statHistorian != null)
-                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", statHistorian.ID) + " RefreshMetadata");
+                GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("Invoke " + GSF.TimeSeries.UI.CommonFunctions.GetRuntimeID("Historian", statHistorian.ID) + " RefreshMetadata");
 
-            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("INVOKE /a STATISTIC!SERVICES ReloadStatistics");
-            TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("RefreshRoutes");
+            GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("INVOKE /a STATISTIC!SERVICES ReloadStatistics");
+            GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("RefreshRoutes");
 
         }
 

@@ -95,7 +95,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TVA.PhasorProtocols\PhasorProtocols.csproj">
+    <ProjectReference Include="..\PhasorProtocols\PhasorProtocols.csproj">
       <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
       <Name>PhasorProtocols</Name>
     </ProjectReference>

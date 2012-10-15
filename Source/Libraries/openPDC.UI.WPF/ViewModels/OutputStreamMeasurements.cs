@@ -28,7 +28,7 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework.UI;
+using GSF.Timeseries.UI;
 using System.Collections.Generic;
 using System.Linq;
 

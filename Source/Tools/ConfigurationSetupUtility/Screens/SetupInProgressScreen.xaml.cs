@@ -43,10 +43,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using Microsoft.Win32;
-using TVA;
-using TVA.Data;
-using TVA.IO;
-using TVA.Security.Cryptography;
+using GSF;
+using GSF.Data;
+using GSF.IO;
+using GSF.Security.Cryptography;
 
 namespace ConfigurationSetupUtility.Screens
 {

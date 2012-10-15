@@ -28,11 +28,11 @@ using System.IO;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
-using TimeSeriesFramework;
-using TVA;
-using TVA.IO;
-using TVA.PhasorProtocols;
-using TVA.ServiceProcess;
+using GSF.TimeSeries;
+using GSF;
+using GSF.IO;
+using PhasorProtocols;
+using GSF.ServiceProcess;
 
 namespace openPDC
 {

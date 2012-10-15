@@ -8,8 +8,8 @@
     <ProjectGuid>{36D4CA56-E2DA-4435-B370-4867A83B6379}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TVA.PhasorProtocols.Test</RootNamespace>
-    <AssemblyName>TVA.PhasorProtocols.Test</AssemblyName>
+    <RootNamespace>PhasorProtocols.Test</RootNamespace>
+    <AssemblyName>PhasorProtocols.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

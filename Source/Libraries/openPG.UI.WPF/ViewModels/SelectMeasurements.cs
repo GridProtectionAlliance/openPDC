@@ -27,15 +27,15 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using openPG.UI.DataModels;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.Commands;
-using TimeSeriesFramework.UI.DataModels;
-using TVA;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.Commands;
+using GSF.TimeSeries.UI.DataModels;
+using GSF;
 
 namespace openPG.UI.ViewModels
 {
     /// <summary>
-    /// Class to hold bindable <see cref="TimeSeriesFramework.UI.DataModels.Measurement"/> collection.
+    /// Class to hold bindable <see cref="GSF.TimeSeries.UI.DataModels.Measurement"/> collection.
     /// </summary>
     internal class SelectMeasurements : PagedViewModelBase<Measurement, Guid>
     {
@@ -137,7 +137,7 @@ namespace openPG.UI.ViewModels
         }
 
         /// <summary>
-        /// Loads collection of <see cref="TimeSeriesFramework.UI.DataModels.Measurement"/> defined in the database.
+        /// Loads collection of <see cref="GSF.TimeSeries.UI.DataModels.Measurement"/> defined in the database.
         /// </summary>
         public override void Load()
         {

@@ -25,7 +25,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using openPDC.UI.ViewModels;
-using TimeSeriesFramework.UI;
+using GSF.Timeseries.UI;
 
 namespace openPDC.UI.UserControls
 {
@@ -65,7 +65,7 @@ namespace openPDC.UI.UserControls
 
         private void RealTimeStatisticUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
+            int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
 
             if (m_statisticDataRefreshInterval == 0)
             {
@@ -99,7 +99,7 @@ namespace openPDC.UI.UserControls
             {
                 m_dataContext.Stop();
                 IsolatedStorageManager.WriteToIsolatedStorage("StatisticsDataRefreshInterval", m_statisticDataRefreshInterval);
-                int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
+                int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
                 TextBlockMeasurementRefreshInterval.Text = m_statisticDataRefreshInterval.ToString();
                 PopupSettings.IsOpen = false;
                 CommonFunctions.LoadUserControl(new RealTimeStatisticUserControl(), "Real-Time Stream Statistics");
@@ -114,7 +114,7 @@ namespace openPDC.UI.UserControls
         {
             m_dataContext.Stop();
             IsolatedStorageManager.InitializeStorageForStreamStatistics(true);
-            int.TryParse(TimeSeriesFramework.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
+            int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticDataRefreshInterval);
             TextBlockMeasurementRefreshInterval.Text = m_statisticDataRefreshInterval.ToString();
             TextBoxRefreshInterval.Text = m_statisticDataRefreshInterval.ToString();
             PopupSettings.IsOpen = false;

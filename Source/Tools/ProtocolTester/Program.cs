@@ -26,11 +26,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TimeSeriesFramework;
-using TVA;
-using TVA.IO;
-using TVA.PhasorProtocols;
-using TVA.PhasorProtocols.Anonymous;
+using GSF.TimeSeries;
+using GSF;
+using GSF.IO;
+using PhasorProtocols;
+using GSF.PhasorProtocols.Anonymous;
 
 namespace ProtocolTester
 {

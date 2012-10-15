@@ -33,10 +33,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Windows;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework.UI;
+using GSF.TimeSeries.UI;
 using System.Linq;
-using TimeSeriesFramework.UI.DataModels;
-using TVA.Data;
+using GSF.TimeSeries.UI.DataModels;
+using GSF.Data;
 
 namespace openPDCManager.UI.DataModels
 {
@@ -1048,7 +1048,7 @@ namespace openPDCManager.UI.DataModels
                 // Delete statistic measurements from database using the output stream acronym we have just deleted
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM Measurement WHERE SignalReference LIKE '" + outputStreamAcronym.Rows[0].Field<string>("Acronym") + "!OS-ST%'"), DefaultTimeout);
                 
-                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("ReloadConfig");
 
                 return "Output Stream Deleted Successfully";
             }

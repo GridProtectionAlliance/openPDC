@@ -31,9 +31,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using openPG.UI.DataModels;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.Commands;
-using TimeSeriesFramework.UI.DataModels;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.Commands;
+using GSF.TimeSeries.UI.DataModels;
 
 namespace openPG.UI.ViewModels
 {
@@ -90,7 +90,7 @@ namespace openPG.UI.ViewModels
             m_subscriberIDs = new List<Guid>();
             m_subscriberStatusQueryLock = new object();
             m_subscriberStatusQuery = new SubscriberStatusQuery();
-            m_subscriberStatusQuery.SubscriberStatuses += new EventHandler<TVA.EventArgs<Dictionary<Guid, Tuple<bool, string>>>>(m_subscriberStatusQuery_SubscriberStatuses);
+            m_subscriberStatusQuery.SubscriberStatuses += new EventHandler<GSF.EventArgs<Dictionary<Guid, Tuple<bool, string>>>>(m_subscriberStatusQuery_SubscriberStatuses);
         }
 
         #endregion
@@ -179,7 +179,7 @@ namespace openPG.UI.ViewModels
 
         #region [ Methods ]
 
-        private void m_subscriberStatusQuery_SubscriberStatuses(object sender, TVA.EventArgs<Dictionary<Guid, Tuple<bool, string>>> e)
+        private void m_subscriberStatusQuery_SubscriberStatuses(object sender, GSF.EventArgs<Dictionary<Guid, Tuple<bool, string>>> e)
         {
             Dictionary<Guid, Tuple<bool, string>> subscriberStatuses = e.Argument;
 

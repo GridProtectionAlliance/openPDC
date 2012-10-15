@@ -32,12 +32,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TVA.Collections;
-using TVA.NumericalAnalysis;
-using TVA.PhasorProtocols;
-using TVA.Units;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
+using GSF.Collections;
+using GSF.NumericalAnalysis;
+using PhasorProtocols;
+using GSF.Units;
 
 namespace PowerCalculations
 {

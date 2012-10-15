@@ -27,7 +27,7 @@ using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using TVA.Data;
+using GSF.Data;
 
 namespace ConfigurationSetupUtility.Screens
 {

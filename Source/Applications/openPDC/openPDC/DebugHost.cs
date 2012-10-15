@@ -21,7 +21,7 @@
 //
 //******************************************************************************************************
 
-using TimeSeriesFramework;
+using GSF.TimeSeries;
 
 namespace openPDC
 {

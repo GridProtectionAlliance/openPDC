@@ -21,9 +21,9 @@
 //
 //******************************************************************************************************
 
-using TimeSeriesFramework;
-using TVA;
-using TVA.Configuration;
+using GSF.TimeSeries;
+using GSF;
+using GSF.Configuration;
 
 namespace openPDC
 {

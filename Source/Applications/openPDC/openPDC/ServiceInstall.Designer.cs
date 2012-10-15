@@ -52,7 +52,7 @@ namespace openPDC
         private void InitializeComponent()
         {
             this.serviceProcessInstaller = new System.ServiceProcess.ServiceProcessInstaller();
-            this.serviceInstallerEx = new TVA.ServiceProcess.ServiceInstallerEx();
+            this.serviceInstallerEx = new GSF.ServiceProcess.ServiceInstallerEx();
             // 
             // serviceProcessInstaller
             // 
@@ -79,6 +79,6 @@ namespace openPDC
         #endregion
 
         private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller;
-        private TVA.ServiceProcess.ServiceInstallerEx serviceInstallerEx;
+        private GSF.ServiceProcess.ServiceInstallerEx serviceInstallerEx;
     }
 }

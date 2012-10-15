@@ -29,7 +29,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework.UI;
+using GSF.Timeseries.UI;
 using System.ComponentModel;
 using System.Collections.Generic;
 

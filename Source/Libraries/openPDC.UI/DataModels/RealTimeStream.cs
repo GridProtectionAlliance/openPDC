@@ -31,9 +31,9 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using TimeSeriesFramework.UI;
-using TVA;
-using TVA.Data;
+using GSF.TimeSeries.UI;
+using GSF;
+using GSF.Data;
 
 namespace openPDC.UI.DataModels
 {

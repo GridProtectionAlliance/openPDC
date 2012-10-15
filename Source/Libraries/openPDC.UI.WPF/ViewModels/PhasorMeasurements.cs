@@ -21,7 +21,7 @@
 //  05/13/2011 - Mehulbhai P Thakkar
 //       Added constructor overload and other changes to handle device specific data.
 //  07/12/2011 - Stephen C. Wills
-//       Moved phasor-specific code from Measurements in TimeSeriesFramework.UI.WPF to here.
+//       Moved phasor-specific code from Measurements in GSF.Timeseries.UI.WPF to here.
 //
 //******************************************************************************************************
 
@@ -30,13 +30,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using openPDC.UI.DataModels;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.ViewModels;
+using GSF.Timeseries.UI;
+using GSF.Timeseries.UI.ViewModels;
 
 namespace openPDC.UI.ViewModels
 {
     /// <summary>
-    /// Class to hold bindable <see cref="TimeSeriesFramework.UI.DataModels.Measurement"/> collection.
+    /// Class to hold bindable <see cref="GSF.Timeseries.UI.DataModels.Measurement"/> collection.
     /// </summary>
     internal class PhasorMeasurements : Measurements
     {
@@ -82,7 +82,7 @@ namespace openPDC.UI.ViewModels
         #region [ Methods ]
 
         /// <summary>
-        /// Creates a new instance of <see cref="TimeSeriesFramework.UI.DataModels.Measurement"/> and assigns it to CurrentItem.
+        /// Creates a new instance of <see cref="GSF.Timeseries.UI.DataModels.Measurement"/> and assigns it to CurrentItem.
         /// </summary>
         public override void Clear()
         {
@@ -100,7 +100,7 @@ namespace openPDC.UI.ViewModels
 
                 try
                 {
-                    CommonFunctions.SendCommandToService("Invoke " + TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Historian", (int)CurrentItem.HistorianID) + " RefreshMetadata");
+                    CommonFunctions.SendCommandToService("Invoke " + GSF.Timeseries.UI.CommonFunctions.GetRuntimeID("Historian", (int)CurrentItem.HistorianID) + " RefreshMetadata");
                 }
                 catch (Exception ex)
                 {
@@ -117,7 +117,7 @@ namespace openPDC.UI.ViewModels
         }
 
         /// <summary>
-        /// Loads collection of <see cref="TimeSeriesFramework.UI.DataModels.Measurement"/> defined in the database.
+        /// Loads collection of <see cref="GSF.Timeseries.UI.DataModels.Measurement"/> defined in the database.
         /// </summary>
         public override void Load()
         {

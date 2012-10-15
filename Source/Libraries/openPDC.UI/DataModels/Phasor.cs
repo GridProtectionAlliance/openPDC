@@ -36,9 +36,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.DataModels;
-using TVA.Data;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.DataModels;
+using GSF.Data;
 using System.Linq;
 
 namespace openPDC.UI.DataModels
@@ -459,7 +459,7 @@ namespace openPDC.UI.DataModels
                         "createdOn");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout, phasor.DeviceID, phasor.Label, phasor.Type, phasor.Phase, phasor.SourceIndex,
-                        TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
+                        GSF.TimeSeries.UI.CommonFunctions.CurrentUser, database.UtcNow(), GSF.TimeSeries.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 }
                 else
                 {
@@ -467,7 +467,7 @@ namespace openPDC.UI.DataModels
                         "UpdatedBy = {5}, UpdatedOn = {6} WHERE ID = {7}", "deviceID", "label", "type", "phase", "sourceIndex", "updatedBy", "updatedOn", "id");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout, phasor.DeviceID, phasor.Label, phasor.Type,
-                        phasor.Phase, phasor.SourceIndex, TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), phasor.ID);
+                        phasor.Phase, phasor.SourceIndex, GSF.TimeSeries.UI.CommonFunctions.CurrentUser, database.UtcNow(), phasor.ID);
                 }
 
                 // Get reference to the device to which phasor is being added.
@@ -526,7 +526,7 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 // Setup current user context for any delete triggers
-                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
+                GSF.TimeSeries.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 Phasor phasor = GetPhasor(database, "WHERE ID = " + phasorID);
 

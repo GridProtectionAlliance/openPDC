@@ -33,12 +33,12 @@ using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Xml;
 using System.Xml.Serialization;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.DataModels;
-using TVA.Configuration;
-using TVA.IO;
-using TVA.Reflection;
-using TVA.Security;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.DataModels;
+using GSF.Configuration;
+using GSF.IO;
+using GSF.Reflection;
+using GSF.Security;
 
 namespace openPDCManager
 {
@@ -245,7 +245,7 @@ namespace openPDCManager
                 m_windowsServiceClient.Helper.RemotingClient.ConnectionEstablished += RemotingClient_ConnectionEstablished;
                 m_windowsServiceClient.Helper.RemotingClient.ConnectionTerminated += RemotingClient_ConnectionTerminated;
 
-                if (m_windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                if (m_windowsServiceClient.Helper.RemotingClient.CurrentState == GSF.Communication.ClientState.Connected)
                 {
                     EllipseConnectionState.Dispatcher.BeginInvoke((Action)delegate()
                     {

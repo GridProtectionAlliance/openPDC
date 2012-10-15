@@ -37,9 +37,9 @@ using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
-using TimeSeriesFramework.UI;
-using TVA;
-using TVA.Data;
+using GSF.TimeSeries.UI;
+using GSF;
+using GSF.Data;
 
 namespace openPDC.UI.DataModels
 {

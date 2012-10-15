@@ -38,13 +38,13 @@ using ConnectionTester;
 using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
 using openPDC.UI.UserControls;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.Commands;
-using TimeSeriesFramework.UI.DataModels;
-using TVA;
-using TVA.Data;
-using TVA.PhasorProtocols;
-using TVA.ServiceProcess;
+using GSF.Timeseries.UI;
+using GSF.Timeseries.UI.Commands;
+using GSF.Timeseries.UI.DataModels;
+using GSF;
+using GSF.Data;
+using PhasorProtocols;
+using GSF.ServiceProcess;
 
 namespace openPDC.UI.ViewModels
 {
@@ -766,27 +766,27 @@ namespace openPDC.UI.ViewModels
                                 switch (connectionSettings.PhasorProtocol)
                                 {
                                     case PhasorProtocol.BpaPdcStream:
-                                        TVA.PhasorProtocols.BpaPdcStream.ConnectionParameters bpaParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.BpaPdcStream.ConnectionParameters;
+                                        GSF.PhasorProtocols.BpaPdcStream.ConnectionParameters bpaParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.BpaPdcStream.ConnectionParameters;
                                         if ((object)bpaParameters != null)
                                             ConnectionString += "; iniFileName=" + bpaParameters.ConfigurationFileName + "; refreshConfigFileOnChange=" + bpaParameters.RefreshConfigurationFileOnChange + "; parseWordCountFromByte=" + bpaParameters.ParseWordCountFromByte;
                                         break;
                                     case PhasorProtocol.FNet:
-                                        TVA.PhasorProtocols.FNet.ConnectionParameters fnetParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.FNet.ConnectionParameters;
+                                        GSF.PhasorProtocols.FNet.ConnectionParameters fnetParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.FNet.ConnectionParameters;
                                         if ((object)fnetParameters != null)
                                             ConnectionString += "; timeOffset=" + fnetParameters.TimeOffset + "; stationName=" + fnetParameters.StationName + "; frameRate=" + fnetParameters.FrameRate + "; nominalFrequency=" + (int)fnetParameters.NominalFrequency;
                                         break;
                                     case PhasorProtocol.SelFastMessage:
-                                        TVA.PhasorProtocols.SelFastMessage.ConnectionParameters selParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.SelFastMessage.ConnectionParameters;
+                                        GSF.PhasorProtocols.SelFastMessage.ConnectionParameters selParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.SelFastMessage.ConnectionParameters;
                                         if ((object)selParameters != null)
                                             ConnectionString += "; messagePeriod=" + selParameters.MessagePeriod;
                                         break;
                                     case PhasorProtocol.Iec61850_90_5:
-                                        TVA.PhasorProtocols.Iec61850_90_5.ConnectionParameters iecParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.Iec61850_90_5.ConnectionParameters;
+                                        GSF.PhasorProtocols.Iec61850_90_5.ConnectionParameters iecParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.Iec61850_90_5.ConnectionParameters;
                                         if ((object)iecParameters != null)
                                             ConnectionString += "; useETRConfiguration=" + iecParameters.UseETRConfiguration + "; guessConfiguration=" + iecParameters.GuessConfiguration + "; parseRedundantASDUs=" + iecParameters.ParseRedundantASDUs + "; ignoreSignatureValidationFailures=" + iecParameters.IgnoreSignatureValidationFailures + "; ignoreSampleSizeValidationFailures=" + iecParameters.IgnoreSampleSizeValidationFailures;
                                         break;
                                     case PhasorProtocol.Macrodyne:
-                                        TVA.PhasorProtocols.Macrodyne.ConnectionParameters macrodyneParameters = connectionSettings.ConnectionParameters as TVA.PhasorProtocols.Macrodyne.ConnectionParameters;
+                                        GSF.PhasorProtocols.Macrodyne.ConnectionParameters macrodyneParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.Macrodyne.ConnectionParameters;
                                         if ((object)macrodyneParameters != null)
                                             ConnectionString += "; protocolVersion=" + macrodyneParameters.ProtocolVersion + "; iniFileName=" + macrodyneParameters.ConfigurationFileName + "; refreshConfigFileOnChange=" + macrodyneParameters.RefreshConfigurationFileOnChange + "; deviceLabel=" + macrodyneParameters.DeviceLabel;
                                         break;
@@ -1075,13 +1075,13 @@ namespace openPDC.UI.ViewModels
                     m_disconnectedCurrentDevice = true;
                 }
 
-                database = new AdoDataConnection(TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory);
+                database = new AdoDataConnection(GSF.Timeseries.UI.CommonFunctions.DefaultSettingsCategory);
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
                 s_responseWaitHandle = new ManualResetEvent(false);
 
-                windowsServiceClient = TimeSeriesFramework.UI.CommonFunctions.GetWindowsServiceClient();
+                windowsServiceClient = GSF.Timeseries.UI.CommonFunctions.GetWindowsServiceClient();
                 if (windowsServiceClient != null && windowsServiceClient.Helper != null &&
-                   windowsServiceClient.Helper.RemotingClient != null && windowsServiceClient.Helper.RemotingClient.CurrentState == TVA.Communication.ClientState.Connected)
+                   windowsServiceClient.Helper.RemotingClient != null && windowsServiceClient.Helper.RemotingClient.CurrentState == GSF.Communication.ClientState.Connected)
                 {
                     windowsServiceClient.Helper.ReceivedServiceResponse += Helper_ReceivedServiceResponse;
                     windowsServiceClient.Helper.ReceivedServiceUpdate += Helper_ReceivedServiceUpdate;
@@ -1245,7 +1245,7 @@ namespace openPDC.UI.ViewModels
         public void SaveConfiguration()
         {
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-            AdoDataConnection database = new AdoDataConnection(TimeSeriesFramework.UI.CommonFunctions.DefaultSettingsCategory);
+            AdoDataConnection database = new AdoDataConnection(GSF.Timeseries.UI.CommonFunctions.DefaultSettingsCategory);
             try
             {
                 int deviceCount = 0;

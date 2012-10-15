@@ -6,7 +6,7 @@
     <members>
         <member name="T:Hadoop.Replication.HadoopReplicationProvider">
             <summary>
-            Represents a provider of replication for the <see cref="T:TVA.Historian.IArchive"/> to Hadoop using FTP channel.
+            Represents a provider of replication for the <see cref="T:GSF.Historian.IArchive"/> to Hadoop using FTP channel.
             </summary>
         </member>
         <member name="F:Hadoop.Replication.HadoopReplicationProvider.DefaultBytesPerCrc32">
@@ -41,7 +41,7 @@
         </member>
         <member name="F:Hadoop.Replication.HadoopReplicationProvider.FilePathTrimLength">
             <summary>
-            Length to be used for the <see cref="M:TVA.IO.FilePath.TrimFileName(System.String,System.Int32)"/> method.
+            Length to be used for the <see cref="M:GSF.IO.FilePath.TrimFileName(System.String,System.Int32)"/> method.
             </summary>
         </member>
         <member name="F:Hadoop.Replication.HadoopReplicationProvider.ReplicationLogFile">
@@ -56,17 +56,17 @@
         </member>
         <member name="M:Hadoop.Replication.HadoopReplicationProvider.SaveSettings">
             <summary>
-            Saves <see cref="T:Hadoop.Replication.HadoopReplicationProvider"/> settings to the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
+            Saves <see cref="T:Hadoop.Replication.HadoopReplicationProvider"/> settings to the config file if the <see cref="P:GSF.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
         </member>
         <member name="M:Hadoop.Replication.HadoopReplicationProvider.LoadSettings">
             <summary>
-            Loads saved <see cref="T:Hadoop.Replication.HadoopReplicationProvider"/> settings from the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
+            Loads saved <see cref="T:Hadoop.Replication.HadoopReplicationProvider"/> settings from the config file if the <see cref="P:GSF.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>  
         </member>
         <member name="M:Hadoop.Replication.HadoopReplicationProvider.ReplicateArchive">
             <summary>
-            Replicates the <see cref="T:TVA.Historian.IArchive"/>.
+            Replicates the <see cref="T:GSF.Historian.IArchive"/>.
             </summary>
         </member>
         <member name="M:Hadoop.Replication.HadoopReplicationProvider.ComputeHdfsFileHash(System.String,System.Int32,System.Int32,System.Boolean)">

@@ -1,34 +1,34 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>TVA.ServiceModel</name>
+        <name>GSF.ServiceModel</name>
     </assembly>
     <members>
-        <member name="T:TVA.ServiceModel.Activation.SecureServiceHostFactory">
+        <member name="T:GSF.ServiceModel.Activation.SecureServiceHostFactory">
             <summary>
-            A service host factory for WCF Services that enables role-based security using <see cref="T:TVA.ServiceModel.SecurityPolicy"/>.
+            A service host factory for WCF Services that enables role-based security using <see cref="T:GSF.ServiceModel.SecurityPolicy"/>.
             </summary>
-            <see cref="T:TVA.ServiceModel.SecurityPolicy"/>
+            <see cref="T:GSF.ServiceModel.SecurityPolicy"/>
         </member>
-        <member name="M:TVA.ServiceModel.Activation.SecureServiceHostFactory.#ctor">
+        <member name="M:GSF.ServiceModel.Activation.SecureServiceHostFactory.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.ServiceModel.Activation.SecureServiceHostFactory"/> class.
+            Initializes a new instance of the <see cref="T:GSF.ServiceModel.Activation.SecureServiceHostFactory"/> class.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.Activation.SecureServiceHostFactory.#ctor(System.String)">
+        <member name="M:GSF.ServiceModel.Activation.SecureServiceHostFactory.#ctor(System.String)">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.ServiceModel.Activation.SecureServiceHostFactory"/> class.
+            Initializes a new instance of the <see cref="T:GSF.ServiceModel.Activation.SecureServiceHostFactory"/> class.
             </summary>
             <param name="protocol">Protocol used by the service.</param>
         </member>
-        <member name="M:TVA.ServiceModel.Activation.SecureServiceHostFactory.#ctor(System.String,System.String)">
+        <member name="M:GSF.ServiceModel.Activation.SecureServiceHostFactory.#ctor(System.String,System.String)">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.ServiceModel.Activation.SecureServiceHostFactory"/> class.
+            Initializes a new instance of the <see cref="T:GSF.ServiceModel.Activation.SecureServiceHostFactory"/> class.
             </summary>
             <param name="protocol">Protocol used by the service.</param>
             <param name="address">Address of the service.</param>
         </member>
-        <member name="M:TVA.ServiceModel.Activation.SecureServiceHostFactory.CreateServiceHost(System.Type,System.Uri[])">
+        <member name="M:GSF.ServiceModel.Activation.SecureServiceHostFactory.CreateServiceHost(System.Type,System.Uri[])">
             <summary>
             Creates a new <see cref="T:System.ServiceModel.ServiceHost"/> from the URI.
             </summary>
@@ -36,97 +36,97 @@
             <param name="baseAddresses">An array of base addresses for the service.</param>
             <returns>New <see cref="T:System.ServiceModel.ServiceHost"/>.</returns>
         </member>
-        <member name="P:TVA.ServiceModel.Activation.SecureServiceHostFactory.PublishMetadata">
+        <member name="P:GSF.ServiceModel.Activation.SecureServiceHostFactory.PublishMetadata">
             <summary>
             Gets or sets a boolean value that indicates whether service metadata is to be published.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.Activation.SecureServiceHostFactory.DisableSecurity">
+        <member name="P:GSF.ServiceModel.Activation.SecureServiceHostFactory.DisableSecurity">
             <summary>
             Gets or sets a boolean value that indicates whether security on the service is to be disabled. 
             </summary>
         </member>
-        <member name="T:TVA.ServiceModel.IPolicyRetriever">
+        <member name="T:GSF.ServiceModel.IPolicyRetriever">
             <summary>
             Defines a web service interface to allow policy retrieval for cross-domain access from
             Silverlight and Flash browser controls.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.IPolicyRetriever.GetSilverlightPolicy">
+        <member name="M:GSF.ServiceModel.IPolicyRetriever.GetSilverlightPolicy">
             <summary>
             Gets policy stream for Silverlight applications.
             </summary>
             <returns>Stream containing clientaccesspolicy.xml.</returns>
         </member>
-        <member name="M:TVA.ServiceModel.IPolicyRetriever.GetFlashPolicy">
+        <member name="M:GSF.ServiceModel.IPolicyRetriever.GetFlashPolicy">
             <summary>
             Gets policy stream for Flash applications.
             </summary>
             <returns>Stream containing crossdomain.xml.</returns>
         </member>
-        <member name="T:TVA.ServiceModel.ISelfHostingService">
+        <member name="T:GSF.ServiceModel.ISelfHostingService">
             <summary>
             Defines a web service that can send and receive data over REST (Representational State Transfer) interface.
             </summary>
         </member>
-        <member name="E:TVA.ServiceModel.ISelfHostingService.ServiceHostCreated">
+        <member name="E:GSF.ServiceModel.ISelfHostingService.ServiceHostCreated">
             <summary>
-            Occurs when the <see cref="P:TVA.ServiceModel.ISelfHostingService.ServiceHost"/> has been created with the specified <see cref="P:TVA.ServiceModel.ISelfHostingService.Endpoints"/>.
+            Occurs when the <see cref="P:GSF.ServiceModel.ISelfHostingService.ServiceHost"/> has been created with the specified <see cref="P:GSF.ServiceModel.ISelfHostingService.Endpoints"/>.
             </summary>
         </member>
-        <member name="E:TVA.ServiceModel.ISelfHostingService.ServiceHostStarted">
+        <member name="E:GSF.ServiceModel.ISelfHostingService.ServiceHostStarted">
             <summary>
-            Occurs when the <see cref="P:TVA.ServiceModel.ISelfHostingService.ServiceHost"/> can process requests via all of its endpoints.
+            Occurs when the <see cref="P:GSF.ServiceModel.ISelfHostingService.ServiceHost"/> can process requests via all of its endpoints.
             </summary>
         </member>
-        <member name="E:TVA.ServiceModel.ISelfHostingService.ServiceProcessException">
+        <member name="E:GSF.ServiceModel.ISelfHostingService.ServiceProcessException">
             <summary>
             Occurs when an <see cref="T:System.Exception"/> is encountered when processing a request.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.ISelfHostingService.Endpoints">
+        <member name="P:GSF.ServiceModel.ISelfHostingService.Endpoints">
             <summary>
             Gets or sets a semicolon delimited list of URIs where the web service can be accessed.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.ISelfHostingService.Contract">
+        <member name="P:GSF.ServiceModel.ISelfHostingService.Contract">
             <summary>
             Gets or sets the <see cref="P:System.Type.FullName"/> of the contract interface implemented by the web service.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.ISelfHostingService.Singleton">
+        <member name="P:GSF.ServiceModel.ISelfHostingService.Singleton">
             <summary>
-            Gets or sets a boolean value that indicates whether the <see cref="P:TVA.ServiceModel.ISelfHostingService.ServiceHost"/> will use the current instance of the web service for processing 
+            Gets or sets a boolean value that indicates whether the <see cref="P:GSF.ServiceModel.ISelfHostingService.ServiceHost"/> will use the current instance of the web service for processing 
             requests or base the web service instance creation on <see cref="T:System.ServiceModel.InstanceContextMode"/> specified in its <see cref="T:System.ServiceModel.ServiceBehaviorAttribute"/>.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.ISelfHostingService.SecurityPolicy">
+        <member name="P:GSF.ServiceModel.ISelfHostingService.SecurityPolicy">
             <summary>
-            Gets or sets the <see cref="P:System.Type.FullName"/> of <see cref="T:System.IdentityModel.Policy.IAuthorizationPolicy"/> to be used for securing all web service <see cref="P:TVA.ServiceModel.ISelfHostingService.Endpoints"/>.
+            Gets or sets the <see cref="P:System.Type.FullName"/> of <see cref="T:System.IdentityModel.Policy.IAuthorizationPolicy"/> to be used for securing all web service <see cref="P:GSF.ServiceModel.ISelfHostingService.Endpoints"/>.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.ISelfHostingService.PublishMetadata">
+        <member name="P:GSF.ServiceModel.ISelfHostingService.PublishMetadata">
             <summary>
-            Gets or sets a boolean value that indicates whether web service metadata is to made available at all web service <see cref="P:TVA.ServiceModel.ISelfHostingService.Endpoints"/>.
+            Gets or sets a boolean value that indicates whether web service metadata is to made available at all web service <see cref="P:GSF.ServiceModel.ISelfHostingService.Endpoints"/>.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.ISelfHostingService.ServiceHost">
+        <member name="P:GSF.ServiceModel.ISelfHostingService.ServiceHost">
             <summary>
-            Gets the <see cref="P:TVA.ServiceModel.ISelfHostingService.ServiceHost"/> hosting the web service.
+            Gets the <see cref="P:GSF.ServiceModel.ISelfHostingService.ServiceHost"/> hosting the web service.
             </summary>
         </member>
-        <member name="T:TVA.ServiceModel.NamespaceDoc">
+        <member name="T:GSF.ServiceModel.NamespaceDoc">
             <summary>
             Contains classes and interfaces that provide the basic infrastructure for writting web services.
             </summary>
         </member>
-        <member name="T:TVA.ServiceModel.Activation.SecureDataServiceHostFactory">
+        <member name="T:GSF.ServiceModel.Activation.SecureDataServiceHostFactory">
             <summary>
-            A service host factory for WCF Data Services that enables role-based security using <see cref="T:TVA.ServiceModel.SecurityPolicy"/>.
+            A service host factory for WCF Data Services that enables role-based security using <see cref="T:GSF.ServiceModel.SecurityPolicy"/>.
             </summary>
-            <see cref="T:TVA.ServiceModel.SecurityPolicy"/>
+            <see cref="T:GSF.ServiceModel.SecurityPolicy"/>
         </member>
-        <member name="M:TVA.ServiceModel.Activation.SecureDataServiceHostFactory.CreateServiceHost(System.Type,System.Uri[])">
+        <member name="M:GSF.ServiceModel.Activation.SecureDataServiceHostFactory.CreateServiceHost(System.Type,System.Uri[])">
             <summary>
             Creates a new <see cref="T:System.Data.Services.DataServiceHost"/> from the URI.
             </summary>
@@ -134,7 +134,7 @@
             <param name="baseAddresses">An array of base addresses for the service.</param>
             <returns>New <see cref="T:System.Data.Services.DataServiceHost"/>.</returns>
         </member>
-        <member name="T:TVA.ServiceModel.SecurityPolicy">
+        <member name="T:GSF.ServiceModel.SecurityPolicy">
             <summary>
             Represents an <see cref="T:System.IdentityModel.Policy.IAuthorizationPolicy">authorization policy</see> that can be used by WCF services for enabling role-based security.
             </summary>
@@ -145,7 +145,7 @@
             <?xml version="1.0"?>
             <configuration>
               <configSections>
-                <section name="categorizedSettings" type="TVA.Configuration.CategorizedSettingsSection, TVA.Core" />
+                <section name="categorizedSettings" type="GSF.Configuration.CategorizedSettingsSection, GSF.Core" />
               </configSections>
               <categorizedSettings>
                 <securityProvider>
@@ -153,7 +153,7 @@
                     encrypted="false" />
                   <add name="ConnectionString" value="" description="Connection string to be used for connection to the backend security datastore."
                     encrypted="false" />
-                  <add name="ProviderType" value="TVA.Security.LdapSecurityProvider, TVA.Security"
+                  <add name="ProviderType" value="GSF.Security.LdapSecurityProvider, GSF.Security"
                     description="The type to be used for enforcing security." encrypted="false" />
                   <add name="IncludedResources" value="*/*.*=*" description="Semicolon delimited list of resources to be secured along with role names."
                     encrypted="false" />
@@ -199,7 +199,7 @@
                     <behavior name="serviceBehavior">
                       <serviceAuthorization principalPermissionMode="Custom">
                         <authorizationPolicies>
-                          <add policyType="TVA.ServiceModel.SecurityPolicy, TVA.ServiceModel" />
+                          <add policyType="GSF.ServiceModel.SecurityPolicy, GSF.ServiceModel" />
                         </authorizationPolicies>
                       </serviceAuthorization>
                     </behavior>
@@ -226,7 +226,7 @@
             <configuration>
               <system.web>
                 <httpModules>
-                  <add name="SecurityModule" type="TVA.ServiceModel.SecurityModule, TVA.ServiceModel" />
+                  <add name="SecurityModule" type="GSF.ServiceModel.SecurityModule, GSF.ServiceModel" />
                 </httpModules>
               </system.web>
               <system.serviceModel>
@@ -246,7 +246,7 @@
                     <behavior name="serviceBehavior">
                       <serviceAuthorization principalPermissionMode="Custom">
                         <authorizationPolicies>
-                          <add policyType="TVA.ServiceModel.SecurityPolicy, TVA.ServiceModel" />
+                          <add policyType="GSF.ServiceModel.SecurityPolicy, GSF.ServiceModel" />
                         </authorizationPolicies>
                       </serviceAuthorization>
                     </behavior>
@@ -265,47 +265,47 @@
             ]]>
             </code>
             </example>
-            <seealso cref="T:TVA.Security.ISecurityProvider"/>
+            <seealso cref="T:GSF.Security.ISecurityProvider"/>
         </member>
-        <member name="M:TVA.ServiceModel.SecurityPolicy.#ctor">
+        <member name="M:GSF.ServiceModel.SecurityPolicy.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:TVA.ServiceModel.SecurityPolicy"/> class.
+            Initializes a new instance of the <see cref="T:GSF.ServiceModel.SecurityPolicy"/> class.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.SecurityPolicy.Evaluate(System.IdentityModel.Policy.EvaluationContext,System.Object@)">
+        <member name="M:GSF.ServiceModel.SecurityPolicy.Evaluate(System.IdentityModel.Policy.EvaluationContext,System.Object@)">
             <summary>
             Evaluates the <paramref name="evaluationContext"/> and initializes security.
             </summary>
             <param name="evaluationContext">An <see cref="T:System.IdentityModel.Policy.EvaluationContext"/> object.</param>
-            <param name="state">Custom state of the <see cref="T:TVA.ServiceModel.SecurityPolicy"/>.</param>
+            <param name="state">Custom state of the <see cref="T:GSF.ServiceModel.SecurityPolicy"/>.</param>
             <returns></returns>
         </member>
-        <member name="M:TVA.ServiceModel.SecurityPolicy.GetResourceName">
+        <member name="M:GSF.ServiceModel.SecurityPolicy.GetResourceName">
             <summary>
             Gets the name of resource being accessed.
             </summary>
             <returns><see cref="P:System.ServiceModel.OperationContext.IncomingMessageHeaders"/>.<see cref="P:System.ServiceModel.Channels.MessageHeaders.To"/>.<see cref="P:System.Uri.PathAndQuery"/> property value.</returns>
         </member>
-        <member name="P:TVA.ServiceModel.SecurityPolicy.Id">
+        <member name="P:GSF.ServiceModel.SecurityPolicy.Id">
             <summary>
-            Gets the identifier of this <see cref="T:TVA.ServiceModel.SecurityPolicy"/> instance.
+            Gets the identifier of this <see cref="T:GSF.ServiceModel.SecurityPolicy"/> instance.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.SecurityPolicy.Issuer">
+        <member name="P:GSF.ServiceModel.SecurityPolicy.Issuer">
             <summary>
-            Gets a claim set that represents the issuer of this <see cref="T:TVA.ServiceModel.SecurityPolicy"/>.
+            Gets a claim set that represents the issuer of this <see cref="T:GSF.ServiceModel.SecurityPolicy"/>.
             </summary>
         </member>
-        <member name="T:TVA.ServiceModel.SelfHostingService">
+        <member name="T:GSF.ServiceModel.SelfHostingService">
             <summary>
             A base class for web service that can send and receive data over REST (Representational State Transfer) interface.
             </summary>
             <example>
-            This example shows how to create a WCF service derived from <see cref="T:TVA.ServiceModel.SelfHostingService"/> that is capable of hosting itself:
+            This example shows how to create a WCF service derived from <see cref="T:GSF.ServiceModel.SelfHostingService"/> that is capable of hosting itself:
             <code>
             using System.ServiceModel;
             using System.ServiceModel.Web;
-            using TVA.ServiceModel;
+            using GSF.ServiceModel;
             
             namespace Services
             {
@@ -325,14 +325,14 @@
                 }
             }
             </code>
-            This example shows how to activate a WCF service derived from <see cref="T:TVA.ServiceModel.SelfHostingService"/> that is capable of hosting itself:
+            This example shows how to activate a WCF service derived from <see cref="T:GSF.ServiceModel.SelfHostingService"/> that is capable of hosting itself:
             <code>
             using System;
             using System.ServiceModel;
             using System.ServiceModel.Description;
             using System.ServiceModel.Web;
             using Services;
-            using TVA.ServiceModel;
+            using GSF.ServiceModel;
             
             class Program
             {
@@ -365,7 +365,7 @@
                 }
             }
             </code>
-            This example shows how to host a WCF service derived from <see cref="T:TVA.ServiceModel.SelfHostingService"/> inside ASP.NET:
+            This example shows how to host a WCF service derived from <see cref="T:GSF.ServiceModel.SelfHostingService"/> inside ASP.NET:
             <code>
             <![CDATA[
             <?xml version="1.0"?>
@@ -400,167 +400,167 @@
             </code>
             </example>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.#ctor">
+        <member name="M:GSF.ServiceModel.SelfHostingService.#ctor">
             <summary>
             Initializes a new instance of the web service.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.Finalize">
+        <member name="M:GSF.ServiceModel.SelfHostingService.Finalize">
             <summary>
             Releases the unmanaged resources before the web service is reclaimed by <see cref="T:System.GC"/>.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.Initialize">
+        <member name="M:GSF.ServiceModel.SelfHostingService.Initialize">
             <summary>
             Initializes the web service.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.SaveSettings">
+        <member name="M:GSF.ServiceModel.SelfHostingService.SaveSettings">
             <summary>
-            Saves web service settings to the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
+            Saves web service settings to the config file if the <see cref="P:GSF.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.LoadSettings">
+        <member name="M:GSF.ServiceModel.SelfHostingService.LoadSettings">
             <summary>
-            Loads saved web service settings from the config file if the <see cref="P:TVA.Adapters.Adapter.PersistSettings"/> property is set to true.
+            Loads saved web service settings from the config file if the <see cref="P:GSF.Adapters.Adapter.PersistSettings"/> property is set to true.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.GetUnusedPort">
+        <member name="M:GSF.ServiceModel.SelfHostingService.GetUnusedPort">
             <summary>
             Get an unused port number.
             </summary>
             <returns>An <see cref="T:System.Int32"/> value.</returns>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.GetServiceAddress">
+        <member name="M:GSF.ServiceModel.SelfHostingService.GetServiceAddress">
             <summary>
-            Gets an address where the <see cref="P:TVA.ServiceModel.SelfHostingService.ServiceHost"/> will host the service.
+            Gets an address where the <see cref="P:GSF.ServiceModel.SelfHostingService.ServiceHost"/> will host the service.
             </summary>
             <returns>A <see cref="T:System.String"/> value.</returns>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.InitializeServiceHost">
+        <member name="M:GSF.ServiceModel.SelfHostingService.InitializeServiceHost">
             <summary>
-            Initializes the <see cref="P:TVA.ServiceModel.SelfHostingService.ServiceHost"/>.
+            Initializes the <see cref="P:GSF.ServiceModel.SelfHostingService.ServiceHost"/>.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.GetSilverlightPolicy">
+        <member name="M:GSF.ServiceModel.SelfHostingService.GetSilverlightPolicy">
             <summary>
             Gets policy stream for Silverlight applications.
             </summary>
             <returns>Stream containing clientaccesspolicy.xml.</returns>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.GetFlashPolicy">
+        <member name="M:GSF.ServiceModel.SelfHostingService.GetFlashPolicy">
             <summary>
             Gets policy stream for Flash applications.
             </summary>
             <returns>Stream containing crossdomain.xml.</returns>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.Dispose(System.Boolean)">
+        <member name="M:GSF.ServiceModel.SelfHostingService.Dispose(System.Boolean)">
             <summary>
             Releases the unmanaged resources used by the web service and optionally releases the managed resources.
             </summary>
             <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.OnServiceHostCreated">
+        <member name="M:GSF.ServiceModel.SelfHostingService.OnServiceHostCreated">
             <summary>
-            Raises the <see cref="E:TVA.ServiceModel.SelfHostingService.ServiceHostCreated"/> event.
+            Raises the <see cref="E:GSF.ServiceModel.SelfHostingService.ServiceHostCreated"/> event.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.OnServiceHostStarted">
+        <member name="M:GSF.ServiceModel.SelfHostingService.OnServiceHostStarted">
             <summary>
-            Raises the <see cref="E:TVA.ServiceModel.SelfHostingService.ServiceHostStarted"/> event.
+            Raises the <see cref="E:GSF.ServiceModel.SelfHostingService.ServiceHostStarted"/> event.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.SelfHostingService.OnServiceProcessException(System.Exception)">
+        <member name="M:GSF.ServiceModel.SelfHostingService.OnServiceProcessException(System.Exception)">
             <summary>
-            Raises the <see cref="E:TVA.ServiceModel.SelfHostingService.ServiceProcessException"/> event.
+            Raises the <see cref="E:GSF.ServiceModel.SelfHostingService.ServiceProcessException"/> event.
             </summary>
-            <param name="exception"><see cref="T:System.Exception"/> to sent to <see cref="E:TVA.ServiceModel.SelfHostingService.ServiceProcessException"/> event.</param>
+            <param name="exception"><see cref="T:System.Exception"/> to sent to <see cref="E:GSF.ServiceModel.SelfHostingService.ServiceProcessException"/> event.</param>
         </member>
-        <member name="E:TVA.ServiceModel.SelfHostingService.ServiceHostCreated">
+        <member name="E:GSF.ServiceModel.SelfHostingService.ServiceHostCreated">
             <summary>
-            Occurs when the <see cref="P:TVA.ServiceModel.SelfHostingService.ServiceHost"/> has been created with the specified <see cref="P:TVA.ServiceModel.SelfHostingService.Endpoints"/>.
+            Occurs when the <see cref="P:GSF.ServiceModel.SelfHostingService.ServiceHost"/> has been created with the specified <see cref="P:GSF.ServiceModel.SelfHostingService.Endpoints"/>.
             </summary>
             <remarks>
-            When <see cref="E:TVA.ServiceModel.SelfHostingService.ServiceHostCreated"/> event is fired, changes like adding new endpoints can be made to the <see cref="P:TVA.ServiceModel.SelfHostingService.ServiceHost"/>.
+            When <see cref="E:GSF.ServiceModel.SelfHostingService.ServiceHostCreated"/> event is fired, changes like adding new endpoints can be made to the <see cref="P:GSF.ServiceModel.SelfHostingService.ServiceHost"/>.
             </remarks>
         </member>
-        <member name="E:TVA.ServiceModel.SelfHostingService.ServiceHostStarted">
+        <member name="E:GSF.ServiceModel.SelfHostingService.ServiceHostStarted">
             <summary>
-            Occurs when the <see cref="P:TVA.ServiceModel.SelfHostingService.ServiceHost"/> has can process requests via all of its endpoints.
+            Occurs when the <see cref="P:GSF.ServiceModel.SelfHostingService.ServiceHost"/> has can process requests via all of its endpoints.
             </summary>
         </member>
-        <member name="E:TVA.ServiceModel.SelfHostingService.ServiceProcessException">
+        <member name="E:GSF.ServiceModel.SelfHostingService.ServiceProcessException">
             <summary>
             Occurs when an <see cref="T:System.Exception"/> is encountered when processing a request.
             </summary>
             <remarks>
-            <see cref="F:TVA.EventArgs`1.Argument"/> is the exception encountered when processing a request.
+            <see cref="F:GSF.EventArgs`1.Argument"/> is the exception encountered when processing a request.
             </remarks>
         </member>
-        <member name="P:TVA.ServiceModel.SelfHostingService.Enabled">
+        <member name="P:GSF.ServiceModel.SelfHostingService.Enabled">
             <summary>
             Gets or sets a boolean value that indicates whether the web service is currently enabled.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.SelfHostingService.Endpoints">
+        <member name="P:GSF.ServiceModel.SelfHostingService.Endpoints">
             <summary>
             Gets or sets a semicolon delimited list of URIs where the web service can be accessed.
             </summary>
             <remarks>
-            Set <see cref="P:TVA.ServiceModel.SelfHostingService.Endpoints"/> to a null or empty string to disable web service hosting. Refer to <see cref="M:TVA.ServiceModel.Service.CreateServiceBinding(System.String@,System.Boolean)"/> 
+            Set <see cref="P:GSF.ServiceModel.SelfHostingService.Endpoints"/> to a null or empty string to disable web service hosting. Refer to <see cref="M:GSF.ServiceModel.Service.CreateServiceBinding(System.String@,System.Boolean)"/> 
             for a list of supported URI formats.
             </remarks>
         </member>
-        <member name="P:TVA.ServiceModel.SelfHostingService.Contract">
+        <member name="P:GSF.ServiceModel.SelfHostingService.Contract">
             <summary>
             Gets or sets the <see cref="P:System.Type.FullName"/> of the contract interface implemented by the web service.
             </summary>
             <exception cref="T:System.ArgumentNullException">The value being assigned is a null or empty string.</exception>
         </member>
-        <member name="P:TVA.ServiceModel.SelfHostingService.Singleton">
+        <member name="P:GSF.ServiceModel.SelfHostingService.Singleton">
             <summary>
-            Gets or sets a boolean value that indicates whether the <see cref="P:TVA.ServiceModel.SelfHostingService.ServiceHost"/> will use the current instance of the web service for processing 
+            Gets or sets a boolean value that indicates whether the <see cref="P:GSF.ServiceModel.SelfHostingService.ServiceHost"/> will use the current instance of the web service for processing 
             requests or base the web service instance creation on <see cref="T:System.ServiceModel.InstanceContextMode"/> specified in its <see cref="T:System.ServiceModel.ServiceBehaviorAttribute"/>.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.SelfHostingService.SecurityPolicy">
+        <member name="P:GSF.ServiceModel.SelfHostingService.SecurityPolicy">
             <summary>
-            Gets or sets the <see cref="P:System.Type.FullName"/> of <see cref="T:System.IdentityModel.Policy.IAuthorizationPolicy"/> to be used for securing all web service <see cref="P:TVA.ServiceModel.SelfHostingService.Endpoints"/>.
+            Gets or sets the <see cref="P:System.Type.FullName"/> of <see cref="T:System.IdentityModel.Policy.IAuthorizationPolicy"/> to be used for securing all web service <see cref="P:GSF.ServiceModel.SelfHostingService.Endpoints"/>.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.SelfHostingService.PublishMetadata">
+        <member name="P:GSF.ServiceModel.SelfHostingService.PublishMetadata">
             <summary>
-            Gets or sets a boolean value that indicates whether web service metadata is to made available at all web service <see cref="P:TVA.ServiceModel.SelfHostingService.Endpoints"/>.
+            Gets or sets a boolean value that indicates whether web service metadata is to made available at all web service <see cref="P:GSF.ServiceModel.SelfHostingService.Endpoints"/>.
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.SelfHostingService.AllowCrossDomainAccess">
+        <member name="P:GSF.ServiceModel.SelfHostingService.AllowCrossDomainAccess">
             <summary>
             Gets or sets flag that indicates if web services will enable cross-domain access for Silverlight and Flash applications. 
             </summary>
         </member>
-        <member name="P:TVA.ServiceModel.SelfHostingService.AllowedDomainList">
+        <member name="P:GSF.ServiceModel.SelfHostingService.AllowedDomainList">
             <summary>
-            Gets or sets comma separated list of allowed domains when <see cref="P:TVA.ServiceModel.SelfHostingService.AllowCrossDomainAccess"/> is <c>true</c>. Use * for domain wildcards, e.g., *.consoto.com.
+            Gets or sets comma separated list of allowed domains when <see cref="P:GSF.ServiceModel.SelfHostingService.AllowCrossDomainAccess"/> is <c>true</c>. Use * for domain wildcards, e.g., *.consoto.com.
             </summary>
             <remarks>
             To allow all domains just set this property to "*".
             </remarks>
         </member>
-        <member name="P:TVA.ServiceModel.SelfHostingService.ServiceHost">
+        <member name="P:GSF.ServiceModel.SelfHostingService.ServiceHost">
             <summary>
             Gets the <see cref="T:System.ServiceModel.Web.WebServiceHost"/> hosting the web service.
             </summary>
             <remarks>
-            By default, the <see cref="P:TVA.ServiceModel.SelfHostingService.ServiceHost"/> only has <see cref="T:System.ServiceModel.WebHttpBinding"/> endpoint at the <see cref="P:TVA.ServiceModel.SelfHostingService.Endpoints"/>. 
-            Additional endpoints can be added to the <see cref="P:TVA.ServiceModel.SelfHostingService.ServiceHost"/> when <see cref="E:TVA.ServiceModel.SelfHostingService.ServiceHostCreated"/> event is fired.
+            By default, the <see cref="P:GSF.ServiceModel.SelfHostingService.ServiceHost"/> only has <see cref="T:System.ServiceModel.WebHttpBinding"/> endpoint at the <see cref="P:GSF.ServiceModel.SelfHostingService.Endpoints"/>. 
+            Additional endpoints can be added to the <see cref="P:GSF.ServiceModel.SelfHostingService.ServiceHost"/> when <see cref="E:GSF.ServiceModel.SelfHostingService.ServiceHostCreated"/> event is fired.
             </remarks>
         </member>
-        <member name="T:TVA.ServiceModel.Service">
+        <member name="T:GSF.ServiceModel.Service">
             <summary>
             Defines helper methods related to WCF-based web services.
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.Service.CreateServiceBinding(System.String@,System.Boolean)">
+        <member name="M:GSF.ServiceModel.Service.CreateServiceBinding(System.String@,System.Boolean)">
             <summary>
             Creates a <see cref="T:System.ServiceModel.Channels.Binding"/> based on the specified <paramref name="address"/>.
             </summary>
@@ -612,12 +612,12 @@
             </para>
             </remarks>
         </member>
-        <member name="M:TVA.ServiceModel.Service.GetAuthenticationSchemes(System.Uri)">
+        <member name="M:GSF.ServiceModel.Service.GetAuthenticationSchemes(System.Uri)">
             <summary>
             Gets the security setting of the hosting environment (For example: IIS web site or virtual directory).
             </summary>
         </member>
-        <member name="M:TVA.ServiceModel.Service.GetServiceContract(System.Type)">
+        <member name="M:GSF.ServiceModel.Service.GetServiceContract(System.Type)">
             <summary>
             Gets the contract that the service implements.
             </summary>

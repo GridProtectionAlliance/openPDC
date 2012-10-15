@@ -38,11 +38,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml.Linq;
-using TVA;
-using TVA.Configuration;
-using TVA.Data;
-using TVA.Identity;
-using TVA.IO;
+using GSF;
+using GSF.Configuration;
+using GSF.Data;
+using GSF.Identity;
+using GSF.IO;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -337,7 +337,7 @@ namespace ConfigurationSetupUtility.Screens
         private void ValidateTimeSeriesStartupOperations()
         {
             const string countQuery = "SELECT COUNT(*) FROM DataOperation WHERE MethodName = 'PerformTimeSeriesStartupOperations'";
-            const string insertQuery = "INSERT INTO DataOperation(Description, AssemblyName, TypeName, MethodName, Arguments, LoadOrder, Enabled) VALUES('Time Series Startup Operations', 'TimeSeriesFramework.dll', 'TimeSeriesFramework.TimeSeriesStartupOperations', 'PerformTimeSeriesStartupOperations', '', 0, 1)";
+            const string insertQuery = "INSERT INTO DataOperation(Description, AssemblyName, TypeName, MethodName, Arguments, LoadOrder, Enabled) VALUES('Time Series Startup Operations', 'GSF.TimeSeries.dll', 'GSF.TimeSeries.TimeSeriesStartupOperations', 'PerformTimeSeriesStartupOperations', '', 0, 1)";
 
             IDbConnection connection = null;
             int timeSeriesStartupOperationsCount;
@@ -359,7 +359,7 @@ namespace ConfigurationSetupUtility.Screens
 
         private void ValidatePhasorDataSourceValidation()
         {
-            const string updateQuery = "UPDATE DataOperation SET Arguments = 'skipOptimization = True' WHERE AssemblyName = 'TVA.PhasorProtocols.dll' AND TypeName = 'TVA.PhasorProtocols.CommonPhasorServices' AND MethodName = 'PhasorDataSourceValidation'";
+            const string updateQuery = "UPDATE DataOperation SET Arguments = 'skipOptimization = True' WHERE AssemblyName = 'GSF.PhasorProtocols.dll' AND TypeName = 'GSF.PhasorProtocols.CommonPhasorServices' AND MethodName = 'PhasorDataSourceValidation'";
             IDbConnection connection = null;
 
             try

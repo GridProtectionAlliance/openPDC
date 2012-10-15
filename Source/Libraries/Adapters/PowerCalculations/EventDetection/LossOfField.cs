@@ -29,11 +29,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
-using TimeSeriesFramework;
-using TimeSeriesFramework.Adapters;
-using TVA.Collections;
-using TVA.PhasorProtocols;
-using TVA.Units;
+using GSF.TimeSeries;
+using GSF.TimeSeries.Adapters;
+using GSF.Collections;
+using PhasorProtocols;
+using GSF.Units;
 
 namespace PowerCalculations.EventDetection
 {

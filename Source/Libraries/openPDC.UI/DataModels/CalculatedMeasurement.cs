@@ -39,8 +39,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using TimeSeriesFramework.UI;
-using TVA.Data;
+using GSF.TimeSeries.UI;
+using GSF.Data;
 using System.Linq;
 
 namespace openPDC.UI.DataModels
@@ -744,8 +744,8 @@ namespace openPDC.UI.DataModels
                         calculatedMeasurement.FramesPerSecond, calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, database.Bool(calculatedMeasurement.UseLocalClockAsRealTime),
                         database.Bool(calculatedMeasurement.AllowSortsByArrival), calculatedMeasurement.LoadOrder, database.Bool(calculatedMeasurement.Enabled),
                         database.Bool(calculatedMeasurement.IgnoreBadTimeStamps), calculatedMeasurement.TimeResolution, database.Bool(calculatedMeasurement.AllowPreemptivePublishing),
-                        calculatedMeasurement.DownsamplingMethod, database.Bool(calculatedMeasurement.PerformTimestampReasonabilityCheck), TimeSeriesFramework.UI.CommonFunctions.CurrentUser,
-                        database.UtcNow(), TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow());
+                        calculatedMeasurement.DownsamplingMethod, database.Bool(calculatedMeasurement.PerformTimestampReasonabilityCheck), GSF.TimeSeries.UI.CommonFunctions.CurrentUser,
+                        database.UtcNow(), GSF.TimeSeries.UI.CommonFunctions.CurrentUser, database.UtcNow());
                 }
                 else
                 {
@@ -765,7 +765,7 @@ namespace openPDC.UI.DataModels
                         calculatedMeasurement.LagTime, calculatedMeasurement.LeadTime, database.Bool(calculatedMeasurement.UseLocalClockAsRealTime), database.Bool(calculatedMeasurement.AllowSortsByArrival),
                         calculatedMeasurement.LoadOrder, database.Bool(calculatedMeasurement.Enabled), database.Bool(calculatedMeasurement.IgnoreBadTimeStamps), calculatedMeasurement.TimeResolution,
                         database.Bool(calculatedMeasurement.AllowPreemptivePublishing), calculatedMeasurement.DownsamplingMethod, database.Bool(calculatedMeasurement.PerformTimestampReasonabilityCheck),
-                        TimeSeriesFramework.UI.CommonFunctions.CurrentUser, database.UtcNow(), calculatedMeasurement.ID);
+                        GSF.TimeSeries.UI.CommonFunctions.CurrentUser, database.UtcNow(), calculatedMeasurement.ID);
                 }
 
                 return "Calculated measurement information saved successfully";
@@ -792,11 +792,11 @@ namespace openPDC.UI.DataModels
                 createdConnection = CreateConnection(ref database);
 
                 // Setup current user context for any delete triggers
-                TimeSeriesFramework.UI.CommonFunctions.SetCurrentUserContext(database);
+                GSF.TimeSeries.UI.CommonFunctions.SetCurrentUserContext(database);
 
                 database.Connection.ExecuteNonQuery(database.ParameterizedQueryString("DELETE FROM CalculatedMeasurement WHERE ID = {0}", "calculatedMeasurementID"), DefaultTimeout, calculatedMeasurementID);
 
-                TimeSeriesFramework.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("ReloadConfig");
 
                 return "Calculated measurement deleted successfully";
             }

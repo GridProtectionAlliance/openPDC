@@ -32,9 +32,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using Microsoft.Win32;
-using TVA;
-using TVA.Data;
-using TVA.Security.Cryptography;
+using GSF;
+using GSF.Data;
+using GSF.Security.Cryptography;
 
 namespace ConfigurationSetupUtility.Screens
 {

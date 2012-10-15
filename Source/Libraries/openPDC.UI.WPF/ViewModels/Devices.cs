@@ -30,9 +30,9 @@ using System.Windows.Input;
 using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
 using openPDC.UI.UserControls;
-using TimeSeriesFramework.UI;
-using TimeSeriesFramework.UI.Commands;
-using TimeSeriesFramework.UI.DataModels;
+using GSF.Timeseries.UI;
+using GSF.Timeseries.UI.Commands;
+using GSF.Timeseries.UI.DataModels;
 
 namespace openPDC.UI.ViewModels
 {
@@ -469,7 +469,7 @@ namespace openPDC.UI.ViewModels
             m_interconnectionLookupList = Interconnection.GetLookupList(null, true);
             m_protocolLookupList = Protocol.GetLookupList(null, true);
             m_vendorDeviceLookupList = VendorDevice.GetLookupList(null, true);
-            m_timezoneLookupList = TimeSeriesFramework.UI.CommonFunctions.GetTimeZones(true);
+            m_timezoneLookupList = GSF.Timeseries.UI.CommonFunctions.GetTimeZones(true);
         }
 
         /// <summary>
@@ -674,7 +674,7 @@ namespace openPDC.UI.ViewModels
                 if (CurrentItem == null)
                     RuntimeID = string.Empty;
                 else
-                    RuntimeID = TimeSeriesFramework.UI.CommonFunctions.GetRuntimeID("Device", CurrentItem.ID);
+                    RuntimeID = GSF.Timeseries.UI.CommonFunctions.GetRuntimeID("Device", CurrentItem.ID);
             }
         }
 
