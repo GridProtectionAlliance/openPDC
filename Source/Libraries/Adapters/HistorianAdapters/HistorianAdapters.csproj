@@ -162,6 +162,6 @@
   <Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(OutDir)..\Applications\openPDC" COPY "$(TargetPath)" "$(OutDir)..\Applications\openPDC"
-IF EXIST "$(OutDir)..\Applications\openPDC" COPY "$(TargetDir)TVA.Historian.dll" "$(OutDir)..\Applications\openPDC"</PostBuildEvent>
+IF EXIST "$(OutDir)..\Applications\openPDC" COPY "$(TargetDir)GSF.Historian.dll" "$(OutDir)..\Applications\openPDC"</PostBuildEvent>
   </PropertyGroup>
 </Project>
