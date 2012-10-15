@@ -61,7 +61,7 @@
     <PropertyGroup>
       <!-- Project specific settings. -->
       <ProjectSolution>$(LocalFolder)\Source\$(ProjectName).sln</ProjectSolution>
-      <BuildDeployFolder Condition="'$(BuildDeployFolder)' == ''">\\GPAWEB\NightlyBuilds\openPDC\Beta\</BuildDeployFolder>
+      <BuildDeployFolder Condition="'$(BuildDeployFolder)' == ''">\\GPAWEB\NightlyBuilds\openPDC\Beta-VS2012\</BuildDeployFolder>
     </PropertyGroup>
   </Target>
 
@@ -75,10 +75,6 @@
       <FilesToVersion Include="$(LocalFolder)\Source\**\AssemblyInfo.*" Exclude="$(LocalFolder)\Source\Applications\openPDCManager\Web.Data\Properties\AssemblyInfo.*">
         <VersionRegex>(?'BeforeVersion'AssemblyFileVersion\(%22)(?'CoreVersion'(\*|\d+)\.)+(\*|\d+)(?'AfterVersion'%22\))</VersionRegex>
         <VersionPrecision>4</VersionPrecision>
-      </FilesToVersion>
-      <FilesToVersion Include="$(LocalFolder)\Source\**\*.vdproj">
-        <VersionRegex>(?'BeforeVersion'%22ProductVersion%22\s=\s%228:)(?'CoreVersion'(\d+)\.)+(\d+)(?'AfterVersion'%22)</VersionRegex>
-        <VersionPrecision>3</VersionPrecision>
       </FilesToVersion>
     </ItemGroup>
   </Target>
