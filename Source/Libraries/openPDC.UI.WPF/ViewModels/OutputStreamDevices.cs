@@ -35,8 +35,8 @@ using System.Windows.Input;
 using openPDC.UI.DataModels;
 using openPDC.UI.UserControls;
 using openPDCManager.UI.DataModels;
-using GSF.Timeseries.UI;
-using GSF.Timeseries.UI.Commands;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.Commands;
 using System.Linq;
 
 namespace openPDC.UI.ViewModels

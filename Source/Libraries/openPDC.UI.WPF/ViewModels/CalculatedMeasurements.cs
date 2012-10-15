@@ -27,9 +27,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
-using GSF.Timeseries.UI;
-using GSF.Timeseries.UI.Commands;
-using GSF.Timeseries.UI.DataModels;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.Commands;
+using GSF.TimeSeries.UI.DataModels;
 
 namespace openPDC.UI.ViewModels
 {
@@ -151,7 +151,7 @@ namespace openPDC.UI.ViewModels
         {
             base.Initialize();
             m_nodeLookupList = Node.GetLookupList(null);
-            m_downsamplingMethod = GSF.Timeseries.UI.CommonFunctions.GetDownsamplingMethodLookupList();
+            m_downsamplingMethod = GSF.TimeSeries.UI.CommonFunctions.GetDownsamplingMethodLookupList();
         }
 
         protected override void OnPropertyChanged(string propertyName)
@@ -163,7 +163,7 @@ namespace openPDC.UI.ViewModels
                 if (CurrentItem == null)
                     RuntimeID = string.Empty;
                 else
-                    RuntimeID = GSF.Timeseries.UI.CommonFunctions.GetRuntimeID("CalculatedMeasurement", CurrentItem.ID);
+                    RuntimeID = GSF.TimeSeries.UI.CommonFunctions.GetRuntimeID("CalculatedMeasurement", CurrentItem.ID);
             }
         }
 
@@ -173,7 +173,7 @@ namespace openPDC.UI.ViewModels
             {
                 if (Confirm("Do you want to send Initialize " + GetCurrentItemName() + "?", "Confirm Initialize"))
                 {
-                    Popup(GSF.Timeseries.UI.CommonFunctions.SendCommandToService("Initialize " + RuntimeID), "Initialize", MessageBoxImage.Information);
+                    Popup(GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("Initialize " + RuntimeID), "Initialize", MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)

@@ -28,8 +28,8 @@ using System.Threading;
 using System.Windows;
 using openPDC.UI.DataModels;
 using GSF.TimeSeries;
-using GSF.Timeseries.Transport;
-using GSF.Timeseries.UI;
+using GSF.TimeSeries.Transport;
+using GSF.TimeSeries.UI;
 using GSF;
 using GSF.Data;
 

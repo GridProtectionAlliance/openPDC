@@ -21,7 +21,7 @@ using System.Windows.Forms;
 using GSF;
 using GSF.Communication;
 using GSF.IO.Checksums;
-using GSF.PhasorProtocols.Macrodyne;
+using PhasorProtocols.Macrodyne;
 using GSF.Reflection;
 using GSF.Windows.Forms;
 

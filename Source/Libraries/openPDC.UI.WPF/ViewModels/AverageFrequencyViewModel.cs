@@ -29,9 +29,9 @@ using System.Linq;
 using System.Windows;
 using GSF;
 using GSF.Data;
-using GSF.Timeseries.UI;
-using GSF.Timeseries.UI.Commands;
-using GSF.Timeseries.UI.DataModels;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.Commands;
+using GSF.TimeSeries.UI.DataModels;
 using openPDC.UI.DataModels;
 using openPDC.UI.UserControls;
 

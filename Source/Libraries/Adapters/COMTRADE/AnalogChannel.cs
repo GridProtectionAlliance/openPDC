@@ -371,7 +371,7 @@ namespace Comtrade
             {
                 m_nominalFrequency = value;
 
-                if (m_signalKind == GSF.PhasorProtocols.SignalKind.Frequency)
+                if (m_signalKind == PhasorProtocols.SignalKind.Frequency)
                     m_adder = (double)m_nominalFrequency;
             }
         }
@@ -400,7 +400,7 @@ namespace Comtrade
                         m_adder = 0.0;
                         break;
                     case SignalKind.Magnitude:
-                        if (m_phasorType == GSF.PhasorProtocols.PhasorType.Current)
+                        if (m_phasorType == PhasorProtocols.PhasorType.Current)
                             m_multipler = 0.4;
                         else
                             m_multipler = 0.04;

@@ -40,8 +40,8 @@ using Microsoft.Research.DynamicDataDisplay.Charts;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using openPDC.UI.DataModels;
 using GSF.TimeSeries;
-using GSF.Timeseries.Transport;
-using GSF.Timeseries.UI;
+using GSF.TimeSeries.Transport;
+using GSF.TimeSeries.UI;
 using GSF;
 using GSF.Configuration;
 using GSF.Data;
@@ -77,7 +77,7 @@ namespace openPDC.UI.UserControls
         private LineGraph m_lineGraph;
         private int m_numberOfPointsToPlot = 60;
         private bool m_eventHandlerRegistered = false;
-        private GSF.Timeseries.UI.DataModels.Measurement m_selectedMeasurement;
+        private GSF.TimeSeries.UI.DataModels.Measurement m_selectedMeasurement;
         #endregion
 
         #region [ Constructor ]
@@ -378,7 +378,7 @@ namespace openPDC.UI.UserControls
         {
             if (ComboBoxMeasurement.Items.Count > 0)
             {
-                m_selectedMeasurement = (GSF.Timeseries.UI.DataModels.Measurement)ComboBoxMeasurement.SelectedItem;
+                m_selectedMeasurement = (GSF.TimeSeries.UI.DataModels.Measurement)ComboBoxMeasurement.SelectedItem;
 
                 // Capture's the Selected index of measurement Combo Box
                 if (Application.Current.Resources.Contains("SelectedMeasurement_Home"))
@@ -421,8 +421,8 @@ namespace openPDC.UI.UserControls
             //    m_signalID = m_selectedMeasurement.SignalID.ToString();
             //}
 
-            ObservableCollection<GSF.Timeseries.UI.DataModels.Measurement> measurements = GSF.Timeseries.UI.DataModels.Measurement.Load(null, ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
-            ComboBoxMeasurement.ItemsSource = new ObservableCollection<GSF.Timeseries.UI.DataModels.Measurement>(measurements.Where(m => m.SignalSuffix == "PA" || m.SignalSuffix == "FQ"));
+            ObservableCollection<GSF.TimeSeries.UI.DataModels.Measurement> measurements = GSF.TimeSeries.UI.DataModels.Measurement.Load(null, ((KeyValuePair<int, string>)ComboBoxDevice.SelectedItem).Key);
+            ComboBoxMeasurement.ItemsSource = new ObservableCollection<GSF.TimeSeries.UI.DataModels.Measurement>(measurements.Where(m => m.SignalSuffix == "PA" || m.SignalSuffix == "FQ"));
             
 
             // assign selected value to device combo box

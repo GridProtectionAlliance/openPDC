@@ -32,9 +32,9 @@ using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
 using openPDC.UI.UserControls;
 using openPDCManager.UI.DataModels;
-using GSF.Timeseries.UI;
-using GSF.Timeseries.UI.Commands;
-using GSF.Timeseries.UI.DataModels;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.Commands;
+using GSF.TimeSeries.UI.DataModels;
 
 namespace openPDCManager.UI.ViewModels
 {
@@ -567,7 +567,7 @@ namespace openPDCManager.UI.ViewModels
                 if (CurrentItem == null)
                     RuntimeID = string.Empty;
                 else
-                    RuntimeID = GSF.Timeseries.UI.CommonFunctions.GetRuntimeID("OutputStream", CurrentItem.ID);
+                    RuntimeID = GSF.TimeSeries.UI.CommonFunctions.GetRuntimeID("OutputStream", CurrentItem.ID);
             }
         }
 

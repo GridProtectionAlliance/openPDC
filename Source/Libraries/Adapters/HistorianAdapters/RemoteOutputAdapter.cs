@@ -42,7 +42,7 @@ using GSF.TimeSeries;
 using GSF.TimeSeries.Adapters;
 using GSF;
 using GSF.Communication;
-using TVA.Historian.Packets;
+using GSF.Historian.Packets;
 using GSF.Parsing;
 
 namespace HistorianAdapters

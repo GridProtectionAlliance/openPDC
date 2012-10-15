@@ -81,6 +81,9 @@
     <Reference Include="GSF.Core">
       <HintPath>..\..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
     </Reference>
+    <Reference Include="GSF.Historian">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.Historian.dll</HintPath>
+    </Reference>
     <Reference Include="GSF.ServiceModel">
       <HintPath>..\..\..\Dependencies\GSF\GSF.ServiceModel.dll</HintPath>
     </Reference>
@@ -108,10 +111,6 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="TVA.Historian">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Dependencies\TVA\TVA.Historian.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="RuntimeConfigurationService.svc" />

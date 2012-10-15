@@ -38,9 +38,9 @@ using ConnectionTester;
 using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
 using openPDC.UI.UserControls;
-using GSF.Timeseries.UI;
-using GSF.Timeseries.UI.Commands;
-using GSF.Timeseries.UI.DataModels;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.Commands;
+using GSF.TimeSeries.UI.DataModels;
 using GSF;
 using GSF.Data;
 using PhasorProtocols;
@@ -766,27 +766,27 @@ namespace openPDC.UI.ViewModels
                                 switch (connectionSettings.PhasorProtocol)
                                 {
                                     case PhasorProtocol.BpaPdcStream:
-                                        GSF.PhasorProtocols.BpaPdcStream.ConnectionParameters bpaParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.BpaPdcStream.ConnectionParameters;
+                                        PhasorProtocols.BpaPdcStream.ConnectionParameters bpaParameters = connectionSettings.ConnectionParameters as PhasorProtocols.BpaPdcStream.ConnectionParameters;
                                         if ((object)bpaParameters != null)
                                             ConnectionString += "; iniFileName=" + bpaParameters.ConfigurationFileName + "; refreshConfigFileOnChange=" + bpaParameters.RefreshConfigurationFileOnChange + "; parseWordCountFromByte=" + bpaParameters.ParseWordCountFromByte;
                                         break;
                                     case PhasorProtocol.FNet:
-                                        GSF.PhasorProtocols.FNet.ConnectionParameters fnetParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.FNet.ConnectionParameters;
+                                        PhasorProtocols.FNet.ConnectionParameters fnetParameters = connectionSettings.ConnectionParameters as PhasorProtocols.FNet.ConnectionParameters;
                                         if ((object)fnetParameters != null)
                                             ConnectionString += "; timeOffset=" + fnetParameters.TimeOffset + "; stationName=" + fnetParameters.StationName + "; frameRate=" + fnetParameters.FrameRate + "; nominalFrequency=" + (int)fnetParameters.NominalFrequency;
                                         break;
                                     case PhasorProtocol.SelFastMessage:
-                                        GSF.PhasorProtocols.SelFastMessage.ConnectionParameters selParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.SelFastMessage.ConnectionParameters;
+                                        PhasorProtocols.SelFastMessage.ConnectionParameters selParameters = connectionSettings.ConnectionParameters as PhasorProtocols.SelFastMessage.ConnectionParameters;
                                         if ((object)selParameters != null)
                                             ConnectionString += "; messagePeriod=" + selParameters.MessagePeriod;
                                         break;
                                     case PhasorProtocol.Iec61850_90_5:
-                                        GSF.PhasorProtocols.Iec61850_90_5.ConnectionParameters iecParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.Iec61850_90_5.ConnectionParameters;
+                                        PhasorProtocols.Iec61850_90_5.ConnectionParameters iecParameters = connectionSettings.ConnectionParameters as PhasorProtocols.Iec61850_90_5.ConnectionParameters;
                                         if ((object)iecParameters != null)
                                             ConnectionString += "; useETRConfiguration=" + iecParameters.UseETRConfiguration + "; guessConfiguration=" + iecParameters.GuessConfiguration + "; parseRedundantASDUs=" + iecParameters.ParseRedundantASDUs + "; ignoreSignatureValidationFailures=" + iecParameters.IgnoreSignatureValidationFailures + "; ignoreSampleSizeValidationFailures=" + iecParameters.IgnoreSampleSizeValidationFailures;
                                         break;
                                     case PhasorProtocol.Macrodyne:
-                                        GSF.PhasorProtocols.Macrodyne.ConnectionParameters macrodyneParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.Macrodyne.ConnectionParameters;
+                                        PhasorProtocols.Macrodyne.ConnectionParameters macrodyneParameters = connectionSettings.ConnectionParameters as PhasorProtocols.Macrodyne.ConnectionParameters;
                                         if ((object)macrodyneParameters != null)
                                             ConnectionString += "; protocolVersion=" + macrodyneParameters.ProtocolVersion + "; iniFileName=" + macrodyneParameters.ConfigurationFileName + "; refreshConfigFileOnChange=" + macrodyneParameters.RefreshConfigurationFileOnChange + "; deviceLabel=" + macrodyneParameters.DeviceLabel;
                                         break;
@@ -1075,11 +1075,11 @@ namespace openPDC.UI.ViewModels
                     m_disconnectedCurrentDevice = true;
                 }
 
-                database = new AdoDataConnection(GSF.Timeseries.UI.CommonFunctions.DefaultSettingsCategory);
+                database = new AdoDataConnection(GSF.TimeSeries.UI.CommonFunctions.DefaultSettingsCategory);
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
                 s_responseWaitHandle = new ManualResetEvent(false);
 
-                windowsServiceClient = GSF.Timeseries.UI.CommonFunctions.GetWindowsServiceClient();
+                windowsServiceClient = GSF.TimeSeries.UI.CommonFunctions.GetWindowsServiceClient();
                 if (windowsServiceClient != null && windowsServiceClient.Helper != null &&
                    windowsServiceClient.Helper.RemotingClient != null && windowsServiceClient.Helper.RemotingClient.CurrentState == GSF.Communication.ClientState.Connected)
                 {
@@ -1245,7 +1245,7 @@ namespace openPDC.UI.ViewModels
         public void SaveConfiguration()
         {
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-            AdoDataConnection database = new AdoDataConnection(GSF.Timeseries.UI.CommonFunctions.DefaultSettingsCategory);
+            AdoDataConnection database = new AdoDataConnection(GSF.TimeSeries.UI.CommonFunctions.DefaultSettingsCategory);
             try
             {
                 int deviceCount = 0;

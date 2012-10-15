@@ -30,7 +30,7 @@ using GSF.TimeSeries;
 using GSF;
 using GSF.IO;
 using PhasorProtocols;
-using GSF.PhasorProtocols.Anonymous;
+using PhasorProtocols.Anonymous;
 
 namespace ProtocolTester
 {

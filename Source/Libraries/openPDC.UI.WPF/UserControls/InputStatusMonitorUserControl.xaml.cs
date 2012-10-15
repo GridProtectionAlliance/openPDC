@@ -43,9 +43,9 @@ using Microsoft.Win32;
 using openPDC.UI.DataModels;
 using openPDC.UI.ViewModels;
 using GSF.TimeSeries;
-using GSF.Timeseries.Transport;
-using GSF.Timeseries.UI;
-using GSF.Timeseries.UI.UserControls;
+using GSF.TimeSeries.Transport;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.UserControls;
 using GSF;
 using GSF.Data;
 
@@ -134,7 +134,7 @@ namespace openPDC.UI.UserControls
             m_dataContext.RestartConnectionCycle = false;
             Unsubscribe();
             m_dataContext.UnsubscribeUnsynchronizedData();
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("InputMonitoringPoints", m_selectedSignalIDs);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("InputMonitoringPoints", m_selectedSignalIDs);
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace openPDC.UI.UserControls
             InitializeColors();
             InitializeChart();
 
-            m_selectedSignalIDs = GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("InputMonitoringPoints").ToString();
+            m_selectedSignalIDs = GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("InputMonitoringPoints").ToString();
             string[] signalIDs = m_selectedSignalIDs.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             AutoSelectMeasurements(signalIDs);
 
@@ -363,24 +363,24 @@ namespace openPDC.UI.UserControls
         private void RetrieveSettingsFromIsolatedStorage()
         {
             // Retreive values from IsolatedStorage.
-            int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfDataPointsToPlot").ToString(), out m_numberOfDataPointsToPlot);
-            int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DataResolution").ToString(), out m_framesPerSecond);
-            int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("ChartRefreshInterval").ToString(), out m_chartRefreshInterval);
-            int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticsDataRefershInterval);
-            int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("MeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
-            double.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("LagTime").ToString(), out m_lagTime);
-            double.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("LeadTime").ToString(), out m_leadTime);
-            double.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin").ToString(), out m_frequencyRangeMin);
-            double.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax").ToString(), out m_frequencyRangeMax);
-            m_forceIPv4 = GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4").ToString().ParseBoolean();
-            m_displayXAxis = GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayXAxis").ToString().ParseBoolean();
-            m_displayLegend = GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayLegend").ToString().ParseBoolean();
-            m_displayFrequencyYAxis = GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayFrequencyYAxis").ToString().ParseBoolean();
-            m_displayPhaseAngleYAxis = GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayPhaseAngleYAxis").ToString().ParseBoolean();
-            m_displayCurrentYAxis = GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayCurrentYAxis").ToString().ParseBoolean();
-            m_displayVoltageYAxis = GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayVoltageYAxis").ToString().ParseBoolean();
-            m_useLocalClockAsRealtime = GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("UseLocalClockAsRealtime").ToString().ParseBoolean();
-            m_ignoreBadTimestamps = GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("IgnoreBadTimestamps").ToString().ParseBoolean();
+            int.TryParse(GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("NumberOfDataPointsToPlot").ToString(), out m_numberOfDataPointsToPlot);
+            int.TryParse(GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DataResolution").ToString(), out m_framesPerSecond);
+            int.TryParse(GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("ChartRefreshInterval").ToString(), out m_chartRefreshInterval);
+            int.TryParse(GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticsDataRefershInterval);
+            int.TryParse(GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("MeasurementsDataRefreshInterval").ToString(), out m_measurementsDataRefreshInterval);
+            double.TryParse(GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("LagTime").ToString(), out m_lagTime);
+            double.TryParse(GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("LeadTime").ToString(), out m_leadTime);
+            double.TryParse(GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMin").ToString(), out m_frequencyRangeMin);
+            double.TryParse(GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("FrequencyRangeMax").ToString(), out m_frequencyRangeMax);
+            m_forceIPv4 = GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("ForceIPv4").ToString().ParseBoolean();
+            m_displayXAxis = GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayXAxis").ToString().ParseBoolean();
+            m_displayLegend = GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayLegend").ToString().ParseBoolean();
+            m_displayFrequencyYAxis = GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayFrequencyYAxis").ToString().ParseBoolean();
+            m_displayPhaseAngleYAxis = GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayPhaseAngleYAxis").ToString().ParseBoolean();
+            m_displayCurrentYAxis = GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayCurrentYAxis").ToString().ParseBoolean();
+            m_displayVoltageYAxis = GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("DisplayVoltageYAxis").ToString().ParseBoolean();
+            m_useLocalClockAsRealtime = GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("UseLocalClockAsRealtime").ToString().ParseBoolean();
+            m_ignoreBadTimestamps = GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("IgnoreBadTimestamps").ToString().ParseBoolean();
         }
 
         private void AutoSelectMeasurements(string[] signalIDs)
@@ -534,7 +534,7 @@ namespace openPDC.UI.UserControls
 
         private void ButtonMeasurement_Click(object sender, RoutedEventArgs e)
         {
-            GSF.Timeseries.UI.DataModels.Measurement measurement = GSF.Timeseries.UI.DataModels.Measurement.GetMeasurement(null, "WHERE SignalReference = '" + ((Button)sender).Content.ToString() + "'");
+            GSF.TimeSeries.UI.DataModels.Measurement measurement = GSF.TimeSeries.UI.DataModels.Measurement.GetMeasurement(null, "WHERE SignalReference = '" + ((Button)sender).Content.ToString() + "'");
 
             if (measurement.DeviceID.HasValue)
             {
@@ -752,8 +752,8 @@ namespace openPDC.UI.UserControls
                                 string stopTime = TextBoxStopTime.Text;
                                 int processingInterval = int.Parse(TextBoxProcessInterval.Text);
 
-                                if (DateTime.Compare(GSF.Timeseries.Adapters.AdapterBase.ParseTimeTag(startTime),
-                                                 GSF.Timeseries.Adapters.AdapterBase.ParseTimeTag(stopTime)) < 0)
+                                if (DateTime.Compare(GSF.TimeSeries.Adapters.AdapterBase.ParseTimeTag(startTime),
+                                                 GSF.TimeSeries.Adapters.AdapterBase.ParseTimeTag(stopTime)) < 0)
                                 {
                                     ModeMessage.Text = "Initializing historical playback...";
 
@@ -818,7 +818,7 @@ namespace openPDC.UI.UserControls
             m_dataContext.RestartConnectionCycle = false;
             Unsubscribe();
             m_dataContext.UnsubscribeUnsynchronizedData();
-            GSF.Timeseries.UI.IsolatedStorageManager.InitializeStorageForInputStatusMonitor(true);
+            GSF.TimeSeries.UI.IsolatedStorageManager.InitializeStorageForInputStatusMonitor(true);
             RetrieveSettingsFromIsolatedStorage();
             PopulateSettings();
             PopupSettings.IsOpen = false;
@@ -827,25 +827,25 @@ namespace openPDC.UI.UserControls
 
         private void ButtonSaveSettings_Click(object sender, RoutedEventArgs e)
         {
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("ForceIPv4", (bool)CheckBoxForceIPv4.IsChecked);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("InputMonitoringPoints", TextBoxLastSelectedMeasurements.Text);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("NumberOfDataPointsToPlot", TextBoxNumberOFDataPointsToPlot.Text);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DataResolution", TextBoxDataResolution.Text);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("LagTime", TextBoxLagTime.Text);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("LeadTime", TextBoxLeadTime.Text);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("UseLocalClockAsRealtime", (bool)CheckBoxUseLocalClockAsRealTime.IsChecked);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("IgnoreBadTimestamps", (bool)CheckBoxIgnoreBadTimestamps.IsChecked);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("ChartRefreshInterval", TextBoxChartRefreshInterval.Text);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("StatisticsDataRefreshInterval", TextBoxStatisticDataRefreshInterval.Text);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("MeasurementsDataRefreshInterval", TextBoxMeasurementDataRefreshInterval.Text);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayXAxis", (bool)CheckBoxDisplayXAxis.IsChecked);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayFrequencyYAxis", (bool)CheckBoxDisplayFrequencyYAxis.IsChecked);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayPhaseAngleYAxis", (bool)CheckBoxDisplayPhaseAngleYAxis.IsChecked);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayVoltageYAxis", (bool)CheckBoxDisplayVoltageMagnitudeYAxis.IsChecked);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayCurrentYAxis", (bool)CheckBoxDisplayCurrentMagnitudeYAxis.IsChecked);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("FrequencyRangeMin", TextBoxFrequencyRangeMin.Text);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("FrequencyRangeMax", TextBoxFrequencyRangeMax.Text);
-            GSF.Timeseries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayLegend", (bool)CheckBoxDisplayLegend.IsChecked);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("ForceIPv4", (bool)CheckBoxForceIPv4.IsChecked);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("InputMonitoringPoints", TextBoxLastSelectedMeasurements.Text);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("NumberOfDataPointsToPlot", TextBoxNumberOFDataPointsToPlot.Text);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DataResolution", TextBoxDataResolution.Text);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("LagTime", TextBoxLagTime.Text);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("LeadTime", TextBoxLeadTime.Text);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("UseLocalClockAsRealtime", (bool)CheckBoxUseLocalClockAsRealTime.IsChecked);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("IgnoreBadTimestamps", (bool)CheckBoxIgnoreBadTimestamps.IsChecked);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("ChartRefreshInterval", TextBoxChartRefreshInterval.Text);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("StatisticsDataRefreshInterval", TextBoxStatisticDataRefreshInterval.Text);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("MeasurementsDataRefreshInterval", TextBoxMeasurementDataRefreshInterval.Text);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayXAxis", (bool)CheckBoxDisplayXAxis.IsChecked);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayFrequencyYAxis", (bool)CheckBoxDisplayFrequencyYAxis.IsChecked);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayPhaseAngleYAxis", (bool)CheckBoxDisplayPhaseAngleYAxis.IsChecked);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayVoltageYAxis", (bool)CheckBoxDisplayVoltageMagnitudeYAxis.IsChecked);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayCurrentYAxis", (bool)CheckBoxDisplayCurrentMagnitudeYAxis.IsChecked);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("FrequencyRangeMin", TextBoxFrequencyRangeMin.Text);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("FrequencyRangeMax", TextBoxFrequencyRangeMax.Text);
+            GSF.TimeSeries.UI.IsolatedStorageManager.WriteToIsolatedStorage("DisplayLegend", (bool)CheckBoxDisplayLegend.IsChecked);
             RetrieveSettingsFromIsolatedStorage();
             PopulateSettings();
 

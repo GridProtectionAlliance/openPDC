@@ -37,7 +37,7 @@ using GSF.TimeSeries;
 using GSF.TimeSeries.Adapters;
 using GSF;
 using GSF.Communication;
-using TVA.Historian;
+using GSF.Historian;
 
 namespace HistorianAdapters
 {

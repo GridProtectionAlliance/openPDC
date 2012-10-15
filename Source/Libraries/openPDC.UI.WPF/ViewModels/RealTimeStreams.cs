@@ -31,8 +31,8 @@ using System.Windows;
 using System.Windows.Input;
 using openPDC.UI.DataModels;
 using GSF.TimeSeries;
-using GSF.Timeseries.Transport;
-using GSF.Timeseries.UI;
+using GSF.TimeSeries.Transport;
+using GSF.TimeSeries.UI;
 using GSF;
 using GSF.Data;
 using GSF.ServiceProcess;
@@ -83,7 +83,7 @@ namespace openPDC.UI.ViewModels
             m_restartConnectionCycle = true;
             StatisticMeasurements = new ObservableCollection<StatisticMeasurement>();
 
-            int.TryParse(GSF.Timeseries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticRefreshInterval);
+            int.TryParse(GSF.TimeSeries.UI.IsolatedStorageManager.ReadFromIsolatedStorage("StatisticsDataRefreshInterval").ToString(), out m_statisticRefreshInterval);
             Statistics = new RealTimeStatistics(1, m_statisticRefreshInterval);
 
             CheckTemporalSupport();
@@ -616,7 +616,7 @@ namespace openPDC.UI.ViewModels
             {
                 s_responseWaitHandle = new ManualResetEvent(false);
 
-                windowsServiceClient = GSF.Timeseries.UI.CommonFunctions.GetWindowsServiceClient();
+                windowsServiceClient = GSF.TimeSeries.UI.CommonFunctions.GetWindowsServiceClient();
                 if (windowsServiceClient != null && windowsServiceClient.Helper != null &&
                    windowsServiceClient.Helper.RemotingClient != null && windowsServiceClient.Helper.RemotingClient.CurrentState == GSF.Communication.ClientState.Connected)
                 {

@@ -16,9 +16,9 @@ using System.Runtime.InteropServices;
 #else
 [assembly: AssemblyConfiguration("Release Build")]
 #endif
-[assembly: AssemblyDefaultAlias("GSF.PhasorProtocols.Test")]
+[assembly: AssemblyDefaultAlias("PhasorProtocols.Test")]
 [assembly: AssemblyDescription("Unit tests for phasor protocol implementations.")]
-[assembly: AssemblyTitle("GSF.PhasorProtocols.Test")]
+[assembly: AssemblyTitle("PhasorProtocols.Test")]
 
 // Other configuration attributes.
 [assembly: CLSCompliant(true)]

@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 using openPDC.UI.DataModels;
 using openPDC.UI.ViewModels;
-using GSF.Timeseries.UI;
+using GSF.TimeSeries.UI;
 using GSF;
 
 namespace openPDC.UI.UserControls
