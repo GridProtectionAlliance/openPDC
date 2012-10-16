@@ -61,12 +61,12 @@ GOTO Finalize
 :Checkin
 ECHO.
 ECHO Checking in dependencies...
-%tfs% checkin %target1% /noprompt /recursive /comment:"Synchrophasor: Updated code library dependencies."
-%tfs% checkin "%sourcetools%ConfigCrypter.exe" /noprompt /comment:"Synchrophasor: Updated code library tool: ConfigCrypter."
-%tfs% checkin "%sourcetools%ConfigurationEditor.exe" /noprompt /comment:"Synchrophasor: Updated code library tools: ConfigurationEditor."
-%tfs% checkin "%sourcetools%DataMigrationUtility.exe" /noprompt /comment:"Synchrophasor: Updated code library tools: DataMigrationUtility."
-%tfs% checkin "%sourcetools%HistorianPlaybackUtility.exe" /noprompt /comment:"Synchrophasor: Updated openHistorian playback / export tool: HistorianPlaybackUtility."
-%tfs% checkin "%sourcetools%HistorianView.exe" /noprompt /comment:"Synchrophasor: Updated openHistorian trending tool: HistorianView."
+%tfs% checkin %target1% /noprompt /recursive /comment:"Synchrophasor-VS2012: Updated code library dependencies."
+%tfs% checkin "%sourcetools%ConfigCrypter.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated code library tool: ConfigCrypter."
+%tfs% checkin "%sourcetools%ConfigurationEditor.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated code library tools: ConfigurationEditor."
+%tfs% checkin "%sourcetools%DataMigrationUtility.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated code library tools: DataMigrationUtility."
+%tfs% checkin "%sourcetools%HistorianPlaybackUtility.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated openHistorian playback / export tool: HistorianPlaybackUtility."
+%tfs% checkin "%sourcetools%HistorianView.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated openHistorian trending tool: HistorianView."
 
 :Finalize
 ECHO.
