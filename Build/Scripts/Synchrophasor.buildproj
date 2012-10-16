@@ -92,9 +92,9 @@
       <ProjectsToBuild Include="$(LocalFolder)\Build\Scripts\$(ProjectName).shfbproj" Condition="'$(SkipHelpFiles)' == ''"/>
     </ItemGroup>
     <!-- Build 32-installs first and cleanup. -->
-    <Message Text="Compiling installs (32-bit)..."/>
-    <Exec Command="%22$(VisualStudio)%22 %22$(ProjectSolution)%22 /Project %22%(x86InstallsToBuild.FullPath)%22 /Build %22$(BuildFlavor)|x86%22"/>
-    <Exec Command="%22$(VisualStudio)%22 %22$(ProjectSolution)%22 /Clean %22$(BuildFlavor)|x86%22"/>
+    <!-- <Message Text="Compiling installs (32-bit)..."/> -->
+    <!-- <Exec Command="%22$(VisualStudio)%22 %22$(ProjectSolution)%22 /Project %22%(x86InstallsToBuild.FullPath)%22 /Build %22$(BuildFlavor)|x86%22"/> -->
+    <!-- <Exec Command="%22$(VisualStudio)%22 %22$(ProjectSolution)%22 /Clean %22$(BuildFlavor)|x86%22"/> -->
   </Target>
 
   <Target Name="BeforeExecuteUnitTests">
