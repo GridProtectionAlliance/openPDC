@@ -61,29 +61,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B1AC9848
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDC", "openPDC", "{CE260396-797B-45DF-AC53-E4FC553B57C0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TVA", "TVA", "{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\TVA\Hadoop.Replication.dll = Dependencies\TVA\Hadoop.Replication.dll
-		Dependencies\TVA\Hadoop.Replication.XML = Dependencies\TVA\Hadoop.Replication.XML
-		Dependencies\TVA\TVA.Communication.dll = Dependencies\TVA\TVA.Communication.dll
-		Dependencies\TVA\TVA.Communication.xml = Dependencies\TVA\TVA.Communication.xml
-		Dependencies\TVA\TVA.Core.dll = Dependencies\TVA\TVA.Core.dll
-		Dependencies\TVA\TVA.Historian.dll = Dependencies\TVA\TVA.Historian.dll
-		Dependencies\TVA\TVA.Historian.XML = Dependencies\TVA\TVA.Historian.XML
-		Dependencies\TVA\TVA.Security.dll = Dependencies\TVA\TVA.Security.dll
-		Dependencies\TVA\TVA.Security.XML = Dependencies\TVA\TVA.Security.XML
-		Dependencies\TVA\TVA.ServiceBus.dll = Dependencies\TVA\TVA.ServiceBus.dll
-		Dependencies\TVA\TVA.ServiceBus.XML = Dependencies\TVA\TVA.ServiceBus.XML
-		Dependencies\TVA\TVA.ServiceModel.dll = Dependencies\TVA\TVA.ServiceModel.dll
-		Dependencies\TVA\TVA.ServiceModel.XML = Dependencies\TVA\TVA.ServiceModel.XML
-		Dependencies\TVA\TVA.ServiceProcess.dll = Dependencies\TVA\TVA.ServiceProcess.dll
-		Dependencies\TVA\TVA.ServiceProcess.XML = Dependencies\TVA\TVA.ServiceProcess.XML
-		Dependencies\TVA\TVA.Web.dll = Dependencies\TVA\TVA.Web.dll
-		Dependencies\TVA\TVA.Web.XML = Dependencies\TVA\TVA.Web.XML
-		Dependencies\TVA\TVA.Windows.dll = Dependencies\TVA\TVA.Windows.dll
-		Dependencies\TVA\TVA.Windows.XML = Dependencies\TVA\TVA.Windows.XML
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B697ECD-E3BE-485B-BE90-BAAA12F3A68D}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE.txt = LICENSE.txt
@@ -102,36 +79,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{29821B31-3A0
 		Dependencies\Microsoft\WPF\System.Windows.Controls.Input.Toolkit.dll = Dependencies\Microsoft\WPF\System.Windows.Controls.Input.Toolkit.dll
 		Dependencies\Microsoft\WPF\System.Windows.Controls.Layout.Toolkit.dll = Dependencies\Microsoft\WPF\System.Windows.Controls.Layout.Toolkit.dll
 		Dependencies\Microsoft\WPF\WPFToolkit.dll = Dependencies\Microsoft\WPF\WPFToolkit.dll
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSeriesFramework", "TimeSeriesFramework", "{05851E03-6FBC-4774-BCC0-CCD006FE05B1}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\TimeSeriesFramework\AdoAdapters.dll = Dependencies\TimeSeriesFramework\AdoAdapters.dll
-		Dependencies\TimeSeriesFramework\AdoAdapters.XML = Dependencies\TimeSeriesFramework\AdoAdapters.XML
-		Dependencies\TimeSeriesFramework\Ciloci.Flee.dll = Dependencies\TimeSeriesFramework\Ciloci.Flee.dll
-		Dependencies\TimeSeriesFramework\Ciloci.Flee.xml = Dependencies\TimeSeriesFramework\Ciloci.Flee.xml
-		Dependencies\TimeSeriesFramework\CsvAdapters.dll = Dependencies\TimeSeriesFramework\CsvAdapters.dll
-		Dependencies\TimeSeriesFramework\CsvAdapters.XML = Dependencies\TimeSeriesFramework\CsvAdapters.XML
-		Dependencies\TimeSeriesFramework\DataQualityMonitoring.dll = Dependencies\TimeSeriesFramework\DataQualityMonitoring.dll
-		Dependencies\TimeSeriesFramework\DataQualityMonitoring.XML = Dependencies\TimeSeriesFramework\DataQualityMonitoring.XML
-		Dependencies\TimeSeriesFramework\Dnp3Adapters.dll = Dependencies\TimeSeriesFramework\Dnp3Adapters.dll
-		Dependencies\TimeSeriesFramework\Dnp3Adapters.XML = Dependencies\TimeSeriesFramework\Dnp3Adapters.XML
-		Dependencies\TimeSeriesFramework\DynamicCalculator.dll = Dependencies\TimeSeriesFramework\DynamicCalculator.dll
-		Dependencies\TimeSeriesFramework\DynamicCalculator.XML = Dependencies\TimeSeriesFramework\DynamicCalculator.XML
-		Dependencies\TimeSeriesFramework\MongoAdapters.dll = Dependencies\TimeSeriesFramework\MongoAdapters.dll
-		Dependencies\TimeSeriesFramework\MongoAdapters.XML = Dependencies\TimeSeriesFramework\MongoAdapters.XML
-		Dependencies\TimeSeriesFramework\MySqlAdapters.dll = Dependencies\TimeSeriesFramework\MySqlAdapters.dll
-		Dependencies\TimeSeriesFramework\MySqlAdapters.XML = Dependencies\TimeSeriesFramework\MySqlAdapters.XML
-		Dependencies\TimeSeriesFramework\OneSecondFrequencyAverager.dll = Dependencies\TimeSeriesFramework\OneSecondFrequencyAverager.dll
-		Dependencies\TimeSeriesFramework\OneSecondFrequencyAverager.xml = Dependencies\TimeSeriesFramework\OneSecondFrequencyAverager.xml
-		Dependencies\TimeSeriesFramework\TestingAdapters.dll = Dependencies\TimeSeriesFramework\TestingAdapters.dll
-		Dependencies\TimeSeriesFramework\TestingAdapters.XML = Dependencies\TimeSeriesFramework\TestingAdapters.XML
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.dll
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.dll
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.dll
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.XML = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.WPF.XML
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.XML = Dependencies\TimeSeriesFramework\TimeSeriesFramework.UI.XML
-		Dependencies\TimeSeriesFramework\TimeSeriesFramework.XML = Dependencies\TimeSeriesFramework\TimeSeriesFramework.XML
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Setup", "Setup", "{D71CBFB5-291F-484E-9DAE-7442F4CA746A}"
@@ -186,14 +133,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Help Me Choose Diagrams", "
 		Documentation\Help Me Choose Diagrams\HMC - Lead Time.vsd = Documentation\Help Me Choose Diagrams\HMC - Lead Time.vsd
 		Documentation\Help Me Choose Diagrams\HMC - Time Resolution.vsd = Documentation\Help Me Choose Diagrams\HMC - Time Resolution.vsd
 		Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd = Documentation\Help Me Choose Diagrams\HMC - Use Local Clock as RealTime.vsd
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MongoDB", "MongoDB", "{CA748B74-2934-440D-98CA-DE3BAD3870E9}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\MongoDB\MongoDB.dll = Dependencies\MongoDB\MongoDB.dll
-		Dependencies\MongoDB\MongoDB.GridFS.dll = Dependencies\MongoDB\MongoDB.GridFS.dll
-		Dependencies\MongoDB\MongoDB.GridFS.xml = Dependencies\MongoDB\MongoDB.GridFS.xml
-		Dependencies\MongoDB\MongoDB.xml = Dependencies\MongoDB\MongoDB.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{53255BB7-2046-4606-BF76-7B5C13F49819}"
@@ -298,6 +237,66 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhasorProtocols", "Libraries\PhasorProtocols\PhasorProtocols.csproj", "{54CA98CC-2F0A-41F2-879D-0E42B17E8544}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhasorProtocols.Test", "Libraries\Test\PhasorProtocols.Test\PhasorProtocols.Test.csproj", "{36D4CA56-E2DA-4435-B370-4867A83B6379}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22F-4900-984D-8751836859B5}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\GSF\AdoAdapters.dll = Dependencies\GSF\AdoAdapters.dll
+		Dependencies\GSF\AdoAdapters.XML = Dependencies\GSF\AdoAdapters.XML
+		Dependencies\GSF\Ciloci.Flee.dll = Dependencies\GSF\Ciloci.Flee.dll
+		Dependencies\GSF\Ciloci.Flee.xml = Dependencies\GSF\Ciloci.Flee.xml
+		Dependencies\GSF\CsvAdapters.dll = Dependencies\GSF\CsvAdapters.dll
+		Dependencies\GSF\CsvAdapters.XML = Dependencies\GSF\CsvAdapters.XML
+		Dependencies\GSF\DataQualityMonitoring.dll = Dependencies\GSF\DataQualityMonitoring.dll
+		Dependencies\GSF\DataQualityMonitoring.XML = Dependencies\GSF\DataQualityMonitoring.XML
+		Dependencies\GSF\Dnp3Adapters.dll = Dependencies\GSF\Dnp3Adapters.dll
+		Dependencies\GSF\Dnp3Adapters.XML = Dependencies\GSF\Dnp3Adapters.XML
+		Dependencies\GSF\DynamicCalculator.dll = Dependencies\GSF\DynamicCalculator.dll
+		Dependencies\GSF\DynamicCalculator.XML = Dependencies\GSF\DynamicCalculator.XML
+		Dependencies\GSF\GSF.Communication.dll = Dependencies\GSF\GSF.Communication.dll
+		Dependencies\GSF\GSF.Communication.xml = Dependencies\GSF\GSF.Communication.xml
+		Dependencies\GSF\GSF.Core.dll = Dependencies\GSF\GSF.Core.dll
+		Dependencies\GSF\GSF.Core.xml = Dependencies\GSF\GSF.Core.xml
+		Dependencies\GSF\GSF.Historian.dll = Dependencies\GSF\GSF.Historian.dll
+		Dependencies\GSF\GSF.Historian.XML = Dependencies\GSF\GSF.Historian.XML
+		Dependencies\GSF\GSF.Media.dll = Dependencies\GSF\GSF.Media.dll
+		Dependencies\GSF\GSF.Media.XML = Dependencies\GSF\GSF.Media.XML
+		Dependencies\GSF\GSF.Net.dll = Dependencies\GSF\GSF.Net.dll
+		Dependencies\GSF\GSF.Net.XML = Dependencies\GSF\GSF.Net.XML
+		Dependencies\GSF\GSF.Security.dll = Dependencies\GSF\GSF.Security.dll
+		Dependencies\GSF\GSF.Security.xml = Dependencies\GSF\GSF.Security.xml
+		Dependencies\GSF\GSF.ServiceBus.dll = Dependencies\GSF\GSF.ServiceBus.dll
+		Dependencies\GSF\GSF.ServiceBus.xml = Dependencies\GSF\GSF.ServiceBus.xml
+		Dependencies\GSF\GSF.ServiceModel.dll = Dependencies\GSF\GSF.ServiceModel.dll
+		Dependencies\GSF\GSF.ServiceModel.xml = Dependencies\GSF\GSF.ServiceModel.xml
+		Dependencies\GSF\GSF.ServiceProcess.dll = Dependencies\GSF\GSF.ServiceProcess.dll
+		Dependencies\GSF\GSF.ServiceProcess.xml = Dependencies\GSF\GSF.ServiceProcess.xml
+		Dependencies\GSF\GSF.TimeSeries.dll = Dependencies\GSF\GSF.TimeSeries.dll
+		Dependencies\GSF\GSF.TimeSeries.UI.dll = Dependencies\GSF\GSF.TimeSeries.UI.dll
+		Dependencies\GSF\GSF.TimeSeries.UI.WPF.dll = Dependencies\GSF\GSF.TimeSeries.UI.WPF.dll
+		Dependencies\GSF\GSF.TimeSeries.UI.WPF.xml = Dependencies\GSF\GSF.TimeSeries.UI.WPF.xml
+		Dependencies\GSF\GSF.TimeSeries.UI.xml = Dependencies\GSF\GSF.TimeSeries.UI.xml
+		Dependencies\GSF\GSF.TimeSeries.xml = Dependencies\GSF\GSF.TimeSeries.xml
+		Dependencies\GSF\GSF.Web.dll = Dependencies\GSF\GSF.Web.dll
+		Dependencies\GSF\GSF.Web.xml = Dependencies\GSF\GSF.Web.xml
+		Dependencies\GSF\GSF.Windows.dll = Dependencies\GSF\GSF.Windows.dll
+		Dependencies\GSF\GSF.Windows.xml = Dependencies\GSF\GSF.Windows.xml
+		Dependencies\GSF\Hadoop.Replication.dll = Dependencies\GSF\Hadoop.Replication.dll
+		Dependencies\GSF\Hadoop.Replication.XML = Dependencies\GSF\Hadoop.Replication.XML
+		Dependencies\GSF\MongoAdapters.dll = Dependencies\GSF\MongoAdapters.dll
+		Dependencies\GSF\MongoAdapters.XML = Dependencies\GSF\MongoAdapters.XML
+		Dependencies\GSF\MongoDB.dll = Dependencies\GSF\MongoDB.dll
+		Dependencies\GSF\MongoDB.GridFS.dll = Dependencies\GSF\MongoDB.GridFS.dll
+		Dependencies\GSF\MongoDB.GridFS.xml = Dependencies\GSF\MongoDB.GridFS.xml
+		Dependencies\GSF\MongoDB.xml = Dependencies\GSF\MongoDB.xml
+		Dependencies\GSF\MySqlAdapters.dll = Dependencies\GSF\MySqlAdapters.dll
+		Dependencies\GSF\MySqlAdapters.XML = Dependencies\GSF\MySqlAdapters.XML
+		Dependencies\GSF\OneSecondFrequencyAverager.dll = Dependencies\GSF\OneSecondFrequencyAverager.dll
+		Dependencies\GSF\OneSecondFrequencyAverager.xml = Dependencies\GSF\OneSecondFrequencyAverager.xml
+		Dependencies\GSF\TestingAdapters.dll = Dependencies\GSF\TestingAdapters.dll
+		Dependencies\GSF\TestingAdapters.XML = Dependencies\GSF\TestingAdapters.XML
+		Dependencies\GSF\WavInputAdapter.dll = Dependencies\GSF\WavInputAdapter.dll
+		Dependencies\GSF\WavInputAdapter.XML = Dependencies\GSF\WavInputAdapter.XML
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -655,10 +654,8 @@ Global
 		{CE260396-797B-45DF-AC53-E4FC553B57C0} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
 		{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{89F8C302-E1C2-4C61-9CFB-CB4879B04B38} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
-		{4CA4A21E-97E7-4566-95DF-A8DD97D7D02B} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
-		{05851E03-6FBC-4774-BCC0-CCD006FE05B1} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
-		{CA748B74-2934-440D-98CA-DE3BAD3870E9} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{44A76C31-308D-4D46-B263-734DD9FA3570} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
+		{A72A7B6D-E22F-4900-984D-8751836859B5} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{060A349D-E92D-4F13-A857-01609631D3BE} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OneSecondFrequencyAverager</name>
+    </assembly>
+    <members>
+        <member name="T:OneSecondFrequencyAverager.OneSecondFrequencyAverager">
+            <summary>
+            Represents an adapter that calculates the average
+            of the input frequencies over each full second.
+            </summary>
+        </member>
+        <member name="M:OneSecondFrequencyAverager.OneSecondFrequencyAverager.Initialize">
+            <summary>
+            Initializes this <see cref="T:OneSecondFrequencyAverager.OneSecondFrequencyAverager"/>.
+            </summary>
+        </member>
+        <member name="M:OneSecondFrequencyAverager.OneSecondFrequencyAverager.PublishFrame(GSF.TimeSeries.IFrame,System.Int32)">
+            <summary>
+            Publish <see cref="T:GSF.TimeSeries.IFrame"/> of time-aligned collection of <see cref="T:GSF.TimeSeries.IMeasurement"/> values that arrived within the
+            concentrator's defined <see cref="P:GSF.TimeSeries.ConcentratorBase.LagTime"/>.
+            </summary>
+            <param name="frame"><see cref="T:GSF.TimeSeries.IFrame"/> of measurements with the same timestamp that arrived within <see cref="P:GSF.TimeSeries.ConcentratorBase.LagTime"/> that are ready for processing.</param>
+            <param name="index">Index of <see cref="T:GSF.TimeSeries.IFrame"/> within a second ranging from zero to <c><see cref="P:GSF.TimeSeries.ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
+        </member>
+        <member name="P:OneSecondFrequencyAverager.OneSecondFrequencyAverager.SupportsTemporalProcessing">
+            <summary>
+            Gets a flag indicating whether this adapter supports temporal processing.
+            </summary>
+        </member>
+    </members>
+</doc>
