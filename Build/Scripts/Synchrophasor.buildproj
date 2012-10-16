@@ -54,6 +54,8 @@
     <PropertyGroup>
       <!-- Must-override setting(s). -->
       <ProjectName>Synchrophasor</ProjectName>
+      <!-- Server folder is different for VS2012 -->
+      <ServerFolder>$/openpdc/$(ProjectName)/Current Version-VS2012</ServerFolder>
     </PropertyGroup>
   </Target>
 
