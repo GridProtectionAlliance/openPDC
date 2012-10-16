@@ -90,11 +90,6 @@
       <!-- List of projects to build. -->
       <ProjectsToBuild Include="$(ProjectSolution)"/>
       <ProjectsToBuild Include="$(LocalFolder)\Build\Scripts\$(ProjectName).shfbproj" Condition="'$(SkipHelpFiles)' == ''"/>
-      <!-- List of installs to build. -->
-      <InstallsToBuild Include="$(LocalFolder)\Source\**\*.vdproj" Exclude="$(LocalFolder)\Source\**\openPDCSetup.vdproj"/>
-      <!-- InstallsToBuild Include="$(LocalFolder)\Source\Applications\openPDCManager\WebInstaller\WebInstaller.csproj"/ -->
-      <!-- InstallsToBuild Include="$(LocalFolder)\Source\Applications\openPDCManager\ServicesInstaller\ServicesInstaller.csproj"/ -->
-      <x86InstallsToBuild Include="$(LocalFolder)\Source\**\openPDCSetup.vdproj"/>
     </ItemGroup>
     <!-- Build 32-installs first and cleanup. -->
     <Message Text="Compiling installs (32-bit)..."/>
