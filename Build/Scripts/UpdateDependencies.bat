@@ -15,8 +15,8 @@
 
 @ECHO OFF
 
-SET vs="%VS100COMNTOOLS%\..\IDE\devenv.com"
-SET tfs="%VS100COMNTOOLS%\..\IDE\tf.exe"
+SET vs="%VS110COMNTOOLS%\..\IDE\devenv.com"
+SET tfs="%VS110COMNTOOLS%\..\IDE\tf.exe"
 SET source1="\\GPAWEB\NightlyBuilds\GridSolutionsFramework\Beta\Libraries\*.*"
 SET target1="..\..\Source\Dependencies\GSF"
 SET solution="..\..\Source\Synchrophasor.sln"
