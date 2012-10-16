@@ -56,6 +56,10 @@
       <ProjectName>Synchrophasor</ProjectName>
       <!-- Server folder is different for VS2012 -->
       <ServerFolder>$/openpdc/$(ProjectName)/Current Version-VS2012</ServerFolder>
+      <!-- Use Visual Studio 11.0 common tools -->
+      <TfsClient Condition="'$(TfsClient)' == ''">$(VS110COMNTOOLS)\..\IDE\tf.exe</TfsClient>
+      <VisualStudio Condition="'$(VisualStudio)' == ''">$(VS110COMNTOOLS)\..\IDE\devenv.com</VisualStudio>
+      <MSTest Condition="'$(MSTest)' == ''">$(VS110COMNTOOLS)\..\IDE\mstest.exe</MSTest>
     </PropertyGroup>
   </Target>
 
