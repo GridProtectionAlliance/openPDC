@@ -46,7 +46,6 @@ namespace ConfigurationSetupUtility.Screens
         #region [ Members ]
 
         // Fields
-        private AccessDatabaseSetupScreen m_accessDatabaseSetupScreen;
         private SqlServerDatabaseSetupScreen m_sqlServerDatabaseSetupScreen;
         private MySqlDatabaseSetupScreen m_mySqlDatabaseSetupScreen;
         private OracleDatabaseSetupScreen m_oracleDatabaseSetupScreen;
@@ -83,9 +82,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 string databaseType = m_state["databaseType"].ToString();
 
-                if (databaseType == "access")
-                    return m_accessDatabaseSetupScreen;
-                else if (databaseType == "sql server")
+                if (databaseType == "sql server")
                     return m_sqlServerDatabaseSetupScreen;
                 else if (databaseType == "mysql")
                     return m_mySqlDatabaseSetupScreen;
@@ -192,9 +189,6 @@ namespace ConfigurationSetupUtility.Screens
                 else
                     m_newDatabaseWarning.Visibility = existingVisibility;
 
-                // Access database will not work in 64-bit installations
-                m_accessDatabaseRadioButton.Visibility = Convert.ToBoolean(m_state["64bit"]) ? Visibility.Collapsed : Visibility.Visible;
-
                 if (!m_state.ContainsKey("databaseType"))
                     m_state.Add("databaseType", "sql server");
 
@@ -300,24 +294,10 @@ namespace ConfigurationSetupUtility.Screens
         // Initializes the screens that can be used as the next screen based on user input.
         private void InitializeNextScreens()
         {
-            m_accessDatabaseSetupScreen = new AccessDatabaseSetupScreen();
             m_sqlServerDatabaseSetupScreen = new SqlServerDatabaseSetupScreen();
             m_mySqlDatabaseSetupScreen = new MySqlDatabaseSetupScreen();
             m_oracleDatabaseSetupScreen = new OracleDatabaseSetupScreen();
             m_sqliteDatabaseSetupScreen = new SqliteDatabaseSetupScreen();
-        }
-
-        // Occurs when the user chooses to set up an Access database.
-        private void AccessDatabaseRadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-            if (m_state != null)
-                m_state["databaseType"] = "access";
-
-            if (!m_sampleScriptChanged && m_sampleDataScriptCheckBox != null)
-                m_sampleDataScriptCheckBox.IsChecked = true;
-
-            if (m_enableAuditLogCheckBox != null)
-                ManageEnableAuditLogCheckBox();
         }
 
         // Occurs when the user chooses to set up a SQL Server database.
@@ -452,7 +432,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 m_enableAuditLogCheckBox.Visibility = Visibility.Visible;
 
-                if (m_state.ContainsKey("databaseType") && (m_state["databaseType"].ToString() == "access" || m_state["databaseType"].ToString() == "sqlite"))
+                if (m_state.ContainsKey("databaseType") && m_state["databaseType"].ToString() == "sqlite")
                     m_enableAuditLogCheckBox.Visibility = Visibility.Collapsed;
             }
             else

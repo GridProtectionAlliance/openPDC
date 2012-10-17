@@ -14,7 +14,6 @@
                     <StackPanel HorizontalAlignment="Center" Margin="0,0,5,0">
                         <RadioButton Content="SQL Server" Height="18" IsChecked="True" GroupName="DatabaseType" Checked="SqlServerDatabaseRadioButton_Checked" />
                         <RadioButton Content="MySQL" Height="18" GroupName="DatabaseType" Checked="MySqlRadioButton_Checked" />
-                        <RadioButton Content="Access (32-bit only)" GroupName="DatabaseType" Checked="AccessDatabaseRadioButton_Checked" Name="m_accessDatabaseRadioButton" />
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Center" Margin="5,0,0,0">
                         <RadioButton Content="Oracle" Height="18" GroupName="DatabaseType" Checked="OracleRadioButton_Checked" />

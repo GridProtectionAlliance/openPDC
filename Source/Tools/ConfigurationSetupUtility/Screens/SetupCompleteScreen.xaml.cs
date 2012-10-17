@@ -420,10 +420,6 @@ namespace ConfigurationSetupUtility.Screens
                     nodeIDQueryString = selectedNodeId.ToString();
                     connection = OpenNewConnection();
 
-                    // Fix nodeIDQueryString if this is a Microsoft Access database connection
-                    if (IsAccessDbConnection(connection))
-                        nodeIDQueryString = "{" + nodeIDQueryString + "}";
-
                     // Get node settings from the database
                     nodeSettingsConnectionString = connection.ExecuteScalar(string.Format(settingsQuery, nodeIDQueryString));
                     nodeSettings = nodeSettingsConnectionString.ToNonNullString().ParseKeyValuePairs();
@@ -474,13 +470,7 @@ namespace ConfigurationSetupUtility.Screens
 
                         foreach (DataRow row in dataTable.Rows)
                         {
-                            string nodeID = row["ID"].ToNonNullString();
-
-                            if (databaseType == "access")
-                                nodeID = "{" + nodeID + "}";
-                            else
-                                nodeID = "'" + nodeID + "'";
-
+                            string nodeID = string.Format("'{0}'", row["ID"].ToNonNullString());
                             IDbCommand command = connection.CreateCommand();
 
                             command.CommandText = string.Format("SELECT COUNT(*) FROM ApplicationRole WHERE NodeID = {0} AND Name = 'Administrator'", nodeID);
@@ -542,12 +532,7 @@ namespace ConfigurationSetupUtility.Screens
             string adminRoleID = command.ExecuteScalar().ToNonNullString();
             string databaseType = m_state["databaseType"].ToString();
 
-            bool databaseIsAccess = (databaseType == "access");
-
-            if (databaseIsAccess)
-                adminRoleID = adminRoleID.StartsWith("{") ? adminRoleID : "{" + adminRoleID + "}";
-            else
-                adminRoleID = adminRoleID.StartsWith("'") ? adminRoleID : "'" + adminRoleID + "'";
+            adminRoleID = adminRoleID.StartsWith("'") ? adminRoleID : "'" + adminRoleID + "'";
 
             // Check if there is any user associated with the administrator role ID in the ApplicationRoleUserAccount table.
             // if so that means there is atleast one user associated with that role. So we do not need to take any action.
@@ -563,11 +548,7 @@ namespace ConfigurationSetupUtility.Screens
 
                     if (!string.IsNullOrEmpty(adminUserID)) //if user exists then attach it to admin role and we'll be done with it.
                     {
-                        if (databaseIsAccess)
-                            adminUserID = adminUserID.StartsWith("{") ? adminUserID : "{" + adminUserID + "}";
-                        else
-                            adminUserID = adminUserID.StartsWith("'") ? adminUserID : "'" + adminUserID + "'";
-
+                        adminUserID = adminUserID.StartsWith("'") ? adminUserID : "'" + adminUserID + "'";
                         command.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES({0}, {1})", adminRoleID, adminUserID);
                         command.ExecuteNonQuery();
                     }
@@ -631,10 +612,7 @@ namespace ConfigurationSetupUtility.Screens
                             adminCredentialCommand.Parameters.Add(createdByParameter);
                             adminCredentialCommand.Parameters.Add(updatedByParameter);
 
-                            if (databaseIsAccess)
-                                adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, [Password], FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) VALUES" +
-                                    "(@name, @password, @firstName, @lastName, {0}, 0, @createdBy, @updatedBy)", nodeID);
-                            else if (databaseIsOracle)
+                            if (databaseIsOracle)
                                 adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) VALUES" +
                                     "(:name, :password, :firstName, :lastName, {0}, 0, :createdBy, :updatedBy)", nodeID);
                             else
@@ -665,11 +643,7 @@ namespace ConfigurationSetupUtility.Screens
                         // Assign Administrative User to Administrator Role.
                         if (!string.IsNullOrEmpty(adminRoleID) && !string.IsNullOrEmpty(adminUserID))
                         {
-                            if (databaseIsAccess)
-                                adminUserID = adminUserID.StartsWith("{") ? adminUserID : "{" + adminUserID + "}";
-                            else
-                                adminUserID = adminUserID.StartsWith("'") ? adminUserID : "'" + adminUserID + "'";
-
+                            adminUserID = adminUserID.StartsWith("'") ? adminUserID : "'" + adminUserID + "'";
                             adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES ({0}, {1})", adminRoleID, adminUserID);
                             adminCredentialCommand.ExecuteNonQuery();
                         }
@@ -709,8 +683,6 @@ namespace ConfigurationSetupUtility.Screens
                         break;
                 }
 
-                bool oldDatabaseIsAccess = (oldDatabaseType == "access");
-
                 nodeCommand = oldConnection.CreateCommand();
                 nodeCommand.CommandText = "SELECT * FROM Node";
                 using (IDataReader nodeReader = nodeCommand.ExecuteReader())
@@ -732,13 +704,7 @@ namespace ConfigurationSetupUtility.Screens
                             // Convert original columns into connection settings format
                             foreach (DataRow row in dataTable.Rows)
                             {
-                                string nodeID = row["ID"].ToNonNullString();
-
-                                if (oldDatabaseType == "access")
-                                    nodeID = "{" + nodeID + "}";
-                                else
-                                    nodeID = "'" + nodeID + "'";
-
+                                string nodeID = string.Format("'{0}'", row["ID"].ToNonNullString());
                                 string remoteStatusServer = row["RemoteStatusServiceUrl"].ToNonNullString();
                                 string realTimeStatisticServiceUrl = row["RealTimeStatisticServiceUrl"].ToNonNullString();
 
@@ -794,20 +760,6 @@ namespace ConfigurationSetupUtility.Screens
 
                     Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
                     Type connectionType = assembly.GetType(connectionTypeName);
-
-                    if (settings.TryGetValue("Provider", out connectionSetting))
-                    {
-                        // Check if provider is for Access to make sure the path is fully qualified.
-                        if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (settings.TryGetValue("Data Source", out connectionSetting))
-                            {
-                                settings["Data Source"] = FilePath.GetAbsolutePath(connectionSetting);
-                                connectionString = settings.JoinKeyValuePairs();
-                            }
-                        }
-                    }
-
                     connection = (IDbConnection)Activator.CreateInstance(connectionType);
                     connection.ConnectionString = connectionString;
                     connection.Open();
@@ -833,13 +785,7 @@ namespace ConfigurationSetupUtility.Screens
                 string connectionString = null;
                 string dataProviderString = null;
 
-                if (databaseType == "access")
-                {
-                    string destination = m_state["accessDatabaseFilePath"].ToString();
-                    connectionString = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + destination;
-                    dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter";
-                }
-                else if (databaseType == "sql server")
+                if (databaseType == "sql server")
                 {
                     SqlServerSetup sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
                     connectionString = sqlServerSetup.ConnectionString;
@@ -890,20 +836,6 @@ namespace ConfigurationSetupUtility.Screens
 
                     Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
                     Type connectionType = assembly.GetType(connectionTypeName);
-
-                    if (settings.TryGetValue("Provider", out connectionSetting))
-                    {
-                        // Check if provider is for Access to make sure the path is fully qualified.
-                        if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (settings.TryGetValue("Data Source", out connectionSetting))
-                            {
-                                settings["Data Source"] = FilePath.GetAbsolutePath(connectionSetting);
-                                connectionString = settings.JoinKeyValuePairs();
-                            }
-                        }
-                    }
-
                     connection = (IDbConnection)Activator.CreateInstance(connectionType);
                     connection.ConnectionString = connectionString;
                     connection.Open();
@@ -920,15 +852,6 @@ namespace ConfigurationSetupUtility.Screens
             }
 
             return connection;
-        }
-
-        private bool IsAccessDbConnection(IDbConnection connection)
-        {
-            Dictionary<string, string> connectionStringSettings;
-            string provider;
-
-            connectionStringSettings = connection.ConnectionString.ParseKeyValuePairs();
-            return connectionStringSettings.TryGetValue("Provider", out provider) && provider.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase);
         }
 
         #endregion

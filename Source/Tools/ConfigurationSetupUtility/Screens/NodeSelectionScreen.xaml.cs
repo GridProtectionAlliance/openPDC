@@ -268,9 +268,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 string databaseType = m_state["databaseType"].ToString();
 
-                if (databaseType == "access")
-                    return GetAccessDatabaseConnection();
-                else if (databaseType == "sql server")
+                if (databaseType == "sql server")
                     return GetSqlServerConnection();
                 else if (databaseType == "mysql")
                     return GetMySqlConnection();
@@ -279,14 +277,6 @@ namespace ConfigurationSetupUtility.Screens
                 else
                     return GetSqliteDatabaseConnection();
             }
-        }
-
-        // Gets a database connection to the Access database configured earlier in the setup.
-        private IDbConnection GetAccessDatabaseConnection()
-        {
-            string databaseFileName = m_state["accessDatabaseFilePath"].ToString();
-            string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + databaseFileName;
-            return new OleDbConnection(connectionString);
         }
 
         // Gets a database connection to the SQL Server database configured earlier in the setup.
@@ -314,7 +304,7 @@ namespace ConfigurationSetupUtility.Screens
             return GetConnection(connectionString, dataProviderString);
         }
 
-        // Gets a database connection to the Access database configured earlier in the setup.
+        // Gets a database connection to the SQLite database configured earlier in the setup.
         private IDbConnection GetSqliteDatabaseConnection()
         {
             string databaseFileName = m_state["sqliteDatabaseFilePath"].ToString();

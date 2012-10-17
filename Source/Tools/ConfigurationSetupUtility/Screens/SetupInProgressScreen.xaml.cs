@@ -228,9 +228,7 @@ namespace ConfigurationSetupUtility.Screens
         {
             string databaseType = m_state["databaseType"].ToString();
 
-            if (databaseType == "access")
-                SetUpAccessDatabase();
-            else if (databaseType == "sql server")
+            if (databaseType == "sql server")
                 SetUpSqlServerDatabase();
             else if (databaseType == "mysql")
                 SetUpMySqlDatabase();
@@ -238,70 +236,6 @@ namespace ConfigurationSetupUtility.Screens
                 SetUpOracleDatabase();
             else
                 SetUpSqliteDatabase();
-        }
-
-        // Called when the user has asked to set up an access database.
-        private void SetUpAccessDatabase()
-        {
-            try
-            {
-                string filePath = null;
-                string destination = m_state["accessDatabaseFilePath"].ToString();
-                string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + destination;
-                string dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter";
-                bool existing = Convert.ToBoolean(m_state["existing"]);
-                bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
-
-                if (!existing || migrate)
-                {
-                    bool initialDataScript = !migrate && Convert.ToBoolean(m_state["initialDataScript"]);
-                    bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
-
-                    if (!initialDataScript)
-                        filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\Access\\openPDC.mdb";
-                    else if (!sampleDataScript)
-                        filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\Access\\openPDC-InitialDataSet.mdb";
-                    else
-                        filePath = Directory.GetCurrentDirectory() + "\\Database scripts\\Access\\openPDC-SampleDataSet.mdb";
-
-                    UpdateProgressBar(2);
-                    AppendStatusMessage(string.Format("Attempting to copy file {0} to {1}...", filePath, destination));
-
-                    // Copy the file to the specified path.
-                    File.Copy(filePath, destination, true);
-                    UpdateProgressBar(90);
-                    AppendStatusMessage("File copy successful.");
-                    AppendStatusMessage(string.Empty);
-
-                    // Set up the initial historian.
-                    if (Convert.ToBoolean(m_state["setupHistorian"]))
-                        SetUpInitialHistorian(connectionString, dataProviderString);
-
-                    if (!migrate)
-                    {
-                        SetUpStatisticsHistorian(connectionString, dataProviderString);
-                        SetupAdminUserCredentials(connectionString, dataProviderString);
-                    }
-                }
-                else if (m_state.ContainsKey("createNewNode") && Convert.ToBoolean(m_state["createNewNode"]))
-                {
-                    CreateNewNode(connectionString, dataProviderString);
-                }
-
-                // Modify the openPDC configuration file.
-                ModifyConfigFiles(connectionString, dataProviderString, false);
-
-                m_state["oldOleDbConnectionString"] = m_oldConnectionString;
-                m_state["oldOleDbDataType"] = "Access";
-                m_state["newOleDbConnectionString"] = connectionString;
-
-                OnSetupSucceeded();
-            }
-            catch (Exception ex)
-            {
-                AppendStatusMessage(ex.Message);
-                OnSetupFailed();
-            }
         }
 
         // Called when the user has asked to set up a MySQL database.
@@ -997,19 +931,6 @@ namespace ConfigurationSetupUtility.Screens
 
                 AppendStatusMessage("Attempting to set up the initial historian...");
 
-                if (settings.TryGetValue("Provider", out connectionSetting))
-                {
-                    // Check if provider is for Access to make sure the path is fully qualified.
-                    if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (settings.TryGetValue("Data Source", out connectionSetting))
-                        {
-                            settings["Data Source"] = FilePath.GetAbsolutePath(connectionSetting);
-                            connectionString = settings.JoinKeyValuePairs();
-                        }
-                    }
-                }
-
                 connection = (IDbConnection)Activator.CreateInstance(connectionType);
                 connection.ConnectionString = connectionString;
                 connection.Open();
@@ -1022,12 +943,6 @@ namespace ConfigurationSetupUtility.Screens
                 if (!migrate)
                     defaultNodeCreatedHere = ManageDefaultNode(connection, sampleDataScript, m_defaultNodeAdded);
 
-                if (settings.TryGetValue("Provider", out connectionSetting))
-                {
-                    // Check if provider is for Access since it uses braces as Guid delimeters
-                    if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                        nodeIdQueryString = "{" + m_state["selectedNodeId"].ToString() + "}";
-                }
                 if (string.IsNullOrWhiteSpace(nodeIdQueryString))
                     nodeIdQueryString = "'" + m_state["selectedNodeId"].ToString() + "'";
 
@@ -1079,19 +994,6 @@ namespace ConfigurationSetupUtility.Screens
 
                 AppendStatusMessage("Attempting to set up the statistics historian...");
 
-                if (settings.TryGetValue("Provider", out connectionSetting))
-                {
-                    // Check if provider is for Access to make sure the path is fully qualified.
-                    if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (settings.TryGetValue("Data Source", out connectionSetting))
-                        {
-                            settings["Data Source"] = FilePath.GetAbsolutePath(connectionSetting);
-                            connectionString = settings.JoinKeyValuePairs();
-                        }
-                    }
-                }
-
                 connection = (IDbConnection)Activator.CreateInstance(connectionType);
                 connection.ConnectionString = connectionString;
                 connection.Open();
@@ -1104,12 +1006,6 @@ namespace ConfigurationSetupUtility.Screens
                 if (!migrate)
                     defaultNodeCreatedHere = ManageDefaultNode(connection, sampleDataScript, m_defaultNodeAdded);
 
-                if (settings.TryGetValue("Provider", out connectionSetting))
-                {
-                    // Check if provider is for Access since it uses braces as Guid delimeters
-                    if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                        nodeIdQueryString = "{" + m_state["selectedNodeId"].ToString() + "}";
-                }
                 if (string.IsNullOrWhiteSpace(nodeIdQueryString))
                     nodeIdQueryString = "'" + m_state["selectedNodeId"].ToString() + "'";
 
@@ -1143,7 +1039,6 @@ namespace ConfigurationSetupUtility.Screens
             Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
             string assemblyName = dataProviderSettings["AssemblyName"];
             string connectionTypeName = dataProviderSettings["ConnectionType"];
-            string connectionSetting;
             string adminRoleID = string.Empty;
             string adminUserID = string.Empty;
 
@@ -1157,19 +1052,6 @@ namespace ConfigurationSetupUtility.Screens
 
                 AppendStatusMessage("Attempting to set up administrative user...");
 
-                if (settings.TryGetValue("Provider", out connectionSetting))
-                {
-                    // Check if provider is for Access to make sure the path is fully qualified.
-                    if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (settings.TryGetValue("Data Source", out connectionSetting))
-                        {
-                            settings["Data Source"] = FilePath.GetAbsolutePath(connectionSetting);
-                            connectionString = settings.JoinKeyValuePairs();
-                        }
-                    }
-                }
-
                 connection = (IDbConnection)Activator.CreateInstance(connectionType);
                 connection.ConnectionString = connectionString;
                 connection.Open();
@@ -1181,12 +1063,6 @@ namespace ConfigurationSetupUtility.Screens
                 if (!migrate)
                     defaultNodeCreatedHere = ManageDefaultNode(connection, sampleDataScript, m_defaultNodeAdded);
 
-                if (settings.TryGetValue("Provider", out connectionSetting))
-                {
-                    // Check if provider is for Access since it uses braces as Guid delimeters
-                    if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                        nodeIdQueryString = "{" + m_state["selectedNodeId"].ToString() + "}";
-                }
                 if (string.IsNullOrWhiteSpace(nodeIdQueryString))
                     nodeIdQueryString = "'" + m_state["selectedNodeId"].ToString() + "'";
 
@@ -1264,10 +1140,7 @@ namespace ConfigurationSetupUtility.Screens
                     adminCredentialCommand.Parameters.Add(createdByParameter);
                     adminCredentialCommand.Parameters.Add(updatedByParameter);
 
-                    if (!string.IsNullOrEmpty(connectionSetting) && connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                        adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, [Password], FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
-                            "(@name, @password, @firstName, @lastName, {0}, 0, @createdBy, @updatedBy)", nodeIdQueryString);
-                    else if (oracle)
+                    if (oracle)
                         adminCredentialCommand.CommandText = string.Format("INSERT INTO UserAccount(Name, Password, FirstName, LastName, DefaultNodeID, UseADAuthentication, CreatedBy, UpdatedBy) Values " +
                             "(:name, :password, :firstName, :lastName, {0}, 0, :createdBy, :updatedBy)", nodeIdQueryString);
                     else
@@ -1296,21 +1169,8 @@ namespace ConfigurationSetupUtility.Screens
                 // Assign Administrative User to Administrator Role.
                 if (!string.IsNullOrEmpty(adminRoleID) && !string.IsNullOrEmpty(adminUserID))
                 {
-                    if (settings.TryGetValue("Provider", out connectionSetting))
-                    {
-                        // Check if provider is for Access since it uses braces as Guid delimeters
-                        if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                        {
-                            adminUserID = "{" + adminUserID + "}";
-                            adminRoleID = "{" + adminRoleID + "}";
-                        }
-                    }
-                    else
-                    {
-                        adminUserID = "'" + adminUserID + "'";
-                        adminRoleID = "'" + adminRoleID + "'";
-                    }
-
+                    adminUserID = "'" + adminUserID + "'";
+                    adminRoleID = "'" + adminRoleID + "'";
                     adminCredentialCommand.CommandText = string.Format("INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES ({0}, {1})", adminRoleID, adminUserID);
                     adminCredentialCommand.ExecuteNonQuery();
                 }
@@ -1406,12 +1266,6 @@ namespace ConfigurationSetupUtility.Screens
             if (m_state.ContainsKey("newNodeDescription"))
                 description = m_state["newNodeDescription"].ToNonNullString();
 
-            if (settings.TryGetValue("Provider", out connectionSetting))
-            {
-                // Check if provider is for Access since it uses braces as Guid delimeters
-                if (connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                    nodeIDQueryString = "{" + nodeID.ToString() + "}";
-            }
             if (string.IsNullOrWhiteSpace(nodeIDQueryString))
                 nodeIDQueryString = "'" + nodeID.ToString() + "'";
 
