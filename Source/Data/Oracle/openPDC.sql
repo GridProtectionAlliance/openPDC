@@ -158,8 +158,8 @@ CREATE TABLE Protocol(
     Name VARCHAR2(200) NOT NULL,
     Type VARCHAR2(200) DEFAULT 'Frame' NOT NULL,
     Category VARCHAR2(200) DEFAULT 'Phasor' NOT NULL,
-    AssemblyName VARCHAR2(1024) DEFAULT 'TVA.PhasorProtocols.dll' NOT NULL,
-    TypeName VARCHAR2(200) DEFAULT 'TVA.PhasorProtocols.PhasorMeasurementMapper' NOT NULL,
+    AssemblyName VARCHAR2(1024) DEFAULT 'PhasorProtocols.dll' NOT NULL,
+    TypeName VARCHAR2(200) DEFAULT 'PhasorProtocols.PhasorMeasurementMapper' NOT NULL,
     LoadOrder NUMBER DEFAULT 0 NOT NULL
 );
 
@@ -1245,8 +1245,8 @@ ORDER BY OutputStreamDevice.LoadOrder;
 CREATE VIEW RuntimeOutputStream
 AS
 SELECT OutputStream.NodeID, Runtime.ID, OutputStream.Acronym AS AdapterName, 
-    'TVA.PhasorProtocols.dll' AS AssemblyName, 
-    CASE Type WHEN 1 THEN 'TVA.PhasorProtocols.BpaPdcStream.Concentrator' ELSE 'TVA.PhasorProtocols.IeeeC37_118.Concentrator' END AS TypeName,
+    'PhasorProtocols.dll' AS AssemblyName, 
+    CASE Type WHEN 1 THEN 'PhasorProtocols.BpaPdcStream.Concentrator' ELSE 'PhasorProtocols.IeeeC37_118.Concentrator' END AS TypeName,
     OutputStream.ConnectionString || ';' ||
     NVL2(OutputStream.DataChannel, 'dataChannel={' || OutputStream.DataChannel || '}', '') || ';' ||
     NVL2(OutputStream.CommandChannel, 'commandChannel={' || OutputStream.CommandChannel || '}', '') || ';' ||
@@ -1359,7 +1359,7 @@ FROM RuntimeCustomInputAdapter;
 
 CREATE VIEW IaonActionAdapter
 AS
-SELECT Node.ID AS NodeID, 0 AS ID, 'PHASOR!SERVICES' AS AdapterName, 'TVA.PhasorProtocols.dll' AS AssemblyName, 'TVA.PhasorProtocols.CommonPhasorServices' AS TypeName, '' AS ConnectionString
+SELECT Node.ID AS NodeID, 0 AS ID, 'PHASOR!SERVICES' AS AdapterName, 'PhasorProtocols.dll' AS AssemblyName, 'PhasorProtocols.CommonPhasorServices' AS TypeName, '' AS ConnectionString
 FROM Node
 UNION ALL
 SELECT NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString
