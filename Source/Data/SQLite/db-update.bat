@@ -15,7 +15,7 @@
 
 @ECHO OFF
 
-SET tfs="%VS100COMNTOOLS%\..\IDE\tf.exe"
+SET tfs="%VS110COMNTOOLS%\..\IDE\tf.exe"
 SET db1="openPDC.db"
 SET db2="openPDC-InitialDataSet.db"
 SET db3="openPDC-SampleDataSet.db"
@@ -55,7 +55,7 @@ GOTO Finalize
 :Checkin
 ECHO.
 ECHO Checking in dependencies...
-%tfs% checkin %dbfiles% /noprompt /comment:"Synchrophasor: Updated SQLite databases."
+%tfs% checkin %dbfiles% /noprompt /comment:"Synchrophasor-VS2012: Updated SQLite databases."
 
 :Finalize
 ECHO.
