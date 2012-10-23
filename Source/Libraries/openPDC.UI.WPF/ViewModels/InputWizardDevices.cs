@@ -1196,7 +1196,8 @@ namespace openPDC.UI.ViewModels
                 m_requestConfigurationAttachment = attachments.First();
             }
 
-            s_responseWaitHandle.Set();
+            if (m_requestConfigurationAttachment is IConfigurationFrame)
+                s_responseWaitHandle.Set();
         }
 
         /// <summary>
