@@ -95,6 +95,7 @@ namespace openPDC.UI.ViewModels
         private Device m_pdcDevice;
         private int m_currentDeviceRuntimeID;
         private bool m_disconnectedCurrentDevice;
+        private bool m_newDeviceConfiguration;
 
         #endregion
 
@@ -652,6 +653,23 @@ namespace openPDC.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets a flag indicating whether the wizard was launched in
+        /// order to set up a new device configuration or update an existing one.
+        /// </summary>
+        public bool NewDeviceConfiguration
+        {
+            get
+            {
+                return m_newDeviceConfiguration;
+            }
+            set
+            {
+                m_newDeviceConfiguration = value;
+                OnPropertyChanged("NewDeviceConfiguration");
+            }
+        }
+
         #endregion
 
         #region [ Constructor ]
@@ -670,6 +688,7 @@ namespace openPDC.UI.ViewModels
             m_protocolLookupList = Protocol.GetLookupList(null, false);
             m_vendorDeviceLookupList = VendorDevice.GetLookupList(null, true);
             m_protocolList = Protocol.Load(null);
+            NewDeviceConfiguration = true;
 
             if (m_companyLookupList.Count > 0)
                 CompanyID = m_companyLookupList.First().Key;

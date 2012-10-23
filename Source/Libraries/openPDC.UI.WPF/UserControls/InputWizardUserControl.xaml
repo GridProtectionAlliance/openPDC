@@ -27,7 +27,7 @@
         </StackPanel.Resources>
 
         <Expander x:Name="ExpanderStep1" IsExpanded="True" Header="Step 1: Configure Connection Settings" Expanded="ExpanderStep1_Expanded">
-            <Grid HorizontalAlignment="Center">
+            <Grid HorizontalAlignment="Center" IsEnabled="{Binding NewDeviceConfiguration}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="3*" />

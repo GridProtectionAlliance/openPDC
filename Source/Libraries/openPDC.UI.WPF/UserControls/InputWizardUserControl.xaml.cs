@@ -71,17 +71,9 @@ namespace openPDC.UI.UserControls
                 m_dataContext.SkipDisableRealTimeData = device.SkipDisableRealTimeData;
 
                 Dictionary<string, string> connectionSettings = device.ConnectionString.ToLower().ParseKeyValuePairs();
-                if (connectionSettings.ContainsKey("commandchannel"))
-                {
-                    m_dataContext.AlternateCommandChannel = connectionSettings["commandchannel"].Replace("{", "").Replace("}", "");
-                    connectionSettings.Remove("commandchannel");
-                    m_dataContext.ConnectionString = connectionSettings.JoinKeyValuePairs();
-                }
-                else
-                {
-                    m_dataContext.ConnectionString = device.ConnectionString;
-                }
 
+                m_dataContext.ConnectionString = device.ConnectionString;
+                m_dataContext.AlternateCommandChannel = device.AlternateCommandChannel;
                 m_dataContext.AccessID = device.AccessID;
                 m_dataContext.ProtocolID = device.ProtocolID ?? 0;
                 m_dataContext.CompanyID = device.CompanyID ?? 0;
@@ -95,8 +87,10 @@ namespace openPDC.UI.UserControls
                     m_dataContext.PdcName = device.Name;
                     m_dataContext.PdcVendorDeviceID = device.VendorDeviceID ?? 0;
                 }
+
                 ExpanderStep2.IsExpanded = true;
                 m_dataContext.CurrentDeviceRuntimeID = Convert.ToInt32(CommonFunctions.GetRuntimeID("Device", device.ID));
+                m_dataContext.NewDeviceConfiguration = false;
             }
         }
 
