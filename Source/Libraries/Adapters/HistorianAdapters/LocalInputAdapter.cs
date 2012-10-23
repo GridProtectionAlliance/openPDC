@@ -56,9 +56,12 @@ namespace HistorianAdapters
         private string m_instanceName;
         private long m_publicationInterval;
         private long m_publicationTime;
+        private bool m_simulateTimestamp;
         private bool m_disposed;
 
         #endregion
+
+        #region [ Constructors ]
 
         /// <summary>
         /// Creates a new instance of the <see cref="LocalInputAdapter"/>.
@@ -69,6 +72,8 @@ namespace HistorianAdapters
             m_readTimer = new System.Timers.Timer();
             m_readTimer.Elapsed += m_readTimer_Elapsed;
         }
+
+        #endregion
 
         #region [ Properties ]
 
@@ -107,7 +112,7 @@ namespace HistorianAdapters
             set
             {
                 if (string.IsNullOrWhiteSpace(m_archiveLocation))
-                    throw new ArgumentNullException("archiveLocation", "The archiveLocation setting must be specified.");
+                    throw new ArgumentNullException("value", "The archiveLocation setting must be specified.");
 
                 m_archiveLocation = FilePath.GetDirectoryName(m_archiveLocation);
             }
@@ -132,13 +137,60 @@ namespace HistorianAdapters
         }
 
         /// <summary>
+        /// Gets the start time for reading data.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the start time for reading data into real-time session, or do not define to start reading from the beginning of the available data. Either StartTimeConstraint or StopTimeConstraint must be defined in order to start reading data into real-time session. Value should not be defined when using adapter for subscription based temporal session support."),
+        DefaultValue("")]
+        public new string StartTimeConstraint
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets the stop time for reading data.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Define the stop time for reading data into real-time session, or do not define to keep reading until the end of the available data. Either StartTimeConstraint or StopTimeConstraint must be defined in order to start reading data into real-time session. Value should not be defined when using adapter for subscription based temporal session support."),
+        DefaultValue("")]
+        public new string StopTimeConstraint
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets a value that determines whether timestamps are
+        /// simulated for the purposes of real-time concentration.
+        /// </summary>
+        [ConnectionStringParameter,
+        Description("Indicate whether timestamps are simulated for real-time concentration."),
+        DefaultValue(false)]
+        public bool SimulateTimestamp
+        {
+            get
+            {
+                return m_simulateTimestamp;
+            }
+            set
+            {
+                m_simulateTimestamp = value;
+            }
+        }
+
+        /// <summary>
         /// Gets the flag indicating if this adapter supports temporal processing.
         /// </summary>
         public override bool SupportsTemporalProcessing
         {
             get
             {
-                return true;
+                // If the start/time constraints are defined in the connection string, it is expected that this adapter
+                // will be used in real-time. For temporal sessions these properties will be defined via method call to
+                // the SetTemporalConstraint function.
+                Dictionary<string, string> settings = Settings;
+                return !(settings.ContainsKey("startTimeConstraint") || settings.ContainsKey("stopTimeConstraint"));
             }
         }
 
@@ -256,6 +308,9 @@ namespace HistorianAdapters
 
             if (!(settings.TryGetValue("publicationInterval", out setting) && long.TryParse(setting, out m_publicationInterval)))
                 m_publicationInterval = DefaultPublicationInterval;
+
+            if (settings.TryGetValue("simulateTimestamp", out setting))
+                m_simulateTimestamp = setting.ParseBoolean();
 
             // Define output measurements this input adapter can support based on the instance name
             OutputSourceIDs = new string[] { m_instanceName };
@@ -375,7 +430,7 @@ namespace HistorianAdapters
         // Kick start read process for historian
         private void StartDataReader(object state)
         {
-            MeasurementKey[] requestedKeys = RequestedOutputMeasurementKeys;
+            MeasurementKey[] requestedKeys = SupportsTemporalProcessing ? RequestedOutputMeasurementKeys : OutputMeasurements.MeasurementKeys().ToArray();
 
             if (Enabled && m_archiveFile != null && requestedKeys != null && requestedKeys.Length > 0)
             {
@@ -385,8 +440,8 @@ namespace HistorianAdapters
                 // Start data read from historian
                 lock (m_readTimer)
                 {
-                    TimeTag startTime = StartTimeConstraint < TimeTag.MinValue ? TimeTag.MinValue : StartTimeConstraint > TimeTag.MaxValue ? TimeTag.MaxValue : new TimeTag(StartTimeConstraint);
-                    TimeTag stopTime = StopTimeConstraint < TimeTag.MinValue ? TimeTag.MinValue : StopTimeConstraint > TimeTag.MaxValue ? TimeTag.MaxValue : new TimeTag(StopTimeConstraint);
+                    TimeTag startTime = base.StartTimeConstraint < TimeTag.MinValue ? TimeTag.MinValue : base.StartTimeConstraint > TimeTag.MaxValue ? TimeTag.MaxValue : new TimeTag(base.StartTimeConstraint);
+                    TimeTag stopTime = base.StopTimeConstraint < TimeTag.MinValue ? TimeTag.MinValue : base.StopTimeConstraint > TimeTag.MaxValue ? TimeTag.MaxValue : new TimeTag(base.StopTimeConstraint);
 
                     m_dataReader = m_archiveFile.ReadData(historianIDs, startTime, stopTime).GetEnumerator();
                     m_readTimer.Enabled = m_dataReader.MoveNext();
@@ -440,7 +495,7 @@ namespace HistorianAdapters
                         {
                             ID = key.SignalID,
                             Key = key,
-                            Timestamp = timestamp,
+                            Timestamp = m_simulateTimestamp ? PrecisionTimer.UtcNow.Ticks : timestamp,
                             Value = currentPoint.Value
                         });
 

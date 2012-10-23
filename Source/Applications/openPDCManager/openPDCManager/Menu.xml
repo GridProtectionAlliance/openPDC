@@ -50,7 +50,7 @@
       <MenuDataItem Icon="" MenuText="_Stream Statistics" Description="Real-time Stream Statistics" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.RealTimeStatisticUserControl"/>
       <MenuDataItem Icon="" MenuText="_Alarm Status" Description="Alarm Status" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.AlarmStatusUserControl"/>
       <!--<MenuDataItem Icon="" MenuText="_HistorianView" Description ="Historian View" Roles="*" UserControlAssembly="openPDC.UI.WPF.dll" UserControlPath="openPDC.UI.UserControls.HistorianViewUserControl"/>-->
-      <!--<MenuDataItem Icon="" MenuText="_Error Log" Description="Error Log" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.ErrorLogUserControl" />-->
+      <MenuDataItem Icon="" MenuText="_Error Log" Description="Error Log" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.ErrorLogUserControl" />
       <MenuDataItem Icon="" MenuText="" Description="" Roles="*" UserControlAssembly="" UserControlPath="" />
       <MenuDataItem Icon="" MenuText="_Remote System Console" Description="Remote System Console" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.MonitoringUserControl" />
     </SubMenuItems>

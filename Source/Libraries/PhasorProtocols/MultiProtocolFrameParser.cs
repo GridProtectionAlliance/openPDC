@@ -2770,13 +2770,6 @@ namespace PhasorProtocols
                         if (m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected)
                         {
                             handle = m_commandChannel.SendAsync(buffer, 0, buffer.Length);
-
-                            // Shut down command channel at the end of the startup sequence
-                            if (!m_keepCommandChannelOpen && command == DeviceCommand.EnableRealTimeData)
-                            {
-                                handle.WaitOne(1000);
-                                m_commandChannel.Disconnect();
-                            }
                         }
                         else if (m_dataChannel != null && m_dataChannel.CurrentState == ClientState.Connected)
                         {
@@ -3520,6 +3513,12 @@ namespace PhasorProtocols
             catch (Exception ex)
             {
                 OnParsingException(ex, "MultiProtocolFrameParser \"ReceivedConfigurationFrame\" consumer event handler exception: {0}", ex.Message);
+            }
+
+            // If user has requested to not keep the command channel open, disconnect it once the system has received a configuration frame
+            if (!m_keepCommandChannelOpen && (object)m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected)
+            {
+                m_commandChannel.Disconnect();
             }
         }
 

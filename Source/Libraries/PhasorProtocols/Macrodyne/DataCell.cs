@@ -391,7 +391,7 @@ namespace PhasorProtocols.Macrodyne
             else
             {
                 // Read sample number for G protocol
-                m_referenceSampleNumber = EndianOrder.BigEndian.ToUInt16(buffer, index);
+                m_sampleNumber = EndianOrder.BigEndian.ToUInt16(buffer, index);
                 index += 2;
             }
 
@@ -405,18 +405,20 @@ namespace PhasorProtocols.Macrodyne
                 byte hours = BinaryCodedDecimal.Decode(buffer[index + 2]);
                 byte minutes = BinaryCodedDecimal.Decode(buffer[index + 3]);
                 byte seconds = BinaryCodedDecimal.Decode(buffer[index + 4]);
+                double timebase = 2880.0D;
                 index += 5;
 
                 // Read sample number for M protocol
                 if (protocolVersion == ProtocolVersion.M)
                 {
                     m_sampleNumber = EndianOrder.BigEndian.ToUInt16(buffer, index + 5);
+                    timebase = 719.0D;
                     index += 2;
                 }
 
                 // TODO: Think about how to handle year change with floating clock...
                 // Calculate timestamp
-                Parent.Timestamp = new DateTime(DateTime.UtcNow.Year, 1, 1).AddDays(day - 1).AddHours(hours).AddMinutes(minutes).AddSeconds(seconds + m_sampleNumber / 719.0D);
+                Parent.Timestamp = new DateTime(DateTime.UtcNow.Year, 1, 1).AddDays(day - 1).AddHours(hours).AddMinutes(minutes).AddSeconds(seconds + m_sampleNumber / timebase);
             }
             else
             {
