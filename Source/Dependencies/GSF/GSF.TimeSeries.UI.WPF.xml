@@ -1605,11 +1605,6 @@
             Gets the list of nodes.
             </summary>
         </member>
-        <member name="P:GSF.TimeSeries.UI.ViewModels.Alarms.MeasurementLookupList">
-            <summary>
-            Gets the list of measurements in the system.
-            </summary>
-        </member>
         <member name="P:GSF.TimeSeries.UI.ViewModels.Alarms.OperationList">
             <summary>
             Gets a list of operations that can be performed to trigger an alarm.
@@ -1618,6 +1613,16 @@
         <member name="P:GSF.TimeSeries.UI.ViewModels.Alarms.SeverityList">
             <summary>
             Gets a list of levels of severity that can be assigned to alarms.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Alarms.MeasurementLabels">
+            <summary>
+            Gets a list of the measurement labels for the alarms on the current page.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Alarms.SelectedMeasurementLabel">
+            <summary>
+            Gets or sets the label of the measurement selected by the user.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.UI.ViewModels.ApplicationRoles">
