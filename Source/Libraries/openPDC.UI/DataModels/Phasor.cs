@@ -492,11 +492,11 @@ namespace openPDC.UI.DataModels
                     measurement.HistorianID = device.HistorianID;
                     measurement.DeviceID = device.ID;
                     measurement.PointTag = device.CompanyAcronym + "_" + device.Acronym + "-" + signal.Suffix + addedPhasor.SourceIndex.ToString() + ":" + device.VendorAcronym + signal.Abbreviation;
-                    measurement.AlternateTag = string.Empty;
+                    measurement.AlternateTag = measurement.AlternateTag;
                     measurement.SignalTypeID = signal.ID;
                     measurement.PhasorSourceIndex = addedPhasor.SourceIndex;
                     measurement.SignalReference = device.Acronym + "-" + signal.Suffix + addedPhasor.SourceIndex.ToString();
-                    measurement.Description = device.Name + " " + addedPhasor.Label + " " + device.VendorDeviceName + " " + addedPhasor.Phase + " " + signal.Name;
+                    measurement.Description = measurement.Description;
                     measurement.Enabled = true;
 
                     Measurement.Save(database, measurement);
