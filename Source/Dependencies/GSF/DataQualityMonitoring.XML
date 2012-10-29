@@ -19,11 +19,6 @@
             Starts the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>, or restarts it if it is already running.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.AlarmAdapter.Stop">
-            <summary>
-            Stops the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>.
-            </summary>
-        </member>
         <member name="M:DataQualityMonitoring.AlarmAdapter.Dispose(System.Boolean)">
             <summary>
             Releases the unmanaged resources used by the <see cref="T:DataQualityMonitoring.AlarmAdapter"/> object and optionally releases the managed resources.

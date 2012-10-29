@@ -679,6 +679,99 @@
             InitializeComponent
             </summary>
         </member>
+        <member name="T:GSF.TimeSeries.UI.UserControls.AdvancedSearchCategory">
+            <summary>
+            Category to search by.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.UI.UserControls.AdvancedSearchCategory.NameProperty">
+            <summary>
+            Dependency property for the <see cref="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchCategory.Name"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.UI.UserControls.AdvancedSearchCategory.SelectedProperty">
+            <summary>
+            Dependency property for the <see cref="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchCategory.Selected"/> property.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchCategory.Name">
+            <summary>
+            Gets or sets the name of the category.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchCategory.Selected">
+            <summary>
+            Gets or sets the flag that indicates whether the category is selected.
+            </summary>
+        </member>
+        <member name="T:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl">
+            <summary>
+            Interaction logic for AdvancedSearchUserControl.xaml
+            </summary>
+            <summary>
+            AdvancedSearchUserControl
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl"/>.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.SearchTextProperty">
+            <summary>
+            Dependency property for the <see cref="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.SearchText"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.IgnoreCaseProperty">
+            <summary>
+            Dependency property for the <see cref="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.IgnoreCase"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.UseWildcardsProperty">
+            <summary>
+            Dependency property for the <see cref="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.UseWildcards"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.UseRegexProperty">
+            <summary>
+            Dependency property for the <see cref="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.UseRegex"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.CategoriesProperty">
+            <summary>
+            Dependency property for the <see cref="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.Categories"/> property.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.SearchText">
+            <summary>
+            Gets or sets the text by which to search.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.IgnoreCase">
+            <summary>
+            Gets or sets whether to ignore casing when searching.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.UseWildcards">
+            <summary>
+            Gets or sets whether to use wildcards in searches.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.UseRegex">
+            <summary>
+            Gets or sets whether to interpret search tokens as regular expressions.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl.Categories">
+            <summary>
+            Gets the collection of categories displayed in the second tab of the <see cref="T:GSF.TimeSeries.UI.UserControls.AdvancedSearchUserControl"/>.
+            </summary>
+        </member>
         <member name="T:GSF.TimeSeries.UI.UserControls.AlarmStatusUserControl">
             <summary>
             Interaction logic for AlarmStatusUserControl.xaml
@@ -2054,15 +2147,9 @@
             Loads collection of <see cref="T:GSF.TimeSeries.UI.DataModels.Measurement"/> defined in the database.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.UI.ViewModels.Measurements.Search(System.Object)">
+        <member name="M:GSF.TimeSeries.UI.ViewModels.Measurements.Search">
             <summary>
-            Hanldes <see cref="P:GSF.TimeSeries.UI.ViewModels.Measurements.SearchCommand"/>.
-            </summary>
-            <param name="parameter">string value to search for in measurement collection.</param>
-        </member>
-        <member name="M:GSF.TimeSeries.UI.ViewModels.Measurements.ShowAll">
-            <summary>
-            Handles <see cref="P:GSF.TimeSeries.UI.ViewModels.Measurements.ShowAllCommand"/>.
+            Handles <see cref="P:GSF.TimeSeries.UI.ViewModels.Measurements.SearchCommand"/>.
             </summary>
         </member>
         <member name="M:GSF.TimeSeries.UI.ViewModels.Measurements.SortData(System.String,System.ComponentModel.ListSortDirection)">
@@ -2071,6 +2158,16 @@
             </summary>
             <param name="sortMember">The member by which to sort the data.</param>
             <param name="sortDirection">The direction in which to sort the data.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.ViewModels.Measurements.LoadSettings">
+            <summary>
+            Loads advanced find settings from isolated storage.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.ViewModels.Measurements.SaveSettings">
+            <summary>
+            Saves advanced find settings to isolated storage.
+            </summary>
         </member>
         <member name="P:GSF.TimeSeries.UI.ViewModels.Measurements.FilterExpression">
             <summary>
@@ -2097,14 +2194,49 @@
             Gets <see cref="T:System.Windows.Input.ICommand"/> to search within measurements.
             </summary>
         </member>
-        <member name="P:GSF.TimeSeries.UI.ViewModels.Measurements.ShowAllCommand">
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Measurements.AdvancedFindCommand">
             <summary>
-            Gets <see cref="T:System.Windows.Input.ICommand"/> to show all measurements.
+            Gets <see cref="T:System.Windows.Input.ICommand"/> to open the advanced find popup.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Measurements.CloseAdvancedFindCommand">
+            <summary>
+            Gets <see cref="T:System.Windows.Input.ICommand"/> to close the advanced find popup.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.UI.ViewModels.Measurements.AllKeys">
             <summary>
             Gets or sets the list of all keys without the search text applied.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Measurements.SearchText">
+            <summary>
+            Gets or sets the text to search for in the measurements.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Measurements.IgnoreCase">
+            <summary>
+            Gets or sets the flag that determines whether to ignore casing in searches.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Measurements.UseWildcards">
+            <summary>
+            Gets or sets the flag that determines whether to use wildcards in searches.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Measurements.UseRegex">
+            <summary>
+            Gets or sets the flag that determines whether search tokens are regular expressions.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Measurements.SearchCategories">
+            <summary>
+            Gets or sets the collection of categories on which to search for the <see cref="P:GSF.TimeSeries.UI.ViewModels.Measurements.SearchText"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Measurements.AdvancedFindIsOpen">
+            <summary>
+            Gets or sets the flag that determines whether the advanced find dialog is open.
             </summary>
         </member>
         <member name="M:GSF.TimeSeries.UI.ViewModels.Nodes.#ctor(System.Int32,System.Boolean)">

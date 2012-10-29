@@ -19507,6 +19507,81 @@
             Contains classes used to schedule operations using standard UNIX crontab syntax.
             </summary>
         </member>
+        <member name="T:GSF.Searching.AsyncSearcher`1">
+            <summary>
+            Uses reflection to search a collection of items for a given search string.
+            </summary>
+            <typeparam name="TSearch">The type of the objects to be searched.</typeparam>
+        </member>
+        <member name="M:GSF.Searching.AsyncSearcher`1.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.Searching.AsyncSearcher`1"/> class.
+            </summary>
+        </member>
+        <member name="M:GSF.Searching.AsyncSearcher`1.Add(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds a collection of items to the search.
+            </summary>
+            <param name="itemsToSearch">The items to be searched.</param>
+        </member>
+        <member name="M:GSF.Searching.AsyncSearcher`1.Cancel">
+            <summary>
+            Cancels currently running searches
+            </summary>
+        </member>
+        <member name="E:GSF.Searching.AsyncSearcher`1.MatchesFound">
+            <summary>
+            Event triggered when the searcher finds a match.
+            </summary>
+        </member>
+        <member name="E:GSF.Searching.AsyncSearcher`1.SearchComplete">
+            <summary>
+            Event triggered when the searcher has finished searching all the items in its queue.
+            </summary>
+        </member>
+        <member name="P:GSF.Searching.AsyncSearcher`1.SearchText">
+            <summary>
+            Gets or sets the text to be searched for.
+            </summary>
+        </member>
+        <member name="P:GSF.Searching.AsyncSearcher`1.SearchCategories">
+            <summary>
+            Gets the names of the properties to which
+            the search string will be applied.
+            </summary>
+        </member>
+        <member name="P:GSF.Searching.AsyncSearcher`1.IgnoreCase">
+            <summary>
+            Gets or sets the flag that determines whether
+            to ignore case when running the search.
+            </summary>
+        </member>
+        <member name="P:GSF.Searching.AsyncSearcher`1.UseWildcards">
+            <summary>
+            Gets or sets the flag that determines whether to process
+            <c>*</c>, <c>?</c>, and <c>-</c> characters as wildcards.
+            </summary>
+            <remarks>
+            The <see cref="P:GSF.Searching.AsyncSearcher`1.UseRegex"/> property supercedes this property.
+            In order to use wildcards, <c>UseRegex</c> must be set to <c>false</c>.
+            </remarks>
+        </member>
+        <member name="P:GSF.Searching.AsyncSearcher`1.UseRegex">
+            <summary>
+            Gets or sets the flag that determines whether to
+            process the search tokens as regular expressions.
+            </summary>
+            <remarks>
+            This property supercedes the <see cref="P:GSF.Searching.AsyncSearcher`1.UseWildcards"/> property.
+            In order to use wildcards, this property must be set to <c>false</c>.
+            </remarks>
+        </member>
+        <member name="P:GSF.Searching.AsyncSearcher`1.Searching">
+            <summary>
+            Gets the flag that indicates whether the <see cref="T:GSF.Searching.AsyncSearcher`1"/>
+            is in the middle of a search operation.
+            </summary>
+        </member>
         <member name="T:GSF.Security.Cryptography.NamespaceDoc">
             <summary>
             Contains classes and extension functions used to simplify and standardize usage of basic cryptography using a combination 

@@ -1671,13 +1671,12 @@
             Represents a record of <see cref="T:GSF.TimeSeries.UI.DataModels.Measurement"/> information as defined in the database.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.UI.DataModels.Measurement.LoadSignalIDs(GSF.Data.AdoDataConnection,System.String,System.String,System.String,System.String)">
+        <member name="M:GSF.TimeSeries.UI.DataModels.Measurement.LoadSignalIDs(GSF.Data.AdoDataConnection,System.String,System.String,System.String)">
             <summary>
             Loads <see cref="T:GSF.TimeSeries.UI.DataModels.Measurement"/> signal IDs as an <see cref="T:System.Collections.Generic.IList`1"/>.
             </summary>
             <param name="database"><see cref="T:GSF.Data.AdoDataConnection"/> to connection to database.</param>
             <param name="filterExpression">SQL expression by which to filter the data coming from the database.</param>
-            <param name="searchText">The text to search by.</param>
             <param name="sortMember">The field to sort by.</param>
             <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
             <returns>Collection of <see cref="T:System.Guid"/>.</returns>
