@@ -69,6 +69,7 @@ namespace openPDC.UI.UserControls
             this.Unloaded += new RoutedEventHandler(PhasorMeasurementUserControl_Unloaded);
             m_dataContext = new PhasorMeasurements(deviceID, 17);
             m_dataContext.PropertyChanged += ViewModel_PropertyChanged;
+            m_dataContext.SearchCategories = AdvancedSearch.Categories;
             this.DataContext = m_dataContext;
         }
 
@@ -77,13 +78,35 @@ namespace openPDC.UI.UserControls
         #region [ Methods ]
 
         /// <summary>
+        /// Handles loaded event.
+        /// </summary>
+        /// <param name="sender">Source of the event.</param>
+        /// <param name="e">Arguments of the event.</param>
+        private void PhasorMeasurementUserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            m_dataContext.LoadSettings();
+        }
+
+        /// <summary>
         /// Handles unloaded event.
         /// </summary>
         /// <param name="sender">Source of the event.</param>
         /// <param name="e">Arguments of the event.</param>
-        void PhasorMeasurementUserControl_Unloaded(object sender, RoutedEventArgs e)
+        private void PhasorMeasurementUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             m_dataContext.ProcessPropertyChange();
+            m_dataContext.SaveSettings();
+        }
+
+        /// <summary>
+        /// Handles key down event.
+        /// </summary>
+        /// <param name="sender">Source of the event.</param>
+        /// <param name="e">Arguments of the event.</param>
+        private void PhasorMeasurementUserControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control)
+                m_dataContext.AdvancedFindIsOpen = true;
         }
 
         /// <summary>
