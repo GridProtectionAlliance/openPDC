@@ -26,7 +26,7 @@
             <Button Content="Show All" Command="{Binding Path=ShowAllCommand}" ToolTip="Show all devices" Margin="2"/>
         </StackPanel>
         
-        <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" 
+        <sdk:DataGrid x:Name="DataGridList" ItemsSource="{Binding CurrentPage}" SelectedItem="{Binding Path=CurrentItem, Mode=TwoWay}" SelectedIndex="{tsfBinding:Column Path=CurrentSelectedIndex}"
                       PreviewKeyDown="DataGrid_PreviewKeyDown" Sorting="DataGrid_Sorting" CellEditEnding="DataGrid_CellEditEnding">
             <sdk:DataGrid.Columns>
                 <sdk:DataGridTemplateColumn Header="Acronym" Width="3*" SortMemberPath="Acronym">

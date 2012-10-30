@@ -85,6 +85,7 @@ namespace openPDC.UI.UserControls
         private void PhasorMeasurementUserControl_Loaded(object sender, RoutedEventArgs e)
         {
             m_dataContext.LoadSettings();
+            Application.Current.Exit += Application_Exit;
         }
 
         /// <summary>
@@ -93,6 +94,18 @@ namespace openPDC.UI.UserControls
         /// <param name="sender">Source of the event.</param>
         /// <param name="e">Arguments of the event.</param>
         private void PhasorMeasurementUserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Exit -= Application_Exit;
+            m_dataContext.ProcessPropertyChange();
+            m_dataContext.SaveSettings();
+        }
+
+        /// <summary>
+        /// Handles the application exit event.
+        /// </summary>
+        /// <param name="sender">Source of the event.</param>
+        /// <param name="e">Arguments of the event.</param>
+        private void Application_Exit(object sender, ExitEventArgs e)
         {
             m_dataContext.ProcessPropertyChange();
             m_dataContext.SaveSettings();
