@@ -713,6 +713,18 @@
             to exist before a property is included as a field in the data model.
             </param>
         </member>
+        <member name="M:GSF.TimeSeries.UI.DataModelBase.#ctor(System.Boolean,System.Boolean)">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TimeSeries.UI.DataModelBase"/> class.
+            </summary>
+            <param name="loadDefaults">
+            Determines whether to load default values into the properties using reflection.
+            </param>
+            <param name="requireEntityPropertyAttribute">
+            Assigns flag that determines if <see cref="T:GSF.TimeSeries.UI.EntityPropertyAttribute"/> is required
+            to exist before a property is included as a field in the data model.
+            </param>
+        </member>
         <member name="M:GSF.TimeSeries.UI.DataModelBase.OnPropertyChanged(System.String)">
             <summary>
             Raises the <see cref="E:GSF.TimeSeries.UI.DataModelBase.PropertyChanged"/> event.
@@ -1670,6 +1682,19 @@
             <summary>
             Represents a record of <see cref="T:GSF.TimeSeries.UI.DataModels.Measurement"/> information as defined in the database.
             </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.DataModels.Measurement.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TimeSeries.UI.DataModels.Measurement"/> class.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.DataModels.Measurement.#ctor(System.Boolean)">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TimeSeries.UI.DataModels.Measurement"/> class.
+            </summary>
+            <param name="loadDefaults">
+            Determines whether to load default values into the properties using reflection.
+            </param>
         </member>
         <member name="M:GSF.TimeSeries.UI.DataModels.Measurement.LoadSignalIDs(GSF.Data.AdoDataConnection,System.String,System.String,System.String)">
             <summary>

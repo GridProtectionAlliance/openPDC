@@ -1175,6 +1175,13 @@
             </summary>
             <param name="e">The event data that describes the property that changed, as well as old and new values.</param>
         </member>
+        <member name="M:GSF.TimeSeries.UI.UserControls.MeasurementPagerUserControl.Application_Exit(System.Object,System.Windows.ExitEventArgs)">
+            <summary>
+            Handles the application exit event.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Arguments of the event.</param>
+        </member>
         <member name="F:GSF.TimeSeries.UI.UserControls.MeasurementPagerUserControl.ItemsPerPageProperty">
             <summary>
             <see cref="T:System.Windows.DependencyProperty"/> for the <see cref="P:GSF.TimeSeries.UI.UserControls.MeasurementPagerUserControl.ItemsPerPage"/> property.
