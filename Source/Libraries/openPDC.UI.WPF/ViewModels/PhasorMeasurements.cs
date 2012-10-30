@@ -53,7 +53,8 @@ namespace openPDC.UI.ViewModels
             : base(deviceID, itemsPerPage, autosave)     // Set ItemsPerPage to zero to avoid load() in the base class.
         {
             m_canLoad = true;
-            m_deviceLookupList = Device.GetLookupList(null, DeviceType.DirectConnected, true, true);
+            // Shows only those devices associated with the current node. 
+            m_deviceLookupList = Device.GetLookupList(null, DeviceType.All, true, false);
             Load();
         }
 
