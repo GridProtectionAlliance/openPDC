@@ -122,7 +122,8 @@ namespace PhasorProtocols
         // Fields
         private ProcessQueue<byte[]> m_bufferQueue;
         private IConnectionParameters m_connectionParameters;
-        private BlockingCollection<EventArgs<FundamentalFrameType, byte[], int, int>> m_frameImageQueue;
+        private ConcurrentQueue<EventArgs<FundamentalFrameType, byte[], int, int>> m_frameImageQueue;
+        private int m_processing;
         private bool m_disposed;
 
         #endregion
@@ -315,11 +316,6 @@ namespace PhasorProtocols
                         }
                         m_bufferQueue = null;
 
-                        if ((object)m_frameImageQueue != null)
-                            m_frameImageQueue.Dispose();
-
-                        m_frameImageQueue = null;
-
                         // Detach from base class events
                         base.DataParsed -= base_DataParsed;
                         base.DuplicateTypeHandlerEncountered -= base_DuplicateTypeHandlerEncountered;
@@ -344,10 +340,6 @@ namespace PhasorProtocols
 
             if ((object)m_bufferQueue != null)
                 m_bufferQueue.Start();
-
-            // Restart frame image queue processing if consumer has attached to frame buffer image event
-            if ((object)m_frameImageQueue != null)
-                (new Thread(ProcessFrameImageQueue)).Start();
         }
 
         /// <summary>
@@ -469,6 +461,8 @@ namespace PhasorProtocols
         /// <param name="length">Length of data in frame buffer image to send to <see cref="ReceivedFrameBufferImage"/> event.</param>
         protected virtual void OnReceivedFrameBufferImage(FundamentalFrameType frameType, byte[] buffer, int offset, int length)
         {
+            EventArgs<FundamentalFrameType, byte[], int, int> dequeuedFrameImage;
+
             // Since this event is called from an async socket operation, these events can be processed simultaneously, especially
             // when the consuming event may take time to process this data (e.g., writing the frame to a capture file for replay),
             // so we queue these events up for serial processing
@@ -476,32 +470,38 @@ namespace PhasorProtocols
             {
                 // If a consumer is subscribing to this event, make sure frame image queue exists
                 if ((object)m_frameImageQueue == null)
-                {
-                    m_frameImageQueue = new BlockingCollection<EventArgs<FundamentalFrameType, byte[], int, int>>();
-                    (new Thread(ProcessFrameImageQueue)).Start();
-                }
+                    m_frameImageQueue = new ConcurrentQueue<EventArgs<FundamentalFrameType, byte[], int, int>>();
 
-                m_frameImageQueue.Add(new EventArgs<FundamentalFrameType, byte[], int, int>(frameType, buffer, offset, length));
+                m_frameImageQueue.Enqueue(new EventArgs<FundamentalFrameType, byte[], int, int>(frameType, buffer, offset, length));
+
+                // Process next frame image
+                if (Interlocked.CompareExchange(ref m_processing, 1, 0) == 0)
+                {
+                    if (m_frameImageQueue.TryDequeue(out dequeuedFrameImage))
+                        ThreadPool.QueueUserWorkItem(state => ProcessFrameImage((EventArgs<FundamentalFrameType, byte[], int, int>)state), dequeuedFrameImage);
+                }
             }
         }
 
         // Process elements in frame image queue
-        private void ProcessFrameImageQueue()
+        private void ProcessFrameImage(EventArgs<FundamentalFrameType, byte[], int, int> frameImage)
         {
-            EventArgs<FundamentalFrameType, byte[], int, int> frameImage;
+            EventArgs<FundamentalFrameType, byte[], int, int> dequeuedFrameImage;
 
-            while (Enabled)
+            try
             {
-                try
-                {
-                    // Expose next frame buffer image
-                    if (m_frameImageQueue.TryTake(out frameImage, ProcessWaitTimeout))
-                        ReceivedFrameBufferImage(this, frameImage);
-                }
-                catch (Exception ex)
-                {
-                    OnParsingException(ex);
-                }
+                // Expose next frame buffer image
+                ReceivedFrameBufferImage(this, frameImage);
+
+                // Process next frame image
+                if (m_frameImageQueue.TryDequeue(out dequeuedFrameImage))
+                    ThreadPool.QueueUserWorkItem(state => ProcessFrameImage((EventArgs<FundamentalFrameType, byte[], int, int>)state), dequeuedFrameImage);
+                else
+                    Interlocked.Exchange(ref m_processing, 0);
+            }
+            catch (Exception ex)
+            {
+                OnParsingException(ex);
             }
         }
 
