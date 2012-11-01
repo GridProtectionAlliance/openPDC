@@ -2059,11 +2059,6 @@
             </summary>
             <returns>The string based named identifier of the <see cref="P:GSF.TimeSeries.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
         </member>
-        <member name="M:GSF.TimeSeries.UI.ViewModels.Historians.Clear">
-            <summary>
-            Creates a new instance of <see cref="T:GSF.TimeSeries.UI.DataModels.Historian"/> and assigns it to CurrentItem.
-            </summary>
-        </member>
         <member name="M:GSF.TimeSeries.UI.ViewModels.Historians.Initialize">
             <summary>
             Initialization to be done before the initial call to <see cref="M:GSF.TimeSeries.UI.PagedViewModelBase`2.Load"/>.

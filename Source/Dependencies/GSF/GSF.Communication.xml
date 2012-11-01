@@ -3321,14 +3321,9 @@
             Callback method for asynchronous connect operation.
             </summary>
         </member>
-        <member name="M:GSF.Communication.TcpClient.SendPayloadAsync">
+        <member name="M:GSF.Communication.TcpClient.SendPayload(GSF.Communication.TcpClient.TcpClientPayload)">
             <summary>
-            Kicks off the send payload thread.
-            </summary>
-        </member>
-        <member name="M:GSF.Communication.TcpClient.SendPayload">
-            <summary>
-            Loops waiting for payloads and sends them on the socket.
+            Sends a payload on the socket.
             </summary>
         </member>
         <member name="M:GSF.Communication.TcpClient.ProcessSend">
@@ -3641,14 +3636,9 @@
             Callback method for asynchronous accept operation.
             </summary>
         </member>
-        <member name="M:GSF.Communication.TcpServer.SendPayloadAsync(System.Guid)">
+        <member name="M:GSF.Communication.TcpServer.SendPayload(GSF.Communication.TcpServer.TcpServerPayload)">
             <summary>
-            Kicks off the send payload thread.
-            </summary>
-        </member>
-        <member name="M:GSF.Communication.TcpServer.SendPayload(System.Guid)">
-            <summary>
-            Loops waiting for payloads and sends them on the socket.
+            Asynchronous loop sends payloads on the socket.
             </summary>
         </member>
         <member name="M:GSF.Communication.TcpServer.ProcessSend(System.Net.Sockets.SocketAsyncEventArgs)">
@@ -4239,14 +4229,9 @@
             Raises the <see cref="E:GSF.Communication.ClientBase.ConnectionTerminated"/> event.
             </summary>
         </member>
-        <member name="M:GSF.Communication.UdpClient.SendPayloadAsync">
+        <member name="M:GSF.Communication.UdpClient.SendPayload(GSF.Communication.UdpClient.UdpClientPayload)">
             <summary>
-            Kicks off the send payload thread.
-            </summary>
-        </member>
-        <member name="M:GSF.Communication.UdpClient.SendPayload">
-            <summary>
-            Loops waiting for payloads and sends them on the socket.
+            Sends a payload on the socket.
             </summary>
         </member>
         <member name="M:GSF.Communication.UdpClient.ProcessSend">
@@ -4563,12 +4548,7 @@
             <param name="clientID">ID of client to send to <see cref="E:GSF.Communication.ServerBase.ReceiveClientDataException"/> event.</param>
             <param name="ex">Exception to send to <see cref="E:GSF.Communication.ServerBase.ReceiveClientDataException"/> event.</param>
         </member>
-        <member name="M:GSF.Communication.UdpServer.SendPayloadAsync(System.Guid)">
-            <summary>
-            Kicks off the send payload thread.
-            </summary>
-        </member>
-        <member name="M:GSF.Communication.UdpServer.SendPayload(System.Guid)">
+        <member name="M:GSF.Communication.UdpServer.SendPayload(GSF.Communication.UdpServer.UdpServerPayload)">
             <summary>
             Loops waiting for payloads and sends them on the socket.
             </summary>
