@@ -479,6 +479,8 @@ namespace PhasorProtocols
                 {
                     if (m_frameImageQueue.TryDequeue(out dequeuedFrameImage))
                         ThreadPool.QueueUserWorkItem(state => ProcessFrameImage((EventArgs<FundamentalFrameType, byte[], int, int>)state), dequeuedFrameImage);
+                    else
+                        Interlocked.Exchange(ref m_processing, 0);
                 }
             }
         }
