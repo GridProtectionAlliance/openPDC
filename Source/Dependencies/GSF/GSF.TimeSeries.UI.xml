@@ -822,6 +822,11 @@
             Value defaults to <c><see cref="F:System.Reflection.BindingFlags.Public"/> | <see cref="F:System.Reflection.BindingFlags.Instance"/> | <see cref="F:System.Reflection.BindingFlags.DeclaredOnly"/></c>.
             </remarks>
         </member>
+        <member name="P:GSF.TimeSeries.UI.DataModelBase.MessageFlag">
+            <summary>
+            gets or sets when the current <see cref="P:GSF.TimeSeries.UI.DataModelBase.MessageFlag"/> 's Message Flag
+            </summary>
+        </member>
         <member name="T:GSF.TimeSeries.UI.DataModels.AdapterType">
             <summary>
             AdapterType method enumeration.
