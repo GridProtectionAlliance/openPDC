@@ -99,8 +99,8 @@ namespace openPG.UI.UserControls
         {
             Subscriber currentItem = m_dataContext.CurrentItem;
 
-            AllowedMeasurementsPager.FilterExpression = string.Format("SignalID IN (SELECT SignalID FROM SubscriberMeasurement WHERE NodeID = '{0}' AND SubscriberID = '{1}' AND Allowed <> 0)", currentItem.NodeID.ToString().ToUpper(), currentItem.ID.ToString().ToUpper());
-            DeniedMeasurementsPager.FilterExpression = string.Format("SignalID IN (SELECT SignalID FROM SubscriberMeasurement WHERE NodeID = '{0}' AND SubscriberID = '{1}' AND Allowed = 0)", currentItem.NodeID.ToString().ToUpper(), currentItem.ID.ToString().ToUpper());
+            AllowedMeasurementsPager.FilterExpression = string.Format("SignalID IN (SELECT SignalID FROM SubscriberMeasurement WHERE NodeID = '{0}' AND SubscriberID = '{1}' AND Allowed <> 0)", currentItem.NodeID.ToString().ToLower(), currentItem.ID.ToString().ToLower());
+            DeniedMeasurementsPager.FilterExpression = string.Format("SignalID IN (SELECT SignalID FROM SubscriberMeasurement WHERE NodeID = '{0}' AND SubscriberID = '{1}' AND Allowed = 0)", currentItem.NodeID.ToString().ToLower(), currentItem.ID.ToString().ToLower());
 
             if (AllowedMeasurementsPager.IsLoaded)
                 AllowedMeasurementsPager.ReloadDataGrid();
