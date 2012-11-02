@@ -6603,6 +6603,12 @@
             <param name="signalIndexCache">New signal index cache.</param>
             <param name="inputMeasurementKeys">Subscribed measurement keys.</param>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.DataPublisher.UpdateRights">
+            <summary>
+            Updates each subscription's inputs based on
+            possible updates to that subscriber's rights.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.SubscriberHasRights(System.Guid,System.Guid)">
             <summary>
             Determines if subscriber has rights to specified <paramref name="signalID"/>.
@@ -8165,6 +8171,11 @@
             Gets the current signal index cache of this <see cref="T:GSF.TimeSeries.Transport.IClientSubscription"/>.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.IClientSubscription.RequestedInputFilter">
+            <summary>
+            Gets the input filter requested by the subscriber when establishing this <see cref="T:GSF.TimeSeries.Transport.IClientSubscription"/>.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.IClientSubscription.UseCompactMeasurementFormat">
             <summary>
             Gets or sets flag that determines if the compact measurement format should be used in data packets of this <see cref="T:GSF.TimeSeries.Transport.IClientSubscription"/>.
@@ -8823,6 +8834,11 @@
         <member name="P:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.SignalIndexCache">
             <summary>
             Gets the current signal index cache of this <see cref="T:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.RequestedInputFilter">
+            <summary>
+            Gets the input filter requested by the subscriber when establishing this <see cref="T:GSF.TimeSeries.Transport.IClientSubscription"/>.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.UseCompactMeasurementFormat">
