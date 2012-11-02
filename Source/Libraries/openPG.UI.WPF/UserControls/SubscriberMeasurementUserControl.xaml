@@ -39,7 +39,7 @@
         <StackPanel Orientation="Horizontal">
         
             <TextBlock Text="Subscriber"/>
-            <ComboBox ItemsSource="{tsfBinding:Column Path=ItemsSource}" SelectedItem="{tsfBinding:Column Path=CurrentItem}" Width="250">
+            <ComboBox ItemsSource="{tsfBinding:Column Path=ItemsSource}" SelectedItem="{tsfBinding:Column Path=CurrentItem}" SelectedIndex="{tsfBinding:Column Path=CurrentSelectedIndex}" Width="250">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{tsfBinding:Column Path=Name}" TextAlignment="Left" Padding="1" />
