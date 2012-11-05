@@ -355,11 +355,13 @@ namespace PhasorProtocols.IeeeC37_118
             {
                 int parseLength = MaximumLabelLength;
 
-                byte[] labelBuffer = BufferPool.TakeBuffer(16);
+                byte[] labelBuffer = null;
 
                 try
                 {
                     string[] labels = new string[16];
+
+                    labelBuffer = BufferPool.TakeBuffer(16);
 
                     for (int i = 0; i < 16; i++)
                     {

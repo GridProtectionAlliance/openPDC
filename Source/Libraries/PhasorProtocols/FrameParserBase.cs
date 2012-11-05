@@ -30,14 +30,13 @@
 //
 //******************************************************************************************************
 
+using GSF;
+using GSF.Parsing;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using GSF.Collections;
-using GSF.Parsing;
-using GSF;
 
 namespace PhasorProtocols
 {
@@ -46,10 +45,12 @@ namespace PhasorProtocols
     /// </summary>
     /// <remarks>
     /// Frame parsers are implemented as a write-only streams so that data can come from any source.<br/>
-    /// See <see cref="FrameImageParserBase{TFrameIdentifier, TCommonFrameHeader}"/> for more detail.
+    /// See <see cref="MultiSourceFrameImageParserBase{TSourceIdentifier, TFrameIdentifier, TCommonFrameHeader}"/> for more detail.
+    /// Note that using the multi-source frame image parser base allows buffers to come in from different channels and still be
+    /// parsed correctly.
     /// </remarks>
     /// <typeparam name="TFrameIdentifier">Frame type identifier used to distinguish frames.</typeparam>
-    public abstract class FrameParserBase<TFrameIdentifier> : FrameImageParserBase<TFrameIdentifier, ISupportFrameImage<TFrameIdentifier>>, IFrameParser
+    public abstract class FrameParserBase<TFrameIdentifier> : MultiSourceFrameImageParserBase<SourceChannel, TFrameIdentifier, ISupportFrameImage<TFrameIdentifier>>, IFrameParser
     {
         #region [ Members ]
 
@@ -120,7 +121,6 @@ namespace PhasorProtocols
         public event EventHandler ConfigurationChanged;
 
         // Fields
-        private ProcessQueue<byte[]> m_bufferQueue;
         private IConnectionParameters m_connectionParameters;
         private ConcurrentQueue<EventArgs<FundamentalFrameType, byte[], int, int>> m_frameImageQueue;
         private int m_processing;
@@ -144,59 +144,6 @@ namespace PhasorProtocols
         #endregion
 
         #region [ Properties ]
-
-        /// <summary>
-        /// Gets or sets a flag that allows frame parsing to be executed on a separate thread (i.e., other than communications thread).
-        /// </summary>
-        /// <remarks>
-        /// This is typically only needed when data frames are very large. This change will happen dynamically, even if a connection is active.
-        /// </remarks>
-        public virtual bool ExecuteParseOnSeparateThread
-        {
-            get
-            {
-                return ((object)m_bufferQueue != null);
-            }
-            set
-            {
-                // This property allows a dynamic change in state of how to process streaming data
-                if (value)
-                {
-                    if ((object)m_bufferQueue == null)
-                    {
-                        m_bufferQueue = CreateBufferQueue();
-                        m_bufferQueue.ProcessException += m_bufferQueue_ProcessException;
-                    }
-
-                    if (Enabled && !m_bufferQueue.Enabled)
-                        m_bufferQueue.Start();
-                }
-                else
-                {
-                    if ((object)m_bufferQueue != null)
-                    {
-                        m_bufferQueue.Stop();
-                        m_bufferQueue.ProcessException -= m_bufferQueue_ProcessException;
-                    }
-
-                    m_bufferQueue = null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the total number of buffers that are currently queued for processing, if any.
-        /// </summary>
-        public virtual int QueuedBuffers
-        {
-            get
-            {
-                if ((object)m_bufferQueue == null)
-                    return 0;
-                else
-                    return m_bufferQueue.Count;
-            }
-        }
 
         /// <summary>
         /// Gets the number of redundant frames in each packet.
@@ -275,20 +222,6 @@ namespace PhasorProtocols
                     status.AppendLine();
                 }
 
-                status.Append("  Parsing execution source: ");
-
-                if ((object)m_bufferQueue == null)
-                {
-                    status.Append("Communications thread");
-                    status.AppendLine();
-                }
-                else
-                {
-                    status.Append("Independent thread using queued data");
-                    status.AppendLine();
-                    status.Append(m_bufferQueue.Status);
-                }
-
                 return status.ToString();
             }
         }
@@ -309,13 +242,6 @@ namespace PhasorProtocols
                 {
                     if (disposing)
                     {
-                        if ((object)m_bufferQueue != null)
-                        {
-                            m_bufferQueue.ProcessException -= m_bufferQueue_ProcessException;
-                            m_bufferQueue.Dispose();
-                        }
-                        m_bufferQueue = null;
-
                         // Detach from base class events
                         base.DataParsed -= base_DataParsed;
                         base.DuplicateTypeHandlerEncountered -= base_DuplicateTypeHandlerEncountered;
@@ -328,78 +254,6 @@ namespace PhasorProtocols
                     base.Dispose(disposing);    // Call base class Dispose().
                 }
             }
-        }
-
-        /// <summary>
-        /// Starts the frame parser given the specified type implementations.
-        /// </summary>
-        /// <param name="implementations">An implementation type paramater.</param>
-        public override void Start(IEnumerable<Type> implementations)
-        {
-            base.Start(implementations);
-
-            if ((object)m_bufferQueue != null)
-                m_bufferQueue.Start();
-        }
-
-        /// <summary>
-        /// Stops the frame parser.
-        /// </summary>
-        public override void Stop()
-        {
-            base.Stop();
-
-            if ((object)m_bufferQueue != null)
-                m_bufferQueue.Stop();
-        }
-
-        /// <summary>
-        /// Writes a sequence of bytes onto the stream for parsing.
-        /// </summary>
-        /// <param name="buffer">An array of bytes. This method copies count bytes from buffer to the current stream.</param>
-        /// <param name="offset">The zero-based byte offset in buffer at which to begin copying bytes to the current stream.</param>
-        /// <param name="count">The number of bytes to be written to the current stream.</param>
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            if ((object)m_bufferQueue == null)
-            {
-                // Directly parse frame using calling thread (typically communications thread)
-                base.Write(buffer, offset, count);
-            }
-            else
-            {
-                // Queue up received data buffer for real-time parsing and return to data collection as quickly as possible...
-                m_bufferQueue.Add(buffer.BlockCopy(offset, count));
-            }
-        }
-
-        /// <summary>
-        /// Clears all buffers for this stream and causes any buffered data to be parsed immediately.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This method is only relevant when <see cref="ExecuteParseOnSeparateThread"/> is true; otherwise this method has no effect.
-        /// </para>
-        /// <para>
-        /// If the user has called <see cref="Start"/> method, this method will process all remaining buffers on the calling thread
-        /// until all queued buffers have been parsed - the <see cref="FrameParserBase{TFrameIdentifier}"/> will then be automatically
-        /// stopped. This method is typically called on shutdown to make sure any remaining queued buffers get parsed before the class
-        /// instance is destructed.
-        /// </para>
-        /// <para>
-        /// It is possible for items to be queued while the flush is executing. The flush will continue to parse buffers as quickly
-        /// as possible until the internal buffer queue is empty. Unless the user stops queueing data to be parsed (i.e. calling the
-        /// <see cref="Write"/> method), the flush call may never return (not a happy situtation on shutdown).
-        /// </para>
-        /// <para>
-        /// The <see cref="FrameParserBase{TFrameIdentifier}"/> does not clear queue prior to destruction. If the user fails to call
-        /// this method before the class is destructed, there may be data that remains unparsed in the internal buffer.
-        /// </para>
-        /// </remarks>
-        public override void Flush()
-        {
-            if ((object)m_bufferQueue != null)
-                m_bufferQueue.Flush();
         }
 
         /// <summary>
@@ -578,46 +432,14 @@ namespace PhasorProtocols
             OnParsingException(new InvalidOperationException(string.Format("WARNING: Encountered an undefined frame type identfier \"{0}\". Output was not parsed.", frameType)));
         }
 
-        /// <summary>
-        /// Creates the internal buffer queue.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This method is virtual to allow derived classes to customize the style of processing queue used when consumers
-        /// choose to implement an internal buffer queue (i.e., set <see cref="ExecuteParseOnSeparateThread"/> to true).
-        /// Default type is a real-time queue with the default settings. When overriding this method, be sure to use the
-        /// <see cref="ParseQueuedBuffers"/> method for the <see cref="ProcessQueue{T}"/>) item processing delegate.
-        /// </para>
-        /// <para>
-        /// Note that current design only supports synchronous parsing - consumer overriding this method to return
-        /// an asynchronous (i.e., multi-threaded) process queue will need to redesign the processing delegate.
-        /// </para>
-        /// </remarks>
-        /// <returns>New internal buffer processing queue (i.e., a new <see cref="ProcessQueue{T}"/>).</returns>
-        protected virtual ProcessQueue<byte[]> CreateBufferQueue()
-        {
-            return ProcessQueue<byte[]>.CreateRealTimeQueue(ParseQueuedBuffers);
-        }
-
-        /// <summary>
-        /// This method is used by the internal <see cref="ProcessQueue{T}"/> to process all queued data buffers.
-        /// </summary>
-        /// <param name="buffers">Queued buffers to process.</param>
-        /// <remarks>
-        /// This is the item processing delegate to use when overriding the <see cref="CreateBufferQueue"/> method.
-        /// </remarks>
-        protected void ParseQueuedBuffers(byte[][] buffers)
-        {
-            // Parse combined data buffers
-            byte[] combinedBuffers = buffers.Combine();
-            base.Write(combinedBuffers, 0, combinedBuffers.Length);
-        }
-
         // Handles reception of data from base class event "DataParsed"
-        private void base_DataParsed(object sender, EventArgs<ISupportFrameImage<TFrameIdentifier>> e)
+        private void base_DataParsed(object sender, EventArgs<SourceChannel, IList<ISupportFrameImage<TFrameIdentifier>>> e)
         {
-            // Call overridable channel frame function handler...
-            OnReceivedChannelFrame(e.Argument as IChannelFrame);
+            // Call overridable channel frame function handler for each parsed frame...
+            foreach (ISupportFrameImage<TFrameIdentifier> frame in e.Argument2)
+            {
+                OnReceivedChannelFrame(frame as IChannelFrame);
+            }
         }
 
         // Handles output type not found error from base class event "OutputTypeNotFound"
@@ -632,12 +454,6 @@ namespace PhasorProtocols
         {
             // This exception will only occur on start up and is a result of not defining unique frame identifiers for the base types
             OnParsingException(new InvalidOperationException(string.Format("WARNING: Duplicate frame type identfier \"{0}\" encountered for parsing type {1} during initialization. Only the first defined type for this identifier will ever be parsed.", e.Argument2, e.Argument1.FullName)));
-        }
-
-        // Handles any exceptions encountered in the buffer queue
-        private void m_bufferQueue_ProcessException(object sender, EventArgs<Exception> e)
-        {
-            OnParsingException(e.Argument);
         }
 
         #endregion

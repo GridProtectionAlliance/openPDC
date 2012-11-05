@@ -81,6 +81,9 @@ using GSF.Parsing;
 using GSF.Units;
 using GSF;
 
+// Ignore warnings about unused events that are required by IClient
+#pragma warning disable 67
+
 namespace PhasorProtocols
 {
     #region [ Enumerations ]
@@ -154,7 +157,7 @@ namespace PhasorProtocols
         /// This class is used to create highly accurate simulated data inputs aligned to the local clock.<br/>
         /// One static instance of this internal class is created per encountered frame rate.
         /// </remarks>
-        private class PrecisionInputTimer : IDisposable
+        private sealed class PrecisionInputTimer : IDisposable
         {
             #region [ Members ]
 
@@ -164,9 +167,9 @@ namespace PhasorProtocols
             private SpinLock m_timerTickLock;
             private ManualResetEventSlim m_frameWaitHandleA;
             private ManualResetEventSlim m_frameWaitHandleB;
-            private int m_framesPerSecond;
-            private int m_frameWindowSize;
-            private int[] m_frameMilliseconds;
+            private readonly int m_framesPerSecond;
+            private readonly int m_frameWindowSize;
+            private readonly int[] m_frameMilliseconds;
             private int m_lastFrameIndex;
             private long m_lastFrameTime;
             private long m_missedPublicationWindows;
@@ -329,7 +332,7 @@ namespace PhasorProtocols
             /// Releases the unmanaged resources used by the <see cref="PrecisionInputTimer"/> object and optionally releases the managed resources.
             /// </summary>
             /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-            protected virtual void Dispose(bool disposing)
+            private void Dispose(bool disposing)
             {
                 if (!m_disposed)
                 {
@@ -337,21 +340,21 @@ namespace PhasorProtocols
                     {
                         if (disposing)
                         {
-                            if (m_timer != null)
+                            if ((object)m_timer != null)
                             {
                                 m_timer.Tick -= m_timer_Tick;
                                 m_timer.Dispose();
                             }
                             m_timer = null;
 
-                            if (m_frameWaitHandleA != null)
+                            if ((object)m_frameWaitHandleA != null)
                             {
                                 m_frameWaitHandleA.Set();
                                 m_frameWaitHandleA.Dispose();
                             }
                             m_frameWaitHandleA = null;
 
-                            if (m_frameWaitHandleB != null)
+                            if ((object)m_frameWaitHandleB != null)
                             {
                                 m_frameWaitHandleB.Set();
                                 m_frameWaitHandleB.Dispose();
@@ -438,7 +441,7 @@ namespace PhasorProtocols
 
                                 if (resync)
                                 {
-                                    if (m_timer != null)
+                                    if ((object)m_timer != null)
                                     {
                                         m_timer.Stop();
                                         ThreadPool.QueueUserWorkItem(SynchronizeInputTimer);
@@ -505,7 +508,7 @@ namespace PhasorProtocols
                 m_lastMissedWindowTime = 0;
                 m_missedPublicationWindows = 0;
 
-                if (m_timer != null)
+                if ((object)m_timer != null)
                     m_timer.Start();
             }
 
@@ -519,11 +522,12 @@ namespace PhasorProtocols
         /// This class is used to create multiple IClient instances which share a single UDP client.<br/>
         /// One shared UDP client instance will be created per local end point.
         /// </remarks>
-        private class SharedUdpClientReference : IClient
+        private sealed class SharedUdpClientReference : IClient
         {
             #region [ Members ]
 
             // Events
+
             public event EventHandler ConnectionAttempt;
             public event EventHandler ConnectionEstablished;
             public event EventHandler ConnectionTerminated;
@@ -1106,7 +1110,7 @@ namespace PhasorProtocols
                 // ensure that subsequent calls to ReturnSharedClient
                 // and GetSharedClient will work properly
                 TerminateSharedClient();
-                
+
                 if ((object)SendDataException != null)
                     SendDataException(this, e);
             }
@@ -1116,8 +1120,8 @@ namespace PhasorProtocols
             #region [ Static ]
 
             // Static Fields
-            private static Dictionary<EndPoint, UdpClient> s_sharedClients = new Dictionary<EndPoint, UdpClient>();
-            private static Dictionary<EndPoint, int> s_sharedReferenceCount = new Dictionary<EndPoint, int>();
+            private static readonly Dictionary<EndPoint, UdpClient> s_sharedClients = new Dictionary<EndPoint, UdpClient>();
+            private static readonly Dictionary<EndPoint, int> s_sharedReferenceCount = new Dictionary<EndPoint, int>();
 
             #endregion
         }
@@ -1221,6 +1225,11 @@ namespace PhasorProtocols
         public event EventHandler<EventArgs<Exception>> ParsingException;
 
         /// <summary>
+        /// Occurs when buffer parsing has completed.
+        /// </summary>
+        public event EventHandler BufferParsed;
+
+        /// <summary>
         /// Occurs when number of parsing exceptions exceed <see cref="AllowedParsingExceptions"/> during <see cref="ParsingExceptionWindow"/>.
         /// </summary>
         public event EventHandler ExceededParsingExceptionThreshold;
@@ -1284,7 +1293,6 @@ namespace PhasorProtocols
         private IConfigurationFrame m_configurationFrame;
         private long m_dataStreamStartTime;
         private bool m_keepCommandChannelOpen;
-        private bool m_executeParseOnSeparateThread;
         private bool m_autoRepeatCapturedPlayback;
         private bool m_injectSimulatedTimestamp;
         private long m_totalFramesReceived;
@@ -1314,14 +1322,9 @@ namespace PhasorProtocols
         private Ticks m_parsingExceptionWindow;
         private IConnectionParameters m_connectionParameters;
         private ManualResetEventSlim m_streamStopDataHandle;
-        private SpinLock m_writeLock;
         private int m_connectionAttempts;
         private bool m_enabled;
         private bool m_disposed;
-
-#if RawDataCapture
-        FileStream m_rawDataCapture;
-#endif
 
         #endregion
 
@@ -1342,7 +1345,6 @@ namespace PhasorProtocols
             m_keepCommandChannelOpen = true;
             m_rateCalcTimer = new System.Timers.Timer();
             m_streamStopDataHandle = new ManualResetEventSlim(false);
-            m_writeLock = new SpinLock();
 
             m_phasorProtocol = PhasorProtocol.IeeeC37_118V1;
             m_transportProtocol = TransportProtocol.Tcp;
@@ -1427,9 +1429,6 @@ namespace PhasorProtocols
                 // File based input connections are handled more carefully
                 if (m_transportProtocol == TransportProtocol.File)
                 {
-                    if (m_autoRepeatCapturedPlayback)
-                        m_executeParseOnSeparateThread = false;
-
                     if (m_maximumConnectionAttempts < 1)
                         m_maximumConnectionAttempts = 1;
                 }
@@ -1647,35 +1646,6 @@ namespace PhasorProtocols
         }
 
         /// <summary>
-        /// Gets or sets a flag that allows frame parsing to be executed on a separate thread (i.e., other than communications thread).
-        /// </summary>
-        /// <remarks>
-        /// This is typically only needed when data frames are very large. This change will happen dynamically, even if a connection is active.
-        /// </remarks>
-        public bool ExecuteParseOnSeparateThread
-        {
-            get
-            {
-                return m_executeParseOnSeparateThread;
-            }
-            set
-            {
-                // If using file based source and auto-repeat is enabled, we don't allow execution on a separate thread
-                // since file based streaming data source will continue to queue data as quickly as possible and add data
-                // to processing queue much faster than it will be processed thereby consuming all available memory
-                if (m_transportProtocol == TransportProtocol.File && m_autoRepeatCapturedPlayback)
-                    m_executeParseOnSeparateThread = false;
-                else
-                    m_executeParseOnSeparateThread = value;
-
-                // Since frame parsers support dynamic changes in this value, we'll pass this value along to the
-                // the frame parser if one has been established...
-                if (m_frameParser != null)
-                    m_frameParser.ExecuteParseOnSeparateThread = m_executeParseOnSeparateThread;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets flag that determines if a high-resolution precision timer should be used for file based input.
         /// </summary>
         /// <remarks>
@@ -1687,14 +1657,14 @@ namespace PhasorProtocols
         {
             get
             {
-                return (m_inputTimer != null);
+                return ((object)m_inputTimer != null);
             }
             set
             {
                 // Note that a 1-ms timer and debug mode don't mix, so the high-resolution timer is disabled while debugging
-                if (value && m_inputTimer == null && !System.Diagnostics.Debugger.IsAttached)
+                if (value && (object)m_inputTimer == null && !System.Diagnostics.Debugger.IsAttached)
                     m_inputTimer = AttachToInputTimer(m_definedFrameRate);
-                else if (!value && m_inputTimer != null)
+                else if (!value && (object)m_inputTimer != null)
                     DetachFromInputTimer(ref m_inputTimer);
             }
         }
@@ -1765,9 +1735,6 @@ namespace PhasorProtocols
             set
             {
                 m_autoRepeatCapturedPlayback = value;
-
-                if (m_transportProtocol == TransportProtocol.File && m_autoRepeatCapturedPlayback)
-                    ExecuteParseOnSeparateThread = false;
             }
         }
 
@@ -1789,7 +1756,7 @@ namespace PhasorProtocols
                 m_configurationFrame = value;
 
                 // Pass new config frame onto appropriate parser, casting into appropriate protocol if needed...
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                     m_frameParser.ConfigurationFrame = value;
             }
         }
@@ -1834,11 +1801,13 @@ namespace PhasorProtocols
         {
             get
             {
-                if (m_commandChannel != null && m_keepCommandChannelOpen)
+                if ((object)m_commandChannel != null && m_keepCommandChannelOpen)
                     return (m_commandChannel.CurrentState == ClientState.Connected);
-                else if (m_dataChannel != null)
+
+                if ((object)m_dataChannel != null)
                     return (m_dataChannel.CurrentState == ClientState.Connected);
-                else if (m_serverBasedDataChannel != null)
+
+                if ((object)m_serverBasedDataChannel != null)
                     return (m_serverBasedDataChannel.ClientIDs.Length > 0);
 
                 return false;
@@ -1852,11 +1821,13 @@ namespace PhasorProtocols
         {
             get
             {
-                if (m_commandChannel != null)
+                if ((object)m_commandChannel != null)
                     return m_commandChannel.ConnectionTime;
-                else if (m_dataChannel != null)
+
+                if ((object)m_dataChannel != null)
                     return m_dataChannel.ConnectionTime;
-                else if (m_serverBasedDataChannel != null)
+
+                if ((object)m_serverBasedDataChannel != null)
                     return m_serverBasedDataChannel.RunTime;
 
                 return 0;
@@ -1892,10 +1863,7 @@ namespace PhasorProtocols
         {
             get
             {
-                if (m_frameParser != null)
-                    return m_frameParser.QueuedBuffers;
-
-                return 0;
+                return (object)m_frameParser != null ? m_frameParser.QueuedBuffers : 0;
             }
         }
 
@@ -1906,10 +1874,10 @@ namespace PhasorProtocols
         {
             get
             {
-                if (m_dataChannel != null)
+                if ((object)m_dataChannel != null)
                     return false;
 
-                if (m_serverBasedDataChannel == null)
+                if ((object)m_serverBasedDataChannel == null)
                 {
                     // No connection is currently active, see if connection string defines a server based connection
                     if (!string.IsNullOrWhiteSpace(m_connectionString))
@@ -2084,23 +2052,24 @@ namespace PhasorProtocols
                     status.AppendLine();
                     status.AppendFormat("     Precision input timer: {0}", UseHighResolutionInputTimer ? "Enabled" : "Offline");
                     status.AppendLine();
-                    if (m_inputTimer != null)
+
+                    if ((object)m_inputTimer != null)
                     {
                         status.AppendFormat("  Timer resynchronizations: {0}", m_inputTimer.Resynchronizations);
                         status.AppendLine();
                     }
                 }
 
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                     status.Append(m_frameParser.Status);
 
-                if (m_dataChannel != null)
+                if ((object)m_dataChannel != null)
                     status.Append(m_dataChannel.Status);
 
-                if (m_serverBasedDataChannel != null)
+                if ((object)m_serverBasedDataChannel != null)
                     status.Append(m_serverBasedDataChannel.Status);
 
-                if (m_commandChannel != null)
+                if ((object)m_commandChannel != null)
                     status.Append(m_commandChannel.Status);
 
                 return status.ToString();
@@ -2121,7 +2090,7 @@ namespace PhasorProtocols
                         return "Active";
                     case TransportProtocol.Udp:
                     case TransportProtocol.File:
-                        if (m_commandChannel != null)
+                        if ((object)m_commandChannel != null)
                             return "Hybrid";
                         return "Passive";
                     default:
@@ -2144,7 +2113,7 @@ namespace PhasorProtocols
                 m_connectionParameters = value;
 
                 // Pass new connection parameters along to derived frame parser if instantiated
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                     m_frameParser.ConnectionParameters = value;
             }
         }
@@ -2178,7 +2147,7 @@ namespace PhasorProtocols
 
                         DetachFromInputTimer(ref m_inputTimer);
 
-                        if (m_rateCalcTimer != null)
+                        if ((object)m_rateCalcTimer != null)
                         {
                             m_rateCalcTimer.Elapsed -= m_rateCalcTimer_Elapsed;
                             m_rateCalcTimer.Dispose();
@@ -2296,7 +2265,7 @@ namespace PhasorProtocols
                     // Check for IEC 61850-90-5 protocol specific parameters in connection string
                     Iec61850_90_5.ConnectionParameters iecParameters = m_connectionParameters as Iec61850_90_5.ConnectionParameters;
 
-                    if (iecParameters != null)
+                    if ((object)iecParameters != null)
                     {
                         if (settings.TryGetValue("useETRConfiguration", out setting))
                             iecParameters.UseETRConfiguration = setting.ParseBoolean();
@@ -2321,7 +2290,7 @@ namespace PhasorProtocols
                     // Check for BPA PDCstream protocol specific parameters in connection string
                     BpaPdcStream.ConnectionParameters bpaPdcParameters = m_connectionParameters as BpaPdcStream.ConnectionParameters;
 
-                    if (bpaPdcParameters != null)
+                    if ((object)bpaPdcParameters != null)
                     {
                         // INI file name setting is required
                         if (settings.TryGetValue("iniFileName", out setting))
@@ -2345,7 +2314,7 @@ namespace PhasorProtocols
                     // Check for F-NET protocol specific parameters in connection string
                     FNet.ConnectionParameters fnetParameters = m_connectionParameters as FNet.ConnectionParameters;
 
-                    if (fnetParameters != null)
+                    if ((object)fnetParameters != null)
                     {
                         if (settings.TryGetValue("timeOffset", out setting))
                             fnetParameters.TimeOffset = long.Parse(setting);
@@ -2366,7 +2335,7 @@ namespace PhasorProtocols
                     // Check for SEL Fast Message protocol specific parameters in connection string
                     SelFastMessage.ConnectionParameters selParameters = m_connectionParameters as SelFastMessage.ConnectionParameters;
 
-                    if (selParameters != null)
+                    if ((object)selParameters != null)
                     {
                         if (settings.TryGetValue("messagePeriod", out setting))
                             selParameters.MessagePeriod = (SelFastMessage.MessagePeriod)Enum.Parse(typeof(SelFastMessage.MessagePeriod), setting, true);
@@ -2378,7 +2347,7 @@ namespace PhasorProtocols
                     // Check for Macrodyne protocol specific parameters in connection string
                     Macrodyne.ConnectionParameters macrodyneParameters = m_connectionParameters as Macrodyne.ConnectionParameters;
 
-                    if (macrodyneParameters != null)
+                    if ((object)macrodyneParameters != null)
                     {
                         Macrodyne.ProtocolVersion protocolVersion;
 
@@ -2407,7 +2376,6 @@ namespace PhasorProtocols
 
             // Assign frame parser properties
             m_frameParser.ConnectionParameters = m_connectionParameters;
-            m_frameParser.ExecuteParseOnSeparateThread = m_executeParseOnSeparateThread;
 
             // Setup event handlers
             m_frameParser.ReceivedCommandFrame += m_frameParser_ReceivedCommandFrame;
@@ -2418,6 +2386,7 @@ namespace PhasorProtocols
             m_frameParser.ReceivedFrameBufferImage += m_frameParser_ReceivedFrameBufferImage;
             m_frameParser.ConfigurationChanged += m_frameParser_ConfigurationChanged;
             m_frameParser.ParsingException += m_frameParser_ParsingException;
+            m_frameParser.BufferParsed += m_frameParser_BufferParsed;
 
             // Start parsing engine
             m_frameParser.Start();
@@ -2511,22 +2480,18 @@ namespace PhasorProtocols
 
                     // For file based playback, we allow the option of auto-repeat
                     FileClient fileClient = m_dataChannel as FileClient;
-
-                    if (fileClient != null)
-                    {
-                        fileClient.FileOpenMode = FileMode.Open;
-                        fileClient.FileAccessMode = FileAccess.Read;
-                        fileClient.FileShareMode = FileShare.Read;
-                        fileClient.ReceiveOnDemand = true;
-                        fileClient.AutoRepeat = m_autoRepeatCapturedPlayback;
-                    }
+                    fileClient.FileOpenMode = FileMode.Open;
+                    fileClient.FileAccessMode = FileAccess.Read;
+                    fileClient.FileShareMode = FileShare.Read;
+                    fileClient.ReceiveOnDemand = true;
+                    fileClient.AutoRepeat = m_autoRepeatCapturedPlayback;
                     break;
                 default:
                     throw new InvalidOperationException(string.Format("Transport protocol \"{0}\" is not recognized, failed to initialize data channel", m_transportProtocol));
             }
 
             // Handle primary data connection, this *must* be defined...
-            if (m_dataChannel != null)
+            if ((object)m_dataChannel != null)
             {
                 // Setup event handlers
                 m_dataChannel.ConnectionEstablished += m_dataChannel_ConnectionEstablished;
@@ -2543,7 +2508,7 @@ namespace PhasorProtocols
                 m_dataChannel.MaxConnectionAttempts = m_maximumConnectionAttempts;
                 m_dataChannel.ConnectAsync();
             }
-            else if (m_serverBasedDataChannel != null)
+            else if ((object)m_serverBasedDataChannel != null)
             {
                 // Setup event handlers
                 m_serverBasedDataChannel.ClientConnected += m_serverBasedDataChannel_ClientConnected;
@@ -2607,7 +2572,7 @@ namespace PhasorProtocols
                     commandWaitHandle.WaitOne(1000);
             }
 
-            if (m_dataChannel != null)
+            if ((object)m_dataChannel != null)
             {
                 try
                 {
@@ -2631,7 +2596,7 @@ namespace PhasorProtocols
             }
             m_dataChannel = null;
 
-            if (m_serverBasedDataChannel != null)
+            if ((object)m_serverBasedDataChannel != null)
             {
                 try
                 {
@@ -2655,7 +2620,7 @@ namespace PhasorProtocols
             }
             m_serverBasedDataChannel = null;
 
-            if (m_commandChannel != null)
+            if ((object)m_commandChannel != null)
             {
                 try
                 {
@@ -2679,7 +2644,7 @@ namespace PhasorProtocols
             }
             m_commandChannel = null;
 
-            if (m_frameParser != null)
+            if ((object)m_frameParser != null)
             {
                 try
                 {
@@ -2699,16 +2664,11 @@ namespace PhasorProtocols
                     m_frameParser.ReceivedFrameBufferImage -= m_frameParser_ReceivedFrameBufferImage;
                     m_frameParser.ConfigurationChanged -= m_frameParser_ConfigurationChanged;
                     m_frameParser.ParsingException -= m_frameParser_ParsingException;
+                    m_frameParser.BufferParsed -= m_frameParser_BufferParsed;
                     m_frameParser.Dispose();
                 }
             }
             m_frameParser = null;
-
-#if RawDataCapture
-            if (m_rawDataCapture != null)
-                m_rawDataCapture.Close();
-            m_rawDataCapture = null;
-#endif
         }
 
         /// <summary>
@@ -2725,7 +2685,7 @@ namespace PhasorProtocols
 
             try
             {
-                if (m_deviceSupportsCommands && (m_dataChannel != null || m_serverBasedDataChannel != null || m_commandChannel != null))
+                if (m_deviceSupportsCommands && ((object)m_dataChannel != null || (object)m_serverBasedDataChannel != null || (object)m_commandChannel != null))
                 {
                     ICommandFrame commandFrame;
 
@@ -2748,7 +2708,7 @@ namespace PhasorProtocols
                             SelFastMessage.MessagePeriod messagePeriod = SelFastMessage.MessagePeriod.DefaultRate;
                             SelFastMessage.ConnectionParameters connectionParameters = m_connectionParameters as SelFastMessage.ConnectionParameters;
 
-                            if (connectionParameters != null)
+                            if ((object)connectionParameters != null)
                                 messagePeriod = connectionParameters.MessagePeriod;
 
                             commandFrame = new SelFastMessage.CommandFrame(command, messagePeriod);
@@ -2761,29 +2721,29 @@ namespace PhasorProtocols
                             break;
                     }
 
-                    if (commandFrame != null)
+                    if ((object)commandFrame != null)
                     {
                         byte[] buffer = commandFrame.BinaryImage();
 
                         // Send command over appropriate communications channel - command channel, if defined,
                         // will take precedence over other communications channels for command traffic...
-                        if (m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected)
+                        if ((object)m_commandChannel != null && m_commandChannel.CurrentState == ClientState.Connected)
                         {
                             handle = m_commandChannel.SendAsync(buffer, 0, buffer.Length);
                         }
-                        else if (m_dataChannel != null && m_dataChannel.CurrentState == ClientState.Connected)
+                        else if ((object)m_dataChannel != null && m_dataChannel.CurrentState == ClientState.Connected)
                         {
                             handle = m_dataChannel.SendAsync(buffer, 0, buffer.Length);
                         }
-                        else if (m_serverBasedDataChannel != null && m_serverBasedDataChannel.CurrentState == ServerState.Running)
+                        else if ((object)m_serverBasedDataChannel != null && m_serverBasedDataChannel.CurrentState == ServerState.Running)
                         {
                             WaitHandle[] handles = m_serverBasedDataChannel.MulticastAsync(buffer, 0, buffer.Length);
 
-                            if (handles != null && handles.Length > 0)
+                            if ((object)handles != null && handles.Length > 0)
                                 handle = handles[0];
                         }
 
-                        if (SentCommandFrame != null)
+                        if ((object)SentCommandFrame != null)
                             SentCommandFrame(this, new EventArgs<ICommandFrame>(commandFrame));
                     }
                 }
@@ -2807,31 +2767,30 @@ namespace PhasorProtocols
         /// <param name="count">Length of data in buffer to be parsed.</param>
         public void Write(byte[] buffer, int offset, int count)
         {
-            bool lockTaken = false;
+            Parse(SourceChannel.Other, buffer, offset, count);
+        }
 
-            try
-            {
-                m_writeLock.Enter(ref lockTaken);
+        /// <summary>
+        /// Writes a sequence of bytes onto the <see cref="IBinaryImageParser"/> stream for parsing.
+        /// </summary>
+        /// <param name="source">Defines the source channel for the data.</param>
+        /// <param name="buffer">An array of bytes. This method copies count bytes from buffer to the current stream.</param>
+        /// <param name="offset">The zero-based byte offset in buffer at which to begin copying bytes to the current stream.</param>
+        /// <param name="count">The number of bytes to be written to the current stream.</param>
+        internal void Parse(SourceChannel source, byte[] buffer, int offset, int count)
+        {
+            // Pass data from communications client into protocol specific frame parser
+            m_frameParser.Parse(source, buffer, offset, count);
 
-#if RawDataCapture
-            if (m_rawDataCapture == null)
-                m_rawDataCapture = new FileStream(FilePath.GetAbsolutePath("RawData.Capture"), FileMode.Create);
-            m_rawDataCapture.Write(buffer, offset, count);
-#endif
+            m_byteRateTotal += count;
 
-                // Pass data from communications client into protocol specific frame parser
-                m_frameParser.Write(buffer, offset, count);
+            if (m_initiatingDataStream)
+                m_initialBytesReceived += count;
+        }
 
-                m_byteRateTotal += count;
-
-                if (m_initiatingDataStream)
-                    m_initialBytesReceived += count;
-            }
-            finally
-            {
-                if (lockTaken)
-                    m_writeLock.Exit(false);
-            }
+        void IFrameParser.Parse(SourceChannel source, byte[] buffer, int offset, int count)
+        {
+            Parse(source, buffer, offset, count);
         }
 
         /// <summary>
@@ -2840,7 +2799,7 @@ namespace PhasorProtocols
         /// <param name="ex">Exception to send to <see cref="ParsingException"/> event.</param>
         private void OnParsingException(Exception ex)
         {
-            if (ParsingException != null && !(ex is ThreadAbortException) && !(ex is ObjectDisposedException))
+            if ((object)ParsingException != null && !(ex is ThreadAbortException) && !(ex is ObjectDisposedException))
                 ParsingException(this, new EventArgs<Exception>(ex));
 
             if (DateTime.Now.Ticks - m_lastParsingExceptionTime > m_parsingExceptionWindow)
@@ -2886,7 +2845,7 @@ namespace PhasorProtocols
         /// </summary>
         private void OnExceededParsingExceptionThreshold()
         {
-            if (ExceededParsingExceptionThreshold != null)
+            if ((object)ExceededParsingExceptionThreshold != null)
                 ExceededParsingExceptionThreshold(this, EventArgs.Empty);
         }
 
@@ -2897,7 +2856,7 @@ namespace PhasorProtocols
         /// <param name="connectionAttempts">Number of connection attempts to report.</param>
         private void OnConnectionException(Exception ex, int connectionAttempts)
         {
-            if (ConnectionException != null && !(ex is ThreadAbortException) && !(ex is ObjectDisposedException))
+            if ((object)ConnectionException != null && !(ex is ThreadAbortException) && !(ex is ObjectDisposedException))
                 ConnectionException(this, new EventArgs<Exception, int>(ex, connectionAttempts));
         }
 
@@ -3076,7 +3035,7 @@ namespace PhasorProtocols
         {
             try
             {
-                if (ConnectionEstablished != null)
+                if ((object)ConnectionEstablished != null)
                     ConnectionEstablished(this, EventArgs.Empty);
 
                 // Begin data parsing sequence to handle reception of configuration frame
@@ -3101,7 +3060,7 @@ namespace PhasorProtocols
         {
             long simulatedTimestamp = 0;
 
-            if (m_inputTimer == null)
+            if ((object)m_inputTimer == null)
             {
                 if (m_lastFrameReceivedTime > 0)
                 {
@@ -3153,7 +3112,7 @@ namespace PhasorProtocols
                 m_inputTimer.FrameWaitHandle.Wait();
 
                 // Input timer can be disabled while thread is waiting, so we make sure it is not null
-                if (m_inputTimer != null)
+                if ((object)m_inputTimer != null)
                     simulatedTimestamp = m_inputTimer.LastFrameTime;
             }
 
@@ -3198,7 +3157,7 @@ namespace PhasorProtocols
         // Handle detach from input timer
         private void DetachFromInputTimer(ref PrecisionInputTimer timer)
         {
-            if (timer != null)
+            if ((object)timer != null)
             {
                 lock (s_inputTimers)
                 {
@@ -3243,11 +3202,11 @@ namespace PhasorProtocols
             {
                 buffer = BufferPool.TakeBuffer(length);
                 length = m_dataChannel.Read(buffer, 0, length);
-                Write(buffer, 0, length);
+                Parse(SourceChannel.Data, buffer, 0, length);
             }
             finally
             {
-                if (buffer != null)
+                if ((object)buffer != null)
                     BufferPool.ReturnBuffer(buffer);
             }
         }
@@ -3255,16 +3214,17 @@ namespace PhasorProtocols
         private void m_dataChannel_ReceiveData(object sender, EventArgs<int> e)
         {
             int length = e.Argument;
-            byte[] buffer = BufferPool.TakeBuffer(length);
+            byte[] buffer = null;
 
             try
             {
+                buffer = BufferPool.TakeBuffer(length);
                 length = m_dataChannel.Read(buffer, 0, length);
-                Write(buffer, 0, length);
+                Parse(SourceChannel.Data, buffer, 0, length);
             }
             finally
             {
-                if (buffer != null)
+                if ((object)buffer != null)
                     BufferPool.ReturnBuffer(buffer);
             }
         }
@@ -3278,7 +3238,7 @@ namespace PhasorProtocols
             {
                 // Start reading file data
                 if (m_transportProtocol == TransportProtocol.File)
-                    ThreadPool.QueueUserWorkItem(ReadFileData);
+                    ThreadPool.QueueUserWorkItem(ReadNextFileBuffer);
             }
             catch (Exception ex)
             {
@@ -3291,7 +3251,7 @@ namespace PhasorProtocols
         {
             m_connectionAttempts++;
 
-            if (ConnectionAttempt != null)
+            if ((object)ConnectionAttempt != null)
                 ConnectionAttempt(this, EventArgs.Empty);
         }
 
@@ -3305,7 +3265,7 @@ namespace PhasorProtocols
 
         private void m_dataChannel_ConnectionTerminated(object sender, EventArgs e)
         {
-            if (ConnectionTerminated != null)
+            if ((object)ConnectionTerminated != null)
                 ConnectionTerminated(this, EventArgs.Empty);
         }
 
@@ -3340,16 +3300,17 @@ namespace PhasorProtocols
         {
             Guid clientID = e.Argument1;
             int length = e.Argument2;
-            byte[] buffer = BufferPool.TakeBuffer(length);
+            byte[] buffer = null;
 
             try
             {
+                buffer = BufferPool.TakeBuffer(length);
                 length = m_serverBasedDataChannel.Read(clientID, buffer, 0, length);
-                Write(buffer, 0, length);
+                Parse(SourceChannel.Data, buffer, 0, length);
             }
             finally
             {
-                if (buffer != null)
+                if ((object)buffer != null)
                     BufferPool.ReturnBuffer(buffer);
             }
         }
@@ -3361,19 +3322,19 @@ namespace PhasorProtocols
 
         private void m_serverBasedDataChannel_ClientDisconnected(object sender, EventArgs<Guid> e)
         {
-            if (ConnectionTerminated != null)
+            if ((object)ConnectionTerminated != null)
                 ConnectionTerminated(this, EventArgs.Empty);
         }
 
         private void m_serverBasedDataChannel_ServerStarted(object sender, EventArgs e)
         {
-            if (ServerStarted != null)
+            if ((object)ServerStarted != null)
                 ServerStarted(this, EventArgs.Empty);
         }
 
         private void m_serverBasedDataChannel_ServerStopped(object sender, EventArgs e)
         {
-            if (ServerStopped != null)
+            if ((object)ServerStopped != null)
                 ServerStopped(this, EventArgs.Empty);
         }
 
@@ -3400,16 +3361,17 @@ namespace PhasorProtocols
         private void m_commandChannel_ReceiveData(object sender, EventArgs<int> e)
         {
             int length = e.Argument;
-            byte[] buffer = BufferPool.TakeBuffer(length);
+            byte[] buffer = null;
 
             try
             {
+                buffer = BufferPool.TakeBuffer(length);
                 length = m_commandChannel.Read(buffer, 0, length);
-                Write(buffer, 0, length);
+                Parse(SourceChannel.Command, buffer, 0, length);
             }
             finally
             {
-                if (buffer != null)
+                if ((object)buffer != null)
                     BufferPool.ReturnBuffer(buffer);
             }
         }
@@ -3431,7 +3393,7 @@ namespace PhasorProtocols
         {
             m_connectionAttempts++;
 
-            if (ConnectionAttempt != null)
+            if ((object)ConnectionAttempt != null)
                 ConnectionAttempt(this, EventArgs.Empty);
         }
 
@@ -3447,7 +3409,7 @@ namespace PhasorProtocols
         {
             if (m_keepCommandChannelOpen)
             {
-                if (ConnectionTerminated != null)
+                if ((object)ConnectionTerminated != null)
                     ConnectionTerminated(this, EventArgs.Empty);
             }
         }
@@ -3480,7 +3442,7 @@ namespace PhasorProtocols
                 if (m_injectSimulatedTimestamp)
                     e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
-                if (ReceivedCommandFrame != null)
+                if ((object)ReceivedCommandFrame != null)
                     ReceivedCommandFrame(this, e);
             }
             catch (Exception ex)
@@ -3493,7 +3455,7 @@ namespace PhasorProtocols
         {
             // We automatically request enabling of real-time data upon reception of config frame if requested. Note that SEL Fast Message will
             // have already been enabled at this point so we don't duplicate request for enabling real-time data stream
-            if (m_configurationFrame == null && m_deviceSupportsCommands && m_autoStartDataParsingSequence && m_phasorProtocol != PhasorProtocol.SelFastMessage && m_phasorProtocol != PhasorProtocol.Iec61850_90_5)
+            if ((object)m_configurationFrame == null && m_deviceSupportsCommands && m_autoStartDataParsingSequence && m_phasorProtocol != PhasorProtocol.SelFastMessage && m_phasorProtocol != PhasorProtocol.Iec61850_90_5)
                 SendDeviceCommand(DeviceCommand.EnableRealTimeData);
 
             m_configurationFrame = e.Argument;
@@ -3504,10 +3466,10 @@ namespace PhasorProtocols
                 if (m_injectSimulatedTimestamp)
                     e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
-                if (ReceivedConfigurationFrame != null)
+                if ((object)ReceivedConfigurationFrame != null)
                     ReceivedConfigurationFrame(this, e);
 
-                if (m_configurationFrame != null)
+                if ((object)m_configurationFrame != null)
                     m_configuredFrameRate = m_configurationFrame.FrameRate;
             }
             catch (Exception ex)
@@ -3534,7 +3496,7 @@ namespace PhasorProtocols
                 else if (m_injectSimulatedTimestamp)
                     e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
-                if (ReceivedDataFrame != null)
+                if ((object)ReceivedDataFrame != null)
                     ReceivedDataFrame(this, e);
             }
             catch (Exception ex)
@@ -3546,7 +3508,7 @@ namespace PhasorProtocols
         private void m_frameParser_ReceivedHeaderFrame(object sender, EventArgs<IHeaderFrame> e)
         {
             // Macrodyne receives header frame which contains station name before configuration frame (this gets online data format: 0xBB 0x24)
-            if (m_configurationFrame == null && m_phasorProtocol == PhasorProtocol.Macrodyne)
+            if ((object)m_configurationFrame == null && m_phasorProtocol == PhasorProtocol.Macrodyne)
                 SendDeviceCommand(DeviceCommand.SendConfigurationFrame2);
 
             // We don't stop parsing for exceptions thrown in consumer event handlers
@@ -3555,7 +3517,7 @@ namespace PhasorProtocols
                 if (m_injectSimulatedTimestamp)
                     e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
-                if (ReceivedHeaderFrame != null)
+                if ((object)ReceivedHeaderFrame != null)
                     ReceivedHeaderFrame(this, e);
             }
             catch (Exception ex)
@@ -3572,7 +3534,7 @@ namespace PhasorProtocols
                 if (m_injectSimulatedTimestamp)
                     e.Argument.Timestamp = PrecisionTimer.UtcNow.Ticks;
 
-                if (ReceivedUndeterminedFrame != null)
+                if ((object)ReceivedUndeterminedFrame != null)
                     ReceivedUndeterminedFrame(this, e);
             }
             catch (Exception ex)
@@ -3586,7 +3548,7 @@ namespace PhasorProtocols
             // We don't stop parsing for exceptions thrown in consumer event handlers
             try
             {
-                if (ReceivedFrameBufferImage != null)
+                if ((object)ReceivedFrameBufferImage != null)
                     ReceivedFrameBufferImage(this, e);
             }
             catch (Exception ex)
@@ -3600,7 +3562,7 @@ namespace PhasorProtocols
             // We don't stop parsing for exceptions thrown in consumer event handlers
             try
             {
-                if (ConfigurationChanged != null)
+                if ((object)ConfigurationChanged != null)
                     ConfigurationChanged(this, e);
             }
             catch (Exception ex)
@@ -3619,32 +3581,42 @@ namespace PhasorProtocols
             OnParsingException(ex);
         }
 
-        private void ReadFileData(object state)
+        private void m_frameParser_BufferParsed(object sender, EventArgs e)
+        {
+            // We don't stop parsing for exceptions thrown in consumer event handlers
+            try
+            {
+                if ((object)BufferParsed != null)
+                    BufferParsed(this, EventArgs.Empty);
+
+                if (m_transportProtocol == TransportProtocol.File)
+                    ThreadPool.QueueUserWorkItem(ReadNextFileBuffer);
+            }
+            catch (Exception ex)
+            {
+                OnParsingException(ex, "MultiProtocolFrameParser \"BufferParsed\" consumer event handler exception: {0}", ex.Message);
+            }
+        }
+
+        private void ReadNextFileBuffer(object state)
         {
             try
             {
                 FileClient fileClient = m_dataChannel as FileClient;
 
-                if (fileClient != null)
+                if ((object)fileClient != null)
                 {
-                    // Start receiving file data continuously.
-                    while (true)
-                    {
-                        // Time to exit if file client disconnects...
-                        if (fileClient.CurrentState != ClientState.Connected)
-                            break;
-
+                    if (fileClient.CurrentState == ClientState.Connected)
                         fileClient.ReadNextBuffer();
-                    }
                 }
             }
             catch (ThreadAbortException)
             {
                 throw;
             }
-            catch
+            catch (Exception ex)
             {
-                // For any other exception, we exit gracefully
+                OnParsingException(new InvalidOperationException("Encountered an exception while reading file data: " + ex.Message, ex));
             }
         }
 
@@ -3655,9 +3627,8 @@ namespace PhasorProtocols
         #region [ Static ]
 
         // Static Fields
-        private static Dictionary<int, PrecisionInputTimer> s_inputTimers = new Dictionary<int, PrecisionInputTimer>();
+        private static readonly Dictionary<int, PrecisionInputTimer> s_inputTimers = new Dictionary<int, PrecisionInputTimer>();
 
         #endregion
-
     }
 }

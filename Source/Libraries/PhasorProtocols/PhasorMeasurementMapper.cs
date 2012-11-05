@@ -1016,11 +1016,6 @@ namespace PhasorProtocols
             if (settings.TryGetValue("skipDisableRealTimeData", out setting))
                 frameParser.SkipDisableRealTimeData = setting.ParseBoolean();
 
-            if (settings.TryGetValue("executeParseOnSeparateThread", out setting))
-                frameParser.ExecuteParseOnSeparateThread = setting.ParseBoolean();
-            //else
-            //    frameParser.ExecuteParseOnSeparateThread = true;
-
             if (!(settings.TryGetValue("lagTime", out setting) && double.TryParse(setting, out m_lagTime)))
                 m_lagTime = 10.0D;
 

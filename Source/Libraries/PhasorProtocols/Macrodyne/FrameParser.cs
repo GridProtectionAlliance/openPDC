@@ -365,10 +365,11 @@ namespace PhasorProtocols.Macrodyne
         /// <summary>
         /// Writes a sequence of bytes onto the stream for parsing.
         /// </summary>
+        /// <param name="source">Defines the source channel for the data.</param>
         /// <param name="buffer">An array of bytes. This method copies count bytes from buffer to the current stream.</param>
         /// <param name="offset">The zero-based byte offset in buffer at which to begin copying bytes to the current stream.</param>
         /// <param name="count">The number of bytes to be written to the current stream.</param>
-        public override void Write(byte[] buffer, int offset, int count)
+        public override void Parse(SourceChannel source, byte[] buffer, int offset, int count)
         {
             // Since the Macrodyne implementation supports both 0xAA and 0xBB as sync-bytes, we must manually check for both during stream initialization,
             // base class handles this only then there is a consistently defined set of sync-bytes, not variable.
@@ -401,7 +402,7 @@ namespace PhasorProtocols.Macrodyne
 
                 if (StreamInitialized)
                 {
-                    base.Write(buffer, offset, count);
+                    base.Parse(source, buffer, offset, count);
                 }
                 else
                 {
@@ -412,7 +413,7 @@ namespace PhasorProtocols.Macrodyne
                     if (syncBytePosition > -1)
                     {
                         StreamInitialized = true;
-                        base.Write(buffer, syncBytePosition, count - (syncBytePosition - offset));
+                        base.Parse(source, buffer, syncBytePosition, count - (syncBytePosition - offset));
                     }
                     else
                     {
@@ -422,7 +423,7 @@ namespace PhasorProtocols.Macrodyne
                         if (syncBytePosition > -1)
                         {
                             StreamInitialized = true;
-                            base.Write(buffer, syncBytePosition, count - (syncBytePosition - offset));
+                            base.Parse(source, buffer, syncBytePosition, count - (syncBytePosition - offset));
                         }
                     }
                 }

@@ -351,11 +351,13 @@ namespace PhasorProtocols.Iec61850_90_5
             {
                 int parseLength = MaximumLabelLength;
 
-                byte[] labelBuffer = BufferPool.TakeBuffer(16);
+                byte[] labelBuffer = null;
 
                 try
                 {
                     string[] labels = new string[16];
+
+                    labelBuffer = BufferPool.TakeBuffer(16);
 
                     for (int i = 0; i < 16; i++)
                     {
@@ -384,7 +386,7 @@ namespace PhasorProtocols.Iec61850_90_5
                 }
                 finally
                 {
-                    if (labelBuffer != null)
+                    if ((object)labelBuffer != null)
                         BufferPool.ReturnBuffer(labelBuffer);
                 }
 

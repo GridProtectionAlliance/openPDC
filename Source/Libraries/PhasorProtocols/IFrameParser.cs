@@ -1,5 +1,5 @@
 //******************************************************************************************************
-//  C:\Projects\openPDC\Synchrophasor\Current Version\Source\Libraries\PhasorProtocols\IFrameParser.cs - Gbtc
+//  IFrameParser.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -29,6 +29,30 @@ using GSF.Parsing;
 
 namespace PhasorProtocols
 {
+    #region [ Enumerations ]
+
+    /// <summary>
+    /// Source channel, i.e., data or command.
+    /// </summary>
+    [Serializable()]
+    public enum SourceChannel
+    {
+        /// <summary>
+        /// Source channel is command (e.g., TCP).
+        /// </summary>
+        Command,
+        /// <summary>
+        /// Source channel is data (e.g., UDP).
+        /// </summary>
+        Data,
+        /// <summary>
+        /// Source channel is other.
+        /// </summary>
+        Other
+    }
+
+    #endregion
+
     /// <summary>
     /// Represents a protocol independent representation of a frame parser.
     /// </summary>
@@ -102,17 +126,17 @@ namespace PhasorProtocols
         event EventHandler<EventArgs<Exception>> ParsingException;
 
         /// <summary>
-        /// Gets or sets a flag that allows frame parsing to be executed on a separate thread (i.e., other than communications thread).
+        /// Occurs when buffer parsing has completed.
         /// </summary>
-        /// <remarks>
-        /// This is typically only needed when data frames are very large. This change will happen dynamically, even if a connection is active.
-        /// </remarks>
-        bool ExecuteParseOnSeparateThread { get; set; }
+        event EventHandler BufferParsed;
 
         /// <summary>
         /// Gets the total number of buffers that are currently queued for processing, if any.
         /// </summary>
-        int QueuedBuffers { get; }
+        int QueuedBuffers
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets the number of redundant frames in each packet.
@@ -122,7 +146,10 @@ namespace PhasorProtocols
         /// frame that is received, that frame will be included in the next <c>n</c>
         /// packets, where <c>n</c> is the number of redundant frames per packet.
         /// </remarks>
-        int RedundantFramesPerPacket { get; }
+        int RedundantFramesPerPacket
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets or sets current <see cref="IConfigurationFrame"/> used for parsing <see cref="IDataFrame"/>'s encountered in the data stream from a device.
@@ -131,12 +158,20 @@ namespace PhasorProtocols
         /// If a <see cref="IConfigurationFrame"/> has been parsed, this will return a reference to the parsed frame.  Consumer can manually assign a
         /// <see cref="IConfigurationFrame"/> to start parsing data if one has not been encountered in the stream.
         /// </remarks>
-        IConfigurationFrame ConfigurationFrame { get; set; }
+        IConfigurationFrame ConfigurationFrame
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets any connection specific <see cref="IConnectionParameters"/> that may be needed for parsing.
         /// </summary>
-        IConnectionParameters ConnectionParameters { get; set; }
+        IConnectionParameters ConnectionParameters
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Start the streaming data parser.
@@ -151,14 +186,19 @@ namespace PhasorProtocols
         /// <summary>
         /// Gets or sets a boolean value that indicates whether the data parser is currently enabled.
         /// </summary>
-        bool Enabled { get; set; }
+        bool Enabled
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Writes a sequence of bytes onto the <see cref="IBinaryImageParser"/> stream for parsing.
         /// </summary>
+        /// <param name="source">Defines the source channel for the data.</param>
         /// <param name="buffer">An array of bytes. This method copies count bytes from buffer to the current stream.</param>
         /// <param name="offset">The zero-based byte offset in buffer at which to begin copying bytes to the current stream.</param>
         /// <param name="count">The number of bytes to be written to the current stream.</param>
-        void Write(byte[] buffer, int offset, int count);
+        void Parse(SourceChannel source, byte[] buffer, int offset, int count);
     }
 }
