@@ -5735,13 +5735,6 @@
             The arguments to be passed into the statistic calculation function.
             </summary>
         </member>
-        <member name="T:GSF.TimeSeries.Statistics.GetAcronymFunction">
-            <summary>
-            Defines function signature for getting the acronym of a source.
-            </summary>
-            <param name="source">The source.</param>
-            <returns>The acronym of the given source.</returns>
-        </member>
         <member name="T:GSF.TimeSeries.Statistics.StatisticsEngine">
             <summary>
             Represents the engine that computes statistics within applications of the TimeSeriesFramework.
@@ -5772,39 +5765,12 @@
             Loads or reloads system statistics.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.MapMeasurement(GSF.TimeSeries.IMeasurement,System.String)">
-            <summary>
-            Maps the given measurement to the given source name.
-            </summary>
-            <param name="measurement">The measurement to be mapped.</param>
-            <param name="source">The name of the source of the measurement.</param>
-        </member>
-        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.AddSource(System.String,System.Object)">
-            <summary>
-            Adds the given source under the source collection with the given source name.
-            </summary>
-            <param name="sourceName">The name of the source.</param>
-            <param name="source">The source to be added.</param>
-        </member>
-        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.MapAcronymFunction(System.String,GSF.TimeSeries.Statistics.GetAcronymFunction)">
-            <summary>
-            Maps the given source name to the given acronym function.
-            </summary>
-            <param name="sourceName">The source name.</param>
-            <param name="acronymFunction">The function used to get the acronym of the source.</param>
-        </member>
         <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.GetShortStatus(System.Int32)">
             <summary>
             Gets a short one-line status of this <see cref="T:GSF.TimeSeries.Statistics.StatisticsEngine"/>.
             </summary>
             <param name="maxLength">Maximum number of available characters for display.</param>
             <returns>A short one-line summary of the current status of this <see cref="T:GSF.TimeSeries.Statistics.StatisticsEngine"/>.</returns>
-        </member>
-        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.AssignParentCollection(GSF.TimeSeries.Adapters.IAdapterCollection)">
-            <summary>
-            Assigns the reference to the parent <see cref="T:GSF.TimeSeries.Adapters.IAdapterCollection"/> that will contain this <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
-            </summary>
-            <param name="parent">Parent adapter collection.</param>
         </member>
         <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.Dispose(System.Boolean)">
             <summary>
@@ -5816,6 +5782,58 @@
             <summary>
             Static initialization of <see cref="T:GSF.TimeSeries.Statistics.StatisticsEngine"/> class.
             </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.Register(GSF.TimeSeries.Adapters.IAdapter,System.String,System.String)">
+            <summary>
+            Registers the given adapter with the statistics engine as a source of statistics.
+            </summary>
+            <param name="adapter">The source of the statistics.</param>
+            <param name="sourceCategory">The category of the statistics.</param>
+            <param name="sourceAcronym">The acronym used in signal references.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.Register(System.Object,System.String,System.String,System.String)">
+            <summary>
+            Registers the given object with the statistics engine as a source of statistics.
+            </summary>
+            <param name="source">The source of the statistics.</param>
+            <param name="sourceName">The name of the source.</param>
+            <param name="sourceCategory">The category of the statistics.</param>
+            <param name="sourceAcronym">The acronym used in signal references.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.Unregister(System.Object)">
+            <summary>
+            Unregisters the given source, removing it from the list of
+            statistic sources so that it no longer generates statistics.
+            </summary>
+            <param name="source">The adapter to be unregistered with the statistics engine.</param>
+            <remarks>
+            Sources that implement <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/> do not need to
+            explicitly unregister themselves from the statistics engine.
+            The engine automatically unregisters them by attaching to the
+            <see cref="E:GSF.ISupportLifecycle.Disposed"/> event.
+            </remarks>
+        </member>
+        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.GetStatSignalTypeID(GSF.Data.AdoDataConnection)">
+            <summary>
+            Gets the signal type ID used for statistic measurements.
+            </summary>
+            <param name="database">The database to be queried.</param>
+            <returns>The signal type ID used for statistic measurements.</returns>
+        </member>
+        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.GetStatHistorianID(GSF.Data.AdoDataConnection)">
+            <summary>
+            Gets the ID of the statistics historian.
+            </summary>
+            <param name="database">The database to be queried.</param>
+            <returns>The ID of the statistics historian.</returns>
+        </member>
+        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.GetDeviceID(GSF.Data.AdoDataConnection,GSF.TimeSeries.Adapters.IAdapter)">
+            <summary>
+            Gets the device ID of the given adapter, or <see cref="F:System.DBNull.Value"/> if the adapter is not a device.
+            </summary>
+            <param name="database">The database to be queried.</param>
+            <param name="adapter">The adapter whose device ID is queried.</param>
+            <returns>The device ID of the given adapter, or <see cref="F:System.DBNull.Value"/> if the adapter is not a device.</returns>
         </member>
         <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.RegexMatch(System.String,System.String)">
             <summary>
@@ -5832,25 +5850,6 @@
             used to differentiate between statistics with the same source and type.
             </remarks>
         </member>
-        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.WaitForDefaultInstance(System.Int32)">
-            <summary>
-            Waits for the default instance to be created.
-            </summary>
-            <param name="timeout">The amount of time to wait before giving up.</param>
-            <returns>Boolean to indicate whether the default instance was created or not.</returns>
-        </member>
-        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.GetAdapterAcronym(System.Object)">
-            <summary>
-            Gets the adapter acronym of the given source object.
-            </summary>
-            <param name="source">The source object.</param>
-            <returns>The given source object's adapter acronym.</returns>
-        </member>
-        <member name="E:GSF.TimeSeries.Statistics.StatisticsEngine.Loaded">
-            <summary>
-            Event is raised when statistics are loaded from the database.
-            </summary>
-        </member>
         <member name="E:GSF.TimeSeries.Statistics.StatisticsEngine.BeforeCalculate">
             <summary>
             Event is raised before statistics calculation.
@@ -5861,11 +5860,6 @@
             Event is raised after statistics calculation.
             </summary>
         </member>
-        <member name="P:GSF.TimeSeries.Statistics.StatisticsEngine.DefinedMeasurements">
-            <summary>
-            Returns the collection of statistics measurements defined in the system.
-            </summary>
-        </member>
         <member name="P:GSF.TimeSeries.Statistics.StatisticsEngine.SupportsTemporalProcessing">
             <summary>
             Gets the flag indicating if this adapter supports temporal processing.
@@ -5874,28 +5868,6 @@
         <member name="P:GSF.TimeSeries.Statistics.StatisticsEngine.Status">
             <summary>
             Returns the detailed status of the statistics engine.
-            </summary>
-        </member>
-        <member name="P:GSF.TimeSeries.Statistics.StatisticsEngine.Default">
-            <summary>
-            Gets the <see cref="T:GSF.TimeSeries.Statistics.StatisticsEngine"/> singleton instance.
-            </summary>
-        </member>
-        <member name="T:GSF.TimeSeries.Statistics.StatisticsEngine.UnmappedMeasurementsEventArgs">
-            <summary>
-            Represents arguments to an event that needs to pass a read-only
-            collection of unmapped measurements to its subscribers.
-            </summary>
-        </member>
-        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.UnmappedMeasurementsEventArgs.#ctor(System.Collections.ObjectModel.ReadOnlyCollection{GSF.TimeSeries.IMeasurement})">
-            <summary>
-            Creates a new instance of the <see cref="T:GSF.TimeSeries.Statistics.StatisticsEngine.UnmappedMeasurementsEventArgs"/> class.
-            </summary>
-            <param name="undefinedMeasurements">The undefined measurements.</param>
-        </member>
-        <member name="P:GSF.TimeSeries.Statistics.StatisticsEngine.UnmappedMeasurementsEventArgs.UnmappedMeasurements">
-            <summary>
-            Gets the collection of undefined measurements.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.Statistics.StatisticValueState">
@@ -6751,6 +6723,12 @@
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.CipherKeyRotationPeriod">
             <summary>
             Gets or sets the cipher key rotation period.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.DataSource">
+            <summary>
+            Gets or sets <see cref="T:System.Data.DataSet"/> based data source used to load each <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/>.
+            Updates to this property will cascade to all items in this <see cref="T:GSF.TimeSeries.Adapters.AdapterCollectionBase`1"/>.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.Status">
