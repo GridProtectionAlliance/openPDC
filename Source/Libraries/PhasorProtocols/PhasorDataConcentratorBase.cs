@@ -50,6 +50,7 @@ using GSF.Parsing;
 using PhasorProtocols.Anonymous;
 using GSF.Units;
 using GSF;
+using GSF.TimeSeries.Statistics;
 
 namespace PhasorProtocols
 {
@@ -985,6 +986,9 @@ namespace PhasorProtocols
 
             // Create the configuration frame
             UpdateConfiguration();
+
+            // Register with the statistics engine
+            StatisticsEngine.Register(this, "OutputStream", "OS");
         }
 
         /// <summary>

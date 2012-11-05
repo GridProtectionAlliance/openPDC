@@ -38,6 +38,7 @@ using GSF.IO;
 using PhasorProtocols.Anonymous;
 using GSF.Units;
 using GSF;
+using GSF.TimeSeries.Statistics;
 
 namespace PhasorProtocols
 {
@@ -1041,6 +1042,10 @@ namespace PhasorProtocols
 
             // Load active device measurements associated with this connection
             LoadDeviceMeasurements();
+
+            // Register with the statistics engine
+            StatisticsEngine.Register(this, "InputStream", "IS");
+            StatisticsEngine.Calculated += (sender, args) => ResetLatencyCounters();
         }
 
         // Load device list for this mapper connection
@@ -1048,6 +1053,15 @@ namespace PhasorProtocols
         {
             ConfigurationCell definedDevice;
             string deviceName;
+
+            if ((object)m_definedDevices != null)
+            {
+                // Unregister each existing device from the statistics engine
+                foreach (ConfigurationCell device in m_definedDevices.Values)
+                {
+                    StatisticsEngine.Unregister(device);
+                }
+            }
 
             m_definedDevices = new ConcurrentDictionary<ushort, ConfigurationCell>();
 
@@ -1095,12 +1109,14 @@ namespace PhasorProtocols
                             else
                             {
                                 m_definedDevices.TryAdd(definedDevice.IDCode, definedDevice);
+                                StatisticsEngine.Register(definedDevice, definedDevice.IDLabel, "Device", "PMU");
                                 devicedAdded = true;
                             }
                         }
                         else
                         {
                             m_labelDefinedDevices.TryAdd(definedDevice.StationName, definedDevice);
+                            StatisticsEngine.Register(definedDevice, definedDevice.IDLabel, "Device", "PMU");
                             devicedAdded = true;
                         }
                     }
@@ -1121,12 +1137,14 @@ namespace PhasorProtocols
                             else
                             {
                                 m_labelDefinedDevices.TryAdd(definedDevice.StationName, definedDevice);
+                                StatisticsEngine.Register(definedDevice, definedDevice.IDLabel, "Device", "PMU");
                                 devicedAdded = true;
                             }
                         }
                         else
                         {
                             m_definedDevices.TryAdd(definedDevice.IDCode, definedDevice);
+                            StatisticsEngine.Register(definedDevice, definedDevice.IDLabel, "Device", "PMU");
                             devicedAdded = true;
                         }
                     }
@@ -1179,12 +1197,14 @@ namespace PhasorProtocols
                         m_labelDefinedDevices = new ConcurrentDictionary<string, ConfigurationCell>(StringComparer.OrdinalIgnoreCase);
 
                     m_labelDefinedDevices.TryAdd(definedDevice.StationName, definedDevice);
+                    StatisticsEngine.Register(definedDevice, definedDevice.IDLabel, "Device", "PMU");
 
                     OnStatusMessage("Input device is using the device label for identification since connection has been forced to use label mapping. This is not the optimal configuration.");
                 }
                 else
                 {
                     m_definedDevices.TryAdd(definedDevice.IDCode, definedDevice);
+                    StatisticsEngine.Register(definedDevice, definedDevice.IDLabel, "Device", "PMU");
                 }
             }
         }

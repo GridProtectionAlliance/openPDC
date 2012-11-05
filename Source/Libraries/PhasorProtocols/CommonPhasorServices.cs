@@ -290,22 +290,7 @@ namespace PhasorProtocols
         /// </summary>
         public override void Initialize()
         {
-            StatisticsEngine statisticsEngine;
-
             base.Initialize();
-
-            // Attach to statistics engine events
-            if (StatisticsEngine.WaitForDefaultInstance(DefaultInitializationTimeout))
-            {
-                statisticsEngine = StatisticsEngine.Default;
-                statisticsEngine.Loaded += StatisticsEngine_Loaded;
-                statisticsEngine.BeforeCalculate += StatisticsEngine_BeforeCalculate;
-                statisticsEngine.Calculated += StatisticsEngine_Calculated;
-                statisticsEngine.MapAcronymFunction("InputStream", StatisticsEngine.GetAdapterAcronym);
-                statisticsEngine.MapAcronymFunction("OutputStream", StatisticsEngine.GetAdapterAcronym);
-                statisticsEngine.MapAcronymFunction("Device", GetDeviceAcronym);
-                GetExternalEventHandle("CommonPhasorServicesInitialize").Set();
-            }
 
             // Initialize the data publishing server (load settings from config file)
             if (m_dataPublisher != null)
@@ -525,91 +510,6 @@ namespace PhasorProtocols
 
             if (m_dataPublisher != null)
                 m_dataPublisher.QueueMeasurementsForProcessing(measurements);
-        }
-
-        // TODO: Add a StatisticsCategory table to do mapping automatically
-        private void StatisticsEngine_Loaded(object sender, StatisticsEngine.UnmappedMeasurementsEventArgs e)
-        {
-            StatisticsEngine statisticsEngine = StatisticsEngine.Default;
-
-            DataTable activeMeasurements = DataSource.Tables["ActiveMeasurements"];
-            DataRow measurementDefinition;
-
-            SignalReference signalReference;
-            string sourceAcronym;
-            string source;
-
-            foreach (IMeasurement measurement in e.UnmappedMeasurements)
-            {
-                source = null;
-                measurementDefinition = activeMeasurements.Select(string.Format("SignalID = '{0}'", measurement.ID.ToString())).First();
-                signalReference = new SignalReference(measurementDefinition.Field<object>("SignalReference").ToString());
-                sourceAcronym = signalReference.Acronym;
-
-                if (StatisticsEngine.RegexMatch(signalReference.ToString(), "IS"))
-                {
-                    source = "InputStream";
-                }
-                else if (StatisticsEngine.RegexMatch(signalReference.ToString(), "OS"))
-                {
-                    source = "OutputStream";
-                }
-                else if (StatisticsEngine.RegexMatch(signalReference.ToString(), "PMU"))
-                {
-                    source = "Device";
-                }
-
-                if ((object)source != null)
-                    statisticsEngine.MapMeasurement(measurement, source);
-            }
-        }
-
-        private void StatisticsEngine_BeforeCalculate(object sender, EventArgs e)
-        {
-            StatisticsEngine statisticsEngine = StatisticsEngine.Default;
-            IEnumerable<PhasorMeasurementMapper> inputStreams;
-            IEnumerable<ConfigurationCell> devices;
-            IEnumerable<PhasorDataConcentratorBase> outputStreams;
-
-            inputStreams = m_inputAdapters.Where<IInputAdapter>(adapter => adapter is PhasorMeasurementMapper).Cast<PhasorMeasurementMapper>();
-            devices = inputStreams.SelectMany(inputStream => inputStream.DefinedDevices);
-            outputStreams = m_actionAdapters.Where<IActionAdapter>(adapter => adapter is PhasorDataConcentratorBase).Cast<PhasorDataConcentratorBase>();
-
-            foreach (PhasorMeasurementMapper inputStream in inputStreams)
-            {
-                statisticsEngine.AddSource("InputStream", inputStream);
-            }
-
-            foreach (ConfigurationCell device in devices)
-            {
-                statisticsEngine.AddSource("Device", device);
-            }
-
-            foreach (PhasorDataConcentratorBase outputStream in outputStreams)
-            {
-                statisticsEngine.AddSource("OutputStream", outputStream);
-            }
-        }
-
-        private void StatisticsEngine_Calculated(object sender, EventArgs e)
-        {
-            IEnumerable<PhasorMeasurementMapper> inputStreams = m_inputAdapters
-                .Where<IInputAdapter>(adapter => adapter is PhasorMeasurementMapper)
-                .Cast<PhasorMeasurementMapper>();
-
-            IEnumerable<PhasorDataConcentratorBase> outputStreams = m_actionAdapters
-                .Where<IActionAdapter>(adapter => adapter is PhasorDataConcentratorBase)
-                .Cast<PhasorDataConcentratorBase>();
-
-            foreach (PhasorMeasurementMapper inputStream in inputStreams)
-            {
-                inputStream.ResetLatencyCounters();
-            }
-
-            foreach (PhasorDataConcentratorBase outputStream in outputStreams)
-            {
-                outputStream.ResetLatencyCounters();
-            }
         }
 
         private void m_frameParser_ReceivedConfigurationFrame(object sender, EventArgs<IConfigurationFrame> e)
