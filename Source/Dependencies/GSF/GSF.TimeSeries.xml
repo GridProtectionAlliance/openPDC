@@ -5860,6 +5860,11 @@
             Event is raised after statistics calculation.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Statistics.StatisticsEngine.DataSource">
+            <summary>
+            Gets or sets <see cref="T:System.Data.DataSet"/> based data source available to the <see cref="T:GSF.TimeSeries.Statistics.StatisticsEngine"/>.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Statistics.StatisticsEngine.SupportsTemporalProcessing">
             <summary>
             Gets the flag indicating if this adapter supports temporal processing.
