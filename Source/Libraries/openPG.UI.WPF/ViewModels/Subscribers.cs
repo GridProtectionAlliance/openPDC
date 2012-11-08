@@ -310,7 +310,7 @@ namespace openPG.UI.ViewModels
 
             try
             {
-                CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+                CommonFunctions.SendCommandToService("ReloadConfig");
             }
             catch (Exception ex)
             {
@@ -333,7 +333,7 @@ namespace openPG.UI.ViewModels
 
             try
             {
-                CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+                CommonFunctions.SendCommandToService("ReloadConfig");
             }
             catch (Exception ex)
             {
@@ -371,7 +371,7 @@ namespace openPG.UI.ViewModels
 
             try
             {
-                CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+                CommonFunctions.SendCommandToService("ReloadConfig");
             }
             catch (Exception ex)
             {
@@ -394,7 +394,7 @@ namespace openPG.UI.ViewModels
 
             try
             {
-                CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+                CommonFunctions.SendCommandToService("ReloadConfig");
             }
             catch (Exception ex)
             {
@@ -427,7 +427,7 @@ namespace openPG.UI.ViewModels
 
                 try
                 {
-                    CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+                    CommonFunctions.SendCommandToService("ReloadConfig");
                 }
                 catch (Exception ex)
                 {
@@ -461,7 +461,7 @@ namespace openPG.UI.ViewModels
 
                 try
                 {
-                    CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+                    CommonFunctions.SendCommandToService("ReloadConfig");
                 }
                 catch (Exception ex)
                 {
@@ -495,7 +495,7 @@ namespace openPG.UI.ViewModels
 
                 try
                 {
-                    CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+                    CommonFunctions.SendCommandToService("ReloadConfig");
                 }
                 catch (Exception ex)
                 {
@@ -529,7 +529,7 @@ namespace openPG.UI.ViewModels
 
                 try
                 {
-                    CommonFunctions.SendCommandToService("Initialize /a EXTERNAL!DATAPUBLISHER");
+                    CommonFunctions.SendCommandToService("ReloadConfig");
                 }
                 catch (Exception ex)
                 {
