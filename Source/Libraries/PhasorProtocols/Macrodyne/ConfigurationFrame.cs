@@ -43,7 +43,7 @@ namespace PhasorProtocols.Macrodyne
     /// Represents the Macrodyne implementation of a <see cref="IConfigurationFrame"/> that can be sent or received.
     /// </summary>
     [Serializable()]
-    public class ConfigurationFrame : ConfigurationFrameBase, ISupportFrameImage<FrameType>
+    public class ConfigurationFrame : ConfigurationFrameBase, ISupportSourceIdentifiableFrameImage<SourceChannel, FrameType>
     {
         #region [ Members ]
 

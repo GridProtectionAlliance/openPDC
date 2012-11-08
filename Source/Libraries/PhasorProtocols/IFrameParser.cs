@@ -139,6 +139,14 @@ namespace PhasorProtocols
         }
 
         /// <summary>
+        /// Gets the total number of frames that are currently queued for publication, if any.
+        /// </summary>
+        int QueuedOutputs
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets the number of redundant frames in each packet.
         /// </summary>
         /// <remarks>

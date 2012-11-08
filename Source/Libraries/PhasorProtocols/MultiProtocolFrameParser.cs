@@ -1868,6 +1868,17 @@ namespace PhasorProtocols
         }
 
         /// <summary>
+        /// Gets the total number of frames that are currently queued for publication, if any.
+        /// </summary>
+        public int QueuedOutputs
+        {
+            get
+            {
+                return (object)m_frameParser != null ? m_frameParser.QueuedOutputs : 0;
+            }
+        }
+
+        /// <summary>
         /// Gets a boolean value that determines if data channel is defined as a server based connection.
         /// </summary>
         public bool DataChannelIsServerBased
@@ -3119,6 +3130,10 @@ namespace PhasorProtocols
             // If injecting a simulated timestamp, use the last received time
             if (m_injectSimulatedTimestamp)
                 sourceFrame.Timestamp = simulatedTimestamp;
+
+            // Read next buffer if output frames are almost all processed
+            if (QueuedOutputs < 2)
+                ThreadPool.QueueUserWorkItem(ReadNextFileBuffer);
         }
 
         // Handle attach to input timer
@@ -3588,9 +3603,6 @@ namespace PhasorProtocols
             {
                 if ((object)BufferParsed != null)
                     BufferParsed(this, EventArgs.Empty);
-
-                if (m_transportProtocol == TransportProtocol.File)
-                    ThreadPool.QueueUserWorkItem(ReadNextFileBuffer);
             }
             catch (Exception ex)
             {

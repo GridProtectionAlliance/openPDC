@@ -60,6 +60,7 @@ namespace PhasorProtocols
         private Ticks m_receivedTimestamp;                                          // Time, represented as 100-nanosecond ticks, of frame received (i.e. created)
         private Ticks m_publishedTimestamp;                                         // Time, represented as 100-nanosecond ticks, of frame published (post process)
         private int m_parsedBinaryLength;                                           // Binary length of frame as provided from parsed header
+        private SourceChannel m_source;
         private bool m_published;                                                   // Determines if this frame of data has been published (IFrame.Published)
         private int m_sortedMeasurements;                                           // Total measurements published into this frame        (IFrame.SortedMeasurements)
         private ConcurrentDictionary<MeasurementKey, IMeasurement> m_measurements;  // Collection of measurements published by this frame  (IFrame.Measurements)
@@ -111,6 +112,37 @@ namespace PhasorProtocols
         public abstract FundamentalFrameType FrameType
         {
             get;
+        }
+
+        /// <summary>
+        /// Gets or sets the data source identifier for this <see cref="ChannelFrameBase{T}"/>.
+        /// </summary>
+        public virtual SourceChannel Source
+        {
+            get
+            {
+                return m_source;
+            }
+            set
+            {
+                m_source = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets flag that determines if frame image can be queued for publication or should be processed immediately.
+        /// </summary>
+        /// <remarks>
+        /// Some frames, e.g., a configuration or key frame, may be critical to processing of other frames. In this
+        /// case, these types of frames should be published immediately so that subsequent frame parsing can have
+        /// access to needed critical information. All other frames are assumed to be queued by default.
+        /// </remarks>
+        public virtual bool AllowQueuedPublication
+        {
+            get
+            {
+                return true;
+            }
         }
 
         /// <summary>

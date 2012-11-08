@@ -245,7 +245,7 @@ namespace PhasorProtocols.IeeeC37_118
     /// Represents the IEEE C37.118 implementation of a <see cref="IConfigurationFrame"/>, type 1, that can be sent or received.
     /// </summary>
     [Serializable()]
-    public class ConfigurationFrame1 : ConfigurationFrameBase, ISupportFrameImage<FrameType>
+    public class ConfigurationFrame1 : ConfigurationFrameBase, ISupportSourceIdentifiableFrameImage<SourceChannel, FrameType>
     {
         #region [ Members ]
 

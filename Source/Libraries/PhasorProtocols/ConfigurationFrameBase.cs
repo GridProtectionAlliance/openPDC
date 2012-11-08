@@ -89,6 +89,20 @@ namespace PhasorProtocols
         }
 
         /// <summary>
+        /// Gets flag that determines if frame image can be queued for publication or should be processed immediately.
+        /// </summary>
+        /// <remarks>
+        /// Configuration frames are not queued for publication by default.
+        /// </remarks>
+        public override bool AllowQueuedPublication
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Gets reference to the <see cref="ConfigurationCellCollection"/> for this <see cref="ConfigurationFrameBase"/>.
         /// </summary>
         public virtual new ConfigurationCellCollection Cells

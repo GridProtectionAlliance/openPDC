@@ -244,7 +244,7 @@ namespace PhasorProtocols.FNet
     /// Represents the F-NET implementation of a <see cref="IDataFrame"/> that can be sent or received.
     /// </summary>
     [Serializable()]
-    public class DataFrame : DataFrameBase, ISupportFrameImage<int>
+    public class DataFrame : DataFrameBase, ISupportSourceIdentifiableFrameImage<SourceChannel, int>
     {
         #region [ Members ]
 

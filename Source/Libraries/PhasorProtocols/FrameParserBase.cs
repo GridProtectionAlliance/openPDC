@@ -50,7 +50,7 @@ namespace PhasorProtocols
     /// parsed correctly.
     /// </remarks>
     /// <typeparam name="TFrameIdentifier">Frame type identifier used to distinguish frames.</typeparam>
-    public abstract class FrameParserBase<TFrameIdentifier> : MultiSourceFrameImageParserBase<SourceChannel, TFrameIdentifier, ISupportFrameImage<TFrameIdentifier>>, IFrameParser
+    public abstract class FrameParserBase<TFrameIdentifier> : MultiSourceFrameImageParserBase<SourceChannel, TFrameIdentifier, ISupportSourceIdentifiableFrameImage<SourceChannel, TFrameIdentifier>>, IFrameParser
     {
         #region [ Members ]
 
@@ -432,14 +432,15 @@ namespace PhasorProtocols
             OnParsingException(new InvalidOperationException(string.Format("WARNING: Encountered an undefined frame type identfier \"{0}\". Output was not parsed.", frameType)));
         }
 
-        // Handles reception of data from base class event "DataParsed"
-        private void base_DataParsed(object sender, EventArgs<SourceChannel, IList<ISupportFrameImage<TFrameIdentifier>>> e)
+        // Handle reception of data from base class event "DataParsed". Note that by attaching to base class event instead of overriding
+        // OnDataParsed event raiser we allow frame implementations to control whether or not publication happens from a new threadpool
+        // thread or from existing parsing thread by simply overriding the AllowQueuedPublication boolean property. Normally configuration
+        // frames are published as soon as they are parsed to make sure needed parsing information is available as quickly as possible.
+        // All other frames are queued for processing by default to allow for better processor distribution of mapping/routing work load.
+        private void base_DataParsed(object sender, EventArgs<ISupportSourceIdentifiableFrameImage<SourceChannel, TFrameIdentifier>> e)
         {
-            // Call overridable channel frame function handler for each parsed frame...
-            foreach (ISupportFrameImage<TFrameIdentifier> frame in e.Argument2)
-            {
-                OnReceivedChannelFrame(frame as IChannelFrame);
-            }
+            // Call overridable channel frame function handler for parsed frame...
+            OnReceivedChannelFrame(e.Argument as IChannelFrame);
         }
 
         // Handles output type not found error from base class event "OutputTypeNotFound"

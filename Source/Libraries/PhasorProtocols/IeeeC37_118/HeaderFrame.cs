@@ -244,7 +244,7 @@ namespace PhasorProtocols.IeeeC37_118
     /// Represents the IEEE C37.118 implementation of a <see cref="IHeaderFrame"/> that can be sent or received.
     /// </summary>
     [Serializable()]
-    public class HeaderFrame : HeaderFrameBase, ISupportFrameImage<FrameType>
+    public class HeaderFrame : HeaderFrameBase, ISupportSourceIdentifiableFrameImage<SourceChannel, FrameType>
     {
         #region [ Members ]
 

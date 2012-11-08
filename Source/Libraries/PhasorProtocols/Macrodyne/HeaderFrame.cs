@@ -32,7 +32,7 @@ namespace PhasorProtocols.Macrodyne
     /// Represents the Macrodyne implementation of a <see cref="IHeaderFrame"/> that can be sent or received.
     /// </summary>
     [Serializable()]
-    public class HeaderFrame : HeaderFrameBase, ISupportFrameImage<FrameType>
+    public class HeaderFrame : HeaderFrameBase, ISupportSourceIdentifiableFrameImage<SourceChannel, FrameType>
     {
         #region [ Members ]
 

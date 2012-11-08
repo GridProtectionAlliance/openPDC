@@ -245,7 +245,7 @@ namespace PhasorProtocols.IeeeC37_118
     /// Represents the IEEE C37.118 implementation of a <see cref="IDataFrame"/> that can be sent or received.
     /// </summary>
     [Serializable()]
-    public class DataFrame : DataFrameBase, ISupportFrameImage<FrameType>
+    public class DataFrame : DataFrameBase, ISupportSourceIdentifiableFrameImage<SourceChannel, FrameType>
     {
         #region [ Members ]
 

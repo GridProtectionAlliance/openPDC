@@ -40,7 +40,7 @@ namespace PhasorProtocols.BpaPdcStream
     /// Represents the BPA PDCstream implementation of a <see cref="IDataFrame"/> that can be sent or received.
     /// </summary>
     [Serializable()]
-    public class DataFrame : DataFrameBase, ISupportFrameImage<FrameType>
+    public class DataFrame : DataFrameBase, ISupportSourceIdentifiableFrameImage<SourceChannel, FrameType>
     {
         #region [ Members ]
 

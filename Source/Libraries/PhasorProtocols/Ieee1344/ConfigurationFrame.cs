@@ -245,7 +245,7 @@ namespace PhasorProtocols.Ieee1344
     /// Represents the IEEE 1344 implementation of a <see cref="IConfigurationFrame"/> that can be sent or received.
     /// </summary>
     [Serializable()]
-    public class ConfigurationFrame : ConfigurationFrameBase, ISupportFrameImage<FrameType>
+    public class ConfigurationFrame : ConfigurationFrameBase, ISupportSourceIdentifiableFrameImage<SourceChannel, FrameType>
     {
         #region [ Members ]
 
