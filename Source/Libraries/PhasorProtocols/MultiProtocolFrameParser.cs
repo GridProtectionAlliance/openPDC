@@ -1201,13 +1201,27 @@ namespace PhasorProtocols
         public event EventHandler<EventArgs<IChannelFrame>> ReceivedUndeterminedFrame;
 
         /// <summary>
+        /// Occurs when a frame image has been received.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="EventArgs{T1,T2}.Argument1"/> is the <see cref="FundamentalFrameType"/> of the frame buffer image that was received.<br/>
+        /// <see cref="EventArgs{T1,T2}.Argument2"/> is the length of the frame image that was received.
+        /// </remarks>
+        public event EventHandler<EventArgs<FundamentalFrameType, int>> ReceivedFrameImage;
+
+        /// <summary>
         /// Occurs when a frame buffer image has been received.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// <see cref="EventArgs{T1,T2,T3,T4}.Argument1"/> is the <see cref="FundamentalFrameType"/> of the frame buffer image that was received.<br/>
         /// <see cref="EventArgs{T1,T2,T3,T4}.Argument2"/> is the buffer that contains the frame image that was received.<br/>
         /// <see cref="EventArgs{T1,T2,T3,T4}.Argument3"/> is the offset into the buffer that contains the frame image that was received.<br/>
         /// <see cref="EventArgs{T1,T2,T3,T4}.Argument4"/> is the length of data in the buffer that contains the frame image that was received.
+        /// </para>
+        /// <para>
+        /// Consumers should use the more efficient <see cref="ReceivedFrameImage"/> event if the buffer is not needed.
+        /// </para>
         /// </remarks>
         public event EventHandler<EventArgs<FundamentalFrameType, byte[], int, int>> ReceivedFrameBufferImage;
 
@@ -2394,10 +2408,14 @@ namespace PhasorProtocols
             m_frameParser.ReceivedDataFrame += m_frameParser_ReceivedDataFrame;
             m_frameParser.ReceivedHeaderFrame += m_frameParser_ReceivedHeaderFrame;
             m_frameParser.ReceivedUndeterminedFrame += m_frameParser_ReceivedUndeterminedFrame;
-            m_frameParser.ReceivedFrameBufferImage += m_frameParser_ReceivedFrameBufferImage;
+            m_frameParser.ReceivedFrameImage += m_frameParser_ReceivedFrameImage;
             m_frameParser.ConfigurationChanged += m_frameParser_ConfigurationChanged;
             m_frameParser.ParsingException += m_frameParser_ParsingException;
             m_frameParser.BufferParsed += m_frameParser_BufferParsed;
+
+            // Only attach to this event if consumer needs buffer image (i.e., has attached to our event)
+            if ((object)ReceivedFrameBufferImage != null)
+                m_frameParser.ReceivedFrameBufferImage += m_frameParser_ReceivedFrameBufferImage;
 
             // Start parsing engine
             m_frameParser.Start();
@@ -2672,10 +2690,14 @@ namespace PhasorProtocols
                     m_frameParser.ReceivedDataFrame -= m_frameParser_ReceivedDataFrame;
                     m_frameParser.ReceivedHeaderFrame -= m_frameParser_ReceivedHeaderFrame;
                     m_frameParser.ReceivedUndeterminedFrame -= m_frameParser_ReceivedUndeterminedFrame;
-                    m_frameParser.ReceivedFrameBufferImage -= m_frameParser_ReceivedFrameBufferImage;
+                    m_frameParser.ReceivedFrameImage -= m_frameParser_ReceivedFrameImage;
                     m_frameParser.ConfigurationChanged -= m_frameParser_ConfigurationChanged;
                     m_frameParser.ParsingException -= m_frameParser_ParsingException;
                     m_frameParser.BufferParsed -= m_frameParser_BufferParsed;
+
+                    if ((object)ReceivedFrameBufferImage != null)
+                        m_frameParser.ReceivedFrameBufferImage -= m_frameParser_ReceivedFrameBufferImage;
+
                     m_frameParser.Dispose();
                 }
             }
@@ -3555,6 +3577,20 @@ namespace PhasorProtocols
             catch (Exception ex)
             {
                 OnParsingException(ex, "MultiProtocolFrameParser \"ReceivedUndeterminedFrame\" consumer event handler exception: {0}", ex.Message);
+            }
+        }
+
+        private void m_frameParser_ReceivedFrameImage(object sender, EventArgs<FundamentalFrameType, int> e)
+        {
+            // We don't stop parsing for exceptions thrown in consumer event handlers
+            try
+            {
+                if ((object)ReceivedFrameImage != null)
+                    ReceivedFrameImage(this, e);
+            }
+            catch (Exception ex)
+            {
+                OnParsingException(ex, "MultiProtocolFrameParser \"ReceivedFrameImage\" consumer event handler exception: {0}", ex.Message);
             }
         }
 

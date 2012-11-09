@@ -102,13 +102,27 @@ namespace PhasorProtocols
         event EventHandler<EventArgs<IChannelFrame>> ReceivedUndeterminedFrame;
 
         /// <summary>
+        /// Occurs when a frame image has been received.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="EventArgs{T1,T2}.Argument1"/> is the <see cref="FundamentalFrameType"/> of the frame buffer image that was received.<br/>
+        /// <see cref="EventArgs{T1,T2}.Argument2"/> is the length of the frame image that was received.
+        /// </remarks>
+        event EventHandler<EventArgs<FundamentalFrameType, int>> ReceivedFrameImage;
+
+        /// <summary>
         /// Occurs when a frame buffer image has been received.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// <see cref="EventArgs{T1,T2,T3,T4}.Argument1"/> is the <see cref="FundamentalFrameType"/> of the frame buffer image that was received.<br/>
         /// <see cref="EventArgs{T1,T2,T3,T4}.Argument2"/> is the buffer that contains the frame image that was received.<br/>
         /// <see cref="EventArgs{T1,T2,T3,T4}.Argument3"/> is the offset into the buffer that contains the frame image that was received.<br/>
-        /// <see cref="EventArgs{T1,T2,T3,T4}.Argument4"/> is the length of data in the buffer that contains the frame image that was received..
+        /// <see cref="EventArgs{T1,T2,T3,T4}.Argument4"/> is the length of data in the buffer that contains the frame image that was received.
+        /// </para>
+        /// <para>
+        /// Consumers should use the more efficient <see cref="ReceivedFrameImage"/> event if the buffer is not needed.
+        /// </para>
         /// </remarks>
         event EventHandler<EventArgs<FundamentalFrameType, byte[], int, int>> ReceivedFrameBufferImage;
 

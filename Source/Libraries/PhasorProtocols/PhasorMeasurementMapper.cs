@@ -271,7 +271,7 @@ namespace PhasorProtocols
         {
             get
             {
-                if (m_labelDefinedDevices != null)
+                if ((object)m_labelDefinedDevices != null)
                     return m_definedDevices.Values.Concat(m_labelDefinedDevices.Values);
 
                 return m_definedDevices.Values;
@@ -363,7 +363,7 @@ namespace PhasorProtocols
         {
             get
             {
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                     return m_frameParser.TotalFramesReceived;
 
                 return 0;
@@ -392,7 +392,7 @@ namespace PhasorProtocols
         {
             get
             {
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                     return m_frameParser.TotalMissingFrames;
 
                 return 0;
@@ -406,7 +406,7 @@ namespace PhasorProtocols
         {
             get
             {
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                     return m_frameParser.TotalCrcExceptions;
 
                 return 0;
@@ -522,7 +522,7 @@ namespace PhasorProtocols
         {
             get
             {
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                     return m_frameParser.ConfiguredFrameRate;
 
                 return 0;
@@ -536,7 +536,7 @@ namespace PhasorProtocols
         {
             get
             {
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                     return m_frameParser.CalculatedFrameRate;
 
                 return 0.0D;
@@ -550,7 +550,7 @@ namespace PhasorProtocols
         {
             get
             {
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                     return m_frameParser.ByteRate;
 
                 return 0.0D;
@@ -693,7 +693,7 @@ namespace PhasorProtocols
                 status.AppendFormat("           Average latency: {0}ms over {1} tests", AverageLatency, m_latencyMeasurements);
                 status.AppendLine();
 
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                     status.Append(m_frameParser.Status);
 
                 status.AppendLine();
@@ -719,7 +719,7 @@ namespace PhasorProtocols
                     stationName = null;
 
                     // Attempt to lookup station name in configuration frame of connected device
-                    if (m_frameParser != null && m_frameParser.ConfigurationFrame != null)
+                    if ((object)m_frameParser != null && (object)m_frameParser.ConfigurationFrame != null)
                     {
                         // Attempt to lookup by label (if defined), then by ID code
                         if (((object)m_labelDefinedDevices != null && (object)definedDevice.StationName != null &&
@@ -775,7 +775,7 @@ namespace PhasorProtocols
             }
             set
             {
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                 {
                     // Detach from events on existing frame parser reference
                     m_frameParser.ConfigurationChanged -= m_frameParser_ConfigurationChanged;
@@ -788,14 +788,14 @@ namespace PhasorProtocols
                     m_frameParser.ReceivedConfigurationFrame -= m_frameParser_ReceivedConfigurationFrame;
                     m_frameParser.ReceivedDataFrame -= m_frameParser_ReceivedDataFrame;
                     m_frameParser.ReceivedHeaderFrame -= m_frameParser_ReceivedHeaderFrame;
-                    m_frameParser.ReceivedFrameBufferImage -= m_frameParser_ReceivedFrameBufferImage;
+                    m_frameParser.ReceivedFrameImage -= m_frameParser_ReceivedFrameImage;
                     m_frameParser.Dispose();
                 }
 
                 // Assign new frame parser reference
                 m_frameParser = value;
 
-                if (m_frameParser != null)
+                if ((object)m_frameParser != null)
                 {
                     // Attach to events on new frame parser reference
                     m_frameParser.ConfigurationChanged += m_frameParser_ConfigurationChanged;
@@ -808,7 +808,7 @@ namespace PhasorProtocols
                     m_frameParser.ReceivedConfigurationFrame += m_frameParser_ReceivedConfigurationFrame;
                     m_frameParser.ReceivedDataFrame += m_frameParser_ReceivedDataFrame;
                     m_frameParser.ReceivedHeaderFrame += m_frameParser_ReceivedHeaderFrame;
-                    m_frameParser.ReceivedFrameBufferImage += m_frameParser_ReceivedFrameBufferImage;
+                    m_frameParser.ReceivedFrameImage += m_frameParser_ReceivedFrameImage;
                 }
             }
         }
@@ -832,14 +832,14 @@ namespace PhasorProtocols
                         // Detach from frame parser events and set reference to null
                         this.FrameParser = null;
 
-                        if (m_dataStreamMonitor != null)
+                        if ((object)m_dataStreamMonitor != null)
                         {
                             m_dataStreamMonitor.Elapsed -= m_dataStreamMonitor_Elapsed;
                             m_dataStreamMonitor.Dispose();
                         }
                         m_dataStreamMonitor = null;
 
-                        if (m_primaryDataSource != null)
+                        if ((object)m_primaryDataSource != null)
                         {
                             m_primaryDataSource.ConnectionEstablished -= m_primaryDataSource_ConnectionEstablished;
                             m_primaryDataSource.ConnectionTerminated -= m_primaryDataSource_ConnectionTerminated;
@@ -1265,9 +1265,9 @@ namespace PhasorProtocols
         [AdapterCommand("Sends the specified command to connected phasor device.")]
         public void SendCommand(DeviceCommand command)
         {
-            if (m_frameParser != null)
+            if ((object)m_frameParser != null)
             {
-                if (m_frameParser.SendDeviceCommand(command) != null)
+                if ((object)m_frameParser.SendDeviceCommand(command) != null)
                     OnStatusMessage("Sent device command \"{0}\"...", command);
             }
             else
@@ -1280,7 +1280,7 @@ namespace PhasorProtocols
         [AdapterCommand("Resets the statistics of all devices associated with this connection.")]
         public void ResetStatistics()
         {
-            if (m_definedDevices != null)
+            if ((object)m_definedDevices != null)
             {
                 foreach (ConfigurationCell definedDevice in DefinedDevices)
                 {
@@ -1305,7 +1305,7 @@ namespace PhasorProtocols
         [AdapterCommand("Resets the statistics of the device with the specified ID code.")]
         public void ResetDeviceStatistics(ushort idCode)
         {
-            if (m_definedDevices != null)
+            if ((object)m_definedDevices != null)
             {
                 ConfigurationCell definedDevice;
 
@@ -1378,7 +1378,7 @@ namespace PhasorProtocols
 
                 // As soon as a configuration frame is made available to the frame parser, regardless of source,
                 // full parsing of data frames can begin...
-                if (configFrame != null)
+                if ((object)configFrame != null)
                 {
                     m_frameParser.ConfigurationFrame = configFrame;
                     m_receivedConfigFrame = true;
@@ -1406,7 +1406,7 @@ namespace PhasorProtocols
 
                 // As soon as a configuration frame is made available to the frame parser, regardless of source,
                 // full parsing of data frames can begin...
-                if (configFrame != null)
+                if ((object)configFrame != null)
                 {
                     m_frameParser.ConfigurationFrame = configFrame;
 
@@ -1442,7 +1442,7 @@ namespace PhasorProtocols
         {
             StringBuilder status = new StringBuilder();
 
-            if (m_frameParser != null && m_frameParser.IsConnected)
+            if ((object)m_frameParser != null && m_frameParser.IsConnected)
             {
                 if (m_lastReportTime > 0)
                 {
@@ -1485,7 +1485,7 @@ namespace PhasorProtocols
                     status.Append(uptimeStats);
                     status.Append(runtimeStats);
                 }
-                else if (m_frameParser.ConfigurationFrame == null)
+                else if ((object)m_frameParser.ConfigurationFrame == null)
                 {
                     status.AppendFormat("  >> Awaiting configuration frame - {0} bytes received", m_frameParser.TotalBytesReceived);
                 }
@@ -1535,7 +1535,7 @@ namespace PhasorProtocols
             m_cachedConfigLoadAttempted = false;
 
             // Start frame parser
-            if (m_frameParser != null)
+            if ((object)m_frameParser != null)
                 m_frameParser.Start();
         }
 
@@ -1548,7 +1548,7 @@ namespace PhasorProtocols
             m_dataStreamMonitor.Enabled = false;
 
             // Stop frame parser
-            if (m_frameParser != null)
+            if ((object)m_frameParser != null)
                 m_frameParser.Stop();
         }
 
@@ -1783,7 +1783,7 @@ namespace PhasorProtocols
                 if (count == references.Length)
                 {
                     // Create and cache new signal reference if it doesn't exist
-                    if (references[index] == null)
+                    if ((object)references[index] == null)
                         references[index] = SignalReference.ToString(Name + "!IS", type, index + 1);
 
                     return references[index];
@@ -1883,10 +1883,10 @@ namespace PhasorProtocols
             m_totalHeaderFrames++;
         }
 
-        private void m_frameParser_ReceivedFrameBufferImage(object sender, EventArgs<FundamentalFrameType, byte[], int, int> e)
+        private void m_frameParser_ReceivedFrameImage(object sender, EventArgs<FundamentalFrameType, int> e)
         {
             // We track bytes received so that connection can be restarted if data is not flowing
-            m_bytesReceived += e.Argument4;
+            m_bytesReceived += e.Argument2;
         }
 
         private void m_frameParser_ConnectionTerminated(object sender, EventArgs e)

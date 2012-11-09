@@ -242,7 +242,7 @@ namespace PhasorProtocols
                     if (disposing)
                     {
                         // Detach from frame parser events and dispose
-                        if (m_frameParser != null)
+                        if ((object)m_frameParser != null)
                         {
                             m_frameParser.ConnectionAttempt -= m_frameParser_ConnectionAttempt;
                             m_frameParser.ConnectionEstablished -= m_frameParser_ConnectionEstablished;
@@ -489,7 +489,7 @@ namespace PhasorProtocols
         /// <param name="command"><see cref="DeviceCommand"/> to send to connected device.</param>
         public void SendCommand(DeviceCommand command)
         {
-            if (m_frameParser != null)
+            if ((object)m_frameParser != null)
             {
                 m_frameParser.SendDeviceCommand(command);
                 OnStatusMessage("Sent device command \"{0}\"...", command);

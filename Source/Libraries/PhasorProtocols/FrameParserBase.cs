@@ -1,5 +1,5 @@
 //******************************************************************************************************
-//  C:\Projects\openPDC\Synchrophasor\Current Version\Source\Libraries\PhasorProtocols\FrameParserBase.cs - Gbtc
+//  FrameParserBase.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -31,6 +31,7 @@
 //******************************************************************************************************
 
 using GSF;
+using GSF.Collections;
 using GSF.Parsing;
 using System;
 using System.Collections.Concurrent;
@@ -105,13 +106,27 @@ namespace PhasorProtocols
         public event EventHandler<EventArgs<IChannelFrame>> ReceivedUndeterminedFrame;
 
         /// <summary>
-        /// Occurs when a frame buffer image has been received.
+        /// Occurs when a frame image has been received.
         /// </summary>
         /// <remarks>
+        /// <see cref="EventArgs{T1,T2}.Argument1"/> is the <see cref="FundamentalFrameType"/> of the frame buffer image that was received.<br/>
+        /// <see cref="EventArgs{T1,T2}.Argument2"/> is the length of the frame image that was received.
+        /// </remarks>
+        public event EventHandler<EventArgs<FundamentalFrameType, int>> ReceivedFrameImage;
+
+        /// <summary>
+        /// Occurs when a frame image has been received, event includes buffer.
+        /// </summary>
+        /// <remarks>
+        /// <para>
         /// <see cref="EventArgs{T1,T2,T3,T4}.Argument1"/> is the <see cref="FundamentalFrameType"/> of the frame buffer image that was received.<br/>
         /// <see cref="EventArgs{T1,T2,T3,T4}.Argument2"/> is the buffer that contains the frame image that was received.<br/>
         /// <see cref="EventArgs{T1,T2,T3,T4}.Argument3"/> is the offset into the buffer that contains the frame image that was received.<br/>
-        /// <see cref="EventArgs{T1,T2,T3,T4}.Argument4"/> is the length of data in the buffer that contains the frame image that was received..
+        /// <see cref="EventArgs{T1,T2,T3,T4}.Argument4"/> is the length of data in the buffer that contains the frame image that was received.
+        /// </para>
+        /// <para>
+        /// Consumers should use the more efficient <see cref="ReceivedFrameImage"/> event if the buffer is not needed.
+        /// </para>
         /// </remarks>
         public event EventHandler<EventArgs<FundamentalFrameType, byte[], int, int>> ReceivedFrameBufferImage;
 
@@ -122,7 +137,7 @@ namespace PhasorProtocols
 
         // Fields
         private IConnectionParameters m_connectionParameters;
-        private ConcurrentQueue<EventArgs<FundamentalFrameType, byte[], int, int>> m_frameImageQueue;
+        private AsyncQueue<EventArgs<FundamentalFrameType, byte[], int, int>> m_frameImageQueue;
         private int m_processing;
         private bool m_disposed;
 
@@ -202,7 +217,7 @@ namespace PhasorProtocols
 
                 status.Append(base.Status);
                 status.Append("     Received config frame: ");
-                status.Append(ConfigurationFrame == null ? "No" : "Yes");
+                status.Append((object)ConfigurationFrame == null ? "No" : "Yes");
                 status.AppendLine();
 
                 if ((object)ConfigurationFrame != null)
@@ -307,7 +322,7 @@ namespace PhasorProtocols
         }
 
         /// <summary>
-        /// Raises the <see cref="ReceivedFrameBufferImage"/> event.
+        /// Raises the <see cref="ReceivedFrameImage"/> and <see cref="ReceivedFrameBufferImage"/> event.
         /// </summary>
         /// <param name="frameType"><see cref="FundamentalFrameType"/> to send to <see cref="ReceivedFrameBufferImage"/> event.</param>
         /// <param name="buffer">Frame buffer image to send to <see cref="ReceivedFrameBufferImage"/> event.</param>
@@ -315,49 +330,30 @@ namespace PhasorProtocols
         /// <param name="length">Length of data in frame buffer image to send to <see cref="ReceivedFrameBufferImage"/> event.</param>
         protected virtual void OnReceivedFrameBufferImage(FundamentalFrameType frameType, byte[] buffer, int offset, int length)
         {
-            EventArgs<FundamentalFrameType, byte[], int, int> dequeuedFrameImage;
+            // It is more light-weight for consumers to attach to the "ReceivedFrameImage" event if they don't need the buffer
+            if ((object)ReceivedFrameImage != null)
+                ReceivedFrameImage(this, new EventArgs<FundamentalFrameType, int>(frameType, length));
 
             // Since this event is called from an async socket operation, these events can be processed simultaneously, especially
             // when the consuming event may take time to process this data (e.g., writing the frame to a capture file for replay),
-            // so we queue these events up for serial processing
+            // so we queue these events up for asynchronous serial processing
             if ((object)ReceivedFrameBufferImage != null)
             {
-                // If a consumer is subscribing to this event, make sure frame image queue exists
                 if ((object)m_frameImageQueue == null)
-                    m_frameImageQueue = new ConcurrentQueue<EventArgs<FundamentalFrameType, byte[], int, int>>();
-
-                m_frameImageQueue.Enqueue(new EventArgs<FundamentalFrameType, byte[], int, int>(frameType, buffer, offset, length));
-
-                // Process next frame image
-                if (Interlocked.CompareExchange(ref m_processing, 1, 0) == 0)
                 {
-                    if (m_frameImageQueue.TryDequeue(out dequeuedFrameImage))
-                        ThreadPool.QueueUserWorkItem(state => ProcessFrameImage((EventArgs<FundamentalFrameType, byte[], int, int>)state), dequeuedFrameImage);
-                    else
-                        Interlocked.Exchange(ref m_processing, 0);
+                    m_frameImageQueue = new AsyncQueue<EventArgs<FundamentalFrameType, byte[], int, int>>()
+                    {
+                        ProcessItemFunction = frameImage => ReceivedFrameBufferImage(this, frameImage)
+                    };
+
+                    m_frameImageQueue.ProcessException += (sender, e) => OnParsingException(e.Argument);
                 }
-            }
-        }
 
-        // Process elements in frame image queue
-        private void ProcessFrameImage(EventArgs<FundamentalFrameType, byte[], int, int> frameImage)
-        {
-            EventArgs<FundamentalFrameType, byte[], int, int> dequeuedFrameImage;
+                // We don't own the provided buffer and don't know what the consumer will do with it, so we create
+                // a copy of the relevant buffer segment and enqueue this for processing
+                byte[] bufferSegment = buffer.BlockCopy(offset, length);
 
-            try
-            {
-                // Expose next frame buffer image
-                ReceivedFrameBufferImage(this, frameImage);
-
-                // Process next frame image
-                if (m_frameImageQueue.TryDequeue(out dequeuedFrameImage))
-                    ThreadPool.QueueUserWorkItem(state => ProcessFrameImage((EventArgs<FundamentalFrameType, byte[], int, int>)state), dequeuedFrameImage);
-                else
-                    Interlocked.Exchange(ref m_processing, 0);
-            }
-            catch (Exception ex)
-            {
-                OnParsingException(ex);
+                m_frameImageQueue.Enqueue(new EventArgs<FundamentalFrameType, byte[], int, int>(frameType, bufferSegment, 0, bufferSegment.Length));
             }
         }
 
