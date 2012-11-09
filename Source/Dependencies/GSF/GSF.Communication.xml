@@ -2685,45 +2685,50 @@
             whether the server has been initialized.
             </summary>
         </member>
-        <member name="T:GSF.Communication.SslClient">
+        <member name="T:GSF.Communication.TlsClient">
             <summary>
             Represents a TCP-based communication client with SSL authentication and encryption.
             </summary>
             <seealso cref="T:GSF.Communication.TcpClient"/>
         </member>
-        <member name="F:GSF.Communication.SslClient.DefaultPayloadAware">
+        <member name="F:GSF.Communication.TlsClient.DefaultPayloadAware">
             <summary>
-            Specifies the default value for the <see cref="P:GSF.Communication.SslClient.PayloadAware"/> property.
+            Specifies the default value for the <see cref="P:GSF.Communication.TlsClient.PayloadAware"/> property.
             </summary>
         </member>
-        <member name="F:GSF.Communication.SslClient.DefaultAllowDualStackSocket">
+        <member name="F:GSF.Communication.TlsClient.DefaultAllowDualStackSocket">
             <summary>
-            Specifies the default value for the <see cref="P:GSF.Communication.SslClient.AllowDualStackSocket"/> property.
+            Specifies the default value for the <see cref="P:GSF.Communication.TlsClient.AllowDualStackSocket"/> property.
             </summary>
         </member>
-        <member name="F:GSF.Communication.SslClient.DefaultConnectionString">
+        <member name="F:GSF.Communication.TlsClient.DefaultConnectionString">
             <summary>
             Specifies the default value for the <see cref="P:GSF.Communication.ClientBase.ConnectionString"/> property.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.#ctor">
+        <member name="F:GSF.Communication.TlsClient.DefaultTrustedCertificatesPath">
             <summary>
-            Initializes a new instance of the <see cref="T:GSF.Communication.SslClient"/> class.
+            Specifies the default value for the <see cref="P:GSF.Communication.TlsClient.TrustedCertificatesPath"/> property.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.#ctor(System.String)">
+        <member name="M:GSF.Communication.TlsClient.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:GSF.Communication.SslClient"/> class.
+            Initializes a new instance of the <see cref="T:GSF.Communication.TlsClient"/> class.
             </summary>
-            <param name="connectString">Connect string of the <see cref="T:GSF.Communication.TcpClient"/>. See <see cref="F:GSF.Communication.SslClient.DefaultConnectionString"/> for format.</param>
         </member>
-        <member name="M:GSF.Communication.SslClient.#ctor(System.ComponentModel.IContainer)">
+        <member name="M:GSF.Communication.TlsClient.#ctor(System.String)">
             <summary>
-            Initializes a new instance of the <see cref="T:GSF.Communication.SslClient"/> class.
+            Initializes a new instance of the <see cref="T:GSF.Communication.TlsClient"/> class.
+            </summary>
+            <param name="connectString">Connect string of the <see cref="T:GSF.Communication.TcpClient"/>. See <see cref="F:GSF.Communication.TlsClient.DefaultConnectionString"/> for format.</param>
+        </member>
+        <member name="M:GSF.Communication.TlsClient.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GSF.Communication.TlsClient"/> class.
             </summary>
             <param name="container"><see cref="T:System.ComponentModel.IContainer"/> object that contains the <see cref="T:GSF.Communication.TcpClient"/>.</param>
         </member>
-        <member name="M:GSF.Communication.SslClient.Read(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:GSF.Communication.TlsClient.Read(System.Byte[],System.Int32,System.Int32)">
             <summary>
             When overridden in a derived class, reads a number of bytes from the current received data buffer and writes those bytes into a byte array at the specified offset.
             </summary>
@@ -2736,41 +2741,41 @@
             will have unexpected results.
             </remarks>
         </member>
-        <member name="M:GSF.Communication.SslClient.SaveSettings">
+        <member name="M:GSF.Communication.TlsClient.SaveSettings">
             <summary>
             Saves <see cref="T:GSF.Communication.TcpClient"/> settings to the config file if the <see cref="P:GSF.Communication.ClientBase.PersistSettings"/> property is set to true.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.LoadSettings">
+        <member name="M:GSF.Communication.TlsClient.LoadSettings">
             <summary>
             Loads saved <see cref="T:GSF.Communication.TcpClient"/> settings from the config file if the <see cref="P:GSF.Communication.ClientBase.PersistSettings"/> property is set to true.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.Disconnect">
+        <member name="M:GSF.Communication.TlsClient.Disconnect">
             <summary>
             When overridden in a derived class, disconnects client from the server synchronously.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.ConnectAsync">
+        <member name="M:GSF.Communication.TlsClient.ConnectAsync">
             <summary>
             Connects the <see cref="T:GSF.Communication.TcpClient"/> to the server asynchronously.
             </summary>
             <exception cref="T:System.InvalidOperationException">Attempt is made to connect the <see cref="T:GSF.Communication.TcpClient"/> when it is not disconnected.</exception>
             <returns><see cref="T:System.Threading.WaitHandle"/> for the asynchronous operation.</returns>
         </member>
-        <member name="M:GSF.Communication.SslClient.Dispose(System.Boolean)">
+        <member name="M:GSF.Communication.TlsClient.Dispose(System.Boolean)">
             <summary>
             Releases the unmanaged resources used by the <see cref="T:GSF.Communication.TcpClient"/> and optionally releases the managed resources.
             </summary>
             <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         </member>
-        <member name="M:GSF.Communication.SslClient.ValidateConnectionString(System.String)">
+        <member name="M:GSF.Communication.TlsClient.ValidateConnectionString(System.String)">
             <summary>
             When overridden in a derived class, validates the specified <paramref name="connectionString"/>.
             </summary>
             <param name="connectionString">The connection string to be validated.</param>
         </member>
-        <member name="M:GSF.Communication.SslClient.SendDataAsync(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:GSF.Communication.TlsClient.SendDataAsync(System.Byte[],System.Int32,System.Int32)">
             <summary>
             When overridden in a derived class, sends data to the server asynchronously.
             </summary>
@@ -2779,166 +2784,204 @@
             <param name="length">The number of bytes to be sent from <paramref name="data"/> starting at the <paramref name="offset"/>.</param>
             <returns><see cref="T:System.Threading.WaitHandle"/> for the asynchronous operation.</returns>
         </member>
-        <member name="M:GSF.Communication.SslClient.OnReceiveDataException(System.Exception)">
+        <member name="M:GSF.Communication.TlsClient.OnReceiveDataException(System.Exception)">
             <summary>
             Raises the <see cref="E:GSF.Communication.ClientBase.ReceiveDataException"/> event.
             </summary>
             <param name="ex">Exception to send to <see cref="E:GSF.Communication.ClientBase.ReceiveDataException"/> event.</param>
         </member>
-        <member name="M:GSF.Communication.SslClient.OnConnectionTerminated">
+        <member name="M:GSF.Communication.TlsClient.OnConnectionTerminated">
             <summary>
             Raises the <see cref="E:GSF.Communication.ClientBase.ConnectionTerminated"/> event.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.ProcessConnect(System.Net.Sockets.SocketAsyncEventArgs)">
+        <member name="M:GSF.Communication.TlsClient.ProcessConnect(System.Net.Sockets.SocketAsyncEventArgs)">
             <summary>
             Callback method for asynchronous connect operation.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.ProcessAuthenticate(System.IAsyncResult)">
+        <member name="M:GSF.Communication.TlsClient.ProcessAuthenticate(System.IAsyncResult)">
             <summary>
             Callback method for asynchronous authenticate operation.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.ProcessSend(System.IAsyncResult)">
+        <member name="M:GSF.Communication.TlsClient.ProcessSend(System.IAsyncResult)">
             <summary>
             Callback method for asynchronous send operation.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.ReceivePayloadAsync">
+        <member name="M:GSF.Communication.TlsClient.ReceivePayloadAsync">
             <summary>
             Initiate method for asynchronous receive operation of payload data.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.ReceivePayloadAwareAsync(System.Boolean)">
+        <member name="M:GSF.Communication.TlsClient.ReceivePayloadAwareAsync(System.Boolean)">
             <summary>
             Initiate method for asynchronous receive operation of payload data in "payload-aware" mode.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.ProcessReceivePayloadAware(System.IAsyncResult)">
+        <member name="M:GSF.Communication.TlsClient.ProcessReceivePayloadAware(System.IAsyncResult)">
             <summary>
             Callback method for asynchronous receive operation of payload data in "payload-aware" mode.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.ReceivePayloadUnawareAsync">
+        <member name="M:GSF.Communication.TlsClient.ReceivePayloadUnawareAsync">
             <summary>
             Initiate method for asynchronous receive operation of payload data in "payload-unaware" mode.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.ProcessReceivePayloadUnaware(System.IAsyncResult)">
+        <member name="M:GSF.Communication.TlsClient.ProcessReceivePayloadUnaware(System.IAsyncResult)">
             <summary>
             Callback method for asynchronous receive operation of payload data in "payload-unaware" mode.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.TerminateConnection(System.Boolean)">
+        <member name="M:GSF.Communication.TlsClient.TerminateConnection">
             <summary>
             Processes the termination of client.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslClient.DefaultLocalCertificateSelectionCallback(System.Object,System.String,System.Security.Cryptography.X509Certificates.X509CertificateCollection,System.Security.Cryptography.X509Certificates.X509Certificate,System.String[])">
+        <member name="M:GSF.Communication.TlsClient.DefaultLocalCertificateSelectionCallback(System.Object,System.String,System.Security.Cryptography.X509Certificates.X509CertificateCollection,System.Security.Cryptography.X509Certificates.X509Certificate,System.String[])">
             <summary>
             Returns the certificate set by the user.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslClient.PayloadAware">
+        <member name="M:GSF.Communication.TlsClient.LoadTrustedCertificates">
+            <summary>
+            Loads the list of trusted certificates into the default certificate checker.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.TlsClient.PayloadAware">
             <summary>
             Gets or sets a boolean value that indicates whether the payload boundaries are to be preserved during transmission.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslClient.PayloadMarker">
+        <member name="P:GSF.Communication.TlsClient.PayloadMarker">
             <summary>
-            Gets or sets the byte sequence used to mark the beginning of a payload in a <see cref="P:GSF.Communication.SslClient.PayloadAware"/> transmission.
+            Gets or sets the byte sequence used to mark the beginning of a payload in a <see cref="P:GSF.Communication.TlsClient.PayloadAware"/> transmission.
             </summary>
             <exception cref="T:System.ArgumentNullException">The value being assigned is null or empty buffer.</exception>
         </member>
-        <member name="P:GSF.Communication.SslClient.AllowDualStackSocket">
+        <member name="P:GSF.Communication.TlsClient.AllowDualStackSocket">
             <summary>
             Gets or sets a boolean value that determines if dual-mode socket is allowed when endpoint address is IPv6.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslClient.Client">
+        <member name="P:GSF.Communication.TlsClient.Client">
             <summary>
             Gets the <see cref="T:GSF.Communication.TransportProvider`1"/> object for the <see cref="T:GSF.Communication.TcpClient"/>.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslClient.ServerUri">
+        <member name="P:GSF.Communication.TlsClient.ServerUri">
             <summary>
-            Gets the server URI of the <see cref="T:GSF.Communication.SslClient"/>.
+            Gets the server URI of the <see cref="T:GSF.Communication.TlsClient"/>.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslClient.RemoteCertificateValidationCallback">
+        <member name="P:GSF.Communication.TlsClient.CertificateChecker">
+            <summary>
+            Gets or sets the certificate checker used to validate remote certificates.
+            </summary>
+            <remarks>
+            The certificate checker will only be used to validate certificates if
+            the <see cref="P:GSF.Communication.TlsClient.RemoteCertificateValidationCallback"/> is set to null.
+            </remarks>
+        </member>
+        <member name="P:GSF.Communication.TlsClient.RemoteCertificateValidationCallback">
             <summary>
             Gets or sets the callback used to verify remote certificates.
             </summary>
+            <remarks>
+            Setting this property overrides the validation
+            callback in the <see cref="P:GSF.Communication.TlsClient.CertificateChecker"/>.
+            </remarks>
         </member>
-        <member name="P:GSF.Communication.SslClient.LocalCertificateSelectionCallback">
+        <member name="P:GSF.Communication.TlsClient.LocalCertificateSelectionCallback">
             <summary>
             Gets or sets the callback used to select a local certificate.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslClient.ClientCertificates">
+        <member name="P:GSF.Communication.TlsClient.ClientCertificates">
             <summary>
             Gets the collection of X509 certificates for this client.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslClient.EnabledSslProtocols">
+        <member name="P:GSF.Communication.TlsClient.EnabledSslProtocols">
             <summary>
             Gets or sets a set of flags which determine the enabled <see cref="T:System.Security.Authentication.SslProtocols"/>.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslClient.CheckCertificateRevocation">
+        <member name="P:GSF.Communication.TlsClient.CheckCertificateRevocation">
             <summary>
             Gets or sets a boolean value that determines whether the certificate revocation list is checked during authentication.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslClient.CertificateFile">
+        <member name="P:GSF.Communication.TlsClient.CertificateFile">
             <summary>
             Gets or sets the path to the certificate used for authentication.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslClient.Certificate">
+        <member name="P:GSF.Communication.TlsClient.Certificate">
             <summary>
-            Gets or sets the local certificate selected by the default <see cref="P:GSF.Communication.SslClient.LocalCertificateSelectionCallback"/>.
+            Gets or sets the local certificate selected by the default <see cref="P:GSF.Communication.TlsClient.LocalCertificateSelectionCallback"/>.
             </summary>
         </member>
-        <member name="T:GSF.Communication.SslServer">
+        <member name="P:GSF.Communication.TlsClient.TrustedCertificatesPath">
+            <summary>
+            Gets or sets the path to the directory containing the trusted certificates.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.TlsClient.ValidPolicyErrors">
+            <summary>
+            Gets or sets the set of valid policy errors when validating remote certificates.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.TlsClient.ValidChainFlags">
+            <summary>
+            Gets or sets the set of valid chain flags used when validating remote certificates.
+            </summary>
+        </member>
+        <member name="T:GSF.Communication.TlsServer">
             <summary>
             Represents a TCP-based communication server with SSL authentication and encryption.
             </summary>
         </member>
-        <member name="F:GSF.Communication.SslServer.DefaultPayloadAware">
+        <member name="F:GSF.Communication.TlsServer.DefaultPayloadAware">
             <summary>
-            Specifies the default value for the <see cref="P:GSF.Communication.SslServer.PayloadAware"/> property.
+            Specifies the default value for the <see cref="P:GSF.Communication.TlsServer.PayloadAware"/> property.
             </summary>
         </member>
-        <member name="F:GSF.Communication.SslServer.DefaultAllowDualStackSocket">
+        <member name="F:GSF.Communication.TlsServer.DefaultAllowDualStackSocket">
             <summary>
-            Specifies the default value for the <see cref="P:GSF.Communication.SslServer.AllowDualStackSocket"/> property.
+            Specifies the default value for the <see cref="P:GSF.Communication.TlsServer.AllowDualStackSocket"/> property.
             </summary>
         </member>
-        <member name="F:GSF.Communication.SslServer.DefaultConfigurationString">
+        <member name="F:GSF.Communication.TlsServer.DefaultConfigurationString">
             <summary>
             Specifies the default value for the <see cref="P:GSF.Communication.ServerBase.ConfigurationString"/> property.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.#ctor">
+        <member name="F:GSF.Communication.TlsServer.DefaultTrustedCertificatesPath">
+            <summary>
+            Specifies the default value for the <see cref="P:GSF.Communication.TlsServer.TrustedCertificatesPath"/> property.
+            </summary>
+        </member>
+        <member name="M:GSF.Communication.TlsServer.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:GSF.Communication.TcpServer"/> class.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.#ctor(System.String)">
+        <member name="M:GSF.Communication.TlsServer.#ctor(System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:GSF.Communication.TcpServer"/> class.
             </summary>
-            <param name="configString">Config string of the <see cref="T:GSF.Communication.TcpServer"/>. See <see cref="F:GSF.Communication.SslServer.DefaultConfigurationString"/> for format.</param>
+            <param name="configString">Config string of the <see cref="T:GSF.Communication.TcpServer"/>. See <see cref="F:GSF.Communication.TlsServer.DefaultConfigurationString"/> for format.</param>
         </member>
-        <member name="M:GSF.Communication.SslServer.#ctor(System.ComponentModel.IContainer)">
+        <member name="M:GSF.Communication.TlsServer.#ctor(System.ComponentModel.IContainer)">
             <summary>
             Initializes a new instance of the <see cref="T:GSF.Communication.TcpServer"/> class.
             </summary>
             <param name="container"><see cref="T:System.ComponentModel.IContainer"/> object that contains the <see cref="T:GSF.Communication.TcpServer"/>.</param>
         </member>
-        <member name="M:GSF.Communication.SslServer.Read(System.Guid,System.Byte[],System.Int32,System.Int32)">
+        <member name="M:GSF.Communication.TlsServer.Read(System.Guid,System.Byte[],System.Int32,System.Int32)">
             <summary>
             Reads a number of bytes from the current received data buffer and writes those bytes into a byte array at the specified offset.
             </summary>
@@ -2961,43 +3004,44 @@
             <paramref name="startIndex"/> and <paramref name="length"/> will exceed <paramref name="buffer"/> length.
             </exception>
         </member>
-        <member name="M:GSF.Communication.SslServer.SaveSettings">
+        <member name="M:GSF.Communication.TlsServer.SaveSettings">
             <summary>
             Saves <see cref="T:GSF.Communication.TcpServer"/> settings to the config file if the <see cref="P:GSF.Communication.ServerBase.PersistSettings"/> property is set to true.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.LoadSettings">
+        <member name="M:GSF.Communication.TlsServer.LoadSettings">
             <summary>
             Loads saved <see cref="T:GSF.Communication.TcpServer"/> settings from the config file if the <see cref="P:GSF.Communication.ServerBase.PersistSettings"/> property is set to true.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.Stop">
+        <member name="M:GSF.Communication.TlsServer.Stop">
             <summary>
             Stops the <see cref="T:GSF.Communication.TcpServer"/> synchronously and disconnects all connected clients.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.Start">
+        <member name="M:GSF.Communication.TlsServer.Start">
             <summary>
             Starts the <see cref="T:GSF.Communication.TcpServer"/> synchronously and begins accepting client connections asynchronously.
             </summary>
-            <exception cref="T:System.InvalidOperationException">Attempt is made to <see cref="M:GSF.Communication.SslServer.Start"/> the <see cref="T:GSF.Communication.TcpServer"/> when it is running.</exception>
+            <exception cref="T:System.InvalidOperationException">Attempt is made to <see cref="M:GSF.Communication.TlsServer.Start"/> the <see cref="T:GSF.Communication.TcpServer"/> when it is running.</exception>
         </member>
-        <member name="M:GSF.Communication.SslServer.DisconnectOne(System.Guid)">
+        <member name="M:GSF.Communication.TlsServer.DisconnectOne(System.Guid)">
             <summary>
             Disconnects the specified connected client.
             </summary>
             <param name="clientID">ID of the client to be disconnected.</param>
             <exception cref="T:System.InvalidOperationException">Client does not exist for the specified <paramref name="clientID"/>.</exception>
         </member>
-        <member name="M:GSF.Communication.SslServer.Client(System.Guid)">
+        <member name="M:GSF.Communication.TlsServer.TryGetClient(System.Guid,GSF.Communication.TransportProvider{GSF.Communication.TlsServer.TlsSocket}@)">
             <summary>
             Gets the <see cref="T:GSF.Communication.TransportProvider`1"/> object associated with the specified client ID.
             </summary>
             <param name="clientID">ID of the client.</param>
+            <param name="tlsClient">The TLS client.</param>
             <returns>An <see cref="T:GSF.Communication.TransportProvider`1"/> object.</returns>
             <exception cref="T:System.InvalidOperationException">Client does not exist for the specified <paramref name="clientID"/>.</exception>
         </member>
-        <member name="M:GSF.Communication.SslServer.ValidateConfigurationString(System.String)">
+        <member name="M:GSF.Communication.TlsServer.ValidateConfigurationString(System.String)">
             <summary>
             Validates the specified <paramref name="configurationString"/>.
             </summary>
@@ -3005,7 +3049,7 @@
             <exception cref="T:System.ArgumentException">Port property is missing.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Port property value is not between <see cref="F:GSF.Communication.Transport.PortRangeLow"/> and <see cref="F:GSF.Communication.Transport.PortRangeHigh"/>.</exception>
         </member>
-        <member name="M:GSF.Communication.SslServer.SendDataToAsync(System.Guid,System.Byte[],System.Int32,System.Int32)">
+        <member name="M:GSF.Communication.TlsServer.SendDataToAsync(System.Guid,System.Byte[],System.Int32,System.Int32)">
             <summary>
             Sends data to the specified client asynchronously.
             </summary>
@@ -3015,105 +3059,162 @@
             <param name="length">The number of bytes to be sent from <paramref name="data"/> starting at the <paramref name="offset"/>.</param>
             <returns><see cref="T:System.Threading.WaitHandle"/> for the asynchronous operation.</returns>
         </member>
-        <member name="M:GSF.Communication.SslServer.ProcessAccept">
+        <member name="M:GSF.Communication.TlsServer.ProcessAccept">
             <summary>
             Callback method for asynchronous accept operation.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.ProcessAuthenticate(System.IAsyncResult)">
+        <member name="M:GSF.Communication.TlsServer.ProcessAuthenticate(System.IAsyncResult)">
             <summary>
             Callback method for asynchronous authenticate operation.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.ProcessSend(System.IAsyncResult)">
+        <member name="M:GSF.Communication.TlsServer.ProcessSend(System.IAsyncResult)">
             <summary>
             Callback method for asynchronous send operation.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.ReceivePayloadAsync(GSF.Communication.TransportProvider{System.Net.Security.SslStream})">
+        <member name="M:GSF.Communication.TlsServer.ReceivePayloadAsync(GSF.Communication.TransportProvider{GSF.Communication.TlsServer.TlsSocket})">
             <summary>
             Initiate method for asynchronous receive operation of payload data.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.ReceivePayloadAwareAsync(GSF.Communication.TransportProvider{System.Net.Security.SslStream},System.Boolean)">
+        <member name="M:GSF.Communication.TlsServer.ReceivePayloadAwareAsync(GSF.Communication.TransportProvider{GSF.Communication.TlsServer.TlsSocket},System.Boolean)">
             <summary>
             Initiate method for asynchronous receive operation of payload data in "payload-aware" mode.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.ProcessReceivePayloadAware(System.IAsyncResult)">
+        <member name="M:GSF.Communication.TlsServer.ProcessReceivePayloadAware(System.IAsyncResult)">
             <summary>
             Callback method for asynchronous receive operation of payload data in "payload-aware" mode.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.ReceivePayloadUnawareAsync(GSF.Communication.TransportProvider{System.Net.Security.SslStream})">
+        <member name="M:GSF.Communication.TlsServer.ReceivePayloadUnawareAsync(GSF.Communication.TransportProvider{GSF.Communication.TlsServer.TlsSocket})">
             <summary>
             Initiate method for asynchronous receive operation of payload data in "payload-unaware" mode.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.ProcessReceivePayloadUnaware(System.IAsyncResult)">
+        <member name="M:GSF.Communication.TlsServer.ProcessReceivePayloadUnaware(System.IAsyncResult)">
             <summary>
             Callback method for asynchronous receive operation of payload data in "payload-unaware" mode.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.TerminateConnection(GSF.Communication.TransportProvider{System.Net.Security.SslStream},System.Boolean)">
+        <member name="M:GSF.Communication.TlsServer.TerminateConnection(GSF.Communication.TransportProvider{GSF.Communication.TlsServer.TlsSocket},System.Boolean)">
             <summary>
             Processes the termination of client.
             </summary>
         </member>
-        <member name="M:GSF.Communication.SslServer.DefaultLocalCertificateSelectionCallback(System.Object,System.String,System.Security.Cryptography.X509Certificates.X509CertificateCollection,System.Security.Cryptography.X509Certificates.X509Certificate,System.String[])">
+        <member name="M:GSF.Communication.TlsServer.DefaultLocalCertificateSelectionCallback(System.Object,System.String,System.Security.Cryptography.X509Certificates.X509CertificateCollection,System.Security.Cryptography.X509Certificates.X509Certificate,System.String[])">
             <summary>
             Returns the certificate set by the user.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslServer.PayloadAware">
+        <member name="M:GSF.Communication.TlsServer.LoadTrustedCertificates">
+            <summary>
+            Loads the list of trusted certificates into the default certificate checker.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.TlsServer.PayloadAware">
             <summary>
             Gets or sets a boolean value that indicates whether the payload boundaries are to be preserved during transmission.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslServer.PayloadMarker">
+        <member name="P:GSF.Communication.TlsServer.PayloadMarker">
             <summary>
-            Gets or sets the byte sequence used to mark the beginning of a payload in a <see cref="P:GSF.Communication.SslServer.PayloadAware"/> transmission.
+            Gets or sets the byte sequence used to mark the beginning of a payload in a <see cref="P:GSF.Communication.TlsServer.PayloadAware"/> transmission.
             </summary>
             <exception cref="T:System.ArgumentNullException">The value being assigned is null or empty buffer.</exception>
         </member>
-        <member name="P:GSF.Communication.SslServer.AllowDualStackSocket">
+        <member name="P:GSF.Communication.TlsServer.AllowDualStackSocket">
             <summary>
             Gets or sets a boolean value that determines if dual-mode socket is allowed when endpoint address is IPv6.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslServer.Server">
+        <member name="P:GSF.Communication.TlsServer.Server">
             <summary>
             Gets the <see cref="T:System.Net.Sockets.Socket"/> object for the <see cref="T:GSF.Communication.TcpServer"/>.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslServer.RemoteCertificateValidationCallback">
+        <member name="P:GSF.Communication.TlsServer.CertificateChecker">
+            <summary>
+            Gets or sets the certificate checker used to validate remote certificates.
+            </summary>
+            <remarks>
+            The certificate checker will only be used to validate certificates if
+            the <see cref="P:GSF.Communication.TlsServer.RemoteCertificateValidationCallback"/> is set to null.
+            </remarks>
+        </member>
+        <member name="P:GSF.Communication.TlsServer.RemoteCertificateValidationCallback">
             <summary>
             Gets or sets the callback used to validate remote certificates.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslServer.LocalCertificateSelectionCallback">
+        <member name="P:GSF.Communication.TlsServer.LocalCertificateSelectionCallback">
             <summary>
             Gets or sets the callback used to select local certificates.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslServer.CertificateFile">
+        <member name="P:GSF.Communication.TlsServer.CertificateFile">
             <summary>
             Gets or sets the path to the certificate used for authentication.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslServer.Certificate">
+        <member name="P:GSF.Communication.TlsServer.Certificate">
             <summary>
             Gets or sets the certificate used to identify this server.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslServer.EnabledSslProtocols">
+        <member name="P:GSF.Communication.TlsServer.EnabledSslProtocols">
             <summary>
             Gets or sets a set of flags which determine the enabled <see cref="T:System.Security.Authentication.SslProtocols"/>.
             </summary>
         </member>
-        <member name="P:GSF.Communication.SslServer.CheckCertificateRevocation">
+        <member name="P:GSF.Communication.TlsServer.RequireClientCertificate">
+            <summary>
+            Gets or sets a flag that determines whether a client certificate is required during authentication.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.TlsServer.CheckCertificateRevocation">
             <summary>
             Gets or sets a boolean value that determines whether the certificate revocation list is checked during authentication.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.TlsServer.TrustedCertificatesPath">
+            <summary>
+            Gets or sets the path to the directory containing the trusted certificates.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.TlsServer.ValidPolicyErrors">
+            <summary>
+            Gets or sets the set of valid policy errors when validating remote certificates.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.TlsServer.ValidChainFlags">
+            <summary>
+            Gets or sets the set of valid chain flags used when validating remote certificates.
+            </summary>
+        </member>
+        <member name="T:GSF.Communication.TlsServer.TlsSocket">
+            <summary>
+            Represents a socket that has been wrapped
+            in an <see cref="F:GSF.Communication.TlsServer.TlsSocket.SslStream"/> for encryption.
+            </summary>
+        </member>
+        <member name="F:GSF.Communication.TlsServer.TlsSocket.Socket">
+            <summary>
+            Gets the <see cref="F:GSF.Communication.TlsServer.TlsSocket.Socket"/> connected to the remote host.
+            </summary>
+        </member>
+        <member name="F:GSF.Communication.TlsServer.TlsSocket.SslStream">
+            <summary>
+            Gets the stream through which data is passed when
+            sending to or receiving from the remote host.
+            </summary>
+        </member>
+        <member name="M:GSF.Communication.TlsServer.TlsSocket.Dispose">
+            <summary>
+            Performs application-defined tasks associated with
+            freeing, releasing, or resetting unmanaged resources.
             </summary>
         </member>
         <member name="T:GSF.Communication.TcpClient">

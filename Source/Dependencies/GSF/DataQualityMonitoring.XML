@@ -9,6 +9,11 @@
             Action adapter that generates alarm measurements based on alarm definitions from the database.
             </summary>
         </member>
+        <member name="M:DataQualityMonitoring.AlarmAdapter.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>.
+            </summary>
+        </member>
         <member name="M:DataQualityMonitoring.AlarmAdapter.Initialize">
             <summary>
             Initializes the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>.
@@ -17,6 +22,11 @@
         <member name="M:DataQualityMonitoring.AlarmAdapter.Start">
             <summary>
             Starts the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>, or restarts it if it is already running.
+            </summary>
+        </member>
+        <member name="M:DataQualityMonitoring.AlarmAdapter.Stop">
+            <summary>
+            Stops the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>.
             </summary>
         </member>
         <member name="M:DataQualityMonitoring.AlarmAdapter.Dispose(System.Boolean)">
