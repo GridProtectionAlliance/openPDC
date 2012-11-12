@@ -341,6 +341,7 @@ namespace openPDC.UI.DataModels
                 {
                     phasorList.Add(row.ConvertField<int>("ID"));
                 }
+
                 return phasorList;
             }
             finally
@@ -441,9 +442,21 @@ namespace openPDC.UI.DataModels
         /// Saves <see cref="Phasor"/> information to database.
         /// </summary>
         /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
-        /// <param name="phasor">Information about <see cref="Phasor"/>.</param>        
+        /// <param name="phasor">Information about <see cref="Phasor"/>.</param>
         /// <returns>String, for display use, indicating success.</returns>
         public static string Save(AdoDataConnection database, Phasor phasor)
+        {
+            return Save(database, phasor, phasor.SourceIndex);
+        }
+
+        /// <summary>
+        /// Saves <see cref="Phasor"/> information to database.
+        /// </summary>
+        /// <param name="database"><see cref="AdoDataConnection"/> to connection to database.</param>
+        /// <param name="phasor">Information about <see cref="Phasor"/>.</param>
+        /// <param name="oldSourceIndex">The old source index of the phasor.</param>
+        /// <returns>String, for display use, indicating success.</returns>
+        public static string Save(AdoDataConnection database, Phasor phasor, int oldSourceIndex)
         {
             bool createdConnection = false;
             string query;
@@ -485,19 +498,20 @@ namespace openPDC.UI.DataModels
 
                 foreach (SignalType signal in signals)
                 {
-                    Measurement measurement = Measurement.GetMeasurement(database, "WHERE DeviceID = " + phasor.DeviceID + " AND SignalTypeSuffix = '" + signal.Suffix + "' AND PhasorSourceIndex = " + phasor.SourceIndex);
-                    if (measurement == null)
+                    Measurement measurement = Measurement.GetMeasurement(database, "WHERE DeviceID = " + phasor.DeviceID + " AND SignalTypeSuffix = '" + signal.Suffix + "' AND PhasorSourceIndex = " + oldSourceIndex);
+
+                    if ((object)measurement == null)
+                    {
                         measurement = new Measurement();
+                        measurement.SignalTypeID = signal.ID;
+                        measurement.Enabled = true;
+                    }
 
                     measurement.HistorianID = device.HistorianID;
                     measurement.DeviceID = device.ID;
                     measurement.PointTag = device.CompanyAcronym + "_" + device.Acronym + "-" + signal.Suffix + addedPhasor.SourceIndex.ToString() + ":" + device.VendorAcronym + signal.Abbreviation;
-                    measurement.AlternateTag = measurement.AlternateTag;
-                    measurement.SignalTypeID = signal.ID;
-                    measurement.PhasorSourceIndex = addedPhasor.SourceIndex;
                     measurement.SignalReference = device.Acronym + "-" + signal.Suffix + addedPhasor.SourceIndex.ToString();
-                    measurement.Description = measurement.Description;
-                    measurement.Enabled = true;
+                    measurement.PhasorSourceIndex = addedPhasor.SourceIndex;
 
                     Measurement.Save(database, measurement);
                 }

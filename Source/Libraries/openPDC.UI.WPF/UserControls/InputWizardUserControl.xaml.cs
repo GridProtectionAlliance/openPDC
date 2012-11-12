@@ -21,13 +21,14 @@
 //
 //******************************************************************************************************
 
-using System;
-using System.Collections.Generic;
-using System.Windows.Controls;
+using GSF;
+using GSF.TimeSeries.UI;
 using openPDC.UI.DataModels;
 using openPDC.UI.ViewModels;
-using GSF.TimeSeries.UI;
-using GSF;
+using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace openPDC.UI.UserControls
 {
@@ -39,7 +40,6 @@ namespace openPDC.UI.UserControls
         #region [ Members ]
 
         private InputWizardDevices m_dataContext;
-        private bool loaded;
 
         #endregion
 
@@ -51,7 +51,6 @@ namespace openPDC.UI.UserControls
         public InputWizardUserControl()
         {
             InitializeComponent();
-            this.Loaded += new System.Windows.RoutedEventHandler(InputWizardUserControl_Loaded);
             this.Unloaded += new System.Windows.RoutedEventHandler(InputWizardUserControl_Unloaded);
             m_dataContext = new InputWizardDevices(1);
             StackPanelRoot.DataContext = m_dataContext;
@@ -104,11 +103,6 @@ namespace openPDC.UI.UserControls
                 CommonFunctions.SendCommandToService("Connect " + m_dataContext.CurrentDeviceRuntimeID);
 
             m_dataContext.CurrentDeviceRuntimeID = 0;
-        }
-
-        private void InputWizardUserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            loaded = true;
         }
 
         /// <summary>
@@ -169,12 +163,7 @@ namespace openPDC.UI.UserControls
             }
             else if (ExpanderStep2.IsExpanded)
             {
-                Boolean b;
-                b= m_dataContext.validatePDCDetails();
-                if (b == true)
-                {
-                    ExpanderStep3.IsExpanded = true;
-                }
+                ExpanderStep3.IsExpanded = true;
             }
             else if (ExpanderStep3.IsExpanded)
             {
@@ -183,12 +172,15 @@ namespace openPDC.UI.UserControls
             }
         }
 
-        private void ExpanderStep3_Expanded(object sender, System.Windows.RoutedEventArgs e)
+        private void ExpanderStep1_Expanded(object sender, System.Windows.RoutedEventArgs e)
         {
-            ExpanderStep1.IsExpanded = false;
-            ExpanderStep2.IsExpanded = false;
-            ButtonNext.Content = "Finish";
-            ButtonPrevious.IsEnabled = true;
+            if (IsLoaded)
+            {
+                ExpanderStep2.IsExpanded = false;
+                ExpanderStep3.IsExpanded = false;
+                ButtonNext.Content = "Next";
+                ButtonPrevious.IsEnabled = false;
+            }
         }
 
         private void ExpanderStep2_Expanded(object sender, System.Windows.RoutedEventArgs e)
@@ -199,14 +191,21 @@ namespace openPDC.UI.UserControls
             ButtonPrevious.IsEnabled = true;
         }
 
-        private void ExpanderStep1_Expanded(object sender, System.Windows.RoutedEventArgs e)
+        private void ExpanderStep3_Expanded(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (loaded) // This is added to avoid null reference exception.
+            string errorMessage;
+
+            if (!m_dataContext.ValidatePDCDetails(out errorMessage))
             {
-                ExpanderStep2.IsExpanded = false;
+                MessageBox.Show(errorMessage, "PDC Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 ExpanderStep3.IsExpanded = false;
-                ButtonNext.Content = "Next";
-                ButtonPrevious.IsEnabled = false;
+            }
+            else
+            {
+                ExpanderStep1.IsExpanded = false;
+                ExpanderStep2.IsExpanded = false;
+                ButtonNext.Content = "Finish";
+                ButtonPrevious.IsEnabled = true;
             }
         }
 

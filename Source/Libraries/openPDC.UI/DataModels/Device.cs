@@ -38,17 +38,18 @@
 //          Added paging and sorting technique. 
 //******************************************************************************************************
 
+using GSF;
+using GSF.Data;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using GSF.TimeSeries.UI;
-using GSF.TimeSeries.UI.DataModels;
-using GSF;
-using GSF.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace openPDC.UI.DataModels
 {
@@ -1333,79 +1334,99 @@ namespace openPDC.UI.DataModels
                 {
                     foreach (SignalType signal in SignalType.GetPmuSignalTypes())
                     {
-                        if (signal.Suffix != "CV")
+                        Measurement measurement;
+
+                        if (signal.Suffix == "AV" && analogCount > 0)
                         {
-                            Measurement measurement;
-
-                            if (signal.Suffix == "AV" && analogCount > 0)
+                            for (int i = 1; i <= analogCount; i++)
                             {
-                                for (int i = 1; i <= analogCount; i++)
+                                measurement = Measurement.GetMeasurement(database, "WHERE DeviceID = " + savedDevice.ID + " AND SignalReference = '" +
+                                    savedDevice.Acronym + "-AV" + i.ToString() + "'");
+
+                                if ((object)measurement == null)
                                 {
-                                    measurement = Measurement.GetMeasurement(database, "WHERE DeviceID = " + savedDevice.ID + " AND SignalReference = '" +
-                                        savedDevice.Acronym + "-AV" + i.ToString() + "'");
-
-                                    if (measurement == null)
-                                        measurement = new Measurement();
-
-                                    measurement.HistorianID = savedDevice.HistorianID;
-                                    measurement.DeviceID = savedDevice.ID;
+                                    measurement = new Measurement();
                                     measurement.PointTag = savedDevice.CompanyAcronym + "_" + savedDevice.Acronym + ":" + savedDevice.VendorAcronym + "A" + i.ToString();
+                                    measurement.Description = savedDevice.Name + " " + savedDevice.VendorDeviceName + " Analog Value " + i.ToString();
+
                                     if (analogLabels != null && analogLabels[i - 1] != null)
                                         measurement.AlternateTag = analogLabels[i - 1];
-                                    else
-                                        measurement.AlternateTag = string.Empty;
-                                    measurement.SignalReference = savedDevice.Acronym + "-AV" + i.ToString();
-                                    measurement.SignalTypeID = signal.ID;
-                                    measurement.PhasorSourceIndex = (int?)null;
-                                    measurement.Description = savedDevice.Name + " " + savedDevice.VendorDeviceName + " Analog Value " + i.ToString();
-                                    measurement.Enabled = true;
-                                    Measurement.Save(database, measurement);
                                 }
-                            }
-                            else if (signal.Suffix == "DV" && digitalCount > 0)
-                            {
-                                for (int i = 1; i <= digitalCount; i++)
+                                else
                                 {
-                                    measurement = Measurement.GetMeasurement(database, "WHERE DeviceID = " + savedDevice.ID + " AND SignalReference = '" +
-                                        savedDevice.Acronym + "-DV" + i.ToString() + "'");
-
-                                    if (measurement == null)
-                                        measurement = new Measurement();
-
-                                    measurement.HistorianID = savedDevice.HistorianID;
-                                    measurement.DeviceID = savedDevice.ID;
-                                    measurement.PointTag = savedDevice.CompanyAcronym + "_" + savedDevice.Acronym + ":" + savedDevice.VendorAcronym + "D" + i.ToString();
-                                    if (digitalLabels != null && digitalLabels[i - 1] != null)
-                                        measurement.AlternateTag = digitalLabels[i - 1];
-                                    else
-                                        measurement.AlternateTag = string.Empty;
-                                    measurement.SignalReference = savedDevice.Acronym + "-DV" + i.ToString();
-                                    measurement.SignalTypeID = signal.ID;
-                                    measurement.PhasorSourceIndex = (int?)null;
-                                    measurement.Description = savedDevice.Name + " " + savedDevice.VendorDeviceName + " Digital Value " + i.ToString();
-                                    measurement.Enabled = true;
-                                    Measurement.Save(database, measurement);
+                                    measurement.PointTag = measurement.PointTag.Replace(oldDevice.Acronym, savedDevice.Acronym);
+                                    measurement.AlternateTag = measurement.AlternateTag.ToNonNullString().Replace(oldDevice.Acronym, savedDevice.Acronym);
+                                    measurement.Description = Regex.Replace(measurement.Description, oldDevice.Name, savedDevice.Name, RegexOptions.IgnoreCase);
                                 }
-                            }
-                            else if (signal.Suffix == "FQ" || signal.Suffix == "DF" || signal.Suffix == "SF")
-                            {
-                                measurement = Measurement.GetMeasurement(database, "WHERE DeviceID = " + savedDevice.ID + " AND SignalTypeSuffix = '" + signal.Suffix + "'");
-
-                                if (measurement == null)
-                                    measurement = new Measurement();
 
                                 measurement.HistorianID = savedDevice.HistorianID;
                                 measurement.DeviceID = savedDevice.ID;
-                                measurement.PointTag = savedDevice.CompanyAcronym + "_" + savedDevice.Acronym + ":" + savedDevice.VendorAcronym + signal.Abbreviation;
-                                measurement.AlternateTag = string.Empty;
-                                measurement.SignalReference = savedDevice.Acronym + "-" + signal.Suffix;
+                                measurement.SignalReference = savedDevice.Acronym + "-AV" + i.ToString();
                                 measurement.SignalTypeID = signal.ID;
                                 measurement.PhasorSourceIndex = (int?)null;
-                                measurement.Description = savedDevice.Name + " " + savedDevice.VendorDeviceName + " " + signal.Name;
                                 measurement.Enabled = true;
 
                                 Measurement.Save(database, measurement);
                             }
+                        }
+                        else if (signal.Suffix == "DV" && digitalCount > 0)
+                        {
+                            for (int i = 1; i <= digitalCount; i++)
+                            {
+                                measurement = Measurement.GetMeasurement(database, "WHERE DeviceID = " + savedDevice.ID + " AND SignalReference = '" +
+                                    savedDevice.Acronym + "-DV" + i.ToString() + "'");
+
+                                if ((object)measurement == null)
+                                {
+                                    measurement = new Measurement();
+                                    measurement.PointTag = savedDevice.CompanyAcronym + "_" + savedDevice.Acronym + ":" + savedDevice.VendorAcronym + "D" + i.ToString();
+                                    measurement.Description = savedDevice.Name + " " + savedDevice.VendorDeviceName + " Digital Value " + i.ToString();
+
+                                    if (digitalLabels != null && digitalLabels[i - 1] != null)
+                                        measurement.AlternateTag = digitalLabels[i - 1];
+                                }
+                                else
+                                {
+                                    measurement.PointTag = measurement.PointTag.Replace(oldDevice.Acronym, savedDevice.Acronym);
+                                    measurement.AlternateTag = measurement.AlternateTag.ToNonNullString().Replace(oldDevice.Acronym, savedDevice.Acronym);
+                                    measurement.Description = Regex.Replace(measurement.Description, oldDevice.Name, savedDevice.Name, RegexOptions.IgnoreCase);
+                                }
+
+                                measurement.HistorianID = savedDevice.HistorianID;
+                                measurement.DeviceID = savedDevice.ID;
+                                measurement.SignalReference = savedDevice.Acronym + "-DV" + i.ToString();
+                                measurement.SignalTypeID = signal.ID;
+                                measurement.PhasorSourceIndex = (int?)null;
+                                measurement.Enabled = true;
+
+                                Measurement.Save(database, measurement);
+                            }
+                        }
+                        else if (signal.Suffix == "FQ" || signal.Suffix == "DF" || signal.Suffix == "SF")
+                        {
+                            measurement = Measurement.GetMeasurement(database, "WHERE DeviceID = " + savedDevice.ID + " AND SignalTypeSuffix = '" + signal.Suffix + "'");
+
+                            if ((object)measurement == null)
+                            {
+                                measurement = new Measurement();
+                                measurement.PointTag = savedDevice.CompanyAcronym + "_" + savedDevice.Acronym + ":" + savedDevice.VendorAcronym + signal.Abbreviation;
+                                measurement.Description = savedDevice.Name + " " + savedDevice.VendorDeviceName + " " + signal.Name;
+                            }
+                            else
+                            {
+                                measurement.PointTag = measurement.PointTag.Replace(oldDevice.Acronym, savedDevice.Acronym);
+                                measurement.AlternateTag = measurement.AlternateTag.ToNonNullString().Replace(oldDevice.Acronym, savedDevice.Acronym);
+                                measurement.Description = Regex.Replace(measurement.Description, oldDevice.Name, savedDevice.Name, RegexOptions.IgnoreCase);
+                            }
+
+                            measurement.HistorianID = savedDevice.HistorianID;
+                            measurement.DeviceID = savedDevice.ID;
+                            measurement.SignalReference = savedDevice.Acronym + "-" + signal.Suffix;
+                            measurement.SignalTypeID = signal.ID;
+                            measurement.PhasorSourceIndex = (int?)null;
+                            measurement.Enabled = true;
+
+                            Measurement.Save(database, measurement);
                         }
                     }
                 }
@@ -1428,7 +1449,8 @@ namespace openPDC.UI.DataModels
                         {
                             measurement.SignalReference = measurement.SignalReference.Replace(oldDevice.Acronym, savedDevice.Acronym);
                             measurement.PointTag = measurement.PointTag.Replace(oldDevice.Acronym, savedDevice.Acronym);
-                            measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldDevice.Name, savedDevice.Name, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                            measurement.AlternateTag = measurement.AlternateTag.ToNonNullString().Replace(oldDevice.Acronym, savedDevice.Acronym);
+                            measurement.Description = Regex.Replace(measurement.Description, oldDevice.Name, savedDevice.Name, RegexOptions.IgnoreCase);
                             Measurement.Save(database, measurement);
                         }
 
@@ -1437,7 +1459,8 @@ namespace openPDC.UI.DataModels
                         {
                             measurement.SignalReference = measurement.SignalReference.Replace(oldDevice.Acronym, savedDevice.Acronym);
                             measurement.PointTag = measurement.PointTag.Replace(oldDevice.Acronym, savedDevice.Acronym);
-                            measurement.Description = System.Text.RegularExpressions.Regex.Replace(measurement.Description, oldDevice.Name, savedDevice.Name, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                            measurement.AlternateTag = measurement.AlternateTag.ToNonNullString().Replace(oldDevice.Acronym, savedDevice.Acronym);
+                            measurement.Description = Regex.Replace(measurement.Description, oldDevice.Name, savedDevice.Name, RegexOptions.IgnoreCase);
                             Measurement.Save(database, measurement);
                         }
                     }

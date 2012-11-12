@@ -21,6 +21,17 @@
 //
 //******************************************************************************************************
 
+using ConnectionTester;
+using GSF;
+using GSF.Data;
+using GSF.ServiceProcess;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.Commands;
+using GSF.TimeSeries.UI.DataModels;
+using openPDC.UI.DataModels;
+using openPDC.UI.Modal;
+using openPDC.UI.UserControls;
+using PhasorProtocols;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,17 +45,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using ConnectionTester;
-using openPDC.UI.DataModels;
-using openPDC.UI.Modal;
-using openPDC.UI.UserControls;
-using GSF.TimeSeries.UI;
-using GSF.TimeSeries.UI.Commands;
-using GSF.TimeSeries.UI.DataModels;
-using GSF;
-using GSF.Data;
-using PhasorProtocols;
-using GSF.ServiceProcess;
 
 namespace openPDC.UI.ViewModels
 {
@@ -1266,20 +1266,24 @@ namespace openPDC.UI.ViewModels
         {
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
             AdoDataConnection database = new AdoDataConnection(GSF.TimeSeries.UI.CommonFunctions.DefaultSettingsCategory);
+
             try
             {
                 int deviceCount = 0;
+
                 foreach (openPDC.UI.DataModels.InputWizardDevice inputWizardDevice in ItemsSource)
                 {
                     if (inputWizardDevice.Include)
                     {
                         // Included NodeID to find devices
                         Device device = Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "' and NodeID = '"+ database.CurrentNodeID() + "'");
+
                         if (device == null)
                         {
                             device = new Device();
                             device.Acronym = inputWizardDevice.Acronym.ToUpper();
                         }
+
                         device.Name = inputWizardDevice.Name;
                         device.CompanyID = CompanyID == 0 ? (int?)null : CompanyID;
                         device.HistorianID = HistorianID == 0 ? (int?)null : HistorianID;
@@ -1319,26 +1323,110 @@ namespace openPDC.UI.ViewModels
                         if (device.ID == 0)
                             device.ID = Device.GetDevice(database, "WHERE Acronym = '" + inputWizardDevice.Acronym.ToUpper() + "'").ID;
 
-                        int phasorCount = 1;
-                        foreach (openPDC.UI.DataModels.InputWizardDevicePhasor inputWizardDevicePhasor in inputWizardDevice.PhasorList)
+                        IList<InputWizardDevicePhasor> inputPhasorList = inputWizardDevice.PhasorList;
+                        HashSet<InputWizardDevicePhasor> unsavedInputPhasorSet = new HashSet<InputWizardDevicePhasor>(inputWizardDevice.PhasorList);
+                        IList<Phasor> oldPhasorList = Phasor.Load(database, Phasor.LoadKeys(database, device.ID));
+                        HashSet<Phasor> unsavedOldPhasorSet = new HashSet<Phasor>(oldPhasorList);
+
+                        InputWizardDevicePhasor inputPhasor;
+                        Phasor oldPhasor;
+                        int index;
+
+                        // Attempt to reorder old phasors based on phasor label
+                        for (index = 0; (index < inputWizardDevice.PhasorList.Count) && (unsavedOldPhasorSet.Count > 0); index++)
                         {
-                            openPDC.UI.DataModels.Phasor phasor = openPDC.UI.DataModels.Phasor.GetPhasor(database, "WHERE DeviceID = " + device.ID + " AND SourceIndex = " + phasorCount);
+                            inputPhasor = inputPhasorList[index];
+                            oldPhasor = unsavedOldPhasorSet.FirstOrDefault(p => inputPhasor.Label == p.Label);
 
-                            if (phasor == null)
+                            if ((object)oldPhasor != null)
                             {
-                                phasor = new openPDC.UI.DataModels.Phasor();
+                                int oldSourceIndex = oldPhasor.SourceIndex;
+
+                                // Update old phasor and save
+                                oldPhasor.DeviceID = device.ID;
+                                oldPhasor.SourceIndex = index + 1;
+                                oldPhasor.Type = inputPhasor.Type;
+                                oldPhasor.Phase = inputPhasor.Phase;
+                                Phasor.Save(database, oldPhasor, oldSourceIndex);
+
+                                // Remove phasor from the sets of unsaved phasors
+                                unsavedInputPhasorSet.Remove(inputPhasor);
+                                unsavedOldPhasorSet.Remove(oldPhasor);
                             }
+                        }
 
-                            phasor.DeviceID = device.ID;
-                            phasor.SourceIndex = phasorCount;
-                            phasor.Label = inputWizardDevicePhasor.Label;
-                            phasor.Type = inputWizardDevicePhasor.Type;
-                            phasor.Phase = inputWizardDevicePhasor.Phase;
-                            openPDC.UI.DataModels.Phasor.Save(database, phasor);
+                        // Attempt to update old phasors based on phasor index
+                        foreach (Phasor unsavedOldPhasor in unsavedOldPhasorSet)
+                        {
+                            oldPhasor = unsavedOldPhasor;
+                            index = oldPhasor.SourceIndex - 1;
 
-                            phasorCount++;
+                            if (index < inputPhasorList.Count)
+                            {
+                                inputPhasor = inputPhasorList[index];
+
+                                if (unsavedInputPhasorSet.Contains(inputPhasor))
+                                {
+                                    // Update old phasor and save
+                                    oldPhasor.DeviceID = device.ID;
+                                    oldPhasor.Label = inputPhasor.Label;
+                                    oldPhasor.Type = inputPhasor.Type;
+                                    oldPhasor.Phase = inputPhasor.Phase;
+                                    Phasor.Save(database, oldPhasor);
+
+                                    // Remove phasor from the sets of unsaved phasors
+                                    unsavedInputPhasorSet.Remove(inputPhasor);
+                                    unsavedOldPhasorSet.Remove(oldPhasor);
+                                }
+                            }
+                        }
+
+                        // Attempt to reorder and update old phasors based on position in phasor lists
+                        while (unsavedInputPhasorSet.Count > 0 && unsavedOldPhasorSet.Count > 0)
+                        {
+                            int oldSourceIndex;
+
+                            inputPhasor = inputPhasorList.First(unsavedInputPhasor => unsavedInputPhasorSet.Contains(unsavedInputPhasor));
+                            oldPhasor = oldPhasorList.First(unsavedOldPhasor => unsavedOldPhasorSet.Contains(unsavedOldPhasor));
+
+                            // Update old phasor and save
+                            oldSourceIndex = oldPhasor.SourceIndex;
+                            oldPhasor.DeviceID = device.ID;
+                            oldPhasor.SourceIndex = index + 1;
+                            oldPhasor.Label = inputPhasor.Label;
+                            oldPhasor.Type = inputPhasor.Type;
+                            oldPhasor.Phase = inputPhasor.Phase;
+                            Phasor.Save(database, oldPhasor, oldSourceIndex);
+
+                            // Remove phasor from the sets of unsaved phasors
+                            unsavedInputPhasorSet.Remove(inputPhasor);
+                            unsavedOldPhasorSet.Remove(oldPhasor);
+                        }
+
+                        // Remove old phasors that cannot be mapped to input phasors
+                        foreach (Phasor unsavedOldPhasor in unsavedOldPhasorSet)
+                        {
+                            Phasor.Delete(database, unsavedOldPhasor.ID);
+                        }
+
+                        // Add new phasor for any input phasors that have yet to be saved
+                        for (index = 0; (index < inputPhasorList.Count) && (unsavedInputPhasorSet.Count > 0); index++)
+                        {
+                            inputPhasor = inputPhasorList[index];
+
+                            if (unsavedInputPhasorSet.Contains(inputPhasor))
+                            {
+                                oldPhasor = new Phasor();
+                                oldPhasor.DeviceID = device.ID;
+                                oldPhasor.SourceIndex = index + 1;
+                                oldPhasor.Label = inputPhasor.Label;
+                                oldPhasor.Type = inputPhasor.Type;
+                                oldPhasor.Phase = inputPhasor.Phase;
+                                Phasor.Save(database, oldPhasor);
+                            }
                         }
                     }
+
                     deviceCount++;
                 }
 
@@ -1374,6 +1462,25 @@ namespace openPDC.UI.ViewModels
         }
 
         /// <summary>
+        /// Determines whether PDC acronym is required to
+        /// save the configuration, and also determines
+        /// whether the user has entered it.
+        /// </summary>
+        /// <param name="errorMessage">Error message to be displayed when validation fails.</param>
+        /// <returns>True if the PDC details are valid; false otherwise.</returns>
+        public bool ValidatePDCDetails(out string errorMessage)
+        {
+            if (ItemsSource.Count > 1 && string.IsNullOrEmpty(PdcAcronym))
+            {
+                errorMessage = "PDC Acronym required before proceeding to the next step.";
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            return true;
+        }
+
+        /// <summary>
         /// Generates connection string to save into database by merging connection string and alternate command channel.
         /// </summary>
         /// <returns>string, to store into database.</returns>
@@ -1389,28 +1496,14 @@ namespace openPDC.UI.ViewModels
                 connectionString += "commandchannel={" + AlternateCommandChannel + "}";
             }
 
-
             return connectionString;
         }
 
         #endregion
 
-        public Boolean validatePDCDetails()
-        {
-            if (ItemsSource.Count > 1 && string.IsNullOrEmpty(PdcAcronym))
-            {
-                System.Windows.Forms.MessageBox.Show("Please provide the Pdc Acronym Name and  proceed to the next step");
-                return false;
-            }
-            else
-                return true;
-        }
-
-
         #region [ Static ]
 
         // Fields
-
         private static ManualResetEvent s_responseWaitHandle;
 
         #endregion
