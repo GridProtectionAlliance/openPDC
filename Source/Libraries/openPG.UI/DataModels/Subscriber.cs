@@ -25,14 +25,16 @@
 //
 //******************************************************************************************************
 
+using GSF.Data;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using GSF.TimeSeries.UI;
-using GSF.TimeSeries.UI.DataModels;
-using GSF.Data;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace openPG.UI.DataModels
 {
@@ -52,6 +54,9 @@ namespace openPG.UI.DataModels
         private string m_sharedSecret;
         private string m_authKey;
         private string m_validIpAddresses;
+        private string m_certificateFile;
+        private SslPolicyErrors? m_validPolicyErrors;
+        private X509ChainStatusFlags? m_validChainFlags;
         private bool m_enabled;
         private DateTime m_createdOn;
         private string m_createdBy;
@@ -278,7 +283,6 @@ namespace openPG.UI.DataModels
         /// <summary>
         /// Gets or sets the current <see cref="Subscriber"/>'s shared secret.
         /// </summary>
-        [Required(ErrorMessage = "The Subscriber shared secret is a required field, please provide a value.")]
         public string SharedSecret
         {
             get
@@ -295,7 +299,6 @@ namespace openPG.UI.DataModels
         /// <summary>
         /// Gets or sets the authorization key for the current <see cref="Subscriber"/>.
         /// </summary>
-        [Required(ErrorMessage = "The subscriber authorization key is a required field, please provide value.")]
         public string AuthKey
         {
             get
@@ -312,7 +315,6 @@ namespace openPG.UI.DataModels
         /// <summary>
         /// Gets or sets the valid IP addresses of the current <see cref="Subscriber"/>.
         /// </summary>
-        [Required(ErrorMessage = "Subscriber valid IP addresses is a required field, please provide a value.")]
         public string ValidIPAddresses
         {
             get
@@ -323,6 +325,53 @@ namespace openPG.UI.DataModels
             {
                 m_validIpAddresses = value;
                 OnPropertyChanged("ValidIPAddresses");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the path to the certificate file used to
+        /// validate the identity of the <see cref="Subscriber"/>.
+        /// </summary>
+        public string CertificateFile
+        {
+            get
+            {
+                return m_certificateFile;
+            }
+            set
+            {
+                m_certificateFile = value;
+                OnPropertyChanged("CertificateFile");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the policy errors which can be ignored
+        /// when validating <see cref="Subscriber"/> identity.
+        /// </summary>
+        public SslPolicyErrors? ValidPolicyErrors
+        {
+            get
+            {
+                return m_validPolicyErrors;
+            }
+            set
+            {
+                m_validPolicyErrors = value;
+                OnPropertyChanged("ValidPolicyErrors");
+            }
+        }
+
+        public X509ChainStatusFlags? ValidChainFlags
+        {
+            get
+            {
+                return m_validChainFlags;
+            }
+            set
+            {
+                m_validChainFlags = value;
+                OnPropertyChanged("ValidChainFlags");
             }
         }
 
@@ -434,6 +483,9 @@ namespace openPG.UI.DataModels
 
                 foreach (DataRow row in subscriberTable.Rows)
                 {
+                    SslPolicyErrors validPolicyErrors;
+                    X509ChainStatusFlags validChainFlags;
+
                     subscriberList.Add(new Subscriber()
                     {
                         ID = database.Guid(row, "ID"),
@@ -443,6 +495,9 @@ namespace openPG.UI.DataModels
                         SharedSecret = row.Field<string>("SharedSecret"),
                         AuthKey = row.Field<string>("AuthKey"),
                         ValidIPAddresses = row.Field<string>("ValidIPAddresses"),
+                        CertificateFile = row.Field<string>("CertificateFile"),
+                        ValidPolicyErrors = Enum.TryParse(row.Field<string>("ValidPolicyErrors"), out validPolicyErrors) ? validPolicyErrors : (SslPolicyErrors?)null,
+                        ValidChainFlags = Enum.TryParse(row.Field<string>("ValidChainFlags"), out validChainFlags) ? validChainFlags : (X509ChainStatusFlags?)null,
                         Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
                         AllowedMeasurements = GetAllowedMeasurements(database, database.Guid(row, "ID")),
                         DeniedMeasurements = GetDeniedMeasurements(database, database.Guid(row, "ID")),
@@ -819,24 +874,29 @@ namespace openPG.UI.DataModels
 
                 if (subscriber.ID == Guid.Empty || subscriber.ID == null)
                 {
-                    query = database.ParameterizedQueryString("INSERT INTO Subscriber (NodeID, Acronym, Name, SharedSecret, AuthKey, ValidIPAddresses, Enabled, " +
-                        "UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10})", "nodeID", "acronym", "name",
-                        "sharedSecret", "authKey", "validIPAddresses", "enabled", "updatedBy", "updatedOn", "createdBy", "createdOn");
+                    query = database.ParameterizedQueryString("INSERT INTO Subscriber (NodeID, Acronym, Name, SharedSecret, AuthKey, ValidIPAddresses, CertificateFile, " +
+                        "ValidPolicyErrors, ValidChainFlags, Enabled, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, " +
+                        "{10}, {11}, {12}, {13})", "nodeID", "acronym", "name", "sharedSecret", "authKey", "validIPAddresses", "certificateFile", "validPolicyErrors",
+                        "validChainFlags", "enabled", "updatedBy", "updatedOn", "createdBy", "createdOn");
 
-                    database.Connection.ExecuteNonQuery(query, DefaultTimeout,
-                        database.CurrentNodeID(), subscriber.Acronym,
-                        subscriber.Name.ToNotNull(), subscriber.SharedSecret, subscriber.AuthKey, subscriber.ValidIPAddresses, database.Bool(subscriber.Enabled),
-                        CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.CurrentNodeID(), subscriber.Acronym, subscriber.Name.ToNotNull(),
+                        subscriber.SharedSecret.ToNotNull(), subscriber.AuthKey.ToNotNull(), subscriber.ValidIPAddresses.ToNotNull(), subscriber.CertificateFile.ToNotNull(),
+                        ((object)subscriber.ValidPolicyErrors != null) ? subscriber.ValidPolicyErrors.ToString() : (object)DBNull.Value,
+                        ((object)subscriber.ValidChainFlags != null) ? subscriber.ValidChainFlags.ToString() : (object)DBNull.Value,
+                        database.Bool(subscriber.Enabled), CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
                 }
                 else
                 {
                     query = database.ParameterizedQueryString("UPDATE Subscriber SET NodeID = {0}, Acronym = {1}, Name = {2}, SharedSecret = {3}, AuthKey = {4}, " +
-                        "ValidIPAddresses = {5}, Enabled = {6}, UpdatedBy = {7}, UpdatedOn = {8} WHERE ID = {9}", "nodeID", "acronym", "name", "sharedSecret", "authKey",
-                        "validIPAddresses", "enabled", "updatedBy", "updatedOn", "id");
+                        "ValidIPAddresses = {5}, CertificateFile = {6}, ValidPolicyErrors = {7}, ValidChainFlags = {8}, Enabled = {9}, UpdatedBy = {10}, UpdatedOn = {11} " +
+                        "WHERE ID = {12}", "nodeID", "acronym", "name", "sharedSecret", "authKey", "validIPAddresses", "certificateFile", "validPolicyErrors", "validChainFlags",
+                        "enabled", "updatedBy", "updatedOn", "id");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.Guid(subscriber.NodeID), subscriber.Acronym, subscriber.Name.ToNotNull(),
-                        subscriber.SharedSecret, subscriber.AuthKey, subscriber.ValidIPAddresses, database.Bool(subscriber.Enabled), CommonFunctions.CurrentUser,
-                        database.UtcNow(), database.Guid(subscriber.ID));
+                        subscriber.SharedSecret.ToNotNull(), subscriber.AuthKey.ToNotNull(), subscriber.ValidIPAddresses.ToNotNull(), subscriber.CertificateFile.ToNotNull(),
+                        ((object)subscriber.ValidPolicyErrors != null) ? subscriber.ValidPolicyErrors.ToString() : (object)DBNull.Value,
+                        ((object)subscriber.ValidChainFlags != null) ? subscriber.ValidChainFlags.ToString() : (object)DBNull.Value,
+                        database.Bool(subscriber.Enabled), CommonFunctions.CurrentUser, database.UtcNow(), database.Guid(subscriber.ID));
                 }
 
                 try
@@ -886,6 +946,5 @@ namespace openPG.UI.DataModels
         }
 
         #endregion
-
     }
 }
