@@ -5962,7 +5962,7 @@
             Represents a <see cref="T:GSF.TimeSeries.Transport.DataSubscriber"/> client connection to the <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.Transport.ClientConnection.#ctor(GSF.TimeSeries.Transport.DataPublisher,System.Guid,GSF.Communication.TcpServer)">
+        <member name="M:GSF.TimeSeries.Transport.ClientConnection.#ctor(GSF.TimeSeries.Transport.DataPublisher,System.Guid,GSF.Communication.IServer)">
             <summary>
             Creates a new <see cref="T:GSF.TimeSeries.Transport.ClientConnection"/> instance.
             </summary>
@@ -5996,6 +5996,13 @@
             Rotates or initializes the crypto keys for this <see cref="T:GSF.TimeSeries.Transport.ClientConnection"/>.
             </summary>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.ClientConnection.GetCommandChannelSocket">
+            <summary>
+            Gets the <see cref="T:System.Net.Sockets.Socket"/> instance used by this client
+            connection to send and receive data over the command channel.
+            </summary>
+            <returns>The socket instance used by the client to send and receive data over the command channel.</returns>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.ClientConnection.ClientID">
             <summary>
             Gets client ID of this <see cref="T:GSF.TimeSeries.Transport.ClientConnection"/>.
@@ -6004,6 +6011,11 @@
         <member name="P:GSF.TimeSeries.Transport.ClientConnection.DataChannel">
             <summary>
             Gets or sets reference to <see cref="T:GSF.Communication.UdpServer"/> data channel, attaching to or detaching from events as needed, associated with this <see cref="T:GSF.TimeSeries.Transport.ClientConnection"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.ClientConnection.CommandChannel">
+            <summary>
+            Gets <see cref="T:GSF.Communication.IServer"/> command channel.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.ClientConnection.PublishChannel">
@@ -6125,6 +6137,26 @@
         <member name="P:GSF.TimeSeries.Transport.Common.SymmetricAlgorithm">
             <summary>
             Gets an AES symmetric algorithm to use for encryption or decryption.
+            </summary>
+        </member>
+        <member name="T:GSF.TimeSeries.Transport.SecurityMode">
+            <summary>
+            Security modes used by the <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/> to secure data sent over the command channel.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.Transport.SecurityMode.None">
+            <summary>
+            No security.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.Transport.SecurityMode.TLS">
+            <summary>
+            Transport Layer Security.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.Transport.SecurityMode.Gateway">
+            <summary>
+            Pre-shared key.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.Transport.ServerCommand">
@@ -6448,6 +6480,11 @@
             Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.RequireAuthentication"/>.
             </summary>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.DataPublisher.DefaultSecurityMode">
+            <summary>
+            Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.SecurityMode"/>.
+            </summary>
+        </member>
         <member name="F:GSF.TimeSeries.Transport.DataPublisher.DefaultEncryptPayload">
             <summary>
             Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.EncryptPayload"/>.
@@ -6693,6 +6730,11 @@
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.RequireAuthentication">
             <summary>
             Gets or sets flag that determines if <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/> should require subscribers to authenticate before making data requests.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.SecurityMode">
+            <summary>
+            Gets or sets the security mode of the <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>'s command channel.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.EncryptPayload">
@@ -7171,6 +7213,11 @@
             This event is expected to only be raised when an input adapter has been designed to process
             a finite amount of data, e.g., reading a historical range of data during temporal procesing.
             </remarks>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.SecurityMode">
+            <summary>
+            Gets or sets the security mode used for communications over the command channel.
+            </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.RequireAuthentication">
             <summary>

@@ -2701,6 +2701,11 @@
             Specifies the default value for the <see cref="P:GSF.Communication.TlsClient.AllowDualStackSocket"/> property.
             </summary>
         </member>
+        <member name="F:GSF.Communication.TlsClient.DefaultMaxSendQueueSize">
+            <summary>
+            Specifies the default value for the <see cref="P:GSF.Communication.TlsClient.MaxSendQueueSize"/> property.
+            </summary>
+        </member>
         <member name="F:GSF.Communication.TlsClient.DefaultConnectionString">
             <summary>
             Specifies the default value for the <see cref="P:GSF.Communication.ClientBase.ConnectionString"/> property.
@@ -2805,6 +2810,11 @@
             Callback method for asynchronous authenticate operation.
             </summary>
         </member>
+        <member name="M:GSF.Communication.TlsClient.SendPayload(GSF.Communication.TlsClient.TlsClientPayload)">
+            <summary>
+            Sends a payload on the socket.
+            </summary>
+        </member>
         <member name="M:GSF.Communication.TlsClient.ProcessSend(System.IAsyncResult)">
             <summary>
             Callback method for asynchronous send operation.
@@ -2864,6 +2874,11 @@
         <member name="P:GSF.Communication.TlsClient.AllowDualStackSocket">
             <summary>
             Gets or sets a boolean value that determines if dual-mode socket is allowed when endpoint address is IPv6.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.TlsClient.MaxSendQueueSize">
+            <summary>
+            Gets or sets the maximum size for the send queue before payloads are dumped from the queue.
             </summary>
         </member>
         <member name="P:GSF.Communication.TlsClient.Client">
@@ -2952,6 +2967,11 @@
         <member name="F:GSF.Communication.TlsServer.DefaultAllowDualStackSocket">
             <summary>
             Specifies the default value for the <see cref="P:GSF.Communication.TlsServer.AllowDualStackSocket"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.Communication.TlsServer.DefaultMaxSendQueueSize">
+            <summary>
+            Specifies the default value for the <see cref="P:GSF.Communication.TlsServer.MaxSendQueueSize"/> property.
             </summary>
         </member>
         <member name="F:GSF.Communication.TlsServer.DefaultConfigurationString">
@@ -3069,6 +3089,11 @@
             Callback method for asynchronous authenticate operation.
             </summary>
         </member>
+        <member name="M:GSF.Communication.TlsServer.SendPayload(GSF.Communication.TlsServer.TlsServerPayload)">
+            <summary>
+            Asynchronous loop sends payloads on the socket.
+            </summary>
+        </member>
         <member name="M:GSF.Communication.TlsServer.ProcessSend(System.IAsyncResult)">
             <summary>
             Callback method for asynchronous send operation.
@@ -3128,6 +3153,11 @@
         <member name="P:GSF.Communication.TlsServer.AllowDualStackSocket">
             <summary>
             Gets or sets a boolean value that determines if dual-mode socket is allowed when endpoint address is IPv6.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.TlsServer.MaxSendQueueSize">
+            <summary>
+            Gets or sets the maximum size for the send queue before payloads are dumped from the queue.
             </summary>
         </member>
         <member name="P:GSF.Communication.TlsServer.Server">
