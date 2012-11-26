@@ -127,16 +127,19 @@ namespace openPDC.UI.UserControls
             IList<int> outputMeasurementKeys;
             IEnumerable<int> pointIDs;
 
-            string pointIDList;
-            IList<Guid> signalIDs;
+            string pointIDList = string.Empty;
+            IList<Guid> signalIDs = new List<Guid>();
 
             // Get the list of point IDs that are defined for this output stream
             outputMeasurementKeys = OutputStreamMeasurement.LoadKeys(null, m_outputStreamID);
             pointIDs = OutputStreamMeasurement.Load(null, outputMeasurementKeys).Select(outputMeasurement => outputMeasurement.PointID);
 
-            // Get the signal IDs of the measurements to be automatically selected
-            pointIDList = pointIDs.Select(id => id.ToString()).Aggregate((str1, str2) => str1 + "," + str2);
-            signalIDs = Measurement.LoadSignalIDs(null, string.Format("PointID IN ({0})", pointIDList));
+            if (pointIDs.Any())
+            {
+                // Get the signal IDs of the measurements to be automatically selected
+                pointIDList = pointIDs.Select(id => id.ToString()).Aggregate((str1, str2) => str1 + "," + str2);
+                signalIDs = Measurement.LoadSignalIDs(null, string.Format("PointID IN ({0})", pointIDList));
+            }
 
             // Clear out the set of selected measurements
             MeasurementPager.SelectedMeasurements.Clear();
