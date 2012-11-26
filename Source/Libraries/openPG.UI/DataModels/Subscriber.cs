@@ -477,7 +477,7 @@ namespace openPG.UI.DataModels
                 string query;
 
                 query = database.ParameterizedQueryString("SELECT ID, NodeID, Acronym, Name, SharedSecret, AuthKey, ValidIPAddresses, " +
-                    "Enabled FROM Subscriber WHERE NodeID = {0} ORDER BY Name", "nodeID");
+                    "CertificateFile, ValidPolicyErrors, ValidChainFlags, Enabled FROM Subscriber WHERE NodeID = {0} ORDER BY Name", "nodeID");
 
                 subscriberTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
 
