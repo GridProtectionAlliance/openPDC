@@ -6611,6 +6611,12 @@
             <param name="signalIndexCache">New signal index cache.</param>
             <param name="inputMeasurementKeys">Subscribed measurement keys.</param>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.DataPublisher.UpdateLatestMeasurementCache">
+            <summary>
+            Updates the latest measurement cache when the
+            set of cached measurements may have changed.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.UpdateRights">
             <summary>
             Updates each subscription's inputs based on
