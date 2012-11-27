@@ -246,10 +246,6 @@
       <Project>{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}</Project>
       <Name>openPDC.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PMUConnectionTester\PMUConnectionTester.csproj">
-      <Project>{AFFE84C3-9703-4DDA-8733-39B9894A2848}</Project>
-      <Name>PMUConnectionTester</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Modal\ConfigurationCreator.xaml">

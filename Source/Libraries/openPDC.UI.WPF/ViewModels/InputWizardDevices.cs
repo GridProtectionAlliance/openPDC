@@ -21,7 +21,6 @@
 //
 //******************************************************************************************************
 
-using ConnectionTester;
 using GSF;
 using GSF.Data;
 using GSF.ServiceProcess;
@@ -757,6 +756,7 @@ namespace openPDC.UI.ViewModels
                             SoapFormatter sf = new SoapFormatter();
                             sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
                             sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
+                            sf.Binder = Serialization.LegacyBinder;
                             connectionSettings = sf.Deserialize(fileData) as ConnectionSettings;
                         }
 
@@ -853,6 +853,7 @@ namespace openPDC.UI.ViewModels
                         SoapFormatter sf = new SoapFormatter();
                         sf.AssemblyFormat = FormatterAssemblyStyle.Simple;
                         sf.TypeFormat = FormatterTypeStyle.TypesWhenNeeded;
+                        sf.Binder = Serialization.LegacyBinder;
 
                         // If protocol is BpaPdcStream and INI file path is provided then replace existing path with the provided one.
                         if (ProtocolIsBpaPdcStream && !string.IsNullOrEmpty(IniFileName))
