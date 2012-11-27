@@ -359,7 +359,7 @@ namespace ConfigurationSetupUtility.Screens
 
         private void ValidatePhasorDataSourceValidation()
         {
-            const string updateQuery = "UPDATE DataOperation SET Arguments = 'skipOptimization = True' WHERE AssemblyName = 'PhasorProtocols.dll' AND TypeName = 'PhasorProtocols.CommonPhasorServices' AND MethodName = 'PhasorDataSourceValidation'";
+            const string updateQuery = "UPDATE DataOperation SET Arguments = 'skipOptimization = True' WHERE AssemblyName = 'GSF.PhasorProtocols.dll' AND TypeName = 'GSF.PhasorProtocols.CommonPhasorServices' AND MethodName = 'PhasorDataSourceValidation'";
             IDbConnection connection = null;
 
             try
