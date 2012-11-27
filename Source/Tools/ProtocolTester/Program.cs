@@ -29,8 +29,8 @@ using System.Linq;
 using GSF.TimeSeries;
 using GSF;
 using GSF.IO;
-using PhasorProtocols;
-using PhasorProtocols.Anonymous;
+using GSF.PhasorProtocols;
+using GSF.PhasorProtocols.Anonymous;
 
 namespace ProtocolTester
 {

@@ -31,7 +31,7 @@ using GSF.TimeSeries.UI.DataModels;
 using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
 using openPDC.UI.UserControls;
-using PhasorProtocols;
+using GSF.PhasorProtocols;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -785,27 +785,27 @@ namespace openPDC.UI.ViewModels
                                 switch (connectionSettings.PhasorProtocol)
                                 {
                                     case PhasorProtocol.BpaPdcStream:
-                                        PhasorProtocols.BpaPdcStream.ConnectionParameters bpaParameters = connectionSettings.ConnectionParameters as PhasorProtocols.BpaPdcStream.ConnectionParameters;
+                                        GSF.PhasorProtocols.BpaPdcStream.ConnectionParameters bpaParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.BpaPdcStream.ConnectionParameters;
                                         if ((object)bpaParameters != null)
                                             ConnectionString += "; iniFileName=" + bpaParameters.ConfigurationFileName + "; refreshConfigFileOnChange=" + bpaParameters.RefreshConfigurationFileOnChange + "; parseWordCountFromByte=" + bpaParameters.ParseWordCountFromByte;
                                         break;
                                     case PhasorProtocol.FNet:
-                                        PhasorProtocols.FNet.ConnectionParameters fnetParameters = connectionSettings.ConnectionParameters as PhasorProtocols.FNet.ConnectionParameters;
+                                        GSF.PhasorProtocols.FNet.ConnectionParameters fnetParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.FNet.ConnectionParameters;
                                         if ((object)fnetParameters != null)
                                             ConnectionString += "; timeOffset=" + fnetParameters.TimeOffset + "; stationName=" + fnetParameters.StationName + "; frameRate=" + fnetParameters.FrameRate + "; nominalFrequency=" + (int)fnetParameters.NominalFrequency;
                                         break;
                                     case PhasorProtocol.SelFastMessage:
-                                        PhasorProtocols.SelFastMessage.ConnectionParameters selParameters = connectionSettings.ConnectionParameters as PhasorProtocols.SelFastMessage.ConnectionParameters;
+                                        GSF.PhasorProtocols.SelFastMessage.ConnectionParameters selParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.SelFastMessage.ConnectionParameters;
                                         if ((object)selParameters != null)
                                             ConnectionString += "; messagePeriod=" + selParameters.MessagePeriod;
                                         break;
                                     case PhasorProtocol.Iec61850_90_5:
-                                        PhasorProtocols.Iec61850_90_5.ConnectionParameters iecParameters = connectionSettings.ConnectionParameters as PhasorProtocols.Iec61850_90_5.ConnectionParameters;
+                                        GSF.PhasorProtocols.Iec61850_90_5.ConnectionParameters iecParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.Iec61850_90_5.ConnectionParameters;
                                         if ((object)iecParameters != null)
                                             ConnectionString += "; useETRConfiguration=" + iecParameters.UseETRConfiguration + "; guessConfiguration=" + iecParameters.GuessConfiguration + "; parseRedundantASDUs=" + iecParameters.ParseRedundantASDUs + "; ignoreSignatureValidationFailures=" + iecParameters.IgnoreSignatureValidationFailures + "; ignoreSampleSizeValidationFailures=" + iecParameters.IgnoreSampleSizeValidationFailures;
                                         break;
                                     case PhasorProtocol.Macrodyne:
-                                        PhasorProtocols.Macrodyne.ConnectionParameters macrodyneParameters = connectionSettings.ConnectionParameters as PhasorProtocols.Macrodyne.ConnectionParameters;
+                                        GSF.PhasorProtocols.Macrodyne.ConnectionParameters macrodyneParameters = connectionSettings.ConnectionParameters as GSF.PhasorProtocols.Macrodyne.ConnectionParameters;
                                         if ((object)macrodyneParameters != null)
                                             ConnectionString += "; protocolVersion=" + macrodyneParameters.ProtocolVersion + "; iniFileName=" + macrodyneParameters.ConfigurationFileName + "; refreshConfigFileOnChange=" + macrodyneParameters.RefreshConfigurationFileOnChange + "; deviceLabel=" + macrodyneParameters.DeviceLabel;
                                         break;

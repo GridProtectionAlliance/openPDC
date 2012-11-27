@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{9EEDE95F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infragistics", "Infragistics", "{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{CDEEFA49-6184-4E99-9559-C7BBD7588F3B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDCManager", "openPDCManager", "{94B7694B-F813-47FF-8C50-33DCA32D183D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microsoft", "Microsoft", "{89F8C302-E1C2-4C61-9CFB-CB4879B04B38}"
@@ -93,8 +91,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight", "Silverlight"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MacrodyneController", "MacrodyneController", "{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{AECB8505-AB0A-4D4C-86A3-4C43F4656FB1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD}"
 	ProjectSection(SolutionItems) = preProject
 		Documentation\Images\Data Structure Relationship Diagram.png = Documentation\Images\Data Structure Relationship Diagram.png
@@ -166,29 +162,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProtocolTester", "ProtocolT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC", "Applications\openPDC\openPDC\openPDC.csproj", "{0BF2447E-252D-4712-B154-E350AF463081}"
 	ProjectSection(ProjectDependencies) = postProject
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8} = {40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27} = {8A1BCFAA-19E8-408A-8C72-170B1211DC27}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {54CA98CC-2F0A-41F2-879D-0E42B17E8544}
-		{B74CF4DA-2972-489B-AF08-419560EE57EF} = {B74CF4DA-2972-489B-AF08-419560EE57EF}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCConsole", "Applications\openPDC\openPDCConsole\openPDCConsole.csproj", "{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HistorianAdapters", "Libraries\Adapters\HistorianAdapters\HistorianAdapters.csproj", "{8A1BCFAA-19E8-408A-8C72-170B1211DC27}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICCPExport", "Libraries\Adapters\ICCPExport\ICCPExport.csproj", "{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCServices", "Applications\openPDC\openPDCServices\openPDCServices.csproj", "{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerCalculations", "Libraries\Adapters\PowerCalculations\PowerCalculations.csproj", "{B74CF4DA-2972-489B-AF08-419560EE57EF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacrodyneController", "Tools\MacrodyneController\MacrodyneController.csproj", "{334BA160-26D6-4A3B-92E2-42DEB4381176}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comtrade", "Libraries\Adapters\COMTRADE\Comtrade.csproj", "{9B93C212-786C-45C9-9B90-8CEFD24EF19D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {54CA98CC-2F0A-41F2-879D-0E42B17E8544}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationSetupUtility", "Tools\ConfigurationSetupUtility\ConfigurationSetupUtility.csproj", "{2A74EACF-8291-47C7-A2ED-0D58771F24E2}"
 EndProject
@@ -202,34 +183,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCManager", "Applicati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtocolTester", "Tools\ProtocolTester\ProtocolTester.csproj", "{DCFB7880-2C6B-41D0-B603-661BCE089DD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpriExport", "Libraries\Adapters\EpriExport\EpriExport.csproj", "{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMUConnectionTester", "Libraries\PMUConnectionTester\PMUConnectionTester.csproj", "{AFFE84C3-9703-4DDA-8733-39B9894A2848}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPG.UI", "Libraries\openPG.UI\openPG.UI.csproj", "{94F36768-E9A0-4783-BB0F-8C2C1771352E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPG.UI.WPF", "Libraries\openPG.UI.WPF\openPG.UI.WPF.csproj", "{134819C5-C1BB-4ED1-BE23-49AB5FB33744}"
-EndProject
-Project("{E729F059-12D4-455F-A2A4-FDA8DD25E08A}") = "openPDCSetup64", "Applications\openPDC\openPDCSetup\openPDCSetup64.isproj", "{C9B3171F-3AF5-44EE-9B29-36A5F2097FD6}"
-	ProjectSection(ProjectDependencies) = postProject
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8} = {40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D} = {9B93C212-786C-45C9-9B90-8CEFD24EF19D}
-		{334BA160-26D6-4A3B-92E2-42DEB4381176} = {334BA160-26D6-4A3B-92E2-42DEB4381176}
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E} = {94F36768-E9A0-4783-BB0F-8C2C1771352E}
-		{6903507C-C289-4F8F-887C-C2D94C72BA99} = {6903507C-C289-4F8F-887C-C2D94C72BA99}
-		{0BF2447E-252D-4712-B154-E350AF463081} = {0BF2447E-252D-4712-B154-E350AF463081}
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0} = {57261E91-7636-4F92-8D93-744A4AAD7EB0}
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27} = {8A1BCFAA-19E8-408A-8C72-170B1211DC27}
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3} = {A818C4B5-52B5-4E12-917E-4854C9AB4EF3}
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744} = {134819C5-C1BB-4ED1-BE23-49AB5FB33744}
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {54CA98CC-2F0A-41F2-879D-0E42B17E8544}
-		{2A74EACF-8291-47C7-A2ED-0D58771F24E2} = {2A74EACF-8291-47C7-A2ED-0D58771F24E2}
-		{B74CF4DA-2972-489B-AF08-419560EE57EF} = {B74CF4DA-2972-489B-AF08-419560EE57EF}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhasorProtocols", "Libraries\PhasorProtocols\PhasorProtocols.csproj", "{54CA98CC-2F0A-41F2-879D-0E42B17E8544}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhasorProtocols.Test", "Libraries\Test\PhasorProtocols.Test\PhasorProtocols.Test.csproj", "{36D4CA56-E2DA-4435-B370-4867A83B6379}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22F-4900-984D-8751836859B5}"
 	ProjectSection(SolutionItems) = preProject
@@ -237,6 +195,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\AdoAdapters.XML = Dependencies\GSF\AdoAdapters.XML
 		Dependencies\GSF\Ciloci.Flee.dll = Dependencies\GSF\Ciloci.Flee.dll
 		Dependencies\GSF\Ciloci.Flee.xml = Dependencies\GSF\Ciloci.Flee.xml
+		Dependencies\GSF\Comtrade.dll = Dependencies\GSF\Comtrade.dll
+		Dependencies\GSF\COMTRADE.XML = Dependencies\GSF\COMTRADE.XML
 		Dependencies\GSF\CsvAdapters.dll = Dependencies\GSF\CsvAdapters.dll
 		Dependencies\GSF\CsvAdapters.XML = Dependencies\GSF\CsvAdapters.XML
 		Dependencies\GSF\DataQualityMonitoring.dll = Dependencies\GSF\DataQualityMonitoring.dll
@@ -245,6 +205,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\Dnp3Adapters.XML = Dependencies\GSF\Dnp3Adapters.XML
 		Dependencies\GSF\DynamicCalculator.dll = Dependencies\GSF\DynamicCalculator.dll
 		Dependencies\GSF\DynamicCalculator.XML = Dependencies\GSF\DynamicCalculator.XML
+		Dependencies\GSF\EpriExport.dll = Dependencies\GSF\EpriExport.dll
+		Dependencies\GSF\EpriExport.XML = Dependencies\GSF\EpriExport.XML
 		Dependencies\GSF\GSF.Communication.dll = Dependencies\GSF\GSF.Communication.dll
 		Dependencies\GSF\GSF.Communication.xml = Dependencies\GSF\GSF.Communication.xml
 		Dependencies\GSF\GSF.Core.dll = Dependencies\GSF\GSF.Core.dll
@@ -255,6 +217,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\GSF.Media.XML = Dependencies\GSF\GSF.Media.XML
 		Dependencies\GSF\GSF.Net.dll = Dependencies\GSF\GSF.Net.dll
 		Dependencies\GSF\GSF.Net.XML = Dependencies\GSF\GSF.Net.XML
+		Dependencies\GSF\GSF.PhasorProtocols.dll = Dependencies\GSF\GSF.PhasorProtocols.dll
+		Dependencies\GSF\GSF.PhasorProtocols.xml = Dependencies\GSF\GSF.PhasorProtocols.xml
 		Dependencies\GSF\GSF.Security.dll = Dependencies\GSF\GSF.Security.dll
 		Dependencies\GSF\GSF.Security.xml = Dependencies\GSF\GSF.Security.xml
 		Dependencies\GSF\GSF.ServiceBus.dll = Dependencies\GSF\GSF.ServiceBus.dll
@@ -275,6 +239,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\GSF.Windows.xml = Dependencies\GSF\GSF.Windows.xml
 		Dependencies\GSF\Hadoop.Replication.dll = Dependencies\GSF\Hadoop.Replication.dll
 		Dependencies\GSF\Hadoop.Replication.XML = Dependencies\GSF\Hadoop.Replication.XML
+		Dependencies\GSF\HistorianAdapters.dll = Dependencies\GSF\HistorianAdapters.dll
+		Dependencies\GSF\HistorianAdapters.XML = Dependencies\GSF\HistorianAdapters.XML
+		Dependencies\GSF\ICCPExport.dll = Dependencies\GSF\ICCPExport.dll
+		Dependencies\GSF\ICCPExport.XML = Dependencies\GSF\ICCPExport.XML
 		Dependencies\GSF\MongoAdapters.dll = Dependencies\GSF\MongoAdapters.dll
 		Dependencies\GSF\MongoAdapters.XML = Dependencies\GSF\MongoAdapters.XML
 		Dependencies\GSF\MongoDB.dll = Dependencies\GSF\MongoDB.dll
@@ -285,6 +253,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\MySqlAdapters.XML = Dependencies\GSF\MySqlAdapters.XML
 		Dependencies\GSF\OneSecondFrequencyAverager.dll = Dependencies\GSF\OneSecondFrequencyAverager.dll
 		Dependencies\GSF\OneSecondFrequencyAverager.xml = Dependencies\GSF\OneSecondFrequencyAverager.xml
+		Dependencies\GSF\PowerCalculations.dll = Dependencies\GSF\PowerCalculations.dll
+		Dependencies\GSF\PowerCalculations.XML = Dependencies\GSF\PowerCalculations.XML
 		Dependencies\GSF\TestingAdapters.dll = Dependencies\GSF\TestingAdapters.dll
 		Dependencies\GSF\TestingAdapters.XML = Dependencies\GSF\TestingAdapters.XML
 		Dependencies\GSF\WavInputAdapter.dll = Dependencies\GSF\WavInputAdapter.dll
@@ -293,7 +263,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 22
+		SccNumberOfProjects = 14
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -301,86 +271,54 @@ Global
 		SccProjectTopLevelParentUniqueName1 = Synchrophasor.sln
 		SccProjectName1 = Applications/openPDC/openPDCConsole
 		SccLocalPath1 = Applications\\openPDC\\openPDCConsole
-		SccProjectUniqueName2 = Libraries\\Adapters\\HistorianAdapters\\HistorianAdapters.csproj
+		SccProjectUniqueName2 = Applications\\openPDC\\openPDC\\openPDC.csproj
 		SccProjectTopLevelParentUniqueName2 = Synchrophasor.sln
-		SccProjectName2 = Libraries/Adapters/HistorianAdapters
-		SccLocalPath2 = Libraries\\Adapters\\HistorianAdapters
-		SccProjectUniqueName3 = Applications\\openPDC\\openPDC\\openPDC.csproj
+		SccProjectName2 = Applications/openPDC/openPDC
+		SccLocalPath2 = Applications\\openPDC\\openPDC
+		SccProjectUniqueName3 = Applications\\openPDC\\openPDCServices\\openPDCServices.csproj
 		SccProjectTopLevelParentUniqueName3 = Synchrophasor.sln
-		SccProjectName3 = Applications/openPDC/openPDC
-		SccLocalPath3 = Applications\\openPDC\\openPDC
-		SccProjectUniqueName4 = Libraries\\Adapters\\ICCPExport\\ICCPExport.csproj
+		SccProjectName3 = Applications/openPDC/openPDCServices
+		SccLocalPath3 = Applications\\openPDC\\openPDCServices
+		SccProjectUniqueName4 = Tools\\MacrodyneController\\MacrodyneController.csproj
 		SccProjectTopLevelParentUniqueName4 = Synchrophasor.sln
-		SccProjectName4 = Libraries/Adapters/ICCPExport
-		SccLocalPath4 = Libraries\\Adapters\\ICCPExport
-		SccProjectUniqueName5 = Applications\\openPDC\\openPDCServices\\openPDCServices.csproj
+		SccProjectName4 = Tools/MacrodyneController
+		SccLocalPath4 = Tools\\MacrodyneController
+		SccProjectUniqueName5 = Tools\\ConfigurationSetupUtility\\ConfigurationSetupUtility.csproj
 		SccProjectTopLevelParentUniqueName5 = Synchrophasor.sln
-		SccProjectName5 = Applications/openPDC/openPDCServices
-		SccLocalPath5 = Applications\\openPDC\\openPDCServices
-		SccProjectUniqueName6 = Libraries\\Adapters\\PowerCalculations\\PowerCalculations.csproj
+		SccProjectName5 = Tools/ConfigurationSetupUtility
+		SccLocalPath5 = Tools\\ConfigurationSetupUtility
+		SccProjectUniqueName6 = Tools\\Setup\\Setup.csproj
 		SccProjectTopLevelParentUniqueName6 = Synchrophasor.sln
-		SccProjectName6 = Libraries/Adapters/PowerCalculations
-		SccLocalPath6 = Libraries\\Adapters\\PowerCalculations
-		SccProjectUniqueName7 = Tools\\MacrodyneController\\MacrodyneController.csproj
+		SccProjectName6 = Tools/Setup
+		SccLocalPath6 = Tools\\Setup
+		SccProjectUniqueName7 = Libraries\\openPDC.UI\\openPDC.UI.csproj
 		SccProjectTopLevelParentUniqueName7 = Synchrophasor.sln
-		SccProjectName7 = Tools/MacrodyneController
-		SccLocalPath7 = Tools\\MacrodyneController
-		SccProjectUniqueName8 = Libraries\\Adapters\\COMTRADE\\Comtrade.csproj
+		SccProjectName7 = Libraries/openPDC.UI
+		SccLocalPath7 = Libraries\\openPDC.UI
+		SccProjectUniqueName8 = Libraries\\openPDC.UI.WPF\\openPDC.UI.WPF.csproj
 		SccProjectTopLevelParentUniqueName8 = Synchrophasor.sln
-		SccProjectName8 = Libraries/Adapters/COMTRADE
-		SccLocalPath8 = Libraries\\Adapters\\COMTRADE
-		SccProjectUniqueName9 = Tools\\ConfigurationSetupUtility\\ConfigurationSetupUtility.csproj
+		SccProjectName8 = Libraries/openPDC.UI.WPF
+		SccLocalPath8 = Libraries\\openPDC.UI.WPF
+		SccProjectUniqueName9 = Applications\\openPDCManager\\openPDCManager\\openPDCManager.csproj
 		SccProjectTopLevelParentUniqueName9 = Synchrophasor.sln
-		SccProjectName9 = Tools/ConfigurationSetupUtility
-		SccLocalPath9 = Tools\\ConfigurationSetupUtility
-		SccProjectUniqueName10 = Tools\\Setup\\Setup.csproj
+		SccProjectName9 = Applications/openPDCManager/openPDCManager
+		SccLocalPath9 = Applications\\openPDCManager\\openPDCManager
+		SccProjectUniqueName10 = Tools\\ProtocolTester\\ProtocolTester.csproj
 		SccProjectTopLevelParentUniqueName10 = Synchrophasor.sln
-		SccProjectName10 = Tools/Setup
-		SccLocalPath10 = Tools\\Setup
-		SccProjectUniqueName11 = Libraries\\openPDC.UI\\openPDC.UI.csproj
+		SccProjectName10 = Tools/ProtocolTester
+		SccLocalPath10 = Tools\\ProtocolTester
+		SccProjectUniqueName11 = Libraries\\PMUConnectionTester\\PMUConnectionTester.csproj
 		SccProjectTopLevelParentUniqueName11 = Synchrophasor.sln
-		SccProjectName11 = Libraries/openPDC.UI
-		SccLocalPath11 = Libraries\\openPDC.UI
-		SccProjectUniqueName12 = Libraries\\openPDC.UI.WPF\\openPDC.UI.WPF.csproj
+		SccProjectName11 = Libraries/PMUConnectionTester
+		SccLocalPath11 = Libraries\\PMUConnectionTester
+		SccProjectUniqueName12 = Libraries\\openPG.UI\\openPG.UI.csproj
 		SccProjectTopLevelParentUniqueName12 = Synchrophasor.sln
-		SccProjectName12 = Libraries/openPDC.UI.WPF
-		SccLocalPath12 = Libraries\\openPDC.UI.WPF
-		SccProjectUniqueName13 = Applications\\openPDCManager\\openPDCManager\\openPDCManager.csproj
+		SccProjectName12 = Libraries/openPG.UI
+		SccLocalPath12 = Libraries\\openPG.UI
+		SccProjectUniqueName13 = Libraries\\openPG.UI.WPF\\openPG.UI.WPF.csproj
 		SccProjectTopLevelParentUniqueName13 = Synchrophasor.sln
-		SccProjectName13 = Applications/openPDCManager/openPDCManager
-		SccLocalPath13 = Applications\\openPDCManager\\openPDCManager
-		SccProjectUniqueName14 = Tools\\ProtocolTester\\ProtocolTester.csproj
-		SccProjectTopLevelParentUniqueName14 = Synchrophasor.sln
-		SccProjectName14 = Tools/ProtocolTester
-		SccLocalPath14 = Tools\\ProtocolTester
-		SccProjectUniqueName15 = Libraries\\Adapters\\EpriExport\\EpriExport.csproj
-		SccProjectTopLevelParentUniqueName15 = Synchrophasor.sln
-		SccProjectName15 = Libraries/Adapters/EpriExport
-		SccLocalPath15 = Libraries\\Adapters\\EpriExport
-		SccProjectUniqueName16 = Libraries\\PMUConnectionTester\\PMUConnectionTester.csproj
-		SccProjectTopLevelParentUniqueName16 = Synchrophasor.sln
-		SccProjectName16 = Libraries/PMUConnectionTester
-		SccLocalPath16 = Libraries\\PMUConnectionTester
-		SccProjectUniqueName17 = Libraries\\openPG.UI\\openPG.UI.csproj
-		SccProjectTopLevelParentUniqueName17 = Synchrophasor.sln
-		SccProjectName17 = Libraries/openPG.UI
-		SccLocalPath17 = Libraries\\openPG.UI
-		SccProjectUniqueName18 = Libraries\\openPG.UI.WPF\\openPG.UI.WPF.csproj
-		SccProjectTopLevelParentUniqueName18 = Synchrophasor.sln
-		SccProjectName18 = Libraries/openPG.UI.WPF
-		SccLocalPath18 = Libraries\\openPG.UI.WPF
-		SccProjectUniqueName19 = Applications\\openPDC\\openPDCSetup\\openPDCSetup64.isproj
-		SccProjectTopLevelParentUniqueName19 = Synchrophasor.sln
-		SccProjectName19 = Applications/openPDC/openPDCSetup
-		SccLocalPath19 = Applications\\openPDC\\openPDCSetup
-		SccProjectUniqueName20 = Libraries\\PhasorProtocols\\PhasorProtocols.csproj
-		SccProjectTopLevelParentUniqueName20 = Synchrophasor.sln
-		SccProjectName20 = Libraries/PhasorProtocols
-		SccLocalPath20 = Libraries\\PhasorProtocols
-		SccProjectUniqueName21 = Libraries\\Test\\PhasorProtocols.Test\\PhasorProtocols.Test.csproj
-		SccProjectTopLevelParentUniqueName21 = Synchrophasor.sln
-		SccProjectName21 = Libraries/Test/PhasorProtocols.Test
-		SccLocalPath21 = Libraries\\Test\\PhasorProtocols.Test
+		SccProjectName13 = Libraries/openPG.UI.WPF
+		SccLocalPath13 = Libraries\\openPG.UI.WPF
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
@@ -418,30 +356,6 @@ Global
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}.Release|Any CPU.Build.0 = Release|Any CPU
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}.Release|x86.ActiveCfg = Release|x86
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}.Release|x86.Build.0 = Release|x86
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Debug|x86.ActiveCfg = Debug|x86
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Debug|x86.Build.0 = Debug|x86
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Deploy|Any CPU.Build.0 = Release|Any CPU
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Deploy|x86.ActiveCfg = Release|x86
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Deploy|x86.Build.0 = Release|x86
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Release|x86.ActiveCfg = Release|x86
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27}.Release|x86.Build.0 = Release|x86
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Debug|x86.ActiveCfg = Debug|x86
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Debug|x86.Build.0 = Debug|x86
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Deploy|Any CPU.Build.0 = Release|Any CPU
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Deploy|x86.ActiveCfg = Release|x86
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Deploy|x86.Build.0 = Release|x86
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Release|x86.ActiveCfg = Release|x86
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8}.Release|x86.Build.0 = Release|x86
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}.Debug|x86.ActiveCfg = Debug|x86
@@ -454,18 +368,6 @@ Global
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}.Release|x86.ActiveCfg = Release|x86
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1}.Release|x86.Build.0 = Release|x86
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Debug|x86.ActiveCfg = Debug|x86
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Debug|x86.Build.0 = Debug|x86
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Deploy|Any CPU.Build.0 = Release|Any CPU
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Deploy|x86.ActiveCfg = Release|x86
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Deploy|x86.Build.0 = Release|x86
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Release|x86.ActiveCfg = Release|x86
-		{B74CF4DA-2972-489B-AF08-419560EE57EF}.Release|x86.Build.0 = Release|x86
 		{334BA160-26D6-4A3B-92E2-42DEB4381176}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{334BA160-26D6-4A3B-92E2-42DEB4381176}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{334BA160-26D6-4A3B-92E2-42DEB4381176}.Debug|x86.ActiveCfg = Debug|x86
@@ -478,18 +380,6 @@ Global
 		{334BA160-26D6-4A3B-92E2-42DEB4381176}.Release|Any CPU.Build.0 = Release|Any CPU
 		{334BA160-26D6-4A3B-92E2-42DEB4381176}.Release|x86.ActiveCfg = Release|x86
 		{334BA160-26D6-4A3B-92E2-42DEB4381176}.Release|x86.Build.0 = Release|x86
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Debug|x86.ActiveCfg = Debug|x86
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Debug|x86.Build.0 = Debug|x86
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Deploy|Any CPU.Build.0 = Release|Any CPU
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Deploy|x86.ActiveCfg = Release|x86
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Deploy|x86.Build.0 = Release|x86
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Release|x86.ActiveCfg = Release|x86
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D}.Release|x86.Build.0 = Release|x86
 		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A74EACF-8291-47C7-A2ED-0D58771F24E2}.Debug|x86.ActiveCfg = Debug|x86
@@ -559,18 +449,6 @@ Global
 		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Release|Any CPU.ActiveCfg = Release|x86
 		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Release|x86.ActiveCfg = Release|x86
 		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Release|x86.Build.0 = Release|x86
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Debug|x86.ActiveCfg = Debug|x86
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Debug|x86.Build.0 = Debug|x86
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Deploy|Any CPU.Build.0 = Release|Any CPU
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Deploy|x86.ActiveCfg = Release|x86
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Deploy|x86.Build.0 = Release|x86
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Release|x86.ActiveCfg = Release|x86
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7}.Release|x86.Build.0 = Release|x86
 		{AFFE84C3-9703-4DDA-8733-39B9894A2848}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AFFE84C3-9703-4DDA-8733-39B9894A2848}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFFE84C3-9703-4DDA-8733-39B9894A2848}.Debug|x86.ActiveCfg = Debug|x86
@@ -607,37 +485,6 @@ Global
 		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|Any CPU.Build.0 = Release|Any CPU
 		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|x86.ActiveCfg = Release|x86
 		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|x86.Build.0 = Release|x86
-		{C9B3171F-3AF5-44EE-9B29-36A5F2097FD6}.Debug|Any CPU.ActiveCfg = Debug
-		{C9B3171F-3AF5-44EE-9B29-36A5F2097FD6}.Debug|x86.ActiveCfg = Debug
-		{C9B3171F-3AF5-44EE-9B29-36A5F2097FD6}.Deploy|Any CPU.ActiveCfg = Release
-		{C9B3171F-3AF5-44EE-9B29-36A5F2097FD6}.Deploy|Any CPU.Build.0 = Release
-		{C9B3171F-3AF5-44EE-9B29-36A5F2097FD6}.Deploy|x86.ActiveCfg = Debug
-		{C9B3171F-3AF5-44EE-9B29-36A5F2097FD6}.Release|Any CPU.ActiveCfg = Release
-		{C9B3171F-3AF5-44EE-9B29-36A5F2097FD6}.Release|x86.ActiveCfg = Release
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Debug|x86.ActiveCfg = Debug|x86
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Debug|x86.Build.0 = Debug|x86
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Deploy|Any CPU.Build.0 = Debug|Any CPU
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Deploy|x86.ActiveCfg = Debug|x86
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Deploy|x86.Build.0 = Debug|x86
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Release|Any CPU.Build.0 = Release|Any CPU
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Release|x86.ActiveCfg = Release|x86
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544}.Release|x86.Build.0 = Release|x86
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Debug|x86.ActiveCfg = Debug|x86
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Debug|x86.Build.0 = Debug|x86
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Deploy|Any CPU.Build.0 = Debug|Any CPU
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Deploy|x86.ActiveCfg = Debug|x86
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Deploy|x86.Build.0 = Debug|x86
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Release|x86.ActiveCfg = Release|x86
-		{36D4CA56-E2DA-4435-B370-4867A83B6379}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -651,24 +498,16 @@ Global
 		{A72A7B6D-E22F-4900-984D-8751836859B5} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{060A349D-E92D-4F13-A857-01609631D3BE} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
-		{CDEEFA49-6184-4E99-9559-C7BBD7588F3B} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
-		{AECB8505-AB0A-4D4C-86A3-4C43F4656FB1} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{57261E91-7636-4F92-8D93-744A4AAD7EB0} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{AFFE84C3-9703-4DDA-8733-39B9894A2848} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{94F36768-E9A0-4783-BB0F-8C2C1771352E} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{134819C5-C1BB-4ED1-BE23-49AB5FB33744} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
-		{54CA98CC-2F0A-41F2-879D-0E42B17E8544} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{D71CBFB5-291F-484E-9DAE-7442F4CA746A} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{0515FA28-3230-415D-8D6F-5C8C9E795745} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
-		{8A1BCFAA-19E8-408A-8C72-170B1211DC27} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
-		{40FACE0F-06DF-474C-A87C-59C8EAC0B3F8} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
-		{B74CF4DA-2972-489B-AF08-419560EE57EF} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
-		{9B93C212-786C-45C9-9B90-8CEFD24EF19D} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
-		{5E1CD41C-6CB0-45D1-AA73-191A36028CE7} = {CDEEFA49-6184-4E99-9559-C7BBD7588F3B}
 		{6903507C-C289-4F8F-887C-C2D94C72BA99} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{29821B31-3A0D-469E-B8BA-AD006159BC3D} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
 		{83A90AB9-3DC7-4FB6-9AF3-79AB2F6EB0C6} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
@@ -680,11 +519,9 @@ Global
 		{0BF2447E-252D-4712-B154-E350AF463081} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
-		{C9B3171F-3AF5-44EE-9B29-36A5F2097FD6} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{2A74EACF-8291-47C7-A2ED-0D58771F24E2} = {F7821DF0-BD48-481E-9DF9-D64AEFD24F57}
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F} = {D71CBFB5-291F-484E-9DAE-7442F4CA746A}
 		{334BA160-26D6-4A3B-92E2-42DEB4381176} = {C4B7F8ED-DC60-46EC-B78B-D541C1FA864C}
-		{36D4CA56-E2DA-4435-B370-4867A83B6379} = {AECB8505-AB0A-4D4C-86A3-4C43F4656FB1}
 		{AD1920D4-64C4-43C9-903D-3C78981C8850} = {44A76C31-308D-4D46-B263-734DD9FA3570}
 		{DCFB7880-2C6B-41D0-B603-661BCE089DD7} = {0515FA28-3230-415D-8D6F-5C8C9E795745}
 	EndGlobalSection

@@ -100,6 +100,9 @@
     <Reference Include="GSF.Core">
       <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
     </Reference>
+    <Reference Include="GSF.PhasorProtocols">
+      <HintPath>..\..\Dependencies\GSF\GSF.PhasorProtocols.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -171,12 +174,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\PhasorProtocols\PhasorProtocols.csproj">
-      <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
-      <Name>PhasorProtocols</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

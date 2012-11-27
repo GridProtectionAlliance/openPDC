@@ -1,6 +1,6 @@
 ﻿using System;
 using GSF;
-using PhasorProtocols.Macrodyne;
+using GSF.PhasorProtocols.Macrodyne;
 
 namespace MacrodyneController
 {

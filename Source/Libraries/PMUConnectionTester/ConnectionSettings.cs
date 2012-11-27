@@ -23,7 +23,7 @@
 
 using System;
 using GSF.Communication;
-using PhasorProtocols;
+using GSF.PhasorProtocols;
 
 namespace ConnectionTester
 {

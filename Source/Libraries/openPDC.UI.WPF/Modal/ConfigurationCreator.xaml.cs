@@ -27,8 +27,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using GSF;
-using PhasorProtocols;
-using PhasorProtocols.Anonymous;
+using GSF.PhasorProtocols;
+using GSF.PhasorProtocols.Anonymous;
 
 namespace openPDC.UI.Modal
 {
@@ -288,22 +288,22 @@ namespace openPDC.UI.Modal
                 textBoxDeviceName.Text = selectedDevice.StationName;
                 textBoxDeviceIDCode.Text = selectedDevice.IDCode.ToString();
 
-                if (selectedDevice.PhasorCoordinateFormat == PhasorProtocols.CoordinateFormat.Polar)
+                if (selectedDevice.PhasorCoordinateFormat == GSF.PhasorProtocols.CoordinateFormat.Polar)
                     radioButtonPhasorPolar.IsChecked = true;
                 else
                     radioButtonPhasorRectangular.IsChecked = true;
 
-                if (selectedDevice.PhasorDataFormat == PhasorProtocols.DataFormat.FloatingPoint)
+                if (selectedDevice.PhasorDataFormat == GSF.PhasorProtocols.DataFormat.FloatingPoint)
                     radioButtonPhasorFloatingPoint.IsChecked = true;
                 else
                     radioButtonPhasorScaledInteger.IsChecked = true;
 
-                if (selectedDevice.FrequencyDataFormat == PhasorProtocols.DataFormat.FloatingPoint)
+                if (selectedDevice.FrequencyDataFormat == GSF.PhasorProtocols.DataFormat.FloatingPoint)
                     radioButtonFrequencyFloatingPoint.IsChecked = true;
                 else
                     radioButtonFrequencyScaledInteger.IsChecked = true;
 
-                if (selectedDevice.AnalogDataFormat == PhasorProtocols.DataFormat.FloatingPoint)
+                if (selectedDevice.AnalogDataFormat == GSF.PhasorProtocols.DataFormat.FloatingPoint)
                     radioButtonAnalogFloatingPoint.IsChecked = true;
                 else
                     radioButtonAnalogScaledInteger.IsChecked = true;
@@ -369,7 +369,7 @@ namespace openPDC.UI.Modal
             ConfigurationCell selectedDevice = this.SelectedDevice;
 
             if (selectedDevice != null)
-                selectedDevice.PhasorCoordinateFormat = PhasorProtocols.CoordinateFormat.Polar;
+                selectedDevice.PhasorCoordinateFormat = GSF.PhasorProtocols.CoordinateFormat.Polar;
         }
 
         private void radioButtonPhasorRectangular_Checked(object sender, RoutedEventArgs e)
@@ -377,7 +377,7 @@ namespace openPDC.UI.Modal
             ConfigurationCell selectedDevice = this.SelectedDevice;
 
             if (selectedDevice != null)
-                selectedDevice.PhasorCoordinateFormat = PhasorProtocols.CoordinateFormat.Rectangular;
+                selectedDevice.PhasorCoordinateFormat = GSF.PhasorProtocols.CoordinateFormat.Rectangular;
         }
 
         private void radioButtonPhasorFloatingPoint_Checked(object sender, RoutedEventArgs e)
@@ -385,7 +385,7 @@ namespace openPDC.UI.Modal
             ConfigurationCell selectedDevice = this.SelectedDevice;
 
             if (selectedDevice != null)
-                selectedDevice.PhasorDataFormat = PhasorProtocols.DataFormat.FloatingPoint;
+                selectedDevice.PhasorDataFormat = GSF.PhasorProtocols.DataFormat.FloatingPoint;
         }
 
         private void radioButtonPhasorScaledInteger_Checked(object sender, RoutedEventArgs e)
@@ -393,7 +393,7 @@ namespace openPDC.UI.Modal
             ConfigurationCell selectedDevice = this.SelectedDevice;
 
             if (selectedDevice != null)
-                selectedDevice.PhasorDataFormat = PhasorProtocols.DataFormat.FixedInteger;
+                selectedDevice.PhasorDataFormat = GSF.PhasorProtocols.DataFormat.FixedInteger;
         }
 
         private void radioButtonFrequencyFloatingPoint_Checked(object sender, RoutedEventArgs e)
@@ -401,7 +401,7 @@ namespace openPDC.UI.Modal
             ConfigurationCell selectedDevice = this.SelectedDevice;
 
             if (selectedDevice != null)
-                selectedDevice.FrequencyDataFormat = PhasorProtocols.DataFormat.FloatingPoint;
+                selectedDevice.FrequencyDataFormat = GSF.PhasorProtocols.DataFormat.FloatingPoint;
         }
 
         private void radioButtonFrequencyScaledInteger_Checked(object sender, RoutedEventArgs e)
@@ -409,7 +409,7 @@ namespace openPDC.UI.Modal
             ConfigurationCell selectedDevice = this.SelectedDevice;
 
             if (selectedDevice != null)
-                selectedDevice.FrequencyDataFormat = PhasorProtocols.DataFormat.FixedInteger;
+                selectedDevice.FrequencyDataFormat = GSF.PhasorProtocols.DataFormat.FixedInteger;
         }
 
         private void radioButtonAnalogFloatingPoint_Checked(object sender, RoutedEventArgs e)
@@ -417,7 +417,7 @@ namespace openPDC.UI.Modal
             ConfigurationCell selectedDevice = this.SelectedDevice;
 
             if (selectedDevice != null)
-                selectedDevice.AnalogDataFormat = PhasorProtocols.DataFormat.FloatingPoint;
+                selectedDevice.AnalogDataFormat = GSF.PhasorProtocols.DataFormat.FloatingPoint;
         }
 
         private void radioButtonAnalogScaledInteger_Checked(object sender, RoutedEventArgs e)
@@ -425,7 +425,7 @@ namespace openPDC.UI.Modal
             ConfigurationCell selectedDevice = this.SelectedDevice;
 
             if (selectedDevice != null)
-                selectedDevice.AnalogDataFormat = PhasorProtocols.DataFormat.FixedInteger;
+                selectedDevice.AnalogDataFormat = GSF.PhasorProtocols.DataFormat.FixedInteger;
         }
 
         private void textBoxAnalogs_TextChanged(object sender, TextChangedEventArgs e)

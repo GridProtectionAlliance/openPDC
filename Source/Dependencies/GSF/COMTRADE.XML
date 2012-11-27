@@ -1,0 +1,508 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Comtrade</name>
+    </assembly>
+    <members>
+        <member name="T:Comtrade.AnalogChannel">
+            <summary>
+            Represents an analog channel defintion of the <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="M:Comtrade.AnalogChannel.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="M:Comtrade.AnalogChannel.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Comtrade.AnalogChannel"/> from an existing line image.
+            </summary>
+            <param name="lineImage">Line image to parse.</param>
+        </member>
+        <member name="M:Comtrade.AnalogChannel.ToString">
+            <summary>
+            Converts <see cref="T:Comtrade.AnalogChannel"/> to its string format.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.Index">
+            <summary>
+            Gets or sets index of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.Name">
+            <summary>
+            Gets or sets name of this <see cref="T:Comtrade.AnalogChannel"/> formatted as station_name:channel_name.
+            </summary>
+            <exception cref="T:System.FormatException">Name must be formatted as station_name:channel_name.</exception>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.StationName">
+            <summary>
+            Gets or sets station name component of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.ChannelName">
+            <summary>
+            Gets or sets channel name component of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.PhaseID">
+            <summary>
+            Gets or sets the 2-character phase identifier for this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.PhaseDesignation">
+            <summary>
+            Gets or sets phase designation of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException">Value is not a valid phase designation.</exception>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.PhasorType">
+            <summary>
+            Gets or sets phasor type of this <see cref="T:Comtrade.AnalogChannel"/>, if applicable.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.NominalFrequency">
+            <summary>
+            Gets or sets nominal frequency of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.SignalKind">
+            <summary>
+            Gets or sets signal kind of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException">Value is not a valid analog signal kind.</exception>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.CoordinateFormat">
+            <summary>
+            Gets or sets coordinate format of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.CircuitComponent">
+            <summary>
+            Gets or sets circuit component of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.Units">
+            <summary>
+            Gets or sets units of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.Multiplier">
+            <summary>
+            Gets or sets value multipler of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.Adder">
+            <summary>
+            Gets or sets adder of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.Skew">
+            <summary>
+            Gets or sets time skew between channels of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.MinValue">
+            <summary>
+            Gets or sets minimum unscaled value of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.MaxValue">
+            <summary>
+            Gets or sets maximum unscaled value of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.PrimaryRatio">
+            <summary>
+            Gets or sets the channel voltage or current transformer ratio primary factor of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.SecondaryRatio">
+            <summary>
+            Gets or sets the channel voltage or current transformer ratio secondary factor of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.AnalogChannel.ScalingIdentifier">
+            <summary>
+            Gets or sets the the primary or secondary data scaling identifer of this <see cref="T:Comtrade.AnalogChannel"/>.
+            </summary>
+        </member>
+        <member name="T:Comtrade.Parser">
+            <summary>
+            COMTRADE data file(s) parser.
+            </summary>
+        </member>
+        <member name="M:Comtrade.Parser.#ctor">
+            <summary>
+            Creates a new instance of the COMTRADE <see cref="T:Comtrade.Parser"/>.
+            </summary>
+        </member>
+        <member name="M:Comtrade.Parser.Finalize">
+            <summary>
+            Releases the unmanaged resources before the <see cref="T:Comtrade.Parser"/> object is reclaimed by <see cref="T:System.GC"/>.
+            </summary>
+        </member>
+        <member name="M:Comtrade.Parser.Dispose">
+            <summary>
+            Releases all the resources used by the <see cref="T:Comtrade.Parser"/> object.
+            </summary>
+        </member>
+        <member name="M:Comtrade.Parser.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:Comtrade.Parser"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Comtrade.Parser.OpenFiles">
+            <summary>
+            Opens all COMTRADE data file streams.
+            </summary>
+        </member>
+        <member name="M:Comtrade.Parser.CloseFiles">
+            <summary>
+            Closes all COMTRADE data file streams.
+            </summary>
+        </member>
+        <member name="M:Comtrade.Parser.ReadNext">
+            <summary>
+            Reads next COMTRADE record.
+            </summary>
+            <returns><c>true</c> if read succeeded; otherwise <c>false</c> if end of data set was reached.</returns>
+        </member>
+        <member name="P:Comtrade.Parser.Schema">
+            <summary>
+            Gets or sets associated COMTRADE schema for this <see cref="T:Comtrade.Parser"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Parser.FileName">
+            <summary>
+            Gets or sets COMTRADE data filename. If there are more than one data files in a set, this should be set to first file name in the set, e.g., DATA123.D00.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Parser.InferTimeFromSampleRates">
+            <summary>
+            Gets or sets flag that determines if time should be inferred from sample rates.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Parser.Timestamp">
+            <summary>
+            Gets timestamp of current record.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Parser.Values">
+            <summary>
+            Gets values of current record.
+            </summary>
+        </member>
+        <member name="T:Comtrade.Timestamp">
+            <summary>
+            Represents a timestamp in the COMTRADE file standard format, IEEE Std C37.111-1999..
+            </summary>
+        </member>
+        <member name="F:Comtrade.Timestamp.Value">
+            <summary>
+            Timestamp in ticks.
+            </summary>
+        </member>
+        <member name="M:Comtrade.Timestamp.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Comtrade.Timestamp"/> from an existing line image.
+            </summary>
+            <param name="lineImage">Line image to parse.</param>
+        </member>
+        <member name="M:Comtrade.Timestamp.ToString">
+            <summary>
+            Converts <see cref="T:Comtrade.Timestamp"/> to its string format.
+            </summary>
+        </member>
+        <member name="T:Comtrade.DigitalChannel">
+            <summary>
+            Represents a digital channel defintion of the <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="M:Comtrade.DigitalChannel.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:Comtrade.DigitalChannel"/>.
+            </summary>
+        </member>
+        <member name="M:Comtrade.DigitalChannel.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Comtrade.DigitalChannel"/> from an existing line image.
+            </summary>
+            <param name="lineImage">Line image to parse.</param>
+        </member>
+        <member name="M:Comtrade.DigitalChannel.ToString">
+            <summary>
+            Converts <see cref="T:Comtrade.DigitalChannel"/> to its string format.
+            </summary>
+        </member>
+        <member name="P:Comtrade.DigitalChannel.Index">
+            <summary>
+            Gets or sets index of this <see cref="T:Comtrade.DigitalChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.DigitalChannel.Name">
+            <summary>
+            Gets or sets name of this <see cref="T:Comtrade.DigitalChannel"/> formatted as station_name:channel_name.
+            </summary>
+            <exception cref="T:System.FormatException">Name must be formatted as station_name:channel_name.</exception>
+        </member>
+        <member name="P:Comtrade.DigitalChannel.StationName">
+            <summary>
+            Gets or sets station name component of this <see cref="T:Comtrade.DigitalChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.DigitalChannel.ChannelName">
+            <summary>
+            Gets or sets channel name component of this <see cref="T:Comtrade.DigitalChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.DigitalChannel.PhaseID">
+            <summary>
+            Gets or sets the 2-character phase identifier for this <see cref="T:Comtrade.DigitalChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.DigitalChannel.CircuitComponent">
+            <summary>
+            Gets or sets circuit component of this <see cref="T:Comtrade.DigitalChannel"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.DigitalChannel.NormalState">
+            <summary>
+            Gets or sets normal state of this <see cref="T:Comtrade.DigitalChannel"/>.
+            </summary>
+        </member>
+        <member name="T:Comtrade.FileExporter">
+            <summary>
+            Represents an action adapter that exports measurements on an interval to a COMTRADE formatted file that can be imported into other systems for analysis.
+            </summary>
+        </member>
+        <member name="F:Comtrade.FileExporter.SqrtOf3">
+            Constants
+        </member>
+        <member name="F:Comtrade.FileExporter.m_dataExporter">
+            Fields
+        </member>
+        <member name="M:Comtrade.FileExporter.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:Comtrade.FileExporter"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Comtrade.FileExporter.Initialize">
+            <summary>
+            Intializes <see cref="T:Comtrade.FileExporter"/>.
+            </summary>
+        </member>
+        <member name="M:Comtrade.FileExporter.QueueMeasurementForProcessing(GSF.TimeSeries.IMeasurement)">
+            <summary>
+            Queues a single measurement for processing.
+            </summary>
+            <param name="measurement">Measurement to queue for processing.</param>
+        </member>
+        <member name="M:Comtrade.FileExporter.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{GSF.TimeSeries.IMeasurement})">
+            <summary>
+            Queues a collection of measurements for processing.
+            </summary>
+            <param name="measurements">Collection of measurements to queue for processing.</param>
+            <remarks>
+            We override this method to only queue measurements at the desired export interval - no need
+            do excess sorting work for measurements that will never be used :)
+            </remarks>
+        </member>
+        <member name="M:Comtrade.FileExporter.PublishFrame(GSF.TimeSeries.IFrame,System.Int32)">
+            <summary>
+            Process frame of time-aligned measurements that arrived within the defined lag time.
+            </summary>
+            <param name="frame"><see cref="T:GSF.TimeSeries.IFrame"/> of measurements that arrived within lag time and are ready for processing.</param>
+            <param name="index">Index of <see cref="T:GSF.TimeSeries.IFrame"/> within one second of data ranging from zero to frames per second - 1.</param>
+        </member>
+        <member name="P:Comtrade.FileExporter.ExportInterval">
+            <summary>
+            Gets or sets the interval, in seconds, at which data will be queued for concentration and then exported.
+            </summary>
+        </member>
+        <member name="P:Comtrade.FileExporter.UseReferenceAngle">
+            <summary>
+            Gets or sets a value that determines whether a reference angle is used to adjust the value of phase angles.
+            </summary>
+        </member>
+        <member name="P:Comtrade.FileExporter.ReferenceAngleMeasurement">
+            <summary>
+            Gets or sets the key of the measurement used to adjust the value of phase angles.
+            </summary>
+        </member>
+        <member name="P:Comtrade.FileExporter.CompanyTagPrefix">
+            <summary>
+            Gets or sets the prefix attached to the beginning of the measurements' point tags, excluding the underscore.
+            </summary>
+        </member>
+        <member name="P:Comtrade.FileExporter.UseNumericQuality">
+            <summary>
+            Gets or sets the value that determines whether the measurement quality is represented as a numeric value rather than a symbolic value.
+            </summary>
+        </member>
+        <member name="P:Comtrade.FileExporter.SupportsTemporalProcessing">
+            <summary>
+            Gets the flag indicating if this adapter supports temporal processing.
+            </summary>
+        </member>
+        <member name="P:Comtrade.FileExporter.Status">
+            <summary>
+            Returns the detailed status of the <see cref="T:Comtrade.FileExporter"/>.
+            </summary>
+        </member>
+        <member name="T:Comtrade.FileExporter.DataQuality">
+            Nested Types
+        </member>
+        <member name="T:Comtrade.FileType">
+            <summary>
+            <see cref="T:Comtrade.Schema"/> file type enumeration.
+            </summary>
+        </member>
+        <member name="F:Comtrade.FileType.Ascii">
+            <summary>
+            ASCII file type.
+            </summary>
+        </member>
+        <member name="F:Comtrade.FileType.Binary">
+            <summary>
+            Binary file type.
+            </summary>
+        </member>
+        <member name="T:Comtrade.Schema">
+            <summary>
+            Represents the schema for a configuration file in the COMTRADE file standard, IEEE Std C37.111-1999.
+            </summary>
+        </member>
+        <member name="M:Comtrade.Schema.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="M:Comtrade.Schema.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Comtrade.Schema"/> from an existing configuration file name.
+            </summary>
+            <param name="fileName">File name of configuration file to parse.</param>
+        </member>
+        <member name="P:Comtrade.Schema.StationName">
+            <summary>
+            Gets or sets free-form station name for this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.DeviceID">
+            <summary>
+            Gets or sets free-form device ID for this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.Version">
+            <summary>
+            Gets or sets version number of the IEEE Std C37.111 used by this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">Only IEEE Std C37.111 version 1999 is supported by this implementation of the phasor data schema.</exception>
+        </member>
+        <member name="P:Comtrade.Schema.TotalChannels">
+            <summary>
+            Gets total number of analog and digital channels of this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.TotalAnalogChannels">
+            <summary>
+            Gets total number of analog channels of this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.TotalDigitalChannels">
+            <summary>
+            Gets total number of digital channels of this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.AnalogChannels">
+            <summary>
+            Gets or sets analog channels of this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.DigitalChannels">
+            <summary>
+            Gets or sets digital channels of this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.NominalFrequency">
+            <summary>
+            Gets or sets nominal frequency of this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.TotalSampleRates">
+            <summary>
+            Gets total number of sample rates of this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.SampleRates">
+            <summary>
+            Gets or sets sampling rates of this <see cref="T:Comtrade.Schema"/>. A file of phasor data will normally be made using a single sampling rate, so this will usually be 1.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.StartTime">
+            <summary>
+            Gets or sets start timestamp of this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.TriggerTime">
+            <summary>
+            Gets or sets trigger timestamp of this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.FileType">
+            <summary>
+            Gets or sets file type of this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.TimeFactor">
+            <summary>
+            Gets or sets the multiplication factor for the time differential (timestamp) field in this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.DigitalWords">
+            <summary>
+            Gets the total digital words for given number of digital values when the file type is binary.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.BinaryRecordLength">
+            <summary>
+            Calculates the size of a record, in bytes, when the file type is binary.
+            </summary>
+        </member>
+        <member name="P:Comtrade.Schema.FileImage">
+            <summary>
+            Gets the file image of this <see cref="T:Comtrade.Schema"/>.
+            </summary>
+        </member>
+        <member name="T:Comtrade.SampleRate">
+            <summary>
+            Represents a sample rate with associated ending sample using the COMTRADE file standard, IEEE Std C37.111-1999.
+            </summary>
+        </member>
+        <member name="F:Comtrade.SampleRate.Rate">
+            <summary>
+            Sample rate in Hertz (Hz).
+            </summary>
+        </member>
+        <member name="F:Comtrade.SampleRate.EndSample">
+            <summary>
+            Last sample number at sample rate.
+            </summary>
+        </member>
+        <member name="M:Comtrade.SampleRate.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Comtrade.SampleRate"/> from an existing line image.
+            </summary>
+            <param name="lineImage">Line image to parse.</param>
+        </member>
+        <member name="M:Comtrade.SampleRate.ToString">
+            <summary>
+            Converts <see cref="T:Comtrade.SampleRate"/> to its string format.
+            </summary>
+        </member>
+    </members>
+</doc>

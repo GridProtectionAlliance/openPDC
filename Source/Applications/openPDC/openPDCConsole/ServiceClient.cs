@@ -31,7 +31,7 @@ using System.Text;
 using GSF.TimeSeries;
 using GSF;
 using GSF.IO;
-using PhasorProtocols;
+using GSF.PhasorProtocols;
 using GSF.ServiceProcess;
 
 namespace openPDC

@@ -84,6 +84,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
     </Reference>
+    <Reference Include="GSF.PhasorProtocols">
+      <HintPath>..\..\Dependencies\GSF\GSF.PhasorProtocols.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -95,12 +98,6 @@
   <ItemGroup>
     <Compile Include="ConnectionSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PhasorProtocols\PhasorProtocols.csproj">
-      <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
-      <Name>PhasorProtocols</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -90,6 +90,9 @@
     <Reference Include="GSF.Historian">
       <HintPath>..\..\Dependencies\GSF\GSF.Historian.dll</HintPath>
     </Reference>
+    <Reference Include="GSF.PhasorProtocols">
+      <HintPath>..\..\Dependencies\GSF\GSF.PhasorProtocols.dll</HintPath>
+    </Reference>
     <Reference Include="GSF.Security, Version=4.0.4.15, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\GSF\GSF.Security.dll</HintPath>
@@ -118,7 +121,7 @@
       <HintPath>..\..\Dependencies\GSF\GSF.Windows.dll</HintPath>
     </Reference>
     <Reference Include="Hadoop.Replication">
-      <HintPath>..\..\Dependencies\TVA\Hadoop.Replication.dll</HintPath>
+      <HintPath>..\..\Dependencies\GSF\Hadoop.Replication.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -246,10 +249,6 @@
     <ProjectReference Include="..\PMUConnectionTester\PMUConnectionTester.csproj">
       <Project>{AFFE84C3-9703-4DDA-8733-39B9894A2848}</Project>
       <Name>PMUConnectionTester</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PhasorProtocols\PhasorProtocols.csproj">
-      <Project>{54CA98CC-2F0A-41F2-879D-0E42B17E8544}</Project>
-      <Name>PhasorProtocols</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
