@@ -21970,6 +21970,13 @@
             <param name="serializableObject">The serializable object.</param>
             <returns>A memory stream representation of the object if the specified object can be serialized; otherwise an empty stream.</returns>
         </member>
+        <member name="F:GSF.Serialization.LegacyBinder">
+            <summary>
+            Serialization binder used to deserialize files that were serialized using the old library frameworks
+            (TVA Code Library, Time Series Framework, TVA.PhasorProtocols, and PMU Connection Tester) into classes
+            in the Grid Solutions Framework.
+            </summary>
+        </member>
         <member name="M:GSF.Serialization.Serialize``1(``0,GSF.SerializationFormat)">
             <summary>
             Serializes an <see cref="T:System.Object"/>.
@@ -22033,6 +22040,14 @@
             <param name="serializationFormat"><see cref="T:GSF.SerializationFormat"/> in which the <paramref name="serializedObject"/> was serialized.</param>
             <param name="deserializedObject">Deserialized <see cref="T:System.Object"/>.</param>
             <returns><c>true</c>if deserialization succeeded; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:GSF.Serialization.LegacySerializationBinder.BindToType(System.String,System.String)">
+            <summary>
+            Controls the binding of a serialized object to a type.
+            </summary>
+            <param name="assemblyName">Specifies the <see cref="T:System.Reflection.Assembly"/> name of the serialized object.</param>
+            <param name="typeName">Specifies the <see cref="T:System.Type"/> name of the serialized object.</param>
+            <returns>The type of the object the formatter creates a new instance of.</returns>
         </member>
         <member name="T:GSF.Collections.SettingsCollection">
             <summary>

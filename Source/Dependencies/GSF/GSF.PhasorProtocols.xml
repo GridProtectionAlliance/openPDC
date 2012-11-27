@@ -3439,6 +3439,51 @@
             Determines if custom connection parameters are valid.
             </summary>
         </member>
+        <member name="T:GSF.PhasorProtocols.ConnectionSettings">
+            <summary>
+            Represents information defined in a PMU Connection Tester connection file.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.ConnectionSettings.PhasorProtocol">
+            <summary>
+            Defines <see cref="F:GSF.PhasorProtocols.ConnectionSettings.PhasorProtocol"/> from PmuConnection file.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.ConnectionSettings.TransportProtocol">
+            <summary>
+            Defines <see cref="F:GSF.PhasorProtocols.ConnectionSettings.TransportProtocol"/> from PmuConnection file.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.ConnectionSettings.ConnectionString">
+            <summary>
+            Defines connection string from PmuConnection file.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.ConnectionSettings.PmuID">
+            <summary>
+            Defines ID of the source from PmuConnection file.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.ConnectionSettings.FrameRate">
+            <summary>
+            Defines frame rate from PmuConnection file.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.ConnectionSettings.AutoRepeatPlayback">
+            <summary>
+            Defines boolean flag if data needs to be repeated again and again.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.ConnectionSettings.ByteEncodingDisplayFormat">
+            <summary>
+            Defines byte encoding format from PmuConnection file.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.ConnectionSettings.ConnectionParameters">
+            <summary>
+            Defines additional connection information such as alternate command channel from PmuConnection file.
+            </summary>
+        </member>
         <member name="T:GSF.PhasorProtocols.CrcException">
             <summary>
             The exception that is thrown when an object's CRC check fails.
