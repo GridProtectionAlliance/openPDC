@@ -158,8 +158,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Oracle", "Oracle", "{051BD0
 		Data\Oracle\SampleDataSet.sql = Data\Oracle\SampleDataSet.sql
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProtocolTester", "ProtocolTester", "{0515FA28-3230-415D-8D6F-5C8C9E795745}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC", "Applications\openPDC\openPDC\openPDC.csproj", "{0BF2447E-252D-4712-B154-E350AF463081}"
 	ProjectSection(ProjectDependencies) = postProject
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}
@@ -180,8 +178,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI.WPF", "Libraries\openPDC.UI.WPF\openPDC.UI.WPF.csproj", "{57261E91-7636-4F92-8D93-744A4AAD7EB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCManager", "Applications\openPDCManager\openPDCManager\openPDCManager.csproj", "{6903507C-C289-4F8F-887C-C2D94C72BA99}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtocolTester", "Tools\ProtocolTester\ProtocolTester.csproj", "{DCFB7880-2C6B-41D0-B603-661BCE089DD7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPG.UI", "Libraries\openPG.UI\openPG.UI.csproj", "{94F36768-E9A0-4783-BB0F-8C2C1771352E}"
 EndProject
@@ -261,7 +257,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 13
+		SccNumberOfProjects = 12
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -301,18 +297,14 @@ Global
 		SccProjectTopLevelParentUniqueName9 = Synchrophasor.sln
 		SccProjectName9 = Applications/openPDCManager/openPDCManager
 		SccLocalPath9 = Applications\\openPDCManager\\openPDCManager
-		SccProjectUniqueName10 = Tools\\ProtocolTester\\ProtocolTester.csproj
+		SccProjectUniqueName10 = Libraries\\openPG.UI\\openPG.UI.csproj
 		SccProjectTopLevelParentUniqueName10 = Synchrophasor.sln
-		SccProjectName10 = Tools/ProtocolTester
-		SccLocalPath10 = Tools\\ProtocolTester
-		SccProjectUniqueName11 = Libraries\\openPG.UI\\openPG.UI.csproj
+		SccProjectName10 = Libraries/openPG.UI
+		SccLocalPath10 = Libraries\\openPG.UI
+		SccProjectUniqueName11 = Libraries\\openPG.UI.WPF\\openPG.UI.WPF.csproj
 		SccProjectTopLevelParentUniqueName11 = Synchrophasor.sln
-		SccProjectName11 = Libraries/openPG.UI
-		SccLocalPath11 = Libraries\\openPG.UI
-		SccProjectUniqueName12 = Libraries\\openPG.UI.WPF\\openPG.UI.WPF.csproj
-		SccProjectTopLevelParentUniqueName12 = Synchrophasor.sln
-		SccProjectName12 = Libraries/openPG.UI.WPF
-		SccLocalPath12 = Libraries\\openPG.UI.WPF
+		SccProjectName11 = Libraries/openPG.UI.WPF
+		SccLocalPath11 = Libraries\\openPG.UI.WPF
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
@@ -434,15 +426,6 @@ Global
 		{6903507C-C289-4F8F-887C-C2D94C72BA99}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6903507C-C289-4F8F-887C-C2D94C72BA99}.Release|x86.ActiveCfg = Release|x86
 		{6903507C-C289-4F8F-887C-C2D94C72BA99}.Release|x86.Build.0 = Release|x86
-		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Debug|x86.ActiveCfg = Debug|x86
-		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Debug|x86.Build.0 = Debug|x86
-		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Deploy|Any CPU.ActiveCfg = Release|x86
-		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Deploy|x86.ActiveCfg = Debug|x86
-		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Deploy|x86.Build.0 = Debug|x86
-		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Release|Any CPU.ActiveCfg = Release|x86
-		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Release|x86.ActiveCfg = Release|x86
-		{DCFB7880-2C6B-41D0-B603-661BCE089DD7}.Release|x86.Build.0 = Release|x86
 		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|x86.ActiveCfg = Debug|x86
@@ -487,7 +470,6 @@ Global
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{D71CBFB5-291F-484E-9DAE-7442F4CA746A} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
-		{0515FA28-3230-415D-8D6F-5C8C9E795745} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
 		{6903507C-C289-4F8F-887C-C2D94C72BA99} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{29821B31-3A0D-469E-B8BA-AD006159BC3D} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
@@ -504,6 +486,5 @@ Global
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F} = {D71CBFB5-291F-484E-9DAE-7442F4CA746A}
 		{334BA160-26D6-4A3B-92E2-42DEB4381176} = {C4B7F8ED-DC60-46EC-B78B-D541C1FA864C}
 		{AD1920D4-64C4-43C9-903D-3C78981C8850} = {44A76C31-308D-4D46-B263-734DD9FA3570}
-		{DCFB7880-2C6B-41D0-B603-661BCE089DD7} = {0515FA28-3230-415D-8D6F-5C8C9E795745}
 	EndGlobalSection
 EndGlobal
