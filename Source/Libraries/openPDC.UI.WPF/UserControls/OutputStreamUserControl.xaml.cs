@@ -159,10 +159,13 @@ namespace openPDC.UI.UserControls
                         // Auto-save changes to the output stream
                         m_dataContext.ProcessPropertyChange();
 
-                        if (enabledCheckBox.IsChecked.GetValueOrDefault())
-                            GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("Initialize " + runtimeID);
-                        else
-                            GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                        if (m_dataContext.CanSave)
+                        {
+                            if (enabledCheckBox.IsChecked.GetValueOrDefault())
+                                GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("Initialize " + runtimeID);
+                            else
+                                GSF.TimeSeries.UI.CommonFunctions.SendCommandToService("ReloadConfig");
+                        }
                     }
                     catch (Exception ex)
                     {
