@@ -1348,7 +1348,7 @@ namespace openPDC.UI.ViewModels
                                 oldPhasor.SourceIndex = index + 1;
                                 oldPhasor.Type = inputPhasor.Type;
                                 oldPhasor.Phase = inputPhasor.Phase;
-                                Phasor.Save(database, oldPhasor, oldSourceIndex);
+                                Phasor.SaveAndReorder(database, oldPhasor, oldSourceIndex);
 
                                 // Remove phasor from the sets of unsaved phasors
                                 unsavedInputPhasorSet.Remove(inputPhasor);
@@ -1397,7 +1397,7 @@ namespace openPDC.UI.ViewModels
                             oldPhasor.Label = inputPhasor.Label;
                             oldPhasor.Type = inputPhasor.Type;
                             oldPhasor.Phase = inputPhasor.Phase;
-                            Phasor.Save(database, oldPhasor, oldSourceIndex);
+                            Phasor.SaveAndReorder(database, oldPhasor, oldSourceIndex);
 
                             // Remove phasor from the sets of unsaved phasors
                             unsavedInputPhasorSet.Remove(inputPhasor);

@@ -446,7 +446,7 @@ namespace openPDC.UI.DataModels
         /// <returns>String, for display use, indicating success.</returns>
         public static string Save(AdoDataConnection database, Phasor phasor)
         {
-            return Save(database, phasor, phasor.SourceIndex);
+            return SaveAndReorder(database, phasor, phasor.SourceIndex);
         }
 
         /// <summary>
@@ -456,7 +456,7 @@ namespace openPDC.UI.DataModels
         /// <param name="phasor">Information about <see cref="Phasor"/>.</param>
         /// <param name="oldSourceIndex">The old source index of the phasor.</param>
         /// <returns>String, for display use, indicating success.</returns>
-        public static string Save(AdoDataConnection database, Phasor phasor, int oldSourceIndex)
+        public static string SaveAndReorder(AdoDataConnection database, Phasor phasor, int oldSourceIndex)
         {
             bool createdConnection = false;
             string query;
