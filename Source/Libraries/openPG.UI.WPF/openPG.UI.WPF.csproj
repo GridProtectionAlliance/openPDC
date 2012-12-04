@@ -139,6 +139,9 @@
     <Compile Include="UserControls\SelectMeasurementUserControl.xaml.cs">
       <DependentUpon>SelectMeasurementUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\SelfSignedCertificateGenerator.xaml.cs">
+      <DependentUpon>SelfSignedCertificateGenerator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\SubscribeMeasurementUserControl.xaml.cs">
       <DependentUpon>SubscribeMeasurementUserControl.xaml</DependentUpon>
     </Compile>
@@ -157,6 +160,7 @@
     <Compile Include="ViewModels\MeasurementGroups.cs" />
     <Compile Include="ViewModels\SelectMeasurements.cs" />
     <Compile Include="ViewModels\SubscribeMeasurements.cs" />
+    <Compile Include="ViewModels\SubscriberRequestViewModel.cs" />
     <Compile Include="ViewModels\Subscribers.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +189,10 @@
     <Page Include="UserControls\SelectMeasurementUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\SelfSignedCertificateGenerator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\SubscribeMeasurementUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
