@@ -123,6 +123,9 @@
     <Reference Include="Hadoop.Replication">
       <HintPath>..\..\Dependencies\GSF\Hadoop.Replication.dll</HintPath>
     </Reference>
+    <Reference Include="PhasorProtocolAdapters">
+      <HintPath>..\..\Dependencies\GSF\PhasorProtocolAdapters.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationUI, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />

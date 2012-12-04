@@ -23,6 +23,7 @@
 
 using GSF;
 using GSF.Data;
+using GSF.PhasorProtocols;
 using GSF.ServiceProcess;
 using GSF.TimeSeries.UI;
 using GSF.TimeSeries.UI.Commands;
@@ -30,7 +31,7 @@ using GSF.TimeSeries.UI.DataModels;
 using openPDC.UI.DataModels;
 using openPDC.UI.Modal;
 using openPDC.UI.UserControls;
-using GSF.PhasorProtocols;
+using PhasorProtocolAdapters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

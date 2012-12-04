@@ -21,6 +21,12 @@
 //
 //******************************************************************************************************
 
+using GSF;
+using GSF.IO;
+using GSF.PhasorProtocols;
+using GSF.ServiceProcess;
+using GSF.TimeSeries;
+using PhasorProtocolAdapters;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,11 +34,6 @@ using System.IO;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
-using GSF.TimeSeries;
-using GSF;
-using GSF.IO;
-using GSF.PhasorProtocols;
-using GSF.ServiceProcess;
 
 namespace openPDC
 {
