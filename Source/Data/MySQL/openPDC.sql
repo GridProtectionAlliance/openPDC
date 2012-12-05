@@ -108,8 +108,8 @@ CREATE TABLE Protocol(
     Name VARCHAR(200) NOT NULL,
     Type VARCHAR(200) NOT NULL DEFAULT N'Frame',
     Category VARCHAR(200) NOT NULL DEFAULT N'Phasor',
-    AssemblyName VARCHAR(1024) NOT NULL DEFAULT N'GSF.PhasorProtocols.dll',
-    TypeName VARCHAR(200) NOT NULL DEFAULT N'GSF.PhasorProtocols.PhasorMeasurementMapper',
+    AssemblyName VARCHAR(1024) NOT NULL DEFAULT N'PhasorProtocolAdapters.dll',
+    TypeName VARCHAR(200) NOT NULL DEFAULT N'PhasorProtocolAdapters.PhasorMeasurementMapper',
     LoadOrder INT NOT NULL DEFAULT 0,
     CONSTRAINT PK_Protocol PRIMARY KEY (ID ASC)
 );
@@ -906,8 +906,8 @@ ORDER BY OutputStreamDevice.LoadOrder;
 CREATE VIEW RuntimeOutputStream
 AS
 SELECT OutputStream.NodeID, Runtime.ID, OutputStream.Acronym AS AdapterName, 
-    N'GSF.PhasorProtocols.dll' AS AssemblyName, 
-    IF(Type = 1, N'GSF.PhasorProtocols.BpaPdcStream.Concentrator', N'GSF.PhasorProtocols.IeeeC37_118.Concentrator') AS TypeName,
+    N'PhasorProtocolAdapters.dll' AS AssemblyName, 
+    IF(Type = 1, N'PhasorProtocolAdapters.BpaPdcStream.Concentrator', N'PhasorProtocolAdapters.IeeeC37_118.Concentrator') AS TypeName,
     CONCAT_WS(';', OutputStream.ConnectionString,
     IF(OutputStream.DataChannel IS NULL, N'', CONCAT(N'dataChannel={', OutputStream.DataChannel, N'}')),
     IF(OutputStream.CommandChannel IS NULL, N'', CONCAT(N'commandChannel={', OutputStream.CommandChannel, N'}')),
@@ -1019,7 +1019,7 @@ FROM RuntimeCustomInputAdapter;
 
 CREATE VIEW IaonActionAdapter
 AS
-SELECT Node.ID AS NodeID, 0 AS ID, N'PHASOR!SERVICES' AS AdapterName, N'GSF.PhasorProtocols.dll' AS AssemblyName, N'GSF.PhasorProtocols.CommonPhasorServices' AS TypeName, N'' AS ConnectionString
+SELECT Node.ID AS NodeID, 0 AS ID, N'PHASOR!SERVICES' AS AdapterName, N'PhasorProtocolAdapters.dll' AS AssemblyName, N'PhasorProtocolAdapters.CommonPhasorServices' AS TypeName, N'' AS ConnectionString
 FROM Node
 UNION
 SELECT NodeID, ID, AdapterName, AssemblyName, TypeName, ConnectionString
