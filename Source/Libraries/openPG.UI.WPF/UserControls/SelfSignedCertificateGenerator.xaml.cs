@@ -145,7 +145,7 @@ namespace openPG.UI.UserControls
 
             ProcessStartInfo processInfo;
 
-            if (Uri.CheckHostName(commonName) != UriHostNameType.Unknown)
+            if (Uri.CheckHostName(commonName) == UriHostNameType.Unknown)
                 throw new ArgumentException(string.Format("Common name \"{0}\" is not a valid host name.", commonName), "commonName");
 
             if (!File.Exists(makeCertPath))
