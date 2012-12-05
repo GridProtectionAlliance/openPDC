@@ -505,6 +505,7 @@ namespace openPDC.UI.DataModels
                         measurement = new Measurement();
                         measurement.SignalTypeID = signal.ID;
                         measurement.Enabled = true;
+                        measurement.Description = device.Name + " " + addedPhasor.Label + " " + device.VendorDeviceName + " " + addedPhasor.Phase + " " + signal.Name;
                     }
 
                     measurement.HistorianID = device.HistorianID;
