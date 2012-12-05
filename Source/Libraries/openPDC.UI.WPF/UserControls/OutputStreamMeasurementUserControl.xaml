@@ -47,6 +47,9 @@
 
         </tsf:TsfPopup>
 
+        <Button Width="Auto" Margin="0,20" Foreground="Blue" FontSize="18" Content="Click here to add source measurements to the output stream" Template="{StaticResource HyperlinkStyleButtonTemplate}" Click="Button_Click" />
+        <Separator />
+
         <Grid x:Name="GridDetailView" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" DataContext="{Binding Path=CurrentItem, Mode=TwoWay}" DataContextChanged="GridDetailView_DataContextChanged">
             <Grid.BindingGroup>
                 <BindingGroup Name="input"/>
@@ -62,31 +65,20 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!--Frist Row-->
-            <TextBlock Text="Source Measurment" Grid.Row="0" Grid.Column="0" />
-            <Button Content=" ... " Grid.Row="0" Grid.Column="1" Width="Auto" HorizontalAlignment="Left" Click="Button_Click"/>
-
-            <!--Second Row-->
-            <TextBlock Text="Historian" Grid.Row="1" Grid.Column="0"/>
-            <TextBlock Text="{Binding Path=HistorianAcronym}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
-            <TextBlock Text="Point ID"  Grid.Row="1" Grid.Column="2"/>
-            <TextBlock Text="{tsfBinding:Column Path=PointID}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left"/>
+            <TextBlock Text="Historian" Grid.Row="0" Grid.Column="0"/>
+            <TextBlock Text="{Binding Path=HistorianAcronym}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"/>
+            <TextBlock Text="Point ID"  Grid.Row="0" Grid.Column="2"/>
+            <TextBlock Text="{tsfBinding:Column Path=PointID}" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left"/>
             
-            <!--Third Row-->
-            <TextBox Grid.Row="2" Grid.Column="1" Text="{tsfBinding:Column Path=SignalReference}"/>
-            <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right">
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=SignalReference}"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right">
                 <TextBlock Text="Signal Reference" Style="{StaticResource RequiredLabel}"/>
                 <TextBlock Style="{StaticResource RequiredMarker}"/>
             </StackPanel>
-            <TextBlock Text="Source PointTag" Grid.Row="2" Grid.Column="2" />
-            <TextBlock Text="{Binding Path=SourcePointTag}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left"/>
-            
+            <TextBlock Text="Source PointTag" Grid.Row="1" Grid.Column="2" />
+            <TextBlock Text="{Binding Path=SourcePointTag}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left"/>
         </Grid>
                 
         <uc:DetailViewFooterUserControl x:Name="UserControlDetailViewFooter" DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
