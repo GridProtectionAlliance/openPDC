@@ -1358,7 +1358,7 @@ namespace openPDC.UI.ViewModels
                         }
 
                         // Attempt to update old phasors based on phasor index
-                        foreach (Phasor unsavedOldPhasor in unsavedOldPhasorSet)
+                        foreach (Phasor unsavedOldPhasor in unsavedOldPhasorSet.ToList())
                         {
                             oldPhasor = unsavedOldPhasor;
                             index = oldPhasor.SourceIndex - 1;
@@ -1453,6 +1453,7 @@ namespace openPDC.UI.ViewModels
             catch (Exception ex)
             {
                 Popup("ERROR: " + ex.Message, "Input Wizard Configuration", MessageBoxImage.Error);
+                CommonFunctions.LogException(database, "Input wizard save configuration", ex);
             }
             finally
             {
