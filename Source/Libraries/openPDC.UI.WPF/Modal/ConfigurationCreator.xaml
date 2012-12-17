@@ -86,7 +86,7 @@
         <GroupBox Header="Phasor Data Format" HorizontalAlignment="Center" Name="groupBoxPhasorDataFormat" VerticalAlignment="Top" Grid.Column="2" Grid.Row="4" Width="175">
             <StackPanel Orientation="Vertical">
                 <RadioButton Content="Floating Point" GroupName="PhasorDataFormat" Height="Auto" HorizontalAlignment="Left" Name="radioButtonPhasorFloatingPoint" VerticalAlignment="Top" IsChecked="True" Checked="radioButtonPhasorFloatingPoint_Checked" />
-                <RadioButton Content="Retangular" GroupName="PhasorDataFormat" Height="Auto" HorizontalAlignment="Left" Name="radioButtonPhasorScaledInteger" VerticalAlignment="Bottom" Checked="radioButtonPhasorScaledInteger_Checked" />
+                <RadioButton Content="Scaled Integer" GroupName="PhasorDataFormat" Height="Auto" HorizontalAlignment="Left" Name="radioButtonPhasorScaledInteger" VerticalAlignment="Bottom" Checked="radioButtonPhasorScaledInteger_Checked" />
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Frequency Data Format" HorizontalAlignment="Center" Name="groupBoxFrequencyDataFormat" VerticalAlignment="Top" Width="150" Grid.Column="3" Grid.Row="3">
