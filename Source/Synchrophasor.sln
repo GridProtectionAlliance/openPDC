@@ -257,9 +257,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\WavInputAdapter.XML = Dependencies\GSF\WavInputAdapter.XML
 	EndProjectSection
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "openPDCSetup", "Applications\openPDC\openPDCSetup\openPDCSetup.wixproj", "{6858B393-77B4-4F28-A4B1-14B484C10FB2}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 12
+		SccNumberOfProjects = 13
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -307,6 +309,10 @@ Global
 		SccProjectTopLevelParentUniqueName11 = Synchrophasor.sln
 		SccProjectName11 = Libraries/openPG.UI.WPF
 		SccLocalPath11 = Libraries\\openPG.UI.WPF
+		SccProjectUniqueName12 = Applications\\openPDC\\openPDCSetup\\openPDCSetup.wixproj
+		SccProjectTopLevelParentUniqueName12 = Synchrophasor.sln
+		SccProjectName12 = Applications/openPDC/openPDCSetup
+		SccLocalPath12 = Applications\\openPDC\\openPDCSetup
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
@@ -452,6 +458,13 @@ Global
 		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|Any CPU.Build.0 = Release|Any CPU
 		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|x86.ActiveCfg = Release|x86
 		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|x86.Build.0 = Release|x86
+		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Debug|x86.ActiveCfg = Debug|x64
+		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Deploy|Any CPU.ActiveCfg = Debug|x64
+		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Deploy|Any CPU.Build.0 = Debug|x64
+		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Deploy|x86.ActiveCfg = Debug|x64
+		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Release|Any CPU.ActiveCfg = Release|x64
+		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -484,6 +497,7 @@ Global
 		{0BF2447E-252D-4712-B154-E350AF463081} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
+		{6858B393-77B4-4F28-A4B1-14B484C10FB2} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{2A74EACF-8291-47C7-A2ED-0D58771F24E2} = {F7821DF0-BD48-481E-9DF9-D64AEFD24F57}
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F} = {D71CBFB5-291F-484E-9DAE-7442F4CA746A}
 		{334BA160-26D6-4A3B-92E2-42DEB4381176} = {C4B7F8ED-DC60-46EC-B78B-D541C1FA864C}

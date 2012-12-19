@@ -1,0 +1,1536 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="{493D6CED-50C6-4CF5-93A3-306C364F10A3}" Codepage="1252" Language="1033" Manufacturer="Grid Protection Alliance" Name="openPDC 64-bit" UpgradeCode="{672ED075-C482-49A6-86D5-7B3FEB4AEAC8}" Version="1.5.150">
+
+    <Package Comments="openPDC" Compressed="yes" InstallerVersion="200" Keywords="PDC Phasor Data Concentrator" Languages="1033" Manufacturer="GPA" Platform="x64" />
+
+    <Binary Id="InstallUtil" SourceFile="Binary\InstallUtil" />
+    <Binary Id="MSVBDPCADLL" SourceFile="Binary\MSVBDPCADLL" />
+    <Binary Id="VSDNETCFG" SourceFile="Binary\VSDNETCFG" />
+    <Binary Id="openPDCSetupLogo" SourceFile="openPDCSetupLogo.jpg" />
+    <Binary Id="UpFldrBtn" SourceFile="Binary\UpFldrBtn" />
+    <Binary Id="NewFldrBtn" SourceFile="Binary\NewFldrBtn" />
+    <Binary Id="DefBannerBitmap" SourceFile="Binary\DefBannerBitmap" />
+
+    <CustomAction Id="CA_openPDCManager.ApplicationInstall.uninstall" BinaryKey="InstallUtil" DllEntry="ManagedInstall" Execute="deferred" Impersonate="no" />
+    <CustomAction Id="CA_openPDCManager.ApplicationInstall.uninstall.SetProperty" Property="CA_openPDCManager.ApplicationInstall.uninstall" Value="/installtype=notransaction /action=uninstall /LogFile= &quot;[#FILE_SourceDir.openPDCManagerEXE]&quot; &quot;[VSDFxConfigFile]&quot;" />
+    <CustomAction Id="CA_openPDCManager.ApplicationInstall.install" BinaryKey="InstallUtil" DllEntry="ManagedInstall" Execute="deferred" Impersonate="no" />
+    <CustomAction Id="CA_openPDCManager.ApplicationInstall.install.SetProperty" Property="CA_openPDCManager.ApplicationInstall.install" Value="/installtype=notransaction /action=install /LogFile= &quot;[#FILE_SourceDir.openPDCManagerEXE]&quot; &quot;[VSDFxConfigFile]&quot;" />
+    <CustomAction Id="CA_openPDCManager.ApplicationInstall.rollback" BinaryKey="InstallUtil" DllEntry="ManagedInstall" Execute="rollback" Impersonate="no" />
+    <CustomAction Id="CA_openPDCManager.ApplicationInstall.rollback.SetProperty" Property="CA_openPDCManager.ApplicationInstall.rollback" Value="/installtype=notransaction /action=rollback /LogFile= &quot;[#FILE_SourceDir.openPDCManagerEXE]&quot; &quot;[VSDFxConfigFile]&quot;" />
+    <CustomAction Id="CA_openPDCManager.ApplicationInstall.commit" BinaryKey="InstallUtil" DllEntry="ManagedInstall" Execute="commit" Impersonate="no" />
+    <CustomAction Id="CA_openPDCManager.ApplicationInstall.commit.SetProperty" Property="CA_openPDCManager.ApplicationInstall.commit" Value="/installtype=notransaction /action=commit /LogFile= &quot;[#FILE_SourceDir.openPDCManagerEXE]&quot; &quot;[VSDFxConfigFile]&quot;" />
+
+    <CustomAction Id="CA_openPDC.ServiceInstall.uninstall" BinaryKey="InstallUtil" DllEntry="ManagedInstall" Execute="deferred" Impersonate="no" />
+    <CustomAction Id="CA_openPDC.ServiceInstall.uninstall.SetProperty" Property="CA_openPDC.ServiceInstall.uninstall" Value="/installtype=notransaction /action=uninstall /LogFile= &quot;[#FILE_SourceDir.openPDCEXE]&quot; &quot;[VSDFxConfigFile]&quot;" />
+    <CustomAction Id="CA_openPDC.ServiceInstall.install" BinaryKey="InstallUtil" DllEntry="ManagedInstall" Execute="deferred" Impersonate="no" />
+    <CustomAction Id="CA_openPDC.ServiceInstall.install.SetProperty" Property="CA_openPDC.ServiceInstall.install" Value="/installtype=notransaction /action=install /LogFile= /DP_TargetDir=&quot;[TARGETDIR]\&quot; /DP_CompanyName=&quot;[COMPANYNAME]&quot; /DP_CompanyAcronym=&quot;[COMPANYACRONYM]&quot; &quot;[#FILE_SourceDir.openPDCEXE]&quot; &quot;[VSDFxConfigFile]&quot;" />
+    <CustomAction Id="CA_openPDC.ServiceInstall.rollback" BinaryKey="InstallUtil" DllEntry="ManagedInstall" Execute="rollback" Impersonate="no" />
+    <CustomAction Id="CA_openPDC.ServiceInstall.rollback.SetProperty" Property="CA_openPDC.ServiceInstall.rollback" Value="/installtype=notransaction /action=rollback /LogFile= &quot;[#FILE_SourceDir.openPDCEXE]&quot; &quot;[VSDFxConfigFile]&quot;" />
+    <CustomAction Id="CA_openPDC.ServiceInstall.commit" BinaryKey="InstallUtil" DllEntry="ManagedInstall" Execute="commit" Impersonate="no" />
+    <CustomAction Id="CA_openPDC.ServiceInstall.commit.SetProperty" Property="CA_openPDC.ServiceInstall.commit" Value="/installtype=notransaction /action=commit /LogFile= &quot;[#FILE_SourceDir.openPDCEXE]&quot; &quot;[VSDFxConfigFile]&quot;" />
+
+    <CustomAction Id="DIRCA_TARGETDIR" Property="TARGETDIR" Value="[ProgramFiles64Folder]openPDC" Execute="firstSequence" />
+    <CustomAction Id="DIRCA_CheckFX" BinaryKey="MSVBDPCADLL" DllEntry="CheckFX" />
+    <CustomAction Id="VSDCA_VsdLaunchConditions" BinaryKey="MSVBDPCADLL" DllEntry="VsdLaunchConditions" />
+    <CustomAction Id="ERRCA_CANCELNEWERVERSION" Error="[VSDVERSIONMSG]" />
+    <CustomAction Id="ERRCA_UIANDADVERTISED" Error="[VSDUIANDADVERTISED]" />
+
+    <CustomAction Id="CustomCheckA_SetProperty_CHECKBOX1" Property="INSTALLOPENPDC" Value="1" Execute="firstSequence" />
+    <CustomAction Id="CustomCheckA_SetProperty_CHECKBOX2" Property="INSTALLCONSOLE" Value="1" Execute="firstSequence" />
+    <CustomAction Id="CustomCheckA_SetProperty_CHECKBOX3" Property="INSTALLMANAGER" Value="1" Execute="firstSequence" />
+    <CustomAction Id="CustomCheckA_SetProperty_CHECKBOX4" Property="INSTALLTOOLS" Value="1" Execute="firstSequence" />
+
+    <CustomAction Id="CustomTextA_SetProperty_EDIT1" Property="COMPANYNAME" Value="Grid Protection Alliance" Execute="firstSequence" />
+    <CustomAction Id="CustomTextA_SetProperty_EDIT2" Property="COMPANYACRONYM" Value="GPA" Execute="firstSequence" />
+    <CustomAction Id="CustomTextA_SetProperty_EDIT3" Property="EDITA3" Value="" Execute="firstSequence" />
+    <CustomAction Id="CustomTextA_SetProperty_EDIT4" Property="EDITA4" Value="" Execute="firstSequence" />
+
+    <CustomAction Id="VSDCA_FolderForm_AllUsers" Property="FolderForm_AllUsers" Value="ALL" />
+
+    <CustomTable Id="_VsdLaunchCondition">
+      <Column Id="Condition" PrimaryKey="yes" Type="string" Width="255" Category="Condition" Description="Expression which must evaluate to TRUE in order for install to commence." Modularize="Condition" />
+      <Column Id="Description" Type="string" Width="255" Localizable="yes" Category="Formatted" Description="Localizable text to display when condition fails and install must abort." Modularize="Property" />
+      <Column Id="Url" Type="string" Width="0" Category="Text" Description="URL to navigate to when condition fails and install must abort." />
+      <Row>
+        <Data Column="Condition">VSDFXAvailable</Data>
+        <Data Column="Description">[VSDNETURLMSG]</Data>
+        <Data Column="Url">http://msdn.microsoft.com/en-us/netframework/aa569263.aspx</Data>
+      </Row>
+    </CustomTable>
+
+    <!--                     COMPONENTS                           -->
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <!--
+				GSF Dependencies
+			-->
+      <Component Id="CMP_SourceDir.AdoAdaptersDLL" Guid="{2BE587C5-2E40-C4D5-2CB9-C1DF01FD09D6}" Win64="yes">
+        <File Id="FILE_SourceDir.AdoAdaptersDLL" Name="AdoAdapters.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.AdoAdaptersDLL" AssemblyApplication="FILE_SourceDir.AdoAdaptersDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\AdoAdapters.dll" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.Ciloci.FleeDLL" Guid="{2A8E228A-2C09-0D78-2CCE-ADDD95F2CFCB}" Win64="yes">
+        <File Id="FILE_SourceDir.Ciloci.FleeDLL" Name="Ciloci.Flee.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.Ciloci.FleeDLL" AssemblyApplication="FILE_SourceDir.Ciloci.FleeDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\Ciloci.Flee.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.ComtradeDLL" Guid="{274B1B4A-D980-41FA-0C09-F90E7AC90051}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1</Condition>
+        <File Id="FILE_SourceDir.ComtradeDLL" Name="Comtrade.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.ComtradeDLL" AssemblyApplication="FILE_SourceDir.ComtradeDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\Comtrade.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.CsvAdaptersDLL" Guid="{45BDE8CE-9630-D082-3009-6EDA26BA8C2E}" Win64="yes">
+        <File Id="FILE_SourceDir.CsvAdaptersDLL" Name="CsvAdapters.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.CsvAdaptersDLL" AssemblyApplication="FILE_SourceDir.CsvAdaptersDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\CsvAdapters.dll" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.DataQualityMonitoringDLL" Guid="{E305FC86-8B54-3F66-CA18-2C0AAD6BA4F9}" Win64="yes">
+        <File Id="FILE_SourceDir.DataQualityMonitoringDLL" Name="DataQualityMonitoring.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.DataQualityMonitoringDLL" AssemblyApplication="FILE_SourceDir.DataQualityMonitoringDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\DataQualityMonitoring.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.Dnp3AdaptersDLL" Guid="{F1F7BD3C-3809-4EFC-9B5C-FE634B8AE587}" Win64="yes">
+        <File Id="FILE_SourceDir.Dnp3AdaptersDLL" Name="Dnp3Adapters.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.Dnp3AdaptersDLL" AssemblyApplication="FILE_SourceDir.Dnp3AdaptersDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\Dnp3Adapters.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.DynamicCalculatorDLL" Guid="{E8AA2F02-4079-8630-1B9F-C3E420FA7B71}" Win64="yes">
+        <File Id="FILE_SourceDir.DynamicCalculatorDLL" Name="DynamicCalculator.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.DynamicCalculatorDLL" AssemblyApplication="FILE_SourceDir.DynamicCalculatorDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\DynamicCalculator.dll" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.EpriExportDLL" Guid="{4A4B6C34-A429-4E53-B0FF-A64E5A62C041}" Win64="yes">
+        <File Id="FILE_SourceDir.EpriExportDLL" Name="EpriExport.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.EpriExportDLL" AssemblyApplication="FILE_SourceDir.EpriExportDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\EpriExport.dll" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.GSF.CommunicationDLL" Guid="{7918099F-890C-2D7E-B0F6-992718C50855}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.CommunicationDLL" Name="GSF.Communication.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.CommunicationDLL" AssemblyApplication="FILE_SourceDir.GSF.CommunicationDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.Communication.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.CoreDLL" Guid="{D2FC935F-2EBA-F439-0CFB-849466A99DB2}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.CoreDLL" Name="GSF.Core.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.CoreDLL" AssemblyApplication="FILE_SourceDir.GSF.CoreDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.Core.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.HistorianDLL" Guid="{4DF7F698-15E3-6ABD-3635-853C87D60BD5}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.HistorianDLL" Name="GSF.Historian.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.HistorianDLL" AssemblyApplication="FILE_SourceDir.GSF.HistorianDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.Historian.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.PhasorProtocolsDLL" Guid="{D8F2EBCD-D8AF-4875-F61C-C04EA31232C1}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.PhasorProtocolsDLL" Name="GSF.PhasorProtocols.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.PhasorProtocolsDLL" AssemblyApplication="FILE_SourceDir.GSF.PhasorProtocolsDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.PhasorProtocols.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.SecurityDLL" Guid="{C63A61B3-EDEA-D2CE-8A00-5A015BC43A16}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.SecurityDLL" Name="GSF.Security.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.SecurityDLL" AssemblyApplication="FILE_SourceDir.GSF.SecurityDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.Security.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.ServiceBusDLL" Guid="{E27AE3D2-B472-C5F3-19E5-F85C7FD96904}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.ServiceBusDLL" Name="GSF.ServiceBus.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.ServiceBusDLL" AssemblyApplication="FILE_SourceDir.GSF.ServiceBusDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.ServiceBus.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.ServiceModelDLL" Guid="{AF9A2E7D-89A6-11B4-6590-A5AA797F40A1}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.ServiceModelDLL" Name="GSF.ServiceModel.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.ServiceModelDLL" AssemblyApplication="FILE_SourceDir.GSF.ServiceModelDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.ServiceModel.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.ServiceProcessDLL" Guid="{6432ED3C-A20F-20D4-9E6E-EE3AD16C046D}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.ServiceProcessDLL" Name="GSF.ServiceProcess.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.ServiceProcessDLL" AssemblyApplication="FILE_SourceDir.GSF.ServiceProcessDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.ServiceProcess.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.TimeSeriesDLL" Guid="{E3F6355A-B545-4C1C-9E52-D361AFC69B60}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.TimeSeriesDLL" Name="GSF.TimeSeries.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.TimeSeriesDLL" AssemblyApplication="FILE_SourceDir.GSF.TimeSeriesDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.TimeSeries.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.TimeSeries.UIDLL" Guid="{EDED909B-072F-DB17-A624-270DA90B28C3}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.TimeSeries.UIDLL" Name="GSF.TimeSeries.UI.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.TimeSeries.UIDLL" AssemblyApplication="FILE_SourceDir.GSF.TimeSeries.UIDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.TimeSeries.UI.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.TimeSeries.UI.WPFDLL" Guid="{99B7278C-476B-EEBA-1530-E78BAB5C3910}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.TimeSeries.UI.WPFDLL" Name="GSF.TimeSeries.UI.WPF.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.TimeSeries.UI.WPFDLL" AssemblyApplication="FILE_SourceDir.GSF.TimeSeries.UI.WPFDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.TimeSeries.UI.WPF.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.WebDLL" Guid="{1764250B-9CE0-4D27-BF73-F40C44917574}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.WebDLL" Name="GSF.Web.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.WebDLL" AssemblyApplication="FILE_SourceDir.GSF.WebDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.Web.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.GSF.WindowsDLL" Guid="{8BD2B3E2-A04F-F252-FE6B-FFE1A724E91A}" Win64="yes">
+        <File Id="FILE_SourceDir.GSF.WindowsDLL" Name="GSF.Windows.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.GSF.WindowsDLL" AssemblyApplication="FILE_SourceDir.GSF.WindowsDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\GSF.Windows.dll" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.Hadoop.ReplicationDLL" Guid="{02E26BB4-075E-18EA-7036-4C3C5794AECB}" Win64="yes">
+        <File Id="FILE_SourceDir.Hadoop.ReplicationDLL" Name="Hadoop.Replication.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.Hadoop.ReplicationDLL" AssemblyApplication="FILE_SourceDir.Hadoop.ReplicationDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\Hadoop.Replication.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.HistorianAdaptersDLL" Guid="{BBA4AFF4-882B-C4D1-0ADB-EC01C8E83A31}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1</Condition>
+        <File Id="FILE_SourceDir.HistorianAdaptersDLL" Name="HistorianAdapters.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.HistorianAdaptersDLL" AssemblyApplication="FILE_SourceDir.HistorianAdaptersDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\HistorianAdapters.dll" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.ICCPExportDLL" Guid="{E114D887-6D7F-FDFD-8799-2C318BD94832}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1</Condition>
+        <File Id="FILE_SourceDir.ICCPExportDLL" Name="ICCPExport.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.ICCPExportDLL" AssemblyApplication="FILE_SourceDir.ICCPExportDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\ICCPExport.dll" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.MongoAdaptersDLL" Guid="{7D9D89A5-8D6E-23F0-80AF-1716D3E9F6E3}" Win64="yes">
+        <File Id="FILE_SourceDir.MongoAdaptersDLL" Name="MongoAdapters.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.MongoAdaptersDLL" AssemblyApplication="FILE_SourceDir.MongoAdaptersDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\MongoAdapters.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.MongoDBDLL" Guid="{3B46737B-DDBD-E4AE-C6EF-D4F82E251290}" Win64="yes">
+        <File Id="FILE_SourceDir.MongoDBDLL" Name="MongoDB.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.MongoDBDLL" AssemblyApplication="FILE_SourceDir.MongoDBDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\MongoDB.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.MongoDB.GridFSDLL" Guid="{5E4D7CBF-F6F8-B499-67D4-E110E3C26BE0}" Win64="yes">
+        <File Id="FILE_SourceDir.MongoDB.GridFSDLL" Name="MongoDB.GridFS.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.MongoDB.GridFSDLL" AssemblyApplication="FILE_SourceDir.MongoDB.GridFSDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\MongoDB.GridFS.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.MySqlAdaptersDLL" Guid="{577E06AB-4EEE-810E-5FA0-085567B52DEF}" Win64="yes">
+        <File Id="FILE_SourceDir.MySqlAdaptersDLL" Name="MySqlAdapters.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.MySqlAdaptersDLL" AssemblyApplication="FILE_SourceDir.MySqlAdaptersDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\MySqlAdapters.dll" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.OneSecondFrequencyAveragerDLL" Guid="{6116BAEF-1E68-87C9-25F7-ECB29537CC5D}" Win64="yes">
+        <File Id="FILE_SourceDir.OneSecondFrequencyAveragerDLL" Name="OneSecondFrequencyAverager.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.OneSecondFrequencyAveragerDLL" AssemblyApplication="FILE_SourceDir.OneSecondFrequencyAveragerDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\OneSecondFrequencyAverager.dll" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.PowerCalculationsDLL" Guid="{C669B903-F790-44C4-D046-C3F4759FC3C1}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1</Condition>
+        <File Id="FILE_SourceDir.PowerCalculationsDLL" Name="PowerCalculations.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.PowerCalculationsDLL" AssemblyApplication="FILE_SourceDir.PowerCalculationsDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\PowerCalculations.dll" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.TestingAdaptersDLL" Guid="{2169432C-E38B-901A-7097-C7673A42FEDD}" Win64="yes">
+        <File Id="FILE_SourceDir.TestingAdaptersDLL" Name="TestingAdapters.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.TestingAdaptersDLL" AssemblyApplication="FILE_SourceDir.TestingAdaptersDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\TestingAdapters.dll" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.WavInputAdapterDLL" Guid="{B73F1A0A-08F5-127B-ECAF-8654075878BF}" Win64="yes">
+        <File Id="FILE_SourceDir.WavInputAdapterDLL" Name="WavInputAdapter.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.WavInputAdapterDLL" AssemblyApplication="FILE_SourceDir.WavInputAdapterDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\WavInputAdapter.dll" />
+      </Component>
+      <!--
+				Microsoft Dependencies
+			-->
+      <Component Id="CMP_SourceDir.DynamicDataDisplayDLL" Guid="{96232C23-9F40-53AD-9A87-7BD807EFC1FD}" Win64="yes">
+        <File Id="FILE_SourceDir.DynamicDataDisplayDLL" Name="DynamicDataDisplay.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.DynamicDataDisplayDLL" AssemblyApplication="FILE_SourceDir.DynamicDataDisplayDLL" DiskId="1" Source="..\..\..\Dependencies\Microsoft\D3\DynamicDataDisplay.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.System.Windows.Controls.Input.ToolkitDLL" Guid="{58286A1B-83BA-5DC5-815F-6300327F6459}" Win64="yes">
+        <File Id="FILE_SourceDir.System.Windows.Controls.Input.ToolkitDLL" Name="System.Windows.Controls.Input.Toolkit.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.System.Windows.Controls.Input.ToolkitDLL" AssemblyApplication="FILE_SourceDir.System.Windows.Controls.Input.ToolkitDLL" DiskId="1" Source="..\..\..\Dependencies\Microsoft\WPF\System.Windows.Controls.Input.Toolkit.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.System.Windows.Controls.DataVisualization.ToolkitDLL" Guid="{2BEF9660-4A72-536D-9A5D-3A54EAA408AF}" Win64="yes">
+        <File Id="FILE_SourceDir.System.Windows.Controls.DataVisualization.ToolkitDLL" Name="System.Windows.Controls.DataVisualization.Toolkit.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.System.Windows.Controls.DataVisualization.ToolkitDLL" AssemblyApplication="FILE_SourceDir.System.Windows.Controls.DataVisualization.ToolkitDLL" DiskId="1" Source="..\..\..\Dependencies\Microsoft\WPF\System.Windows.Controls.DataVisualization.Toolkit.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.WPFToolkitDLL" Guid="{1EEB9079-8E46-3A22-B9B9-AF02E10B9688}" Win64="yes">
+        <File Id="FILE_SourceDir.WPFToolkitDLL" Name="WPFToolkit.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.WPFToolkitDLL" AssemblyApplication="FILE_SourceDir.WPFToolkitDLL" DiskId="1" Source="..\..\..\Dependencies\Microsoft\WPF\WPFToolkit.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.System.Windows.Controls.Layout.ToolkitDLL" Guid="{C9FA68A7-1F92-9C9E-D636-397F2C71A23F}" Win64="yes">
+        <File Id="FILE_SourceDir.System.Windows.Controls.Layout.ToolkitDLL" Name="System.Windows.Controls.Layout.Toolkit.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.System.Windows.Controls.Layout.ToolkitDLL" AssemblyApplication="FILE_SourceDir.System.Windows.Controls.Layout.ToolkitDLL" DiskId="1" Source="..\..\..\Dependencies\Microsoft\WPF\System.Windows.Controls.Layout.Toolkit.dll" />
+      </Component>
+      <!-- 
+				SQLite Dependencies
+			-->
+      <Component Id="CMP_SourceDir.System.Data.SQLite.LinqDLL" Guid="{DF67BAF9-799F-CCDC-7FB7-6EACA433D3EE}" Win64="yes">
+        <File Id="FILE_SourceDir.System.Data.SQLite.LinqDLL" Name="System.Data.SQLite.Linq.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.System.Data.SQLite.LinqDLL" AssemblyApplication="FILE_SourceDir.System.Data.SQLite.LinqDLL" DiskId="1" Source="..\..\..\Dependencies\SQLite\x86\System.Data.SQLite.Linq.dll"/>
+      </Component>
+      <Component Id="CMP_SourceDir.System.Data.SQLiteDLL" Guid="{56B0931B-A198-543E-9039-69B653A2E381}" Win64="yes">
+        <File Id="FILE_SourceDir.System.Data.SQLiteDLL" Name="System.Data.SQLite.DLL" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.System.Data.SQLiteDLL" AssemblyApplication="FILE_SourceDir.System.Data.SQLiteDLL" DiskId="1" Source="..\..\..\Dependencies\SQLite\x86\System.Data.SQLite.dll" />
+      </Component>
+      <!--
+				openPDC
+			-->
+      <Component Id="CMP_SourceDir.openPDCEXE" Guid="{E108AD8E-3956-EEFA-63EC-0F4250054A17}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1</Condition>
+        <File Id="FILE_SourceDir.openPDCEXE" Name="openPDC.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDCEXE" AssemblyApplication="FILE_SourceDir.openPDCEXE" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDC.exe" />
+      </Component>
+      <Component Id="CMP_SourceDir.openPDC.exeCONFIG" Guid="{8107F076-899F-AA0E-F0BD-CCEC691A6B0D}" Permanent="yes" Win64="yes">
+        <Condition>INSTALLOPENPDC=1</Condition>
+        <File Id="FILE_SourceDir.openPDC.exeCONFIG" Name="openPDC.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDC.exe.config" />
+      </Component>
+      <Component Id="CMP_SourceDir.openPDCConsoleEXE" Guid="{B7356563-53A5-6941-A0F5-BBF61EADCDDC}" Win64="yes">
+        <Condition>INSTALLCONSOLE=1</Condition>
+        <File Id="FILE_SourceDir.openPDCConsoleEXE" Name="openPDCConsole.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDCConsoleEXE" AssemblyApplication="FILE_SourceDir.openPDCConsoleEXE" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDCConsole.exe" />
+        <Shortcut Id="SHORTCUT_openPDCConsole.exe" Directory="ProgramMenuFolder.openPDC" Name="openPDC Console" Icon="ICON_openPDCConsole.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
+      </Component>
+      <Component Id="CMP_SourceDir.openPDCConsole.exeCONFIG" Guid="{02EE091F-6373-CDE1-620C-6F230FFF33AC}" Win64="yes">
+        <Condition>INSTALLCONSOLE=1</Condition>
+        <File Id="FILE_SourceDir.openPDCConsole.exeCONFIG" Name="openPDCConsole.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDCConsole.exe.config" />
+      </Component>
+      <Component Id="CMP_SourceDir.ConfigurationSetupUtilityEXE" Guid="{7E3BEEED-F51F-3A73-7BCB-E17E017DC2DD}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1 OR INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.ConfigurationSetupUtilityEXE" Name="ConfigurationSetupUtility.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.ConfigurationSetupUtilityEXE" AssemblyApplication="FILE_SourceDir.ConfigurationSetupUtilityEXE" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\ConfigurationSetupUtility.exe" />
+        <Shortcut Id="SHORTCUT_ConfigurationSetupUtility.exe" Directory="ProgramMenuFolder.openPDC" Name="Configuration Setup Utility" Arguments="-64bit" Icon="ICON_ConfigurationSetupUtility.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
+      </Component>
+      <Component Id="CMP_SourceDir.ConfigurationSetupUtility.exeCONFIG" Guid="{C3454296-0ECB-2F22-087C-881BC4F3397F}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1 OR INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.ConfigurationSetupUtility.exeCONFIG" Name="ConfigurationSetupUtility.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\ConfigurationSetupUtility.exe.config" />
+      </Component>
+      <Component Id="CMP_SourceDir.Sample1344.PMUCAPTURE" Guid="{594F2670-C14B-A405-B672-01EC125DB339}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1</Condition>
+        <File Id="FILE_SourceDir.Sample1344.PMUCAPTURE" Name="Sample1344.PmuCapture" KeyPath="yes" DiskId="1" Source="..\openPDC\Sample1344.PmuCapture" />
+      </Component>
+      <!--
+				openPDC Manager
+			-->
+      <Component Id="CMP_SourceDir.openPDCManagerEXE" Guid="{16005BF1-6868-4DB8-A986-02FF321379B8}" Win64="yes">
+        <Condition>INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.openPDCManagerEXE" Name="openPDCManager.exe" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDCManager.exe" />
+        <Shortcut Id="SHORTCUT_openPDCManagerEXE" Directory="ProgramMenuFolder.openPDC" Name="openPDC Manager" Description="openPDC Manager" Icon="ICON_openPDCManager.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
+      </Component>
+      <Component Id="CMP_SourceDir.openPDCManager.exeCONFIG" Guid="{6E4D8453-2515-0868-E8BE-0D0E70DC30C7}" Win64="yes">
+        <Condition>INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.openPDCManager.exeCONFIG" Name="openPDCManager.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDCManager.exe.config" />
+      </Component>
+      <Component Id="CMP_SourceDir.openPDC.UIDLL" Guid="{1B3E8379-5623-A5EF-7B5E-465614E09EC6}" Win64="yes">
+        <Condition>INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.openPDC.UIDLL" Name="openPDC.UI.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDC.UIDLL" AssemblyApplication="FILE_SourceDir.openPDC.UIDLL" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Libraries\openPDC.UI.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.openPDC.UI.WPFDLL" Guid="{E3674102-965B-3960-981A-2D50514AC09C}" Win64="yes">
+        <Condition>INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.openPDC.UI.WPFDLL" Name="openPDC.UI.WPF.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDC.UI.WPFDLL" AssemblyApplication="FILE_SourceDir.openPDC.UI.WPFDLL" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Libraries\openPDC.UI.WPF.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.MenuXML" Guid="{163D9524-E210-9D73-3A41-BCDA5038CDA7}" Win64="yes">
+        <Condition>INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.MenuXML" Name="Menu.xml" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Menu.xml" />
+      </Component>
+      <!--
+				openPG
+			-->
+      <Component Id="CMP_SourceDir.openPG.UIDLL" Guid="{E777FC01-0A9B-A117-DCF0-AF46C78B31FC}" Win64="yes">
+        <Condition>INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.openPG.UIDLL" Name="openPG.UI.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPG.UIDLL" AssemblyApplication="FILE_SourceDir.openPG.UIDLL" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Libraries\openPG.UI.dll" />
+      </Component>
+      <Component Id="CMP_SourceDir.openPG.UI.WPFDLL" Guid="{0B364D6A-7753-DF04-739A-D39CF1C2347F}" Win64="yes">
+        <Condition>INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.openPG.UI.WPFDLL" Name="openPG.UI.WPF.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPG.UI.WPFDLL" AssemblyApplication="FILE_SourceDir.openPG.UI.WPFDLL" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Libraries\openPG.UI.WPF.dll" />
+      </Component>
+      <!--
+				GSF Tools
+			-->
+      <Component Id="CMP_SourceDir.ConfigCrypterEXE" Guid="{498F461B-8DBE-E1C2-BB80-DDBCB13E4638}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1 OR INSTALLCONSOLE=1 OR INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.ConfigCrypterEXE" Name="ConfigCrypter.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.ConfigCrypterEXE" AssemblyApplication="FILE_SourceDir.ConfigCrypterEXE" DiskId="1" Source="ConfigCrypter.exe" />
+        <Shortcut Id="SHORTCUT_ConfigCrypter.exe" Directory="ProgramMenuFolder.openPDC" Name="Cipher Key Manager" Icon="ICON_ConfigCrypter.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
+      </Component>
+      <Component Id="CMP_SourceDir.ConfigCrypter.exeCONFIG" Guid="{37C9BC33-E42E-B749-96A5-362EBBCA8CF8}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1 OR INSTALLCONSOLE=1 OR INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.ConfigCrypter.exeCONFIG" Name="ConfigCrypter.exe.config" KeyPath="yes" DiskId="1" Source="ConfigCrypter.exe.config" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.ConfigurationEditorEXE" Guid="{A2E67390-57D1-4B0C-418C-CF19D57119EC}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1 OR INSTALLCONSOLE=1 OR INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.ConfigurationEditorEXE" Name="ConfigurationEditor.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.ConfigurationEditorEXE" AssemblyApplication="FILE_SourceDir.ConfigurationEditorEXE" DiskId="1" Source="ConfigurationEditor.exe" />
+        <Shortcut Id="SHORTCUT_SourceDir.ConfigurationEditor.exe" Directory="ProgramMenuFolder.openPDC" Name="XML Configuration Editor" Icon="ICON_ConfigurationEditor.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
+      </Component>
+      <Component Id="CMP_SourceDir.ConfigurationEditor.exeCONFIG" Guid="{780F87B2-1EBE-AB55-C54A-2D500692EDE2}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1 OR INSTALLCONSOLE=1 OR INSTALLMANAGER=1</Condition>
+        <File Id="FILE_SourceDir.ConfigurationEditor.exeCONFIG" Name="ConfigurationEditor.exe.Config" KeyPath="yes" DiskId="1" Source="ConfigurationEditor.exe.config" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.DataMigrationUtilityEXE" Guid="{AD129A0B-50DC-B6F0-D454-9CA3D2313AFC}" Win64="yes">
+        <File Id="FILE_SourceDir.DataMigrationUtilityEXE" Name="DataMigrationUtility.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.DataMigrationUtilityEXE" AssemblyApplication="FILE_SourceDir.DataMigrationUtilityEXE" DiskId="1" Source="DataMigrationUtility.exe" />
+        <Shortcut Id="SHORTCUT_DataMigrationUtility.exe" Directory="ProgramMenuFolder.openPDC" Name="Data Migration Utility" Icon="ICON_DataMigrationUtility.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
+      </Component>
+      <Component Id="CMP_SourceDir.DataMigrationUtility.exeCONFIG" Guid="{A91FFEB5-6457-4C0B-F5C6-1FF9E9092A13}" Win64="yes">
+        <File Id="FILE_SourceDir.DataMigrationUtility.exeCONFIG" Name="DataMigrationUtility.exe.config" KeyPath="yes" DiskId="1" Source="DataMigrationUtility.exe.config" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.HistorianPlaybackUtilityEXE" Guid="{76E32D28-0A83-3190-94B5-26A50F5C87AC}" Win64="yes">
+        <Condition>INSTALLTOOLS=1</Condition>
+        <File Id="FILE_SourceDir.HistorianPlaybackUtilityEXE" Name="HistorianPlaybackUtility.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.HistorianPlaybackUtilityEXE" AssemblyApplication="FILE_SourceDir.HistorianPlaybackUtilityEXE" DiskId="1" Source="HistorianPlaybackUtility.exe" />
+        <Shortcut Id="SHORTCUT_HistorianPlaybackUtility.exe" Directory="ProgramMenuFolder.openPDC" Name="Historian Playback Utility" Icon="ICON_HistorianPlaybackUtility.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
+      </Component>
+      <Component Id="CMP_SourceDir.HistorianPlaybackUtility.exeCONFIG" Guid="{6BA5C7DA-879B-5D01-74C0-230877E2A91C}" Win64="yes">
+        <Condition>INSTALLTOOLS=1</Condition>
+        <File Id="FILE_SourceDir.HistorianPlaybackUtility.exeCONFIG" Name="HistorianPlaybackUtility.exe.config" KeyPath="yes" DiskId="1" Source="HistorianPlaybackUtility.exe.config" />
+      </Component>
+
+      <Component Id="CMP_SourceDir.HistorianViewEXE" Guid="{5F5250C0-19A7-0C7C-7651-42099F2DA071}" Win64="yes">
+        <Condition>INSTALLTOOLS=1</Condition>
+        <File Id="FILE_SourceDir.HistorianViewEXE" Name="HistorianView.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.HistorianViewEXE" AssemblyApplication="FILE_SourceDir.HistorianViewEXE" DiskId="1" Source="HistorianView.exe" />
+        <Shortcut Id="SHORTCUT_HistorianView.exe" Directory="ProgramMenuFolder.openPDC" Name="Historian Trending Tool" Icon="ICON_HistorianView.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
+      </Component>
+      <Component Id="CMP_SourceDir.HistorianView.exeCONFIG" Guid="{E563CEBB-296D-A6A3-64A6-F7896EF079BA}" Win64="yes">
+        <Condition>INSTALLTOOLS=1</Condition>
+        <File Id="FILE_SourceDir.HistorianView.exeCONFIG" Name="HistorianView.exe.config" KeyPath="yes" DiskId="1" Source="HistorianView.exe.config" />
+      </Component>
+      <!--
+				Macrodyne Controller (PMU) 
+			-->
+      <Component Id="CMP_SourceDir.MacrodyneControllerEXE" Guid="{84E46A11-79A2-11BD-2B0D-E8CAE86C6B74}" Win64="yes">
+        <Condition>INSTALLTOOLS=1</Condition>
+        <File Id="FILE_SourceDir.MacrodyneControllerEXE" Name="MacrodyneController.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.MacrodyneControllerEXE" AssemblyApplication="FILE_SourceDir.MacrodyneControllerEXE" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Tools\MacrodyneController\MacrodyneController.exe" />
+        <Shortcut Id="SHORTCUT_MacrodyneController.exe" Directory="ProgramMenuFolder.openPDC" Name="Macrodyne Host Controller" Icon="ICON_MacrodyneController.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
+      </Component>
+      <Component Id="CMP_SourceDir.MacrodyneController.exeCONFIG" Guid="{E2DF8C0A-16C3-068E-FFB0-43C00826F14C}" Win64="yes">
+        <Condition>INSTALLTOOLS=1</Condition>
+        <File Id="FILE_SourceDir.MacrodyneController.exeCONFIG" Name="MacrodyneController.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Tools\MacrodyneController\MacrodyneController.exe.config" />
+      </Component>
+      <!-- 
+				Start Menu
+			-->
+      <Directory Id="ProgramMenuFolder" SourceName="User's Programs Menu">
+        <Directory Id="ProgramMenuFolder.openPDC" Name="openPDC" />
+      </Directory>
+
+      <Component Id="CMP_REMOVEFOLDER_ProgramMenuFolder.openPDC" Guid="{493D6CED-50C6-4CF5-93A3-306C364F10A3}" KeyPath="yes">
+        <RemoveFolder Id="REMOVEFOLDER_ProgramMenuFolder.openPDC" Directory="ProgramMenuFolder.openPDC" On="uninstall" />
+      </Component>
+      <!-- 
+				Database Scripts Directory
+			-->
+      <Directory Id="DIR_DBScripts" Name="Database Scripts">
+        <!-- MySQL -->
+        <Directory Id="DIR_DBScripts_MySQL" Name="MySQL">
+          <Component Id="CMP_DBScripts_MySQL.SampleDataSetSQL" Guid="{A0CE45F8-FB58-7CB1-4388-BD9E62C17ABD}" Win64="yes">
+            <File Id="FILE_DBScripts_MySQL.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\MySQL\SampleDataSet.sql" />
+          </Component>
+          <Component Id="CMP_DBScripts_MySQL.InitialDataSetSQL" Guid="{9D46FC99-5615-DA54-7638-95DDF82EE6C9}" Win64="yes">
+            <File Id="FILE_DBScripts_MySQL.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\MySQL\InitialDataSet.sql" />
+          </Component>
+          <Component Id="CMP_DBScripts_MySQL.AuditLogSQL" Guid="{7EB4314C-743D-4360-BE12-9CB4578D83AC}" Win64="yes">
+            <File Id="FILE_DBScripts_MySQL.AuditLogSQL" Name="AuditLog.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\MySQL\AuditLog.sql" />
+          </Component>
+          <Component Id="CMP_DBScripts_MySQL.openPDCSQL" Guid="{22A7C764-501D-1B0A-D4AD-A2AAD97ED6AE}" Win64="yes">
+            <File Id="FILE_DBScripts_MySQL.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\MySQL\openPDC.sql" />
+          </Component>
+        </Directory>
+        <!-- Oracle -->
+        <Directory Id="DIR_DBScripts_Oracle" Name="Oracle">
+          <Component Id="CMP_DBScripts_Oracle.InitialDataSetSQL" Guid="{E5CB4A4C-B692-CE35-7E7A-85E408BCCE0A}" Win64="yes">
+            <File Id="FILE_DBScripts_Oracle.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\Oracle\InitialDataSet.sql" />
+          </Component>
+          <Component Id="CMP_DBScripts_Oracle.SampleDataSetSQL" Guid="{16D0E549-3443-B736-BEE3-7545B69B1C8B}" Win64="yes">
+            <File Id="FILE_DBScripts_Oracle.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\Oracle\SampleDataSet.sql" />
+          </Component>
+          <Component Id="CMP_DBScripts_Oracle.openPDCSQL" Guid="{BC0454F5-B80D-5006-59D4-A82B3A9BC617}" Win64="yes">
+            <File Id="FILE_DBScripts_Oracle.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\Oracle\openPDC.sql" />
+          </Component>
+          <Component Id="CMP_DBScripts_Oracle.AuditLogSQL" Guid="{D2875C9B-43F8-0B88-7172-10B0EA489BC2}" Win64="yes">
+            <File Id="FILE_DBScripts_Oracle.AuditLogSQL" Name="AuditLog.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\Oracle\AuditLog.sql" />
+          </Component>
+        </Directory>
+        <!-- SQLite -->
+        <Directory Id="DIR_DBScripts_SQLite" Name="SQLite">
+          <Component Id="CMP_DBScripts_SQLite.sqlite3EXE" Guid="{59194783-23DB-40FA-301F-6D9A79E3D5C3}" Win64="yes">
+            <File Id="FILE_DBScripts_SQLite.sqlite3EXE" Name="sqlite3.exe" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\sqlite3.exe" />
+          </Component>
+          <Component Id="CMP_DBScripts_SQLite.SampleDataSetSQL" Guid="{1B0C1756-F20D-809A-FD7D-AC933B638239}" Win64="yes">
+            <File Id="FILE_DBScripts_SQLite.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\SampleDataSet.sql" />
+          </Component>
+          <Component Id="CMP_DBScripts_SQLite.openPDCDB" Guid="{A489CBDA-C117-8503-3833-44A43591702A}" Win64="yes">
+            <File Id="FILE_DBScripts_SQLite.openPDCDB" Name="openPDC.db" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\openPDC.db" />
+          </Component>
+          <Component Id="CMP_DBScripts_SQLite.SampleDataSetDB" Guid="{ABCFA7FB-263B-C7F2-52F2-72A0D7E66338}" Win64="yes">
+            <File Id="FILE_DBScripts_SQLite.SampleDataSetDB" Name="openPDC-SampleDataSet.db" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\openPDC-SampleDataSet.db" />
+          </Component>
+          <Component Id="CMP_DBScripts_SQLite.InitialDataSetSQL" Guid="{4B3EC3EA-DE37-A4F3-DA42-D8643BDE2419}" Win64="yes">
+            <File Id="FILE_DBScripts_SQLite.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\InitialDataSet.sql" />
+          </Component>
+          <Component Id="CMP_DBScripts_SQLite.InitialDataSetDB" Guid="{EFF09CEE-E200-8181-EA6A-8CC5F04DA66B}" Win64="yes">
+            <File Id="FILE_DBScripts_SQLite.InitialDataSetDB" Name="openPDC-InitialDataSet.db" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\openPDC-InitialDataSet.db" />
+          </Component>
+          <Component Id="CMP_DBScripts_SQLite.openPDCSQL" Guid="{9E066F16-454F-B375-FFD8-2952F120A69A}" Win64="yes">
+            <File Id="FILE_DBScripts_SQLite.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\openPDC.sql" />
+          </Component>
+        </Directory>
+        <!-- SQL Server -->
+        <Directory Id="DIR_DBScripts_SQLServer" Name="SQL Server">
+          <Component Id="CMP_DBScripts_SQLServer.SampleDataSetSQL" Guid="{7B514754-529A-764E-F819-5E1DF4B998A8}" Win64="yes">
+            <File Id="FILE_DBScripts_SQLServer.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQL Server\SampleDataSet.sql" />
+          </Component>
+          <Component Id="CMP_DBScripts_SQLServer.AuditLogSQL" Guid="{B50DD1C2-84C4-5E1E-731B-EE8660C7DC93}" Win64="yes">
+            <File Id="FILE_DBScripts_SQLServer.AuditLogSQL" Name="AuditLog.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQL Server\AuditLog.sql" />
+          </Component>
+          <Component Id="CMP_DBScripts_SQLServer.openPDCSQL" Guid="{27330CBF-0217-5CC7-67E7-76D4D5DBBADA}" Win64="yes">
+            <File Id="FILE_DBScripts_SQLServer.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQL Server\openPDC.sql" />
+          </Component>
+          <Component Id="CMP_DBScripts_SQLServer.InitialDataSetSQL" Guid="{E0F115BF-98C9-1904-EC96-9713E211A21B}" Win64="yes">
+            <File Id="FILE_DBScripts_SQLServer.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQL Server\InitialDataSet.sql" />
+          </Component>
+        </Directory>
+      </Directory>
+      <!-- 
+				Registry Settings
+			-->
+      <Component Id="CMP_REG_Msi.Package.shell.runas.command" Guid="{BB813247-8AE0-5C44-0890-F36AE5B50BC6}" Win64="yes">
+        <RegistryValue Id="REG_Msi.Package.shell.runas.command" Root="HKCR" Key="Msi.Package\shell\runas\command" Value="#%&quot;%SystemRoot%\System32\msiexec.exe&quot; /i &quot;%1&quot; %*" Type="string" KeyPath="yes" />
+      </Component>
+      <!--64bit-->
+      <Component Id="CMP_REG_SOFTWARE.GridProtectionAlliance" Guid="{63B21B3E-D962-D33C-C809-CA253437FF2B}" Win64="yes">
+        <RegistryKey Id="REG_SOFTWARE.GridProtectionAlliance" ForceCreateOnInstall="yes" Key="SOFTWARE\Grid Protection Alliance" Root="HKLM" />
+      </Component>
+      <Component Id="CMP_REG_SOFTWARE.GridProtectionAlliance.openPDC" Guid="{9A6C036E-CD27-5302-E419-1E347623421D}" Win64="yes">
+        <RegistryKey Id="REG_SOFTWARE.GridProtectionAlliance.openPDC" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" Key="SOFTWARE\Grid Protection Alliance\openPDC" Root="HKLM" />
+      </Component>
+      <Component Id="CMP_REG_SOFTWARE.GridProtectionAlliance.openPDC.InstallPath" Guid="{A2DB8297-AA46-815E-1CBA-7B45B05F825C}" Win64="yes">
+        <RegistryValue Id="REG_SOFTWARE.GridProtectionAlliance.openPDC.InstallPath" Root="HKLM" Key="SOFTWARE\Grid Protection Alliance\openPDC" Name="InstallPath" Value="[TARGETDIR]" Type="string" KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_REG_SOFTWARE.GridProtectionAlliance.openPDC.Revision" Guid="{433F55D7-60E1-CBCA-B321-1AE5FF5A0E6A}" Win64="yes">
+        <RegistryValue Id="REG_SOFTWARE.GridProtectionAlliance.openPDC.Revision" Root="HKLM" Key="SOFTWARE\Grid Protection Alliance\openPDC" Name="Revision" Value="[ProductVersion]" Type="string" KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_REG_SOFTWARE.GridProtectionAlliance.openPDC.TargetBitSize" Guid="{ADC02CF4-9B08-8526-7DF4-D2CFE792DCCC}" Win64="yes">
+        <RegistryValue Id="REG_SOFTWARE.GridProtectionAlliance.openPDC.TargetBitSize" Root="HKLM" Key="SOFTWARE\Grid Protection Alliance\openPDC" Name="TargetBitSize" Value="64bit" Type="string" KeyPath="yes" />
+      </Component>
+      <!--32bit Compatability-->
+      <Component Id="CMP_REG_SOFTWARE.Wow6432Node.GPA" Guid="{29992F1F-C5A7-551B-9BEE-0A2C7789D285}" Win64="yes">
+        <RegistryKey Id="REG_SOFTWARE.Wow6432Node.GPA" ForceCreateOnInstall="yes" Key="SOFTWARE\Wow6432Node\Grid Protection Alliancecan" Root="HKLM" />
+      </Component>
+      <Component Id="CMP_REG_SOFTWARE.Wow6432Node.GPA.openPDC" Guid="{87C527E2-5E91-D566-FE54-C8C3939ABD03}" Win64="yes">
+        <RegistryKey Id="REG_SOFTWARE.Wow6432Node.GPA.openPDC" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" Key="SOFTWARE\Wow6432Node\Grid Protection Alliance\openPDC" Root="HKLM" />
+      </Component>
+      <Component Id="CMP_REG_SOFTWARE.Wow6432Node.GPA.openPDC.InstallPath" Guid="{3EABF65F-F785-1318-629B-56B2BE72CDEB}" Win64="yes">
+        <RegistryValue Id="REG_SOFTWARE.Wow6432Node.GPA.openPDC.InstallPath" Root="HKLM" Key="SOFTWARE\Wow6432Node\Grid Protection Alliance\openPDC" Name="InstallPath" Value="[TARGETDIR]" Type="string" KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_REG_SOFTWARE.Wow6432Node.GPA.openPDC.Revision" Guid="{917B9D24-D03A-81E8-B125-1381953087F2}" Win64="yes">
+        <RegistryValue Id="REG_SOFTWARE.Wow6432Node.GPA.openPDC.Revision" Root="HKLM" Key="SOFTWARE\Wow6432Node\Grid Protection Alliance\openPDC" Name="Revision" Value="[ProductVersion]" Type="string" KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_REG_SOFTWARE.Wow6432Node.GPA.openPDC.TargetBitSize" Guid="{1AC74A72-ACDB-62B3-CBCA-DB5B0C4491C0}" Win64="yes">
+        <RegistryValue Id="REG_SOFTWARE.Wow6432Node.GPA.openPDC.TargetBitSize" Root="HKLM" Key="SOFTWARE\Wow6432Node\Grid Protection Alliance\openPDC" Name="TargetBitSize" Value="64bit" Type="string" KeyPath="yes" />
+      </Component>
+    </Directory>
+
+    <!--                     COMPONENT REFERENCES                              -->
+
+    <Feature Id="DefaultFeature" ConfigurableDirectory="TARGETDIR" Level="1">
+      <!--
+				GSF Dependencies
+			-->
+      <ComponentRef Id="CMP_SourceDir.AdoAdaptersDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.Ciloci.FleeDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.ComtradeDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.CsvAdaptersDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.DataQualityMonitoringDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.Dnp3AdaptersDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.DynamicCalculatorDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.EpriExportDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.CommunicationDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.CoreDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.HistorianDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.PhasorProtocolsDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.SecurityDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.ServiceBusDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.ServiceModelDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.ServiceProcessDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.TimeSeriesDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.TimeSeries.UIDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.TimeSeries.UI.WPFDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.WebDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.GSF.WindowsDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.Hadoop.ReplicationDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.HistorianAdaptersDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.ICCPExportDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.MongoAdaptersDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.MongoDBDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.MongoDB.GridFSDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.MySqlAdaptersDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.OneSecondFrequencyAveragerDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.PowerCalculationsDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.TestingAdaptersDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.WavInputAdapterDLL" Primary="yes" />
+      <!--
+				Microsoft Dependencies
+			-->
+      <ComponentRef Id="CMP_SourceDir.DynamicDataDisplayDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.System.Windows.Controls.DataVisualization.ToolkitDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.System.Windows.Controls.Input.ToolkitDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.WPFToolkitDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.System.Windows.Controls.Layout.ToolkitDLL" Primary="yes" />
+      <!-- 
+				SQLite Dependencies
+			-->
+      <ComponentRef Id="CMP_SourceDir.System.Data.SQLiteDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.System.Data.SQLite.LinqDLL" Primary="yes" />
+      <!--
+				openPDC
+			-->
+      <ComponentRef Id="CMP_SourceDir.openPDCEXE" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.openPDC.exeCONFIG" />
+      <ComponentRef Id="CMP_SourceDir.openPDCConsoleEXE" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.openPDCConsole.exeCONFIG" />
+      <ComponentRef Id="CMP_SourceDir.ConfigurationSetupUtilityEXE" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.ConfigurationSetupUtility.exeCONFIG" />
+      <ComponentRef Id="CMP_SourceDir.Sample1344.PMUCAPTURE" />
+      <!--
+				openPDC Manager
+			-->
+      <ComponentRef Id="CMP_SourceDir.openPDCManagerEXE" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.openPDCManager.exeCONFIG" />
+      <ComponentRef Id="CMP_SourceDir.openPDC.UIDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.openPDC.UI.WPFDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.MenuXML" />
+      <!--
+				openPG
+			-->
+      <ComponentRef Id="CMP_SourceDir.openPG.UI.WPFDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.openPG.UIDLL" Primary="yes" />
+      <!--
+				GSF Tools
+			-->
+      <ComponentRef Id="CMP_SourceDir.ConfigCrypterEXE" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.ConfigCrypter.exeCONFIG" />
+      <ComponentRef Id="CMP_SourceDir.ConfigurationEditorEXE" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.ConfigurationEditor.exeCONFIG" />
+      <ComponentRef Id="CMP_SourceDir.DataMigrationUtilityEXE" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.DataMigrationUtility.exeCONFIG" />
+      <ComponentRef Id="CMP_SourceDir.HistorianPlaybackUtilityEXE" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.HistorianPlaybackUtility.exeCONFIG" />
+      <ComponentRef Id="CMP_SourceDir.HistorianViewEXE" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.HistorianView.exeCONFIG" />
+      <!--
+				Macrodyne Controller (PMU) 
+			-->
+      <ComponentRef Id="CMP_SourceDir.MacrodyneControllerEXE" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.MacrodyneController.exeCONFIG" />
+      <!-- 
+				Start Menu
+			-->
+      <ComponentRef Id="CMP_REMOVEFOLDER_ProgramMenuFolder.openPDC" />
+      <!-- 
+				Database Scripts Directory
+			-->
+      <!-- MySQL -->
+      <ComponentRef Id="CMP_DBScripts_MySQL.AuditLogSQL" />
+      <ComponentRef Id="CMP_DBScripts_MySQL.InitialDataSetSQL" />
+      <ComponentRef Id="CMP_DBScripts_MySQL.openPDCSQL" />
+      <ComponentRef Id="CMP_DBScripts_MySQL.SampleDataSetSQL" />
+      <!-- Oracle -->
+      <ComponentRef Id="CMP_DBScripts_Oracle.AuditLogSQL" />
+      <ComponentRef Id="CMP_DBScripts_Oracle.InitialDataSetSQL" />
+      <ComponentRef Id="CMP_DBScripts_Oracle.openPDCSQL" />
+      <ComponentRef Id="CMP_DBScripts_Oracle.SampleDataSetSQL" />
+      <!-- SQLite -->
+      <ComponentRef Id="CMP_DBScripts_SQLite.InitialDataSetDB" />
+      <ComponentRef Id="CMP_DBScripts_SQLite.InitialDataSetSQL" />
+      <ComponentRef Id="CMP_DBScripts_SQLite.openPDCDB" />
+      <ComponentRef Id="CMP_DBScripts_SQLite.openPDCSQL" />
+      <ComponentRef Id="CMP_DBScripts_SQLite.SampleDataSetDB" />
+      <ComponentRef Id="CMP_DBScripts_SQLite.SampleDataSetSQL" />
+      <ComponentRef Id="CMP_DBScripts_SQLite.sqlite3EXE" />
+      <!-- SQL Server -->
+      <ComponentRef Id="CMP_DBScripts_SQLServer.AuditLogSQL" />
+      <ComponentRef Id="CMP_DBScripts_SQLServer.InitialDataSetSQL" />
+      <ComponentRef Id="CMP_DBScripts_SQLServer.openPDCSQL" />
+      <ComponentRef Id="CMP_DBScripts_SQLServer.SampleDataSetSQL" />
+      <!-- 
+				Registry Settings
+			-->
+      <ComponentRef Id="CMP_REG_Msi.Package.shell.runas.command" />
+      <ComponentRef Id="CMP_REG_SOFTWARE.GridProtectionAlliance" />
+      <ComponentRef Id="CMP_REG_SOFTWARE.GridProtectionAlliance.openPDC" />
+      <ComponentRef Id="CMP_REG_SOFTWARE.GridProtectionAlliance.openPDC.InstallPath" />
+      <ComponentRef Id="CMP_REG_SOFTWARE.GridProtectionAlliance.openPDC.Revision" />
+      <ComponentRef Id="CMP_REG_SOFTWARE.GridProtectionAlliance.openPDC.TargetBitSize" />
+      <ComponentRef Id="CMP_REG_SOFTWARE.Wow6432Node.GPA" />
+      <ComponentRef Id="CMP_REG_SOFTWARE.Wow6432Node.GPA.openPDC" />
+      <ComponentRef Id="CMP_REG_SOFTWARE.Wow6432Node.GPA.openPDC.InstallPath" />
+      <ComponentRef Id="CMP_REG_SOFTWARE.Wow6432Node.GPA.openPDC.Revision" />
+      <ComponentRef Id="CMP_REG_SOFTWARE.Wow6432Node.GPA.openPDC.TargetBitSize" />
+    </Feature>
+
+
+    <Icon Id="ICON_openPDC.exe" SourceFile="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDC.exe" />
+    <Icon Id="ICON_openPDCManager.exe" SourceFile="..\..\..\..\Build\Output\Debug\Applications\openPDCManager\openPDCManager.exe" />
+    <Icon Id="ICON_ConfigurationEditor.exe" SourceFile="ConfigurationEditor.exe" />
+    <Icon Id="ICON_HistorianPlaybackUtility.exe" SourceFile="HistorianPlaybackUtility.exe"/>
+    <Icon Id="ICON_HistorianView.exe" SourceFile="HistorianView.exe" />
+    <Icon Id="ICON_MacrodyneController.exe" SourceFile="..\..\..\..\Build\Output\Debug\Tools\MacrodyneController\MacrodyneController.exe" />
+    <Icon Id="ICON_ConfigCrypter.exe" SourceFile="ConfigCrypter.exe" />
+    <Icon Id="ICON_DataMigrationUtility.exe" SourceFile="DataMigrationUtility.exe" />
+    <Icon Id="ICON_ConfigurationSetupUtility.exe" SourceFile="..\..\..\..\Build\Output\Debug\Tools\ConfigurationSetupUtility\ConfigurationSetupUtility.exe" />
+    <Icon Id="ICON_openPDCConsole.exe" SourceFile="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDCConsole.exe" />
+
+    <Media Id="1" Cabinet="_6B36B7D3C743CECAF91890EEF1666533" EmbedCab="yes" />
+
+    <Property Id="VSDFrameworkVersion" Value="v4.0" />
+    <Property Id="VSDAllowLaterFrameworkVersions" Value="False" />
+    <Property Id="ARPHELPLINK" Value="http://www.openpdc.com/" />
+    <Property Id="ARPCONTACT" Value="GPA" />
+    <Property Id="ARPCOMMENTS" Value="openPDC" />
+    <Property Id="ARPURLINFOABOUT" Value="http://www.GPA.org/" />
+    <Property Id="ALLUSERS" Value="2" />
+    <Property Id="ARPPRODUCTICON" Value="ICON_openPDC.exe" />
+    <Property Id="NEWERPRODUCTFOUND" Secure="yes" />
+    <Property Id="VSDNETURLMSG" Value="This setup requires the .NET Framework version [1].  Please install the .NET Framework and run this setup again.  The .NET Framework can be obtained from the web.  Would you like to do this now?" />
+    <Property Id="VSDIISMSG" Value="This setup requires Internet Information Server 5.1 or higher and Windows XP or higher.  This setup cannot be installed on Windows 2000.  Please install Internet Information Server or a newer operating system and run this setup again." />
+    <Property Id="VSDUIANDADVERTISED" Value="This advertised application will not be installed because it might be unsafe. Contact your administrator to change the installation user interface option of the package to basic." />
+    <Property Id="VSDNETMSG" Value="This setup requires the .NET Framework version [1].  Please install the .NET Framework and run this setup again." />
+    <Property Id="VSDINVALIDURLMSG" Value="The specified path '[2]' is unavailable. The Internet Information Server might not be running or the path exists and is redirected to another machine. Please check the status of this virtual directory in the Internet Services Manager." />
+    <Property Id="VSDVERSIONMSG" Value="Unable to install because a newer version of this product is already installed." />
+    <Property Id="EulaForm_Property" Value="No" />
+    <Property Id="CHECKBOXA4" Value="1" />
+    <Property Id="CHECKBOXA3" Value="1" />
+    <Property Id="CHECKBOXA2" Value="1" />
+    <Property Id="CHECKBOXA1" Value="1" />
+    <Property Id="FolderForm_AllUsers" Value="ME" />
+    <Property Id="FolderForm_AllUsersVisible" Value="1" />
+    <Property Id="EDITA4" Value="1" />
+    <Property Id="EDITA3" Value="1" />
+    <Property Id="EDITA2" Value="1" />
+    <Property Id="EDITA1" Value="1" />
+    <Property Id="MaintenanceForm_Action" Value="Repair" />
+    <Property Id="ErrorDialog" Value="ErrorDialog" />
+    <Property Id="SFF_UpFldrBtn" Value="UpFldrBtn" />
+    <Property Id="SFF_NewFldrBtn" Value="NewFldrBtn" />
+    <Property Id="DefaultUIFont" Value="VsdDefaultUIFont.524F4245_5254_5341_4C45_534153783400" />
+    <Property Id="AdminMaintenanceForm_Action" Value="Repair" />
+    <Property Id="AdminWelcomeForm_NextArgs" Value="AdminFolderForm" />
+    <Property Id="AdminFolderForm_PrevArgs" Value="AdminWelcomeForm" />
+    <Property Id="AdminFolderForm_NextArgs" Value="AdminConfirmInstallForm" />
+    <Property Id="AdminConfirmInstallForm_PrevArgs" Value="AdminFolderForm" />
+    <Property Id="WelcomeForm_NextArgs" Value="EulaForm" />
+    <Property Id="EulaForm_PrevArgs" Value="WelcomeForm" />
+    <Property Id="EulaForm_NextArgs" Value="CustomTextA" />
+    <Property Id="CustomTextA_PrevArgs" Value="EulaForm" />
+    <Property Id="CustomTextA_NextArgs" Value="CustomCheckA" />
+    <Property Id="CustomCheckA_PrevArgs" Value="CustomTextA" />
+    <Property Id="FolderForm_NextArgs" Value="ConfirmInstallForm" />
+    <Property Id="ConfirmInstallForm_PrevArgs" Value="FolderForm" />
+
+    <UI>
+      <Error Id="1001">Error [1]. [2]</Error>
+
+      <RadioButtonGroup Property="AdminMaintenanceForm_Action">
+        <RadioButton Height="17" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Repair [ProductName]" Value="Repair" Width="348" X="0" Y="0" />
+        <RadioButton Height="17" Text="{\VSI_MS_Sans_Serif13.0_0_0}Re&amp;move [ProductName]" Value="Remove" Width="348" X="0" Y="18" />
+      </RadioButtonGroup>
+      <RadioButtonGroup Property="EulaForm_Property">
+        <RadioButton Height="15" Text="{\VSI_MS_Sans_Serif13.0_0_0}I &amp;Do Not Agree" Value="No" Width="138" X="0" Y="0" />
+        <RadioButton Height="15" Text="{\VSI_MS_Sans_Serif13.0_0_0}I &amp;Agree" Value="Yes" Width="138" X="138" Y="0" />
+      </RadioButtonGroup>
+      <RadioButtonGroup Property="FolderForm_AllUsers">
+        <RadioButton Height="17" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Everyone" Value="ALL" Width="342" X="0" Y="0" />
+        <RadioButton Height="17" Text="{\VSI_MS_Sans_Serif13.0_0_0}Just &amp;me" Value="ME" Width="342" X="0" Y="18" />
+      </RadioButtonGroup>
+      <RadioButtonGroup Property="MaintenanceForm_Action">
+        <RadioButton Height="17" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Repair [ProductName]" Value="Repair" Width="348" X="0" Y="0" />
+        <RadioButton Height="17" Text="{\VSI_MS_Sans_Serif13.0_0_0}Re&amp;move [ProductName]" Value="Remove" Width="348" X="0" Y="18" />
+      </RadioButtonGroup>
+
+      <TextStyle Id="VSI_MS_Sans_Serif13.0_0_0" FaceName="MS Sans Serif" Size="9" Red="0" Green="0" Blue="0" />
+      <TextStyle Id="VSI_MS_Sans_Serif16.0_1_0" FaceName="MS Sans Serif" Size="12" Red="0" Green="0" Blue="0" Bold="yes" />
+      <TextStyle Id="VSI_MS_Shell_Dlg13.0_0_0" FaceName="MS Shell Dlg" Size="9" Red="0" Green="0" Blue="0" />
+      <TextStyle Id="VsdDefaultUIFont.524F4245_5254_5341_4C45_534153783400" FaceName="MS Sans Serif" Size="9" Red="0" Green="0" Blue="0" />
+
+      <UIText Id="MenuLocal">Will be installed on local hard drive</UIText>
+      <UIText Id="SelParentCostNegNeg">This feature frees up [1] on your hard drive. It has [2] of [3] subfeatures selected. The subfeatures free up [4] on your hard drive.</UIText>
+      <UIText Id="SelNetworkNetwork">This feature will remain to be run from the network</UIText>
+      <UIText Id="SelNetworkLocal">This feature will change from run from network state to be installed on the local hard drive</UIText>
+      <UIText Id="SelNetworkAdvertise">This feature will change from run from network state to set to be installed when required</UIText>
+      <UIText Id="SelNetworkAbsent">This feature will be uninstalled completely, you won't be able to run it from the network</UIText>
+      <UIText Id="SelAbsentAbsent">This feature will remain uninstalled</UIText>
+      <UIText Id="ScriptInProgress">Gathering required information...</UIText>
+      <UIText Id="MenuCD">Will be installed to run from CD</UIText>
+      <UIText Id="SelChildCostNeg">This feature frees up [1] on your hard drive.</UIText>
+      <UIText Id="SelCDLocal">This feature will change from run from CD state to be installed on the local hard drive</UIText>
+      <UIText Id="MenuAbsent">Entire feature will be unavailable</UIText>
+      <UIText Id="SelCDAdvertise">This feature will change from run from CD state to set to be installed when required</UIText>
+      <UIText Id="MenuAllNetwork">Entire feature will be installed to run from network</UIText>
+      <UIText Id="SelLocalNetwork">This feature will be removed from your local hard drive, but will be still available to run from the network</UIText>
+      <UIText Id="SelAdvertiseNetwork">This feature will be available to run from the network</UIText>
+      <UIText Id="MenuAllLocal">Entire feature will be installed on local hard drive</UIText>
+      <UIText Id="SelAdvertiseLocal">This feature will be installed on your local hard drive</UIText>
+      <UIText Id="MenuAllCD">Entire feature will be installed to run from CD</UIText>
+      <UIText Id="SelCDAbsent">This feature will be uninstalled completely, you won't be able to run it from CD</UIText>
+      <UIText Id="MenuAdvertise">Feature will be installed when required</UIText>
+      <UIText Id="SelAdvertiseCD">This feature will be available to run from CD</UIText>
+      <UIText Id="bytes">bytes</UIText>
+      <UIText Id="SelAdvertiseAdvertise">Will be installed when required</UIText>
+      <UIText Id="AbsentPath" />
+      <UIText Id="MB">MB</UIText>
+      <UIText Id="SelAdvertiseAbsent">This feature will become unavailable</UIText>
+      <UIText Id="KB">KB</UIText>
+      <UIText Id="GB">GB</UIText>
+      <UIText Id="SelAbsentNetwork">This feature will be installed to run from the network</UIText>
+      <UIText Id="SelAbsentCD">This feature will be installed to run from CD</UIText>
+      <UIText Id="SelAbsentAdvertise">This feature will be set to be installed when required</UIText>
+      <UIText Id="SelAbsentLocal">This feature will be installed on the local hard drive</UIText>
+      <UIText Id="SelCDCD">This feature will remain to be run from CD</UIText>
+      <UIText Id="NewFolder">Folder|New Folder</UIText>
+      <UIText Id="MenuNetwork">Will be installed to run from network</UIText>
+      <UIText Id="SelLocalCD">This feature will be removed from your local hard drive, but will be still available to run from CD</UIText>
+      <UIText Id="SelLocalAbsent">This feature will be completely removed</UIText>
+      <UIText Id="SelCostPending">Compiling cost for this feature...</UIText>
+      <UIText Id="SelLocalLocal">This feature will remain on you local hard drive</UIText>
+      <UIText Id="SelChildCostPos">This feature requires [1] on your hard drive.</UIText>
+      <UIText Id="SelLocalAdvertise">This feature will be removed from your local hard drive, but will be set to be installed when required</UIText>
+      <UIText Id="SelParentCostNegPos">This feature frees up [1] on your hard drive. It has [2] of [3] subfeatures selected. The subfeatures require [4] on your hard drive.</UIText>
+      <UIText Id="SelParentCostPosNeg">This feature requires [1] on your hard drive. It has [2] of [3] subfeatures selected. The subfeatures free up [4] on your hard drive.</UIText>
+      <UIText Id="SelParentCostPosPos">This feature requires [1] on your hard drive. It has [2] of [3] subfeatures selected. The subfeatures require [4] on your hard drive.</UIText>
+      <UIText Id="TimeRemaining">Time remaining: {[1] minutes }{[2] seconds}</UIText>
+      <UIText Id="VolumeCostAvailable">Available</UIText>
+      <UIText Id="VolumeCostDifference">Difference</UIText>
+      <UIText Id="VolumeCostRequired">Required</UIText>
+      <UIText Id="VolumeCostSize">Disk Size</UIText>
+      <UIText Id="VolumeCostVolume">Volume</UIText>
+
+      <Dialog Id="UserExitForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="CloseButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Close" TabSkip="no" Default="yes" Cancel="yes">
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Disabled="yes" />
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Installation Interrupted" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyTextRemove" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer was interrupted before [ProductName] could be removed. You need to restart the installer to try again.&#xD;&#xA;&#xD;&#xA;Click &quot;Close&quot; to exit." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE&lt;&gt;""</Condition>
+          <Condition Action="hide">REMOVE=""</Condition>
+        </Control>
+        <Control Id="BodyTextInstall" Type="Text" X="18" Y="63" Width="342" Height="24" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installation was interrupted before [ProductName] could be installed. You need to restart the installer to try again." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+      </Dialog>
+
+      <Dialog Id="FatalErrorForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="CloseButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Close" TabSkip="no" Default="yes" Cancel="yes">
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Disabled="yes" />
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Installation Incomplete" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyTextRemove" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer was interrupted before [ProductName] could be installed. You need to restart the installer to try again.&#xD;&#xA;&#xD;&#xA;Click &quot;Close&quot; to exit." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+        <Control Id="BodyTextInstall" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer was interrupted before [ProductName] could be removed. You need to restart the installer to try again.&#xD;&#xA;&#xD;&#xA;Click &quot;Close&quot; to exit." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE&lt;&gt;""</Condition>
+          <Condition Action="hide">REMOVE=""</Condition>
+        </Control>
+      </Dialog>
+
+      <Dialog Id="MaintenanceForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="FinishButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Finish" TabSkip="no" Default="yes">
+          <Publish Property="REINSTALL" Value="ALL">MaintenanceForm_Action="Repair"</Publish>
+          <Publish Event="Reinstall" Value="ALL">MaintenanceForm_Action="Repair"</Publish>
+          <Publish Property="REMOVE" Value="ALL">MaintenanceForm_Action="Remove"</Publish>
+          <Publish Event="Remove" Value="ALL">MaintenanceForm_Action="Remove"</Publish>
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="RepairRadioGroup" Type="RadioButtonGroup" X="18" Y="108" Width="348" Height="48" Property="MaintenanceForm_Action" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiRadioButtonGroup" TabSkip="no" />
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Welcome to the [ProductName] Setup Wizard" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyText" Type="Text" X="9" Y="63" Width="354" Height="42" Text="{\VSI_MS_Sans_Serif13.0_0_0}Select whether you want to repair or remove [ProductName]." TabSkip="yes" NoPrefix="yes" />
+      </Dialog>
+
+      <Dialog Id="ResumeForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="FinishButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Finish" TabSkip="no" Default="yes">
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Welcome to the [ProductName] Setup Wizard" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyText" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer will resume the installation of [ProductName] on your computer.&#xD;&#xA;&#xD;&#xA;Click &quot;Finish&quot; to continue." TabSkip="yes" NoPrefix="yes" />
+      </Dialog>
+
+      <Dialog Id="AdminUserExitForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="CloseButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Close" TabSkip="no" Default="yes" Cancel="yes">
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Disabled="yes" />
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Installation Interrupted" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyTextRemove" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer was interrupted before [ProductName] could be removed. You need to restart the installer to try again.&#xD;&#xA;&#xD;&#xA;Click &quot;Close&quot; to exit." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE&lt;&gt;""</Condition>
+          <Condition Action="hide">REMOVE=""</Condition>
+        </Control>
+        <Control Id="BodyTextInstall" Type="Text" X="18" Y="63" Width="342" Height="24" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installation was interrupted before [ProductName] could be installed. You need to restart the installer to try again." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+      </Dialog>
+
+      <Dialog Id="AdminFatalErrorForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="CloseButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Close" TabSkip="no" Default="yes" Cancel="yes">
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Disabled="yes" />
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Installation Incomplete" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyTextRemove" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer was interrupted before [ProductName] could be removed. You need to restart the installer to try again.&#xD;&#xA;&#xD;&#xA;Click &quot;Close&quot; to exit." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+        <Control Id="BodyTextInstall" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer was interrupted before [ProductName] could be installed. You need to restart the installer to try again.&#xD;&#xA;&#xD;&#xA;Click &quot;Close&quot; to exit." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE&lt;&gt;""</Condition>
+          <Condition Action="hide">REMOVE=""</Condition>
+        </Control>
+      </Dialog>
+
+      <Dialog Id="AdminMaintenanceForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="FinishButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Finish" TabSkip="no" Default="yes">
+          <Publish Property="REINSTALL" Value="ALL">AdminMaintenanceForm_Action="Repair"</Publish>
+          <Publish Event="Reinstall" Value="ALL">AdminMaintenanceForm_Action="Repair"</Publish>
+          <Publish Property="REMOVE" Value="ALL">AdminMaintenanceForm_Action="Remove"</Publish>
+          <Publish Event="Remove" Value="ALL">AdminMaintenanceForm_Action="Remove"</Publish>
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="RepairRadioGroup" Type="RadioButtonGroup" X="18" Y="108" Width="348" Height="48" Property="AdminMaintenanceForm_Action" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiRadioButtonGroup" TabSkip="no" />
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Welcome to the [ProductName] Setup Wizard" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyText" Type="Text" X="9" Y="63" Width="354" Height="42" Text="{\VSI_MS_Sans_Serif13.0_0_0}Select whether you want to repair or remove [ProductName]." TabSkip="yes" NoPrefix="yes" />
+      </Dialog>
+
+      <Dialog Id="AdminResumeForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="FinishButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Finish" TabSkip="no" Default="yes">
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Welcome to the [ProductName] Setup Wizard" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyText" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer will resume the installation of [ProductName] on your computer.&#xD;&#xA;&#xD;&#xA;Click &quot;Finish&quot; to continue." TabSkip="yes" NoPrefix="yes" />
+      </Dialog>
+
+      <Dialog Id="AdminWelcomeForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="NextButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Next &gt;" TabSkip="no" Default="yes">
+          <Publish Event="EndDialog" Value="Return">AdminWelcomeForm_NextArgs=""</Publish>
+          <Publish Event="NewDialog" Value="[AdminWelcomeForm_NextArgs]">AdminWelcomeForm_NextArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no">
+          <Condition Action="disable">AdminWelcomeForm_PrevArgs=""</Condition>
+          <Condition Action="enable">AdminWelcomeForm_PrevArgs&lt;&gt;""</Condition>
+          <Publish Event="NewDialog" Value="[AdminWelcomeForm_PrevArgs]">AdminWelcomeForm_PrevArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Welcome to the [ProductName] Network Setup Wizard" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="CopyrightWarningText" Type="Text" X="9" Y="186" Width="354" Height="66" Text="{\VSI_MS_Sans_Serif13.0_0_0}WARNING: This computer program is protected by copyright law and international treaties. Unauthorized duplication or distribution of this program, or any portion of it, may result in severe civil or criminal penalties, and will be prosecuted to the maximum extent possible under the law." TabSkip="yes" NoPrefix="yes" />
+        <Control Id="WelcomeText" Type="Text" X="9" Y="63" Width="354" Height="114" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer will guide you through the steps required to install [ProductName] on your computer." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">Installed="" AND NOT RESUME</Condition>
+          <Condition Action="hide">Installed&lt;&gt;"" OR RESUME</Condition>
+        </Control>
+      </Dialog>
+
+      <Dialog Id="Cancel" X="50" Y="50" Width="271" Height="78" Title="[ProductName]" NoMinimize="yes">
+        <Control Id="NoButton" Type="PushButton" X="198" Y="48" Width="65" Height="21" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;No" TabSkip="no" Default="yes" Cancel="yes">
+          <Publish Event="EndDialog" Value="Return" />
+        </Control>
+        <Control Id="YesButton" Type="PushButton" X="126" Y="48" Width="65" Height="21" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Yes" TabSkip="no">
+          <Publish Event="EndDialog" Value="Exit" />
+        </Control>
+        <Control Id="BodyText" Type="Text" X="6" Y="9" Width="258" Height="24" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installation is not yet complete. Are you sure you want to exit?" TabSkip="yes" NoPrefix="yes" />
+      </Dialog>
+
+      <Dialog Id="AdminConfirmInstallForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="NextButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Next &gt;" TabSkip="no" Default="yes">
+          <Publish Event="EndDialog" Value="Return">AdminConfirmInstallForm_NextArgs=""</Publish>
+          <Publish Event="NewDialog" Value="[AdminConfirmInstallForm_NextArgs]">AdminConfirmInstallForm_NextArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no">
+          <Condition Action="disable">AdminConfirmInstallForm_PrevArgs=""</Condition>
+          <Condition Action="enable">AdminConfirmInstallForm_PrevArgs&lt;&gt;""</Condition>
+          <Publish Event="NewDialog" Value="[AdminConfirmInstallForm_PrevArgs]">AdminConfirmInstallForm_PrevArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Confirm Installation" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyText1" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer is ready to install [ProductName] on your computer.&#xD;&#xA;&#xD;&#xA;Click &quot;Next&quot; to start the installation." TabSkip="yes" NoPrefix="yes" />
+      </Dialog>
+
+      <Dialog Id="AdminFolderForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]" TrackDiskSpace="yes">
+        <Control Id="NextButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Next &gt;" TabSkip="no" Default="yes">
+          <Publish Event="SetTargetPath" Value="TARGETDIR">1</Publish>
+          <Publish Event="SpawnDialog" Value="DiskCost">OutOfDiskSpace=1</Publish>
+          <Publish Event="EndDialog" Value="Return">AdminFolderForm_NextArgs="" AND OutOfDiskSpace&lt;&gt;1</Publish>
+          <Publish Event="NewDialog" Value="[AdminFolderForm_NextArgs]">AdminFolderForm_NextArgs&lt;&gt;"" AND OutOfDiskSpace&lt;&gt;1</Publish>
+          <Publish Property="ALLUSERS" Value="2">AdminFolderForm_AllUsers="ALL"</Publish>
+        </Control>
+        <Control Id="FolderLabel" Type="Text" X="18" Y="114" Width="348" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Folder:" TabSkip="no" />
+        <Control Id="FolderEdit" Type="PathEdit" X="18" Y="126" Width="258" Height="18" Property="TARGETDIR" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiPathEdit" TabSkip="no" Sunken="yes" />
+        <Control Id="BrowseButton" Type="PushButton" X="282" Y="126" Width="84" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}B&amp;rowse..." TabSkip="no">
+          <Publish Property="SelectFolderDialog_Property" Value="TARGETDIR">1</Publish>
+          <Publish Event="SpawnDialog" Value="SelectFolderDialog">1</Publish>
+        </Control>
+        <Control Id="DiskCostButton" Type="PushButton" X="282" Y="150" Width="84" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Disk Cost..." TabSkip="no">
+          <Publish Event="SetTargetPath" Value="TARGETDIR">1</Publish>
+          <Publish Event="SpawnDialog" Value="DiskCost">1</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no">
+          <Condition Action="disable">AdminFolderForm_PrevArgs=""</Condition>
+          <Condition Action="enable">AdminFolderForm_PrevArgs&lt;&gt;""</Condition>
+          <Publish Event="NewDialog" Value="[AdminFolderForm_PrevArgs]">AdminFolderForm_PrevArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Network Location" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Body" Type="Text" X="9" Y="63" Width="354" Height="48" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer will create a network image at the following location.&#xD;&#xA;&#xD;&#xA;To create an image in this folder, click &quot;Next&quot;. To use a different folder, enter it below or click &quot;Browse&quot;." TabSkip="yes" NoPrefix="yes" />
+      </Dialog>
+
+      <Dialog Id="DiskCost" X="50" Y="50" Width="361" Height="192" Title="[ProductName] Disk Space" NoMinimize="yes" TrackDiskSpace="yes">
+        <Control Id="OKButton" Type="PushButton" X="288" Y="165" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}OK" TabSkip="no" Default="yes" Cancel="yes">
+          <Publish Event="EndDialog" Value="Return" />
+        </Control>
+        <Control Id="VolumeCostList1" Type="VolumeCostList" X="6" Y="39" Width="348" Height="114" Text="{\VSI_MS_Sans_Serif13.0_0_0}{116}{80}{80}{80}{80}" TabSkip="no" Sunken="yes" Removable="yes" Fixed="yes" Remote="yes" />
+        <Control Id="AvailableBodyText" Type="Text" X="6" Y="9" Width="348" Height="24" Text="{\VSI_MS_Sans_Serif13.0_0_0}The list below includes the drives you can install [ProductName] to, along with each drive's available and required disk space." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">OutOfDiskSpace&lt;&gt;1</Condition>
+          <Condition Action="hide">OutOfDiskSpace=1</Condition>
+        </Control>
+        <Control Id="RequiredBodyText" Type="Text" X="6" Y="9" Width="348" Height="24" Text="{\VSI_MS_Sans_Serif13.0_0_0}The amount of required disk space exceeds the amount of available disk space. The highlighted items indicate the drives with insufficient disk space." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">OutOfDiskSpace=1</Condition>
+          <Condition Action="hide">OutOfDiskSpace&lt;&gt;1</Condition>
+        </Control>
+      </Dialog>
+
+      <Dialog Id="SelectFolderDialog" X="50" Y="50" Width="313" Height="223" Title="Browse for Folder" NoMinimize="yes">
+        <Control Id="OKButton" Type="PushButton" X="168" Y="198" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}OK" TabSkip="no" Default="yes">
+          <Publish Event="SetTargetPath" Value="[SelectFolderDialog_Property]">1</Publish>
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="240" Y="198" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="Reset" Value="{}">1</Publish>
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="BrowseText" Type="Text" X="6" Y="9" Width="60" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Browse:" TabSkip="no" />
+        <Control Id="FolderCombo" Type="DirectoryCombo" X="66" Y="6" Width="198" Height="120" Property="SelectFolderDialog_Property" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiDirectoryCombo" TabSkip="no" Indirect="yes" Removable="yes" Fixed="yes" Remote="yes" RAMDisk="yes" Floppy="yes" />
+        <Control Id="FolderUpButton" Type="PushButton" X="270" Y="6" Width="18" Height="18" Text="[SFF_UpFldrBtn]" TabSkip="no" IconSize="16" FixedSize="yes" Icon="yes">
+          <Publish Event="DirectoryListUp" Value="{}">1</Publish>
+        </Control>
+        <Control Id="NewFolderButton" Type="PushButton" X="288" Y="6" Width="18" Height="18" Text="[SFF_NewFldrBtn]" TabSkip="no" IconSize="16" FixedSize="yes" Icon="yes">
+          <Publish Event="DirectoryListNew" Value="{}">1</Publish>
+        </Control>
+        <Control Id="FolderList" Type="DirectoryList" X="6" Y="30" Width="300" Height="129" Property="SelectFolderDialog_Property" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiDirectoryList" TabSkip="no" Sunken="yes" Indirect="yes" />
+        <Control Id="FolderText" Type="Text" X="6" Y="171" Width="60" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Folder:" TabSkip="no" />
+        <Control Id="FolderPathEdit" Type="PathEdit" X="66" Y="168" Width="240" Height="18" Property="SelectFolderDialog_Property" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiPathEdit" TabSkip="no" Sunken="yes" Indirect="yes" />
+      </Dialog>
+
+      <Dialog Id="EulaForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="LicenseText" Type="ScrollableText" X="18" Y="105" Width="348" Height="120" Text="{\rtf1\adeflang1025\ansi\ansicpg1252\uc1\adeff37\deff0\stshfdbch0\stshfloch31506\stshfhich31506\stshfbi31506\deflang1033\deflangfe1033\themelang1033\themelangfe0\themelangcs0{\fonttbl{\f0\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f2\fbidi \fmodern\fcharset0\fprq1{\*\panose 02070309020205020404}Courier New;}&#xD;&#xA;{\f34\fbidi \froman\fcharset0\fprq2{\*\panose 02040503050406030204}Cambria Math;}{\f37\fbidi \fswiss\fcharset0\fprq2{\*\panose 020f0502020204030204}Calibri;}{\f39\fbidi \fmodern\fcharset0\fprq1{\*\panose 00000000000000000000}Consolas;}&#xD;&#xA;{\flomajor\f31500\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\fdbmajor\f31501\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}&#xD;&#xA;{\fhimajor\f31502\fbidi \froman\fcharset0\fprq2{\*\panose 02040503050406030204}Cambria;}{\fbimajor\f31503\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}&#xD;&#xA;{\flominor\f31504\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\fdbminor\f31505\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}&#xD;&#xA;{\fhiminor\f31506\fbidi \fswiss\fcharset0\fprq2{\*\panose 020f0502020204030204}Calibri;}{\fbiminor\f31507\fbidi \froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f40\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}&#xD;&#xA;{\f41\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}{\f43\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}{\f44\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}{\f45\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}&#xD;&#xA;{\f46\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}{\f47\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}{\f48\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}{\f60\fbidi \fmodern\fcharset238\fprq1 Courier New CE;}&#xD;&#xA;{\f61\fbidi \fmodern\fcharset204\fprq1 Courier New Cyr;}{\f63\fbidi \fmodern\fcharset161\fprq1 Courier New Greek;}{\f64\fbidi \fmodern\fcharset162\fprq1 Courier New Tur;}{\f65\fbidi \fmodern\fcharset177\fprq1 Courier New (Hebrew);}&#xD;&#xA;{\f66\fbidi \fmodern\fcharset178\fprq1 Courier New (Arabic);}{\f67\fbidi \fmodern\fcharset186\fprq1 Courier New Baltic;}{\f68\fbidi \fmodern\fcharset163\fprq1 Courier New (Vietnamese);}{\f380\fbidi \froman\fcharset238\fprq2 Cambria Math CE;}&#xD;&#xA;{\f381\fbidi \froman\fcharset204\fprq2 Cambria Math Cyr;}{\f383\fbidi \froman\fcharset161\fprq2 Cambria Math Greek;}{\f384\fbidi \froman\fcharset162\fprq2 Cambria Math Tur;}{\f387\fbidi \froman\fcharset186\fprq2 Cambria Math Baltic;}&#xD;&#xA;{\f388\fbidi \froman\fcharset163\fprq2 Cambria Math (Vietnamese);}{\f410\fbidi \fswiss\fcharset238\fprq2 Calibri CE;}{\f411\fbidi \fswiss\fcharset204\fprq2 Calibri Cyr;}{\f413\fbidi \fswiss\fcharset161\fprq2 Calibri Greek;}&#xD;&#xA;{\f414\fbidi \fswiss\fcharset162\fprq2 Calibri Tur;}{\f417\fbidi \fswiss\fcharset186\fprq2 Calibri Baltic;}{\f418\fbidi \fswiss\fcharset163\fprq2 Calibri (Vietnamese);}{\f430\fbidi \fmodern\fcharset238\fprq1 Consolas CE;}&#xD;&#xA;{\f431\fbidi \fmodern\fcharset204\fprq1 Consolas Cyr;}{\f433\fbidi \fmodern\fcharset161\fprq1 Consolas Greek;}{\f434\fbidi \fmodern\fcharset162\fprq1 Consolas Tur;}{\f437\fbidi \fmodern\fcharset186\fprq1 Consolas Baltic;}&#xD;&#xA;{\f438\fbidi \fmodern\fcharset163\fprq1 Consolas (Vietnamese);}{\flomajor\f31508\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}{\flomajor\f31509\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}&#xD;&#xA;{\flomajor\f31511\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}{\flomajor\f31512\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}{\flomajor\f31513\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}&#xD;&#xA;{\flomajor\f31514\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}{\flomajor\f31515\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}{\flomajor\f31516\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}&#xD;&#xA;{\fdbmajor\f31518\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}{\fdbmajor\f31519\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}{\fdbmajor\f31521\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}&#xD;&#xA;{\fdbmajor\f31522\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}{\fdbmajor\f31523\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\fdbmajor\f31524\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}&#xD;&#xA;{\fdbmajor\f31525\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}{\fdbmajor\f31526\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}{\fhimajor\f31528\fbidi \froman\fcharset238\fprq2 Cambria CE;}&#xD;&#xA;{\fhimajor\f31529\fbidi \froman\fcharset204\fprq2 Cambria Cyr;}{\fhimajor\f31531\fbidi \froman\fcharset161\fprq2 Cambria Greek;}{\fhimajor\f31532\fbidi \froman\fcharset162\fprq2 Cambria Tur;}&#xD;&#xA;{\fhimajor\f31535\fbidi \froman\fcharset186\fprq2 Cambria Baltic;}{\fhimajor\f31536\fbidi \froman\fcharset163\fprq2 Cambria (Vietnamese);}{\fbimajor\f31538\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}&#xD;&#xA;{\fbimajor\f31539\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}{\fbimajor\f31541\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}{\fbimajor\f31542\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}&#xD;&#xA;{\fbimajor\f31543\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\fbimajor\f31544\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}{\fbimajor\f31545\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}&#xD;&#xA;{\fbimajor\f31546\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}{\flominor\f31548\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}{\flominor\f31549\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}&#xD;&#xA;{\flominor\f31551\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}{\flominor\f31552\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}{\flominor\f31553\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}&#xD;&#xA;{\flominor\f31554\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}{\flominor\f31555\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}{\flominor\f31556\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}&#xD;&#xA;{\fdbminor\f31558\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}{\fdbminor\f31559\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}{\fdbminor\f31561\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}&#xD;&#xA;{\fdbminor\f31562\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}{\fdbminor\f31563\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\fdbminor\f31564\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}&#xD;&#xA;{\fdbminor\f31565\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}{\fdbminor\f31566\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}{\fhiminor\f31568\fbidi \fswiss\fcharset238\fprq2 Calibri CE;}&#xD;&#xA;{\fhiminor\f31569\fbidi \fswiss\fcharset204\fprq2 Calibri Cyr;}{\fhiminor\f31571\fbidi \fswiss\fcharset161\fprq2 Calibri Greek;}{\fhiminor\f31572\fbidi \fswiss\fcharset162\fprq2 Calibri Tur;}&#xD;&#xA;{\fhiminor\f31575\fbidi \fswiss\fcharset186\fprq2 Calibri Baltic;}{\fhiminor\f31576\fbidi \fswiss\fcharset163\fprq2 Calibri (Vietnamese);}{\fbiminor\f31578\fbidi \froman\fcharset238\fprq2 Times New Roman CE;}&#xD;&#xA;{\fbiminor\f31579\fbidi \froman\fcharset204\fprq2 Times New Roman Cyr;}{\fbiminor\f31581\fbidi \froman\fcharset161\fprq2 Times New Roman Greek;}{\fbiminor\f31582\fbidi \froman\fcharset162\fprq2 Times New Roman Tur;}&#xD;&#xA;{\fbiminor\f31583\fbidi \froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\fbiminor\f31584\fbidi \froman\fcharset178\fprq2 Times New Roman (Arabic);}{\fbiminor\f31585\fbidi \froman\fcharset186\fprq2 Times New Roman Baltic;}&#xD;&#xA;{\fbiminor\f31586\fbidi \froman\fcharset163\fprq2 Times New Roman (Vietnamese);}}{\colortbl;\red0\green0\blue0;\red0\green0\blue255;\red0\green255\blue255;\red0\green255\blue0;\red255\green0\blue255;\red255\green0\blue0;\red255\green255\blue0;&#xD;&#xA;\red255\green255\blue255;\red0\green0\blue128;\red0\green128\blue128;\red0\green128\blue0;\red128\green0\blue128;\red128\green0\blue0;\red128\green128\blue0;\red128\green128\blue128;\red192\green192\blue192;}{\*\defchp \f31506\fs22 }{\*\defpap &#xD;&#xA;\ql \li0\ri0\sa200\sl276\slmult1\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 }\noqfpromote {\stylesheet{\ql \li0\ri0\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af37\afs22\alang1025 &#xD;&#xA;\ltrch\fcs0 \f37\fs22\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \snext0 \sqformat \spriority0 \styrsid7804836 Normal;}{\*\cs10 \additive \ssemihidden \sunhideused \spriority1 Default Paragraph Font;}{\*&#xD;&#xA;\ts11\tsrowd\trftsWidthB3\trpaddl108\trpaddr108\trpaddfl3\trpaddft3\trpaddfb3\trpaddfr3\trcbpat1\trcfpat1\tblind0\tblindtype3\tscellwidthfts0\tsvertalt\tsbrdrt\tsbrdrl\tsbrdrb\tsbrdrr\tsbrdrdgl\tsbrdrdgr\tsbrdrh\tsbrdrv \ql \li0\ri0\sa200\sl276\slmult1&#xD;&#xA;\widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af31506\afs22\alang1025 \ltrch\fcs0 \f31506\fs22\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \snext11 \ssemihidden \sunhideused \sqformat Normal Table;}{&#xD;&#xA;\s15\ql \li0\ri0\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af2\afs20\alang1025 \ltrch\fcs0 &#xD;&#xA;\f2\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext15 \slink16 \ssemihidden \sunhideused \styrsid2360556 HTML Preformatted;}{\*\cs16 \additive \rtlch\fcs1 \af2\afs20 \ltrch\fcs0 \f2\fs20 &#xD;&#xA;\sbasedon10 \slink15 \slocked \ssemihidden \styrsid2360556 HTML Preformatted Char;}}{\*\pgptbl {\pgp\ipgp0\itap0\li0\ri0\sb0\sa0}{\pgp\ipgp0\itap0\li0\ri0\sb0\sa0}}{\*\rsidtbl \rsid2360556\rsid5011216\rsid7471531\rsid7804836}{\mmathPr\mmathFont34\mbrkBin0&#xD;&#xA;\mbrkBinSub0\msmallFrac0\mdispDef1\mlMargin0\mrMargin0\mdefJc1\mwrapIndent1440\mintLim0\mnaryLim1}{\info{\author mthakkar}{\operator mthakkar}{\creatim\yr2011\mo12\dy1\hr13\min45}{\revtim\yr2011\mo12\dy1\hr14\min49}{\version3}{\edmins3}{\nofpages4}&#xD;&#xA;{\nofwords1685}{\nofchars9610}{\nofcharsws11273}{\vern32771}}{\*\xmlnstbl {\xmlns1 http://schemas.microsoft.com/office/word/2003/wordml}}\paperw12240\paperh15840\margl1440\margr1440\margt1440\margb1440\gutter0\ltrsect &#xD;&#xA;\widowctrl\ftnbj\aenddoc\trackmoves1\trackformatting1\donotembedsysfont1\relyonvml0\donotembedlingdata0\grfdocevents0\validatexml1\showplaceholdtext0\ignoremixedcontent0\saveinvalidxml0\showxmlerrors1\noxlattoyen&#xD;&#xA;\expshrtn\noultrlspc\dntblnsbdb\nospaceforul\formshade\horzdoc\dgmargin\dghspace180\dgvspace180\dghorigin1440\dgvorigin1440\dghshow1\dgvshow1&#xD;&#xA;\jexpand\viewkind1\viewscale160\pgbrdrhead\pgbrdrfoot\splytwnine\ftnlytwnine\htmautsp\nolnhtadjtbl\useltbaln\alntblind\lytcalctblwd\lyttblrtgr\lnbrkrule\nobrkwrptbl\snaptogridincell\allowfieldendsel\wrppunct&#xD;&#xA;\asianbrkrule\rsidroot7804836\newtblstyruls\nogrowautofit\usenormstyforlist\noindnmbrts\felnbrelev\nocxsptable\indrlsweleven\noafcnsttbl\afelev\utinl\hwelev\spltpgpar\notcvasp\notbrkcnstfrctbl\notvatxbx\krnprsnet\cachedcolbal \nouicompat \fet0&#xD;&#xA;{\*\wgrffmtfilter 2450}\nofeaturethrottle1\ilfomacatclnup0\ltrpar \sectd \ltrsect\linex0\endnhere\sectlinegrid360\sectdefaultcl\sectrsid7471531\sftnbj {\*\pnseclvl1\pnucrm\pnstart1\pnindent720\pnhang {\pntxta .}}{\*\pnseclvl2&#xD;&#xA;\pnucltr\pnstart1\pnindent720\pnhang {\pntxta .}}{\*\pnseclvl3\pndec\pnstart1\pnindent720\pnhang {\pntxta .}}{\*\pnseclvl4\pnlcltr\pnstart1\pnindent720\pnhang {\pntxta )}}{\*\pnseclvl5\pndec\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}{\*\pnseclvl6&#xD;&#xA;\pnlcltr\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}{\*\pnseclvl7\pnlcrm\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}{\*\pnseclvl8\pnlcltr\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnstart1\pnindent720\pnhang &#xD;&#xA;{\pntxtb (}{\pntxta )}}\pard\plain \ltrpar\ql \li0\ri0\widctlpar&#xD;&#xA;\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0\pararsid2360556 \cbpat8 \rtlch\fcs1 \af37\afs22\alang1025 \ltrch\fcs0 &#xD;&#xA;\f37\fs22\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\rtlch\fcs1 \af39\afs18 \ltrch\fcs0 \f39\fs18\cf1\insrsid2360556\charrsid5011216 Eclipse\~Public\~License\~-v\~1.0&#xD;&#xA;\par  &#xD;&#xA;\par THE\~ACCOMPANYING\~PROGRAM\~IS\~PROVIDED\~UNDER\~THE\~TERMS\~OF\~THIS\~ECLIPSE\~PUBLIC\~LICENSE\~(&quot;AGREEMENT&quot;).\~ANY\~USE,\~REPRODUCTION\~OR\~DISTRIBUTION\~OF\~THE\~PROGRAM\~CONSTITUTES\~RECIPIENT'S\~ACCEPTANCE\~OF\~THIS\~AGREEMENT.&#xD;&#xA;\par  &#xD;&#xA;\par 1.\~DEFINITIONS&#xD;&#xA;\par  &#xD;&#xA;\par &quot;Contribution&quot;\~means:&#xD;&#xA;\par  &#xD;&#xA;\par a)\~in\~the\~case\~of\~the\~initial\~Contributor,\~the\~initial\~code\~and\~documentation\~distributed\~under\~this\~Agreement,\~and&#xD;&#xA;\par  &#xD;&#xA;\par b)\~in\~the\~case\~of\~each\~subsequent\~Contributor:&#xD;&#xA;\par  &#xD;&#xA;\par i)\~changes\~to\~the\~Program,\~and&#xD;&#xA;\par  &#xD;&#xA;\par ii)\~additions\~to\~the\~Program;\~&#xD;&#xA;\par  &#xD;&#xA;\par where\~such\~changes\~and/or\~additions\~to\~the\~Program\~originate\~from\~and\~are\~distributed\~by\~that\~particular\~Contributor.\~A\~Contribution\~'originates'\~from\~a\~Contributor\~if\~it\~was\~added\~to\~the\~Program\~by\~such\~Contributor\~itself&#xD;&#xA;\~or\~anyone\~acting\~on\~such\~Contributor's\~behalf.\~Contributions\~do\~not\~include\~additions\~to\~the\~Program\~which:\~(i)\~are\~separate\~modules\~of\~software\~distributed\~in\~conjunction\~with\~the\~Program\~under\~their\~own\~license\~&#xD;&#xA;agreement,\~and\~(ii)\~are\~not\~derivative\~works\~of\~the\~Program.&#xD;&#xA;\par  &#xD;&#xA;\par &quot;Contributor&quot;\~means\~any\~person\~or\~entity\~that\~distributes\~the\~Program.&#xD;&#xA;\par  &#xD;&#xA;\par &quot;Licensed\~Patents\~&quot;\~mean\~patent\~claims\~licensable\~by\~a\~Contributor\~which\~are\~necessarily\~infringed\~by\~the\~use\~or\~sale\~of\~its\~Contribution\~alone\~or\~when\~combined\~with\~the\~Program.&#xD;&#xA;\par  &#xD;&#xA;\par &quot;Program&quot;\~means\~the\~Contributions\~distributed\~in\~accordance\~with\~this\~Agreement.&#xD;&#xA;\par  &#xD;&#xA;\par &quot;Recipient&quot;\~means\~anyone\~who\~receives\~the\~Program\~under\~this\~Agreement,\~including\~all\~Contributors.&#xD;&#xA;\par  &#xD;&#xA;\par 2.\~GRANT\~OF\~RIGHTS&#xD;&#xA;\par  &#xD;&#xA;\par a)\~Subject\~to\~the\~terms\~of\~this\~Agreement,\~each\~Contributor\~hereby\~grants\~Recipient\~a\~non-exclusive,\~worldwide,\~royalty-free\~copyright\~license\~to\~reproduce,\~prepare\~derivative\~works\~of,\~publicly\~display,\~publicly\~perform,\~&#xD;&#xA;distribute\~and\~sublicense\~the\~Contribution\~of\~such\~Contributor,\~if\~any,\~and\~such\~derivative\~works,\~in\~source\~code\~and\~object\~code\~form.&#xD;&#xA;\par  &#xD;&#xA;\par b)\~Subject\~to\~the\~terms\~of\~this\~Agreement,\~each\~Contributor\~hereby\~grants\~Recipient\~a\~non-exclusive,\~worldwide,\~royalty-free\~patent\~license\~under\~Licensed\~Patents\~to\~make,\~use,\~sell,\~offer\~to\~sell,\~import\~and\~otherwise\~&#xD;&#xA;transfer\~the\~Contribution\~of\~such\~Contributor,\~if\~any,\~in\~source\~code\~and\~object\~code\~form.\~This\~patent\~license\~shall\~apply\~to\~the\~combination\~of\~the\~Contribution\~and\~the\~Program\~if,\~at\~the\~time\~the\~Contribution\~is\~&#xD;&#xA;added\~by\~the\~Contributor,\~such\~addition\~of\~the\~Contribution\~causes\~such\~combination\~to\~be\~covered\~by\~the\~Licensed\~Patents.\~The\~patent\~license\~shall\~not\~apply\~to\~any\~other\~combinations\~which\~include\~the\~Contribution.\~No\~&#xD;&#xA;hardware\~per\~se\~is\~licensed\~hereunder.&#xD;&#xA;\par  &#xD;&#xA;\par c)\~Recipient\~understands\~that\~although\~each\~Contributor\~grants\~the\~licenses\~to\~its\~Contributions\~set\~forth\~herein,\~no\~assurances\~are\~provided\~by\~any\~Contributor\~that\~the\~Program\~does\~not\~infringe\~the\~patent\~or\~other\~&#xD;&#xA;intellectual\~property\~rights\~of\~any\~other\~entity.\~Each\~Contributor\~disclaims\~any\~liability\~to\~Recipient\~for\~claims\~brought\~by\~any\~other\~entity\~based\~on\~infringement\~of\~intellectual\~property\~rights\~or\~otherwise.\~As\~a\~&#xD;&#xA;condition\~to\~exercising\~the\~rights\~and\~licenses\~granted\~hereunder,\~each\~Recipient\~hereby\~assumes\~sole\~responsibility\~to\~secure\~any\~other\~intellectual\~property\~rights\~needed,\~if\~any.\~For\~example,\~if\~a\~third\~party\~patent\~&#xD;&#xA;license\~is\~required\~to\~allow\~Recipient\~to\~distribute\~the\~Program,\~it\~is\~Recipient's\~responsibility\~to\~acquire\~that\~license\~before\~distributing\~the\~Program.&#xD;&#xA;\par  &#xD;&#xA;\par d)\~Each\~Contributor\~represents\~that\~to\~its\~knowledge\~it\~has\~sufficient\~copyright\~rights\~in\~its\~Contribution,\~if\~any,\~to\~grant\~the\~copyright\~license\~set\~forth\~in\~this\~Agreement.&#xD;&#xA;\par  &#xD;&#xA;\par 3.\~REQUIREMENTS&#xD;&#xA;\par  &#xD;&#xA;\par A\~Contributor\~may\~choose\~to\~distribute\~the\~Program\~in\~object\~code\~form\~under\~its\~own\~license\~agreement,\~provided\~that:&#xD;&#xA;\par  &#xD;&#xA;\par a)\~it\~complies\~with\~the\~terms\~and\~conditions\~of\~this\~Agreement;\~and&#xD;&#xA;\par  &#xD;&#xA;\par b)\~its\~license\~agreement:&#xD;&#xA;\par  &#xD;&#xA;\par i)\~effectively\~disclaims\~on\~behalf\~of\~all\~Contributors\~all\~warranties\~and\~conditions,\~express\~and\~implied,\~including\~warranties\~or\~conditions\~of\~title\~and\~non-infringement,\~and\~implied\~warranties\~or\~conditions\~of\~&#xD;&#xA;merchantability\~and\~fitness\~for\~a\~particular\~purpose;&#xD;&#xA;\par  &#xD;&#xA;\par ii)\~effectively\~excludes\~on\~behalf\~of\~all\~Contributors\~all\~liability\~for\~damages,\~including\~direct,\~indirect,\~special,\~incidental\~and\~consequential\~damages,\~such\~as\~lost\~profits;&#xD;&#xA;\par  &#xD;&#xA;\par iii)\~states\~that\~any\~provisions\~which\~differ\~from\~this\~Agreement\~are\~offered\~by\~that\~Contributor\~alone\~and\~not\~by\~any\~other\~party;\~and&#xD;&#xA;\par  &#xD;&#xA;\par iv)\~states\~that\~source\~code\~for\~the\~Program\~is\~available\~from\~such\~Contributor,\~and\~informs\~licensees\~how\~to\~obtain\~it\~in\~a\~reasonable\~manner\~on\~or\~through\~a\~medium\~customarily\~used\~for\~software\~exchange.\~&#xD;&#xA;\par  &#xD;&#xA;\par When\~the\~Program\~is\~made\~available\~in\~source\~code\~form:&#xD;&#xA;\par  &#xD;&#xA;\par a)\~it\~must\~be\~made\~available\~under\~this\~Agreement;\~and&#xD;&#xA;\par  &#xD;&#xA;\par b)\~a\~copy\~of\~this\~Agreement\~must\~be\~included\~with\~each\~copy\~of\~the\~Program.\~&#xD;&#xA;\par  &#xD;&#xA;\par Contributors\~may\~not\~remove\~or\~alter\~any\~copyright\~notices\~contained\~within\~the\~Program.&#xD;&#xA;\par  &#xD;&#xA;\par Each\~Contributor\~must\~identify\~itself\~as\~the\~originator\~of\~its\~Contribution,\~if\~any,\~in\~a\~manner\~that\~reasonably\~allows\~subsequent\~Recipients\~to\~identify\~the\~originator\~of\~the\~Contribution.&#xD;&#xA;\par  &#xD;&#xA;\par 4.\~COMMERCIAL\~DISTRIBUTION&#xD;&#xA;\par  &#xD;&#xA;\par Commercial\~distributors\~of\~software\~may\~accept\~certain\~responsibilities\~with\~respect\~to\~end\~users,\~business\~partners\~and\~the\~like.\~While\~this\~license\~is\~intended\~to\~facilitate\~the\~commercial\~use\~of\~the\~Program,\~the\~&#xD;&#xA;Contributor\~who\~includes\~the\~Program\~in\~a\~commercial\~product\~offering\~should\~do\~so\~in\~a\~manner\~which\~does\~not\~create\~potential\~liability\~for\~other\~Contributors.\~Therefore,\~if\~a\~Contributor\~includes\~the\~Program\~in\~a\~&#xD;&#xA;commercial\~product\~offering,\~such\~Contributor\~(&quot;Commercial\~Contributor&quot;)\~hereby\~agrees\~to\~defend\~and\~indemnify\~every\~other\~Contributor\~(&quot;Indemnified\~Contributor&quot;)\~against\~any\~losses,\~damages\~and\~costs\~(collectively\~&quot;Losses&quot;)\~&#xD;&#xA;arising\~from\~claims,\~lawsuits\~and\~other\~legal\~actions\~brought\~by\~a\~third\~party\~against\~the\~Indemnified\~Contributor\~to\~the\~extent\~caused\~by\~the\~acts\~or\~omissions\~of\~such\~Commercial\~Contributor\~in\~connection\~with\~its\~&#xD;&#xA;distribution\~of\~the\~Program\~in\~a\~commercial\~product\~offering.\~The\~obligations\~in\~this\~section\~do\~not\~apply\~to\~any\~claims\~or\~Losses\~relating\~to\~any\~actual\~or\~alleged\~intellectual\~property\~infringement.\~In\~order\~to\~qualify,&#xD;&#xA;\~an\~Indemnified\~Contributor\~must:\~a)\~promptly\~notify\~the\~Commercial\~Contributor\~in\~writing\~of\~such\~claim,\~and\~b)\~allow\~the\~Commercial\~Contributor\~to\~control,\~and\~cooperate\~with\~the\~Commercial\~Contributor\~in,\~the\~defense\~&#xD;&#xA;and\~any\~related\~settlement\~negotiations.\~The\~Indemnified\~Contributor\~may\~participate\~in\~any\~such\~claim\~at\~its\~own\~expense.&#xD;&#xA;\par  &#xD;&#xA;\par For\~example,\~a\~Contributor\~might\~include\~the\~Program\~in\~a\~commercial\~product\~offering,\~Product\~X.\~That\~Contributor\~is\~then\~a\~Commercial\~Contributor.\~If\~that\~Commercial\~Contributor\~then\~makes\~performance\~claims,\~or\~offers\~&#xD;&#xA;warranties\~related\~to\~Product\~X,\~those\~performance\~claims\~and\~warranties\~are\~such\~Commercial\~Contributor's\~responsibility\~alone.\~Under\~this\~section,\~the\~Commercial\~Contributor\~would\~have\~to\~defend\~claims\~against\~the\~other\~&#xD;&#xA;Contributors\~related\~to\~those\~performance\~claims\~and\~warranties,\~and\~if\~a\~court\~requires\~any\~other\~Contributor\~to\~pay\~any\~damages\~as\~a\~result,\~the\~Commercial\~Contributor\~must\~pay\~those\~damages.&#xD;&#xA;\par  &#xD;&#xA;\par 5.\~NO\~WARRANTY&#xD;&#xA;\par  &#xD;&#xA;\par EXCEPT\~AS\~EXPRESSLY\~SET\~FORTH\~IN\~THIS\~AGREEMENT,\~THE\~PROGRAM\~IS\~PROVIDED\~ON\~AN\~&quot;AS\~IS&quot;\~BASIS,\~WITHOUT\~WARRANTIES\~OR\~CONDITIONS\~OF\~ANY\~KIND,\~EITHER\~EXPRESS\~OR\~IMPLIED\~INCLUDING,\~WITHOUT\~LIMITATION,\~ANY\~WARRANTIES\~OR\~&#xD;&#xA;CONDITIONS\~OF\~TITLE,\~NON-INFRINGEMENT,\~MERCHANTABILITY\~OR\~FITNESS\~FOR\~A\~PARTICULAR\~PURPOSE.\~Each\~Recipient\~is\~solely\~responsible\~for\~determining\~the\~appropriateness\~of\~using\~and\~distributing\~the\~Program\~and\~assumes\~all\~risks\~&#xD;&#xA;associated\~with\~its\~exercise\~of\~rights\~under\~this\~Agreement\~,\~including\~but\~not\~limited\~to\~the\~risks\~and\~costs\~of\~program\~errors,\~compliance\~with\~applicable\~laws,\~damage\~to\~or\~loss\~of\~data,\~programs\~or\~equipment,\~and\~&#xD;&#xA;unavailability\~or\~interruption\~of\~operations.&#xD;&#xA;\par  &#xD;&#xA;\par 6.\~DISCLAIMER\~OF\~LIABILITY&#xD;&#xA;\par  &#xD;&#xA;\par EXCEPT\~AS\~EXPRESSLY\~SET\~FORTH\~IN\~THIS\~AGREEMENT,\~NEITHER\~RECIPIENT\~NOR\~ANY\~CONTRIBUTORS\~SHALL\~HAVE\~ANY\~LIABILITY\~FOR\~ANY\~DIRECT,\~INDIRECT,\~INCIDENTAL,\~SPECIAL,\~EXEMPLARY,\~OR\~CONSEQUENTIAL\~DAMAGES\~(INCLUDING\~WITHOUT\~LIMITATION&#xD;&#xA;\~LOST\~PROFITS),\~HOWEVER\~CAUSED\~AND\~ON\~ANY\~THEORY\~OF\~LIABILITY,\~WHETHER\~IN\~CONTRACT,\~STRICT\~LIABILITY,\~OR\~TORT\~(INCLUDING\~NEGLIGENCE\~OR\~OTHERWISE)\~ARISING\~IN\~ANY\~WAY\~OUT\~OF\~THE\~USE\~OR\~DISTRIBUTION\~OF\~THE\~PROGRAM\~OR\~THE\~&#xD;&#xA;EXERCISE\~OF\~ANY\~RIGHTS\~GRANTED\~HEREUNDER,\~EVEN\~IF\~ADVISED\~OF\~THE\~POSSIBILITY\~OF\~SUCH\~DAMAGES.&#xD;&#xA;\par  &#xD;&#xA;\par 7.\~GENERAL&#xD;&#xA;\par  &#xD;&#xA;\par If\~any\~provision\~of\~this\~Agreement\~is\~invalid\~or\~unenforceable\~under\~applicable\~law,\~it\~shall\~not\~affect\~the\~validity\~or\~enforceability\~of\~the\~remainder\~of\~the\~terms\~of\~this\~Agreement,\~and\~without\~further\~action\~by\~the\~&#xD;&#xA;parties\~hereto,\~such\~provision\~shall\~be\~reformed\~to\~the\~minimum\~extent\~necessary\~to\~make\~such\~provision\~valid\~and\~enforceable.&#xD;&#xA;\par  &#xD;&#xA;\par If\~Recipient\~institutes\~patent\~litigation\~against\~any\~entity\~(including\~a\~cross-claim\~or\~counterclaim\~in\~a\~lawsuit)\~alleging\~that\~the\~Program\~itself\~(excluding\~combinations\~of\~the\~Program\~with\~other\~software\~or\~hardware)\~&#xD;&#xA;infringes\~such\~Recipient's\~patent(s),\~then\~such\~Recipient's\~rights\~granted\~under\~Section\~2(b)\~shall\~terminate\~as\~of\~the\~date\~such\~litigation\~is\~filed.&#xD;&#xA;\par  &#xD;&#xA;\par All\~Recipient's\~rights\~under\~this\~Agreement\~shall\~terminate\~if\~it\~fails\~to\~comply\~with\~any\~of\~the\~material\~terms\~or\~conditions\~of\~this\~Agreement\~and\~does\~not\~cure\~such\~failure\~in\~a\~reasonable\~period\~of\~time\~after\~&#xD;&#xA;becoming\~aware\~of\~such\~noncompliance.\~If\~all\~Recipient's\~rights\~under\~this\~Agreement\~terminate,\~Recipient\~agrees\~to\~cease\~use\~and\~distribution\~of\~the\~Program\~as\~soon\~as\~reasonably\~practicable.\~However,\~Recipient's\~obligations&#xD;&#xA;\~under\~this\~Agreement\~and\~any\~licenses\~granted\~by\~Recipient\~relating\~to\~the\~Program\~shall\~continue\~and\~survive.&#xD;&#xA;\par  &#xD;&#xA;\par Everyone\~is\~permitted\~to\~copy\~and\~distribute\~copies\~of\~this\~Agreement,\~but\~in\~order\~to\~avoid\~inconsistency\~the\~Agreement\~is\~copyrighted\~and\~may\~only\~be\~modified\~in\~the\~following\~manner.\~The\~Agreement\~Steward\~reserves\~the&#xD;&#xA;\~right\~to\~publish\~new\~versions\~(including\~revisions)\~of\~this\~Agreement\~from\~time\~to\~time.\~No\~one\~other\~than\~the\~Agreement\~Steward\~has\~the\~right\~to\~modify\~this\~Agreement.\~The\~Eclipse\~Foundation\~is\~the\~initial\~Agreement\~&#xD;&#xA;Steward.\~The\~Eclipse\~Foundation\~may\~assign\~the\~responsibility\~to\~serve\~as\~the\~Agreement\~Steward\~to\~a\~suitable\~separate\~entity.\~Each\~new\~version\~of\~the\~Agreement\~will\~be\~given\~a\~distinguishing\~version\~number.\~The\~Program\~&#xD;&#xA;(including\~Contributions)\~may\~always\~be\~distributed\~subject\~to\~the\~version\~of\~the\~Agreement\~under\~which\~it\~was\~received.\~In\~addition,\~after\~a\~new\~version\~of\~the\~Agreement\~is\~published,\~Contributor\~may\~elect\~to\~distribute\~&#xD;&#xA;the\~Program\~(including\~its\~Contributions)\~under\~the\~new\~version.\~Except\~as\~expressly\~stated\~in\~Sections\~2(a)\~and\~2(b)\~above,\~Recipient\~receives\~no\~rights\~or\~licenses\~to\~the\~intellectual\~property\~of\~any\~Contributor\~under\~&#xD;&#xA;this\~Agreement,\~whether\~expressly,\~by\~implication,\~estoppel\~or\~otherwise.\~All\~rights\~in\~the\~Program\~not\~expressly\~granted\~under\~this\~Agreement\~are\~reserved.&#xD;&#xA;\par  &#xD;&#xA;\par This\~Agreement\~is\~governed\~by\~the\~laws\~of\~the\~State\~of\~New\~York\~and\~the\~intellectual\~property\~laws\~of\~the\~United\~States\~of\~America.\~No\~party\~to\~this\~Agreement\~will\~bring\~a\~legal\~action\~under\~this\~Agreement\~more\~than\~&#xD;&#xA;one\~year\~after\~the\~cause\~of\~action\~arose.\~Each\~party\~waives\~its\~rights\~to\~a\~jury\~trial\~in\~any\~resulting\~litigation.}{\rtlch\fcs1 \af39\afs18 \ltrch\fcs0 \f39\fs18\cf1\insrsid7471531\charrsid5011216 &#xD;&#xA;\par }{\*\themedata 504b030414000600080000002100828abc13fa0000001c020000130000005b436f6e74656e745f54797065735d2e786d6cac91cb6ac3301045f785fe83d0b6d8&#xD;&#xA;72ba28a5d8cea249777d2cd20f18e4b12d6a8f843409c9df77ecb850ba082d74231062ce997b55ae8fe3a00e1893f354e9555e6885647de3a8abf4fbee29bbd7&#xD;&#xA;2a3150038327acf409935ed7d757e5ee14302999a654e99e393c18936c8f23a4dc072479697d1c81e51a3b13c07e4087e6b628ee8cf5c4489cf1c4d075f92a0b&#xD;&#xA;44d7a07a83c82f308ac7b0a0f0fbf90c2480980b58abc733615aa2d210c2e02cb04430076a7ee833dfb6ce62e3ed7e14693e8317d8cd0433bf5c60f53fea2fe7&#xD;&#xA;065bd80facb647e9e25c7fc421fd2ddb526b2e9373fed4bb902e182e97b7b461e6bfad3f010000ffff0300504b030414000600080000002100a5d6a7e7c00000&#xD;&#xA;00360100000b0000005f72656c732f2e72656c73848fcf6ac3300c87ef85bd83d17d51d2c31825762fa590432fa37d00e1287f68221bdb1bebdb4fc7060abb08&#xD;&#xA;84a4eff7a93dfeae8bf9e194e720169aaa06c3e2433fcb68e1763dbf7f82c985a4a725085b787086a37bdbb55fbc50d1a33ccd311ba548b63095120f88d94fbc&#xD;&#xA;52ae4264d1c910d24a45db3462247fa791715fd71f989e19e0364cd3f51652d73760ae8fa8c9ffb3c330cc9e4fc17faf2ce545046e37944c69e462a1a82fe353&#xD;&#xA;bd90a865aad41ed0b5b8f9d6fd010000ffff0300504b0304140006000800000021006b799616830000008a0000001c0000007468656d652f7468656d652f7468&#xD;&#xA;656d654d616e616765722e786d6c0ccc4d0ac3201040e17da17790d93763bb284562b2cbaebbf600439c1a41c7a0d29fdbd7e5e38337cedf14d59b4b0d592c9c&#xD;&#xA;070d8a65cd2e88b7f07c2ca71ba8da481cc52c6ce1c715e6e97818c9b48d13df49c873517d23d59085adb5dd20d6b52bd521ef2cdd5eb9246a3d8b4757e8d3f7&#xD;&#xA;29e245eb2b260a0238fd010000ffff0300504b03041400060008000000210096b5ade296060000501b0000160000007468656d652f7468656d652f7468656d65&#xD;&#xA;312e786d6cec594f6fdb3614bf0fd87720746f6327761a07758ad8b19b2d4d1bc46e871e698996d850a240d2497d1bdae38001c3ba618715d86d87615b8116d8&#xD;&#xA;a5fb34d93a6c1dd0afb0475292c5585e9236d88aad3e2412f9e3fbff1e1fa9abd7eec70c1d1221294fda5efd72cd4324f1794093b0eddd1ef62fad79482a9c04&#xD;&#xA;98f184b4bd2991deb58df7dfbb8ad755446282607d22d771db8b944ad79796a40fc3585ee62949606ecc458c15bc8a702910f808e8c66c69b9565b5d8a314d3c&#xD;&#xA;94e018c8de1a8fa94fd05093f43672e23d06af89927ac06762a049136785c10607758d9053d965021d62d6f6804fc08f86e4bef210c352c144dbab999fb7b471&#xD;&#xA;7509af678b985ab0b6b4ae6f7ed9ba6c4170b06c788a705430adf71bad2b5b057d03606a1ed7ebf5babd7a41cf00b0ef83a6569632cd467faddec9699640f671&#xD;&#xA;9e76b7d6ac355c7c89feca9cccad4ea7d36c65b258a206641f1b73f8b5da6a6373d9c11b90c537e7f08dce66b7bbeae00dc8e257e7f0fd2badd5868b37a088d1&#xD;&#xA;e4600ead1ddaef67d40bc898b3ed4af81ac0d76a197c86826828a24bb318f3442d8ab518dfe3a20f000d6458d104a9694ac6d88728eee2782428d60cf03ac1a5&#xD;&#xA;193be4cbb921cd0b495fd054b5bd0f530c1931a3f7eaf9f7af9e3f45c70f9e1d3ff8e9f8e1c3e3073f5a42ceaa6d9c84e5552fbffdeccfc71fa33f9e7ef3f2d1&#xD;&#xA;17d57859c6fffac327bffcfc793510d26726ce8b2f9ffcf6ecc98baf3efdfdbb4715f04d814765f890c644a29be408edf3181433567125272371be15c308d3f2&#xD;&#xA;8acd249438c19a4b05fd9e8a1cf4cd296699771c393ac4b5e01d01e5a30a787d72cf1178108989a2159c77a2d801ee72ce3a5c545a6147f32a99793849c26ae6&#xD;&#xA;6252c6ed637c58c5bb8b13c7bfbd490a75330f4b47f16e441c31f7184e140e494214d273fc80900aedee52ead87597fa824b3e56e82e451d4c2b4d32a423279a&#xD;&#xA;668bb6690c7e9956e90cfe766cb37b077538abd27a8b1cba48c80acc2a841f12e698f13a9e281c57911ce298950d7e03aba84ac8c154f8655c4f2af074481847&#xD;&#xA;bd804859b5e696007d4b4edfc150b12addbecba6b18b148a1e54d1bc81392f23b7f84137c2715a851dd0242a633f900710a218ed715505dfe56e86e877f0034e&#xD;&#xA;16bafb0e258ebb4faf06b769e888340b103d3311da9750aa9d0a1cd3e4efca31a3508f6d0c5c5c398602f8e2ebc71591f5b616e24dd893aa3261fb44f95d843b&#xD;&#xA;5974bb5c04f4edafb95b7892ec1108f3f98de75dc97d5772bdff7cc95d94cf672db4b3da0a6557f70db629362d72bcb0431e53c6066acac80d699a6409fb44d0&#xD;&#xA;8741bdce9c0e4971624a2378cceaba830b05366b90e0ea23aaa241845368b0eb9e2612ca8c742851ca251ceccc70256d8d87265dd96361531f186c3d9058edf2&#xD;&#xA;c00eafe8e1fc5c509031bb4d680e9f39a3154de0accc56ae644441edd76156d7429d995bdd88664a9dc3ad50197c38af1a0c16d684060441db02565e85f3b966&#xD;&#xA;0d0713cc48a0ed6ef7dedc2dc60b17e92219e180643ed27acffba86e9c94c78ab90980d8a9f0913ee49d62b512b79626fb06dccee2a432bbc60276b9f7dec44b&#xD;&#xA;7904cfbca4f3f6443ab2a49c9c2c41476dafd55c6e7ac8c769db1bc399161ee314bc2e75cf8759081743be1236ec4f4d6693e5336fb672c5dc24a8c33585b5fb&#xD;&#xA;9cc24e1d4885545b58463634cc5416022cd19cacfccb4d30eb45296023fd35a458598360f8d7a4003bbaae25e331f155d9d9a5116d3bfb9a95523e51440ca2e0&#xD;&#xA;088dd844ec6370bf0e55d027a012ae264c45d02f708fa6ad6da6dce29c255df9f6cae0ec38666984b372ab5334cf640b37795cc860de4ae2816e95b21be5ceaf&#xD;&#xA;8a49f90b52a51cc6ff3355f47e0237052b81f6800fd7b802239daf6d8f0b1571a8426944fdbe80c6c1d40e8816b88b8569082ab84c36ff0539d4ff6dce591a26&#xD;&#xA;ade1c0a7f669880485fd484582903d284b26fa4e2156cff62e4b9265844c4495c495a9157b440e091bea1ab8aaf7760f4510eaa69a6465c0e04ec69ffb9e65d0&#xD;&#xA;28d44d4e39df9c1a52ecbd3607fee9cec7263328e5d661d3d0e4f62f44acd855ed7ab33cdf7bcb8ae889599bd5c8b3029895b6825696f6af29c239b75a5bb1e6&#xD;&#xA;345e6ee6c28117e73586c1a2214ae1be07e93fb0ff51e133fb65426fa843be0fb515c187064d0cc206a2fa926d3c902e907670048d931db4c1a44959d366ad93&#xD;&#xA;b65abe595f70a75bf03d616c2dd959fc7d4e6317cd99cbcec9c58b34766661c7d6766ca1a9c1b327531486c6f941c638c67cd22a7f75e2a37be0e82db8df9f30&#xD;&#xA;254d30c1372581a1f51c983c80e4b71ccdd28dbf000000ffff0300504b0304140006000800000021000dd1909fb60000001b010000270000007468656d652f74&#xD;&#xA;68656d652f5f72656c732f7468656d654d616e616765722e786d6c2e72656c73848f4d0ac2301484f78277086f6fd3ba109126dd88d0add40384e4350d363f24&#xD;&#xA;51eced0dae2c082e8761be9969bb979dc9136332de3168aa1a083ae995719ac16db8ec8e4052164e89d93b64b060828e6f37ed1567914b284d262452282e3198&#xD;&#xA;720e274a939cd08a54f980ae38a38f56e422a3a641c8bbd048f7757da0f19b017cc524bd62107bd5001996509affb3fd381a89672f1f165dfe514173d9850528&#xD;&#xA;a2c6cce0239baa4c04ca5bbabac4df000000ffff0300504b01022d0014000600080000002100828abc13fa0000001c0200001300000000000000000000000000&#xD;&#xA;000000005b436f6e74656e745f54797065735d2e786d6c504b01022d0014000600080000002100a5d6a7e7c0000000360100000b000000000000000000000000&#xD;&#xA;002b0100005f72656c732f2e72656c73504b01022d00140006000800000021006b799616830000008a0000001c00000000000000000000000000140200007468&#xD;&#xA;656d652f7468656d652f7468656d654d616e616765722e786d6c504b01022d001400060008000000210096b5ade296060000501b000016000000000000000000&#xD;&#xA;00000000d10200007468656d652f7468656d652f7468656d65312e786d6c504b01022d00140006000800000021000dd1909fb60000001b010000270000000000&#xD;&#xA;00000000000000009b0900007468656d652f7468656d652f5f72656c732f7468656d654d616e616765722e786d6c2e72656c73504b050600000000050005005d010000960a00000000}&#xD;&#xA;{\*\colorschememapping 3c3f786d6c2076657273696f6e3d22312e302220656e636f64696e673d225554462d3822207374616e64616c6f6e653d22796573223f3e0d0a3c613a636c724d&#xD;&#xA;617020786d6c6e733a613d22687474703a2f2f736368656d61732e6f70656e786d6c666f726d6174732e6f72672f64726177696e676d6c2f323030362f6d6169&#xD;&#xA;6e22206267313d226c743122207478313d22646b3122206267323d226c743222207478323d22646b322220616363656e74313d22616363656e74312220616363&#xD;&#xA;656e74323d22616363656e74322220616363656e74333d22616363656e74332220616363656e74343d22616363656e74342220616363656e74353d22616363656e74352220616363656e74363d22616363656e74362220686c696e6b3d22686c696e6b2220666f6c486c696e6b3d22666f6c486c696e6b222f3e}&#xD;&#xA;{\*\latentstyles\lsdstimax267\lsdlockeddef0\lsdsemihiddendef1\lsdunhideuseddef1\lsdqformatdef0\lsdprioritydef99{\lsdlockedexcept \lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority0 \lsdlocked0 Normal;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority9 \lsdlocked0 heading 1;\lsdqformat1 \lsdpriority9 \lsdlocked0 heading 2;\lsdqformat1 \lsdpriority9 \lsdlocked0 heading 3;\lsdqformat1 \lsdpriority9 \lsdlocked0 heading 4;&#xD;&#xA;\lsdqformat1 \lsdpriority9 \lsdlocked0 heading 5;\lsdqformat1 \lsdpriority9 \lsdlocked0 heading 6;\lsdqformat1 \lsdpriority9 \lsdlocked0 heading 7;\lsdqformat1 \lsdpriority9 \lsdlocked0 heading 8;\lsdqformat1 \lsdpriority9 \lsdlocked0 heading 9;&#xD;&#xA;\lsdpriority39 \lsdlocked0 toc 1;\lsdpriority39 \lsdlocked0 toc 2;\lsdpriority39 \lsdlocked0 toc 3;\lsdpriority39 \lsdlocked0 toc 4;\lsdpriority39 \lsdlocked0 toc 5;\lsdpriority39 \lsdlocked0 toc 6;\lsdpriority39 \lsdlocked0 toc 7;&#xD;&#xA;\lsdpriority39 \lsdlocked0 toc 8;\lsdpriority39 \lsdlocked0 toc 9;\lsdqformat1 \lsdpriority35 \lsdlocked0 caption;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority10 \lsdlocked0 Title;\lsdpriority1 \lsdlocked0 Default Paragraph Font;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority11 \lsdlocked0 Subtitle;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority22 \lsdlocked0 Strong;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority20 \lsdlocked0 Emphasis;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority59 \lsdlocked0 Table Grid;\lsdunhideused0 \lsdlocked0 Placeholder Text;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority1 \lsdlocked0 No Spacing;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority60 \lsdlocked0 Light Shading;\lsdsemihidden0 \lsdunhideused0 \lsdpriority61 \lsdlocked0 Light List;\lsdsemihidden0 \lsdunhideused0 \lsdpriority62 \lsdlocked0 Light Grid;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority63 \lsdlocked0 Medium Shading 1;\lsdsemihidden0 \lsdunhideused0 \lsdpriority64 \lsdlocked0 Medium Shading 2;\lsdsemihidden0 \lsdunhideused0 \lsdpriority65 \lsdlocked0 Medium List 1;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority66 \lsdlocked0 Medium List 2;\lsdsemihidden0 \lsdunhideused0 \lsdpriority67 \lsdlocked0 Medium Grid 1;\lsdsemihidden0 \lsdunhideused0 \lsdpriority68 \lsdlocked0 Medium Grid 2;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority69 \lsdlocked0 Medium Grid 3;\lsdsemihidden0 \lsdunhideused0 \lsdpriority70 \lsdlocked0 Dark List;\lsdsemihidden0 \lsdunhideused0 \lsdpriority71 \lsdlocked0 Colorful Shading;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority72 \lsdlocked0 Colorful List;\lsdsemihidden0 \lsdunhideused0 \lsdpriority73 \lsdlocked0 Colorful Grid;\lsdsemihidden0 \lsdunhideused0 \lsdpriority60 \lsdlocked0 Light Shading Accent 1;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority61 \lsdlocked0 Light List Accent 1;\lsdsemihidden0 \lsdunhideused0 \lsdpriority62 \lsdlocked0 Light Grid Accent 1;\lsdsemihidden0 \lsdunhideused0 \lsdpriority63 \lsdlocked0 Medium Shading 1 Accent 1;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority64 \lsdlocked0 Medium Shading 2 Accent 1;\lsdsemihidden0 \lsdunhideused0 \lsdpriority65 \lsdlocked0 Medium List 1 Accent 1;\lsdunhideused0 \lsdlocked0 Revision;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority34 \lsdlocked0 List Paragraph;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority29 \lsdlocked0 Quote;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority30 \lsdlocked0 Intense Quote;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority66 \lsdlocked0 Medium List 2 Accent 1;\lsdsemihidden0 \lsdunhideused0 \lsdpriority67 \lsdlocked0 Medium Grid 1 Accent 1;\lsdsemihidden0 \lsdunhideused0 \lsdpriority68 \lsdlocked0 Medium Grid 2 Accent 1;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority69 \lsdlocked0 Medium Grid 3 Accent 1;\lsdsemihidden0 \lsdunhideused0 \lsdpriority70 \lsdlocked0 Dark List Accent 1;\lsdsemihidden0 \lsdunhideused0 \lsdpriority71 \lsdlocked0 Colorful Shading Accent 1;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority72 \lsdlocked0 Colorful List Accent 1;\lsdsemihidden0 \lsdunhideused0 \lsdpriority73 \lsdlocked0 Colorful Grid Accent 1;\lsdsemihidden0 \lsdunhideused0 \lsdpriority60 \lsdlocked0 Light Shading Accent 2;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority61 \lsdlocked0 Light List Accent 2;\lsdsemihidden0 \lsdunhideused0 \lsdpriority62 \lsdlocked0 Light Grid Accent 2;\lsdsemihidden0 \lsdunhideused0 \lsdpriority63 \lsdlocked0 Medium Shading 1 Accent 2;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority64 \lsdlocked0 Medium Shading 2 Accent 2;\lsdsemihidden0 \lsdunhideused0 \lsdpriority65 \lsdlocked0 Medium List 1 Accent 2;\lsdsemihidden0 \lsdunhideused0 \lsdpriority66 \lsdlocked0 Medium List 2 Accent 2;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority67 \lsdlocked0 Medium Grid 1 Accent 2;\lsdsemihidden0 \lsdunhideused0 \lsdpriority68 \lsdlocked0 Medium Grid 2 Accent 2;\lsdsemihidden0 \lsdunhideused0 \lsdpriority69 \lsdlocked0 Medium Grid 3 Accent 2;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority70 \lsdlocked0 Dark List Accent 2;\lsdsemihidden0 \lsdunhideused0 \lsdpriority71 \lsdlocked0 Colorful Shading Accent 2;\lsdsemihidden0 \lsdunhideused0 \lsdpriority72 \lsdlocked0 Colorful List Accent 2;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority73 \lsdlocked0 Colorful Grid Accent 2;\lsdsemihidden0 \lsdunhideused0 \lsdpriority60 \lsdlocked0 Light Shading Accent 3;\lsdsemihidden0 \lsdunhideused0 \lsdpriority61 \lsdlocked0 Light List Accent 3;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority62 \lsdlocked0 Light Grid Accent 3;\lsdsemihidden0 \lsdunhideused0 \lsdpriority63 \lsdlocked0 Medium Shading 1 Accent 3;\lsdsemihidden0 \lsdunhideused0 \lsdpriority64 \lsdlocked0 Medium Shading 2 Accent 3;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority65 \lsdlocked0 Medium List 1 Accent 3;\lsdsemihidden0 \lsdunhideused0 \lsdpriority66 \lsdlocked0 Medium List 2 Accent 3;\lsdsemihidden0 \lsdunhideused0 \lsdpriority67 \lsdlocked0 Medium Grid 1 Accent 3;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority68 \lsdlocked0 Medium Grid 2 Accent 3;\lsdsemihidden0 \lsdunhideused0 \lsdpriority69 \lsdlocked0 Medium Grid 3 Accent 3;\lsdsemihidden0 \lsdunhideused0 \lsdpriority70 \lsdlocked0 Dark List Accent 3;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority71 \lsdlocked0 Colorful Shading Accent 3;\lsdsemihidden0 \lsdunhideused0 \lsdpriority72 \lsdlocked0 Colorful List Accent 3;\lsdsemihidden0 \lsdunhideused0 \lsdpriority73 \lsdlocked0 Colorful Grid Accent 3;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority60 \lsdlocked0 Light Shading Accent 4;\lsdsemihidden0 \lsdunhideused0 \lsdpriority61 \lsdlocked0 Light List Accent 4;\lsdsemihidden0 \lsdunhideused0 \lsdpriority62 \lsdlocked0 Light Grid Accent 4;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority63 \lsdlocked0 Medium Shading 1 Accent 4;\lsdsemihidden0 \lsdunhideused0 \lsdpriority64 \lsdlocked0 Medium Shading 2 Accent 4;\lsdsemihidden0 \lsdunhideused0 \lsdpriority65 \lsdlocked0 Medium List 1 Accent 4;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority66 \lsdlocked0 Medium List 2 Accent 4;\lsdsemihidden0 \lsdunhideused0 \lsdpriority67 \lsdlocked0 Medium Grid 1 Accent 4;\lsdsemihidden0 \lsdunhideused0 \lsdpriority68 \lsdlocked0 Medium Grid 2 Accent 4;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority69 \lsdlocked0 Medium Grid 3 Accent 4;\lsdsemihidden0 \lsdunhideused0 \lsdpriority70 \lsdlocked0 Dark List Accent 4;\lsdsemihidden0 \lsdunhideused0 \lsdpriority71 \lsdlocked0 Colorful Shading Accent 4;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority72 \lsdlocked0 Colorful List Accent 4;\lsdsemihidden0 \lsdunhideused0 \lsdpriority73 \lsdlocked0 Colorful Grid Accent 4;\lsdsemihidden0 \lsdunhideused0 \lsdpriority60 \lsdlocked0 Light Shading Accent 5;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority61 \lsdlocked0 Light List Accent 5;\lsdsemihidden0 \lsdunhideused0 \lsdpriority62 \lsdlocked0 Light Grid Accent 5;\lsdsemihidden0 \lsdunhideused0 \lsdpriority63 \lsdlocked0 Medium Shading 1 Accent 5;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority64 \lsdlocked0 Medium Shading 2 Accent 5;\lsdsemihidden0 \lsdunhideused0 \lsdpriority65 \lsdlocked0 Medium List 1 Accent 5;\lsdsemihidden0 \lsdunhideused0 \lsdpriority66 \lsdlocked0 Medium List 2 Accent 5;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority67 \lsdlocked0 Medium Grid 1 Accent 5;\lsdsemihidden0 \lsdunhideused0 \lsdpriority68 \lsdlocked0 Medium Grid 2 Accent 5;\lsdsemihidden0 \lsdunhideused0 \lsdpriority69 \lsdlocked0 Medium Grid 3 Accent 5;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority70 \lsdlocked0 Dark List Accent 5;\lsdsemihidden0 \lsdunhideused0 \lsdpriority71 \lsdlocked0 Colorful Shading Accent 5;\lsdsemihidden0 \lsdunhideused0 \lsdpriority72 \lsdlocked0 Colorful List Accent 5;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority73 \lsdlocked0 Colorful Grid Accent 5;\lsdsemihidden0 \lsdunhideused0 \lsdpriority60 \lsdlocked0 Light Shading Accent 6;\lsdsemihidden0 \lsdunhideused0 \lsdpriority61 \lsdlocked0 Light List Accent 6;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority62 \lsdlocked0 Light Grid Accent 6;\lsdsemihidden0 \lsdunhideused0 \lsdpriority63 \lsdlocked0 Medium Shading 1 Accent 6;\lsdsemihidden0 \lsdunhideused0 \lsdpriority64 \lsdlocked0 Medium Shading 2 Accent 6;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority65 \lsdlocked0 Medium List 1 Accent 6;\lsdsemihidden0 \lsdunhideused0 \lsdpriority66 \lsdlocked0 Medium List 2 Accent 6;\lsdsemihidden0 \lsdunhideused0 \lsdpriority67 \lsdlocked0 Medium Grid 1 Accent 6;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority68 \lsdlocked0 Medium Grid 2 Accent 6;\lsdsemihidden0 \lsdunhideused0 \lsdpriority69 \lsdlocked0 Medium Grid 3 Accent 6;\lsdsemihidden0 \lsdunhideused0 \lsdpriority70 \lsdlocked0 Dark List Accent 6;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdpriority71 \lsdlocked0 Colorful Shading Accent 6;\lsdsemihidden0 \lsdunhideused0 \lsdpriority72 \lsdlocked0 Colorful List Accent 6;\lsdsemihidden0 \lsdunhideused0 \lsdpriority73 \lsdlocked0 Colorful Grid Accent 6;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority19 \lsdlocked0 Subtle Emphasis;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority21 \lsdlocked0 Intense Emphasis;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority31 \lsdlocked0 Subtle Reference;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority32 \lsdlocked0 Intense Reference;&#xD;&#xA;\lsdsemihidden0 \lsdunhideused0 \lsdqformat1 \lsdpriority33 \lsdlocked0 Book Title;\lsdpriority37 \lsdlocked0 Bibliography;\lsdqformat1 \lsdpriority39 \lsdlocked0 TOC Heading;}}{\*\datastore 010500000200000018000000&#xD;&#xA;4d73786d6c322e534158584d4c5265616465722e352e3000000000000000000000060000&#xD;&#xA;d0cf11e0a1b11ae1000000000000000000000000000000003e000300feff090006000000000000000000000001000000010000000000000000100000feffffff00000000feffffff0000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&#xD;&#xA;ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&#xD;&#xA;ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&#xD;&#xA;ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&#xD;&#xA;fffffffffffffffffdfffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&#xD;&#xA;ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&#xD;&#xA;ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&#xD;&#xA;ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&#xD;&#xA;ffffffffffffffffffffffffffffffff52006f006f007400200045006e00740072007900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000016000500ffffffffffffffffffffffffec69d9888b8b3d4c859eaf6cd158be0f0000000000000000000000000064&#xD;&#xA;1a4662b0cc01feffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000&#xD;&#xA;00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000&#xD;&#xA;000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffff000000000000000000000000000000000000000000000000&#xD;&#xA;0000000000000000000000000000000000000000000000000105000000000000}}" TabSkip="no" Sunken="yes" />
+        <Control Id="AgreeRadioGroup" Type="RadioButtonGroup" X="18" Y="231" Width="348" Height="15" Property="EulaForm_Property" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiRadioButtonGroup" TabSkip="no" />
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no">
+          <Condition Action="disable">EulaForm_PrevArgs=""</Condition>
+          <Condition Action="enable">EulaForm_PrevArgs&lt;&gt;""</Condition>
+          <Publish Event="NewDialog" Value="[EulaForm_PrevArgs]">EulaForm_PrevArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="NextButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Next &gt;" TabSkip="no" Default="yes">
+          <Condition Action="disable">EulaForm_Property&lt;&gt;"Yes"</Condition>
+          <Condition Action="enable">EulaForm_Property="Yes"</Condition>
+          <Publish Event="EndDialog" Value="Return">EulaForm_NextArgs=""</Publish>
+          <Publish Event="NewDialog" Value="[EulaForm_NextArgs]">EulaForm_NextArgs&lt;&gt;""</Publish>
+          <Subscribe Event="EulaEvent" Attribute="Enabled" />
+        </Control>
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}License Agreement" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyText" Type="Text" X="9" Y="63" Width="360" Height="40" Text="{\VSI_MS_Sans_Serif13.0_0_0}Please take a moment to read the license agreement now. If you accept the terms below, click &quot;I Agree&quot;, then &quot;Next&quot;. Otherwise click &quot;Cancel&quot;." TabSkip="yes" NoPrefix="yes" />
+      </Dialog>
+
+      <Dialog Id="ConfirmInstallForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="NextButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Next &gt;" TabSkip="no" Default="yes">
+          <Publish Event="EndDialog" Value="Return">ConfirmInstallForm_NextArgs=""</Publish>
+          <Publish Event="NewDialog" Value="[ConfirmInstallForm_NextArgs]">ConfirmInstallForm_NextArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no">
+          <Condition Action="disable">ConfirmInstallForm_PrevArgs=""</Condition>
+          <Condition Action="enable">ConfirmInstallForm_PrevArgs&lt;&gt;""</Condition>
+          <Publish Event="NewDialog" Value="[ConfirmInstallForm_PrevArgs]">ConfirmInstallForm_PrevArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Confirm Installation" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyText1" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer is ready to install [ProductName] on your computer.&#xD;&#xA;&#xD;&#xA;Click &quot;Next&quot; to start the installation." TabSkip="yes" NoPrefix="yes" />
+      </Dialog>
+
+      <Dialog Id="CustomCheckA" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="Next" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Next &gt;" TabSkip="no" Default="yes">
+          <Publish Event="EndDialog" Value="Return">CustomCheckA_NextArgs=""</Publish>
+          <Publish Event="NewDialog" Value="[CustomCheckA_NextArgs]">CustomCheckA_NextArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="Checkbox1" Type="CheckBox" X="18" Y="108" Width="348" Height="12" Property="INSTALLOPENPDC" Text="{\VSI_MS_Shell_Dlg13.0_0_0}openPDC Windows Service" TabSkip="no" />
+        <Control Id="Checkbox2" Type="CheckBox" X="18" Y="132" Width="348" Height="12" Property="INSTALLCONSOLE" Text="{\VSI_MS_Shell_Dlg13.0_0_0}openPDC Console" TabSkip="no" />
+        <Control Id="Checkbox3" Type="CheckBox" X="18" Y="156" Width="348" Height="12" Property="INSTALLMANAGER" Text="{\VSI_MS_Shell_Dlg13.0_0_0}openPDC Manager (WPF)" TabSkip="no" />
+        <Control Id="Checkbox4" Type="CheckBox" X="18" Y="180" Width="348" Height="12" Property="INSTALLTOOLS" Text="{\VSI_MS_Shell_Dlg13.0_0_0}Tools" TabSkip="no" />
+        <Control Id="Cancel" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="Previous" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no">
+          <Condition Action="disable">CustomCheckA_PrevArgs=""</Condition>
+          <Condition Action="enable">CustomCheckA_PrevArgs&lt;&gt;""</Condition>
+          <Publish Event="NewDialog" Value="[CustomCheckA_PrevArgs]">CustomCheckA_PrevArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}[ProductName]" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="BodyText" Type="Text" X="9" Y="63" Width="354" Height="42" Text="{\VSI_MS_Sans_Serif13.0_0_0}Please select your installation options:" TabSkip="yes" NoPrefix="yes" />
+        <Control Id="Control348" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Control353" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif16.0_1_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+      </Dialog>
+
+      <Dialog Id="FolderForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]" TrackDiskSpace="yes">
+        <Control Id="NextButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Next &gt;" TabSkip="no" Default="yes">
+          <Publish Event="SetTargetPath" Value="TARGETDIR">1</Publish>
+          <Publish Event="SpawnDialog" Value="DiskCost">OutOfDiskSpace=1</Publish>
+          <Publish Event="EndDialog" Value="Return">FolderForm_NextArgs="" AND OutOfDiskSpace&lt;&gt;1</Publish>
+          <Publish Event="NewDialog" Value="[FolderForm_NextArgs]">FolderForm_NextArgs&lt;&gt;"" AND OutOfDiskSpace&lt;&gt;1</Publish>
+          <Publish Property="ALLUSERS" Value="2">FolderForm_AllUsers="ALL" AND VersionNT&gt;=400 AND Privileged=1 AND FolderForm_AllUsersVisible=1</Publish>
+          <Publish Property="ALLUSERS">FolderForm_AllUsers="ME" AND VersionNT&gt;=400 AND Privileged=1 AND FolderForm_AllUsersVisible=1</Publish>
+          <Publish Event="DoAction" Value="FindRelatedProducts">1</Publish>
+        </Control>
+        <Control Id="FolderLabel" Type="Text" X="18" Y="114" Width="348" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Folder:" TabSkip="no" />
+        <Control Id="FolderEdit" Type="PathEdit" X="18" Y="126" Width="252" Height="18" Property="TARGETDIR" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiPathEdit" TabSkip="no" Sunken="yes" />
+        <Control Id="BrowseButton" Type="PushButton" X="276" Y="126" Width="90" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}B&amp;rowse..." TabSkip="no">
+          <Publish Property="SelectFolderDialog_Property" Value="TARGETDIR">1</Publish>
+          <Publish Event="SpawnDialog" Value="SelectFolderDialog">1</Publish>
+        </Control>
+        <Control Id="DiskCostButton" Type="PushButton" X="276" Y="150" Width="90" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Disk Cost..." TabSkip="no">
+          <Publish Event="SetTargetPath" Value="TARGETDIR">1</Publish>
+          <Publish Event="SpawnDialog" Value="DiskCost">1</Publish>
+        </Control>
+        <Control Id="AllUsersRadioGroup" Type="RadioButtonGroup" X="24" Y="210" Width="342" Height="42" Property="FolderForm_AllUsers" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiRadioButtonGroup" TabSkip="no">
+          <Condition Action="show">VersionNT&gt;=400 AND Privileged=1 AND FolderForm_AllUsersVisible=1</Condition>
+          <Condition Action="hide">NOT (VersionNT&gt;=400 AND Privileged=1 AND FolderForm_AllUsersVisible=1)</Condition>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no">
+          <Condition Action="disable">FolderForm_PrevArgs=""</Condition>
+          <Condition Action="enable">FolderForm_PrevArgs&lt;&gt;""</Condition>
+          <Publish Event="NewDialog" Value="[FolderForm_PrevArgs]">FolderForm_PrevArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Select Installation Folder" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Body" Type="Text" X="9" Y="63" Width="354" Height="48" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer will install [ProductName] to the following folder.&#xD;&#xA;&#xD;&#xA;To install in this folder, click &quot;Next&quot;. To install to a different folder, enter it below or click &quot;Browse&quot;." TabSkip="yes" NoPrefix="yes" />
+        <Control Id="AllUsersText" Type="Text" X="18" Y="186" Width="348" Height="24" Text="{\VSI_MS_Shell_Dlg13.0_0_0}Install [ProductName] for yourself, or for anyone who uses this computer:" TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">VersionNT&gt;=400 AND Privileged=1 AND FolderForm_AllUsersVisible=1</Condition>
+          <Condition Action="hide">NOT (VersionNT&gt;=400 AND Privileged=1 AND FolderForm_AllUsersVisible=1)</Condition>
+        </Control>
+      </Dialog>
+
+      <Dialog Id="CustomTextA" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="NextButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Next &gt;" TabSkip="no" Default="yes">
+          <Publish Event="EndDialog" Value="Return">CustomTextA_NextArgs=""</Publish>
+          <Publish Event="NewDialog" Value="[CustomTextA_NextArgs]">CustomTextA_NextArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="Label1" Type="Text" X="18" Y="108" Width="348" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}Company name:" TabSkip="no" />
+        <Control Id="Edit1" Type="Edit" X="18" Y="120" Width="348" Height="18" Property="COMPANYNAME" Text="{\VSI_MS_Sans_Serif13.0_0_0}" TabSkip="no" Sunken="yes" />
+        <Control Id="Label2" Type="Text" X="18" Y="144" Width="348" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}Company acronym:" TabSkip="no" />
+        <Control Id="Edit2" Type="Edit" X="18" Y="156" Width="348" Height="18" Property="COMPANYACRONYM" Text="{\VSI_MS_Sans_Serif13.0_0_0}" TabSkip="no" Sunken="yes" />
+        <Control Id="Label3" Type="Text" X="18" Y="180" Width="348" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}Edit3:" TabSkip="no" Hidden="yes" />
+        <Control Id="Edit3" Type="Edit" X="18" Y="192" Width="348" Height="18" Property="EDITA3" Text="{\VSI_MS_Sans_Serif13.0_0_0}" TabSkip="no" Hidden="yes" Sunken="yes" />
+        <Control Id="Label4" Type="Text" X="18" Y="216" Width="348" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}Edit4:" TabSkip="no" Hidden="yes" />
+        <Control Id="Edit4" Type="Edit" X="18" Y="228" Width="348" Height="18" Property="EDITA4" Text="{\VSI_MS_Sans_Serif13.0_0_0}" TabSkip="no" Hidden="yes" Sunken="yes" />
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no">
+          <Condition Action="disable">CustomTextA_PrevArgs=""</Condition>
+          <Condition Action="enable">CustomTextA_PrevArgs&lt;&gt;""</Condition>
+          <Publish Event="NewDialog" Value="[CustomTextA_PrevArgs]">CustomTextA_PrevArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}[ProductName]" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="BodyText" Type="Text" X="9" Y="63" Width="354" Height="42" Text="{\VSI_MS_Sans_Serif13.0_0_0}Please enter the name and acronym of the company who will be using [ProductName]." TabSkip="yes" NoPrefix="yes" />
+        <Control Id="Control273" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Control278" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif16.0_1_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+      </Dialog>
+
+      <Dialog Id="WelcomeForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="NextButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Next &gt;" TabSkip="no" Default="yes">
+          <Publish Event="EndDialog" Value="Return">WelcomeForm_NextArgs=""</Publish>
+          <Publish Event="NewDialog" Value="[WelcomeForm_NextArgs]">WelcomeForm_NextArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no">
+          <Condition Action="disable">WelcomeForm_PrevArgs=""</Condition>
+          <Condition Action="enable">WelcomeForm_PrevArgs&lt;&gt;""</Condition>
+          <Publish Event="NewDialog" Value="[WelcomeForm_PrevArgs]">WelcomeForm_PrevArgs&lt;&gt;""</Publish>
+        </Control>
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Welcome to the [ProductName] Setup Wizard" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="CopyrightWarningText" Type="Text" X="9" Y="186" Width="354" Height="66" Text="{\VSI_MS_Sans_Serif13.0_0_0}WARNING: This computer program is protected by copyright law and international treaties. Unauthorized duplication or distribution of this program, or any portion of it, may result in severe civil or criminal penalties, and will be prosecuted to the maximum extent possible under the law." TabSkip="yes" NoPrefix="yes" />
+        <Control Id="WelcomeText" Type="Text" X="9" Y="63" Width="354" Height="114" Text="{\VSI_MS_Sans_Serif13.0_0_0}The installer will guide you through the steps required to install [ProductName] on your computer." TabSkip="yes" NoPrefix="yes" />
+      </Dialog>
+
+      <Dialog Id="FinishedForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="CloseButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Close" TabSkip="no" Default="yes" Cancel="yes">
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Disabled="yes" />
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Installation Complete" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyText" Type="Text" X="9" Y="63" Width="354" Height="138" Text="{\VSI_MS_Sans_Serif13.0_0_0}[ProductName] has been successfully installed.&#xD;&#xA;&#xD;&#xA;Click &quot;Close&quot; to exit." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+        <Control Id="BodyTextRemove" Type="Text" X="9" Y="63" Width="354" Height="138" Text="{\VSI_MS_Sans_Serif13.0_0_0}[ProductName] has been successfully removed.&#xD;&#xA;&#xD;&#xA;Click &quot;Close&quot; to exit." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE&lt;&gt;""</Condition>
+          <Condition Action="hide">REMOVE=""</Condition>
+        </Control>
+        <Control Id="UpdateText" Type="Text" X="9" Y="216" Width="354" Height="36" Text="{\VSI_MS_Sans_Serif13.0_0_0}Please use Windows Update to check for any critical updates to the .NET Framework." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+      </Dialog>
+
+      <Dialog Id="ProgressForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]" Modeless="yes">
+        <Control Id="NextButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Next &gt;" TabSkip="no" Disabled="yes" />
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="ProgressBar" Type="ProgressBar" X="18" Y="108" Width="336" Height="15" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiProgressBar" TabSkip="yes" Disabled="yes">
+          <Subscribe Event="StopServices" Attribute="Progress" />
+          <Subscribe Event="DeleteServices" Attribute="Progress" />
+          <Subscribe Event="RemoveRegistryValues" Attribute="Progress" />
+          <Subscribe Event="RemoveFiles" Attribute="Progress" />
+          <Subscribe Event="MoveFiles" Attribute="Progress" />
+          <Subscribe Event="InstallFiles" Attribute="Progress" />
+          <Subscribe Event="WriteRegistryValues" Attribute="Progress" />
+          <Subscribe Event="WriteIniValues" Attribute="Progress" />
+          <Subscribe Event="StartServices" Attribute="Progress" />
+          <Subscribe Event="InstallAdminPackage" Attribute="Progress" />
+          <Subscribe Event="UnmoveFiles" Attribute="Progress" />
+          <Subscribe Event="SetProgress" Attribute="Progress" />
+        </Control>
+        <Control Id="ProgressLabel" Type="Text" X="18" Y="96" Width="336" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}Please wait..." TabSkip="yes" />
+        <Control Id="InstalledBody" Type="Text" X="9" Y="63" Width="354" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}[ProductName] is being installed." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+        <Control Id="RemovedBody" Type="Text" X="18" Y="63" Width="336" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}[ProductName] is being removed." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE&lt;&gt;""</Condition>
+          <Condition Action="hide">REMOVE=""</Condition>
+        </Control>
+        <Control Id="RemoveBannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Removing [ProductName]" TabSkip="yes" Transparent="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE&lt;&gt;""</Condition>
+          <Condition Action="hide">REMOVE=""</Condition>
+        </Control>
+        <Control Id="InstalledBannerText" Type="Text" X="9" Y="9" Width="255" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Installing [ProductName]" TabSkip="yes" Transparent="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+      </Dialog>
+
+      <Dialog Id="ErrorDialog" X="50" Y="50" Width="330" Height="101" Title="[ProductName]" ErrorDialog="yes">
+        <Control Id="ErrorText" Type="Text" X="6" Y="9" Width="318" Height="48" Text="{\VSI_MS_Sans_Serif13.0_0_0}" TabSkip="no" Disabled="yes" NoPrefix="yes" />
+        <Control Id="N" Type="PushButton" X="120" Y="72" Width="81" Height="21" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;No" TabSkip="yes">
+          <Publish Event="EndDialog" Value="ErrorNo" />
+        </Control>
+        <Control Id="Y" Type="PushButton" X="240" Y="72" Width="81" Height="21" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Yes" TabSkip="yes">
+          <Publish Event="EndDialog" Value="ErrorYes" />
+        </Control>
+        <Control Id="A" Type="PushButton" X="0" Y="72" Width="81" Height="21" Text="{\VSI_MS_Sans_Serif13.0_0_0}E&amp;xit Installation" TabSkip="yes">
+          <Publish Event="EndDialog" Value="ErrorAbort" />
+        </Control>
+        <Control Id="C" Type="PushButton" X="42" Y="72" Width="81" Height="21" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="yes">
+          <Publish Event="EndDialog" Value="ErrorCancel" />
+        </Control>
+        <Control Id="I" Type="PushButton" X="81" Y="72" Width="81" Height="21" Text="{\VSI_MS_Sans_Serif13.0_0_0}C&amp;ontinue" TabSkip="yes">
+          <Publish Event="EndDialog" Value="ErrorIgnore" />
+        </Control>
+        <Control Id="O" Type="PushButton" X="159" Y="72" Width="81" Height="21" Text="{\VSI_MS_Sans_Serif13.0_0_0}OK" TabSkip="yes">
+          <Publish Event="EndDialog" Value="ErrorOk" />
+        </Control>
+        <Control Id="R" Type="PushButton" X="198" Y="72" Width="81" Height="21" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Try Again" TabSkip="yes">
+          <Publish Event="EndDialog" Value="ErrorRetry" />
+        </Control>
+      </Dialog>
+
+      <Dialog Id="ConfirmRemoveDialog" X="50" Y="50" Width="271" Height="78" Title="Remove [ProductName]" NoMinimize="yes">
+        <Control Id="NoButton" Type="PushButton" X="198" Y="48" Width="65" Height="21" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;No" TabSkip="no" Default="yes" Cancel="yes">
+          <Publish Property="WelcomeForm_ConfirmRemove" Value="No" />
+          <Publish Event="EndDialog" Value="Return" />
+        </Control>
+        <Control Id="YesButton" Type="PushButton" X="126" Y="48" Width="65" Height="21" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Yes" TabSkip="no">
+          <Publish Property="WelcomeForm_ConfirmRemove" Value="Yes" />
+          <Publish Event="EndDialog" Value="Return" />
+        </Control>
+        <Control Id="BodyText" Type="Text" X="6" Y="9" Width="258" Height="24" Text="{\VSI_MS_Sans_Serif13.0_0_0}You have chosen to remove [ProductName] from your computer. Are you sure you want to remove it?" TabSkip="yes" NoPrefix="yes" />
+      </Dialog>
+
+      <Dialog Id="FilesInUse" X="50" Y="50" Width="361" Height="177" Title="[ProductName] Files in Use" NoMinimize="yes">
+        <Control Id="RetryButton" Type="PushButton" X="99" Y="150" Width="81" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Try Again" TabSkip="no" Default="yes">
+          <Publish Event="EndDialog" Value="Retry" />
+        </Control>
+        <Control Id="ContinueButton" Type="PushButton" X="186" Y="150" Width="81" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Continue" TabSkip="no">
+          <Publish Event="EndDialog" Value="Ignore" />
+        </Control>
+        <Control Id="ExitButton" Type="PushButton" X="273" Y="150" Width="81" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}E&amp;xit Installation" TabSkip="no" Cancel="yes">
+          <Publish Event="EndDialog" Value="Exit" />
+        </Control>
+        <Control Id="ListFilesInUse" Type="ListBox" X="6" Y="51" Width="348" Height="90" Property="FileInUseProcess" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiFilesInUse" TabSkip="no" Sunken="yes" Sorted="yes" />
+        <Control Id="InstallBodyText" Type="Text" X="6" Y="9" Width="345" Height="36" Text="{\VSI_MS_Sans_Serif13.0_0_0}The following applications are using files which the installer must update. You can either close the applications and click &quot;Try Again&quot;, or click &quot;Continue&quot; so that the installer continues the installation, and replaces these files when your system restarts." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+        <Control Id="RemoveBodyText" Type="Text" X="6" Y="9" Width="345" Height="36" Text="{\VSI_MS_Sans_Serif13.0_0_0}The following applications are using files which the installer must remove. You can either close the applications and click &quot;Try Again&quot;, or click &quot;Continue&quot; so that the installer continues the installation, and replaces these files when your system restarts." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE&lt;&gt;""</Condition>
+          <Condition Action="hide">REMOVE=""</Condition>
+        </Control>
+      </Dialog>
+
+      <Dialog Id="AdminProgressForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]" Modeless="yes">
+        <Control Id="NextButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Next &gt;" TabSkip="no" Disabled="yes" />
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Cancel="yes">
+          <Publish Event="SpawnDialog" Value="Cancel" />
+        </Control>
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="ProgressBar" Type="ProgressBar" X="18" Y="108" Width="336" Height="15" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiProgressBar" TabSkip="yes" Disabled="yes">
+          <Subscribe Event="StopServices" Attribute="Progress" />
+          <Subscribe Event="DeleteServices" Attribute="Progress" />
+          <Subscribe Event="RemoveRegistryValues" Attribute="Progress" />
+          <Subscribe Event="RemoveFiles" Attribute="Progress" />
+          <Subscribe Event="MoveFiles" Attribute="Progress" />
+          <Subscribe Event="InstallFiles" Attribute="Progress" />
+          <Subscribe Event="WriteRegistryValues" Attribute="Progress" />
+          <Subscribe Event="WriteIniValues" Attribute="Progress" />
+          <Subscribe Event="StartServices" Attribute="Progress" />
+          <Subscribe Event="InstallAdminPackage" Attribute="Progress" />
+          <Subscribe Event="UnmoveFiles" Attribute="Progress" />
+          <Subscribe Event="SetProgress" Attribute="Progress" />
+        </Control>
+        <Control Id="ProgressLabel" Type="Text" X="18" Y="96" Width="336" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}Please wait..." TabSkip="yes" />
+        <Control Id="InstalledBody" Type="Text" X="9" Y="63" Width="354" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}[ProductName] is being installed." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+        <Control Id="RemovedBody" Type="Text" X="18" Y="63" Width="336" Height="12" Text="{\VSI_MS_Sans_Serif13.0_0_0}[ProductName] is being removed." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE&lt;&gt;""</Condition>
+          <Condition Action="hide">REMOVE=""</Condition>
+        </Control>
+        <Control Id="RemoveBannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Removing [ProductName]" TabSkip="yes" Transparent="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE&lt;&gt;""</Condition>
+          <Condition Action="hide">REMOVE=""</Condition>
+        </Control>
+        <Control Id="InstalledBannerText" Type="Text" X="9" Y="9" Width="255" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Installing [ProductName]" TabSkip="yes" Transparent="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+      </Dialog>
+
+      <Dialog Id="AdminFinishedForm" X="50" Y="50" Width="373" Height="287" Title="[ProductName]">
+        <Control Id="CloseButton" Type="PushButton" X="300" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&amp;Close" TabSkip="no" Default="yes" Cancel="yes">
+          <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="CancelButton" Type="PushButton" X="156" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}Cancel" TabSkip="no" Disabled="yes" />
+        <Control Id="PreviousButton" Type="PushButton" X="228" Y="261" Width="66" Height="18" Text="{\VSI_MS_Sans_Serif13.0_0_0}&lt; &amp;Back" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerBmp" Type="Bitmap" X="0" Y="0" Width="375" Height="52" Text="openPDCSetupLogo" TabSkip="no" Disabled="yes" />
+        <Control Id="BannerText" Type="Text" X="9" Y="9" Width="306" Height="33" Text="{\VSI_MS_Sans_Serif16.0_1_0}Installation Complete" TabSkip="yes" Transparent="yes" NoPrefix="yes" />
+        <Control Id="Line2" Type="Line" X="0" Y="252" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="Line1" Type="Line" X="0" Y="52" Width="375" Height="6" Text="{\VSI_MS_Sans_Serif13.0_0_0}MsiHorizontalLine" TabSkip="yes" Disabled="yes" />
+        <Control Id="BodyText" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}[ProductName] has been successfully removed.&#xD;&#xA;&#xD;&#xA;Click &quot;Close&quot; to exit." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE&lt;&gt;""</Condition>
+          <Condition Action="hide">REMOVE=""</Condition>
+        </Control>
+        <Control Id="BodyTextInstall" Type="Text" X="9" Y="63" Width="354" Height="180" Text="{\VSI_MS_Sans_Serif13.0_0_0}A network image of [ProductName] has been successfully created.&#xD;&#xA;&#xD;&#xA;Click &quot;Close&quot; to exit." TabSkip="yes" NoPrefix="yes">
+          <Condition Action="show">REMOVE=""</Condition>
+          <Condition Action="hide">REMOVE&lt;&gt;""</Condition>
+        </Control>
+      </Dialog>
+    </UI>
+
+    <Upgrade Id="{672ED075-C482-49A6-86D5-7B3FEB4AEAC8}">
+      <UpgradeVersion Minimum="1.5.150" Property="NEWERPRODUCTFOUND" OnlyDetect="yes" IncludeMinimum="yes" />
+    </Upgrade>
+
+    <InstallExecuteSequence>
+      <Custom Action="DIRCA_CheckFX" Sequence="1" />
+      <Custom Action="ERRCA_CANCELNEWERVERSION" Sequence="201">NEWERPRODUCTFOUND AND NOT Installed</Custom>
+      <Custom Action="VSDCA_VsdLaunchConditions" Sequence="399">NOT Installed</Custom>
+      <Custom Action="CustomTextA_SetProperty_EDIT1" Sequence="701" />
+      <Custom Action="CustomTextA_SetProperty_EDIT2" Sequence="702" />
+      <Custom Action="CustomTextA_SetProperty_EDIT3" Sequence="703" />
+      <Custom Action="CustomTextA_SetProperty_EDIT4" Sequence="704" />
+      <Custom Action="CustomCheckA_SetProperty_CHECKBOX1" Sequence="705" />
+      <Custom Action="CustomCheckA_SetProperty_CHECKBOX2" Sequence="706" />
+      <Custom Action="CustomCheckA_SetProperty_CHECKBOX3" Sequence="707" />
+      <Custom Action="CustomCheckA_SetProperty_CHECKBOX4" Sequence="708" />
+      <Custom Action="DIRCA_TARGETDIR" Sequence="750">TARGETDIR=""</Custom>
+      <Custom Action="CA_openPDC.ServiceInstall.uninstall.SetProperty" Sequence="1696">(INSTALLOPENPDC=1) AND $CMP_SourceDir.openPDCEXE=2</Custom>
+      <Custom Action="CA_openPDC.ServiceInstall.uninstall" Sequence="1697">(INSTALLOPENPDC=1) AND $CMP_SourceDir.openPDCEXE=2</Custom>
+      <Custom Action="CA_openPDC.ServiceInstall.commit.SetProperty" Sequence="5988">(INSTALLOPENPDC=1) AND $CMP_SourceDir.openPDCEXE&gt;2</Custom>
+      <Custom Action="CA_openPDC.ServiceInstall.commit" Sequence="5989">(INSTALLOPENPDC=1) AND $CMP_SourceDir.openPDCEXE&gt;2</Custom>
+      <Custom Action="CA_openPDC.ServiceInstall.rollback.SetProperty" Sequence="5994">(INSTALLOPENPDC=1) AND $CMP_SourceDir.openPDCEXE&gt;2</Custom>
+      <Custom Action="CA_openPDC.ServiceInstall.rollback" Sequence="5995">(INSTALLOPENPDC=1) AND $CMP_SourceDir.openPDCEXE&gt;2</Custom>
+      <Custom Action="CA_openPDC.ServiceInstall.install.SetProperty" Sequence="5996">(INSTALLOPENPDC=1) AND $CMP_SourceDir.openPDCEXE&gt;2</Custom>
+      <Custom Action="CA_openPDC.ServiceInstall.install" Sequence="5997">(INSTALLOPENPDC=1) AND $CMP_SourceDir.openPDCEXE&gt;2</Custom>
+      <Custom Action="CA_openPDCManager.ApplicationInstall.uninstall.SetProperty" Sequence="1698">(INSTALLOPENPDC&lt;&gt;1 AND INSTALLMANAGER=1) AND $CMP_SourceDir.openPDCManagerEXE=2</Custom>
+      <Custom Action="CA_openPDCManager.ApplicationInstall.uninstall" Sequence="1699">(INSTALLOPENPDC&lt;&gt;1 AND INSTALLMANAGER=1) AND $CMP_SourceDir.openPDCManagerEXE=2</Custom>
+      <Custom Action="CA_openPDCManager.ApplicationInstall.commit.SetProperty" Sequence="5990">(INSTALLOPENPDC&lt;&gt;1 AND INSTALLMANAGER=1) AND $CMP_SourceDir.openPDCManagerEXE&gt;2</Custom>
+      <Custom Action="CA_openPDCManager.ApplicationInstall.commit" Sequence="5991">(INSTALLOPENPDC&lt;&gt;1 AND INSTALLMANAGER=1) AND $CMP_SourceDir.openPDCManagerEXE&gt;2</Custom>
+      <Custom Action="CA_openPDCManager.ApplicationInstall.rollback.SetProperty" Sequence="5992">(INSTALLOPENPDC&lt;&gt;1 AND INSTALLMANAGER=1) AND $CMP_SourceDir.openPDCManagerEXE&gt;2</Custom>
+      <Custom Action="CA_openPDCManager.ApplicationInstall.rollback" Sequence="5993">(INSTALLOPENPDC&lt;&gt;1 AND INSTALLMANAGER=1) AND $CMP_SourceDir.openPDCManagerEXE&gt;2</Custom>
+      <Custom Action="CA_openPDCManager.ApplicationInstall.install.SetProperty" Sequence="5998">(INSTALLOPENPDC&lt;&gt;1 AND INSTALLMANAGER=1) AND $CMP_SourceDir.openPDCManagerEXE&gt;2</Custom>
+      <Custom Action="CA_openPDCManager.ApplicationInstall.install" Sequence="5999">(INSTALLOPENPDC&lt;&gt;1 AND INSTALLMANAGER=1) AND $CMP_SourceDir.openPDCManagerEXE&gt;2</Custom>
+      <LaunchConditions Sequence="400">NOT Installed</LaunchConditions>
+      <FindRelatedProducts Sequence="200" />
+      <AppSearch Sequence="100" />
+      <CCPSearch Sequence="500">NOT Installed</CCPSearch>
+      <RMCCPSearch Sequence="600">NOT Installed</RMCCPSearch>
+      <ValidateProductID Sequence="700" />
+      <CostInitialize Sequence="800" />
+      <FileCost Sequence="900" />
+      <IsolateComponents Sequence="950">RedirectedDllSupport</IsolateComponents>
+      <CostFinalize Sequence="1000" />
+      <SetODBCFolders Sequence="1100">NOT Installed</SetODBCFolders>
+      <InstallValidate Sequence="1400" />
+      <InstallInitialize Sequence="1500" />
+      <AllocateRegistrySpace Sequence="1550">NOT Installed</AllocateRegistrySpace>
+      <ProcessComponents Sequence="1600" />
+      <UnpublishComponents Sequence="1700" />
+      <UnpublishFeatures Sequence="1800" />
+      <StopServices Sequence="1900">VersionNT</StopServices>
+      <DeleteServices Sequence="2000">VersionNT</DeleteServices>
+      <UnregisterComPlus Sequence="2100" />
+      <SelfUnregModules Sequence="2200" />
+      <UnregisterTypeLibraries Sequence="2300" />
+      <RemoveODBC Sequence="2400" />
+      <UnregisterFonts Sequence="2500" />
+      <RemoveRegistryValues Sequence="2600" />
+      <UnregisterClassInfo Sequence="2700" />
+      <UnregisterExtensionInfo Sequence="2800" />
+      <UnregisterProgIdInfo Sequence="2900" />
+      <UnregisterMIMEInfo Sequence="3000" />
+      <RemoveIniValues Sequence="3100" />
+      <RemoveShortcuts Sequence="3200" />
+      <RemoveEnvironmentStrings Sequence="3300" />
+      <RemoveDuplicateFiles Sequence="3400" />
+      <RemoveFiles Sequence="3500" />
+      <RemoveFolders Sequence="3600" />
+      <CreateFolders Sequence="3700" />
+      <MoveFiles Sequence="3800" />
+      <InstallFiles Sequence="4000" />
+      <DuplicateFiles Sequence="4210" />
+      <PatchFiles Sequence="4090" />
+      <BindImage Sequence="4300" />
+      <CreateShortcuts Sequence="4500" />
+      <RegisterClassInfo Sequence="4600" />
+      <RegisterExtensionInfo Sequence="4700" />
+      <RegisterProgIdInfo Sequence="4800" />
+      <RegisterMIMEInfo Sequence="4900" />
+      <WriteRegistryValues Sequence="5000" />
+      <WriteIniValues Sequence="5100" />
+      <WriteEnvironmentStrings Sequence="5200" />
+      <RegisterFonts Sequence="5300" />
+      <InstallODBC Sequence="5400" />
+      <RegisterTypeLibraries Sequence="5500" />
+      <SelfRegModules Sequence="5600" />
+      <RegisterComPlus Sequence="5700" />
+      <InstallServices Sequence="5800">VersionNT</InstallServices>
+      <StartServices Sequence="5900">VersionNT</StartServices>
+      <RegisterUser Sequence="6000" />
+      <RegisterProduct Sequence="6100" />
+      <PublishComponents Sequence="6200" />
+      <PublishFeatures Sequence="6300" />
+      <PublishProduct Sequence="6400" />
+      <InstallFinalize Sequence="6600" />
+      <RemoveExistingProducts Sequence="6550" />
+      <InstallExecute Sequence="6500" />
+      <MsiPublishAssemblies Sequence="6250" />
+      <MsiUnpublishAssemblies Sequence="1650" />
+    </InstallExecuteSequence>
+
+    <InstallUISequence>
+      <Custom Action="DIRCA_CheckFX" Sequence="1" />
+      <Custom Action="ERRCA_UIANDADVERTISED" Sequence="5">ProductState=1</Custom>
+      <Custom Action="VSDCA_VsdLaunchConditions" Sequence="399">NOT Installed</Custom>
+      <Custom Action="CustomTextA_SetProperty_EDIT1" Sequence="701" />
+      <Custom Action="CustomTextA_SetProperty_EDIT2" Sequence="702" />
+      <Custom Action="CustomTextA_SetProperty_EDIT3" Sequence="703" />
+      <Custom Action="CustomTextA_SetProperty_EDIT4" Sequence="704" />
+      <Custom Action="CustomCheckA_SetProperty_CHECKBOX1" Sequence="705" />
+      <Custom Action="CustomCheckA_SetProperty_CHECKBOX2" Sequence="706" />
+      <Custom Action="CustomCheckA_SetProperty_CHECKBOX3" Sequence="707" />
+      <Custom Action="CustomCheckA_SetProperty_CHECKBOX4" Sequence="708" />
+      <Custom Action="DIRCA_TARGETDIR" Sequence="750">TARGETDIR=""</Custom>
+      <Custom Action="VSDCA_FolderForm_AllUsers" Sequence="997">Installed="" AND NOT RESUME AND ALLUSERS=1</Custom>
+      <Show Dialog="FatalErrorForm" OnExit="error">NOT HideFatalErrorForm</Show>
+      <Show Dialog="UserExitForm" OnExit="cancel" />
+      <Show Dialog="FinishedForm" OnExit="success" />
+      <Show Dialog="WelcomeForm" Sequence="996">Installed="" AND NOT RESUME</Show>
+      <Show Dialog="ResumeForm" Sequence="998">Installed="" AND RESUME</Show>
+      <Show Dialog="MaintenanceForm" Sequence="999">Installed&lt;&gt;""</Show>
+      <Show Dialog="FolderForm" Sequence="1001">Installed="" AND NOT RESUME</Show>
+      <Show Dialog="ProgressForm" Sequence="1299" />
+      <LaunchConditions Sequence="400">NOT Installed</LaunchConditions>
+      <AppSearch Sequence="100" />
+      <CCPSearch Sequence="500">NOT Installed</CCPSearch>
+      <RMCCPSearch Sequence="600">NOT Installed</RMCCPSearch>
+      <ValidateProductID Sequence="700" />
+      <CostInitialize Sequence="800" />
+      <FileCost Sequence="900" />
+      <IsolateComponents Sequence="950">RedirectedDllSupport</IsolateComponents>
+      <CostFinalize Sequence="1000" />
+      <ExecuteAction Sequence="1300" />
+    </InstallUISequence>
+
+    <AdminExecuteSequence>
+      <Custom Action="DIRCA_TARGETDIR" Sequence="750">TARGETDIR=""</Custom>
+      <CostInitialize Sequence="800" />
+      <FileCost Sequence="900" />
+      <CostFinalize Sequence="1000" />
+      <InstallValidate Sequence="1400" />
+      <InstallInitialize Sequence="1500" />
+      <InstallAdminPackage Sequence="3900" />
+      <InstallFiles Sequence="4000" />
+      <InstallFinalize Sequence="6600" />
+    </AdminExecuteSequence>
+
+    <AdminUISequence>
+      <Custom Action="DIRCA_TARGETDIR" Sequence="750">TARGETDIR=""</Custom>
+      <Show Dialog="AdminFatalErrorForm" OnExit="error" />
+      <Show Dialog="AdminUserExitForm" OnExit="cancel" />
+      <Show Dialog="AdminFinishedForm" OnExit="success" />
+      <Show Dialog="AdminResumeForm" Sequence="998">Installed="" AND RESUME</Show>
+      <Show Dialog="AdminMaintenanceForm" Sequence="999">Installed&lt;&gt;""</Show>
+      <Show Dialog="AdminWelcomeForm" Sequence="1001">Installed="" AND NOT RESUME</Show>
+      <Show Dialog="AdminProgressForm" Sequence="1299" />
+      <CostInitialize Sequence="800" />
+      <FileCost Sequence="900" />
+      <CostFinalize Sequence="1000" />
+      <ExecuteAction Sequence="1300" />
+    </AdminUISequence>
+
+    <AdvertiseExecuteSequence>
+      <CostInitialize Sequence="800" />
+      <CostFinalize Sequence="1000" />
+      <Custom Action="DIRCA_TARGETDIR" Sequence="750">TARGETDIR=""</Custom>
+      <InstallValidate Sequence="1400" />
+      <InstallInitialize Sequence="1500" />
+      <CreateShortcuts Sequence="4500" />
+      <RegisterClassInfo Sequence="4600" />
+      <RegisterExtensionInfo Sequence="4700" />
+      <RegisterMIMEInfo Sequence="4900" />
+      <RegisterProgIdInfo Sequence="4800" />
+      <PublishComponents Sequence="6200" />
+      <PublishFeatures Sequence="6300" />
+      <PublishProduct Sequence="6400" />
+      <InstallFinalize Sequence="6600" />
+      <MsiPublishAssemblies Sequence="6250" />
+    </AdvertiseExecuteSequence>
+  </Product>
+</Wix>
