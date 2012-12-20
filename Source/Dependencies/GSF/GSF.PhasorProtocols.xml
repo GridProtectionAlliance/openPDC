@@ -4085,7 +4085,7 @@
         </member>
         <member name="T:GSF.PhasorProtocols.CompositeFrequencyValue">
             <summary>
-            Composite frequency value indicies enumeration.
+            Composite frequency value indices enumeration.
             </summary>
         </member>
         <member name="F:GSF.PhasorProtocols.CompositeFrequencyValue.Frequency">
@@ -4095,12 +4095,12 @@
         </member>
         <member name="F:GSF.PhasorProtocols.CompositeFrequencyValue.DfDt">
             <summary>
-            Composite df/ft value index.
+            Composite dF/dt value index.
             </summary>
         </member>
         <member name="T:GSF.PhasorProtocols.FrequencyValueBase">
             <summary>
-            Represents the common implementation of the protocol independent representation of a frequency and df/dt value.
+            Represents the common implementation of the protocol independent representation of a frequency and dF/dt value.
             </summary>
         </member>
         <member name="T:GSF.PhasorProtocols.IFrequencyValue">
@@ -5694,7 +5694,7 @@
         </member>
         <member name="T:GSF.PhasorProtocols.CompositePhasorValue">
             <summary>
-            Composite polar value indicies enumeration.
+            Composite polar value indices enumeration.
             </summary>
         </member>
         <member name="F:GSF.PhasorProtocols.CompositePhasorValue.Angle">
@@ -11017,7 +11017,7 @@
             <returns>The length of the data that was parsed.</returns>
             <remarks>
             The longitude, latitude and number of satellites arrive at the top of minute in F-NET data as the analog
-            data in a siggle row, each on their own row, as sample 1, 2, and 3 respectively.
+            data in a single row, each on their own row, as sample 1, 2, and 3 respectively.
             </remarks>
         </member>
         <member name="M:GSF.PhasorProtocols.FNet.DataCell.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
@@ -11133,7 +11133,7 @@
             This constructor is used by <see cref="T:GSF.Parsing.FrameImageParserBase`2"/> to parse an F-NET data frame.
             </remarks>
         </member>
-        <member name="M:GSF.PhasorProtocols.FNet.DataFrame.#ctor(GSF.Ticks,GSF.PhasorProtocols.FNet.ConfigurationFrame,System.Int16)">
+        <member name="M:GSF.PhasorProtocols.FNet.DataFrame.#ctor(GSF.Ticks,GSF.PhasorProtocols.FNet.ConfigurationFrame,System.UInt32)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.FNet.DataFrame"/> from specified parameters.
             </summary>

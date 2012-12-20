@@ -2666,7 +2666,7 @@
         </member>
         <member name="P:GSF.Communication.ServerBase.ReadIndicies">
             <summary>
-            Gets current read indicies for received data buffers incremented at each <see cref="M:GSF.Communication.ServerBase.Read(System.Guid,System.Byte[],System.Int32,System.Int32)"/> call.
+            Gets current read indices for received data buffers incremented at each <see cref="M:GSF.Communication.ServerBase.Read(System.Guid,System.Byte[],System.Int32,System.Int32)"/> call.
             </summary>
         </member>
         <member name="P:GSF.Communication.ServerBase.Name">
@@ -4304,6 +4304,20 @@
             <exception cref="T:System.FormatException">Server property in <see cref="P:GSF.Communication.ClientBase.ConnectionString"/> is invalid.</exception>
             <exception cref="T:System.InvalidOperationException">Attempt is made to connect the <see cref="T:GSF.Communication.UdpClient"/> when it is not disconnected.</exception>
             <returns><see cref="T:System.Threading.WaitHandle"/> for the asynchronous operation.</returns>
+        </member>
+        <member name="M:GSF.Communication.UdpClient.AddMulticastMembership(System.Net.IPAddress,System.Net.IPAddress)">
+            <summary>
+            Adds a multicast membership to the UDP socket.
+            </summary>
+            <param name="serverAddress">Multicast address to join.</param>
+            <param name="sourceAddress">Address which defines the source of the data or null if the membership is not source-specific.</param>
+        </member>
+        <member name="M:GSF.Communication.UdpClient.DropMulticastMembership(System.Net.IPAddress,System.Net.IPAddress)">
+            <summary>
+            Drops a multicast membership from the UDP socket.
+            </summary>
+            <param name="serverAddress">Multicast address to drop.</param>
+            <param name="sourceAddress">Address which defines the source of the data or null if the membership is not source-specific.</param>
         </member>
         <member name="M:GSF.Communication.UdpClient.Dispose(System.Boolean)">
             <summary>
