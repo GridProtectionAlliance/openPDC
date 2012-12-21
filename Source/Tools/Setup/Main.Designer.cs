@@ -135,9 +135,9 @@
             this.checkBoxConnectionTester.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxConnectionTester.Location = new System.Drawing.Point(16, 78);
             this.checkBoxConnectionTester.Name = "checkBoxConnectionTester";
-            this.checkBoxConnectionTester.Size = new System.Drawing.Size(289, 20);
+            this.checkBoxConnectionTester.Size = new System.Drawing.Size(309, 20);
             this.checkBoxConnectionTester.TabIndex = 2;
-            this.checkBoxConnectionTester.Text = "PMU Connection Tester v4.3.7 - October 2012";
+            this.checkBoxConnectionTester.Text = "PMU Connection Tester v4.3.10 - December 2012";
             this.checkBoxConnectionTester.UseVisualStyleBackColor = true;
             // 
             // radioButton64bit
