@@ -545,6 +545,17 @@ namespace openPDC.UI.ViewModels
                             device.BpaAcronym = CurrentItem.Acronym.Substring(0, 4);
                             OutputStreamDevice.Save(null, device);
                         }
+
+                        // To update device Measurements with the updated Device Name
+                        // We are getting device Measurement data from Measuremnt table and updating with new device name in PointTag and Signal Reference fields
+                        ObservableCollection<Measurement> deviceMeasurements = Measurement.GetMeasurements(null, "WHERE DeviceAcronym = '" + CurrentItem.Acronym + "'");
+                        foreach (Measurement measurement in deviceMeasurements)
+                        {
+                            measurement.PointTag = measurement.PointTag.Replace(originalDevice.Acronym, CurrentItem.Acronym);
+                            measurement.SignalReference = measurement.SignalReference.Replace(originalDevice.Acronym, CurrentItem.Acronym);
+
+                            Measurement.Save(null, measurement);
+                        }
                     }
                 }
                 catch (Exception ex)
