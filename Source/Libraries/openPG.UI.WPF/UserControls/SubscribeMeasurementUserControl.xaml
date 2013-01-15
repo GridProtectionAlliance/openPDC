@@ -73,13 +73,14 @@
             </uc:MeasurementPagerUserControl>
 
             <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Content="&gt;&gt;" ToolTip="Unsubscribe Measurements" Width="Auto" Margin="2" IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}, Path=CanSave}" Click="RemoveSubscribedMeasurementsButton_Click"/>
-                <Button Content="&lt;&lt;" ToolTip="Subscribe Measurements" Width="Auto" Margin="2" IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}, Path=CanSave}" Click="AddSubscribedMeasurementsButton_Click"/>
+                <Button Content="&gt;&gt;" ToolTip="Unsubscribe Measurements" Width="Auto" Margin="2" IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}, Path=DataContext.CanSave}" Click="RemoveSubscribedMeasurementsButton_Click"/>
+                <Button Content="&lt;&lt;" ToolTip="Subscribe Measurements" Width="Auto" Margin="2" IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}, Path=DataContext.CanSave}" Click="AddSubscribedMeasurementsButton_Click"/>
             </StackPanel>
 
             <StackPanel Grid.Column="2" Grid.Row="0">
                 <TextBlock Grid.Column="2" Grid.Row="0" Text="Available Measurements" HorizontalAlignment="Left" FontWeight="Bold" VerticalAlignment="Top"/>
-                <CheckBox Name="DisplayInternalCheckBox" Content="Display internal" Margin="0" Click="DisplayInternalCheckBox_Click" />
+                <CheckBox Name="DisplayInternalCheckBox" Content="Display internal" Margin="0" Click="DisplayInternalCheckBox_Click" IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel, AncestorLevel=2}, Path=DataContext.CanSave}" />
+                
             </StackPanel>
             <uc:MeasurementPagerUserControl Grid.Column="2" Grid.Row="1" Name="AvailableMeasurementsPager" ItemsPerPage="25" FilterExpression="Internal = 0" Selectable="True" Searchable="True" ShowPageSize="False" Width="400" Height="580" VerticalAlignment="Top" HorizontalAlignment="Right" />
         </Grid>
