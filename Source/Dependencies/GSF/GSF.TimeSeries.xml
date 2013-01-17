@@ -395,20 +395,25 @@
             </summary>
             <param name="ex">Processing <see cref="T:System.Exception"/>.</param>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.RoutingTables.HandleConnectOnDemandAdapters(GSF.TimeSeries.MeasurementKey[])">
+        <member name="M:GSF.TimeSeries.Adapters.RoutingTables.HandleConnectOnDemandAdapters(GSF.TimeSeries.MeasurementKey[],GSF.TimeSeries.Adapters.IInputAdapter[],GSF.TimeSeries.Adapters.IActionAdapter[],GSF.TimeSeries.Adapters.IOutputAdapter[])">
             <summary>
             Starts or stops connect on demand adapters based on current state of demanded input or output measurements.
             </summary>
             <param name="inputMeasurementKeysRestriction">Input measurement keys restriction.</param>
+            <param name="inputAdapterCollection">Collection of input adapters at start of routing table calculation.</param>
+            <param name="actionAdapterCollection">Collection of action adapters at start of routing table calculation.</param>
+            <param name="outputAdapterCollection">Collection of output adapters at start of routing table calculation.</param>
             <remarks>
             Set the <paramref name="inputMeasurementKeysRestriction"/> to null to use full adapter routing demands.
             </remarks>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.RoutingTables.TraverseMeasurementKeyDependencyChain(GSF.TimeSeries.MeasurementKey[],System.Collections.Generic.IEnumerable{GSF.TimeSeries.MeasurementKey}@,System.Collections.Generic.IEnumerable{GSF.TimeSeries.MeasurementKey}@)">
+        <member name="M:GSF.TimeSeries.Adapters.RoutingTables.TraverseMeasurementKeyDependencyChain(GSF.TimeSeries.MeasurementKey[],GSF.TimeSeries.Adapters.IInputAdapter[],GSF.TimeSeries.Adapters.IActionAdapter[],System.Collections.Generic.IEnumerable{GSF.TimeSeries.MeasurementKey}@,System.Collections.Generic.IEnumerable{GSF.TimeSeries.MeasurementKey}@)">
             <summary>
             Calculates the input and output measurement key dependency chain based on a set of input measurement keys restriction.
             </summary>
             <param name="inputMeasurementKeysRestriction">Input measurement keys restriction.</param>
+            <param name="inputAdapterCollection">Collection of input adapters at start of routing table calculation.</param>
+            <param name="actionAdapterCollection">Collection of action adapters at start of routing table calculation.</param>
             <param name="outputMeasurementKeys">Dependent output measurement keys to return.</param>
             <param name="inputMeasurementKeys">Dependent input measurement keys to return.</param>
         </member>
@@ -958,7 +963,7 @@
             Gets or sets flag to start tracking the absolute latest received measurement values.
             </summary>
             <remarks>
-            Lastest received measurement value will be available via the <see cref="P:GSF.TimeSeries.ConcentratorBase.LatestMeasurements"/> property.
+            Latest received measurement value will be available via the <see cref="P:GSF.TimeSeries.ConcentratorBase.LatestMeasurements"/> property.
             Note that enabling this option will slightly increase the required sorting time.
             </remarks>
         </member>
@@ -997,7 +1002,7 @@
             </para>
             <para>
             With the exception of the values of -1 and 0, this value specifies the desired processing interval for data, e.g.,
-            a timer interval, overwhich to process data. A value of -1 means to use the default processing interval, i.e., use
+            a timer interval, over which to process data. A value of -1 means to use the default processing interval, i.e., use
             the <see cref="P:GSF.TimeSeries.ConcentratorBase.FramesPerSecond"/>, while a value of 0 means to process data as fast as possible.
             </para>
             <para>
@@ -1057,7 +1062,7 @@
             </summary>
             <remarks>
             <para>
-            The concentrator automatically defines a precision timer to provide the heatbeat for frame publication, however if the system
+            The concentrator automatically defines a precision timer to provide the heartbeat for frame publication, however if the system
             gets busy the heartbeat signals can be missed. This property defines a maximum wait timeout before reception of the heartbeat
             signal to make sure frame publications continue to occur in a timely fashion even when a system is under stress.
             </para>
@@ -1209,7 +1214,7 @@
             </summary>
             <remarks>
             Setting this property to <c>true</c> forces system to use timestamps as-is without checking quality.
-            If this property is <c>true</c>, it will supercede operation of <see cref="P:GSF.TimeSeries.ConcentratorBase.AllowSortsByArrival"/>.
+            If this property is <c>true</c>, it will supersede operation of <see cref="P:GSF.TimeSeries.ConcentratorBase.AllowSortsByArrival"/>.
             </remarks>
         </member>
         <member name="P:GSF.TimeSeries.ConcentratorBase.AllowSortsByArrival">
@@ -1317,7 +1322,7 @@
         </member>
         <member name="P:GSF.TimeSeries.ConcentratorBase.WaitHandleExpirations">
             <summary>
-            Gets the total number of wait handle expirations encounted due to delayed precision timer releases.
+            Gets the total number of wait handle expirations encountered due to delayed precision timer releases.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.ConcentratorBase.FramesAheadOfSchedule">
@@ -1365,7 +1370,7 @@
             <param name="processingInterval">Desired processing interval, if applicable.</param>
             <remarks>
             When the <paramref name="processingInterval"/> is set to -1, the frame rate timer interval will be calculated as a distribution
-            of whole milliseonds over the specified number of <paramref name="framesPerSecond"/>. Otherwise the specified
+            of whole milliseconds over the specified number of <paramref name="framesPerSecond"/>. Otherwise the specified
             <paramref name="processingInterval"/> will be used as the timer interval.
             </remarks>
         </member>
@@ -1805,7 +1810,7 @@
         </member>
         <member name="F:GSF.TimeSeries.MeasurementStateFlags.ComparisonAlarm">
             <summary>
-            Defines comparision alarm, i.e., outside threshold of comparison with a real-time value.
+            Defines comparison alarm, i.e., outside threshold of comparison with a real-time value.
             </summary>
         </member>
         <member name="F:GSF.TimeSeries.MeasurementStateFlags.ROCAlarm">
@@ -1985,7 +1990,7 @@
             Gets the adjusted numeric value of this <see cref="T:GSF.TimeSeries.IMeasurement"/>, taking into account the specified <see cref="P:GSF.TimeSeries.IMeasurement.Adder"/> and <see cref="P:GSF.TimeSeries.IMeasurement.Multiplier"/> offsets.
             </summary>
             <remarks>
-            <para>Implementors need to account for <see cref="P:GSF.TimeSeries.IMeasurement.Adder"/> and <see cref="P:GSF.TimeSeries.IMeasurement.Multiplier"/> in return value, e.g.:<br/>
+            <para>Implementers need to account for <see cref="P:GSF.TimeSeries.IMeasurement.Adder"/> and <see cref="P:GSF.TimeSeries.IMeasurement.Multiplier"/> in return value, e.g.:<br/>
             <c>return <see cref="P:GSF.TimeSeries.ITimeSeriesValue`1.Value"/> * <see cref="P:GSF.TimeSeries.IMeasurement.Multiplier"/> + <see cref="P:GSF.TimeSeries.IMeasurement.Adder"/></c>
             </para>
             </remarks>
@@ -1995,15 +2000,15 @@
             Defines an offset to add to the <see cref="T:GSF.TimeSeries.IMeasurement"/> value.
             </summary>
             <remarks>
-            Implementors should make sure this value defaults to zero.
+            Implementers should make sure this value defaults to zero.
             </remarks>
         </member>
         <member name="P:GSF.TimeSeries.IMeasurement.Multiplier">
             <summary>
-            Defines a mulplicative offset to apply to the <see cref="T:GSF.TimeSeries.IMeasurement"/> value.
+            Defines a multiplicative offset to apply to the <see cref="T:GSF.TimeSeries.IMeasurement"/> value.
             </summary>
             <remarks>
-            Implementors should make sure this value defaults to one.
+            Implementers should make sure this value defaults to one.
             </remarks>
         </member>
         <member name="P:GSF.TimeSeries.IMeasurement.StateFlags">
@@ -2016,7 +2021,7 @@
             Gets or sets exact timestamp, in ticks, of when this <see cref="T:GSF.TimeSeries.IMeasurement"/> was received (i.e., created).
             </summary>
             <remarks>
-            <para>Implementors should set this timestamp to be the ticks of <see cref="P:GSF.PrecisionTimer.UtcNow"/> of when this class was created.</para>
+            <para>Implementers should set this timestamp to be the ticks of <see cref="P:GSF.PrecisionTimer.UtcNow"/> of when this class was created.</para>
             <para>The value of this property represents the number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001.</para>
             </remarks>
         </member>

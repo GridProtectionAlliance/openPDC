@@ -5244,6 +5244,11 @@
             Gets flag that determines if the connection type is multicast.
             </summary>
         </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.ConnectionIsListener">
+            <summary>
+            Gets flag that determines if the connection type is a TCP server.
+            </summary>
+        </member>
         <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.ConnectionTime">
             <summary>
             Gets total time connection has been active.
@@ -5413,6 +5418,279 @@
             <summary>
             Gets or sets the function that handles exceptions
             thrown by the precision input timer.
+            </summary>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Initialize">
+            <summary>
+            Initializes the state of the object.
+            </summary>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Start">
+            <summary>
+            Starts the server.
+            </summary>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Stop">
+            <summary>
+            Stops the server.
+            </summary>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.DisconnectOne(System.Guid)">
+            <summary>
+            Disconnects a connected client.
+            </summary>
+            <param name="clientID">ID of the client to be disconnected.</param>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.DisconnectAll">
+            <summary>
+            Disconnects all of the connected clients.
+            </summary>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.SendTo(System.Guid,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends data to the specified client synchronously.
+            </summary>
+            <param name="clientID">ID of the client to which the data is to be sent.</param>
+            <param name="data">The buffer that contains the binary data to be sent.</param>
+            <param name="offset">The zero-based position in the <paramref name="data"/> at which to begin sending data.</param>
+            <param name="length">The number of bytes to be sent from <paramref name="data"/> starting at the <paramref name="offset"/>.</param>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Multicast(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends data to all of the connected clients synchronously.
+            </summary>
+            <param name="data">The buffer that contains the binary data to be sent.</param>
+            <param name="offset">The zero-based position in the <paramref name="data"/> at which to begin sending data.</param>
+            <param name="length">The number of bytes to be sent from <paramref name="data"/> starting at the <paramref name="offset"/>.</param>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.SendToAsync(System.Guid,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends data to the specified client asynchronously.
+            </summary>
+            <param name="clientID">ID of the client to which the data is to be sent.</param>
+            <param name="data">The buffer that contains the binary data to be sent.</param>
+            <param name="offset">The zero-based position in the <paramref name="data"/> at which to begin sending data.</param>
+            <param name="length">The number of bytes to be sent from <paramref name="data"/> starting at the <paramref name="offset"/>.</param>
+            <returns><see cref="T:System.Threading.WaitHandle"/> for the asynchronous operation.</returns>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.MulticastAsync(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Sends data to all of the connected clients asynchronously.
+            </summary>
+            <param name="data">The buffer that contains the binary data to be sent.</param>
+            <param name="offset">The zero-based position in the <paramref name="data"/> at which to begin sending data.</param>
+            <param name="length">The number of bytes to be sent from <paramref name="data"/> starting at the <paramref name="offset"/>.</param>
+            <returns>Array of <see cref="T:System.Threading.WaitHandle"/> for the asynchronous operation.</returns>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Read(System.Guid,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads a number of bytes from the current received data buffer and writes those bytes into a byte array at the specified offset.
+            </summary>
+            <param name="clientID">ID of the client from which data buffer should be read.</param>
+            <param name="buffer">Destination buffer used to hold copied bytes.</param>
+            <param name="startIndex">0-based starting index into destination <paramref name="buffer"/> to begin writing data.</param>
+            <param name="length">The number of bytes to read from current received data buffer and write into <paramref name="buffer"/>.</param>
+            <returns>The number of bytes read.</returns>
+            <remarks>
+            This function should only be called from within the <see cref="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ReceiveClientData"/> event handler. Calling this method outside this
+            event will have unexpected results.
+            </remarks>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.GetSharedServer">
+            <summary>
+            Gets a reference to the shared server listening
+            on this server's local end point.
+            </summary>
+            <returns>A reference to a shared server.</returns>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ReturnSharedServer">
+            <summary>
+            Releases a reference to this server's shared server,
+            and disposes of the shared server if nobody is using it.
+            </summary>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.TerminateSharedClient">
+            <summary>
+            Terminates the server as quickly as possible and
+            removes it from the collection of shared servers.
+            </summary>
+        </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.GetLocalEndPoint">
+            <summary>
+            Determines the local end point this server intends
+            to listen on via configuration string properties.
+            </summary>
+            <returns>The local end point.</returns>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ServerStarted">
+            <summary>
+            Occurs when the server is started.
+            </summary>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ServerStopped">
+            <summary>
+            Occurs when the server is stopped.
+            </summary>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ClientConnected">
+            <summary>
+            Occurs when a client connects to the server.
+            </summary>
+            <remarks>
+            <see cref="F:GSF.EventArgs`1.Argument"/> is the ID of the client that connected to the server.
+            </remarks>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ClientDisconnected">
+            <summary>
+            Occurs when a client disconnects from the server.
+            </summary>
+            <remarks>
+            <see cref="F:GSF.EventArgs`1.Argument"/> is the ID of the client that disconnected from the server.
+            </remarks>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.SendClientDataStart">
+            <summary>
+            Occurs when data is being sent to a client.
+            </summary>
+            <remarks>
+            <see cref="F:GSF.EventArgs`1.Argument"/> is the ID of the client to which the data is being sent.
+            </remarks>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.SendClientDataComplete">
+            <summary>
+            Occurs when data has been sent to a client.
+            </summary>
+            <remarks>
+            <see cref="F:GSF.EventArgs`1.Argument"/> is the ID of the client to which the data has been sent.
+            </remarks>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.SendClientDataException">
+            <summary>
+            Occurs when an <see cref="T:System.Exception"/> is encountered when sending data to a client.
+            </summary>
+            <remarks>
+            <see cref="F:GSF.EventArgs`2.Argument1"/> is the ID of the client to which the data was being sent.<br/>
+            <see cref="F:GSF.EventArgs`2.Argument2"/> is the <see cref="T:System.Exception"/> encountered when sending data to a client.
+            </remarks>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ReceiveClientData">
+            <summary>
+            Occurs when unprocessed data has been received from a client.
+            </summary>
+            <remarks>
+            <para>
+            This event can be used to receive a notification that client data has arrived. The <see cref="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Read(System.Guid,System.Byte[],System.Int32,System.Int32)"/> method can then be used
+            to copy data to an existing buffer. In many cases it will be optimal to use an existing buffer instead of subscribing to the
+            <see cref="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ReceiveClientDataComplete"/> event, however, the data that is available after calling the <see cref="M:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Read(System.Guid,System.Byte[],System.Int32,System.Int32)"/> method
+            will be the original unprocessed data received by the client, i.e., not optionally decrypted or decompressed data.
+            </para>
+            <para>
+            <see cref="F:GSF.EventArgs`2.Argument1"/> is the ID of the client from which data is received.<br/>
+            <see cref="F:GSF.EventArgs`2.Argument2"/> is the number of bytes received in the buffer from the client.
+            </para>
+            </remarks>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ReceiveClientDataComplete">
+            <summary>
+            Occurs when data received from a client has been processed and is ready for consumption.
+            </summary>
+            <remarks>
+            <see cref="F:GSF.EventArgs`3.Argument1"/> is the ID of the client from which data is received.<br/>
+            <see cref="F:GSF.EventArgs`3.Argument2"/> is a new buffer containing post-processed data received from the client starting at index zero.<br/>
+            <see cref="F:GSF.EventArgs`3.Argument3"/> is the number of post-processed bytes received in the buffer from the client.
+            </remarks>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ReceiveClientDataException">
+            <summary>
+            Occurs when an <see cref="T:System.Exception"/> is encountered when receiving data from a client.
+            </summary>
+            <remarks>
+            <see cref="F:GSF.EventArgs`2.Argument1"/> is the ID of the client from which the data was being received.<br/>
+            <see cref="F:GSF.EventArgs`2.Argument2"/> is the <see cref="T:System.Exception"/> encountered when receiving data from a client.
+            </remarks>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.UnhandledUserException">
+            <summary>
+            Occurs when an <see cref="T:System.Exception"/> is encountered in a user-defined function via an event dispatch.
+            </summary>
+            <remarks>
+            <see cref="F:GSF.EventArgs`1.Argument"/> is the <see cref="T:System.Exception"/> thrown by the user-defined function.
+            </remarks>
+        </member>
+        <member name="E:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Disposed">
+            <summary>
+            Raised after the source object has been properly disposed.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Name">
+            <summary>
+            Gets the name of the object providing status information.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Status">
+            <summary>
+            Gets the current status details about object providing status information.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ConfigurationString">
+            <summary>
+            Gets or sets the data required by the server to initialize.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.MaxClientConnections">
+            <summary>
+            Gets or sets the maximum number of clients that can connect to the server.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.SendBufferSize">
+            <summary>
+            Gets or sets the size of the buffer used by the client for receiving data from the server.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ReceiveBufferSize">
+            <summary>
+            Gets or sets the size of the buffer used by the server for receiving data from the clients.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.TextEncoding">
+            <summary>
+            Gets or sets the <see cref="T:System.Text.Encoding"/> to be used for the text sent to the connected clients.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.CurrentState">
+            <summary>
+            Gets the current <see cref="T:GSF.Communication.ServerState"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.TransportProtocol">
+            <summary>
+            Gets the <see cref="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.TransportProtocol"/> used by the server for the transportation of data with the clients.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ServerID">
+            <summary>
+            Gets the server's ID.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.ClientIDs">
+            <summary>
+            Gets the IDs of clients connected to the server.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.RunTime">
+            <summary>
+            Gets the <see cref="T:GSF.Units.Time"/> for which the server has been running.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedTcpServerReference.Enabled">
+            <summary>
+            Gets or sets a boolean value that indicates whether the object is enabled.
             </summary>
         </member>
         <member name="T:GSF.PhasorProtocols.MultiProtocolFrameParser.SharedUdpClientReference">
