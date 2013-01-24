@@ -359,6 +359,7 @@ namespace openPDC.UI.ViewModels
                 OnPropertyChanged("PdcAcronym");
 
                 // Everytime acronym changes, check in the database to see if it already exists.
+                // Checks if the Acronym is duplicated or No, If no then assigns that to zero.
                 PdcMessage = "";
                 Device device = Device.GetDevice(null, " WHERE Acronym = '" + m_pdcAcronym.ToUpper() + "'");
                 if (device != null)
@@ -373,6 +374,8 @@ namespace openPDC.UI.ViewModels
                         PdcMessage = "A non-PDC device with the same acronym exists in the database. Please change acronym.";
                     }
                 }
+                else
+                    PdcID = 0;
             }
         }
 
