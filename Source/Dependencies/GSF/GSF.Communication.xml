@@ -3720,8 +3720,15 @@
             </summary>
             <param name="clientID">ID of the client.</param>
             <param name="tcpClient">The TCP client.</param>
-            <returns>An <see cref="T:GSF.Communication.TransportProvider`1"/> object.</returns>
-            <exception cref="T:System.InvalidOperationException">Client does not exist for the specified <paramref name="clientID"/>.</exception>
+            <returns>A <see cref="T:GSF.Communication.TransportProvider`1"/> object.</returns>
+        </member>
+        <member name="M:GSF.Communication.TcpServer.TryGetClientPrincipal(System.Guid,System.Security.Principal.WindowsPrincipal@)">
+            <summary>
+            Gets the <see cref="T:System.Security.Principal.WindowsPrincipal"/> object associated with the specified client ID.
+            </summary>
+            <param name="clientID">ID of the client.</param>
+            <param name="clientPrincipal">The principal of the client.</param>
+            <returns>A <see cref="T:System.Security.Principal.WindowsPrincipal"/> object.</returns>
         </member>
         <member name="M:GSF.Communication.TcpServer.ValidateConfigurationString(System.String)">
             <summary>
@@ -4470,6 +4477,13 @@
             Gets or sets the size of the buffer used by the client for receiving data from the server.
             </summary>
             <exception cref="T:System.ArgumentException">The value being assigned is either zero or negative.</exception>
+        </member>
+        <member name="P:GSF.Communication.UdpClient.ReceivePacketInfo">
+            <summary>
+            Gets or sets the flag that determines whether the UDP client
+            should attempt to receive packet info when receiving data
+            from the socket.
+            </summary>
         </member>
         <member name="P:GSF.Communication.UdpClient.Status">
             <summary>

@@ -15,6 +15,15 @@
             Initializes this <see cref="T:OneSecondFrequencyAverager.OneSecondFrequencyAverager"/>.
             </summary>
         </member>
+        <member name="M:OneSecondFrequencyAverager.OneSecondFrequencyAverager.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{GSF.TimeSeries.IMeasurement})">
+            <summary>
+            Queues a collection of measurements for processing. Measurements are automatically filtered to the defined <see cref="P:GSF.TimeSeries.Adapters.IAdapter.InputMeasurementKeys"/>.
+            </summary>
+            <param name="measurements">Collection of measurements to queue for processing.</param>
+            <remarks>
+            Measurements are filtered against the defined <see cref="P:GSF.TimeSeries.Adapters.ActionAdapterBase.InputMeasurementKeys"/>.
+            </remarks>
+        </member>
         <member name="M:OneSecondFrequencyAverager.OneSecondFrequencyAverager.PublishFrame(GSF.TimeSeries.IFrame,System.Int32)">
             <summary>
             Publish <see cref="T:GSF.TimeSeries.IFrame"/> of time-aligned collection of <see cref="T:GSF.TimeSeries.IMeasurement"/> values that arrived within the
@@ -22,6 +31,12 @@
             </summary>
             <param name="frame"><see cref="T:GSF.TimeSeries.IFrame"/> of measurements with the same timestamp that arrived within <see cref="P:GSF.TimeSeries.ConcentratorBase.LagTime"/> that are ready for processing.</param>
             <param name="index">Index of <see cref="T:GSF.TimeSeries.IFrame"/> within a second ranging from zero to <c><see cref="P:GSF.TimeSeries.ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
+        </member>
+        <member name="P:OneSecondFrequencyAverager.OneSecondFrequencyAverager.FlatlineCount">
+            <summary>
+            Gets or sets the number of consecutive points the <see cref="T:OneSecondFrequencyAverager.OneSecondFrequencyAverager"/>
+            can receive with the same value before it considers that signal flatlined and discards it.
+            </summary>
         </member>
         <member name="P:OneSecondFrequencyAverager.OneSecondFrequencyAverager.SupportsTemporalProcessing">
             <summary>

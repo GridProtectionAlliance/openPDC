@@ -3227,7 +3227,7 @@
             </summary>
             <param name="buffer">Buffer to search.</param>
             <param name="bytesToFind">Byte sequence to search for.</param>
-            <returns>The zero-based index of the first occurance of the sequence of <paramref name="bytesToFind"/> in the <paramref name="buffer"/>, if found; otherwise, -1.</returns>
+            <returns>The zero-based index of the first occurrence of the sequence of <paramref name="bytesToFind"/> in the <paramref name="buffer"/>, if found; otherwise, -1.</returns>
         </member>
         <member name="M:GSF.BufferExtensions.IndexOfSequence(System.Byte[],System.Byte[],System.Int32)">
             <summary>
@@ -3236,7 +3236,7 @@
             <param name="buffer">Buffer to search.</param>
             <param name="bytesToFind">Byte sequence to search for.</param>
             <param name="startIndex">Start index in the <paramref name="buffer"/> to start searching.</param>
-            <returns>The zero-based index of the first occurance of the sequence of <paramref name="bytesToFind"/> in the <paramref name="buffer"/>, if found; otherwise, -1.</returns>
+            <returns>The zero-based index of the first occurrence of the sequence of <paramref name="bytesToFind"/> in the <paramref name="buffer"/>, if found; otherwise, -1.</returns>
         </member>
         <member name="M:GSF.BufferExtensions.IndexOfSequence(System.Byte[],System.Byte[],System.Int32,System.Int32)">
             <summary>
@@ -3246,7 +3246,7 @@
             <param name="bytesToFind">Byte sequence to search for.</param>
             <param name="startIndex">Start index in the <paramref name="buffer"/> to start searching.</param>
             <param name="length">Number of bytes in the <paramref name="buffer"/> to search through.</param>
-            <returns>The zero-based index of the first occurance of the sequence of <paramref name="bytesToFind"/> in the <paramref name="buffer"/>, if found; otherwise, -1.</returns>
+            <returns>The zero-based index of the first occurrence of the sequence of <paramref name="bytesToFind"/> in the <paramref name="buffer"/>, if found; otherwise, -1.</returns>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="bytesToFind"/> is null or has zero length.
             </exception>
@@ -3256,7 +3256,7 @@
             </exception>
         </member>
         <member name="M:GSF.BufferExtensions.CompareTo(System.Byte[],System.Byte[])">
-            <summary>Returns comparision results of two binary buffers.</summary>
+            <summary>Returns comparison results of two binary buffers.</summary>
             <param name="source">Source buffer.</param>
             <param name="other">Other buffer to compare to <paramref name="source"/> buffer.</param>
             <returns>
@@ -3287,7 +3287,7 @@
         </member>
         <member name="M:GSF.BufferExtensions.CompareTo(System.Byte[],System.Int32,System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Returns comparision results of two binary buffers.
+            Returns comparison results of two binary buffers.
             </summary>
             <param name="source">Source buffer.</param>
             <param name="sourceOffset">Offset into <paramref name="source"/> buffer to begin compare.</param>

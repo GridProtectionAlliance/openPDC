@@ -87,7 +87,7 @@
             <param name="type"><see cref="T:GSF.UpdateType"/> of status message.</param>
             <param name="args">Arguments for <paramref name="formattedStatus"/>.</param>
             <remarks>
-            This overload combines string.Format and SendStatusMessage for convienence.
+            This overload combines string.Format and SendStatusMessage for convenience.
             </remarks>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.IaonSession.OnProcessException(System.Object,System.Exception)">
@@ -262,7 +262,7 @@
             </summary>
             <remarks>
             This event is expected to only be raised when an input adapter has been designed to process
-            a finite amount of data, e.g., reading a historical range of data during temporal procesing.
+            a finite amount of data, e.g., reading a historical range of data during temporal processing.
             </remarks>
         </member>
         <member name="E:GSF.TimeSeries.Adapters.IaonSession.Disposed">
@@ -3696,16 +3696,16 @@
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.SetTemporalConstraint(System.String,System.String,System.String)">
             <summary>
-            Defines a temporal processing constraint for the adapter collection and applies this contraint to each adapter.
+            Defines a temporal processing constraint for the adapter collection and applies this constraint to each adapter.
             </summary>
             <param name="startTime">Defines a relative or exact start time for the temporal constraint.</param>
             <param name="stopTime">Defines a relative or exact stop time for the temporal constraint.</param>
             <param name="constraintParameters">Defines any temporal parameters related to the constraint.</param>
             <remarks>
             <para>
-            This method defines a temporal processing contraint for an adapter, i.e., the start and stop time over which an
+            This method defines a temporal processing constraint for an adapter, i.e., the start and stop time over which an
             adapter will process data. Actual implementation of the constraint will be adapter specific. Implementations
-            should be able to dynamically handle multitple calls to this function with new constraints. Passing in <c>null</c>
+            should be able to dynamically handle multiple calls to this function with new constraints. Passing in <c>null</c>
             for the <paramref name="startTime"/> and <paramref name="stopTime"/> should cancel the temporal constraint and
             return the adapter to standard / real-time operation.
             </para>
@@ -3764,7 +3764,7 @@
             <param name="formattedStatus">Formatted status message.</param>
             <param name="args">Arguments for <paramref name="formattedStatus"/>.</param>
             <remarks>
-            This overload combines string.Format and SendStatusMessage for convienence.
+            This overload combines string.Format and SendStatusMessage for convenience.
             </remarks>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.OnInputMeasurementKeysUpdated">
@@ -3963,7 +3963,7 @@
         </member>
         <member name="P:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.StartTimeConstraint">
             <summary>
-            Gets the start time temporal procesing constraint defined by call to <see cref="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.SetTemporalConstraint(System.String,System.String,System.String)"/>.
+            Gets the start time temporal processing constraint defined by call to <see cref="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.SetTemporalConstraint(System.String,System.String,System.String)"/>.
             </summary>
             <remarks>
             This value will be <see cref="F:System.DateTime.MinValue"/> when start time constraint is not set - meaning the adapter
@@ -3985,7 +3985,7 @@
             </summary>
             <remarks>
             With the exception of the values of -1 and 0, this value specifies the desired processing interval for data, i.e.,
-            basically a delay, or timer interval, overwhich to process data. A value of -1 means to use the default processing
+            basically a delay, or timer interval, over which to process data. A value of -1 means to use the default processing
             interval while a value of 0 means to process data as fast as possible.
             </remarks>
         </member>
@@ -4012,7 +4012,7 @@
         </member>
         <member name="P:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.AutoInitialize">
             <summary>
-            Gets flag that detemines if <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/> implementations are automatically initialized
+            Gets flag that determines if <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/> implementations are automatically initialized
             when they are added to the collection.
             </summary>
         </member>
@@ -4161,7 +4161,7 @@
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterBase.Initialize">
             <summary>
-            Intializes <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
+            Initializes <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
             </summary>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterBase.Start">
@@ -4196,7 +4196,7 @@
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterBase.SetInitializedState(System.Boolean)">
             <summary>
-            Manually sets the intialized state of the <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
+            Manually sets the initialized state of the <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
             </summary>
             <param name="initialized">Desired initialized state.</param>
         </member>
@@ -4230,9 +4230,9 @@
             <param name="constraintParameters">Defines any temporal parameters related to the constraint.</param>
             <remarks>
             <para>
-            This method defines a temporal processing contraint for an adapter, i.e., the start and stop time over which an
+            This method defines a temporal processing constraint for an adapter, i.e., the start and stop time over which an
             adapter will process data. Actual implementation of the constraint will be adapter specific. Implementations
-            should be able to dynamically handle multitple calls to this function with new constraints. Passing in <c>null</c>
+            should be able to dynamically handle multiple calls to this function with new constraints. Passing in <c>null</c>
             for the <paramref name="startTime"/> and <paramref name="stopTime"/> should cancel the temporal constraint and
             return the adapter to standard / real-time operation.
             </para>
@@ -4291,7 +4291,7 @@
             <param name="formattedStatus">Formatted status message.</param>
             <param name="args">Arguments for <paramref name="formattedStatus"/>.</param>
             <remarks>
-            This overload combines string.Format and SendStatusMessage for convienence.
+            This overload combines string.Format and SendStatusMessage for convenience.
             </remarks>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterBase.OnProcessException(System.Exception)">
@@ -4509,7 +4509,7 @@
                 <item>
                     <term>Multiplier</term>
                     <term>FLOAT</term>
-                    <description>Multipler to apply to value, if any (default to 1.0).</description>
+                    <description>Multiplier to apply to value, if any (default to 1.0).</description>
                 </item>
             </list>
             </para>
@@ -4600,7 +4600,7 @@
         </member>
         <member name="P:GSF.TimeSeries.Adapters.AdapterBase.StartTimeConstraint">
             <summary>
-            Gets the start time temporal procesing constraint defined by call to <see cref="M:GSF.TimeSeries.Adapters.AdapterBase.SetTemporalConstraint(System.String,System.String,System.String)"/>.
+            Gets the start time temporal processing constraint defined by call to <see cref="M:GSF.TimeSeries.Adapters.AdapterBase.SetTemporalConstraint(System.String,System.String,System.String)"/>.
             </summary>
             <remarks>
             This value will be <see cref="F:System.DateTime.MinValue"/> when start time constraint is not set - meaning the adapter
@@ -4622,7 +4622,7 @@
             </summary>
             <remarks>
             With the exception of the values of -1 and 0, this value specifies the desired processing interval for data, i.e.,
-            basically a delay, or timer interval, overwhich to process data. A value of -1 means to use the default processing
+            basically a delay, or timer interval, over which to process data. A value of -1 means to use the default processing
             interval while a value of 0 means to process data as fast as possible.
             </remarks>
         </member>
@@ -5962,6 +5962,36 @@
             <param name="parameterNames">A string array that contains zero or more parameter names to format.</param>
             <returns>A parameterized query string based on the given format and parameter names.</returns>
         </member>
+        <member name="T:GSF.TimeSeries.BufferBlockMeasurement">
+            <summary>
+            Represents a byte buffer that can be transported through the system as a <see cref="T:GSF.TimeSeries.IMeasurement"/>.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.BufferBlockMeasurement.#ctor">
+            <summary>
+            Creates a new <see cref="T:GSF.TimeSeries.BufferBlockMeasurement"/>.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.BufferBlockMeasurement.#ctor(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Creates a new <see cref="T:GSF.TimeSeries.BufferBlockMeasurement"/> from an existing buffer.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="startIndex"/> or <paramref name="length"/> is less than 0 -or- 
+            <paramref name="startIndex"/> and <paramref name="length"/> will exceed <paramref name="buffer"/> length.
+            </exception>
+        </member>
+        <member name="P:GSF.TimeSeries.BufferBlockMeasurement.Buffer">
+            <summary>
+            Cached buffer image;
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.BufferBlockMeasurement.Length">
+            <summary>
+            Valid length of cached buffer image.
+            </summary>
+        </member>
         <member name="T:GSF.TimeSeries.Transport.ClientConnection">
             <summary>
             Represents a <see cref="T:GSF.TimeSeries.Transport.DataSubscriber"/> client connection to the <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
@@ -6173,7 +6203,7 @@
             response code along with an associated success or failure message. Message type for successful responses will be based
             on server command - for example, server response for a successful MetaDataRefresh command will return a serialized
             <see cref="T:System.Data.DataSet"/> of the available server metadata. Message type for failed responses will always be a string of
-            text respresenting the error message.
+            text representing the error message.
             </remarks>
         </member>
         <member name="F:GSF.TimeSeries.Transport.ServerCommand.Authenticate">
@@ -6320,6 +6350,14 @@
             Unsolicited response provides notification that input processing has completed, typically via temporal constraint.
             </remarks>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.ServerResponse.BufferBlock">
+            <summary>
+            Buffer block response.
+            </summary>
+            <remarks>
+            Unsolicited response informs client that a raw buffer block follows.
+            </remarks>
+        </member>
         <member name="F:GSF.TimeSeries.Transport.ServerResponse.NoOP">
             <summary>
             No operation keep-alive ping.
@@ -6351,7 +6389,7 @@
         </member>
         <member name="F:GSF.TimeSeries.Transport.DataPacketFlags.CipherIndex">
             <summary>
-            Detemines which cipher index to use when encrypting data packet.
+            Determines which cipher index to use when encrypting data packet.
             </summary>
             <remarks>
             Bit set = use odd cipher index (i.e., 1), bit clear = use even cipher index (i.e., 0).
@@ -6419,7 +6457,7 @@
         </member>
         <member name="F:GSF.TimeSeries.Transport.OperationalModes.CompressMetadata">
             <summary>
-            Determines whether is compressed when exchanging between publisher and subscriber.
+            Determines whether metadata is compressed when exchanging between publisher and subscriber.
             </summary>
             <remarks>
             Bit set = compress, bit clear = no compression
@@ -6539,7 +6577,7 @@
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.Initialize">
             <summary>
-            Intializes <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
+            Initializes <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
             </summary>
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{GSF.TimeSeries.IMeasurement})">
@@ -6735,7 +6773,7 @@
             </summary>
             <remarks>
             This event is expected to only be raised when an input adapter has been designed to process
-            a finite amount of data, e.g., reading a historical range of data during temporal procesing.
+            a finite amount of data, e.g., reading a historical range of data during temporal processing.
             </remarks>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.RequireAuthentication">
@@ -6801,7 +6839,7 @@
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.MetadataTables">
             <summary>
-            Gets or sets comma seperated list of tables to include in meta-data exchange.
+            Gets or sets comma separated list of tables to include in meta-data exchange.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.ClientConnections">
@@ -6847,7 +6885,7 @@
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.Authenticate(System.String,System.String)">
             <summary>
-            Authenticates subcriber to a data publisher.
+            Authenticates subscriber to a data publisher.
             </summary>
             <param name="sharedSecret">Shared secret used to look up private crypto key and initialization vector.</param>
             <param name="authenticationID">Authentication ID that publisher will use to validate subscriber identity.</param>
@@ -8165,19 +8203,19 @@
         </member>
         <member name="M:GSF.TimeSeries.Transport.IClientSubscription.OnStatusMessage(System.String)">
             <summary>
-            Explictly raises the <see cref="E:GSF.TimeSeries.Adapters.IAdapter.StatusMessage"/> event.
+            Explicitly raises the <see cref="E:GSF.TimeSeries.Adapters.IAdapter.StatusMessage"/> event.
             </summary>
             <param name="status">New status message.</param>
         </member>
         <member name="M:GSF.TimeSeries.Transport.IClientSubscription.OnProcessException(System.Exception)">
             <summary>
-            Explictly raises the <see cref="E:GSF.TimeSeries.Adapters.IAdapter.ProcessException"/> event.
+            Explicitly raises the <see cref="E:GSF.TimeSeries.Adapters.IAdapter.ProcessException"/> event.
             </summary>
             <param name="ex">Processing <see cref="T:System.Exception"/>.</param>
         </member>
         <member name="M:GSF.TimeSeries.Transport.IClientSubscription.OnProcessingCompleted(System.Object,System.EventArgs)">
             <summary>
-            Explictly raises the <see cref="E:GSF.TimeSeries.Adapters.IInputAdapter.ProcessingComplete"/> event.
+            Explicitly raises the <see cref="E:GSF.TimeSeries.Adapters.IInputAdapter.ProcessingComplete"/> event.
             </summary>
             <param name="sender"><see cref="T:GSF.TimeSeries.Adapters.IInputAdapter"/> raising the notification.</param>
             <param name="e">Event arguments for notification, if any.</param>
@@ -8188,7 +8226,7 @@
             </summary>
             <remarks>
             This event is expected to only be raised when an input adapter has been designed to process
-            a finite amount of data, e.g., reading a historical range of data during temporal procesing.
+            a finite amount of data, e.g., reading a historical range of data during temporal processing.
             </remarks>
         </member>
         <member name="P:GSF.TimeSeries.Transport.IClientSubscription.ClientID">
@@ -8701,7 +8739,7 @@
             </summary>
             <remarks>
             This event is expected to only be raised when an input adapter has been designed to process
-            a finite amount of data, e.g., reading a historical range of data during temporal procesing.
+            a finite amount of data, e.g., reading a historical range of data during temporal processing.
             </remarks>
         </member>
         <member name="P:GSF.TimeSeries.Transport.SynchronizedClientSubscription.ClientID">
@@ -8740,7 +8778,7 @@
             </summary>
             <remarks>
             With the exception of the values of -1 and 0, this value specifies the desired processing interval for data, i.e.,
-            basically a delay, or timer interval, overwhich to process data. A value of -1 means to use the default processing
+            basically a delay, or timer interval, over which to process data. A value of -1 means to use the default processing
             interval while a value of 0 means to process data as fast as possible.
             </remarks>
         </member>
@@ -8844,7 +8882,7 @@
             <param name="measurements">Collection of measurements to queue for processing.</param>
             <remarks>
             Measurements are filtered against the defined <see cref="P:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.InputMeasurementKeys"/> so we override method
-            so that dyanmic updates to keys will be synchronized with filtering to prevent interference.
+            so that dynamic updates to keys will be synchronized with filtering to prevent interference.
             </remarks>
         </member>
         <member name="E:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.ProcessingComplete">
@@ -8853,7 +8891,7 @@
             </summary>
             <remarks>
             This event is expected to only be raised when an input adapter has been designed to process
-            a finite amount of data, e.g., reading a historical range of data during temporal procesing.
+            a finite amount of data, e.g., reading a historical range of data during temporal processing.
             </remarks>
         </member>
         <member name="P:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.ClientID">
@@ -8897,7 +8935,7 @@
             </summary>
             <remarks>
             With the exception of the values of -1 and 0, this value specifies the desired processing interval for data, i.e.,
-            basically a delay, or timer interval, overwhich to process data. A value of -1 means to use the default processing
+            basically a delay, or timer interval, over which to process data. A value of -1 means to use the default processing
             interval while a value of 0 means to process data as fast as possible.
             </remarks>
         </member>
