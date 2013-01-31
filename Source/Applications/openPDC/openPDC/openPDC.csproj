@@ -148,7 +148,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="App64.config" />
     <Content Include="Sample1344.PmuCapture" />
   </ItemGroup>
   <ItemGroup>
