@@ -208,29 +208,29 @@
 			-->
       <Component Id="CMP_SourceDir.openPDCEXE" Guid="{E108AD8E-3956-EEFA-63EC-0F4250054A17}" Win64="yes">
         <Condition>INSTALLOPENPDC=1</Condition>
-        <File Id="FILE_SourceDir.openPDCEXE" Name="openPDC.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDCEXE" AssemblyApplication="FILE_SourceDir.openPDCEXE" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDC.exe" />
+        <File Id="FILE_SourceDir.openPDCEXE" Name="openPDC.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDCEXE" AssemblyApplication="FILE_SourceDir.openPDCEXE" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\openPDC.exe" />
       </Component>
       <Component Id="CMP_SourceDir.openPDC.exeCONFIG" Guid="{8107F076-899F-AA0E-F0BD-CCEC691A6B0D}" Permanent="yes" Win64="yes">
         <Condition>INSTALLOPENPDC=1</Condition>
-        <File Id="FILE_SourceDir.openPDC.exeCONFIG" Name="openPDC.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDC.exe.config" />
+        <File Id="FILE_SourceDir.openPDC.exeCONFIG" Name="openPDC.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\openPDC.exe.config" />
       </Component>
       <Component Id="CMP_SourceDir.openPDCConsoleEXE" Guid="{B7356563-53A5-6941-A0F5-BBF61EADCDDC}" Win64="yes">
         <Condition>INSTALLCONSOLE=1</Condition>
-        <File Id="FILE_SourceDir.openPDCConsoleEXE" Name="openPDCConsole.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDCConsoleEXE" AssemblyApplication="FILE_SourceDir.openPDCConsoleEXE" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDCConsole.exe" />
+        <File Id="FILE_SourceDir.openPDCConsoleEXE" Name="openPDCConsole.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDCConsoleEXE" AssemblyApplication="FILE_SourceDir.openPDCConsoleEXE" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\openPDCConsole.exe" />
         <Shortcut Id="SHORTCUT_openPDCConsole.exe" Directory="ProgramMenuFolder.openPDC" Name="openPDC Console" Icon="ICON_openPDCConsole.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
       </Component>
       <Component Id="CMP_SourceDir.openPDCConsole.exeCONFIG" Guid="{02EE091F-6373-CDE1-620C-6F230FFF33AC}" Win64="yes">
         <Condition>INSTALLCONSOLE=1</Condition>
-        <File Id="FILE_SourceDir.openPDCConsole.exeCONFIG" Name="openPDCConsole.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDCConsole.exe.config" />
+        <File Id="FILE_SourceDir.openPDCConsole.exeCONFIG" Name="openPDCConsole.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\openPDCConsole.exe.config" />
       </Component>
       <Component Id="CMP_SourceDir.ConfigurationSetupUtilityEXE" Guid="{7E3BEEED-F51F-3A73-7BCB-E17E017DC2DD}" Win64="yes">
         <Condition>INSTALLOPENPDC=1 OR INSTALLMANAGER=1</Condition>
-        <File Id="FILE_SourceDir.ConfigurationSetupUtilityEXE" Name="ConfigurationSetupUtility.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.ConfigurationSetupUtilityEXE" AssemblyApplication="FILE_SourceDir.ConfigurationSetupUtilityEXE" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\ConfigurationSetupUtility.exe" />
+        <File Id="FILE_SourceDir.ConfigurationSetupUtilityEXE" Name="ConfigurationSetupUtility.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.ConfigurationSetupUtilityEXE" AssemblyApplication="FILE_SourceDir.ConfigurationSetupUtilityEXE" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\ConfigurationSetupUtility.exe" />
         <Shortcut Id="SHORTCUT_ConfigurationSetupUtility.exe" Directory="ProgramMenuFolder.openPDC" Name="Configuration Setup Utility" Arguments="-64bit" Icon="ICON_ConfigurationSetupUtility.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
       </Component>
       <Component Id="CMP_SourceDir.ConfigurationSetupUtility.exeCONFIG" Guid="{C3454296-0ECB-2F22-087C-881BC4F3397F}" Win64="yes">
         <Condition>INSTALLOPENPDC=1 OR INSTALLMANAGER=1</Condition>
-        <File Id="FILE_SourceDir.ConfigurationSetupUtility.exeCONFIG" Name="ConfigurationSetupUtility.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\ConfigurationSetupUtility.exe.config" />
+        <File Id="FILE_SourceDir.ConfigurationSetupUtility.exeCONFIG" Name="ConfigurationSetupUtility.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\ConfigurationSetupUtility.exe.config" />
       </Component>
       <Component Id="CMP_SourceDir.Sample1344.PMUCAPTURE" Guid="{594F2670-C14B-A405-B672-01EC125DB339}" Win64="yes">
         <Condition>INSTALLOPENPDC=1</Condition>
@@ -241,35 +241,35 @@
 			-->
       <Component Id="CMP_SourceDir.openPDCManagerEXE" Guid="{16005BF1-6868-4DB8-A986-02FF321379B8}" Win64="yes">
         <Condition>INSTALLMANAGER=1</Condition>
-        <File Id="FILE_SourceDir.openPDCManagerEXE" Name="openPDCManager.exe" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDCManager.exe" />
+        <File Id="FILE_SourceDir.openPDCManagerEXE" Name="openPDCManager.exe" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\openPDCManager.exe" />
         <Shortcut Id="SHORTCUT_openPDCManagerEXE" Directory="ProgramMenuFolder.openPDC" Name="openPDC Manager" Description="openPDC Manager" Icon="ICON_openPDCManager.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
       </Component>
       <Component Id="CMP_SourceDir.openPDCManager.exeCONFIG" Guid="{6E4D8453-2515-0868-E8BE-0D0E70DC30C7}" Win64="yes">
         <Condition>INSTALLMANAGER=1</Condition>
-        <File Id="FILE_SourceDir.openPDCManager.exeCONFIG" Name="openPDCManager.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDCManager.exe.config" />
+        <File Id="FILE_SourceDir.openPDCManager.exeCONFIG" Name="openPDCManager.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\openPDCManager.exe.config" />
       </Component>
       <Component Id="CMP_SourceDir.openPDC.UIDLL" Guid="{1B3E8379-5623-A5EF-7B5E-465614E09EC6}" Win64="yes">
         <Condition>INSTALLMANAGER=1</Condition>
-        <File Id="FILE_SourceDir.openPDC.UIDLL" Name="openPDC.UI.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDC.UIDLL" AssemblyApplication="FILE_SourceDir.openPDC.UIDLL" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Libraries\openPDC.UI.dll" />
+        <File Id="FILE_SourceDir.openPDC.UIDLL" Name="openPDC.UI.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDC.UIDLL" AssemblyApplication="FILE_SourceDir.openPDC.UIDLL" DiskId="1" Source="..\..\..\..\Build\Output\Release\Libraries\openPDC.UI.dll" />
       </Component>
       <Component Id="CMP_SourceDir.openPDC.UI.WPFDLL" Guid="{E3674102-965B-3960-981A-2D50514AC09C}" Win64="yes">
         <Condition>INSTALLMANAGER=1</Condition>
-        <File Id="FILE_SourceDir.openPDC.UI.WPFDLL" Name="openPDC.UI.WPF.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDC.UI.WPFDLL" AssemblyApplication="FILE_SourceDir.openPDC.UI.WPFDLL" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Libraries\openPDC.UI.WPF.dll" />
+        <File Id="FILE_SourceDir.openPDC.UI.WPFDLL" Name="openPDC.UI.WPF.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPDC.UI.WPFDLL" AssemblyApplication="FILE_SourceDir.openPDC.UI.WPFDLL" DiskId="1" Source="..\..\..\..\Build\Output\Release\Libraries\openPDC.UI.WPF.dll" />
       </Component>
       <Component Id="CMP_SourceDir.MenuXML" Guid="{163D9524-E210-9D73-3A41-BCDA5038CDA7}" Win64="yes">
         <Condition>INSTALLMANAGER=1</Condition>
-        <File Id="FILE_SourceDir.MenuXML" Name="Menu.xml" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Menu.xml" />
+        <File Id="FILE_SourceDir.MenuXML" Name="Menu.xml" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Menu.xml" />
       </Component>
       <!--
 				openPG
 			-->
       <Component Id="CMP_SourceDir.openPG.UIDLL" Guid="{E777FC01-0A9B-A117-DCF0-AF46C78B31FC}" Win64="yes">
         <Condition>INSTALLMANAGER=1</Condition>
-        <File Id="FILE_SourceDir.openPG.UIDLL" Name="openPG.UI.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPG.UIDLL" AssemblyApplication="FILE_SourceDir.openPG.UIDLL" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Libraries\openPG.UI.dll" />
+        <File Id="FILE_SourceDir.openPG.UIDLL" Name="openPG.UI.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPG.UIDLL" AssemblyApplication="FILE_SourceDir.openPG.UIDLL" DiskId="1" Source="..\..\..\..\Build\Output\Release\Libraries\openPG.UI.dll" />
       </Component>
       <Component Id="CMP_SourceDir.openPG.UI.WPFDLL" Guid="{0B364D6A-7753-DF04-739A-D39CF1C2347F}" Win64="yes">
         <Condition>INSTALLMANAGER=1</Condition>
-        <File Id="FILE_SourceDir.openPG.UI.WPFDLL" Name="openPG.UI.WPF.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPG.UI.WPFDLL" AssemblyApplication="FILE_SourceDir.openPG.UI.WPFDLL" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Libraries\openPG.UI.WPF.dll" />
+        <File Id="FILE_SourceDir.openPG.UI.WPFDLL" Name="openPG.UI.WPF.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.openPG.UI.WPFDLL" AssemblyApplication="FILE_SourceDir.openPG.UI.WPFDLL" DiskId="1" Source="..\..\..\..\Build\Output\Release\Libraries\openPG.UI.WPF.dll" />
       </Component>
       <!--
 				GSF Tools
@@ -326,12 +326,12 @@
 			-->
       <Component Id="CMP_SourceDir.MacrodyneControllerEXE" Guid="{84E46A11-79A2-11BD-2B0D-E8CAE86C6B74}" Win64="yes">
         <Condition>INSTALLTOOLS=1</Condition>
-        <File Id="FILE_SourceDir.MacrodyneControllerEXE" Name="MacrodyneController.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.MacrodyneControllerEXE" AssemblyApplication="FILE_SourceDir.MacrodyneControllerEXE" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Tools\MacrodyneController\MacrodyneController.exe" />
+        <File Id="FILE_SourceDir.MacrodyneControllerEXE" Name="MacrodyneController.exe" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.MacrodyneControllerEXE" AssemblyApplication="FILE_SourceDir.MacrodyneControllerEXE" DiskId="1" Source="..\..\..\..\Build\Output\Release\Tools\MacrodyneController\MacrodyneController.exe" />
         <Shortcut Id="SHORTCUT_MacrodyneController.exe" Directory="ProgramMenuFolder.openPDC" Name="Macrodyne Host Controller" Icon="ICON_MacrodyneController.exe" IconIndex="0" Show="normal" WorkingDirectory="TARGETDIR" Advertise="yes" />
       </Component>
       <Component Id="CMP_SourceDir.MacrodyneController.exeCONFIG" Guid="{E2DF8C0A-16C3-068E-FFB0-43C00826F14C}" Win64="yes">
         <Condition>INSTALLTOOLS=1</Condition>
-        <File Id="FILE_SourceDir.MacrodyneController.exeCONFIG" Name="MacrodyneController.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Tools\MacrodyneController\MacrodyneController.exe.config" />
+        <File Id="FILE_SourceDir.MacrodyneController.exeCONFIG" Name="MacrodyneController.exe.config" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Tools\MacrodyneController\MacrodyneController.exe.config" />
       </Component>
       <!-- 
 				Start Menu
@@ -350,70 +350,70 @@
         <!-- MySQL -->
         <Directory Id="DIR_DBScripts_MySQL" Name="MySQL">
           <Component Id="CMP_DBScripts_MySQL.SampleDataSetSQL" Guid="{A0CE45F8-FB58-7CB1-4388-BD9E62C17ABD}" Win64="yes">
-            <File Id="FILE_DBScripts_MySQL.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\MySQL\SampleDataSet.sql" />
+            <File Id="FILE_DBScripts_MySQL.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\MySQL\SampleDataSet.sql" />
           </Component>
           <Component Id="CMP_DBScripts_MySQL.InitialDataSetSQL" Guid="{9D46FC99-5615-DA54-7638-95DDF82EE6C9}" Win64="yes">
-            <File Id="FILE_DBScripts_MySQL.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\MySQL\InitialDataSet.sql" />
+            <File Id="FILE_DBScripts_MySQL.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\MySQL\InitialDataSet.sql" />
           </Component>
           <Component Id="CMP_DBScripts_MySQL.AuditLogSQL" Guid="{7EB4314C-743D-4360-BE12-9CB4578D83AC}" Win64="yes">
-            <File Id="FILE_DBScripts_MySQL.AuditLogSQL" Name="AuditLog.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\MySQL\AuditLog.sql" />
+            <File Id="FILE_DBScripts_MySQL.AuditLogSQL" Name="AuditLog.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\MySQL\AuditLog.sql" />
           </Component>
           <Component Id="CMP_DBScripts_MySQL.openPDCSQL" Guid="{22A7C764-501D-1B0A-D4AD-A2AAD97ED6AE}" Win64="yes">
-            <File Id="FILE_DBScripts_MySQL.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\MySQL\openPDC.sql" />
+            <File Id="FILE_DBScripts_MySQL.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\MySQL\openPDC.sql" />
           </Component>
         </Directory>
         <!-- Oracle -->
         <Directory Id="DIR_DBScripts_Oracle" Name="Oracle">
           <Component Id="CMP_DBScripts_Oracle.InitialDataSetSQL" Guid="{E5CB4A4C-B692-CE35-7E7A-85E408BCCE0A}" Win64="yes">
-            <File Id="FILE_DBScripts_Oracle.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\Oracle\InitialDataSet.sql" />
+            <File Id="FILE_DBScripts_Oracle.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\Oracle\InitialDataSet.sql" />
           </Component>
           <Component Id="CMP_DBScripts_Oracle.SampleDataSetSQL" Guid="{16D0E549-3443-B736-BEE3-7545B69B1C8B}" Win64="yes">
-            <File Id="FILE_DBScripts_Oracle.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\Oracle\SampleDataSet.sql" />
+            <File Id="FILE_DBScripts_Oracle.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\Oracle\SampleDataSet.sql" />
           </Component>
           <Component Id="CMP_DBScripts_Oracle.openPDCSQL" Guid="{BC0454F5-B80D-5006-59D4-A82B3A9BC617}" Win64="yes">
-            <File Id="FILE_DBScripts_Oracle.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\Oracle\openPDC.sql" />
+            <File Id="FILE_DBScripts_Oracle.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\Oracle\openPDC.sql" />
           </Component>
           <Component Id="CMP_DBScripts_Oracle.AuditLogSQL" Guid="{D2875C9B-43F8-0B88-7172-10B0EA489BC2}" Win64="yes">
-            <File Id="FILE_DBScripts_Oracle.AuditLogSQL" Name="AuditLog.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\Oracle\AuditLog.sql" />
+            <File Id="FILE_DBScripts_Oracle.AuditLogSQL" Name="AuditLog.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\Oracle\AuditLog.sql" />
           </Component>
         </Directory>
         <!-- SQLite -->
         <Directory Id="DIR_DBScripts_SQLite" Name="SQLite">
           <Component Id="CMP_DBScripts_SQLite.sqlite3EXE" Guid="{59194783-23DB-40FA-301F-6D9A79E3D5C3}" Win64="yes">
-            <File Id="FILE_DBScripts_SQLite.sqlite3EXE" Name="sqlite3.exe" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\sqlite3.exe" />
+            <File Id="FILE_DBScripts_SQLite.sqlite3EXE" Name="sqlite3.exe" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\SQLite\sqlite3.exe" />
           </Component>
           <Component Id="CMP_DBScripts_SQLite.SampleDataSetSQL" Guid="{1B0C1756-F20D-809A-FD7D-AC933B638239}" Win64="yes">
-            <File Id="FILE_DBScripts_SQLite.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\SampleDataSet.sql" />
+            <File Id="FILE_DBScripts_SQLite.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\SQLite\SampleDataSet.sql" />
           </Component>
           <Component Id="CMP_DBScripts_SQLite.openPDCDB" Guid="{A489CBDA-C117-8503-3833-44A43591702A}" Win64="yes">
-            <File Id="FILE_DBScripts_SQLite.openPDCDB" Name="openPDC.db" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\openPDC.db" />
+            <File Id="FILE_DBScripts_SQLite.openPDCDB" Name="openPDC.db" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\SQLite\openPDC.db" />
           </Component>
           <Component Id="CMP_DBScripts_SQLite.SampleDataSetDB" Guid="{ABCFA7FB-263B-C7F2-52F2-72A0D7E66338}" Win64="yes">
-            <File Id="FILE_DBScripts_SQLite.SampleDataSetDB" Name="openPDC-SampleDataSet.db" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\openPDC-SampleDataSet.db" />
+            <File Id="FILE_DBScripts_SQLite.SampleDataSetDB" Name="openPDC-SampleDataSet.db" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\SQLite\openPDC-SampleDataSet.db" />
           </Component>
           <Component Id="CMP_DBScripts_SQLite.InitialDataSetSQL" Guid="{4B3EC3EA-DE37-A4F3-DA42-D8643BDE2419}" Win64="yes">
-            <File Id="FILE_DBScripts_SQLite.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\InitialDataSet.sql" />
+            <File Id="FILE_DBScripts_SQLite.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\SQLite\InitialDataSet.sql" />
           </Component>
           <Component Id="CMP_DBScripts_SQLite.InitialDataSetDB" Guid="{EFF09CEE-E200-8181-EA6A-8CC5F04DA66B}" Win64="yes">
-            <File Id="FILE_DBScripts_SQLite.InitialDataSetDB" Name="openPDC-InitialDataSet.db" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\openPDC-InitialDataSet.db" />
+            <File Id="FILE_DBScripts_SQLite.InitialDataSetDB" Name="openPDC-InitialDataSet.db" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\SQLite\openPDC-InitialDataSet.db" />
           </Component>
           <Component Id="CMP_DBScripts_SQLite.openPDCSQL" Guid="{9E066F16-454F-B375-FFD8-2952F120A69A}" Win64="yes">
-            <File Id="FILE_DBScripts_SQLite.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQLite\openPDC.sql" />
+            <File Id="FILE_DBScripts_SQLite.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\SQLite\openPDC.sql" />
           </Component>
         </Directory>
         <!-- SQL Server -->
         <Directory Id="DIR_DBScripts_SQLServer" Name="SQL Server">
           <Component Id="CMP_DBScripts_SQLServer.SampleDataSetSQL" Guid="{7B514754-529A-764E-F819-5E1DF4B998A8}" Win64="yes">
-            <File Id="FILE_DBScripts_SQLServer.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQL Server\SampleDataSet.sql" />
+            <File Id="FILE_DBScripts_SQLServer.SampleDataSetSQL" Name="SampleDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\SQL Server\SampleDataSet.sql" />
           </Component>
           <Component Id="CMP_DBScripts_SQLServer.AuditLogSQL" Guid="{B50DD1C2-84C4-5E1E-731B-EE8660C7DC93}" Win64="yes">
-            <File Id="FILE_DBScripts_SQLServer.AuditLogSQL" Name="AuditLog.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQL Server\AuditLog.sql" />
+            <File Id="FILE_DBScripts_SQLServer.AuditLogSQL" Name="AuditLog.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\SQL Server\AuditLog.sql" />
           </Component>
           <Component Id="CMP_DBScripts_SQLServer.openPDCSQL" Guid="{27330CBF-0217-5CC7-67E7-76D4D5DBBADA}" Win64="yes">
-            <File Id="FILE_DBScripts_SQLServer.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQL Server\openPDC.sql" />
+            <File Id="FILE_DBScripts_SQLServer.openPDCSQL" Name="openPDC.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\SQL Server\openPDC.sql" />
           </Component>
           <Component Id="CMP_DBScripts_SQLServer.InitialDataSetSQL" Guid="{E0F115BF-98C9-1904-EC96-9713E211A21B}" Win64="yes">
-            <File Id="FILE_DBScripts_SQLServer.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Debug\Applications\openPDC\Database Scripts\SQL Server\InitialDataSet.sql" />
+            <File Id="FILE_DBScripts_SQLServer.InitialDataSetSQL" Name="InitialDataSet.sql" KeyPath="yes" DiskId="1" Source="..\..\..\..\Build\Output\Release\Applications\openPDC\Database Scripts\SQL Server\InitialDataSet.sql" />
           </Component>
         </Directory>
       </Directory>
@@ -596,16 +596,16 @@
     </Feature>
 
 
-    <Icon Id="ICON_openPDC.exe" SourceFile="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDC.exe" />
-    <Icon Id="ICON_openPDCManager.exe" SourceFile="..\..\..\..\Build\Output\Debug\Applications\openPDCManager\openPDCManager.exe" />
+    <Icon Id="ICON_openPDC.exe" SourceFile="..\..\..\..\Build\Output\Release\Applications\openPDC\openPDC.exe" />
+    <Icon Id="ICON_openPDCManager.exe" SourceFile="..\..\..\..\Build\Output\Release\Applications\openPDCManager\openPDCManager.exe" />
     <Icon Id="ICON_ConfigurationEditor.exe" SourceFile="ConfigurationEditor.exe" />
     <Icon Id="ICON_HistorianPlaybackUtility.exe" SourceFile="HistorianPlaybackUtility.exe"/>
     <Icon Id="ICON_HistorianView.exe" SourceFile="HistorianView.exe" />
-    <Icon Id="ICON_MacrodyneController.exe" SourceFile="..\..\..\..\Build\Output\Debug\Tools\MacrodyneController\MacrodyneController.exe" />
+    <Icon Id="ICON_MacrodyneController.exe" SourceFile="..\..\..\..\Build\Output\Release\Tools\MacrodyneController\MacrodyneController.exe" />
     <Icon Id="ICON_ConfigCrypter.exe" SourceFile="ConfigCrypter.exe" />
     <Icon Id="ICON_DataMigrationUtility.exe" SourceFile="DataMigrationUtility.exe" />
-    <Icon Id="ICON_ConfigurationSetupUtility.exe" SourceFile="..\..\..\..\Build\Output\Debug\Tools\ConfigurationSetupUtility\ConfigurationSetupUtility.exe" />
-    <Icon Id="ICON_openPDCConsole.exe" SourceFile="..\..\..\..\Build\Output\Debug\Applications\openPDC\openPDCConsole.exe" />
+    <Icon Id="ICON_ConfigurationSetupUtility.exe" SourceFile="..\..\..\..\Build\Output\Release\Tools\ConfigurationSetupUtility\ConfigurationSetupUtility.exe" />
+    <Icon Id="ICON_openPDCConsole.exe" SourceFile="..\..\..\..\Build\Output\Release\Applications\openPDC\openPDCConsole.exe" />
 
     <Media Id="1" Cabinet="_6B36B7D3C743CECAF91890EEF1666533" EmbedCab="yes" />
 

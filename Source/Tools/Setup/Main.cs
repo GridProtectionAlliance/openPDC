@@ -173,7 +173,7 @@ namespace Setup
             {
                 // Install current version of the openPDC
                 if (radioButton64bit.Checked)
-                    openPDCInstall.StartInfo.Arguments = "/i Installers\\openPDCSetup64.msi";
+                    openPDCInstall.StartInfo.Arguments = "/i Installers\\openPDCSetup.msi";
                 else
                     openPDCInstall.StartInfo.Arguments = "/i Installers\\openPDCSetup.msi";
             }

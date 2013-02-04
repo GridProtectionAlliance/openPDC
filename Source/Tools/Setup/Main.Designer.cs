@@ -143,6 +143,7 @@
             // radioButton64bit
             // 
             this.radioButton64bit.AutoSize = true;
+            this.radioButton64bit.Checked = true;
             this.radioButton64bit.Location = new System.Drawing.Point(16, 51);
             this.radioButton64bit.Name = "radioButton64bit";
             this.radioButton64bit.Size = new System.Drawing.Size(196, 20);
@@ -156,12 +157,11 @@
             // radioButton32bit
             // 
             this.radioButton32bit.AutoSize = true;
-            this.radioButton32bit.Checked = true;
+            this.radioButton32bit.Enabled = false;
             this.radioButton32bit.Location = new System.Drawing.Point(16, 24);
             this.radioButton32bit.Name = "radioButton32bit";
             this.radioButton32bit.Size = new System.Drawing.Size(196, 20);
             this.radioButton32bit.TabIndex = 0;
-            this.radioButton32bit.TabStop = true;
             this.radioButton32bit.Text = "32-bit version of the openPDC";
             this.toolTip.SetToolTip(this.radioButton32bit, "If you do not have a database server installed locally you can always\r\ninstall th" +
         "e 32-bit version of the openPDC and just use an Access database,\r\nno extra softw" +
