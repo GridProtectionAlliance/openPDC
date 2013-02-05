@@ -200,6 +200,9 @@ namespace ConfigurationSetupUtility.Screens
                         // Always make sure time series startup operations are defined in the database.
                         ValidateTimeSeriesStartupOperations();
 
+                        // Always make sure the datapublisher record in the config file is changed to internaldatapublisher.
+                        ValidateInternalDataPublisher();
+
                         // Always make sure skipOptimization is true after an upgrade
                         if (migrate)
                         {
@@ -355,6 +358,14 @@ namespace ConfigurationSetupUtility.Screens
                 if (connection != null)
                     connection.Dispose();
             }
+        }
+
+        private void ValidateInternalDataPublisher()
+        {
+            string configFile = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
+            string configText = File.ReadAllText(configFile);
+            string replacedConfigText = configText.Replace("<datapublisher>", "<internaldatapublisher>").Replace("</datapublisher>", "</internaldatapublisher>");
+            File.WriteAllText(configFile, replacedConfigText);
         }
 
         private void ValidatePhasorDataSourceValidation()
