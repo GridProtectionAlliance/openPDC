@@ -3536,6 +3536,12 @@
             Gets the receive handler for receiving data on the socket.
             </summary>
         </member>
+        <member name="P:GSF.Communication.TcpClient.NetworkCredential">
+            <summary>
+            Gets or sets network credential that is used when
+            <see cref="P:GSF.Communication.TcpClient.IntegratedSecurity"/> is set to <c>true</c>.
+            </summary>
+        </member>
         <member name="P:GSF.Communication.TcpClient.Status">
             <summary>
             Gets the descriptive status of the client.

@@ -260,6 +260,16 @@
             Gets or sets the connection string to be used for connection to the backend security datastore.
             </summary>
         </member>
+        <member name="P:GSF.Security.ISecurityProvider.SecurePassword">
+            <summary>
+            Gets or sets the password as a <see cref="T:System.Security.SecureString"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.ISecurityProvider.Password">
+            <summary>
+            Gets or sets <see cref="P:GSF.Security.ISecurityProvider.SecurePassword"/> as cleartext password.
+            </summary>
+        </member>
         <member name="P:GSF.Security.ISecurityProvider.UserData">
             <summary>
             Gets the <see cref="P:GSF.Security.ISecurityProvider.UserData"/> object containing information about the user.
@@ -407,6 +417,16 @@
         <member name="P:GSF.Security.SecurityProviderBase.ConnectionString">
             <summary>
             Gets or sets the connection string to be used for connection to the backend security datastore.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.SecurityProviderBase.SecurePassword">
+            <summary>
+            Gets or sets the password as a <see cref="T:System.Security.SecureString"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.SecurityProviderBase.Password">
+            <summary>
+            Gets or sets <see cref="P:GSF.Security.SecurityProviderBase.SecurePassword"/> as cleartext password.
             </summary>
         </member>
         <member name="P:GSF.Security.SecurityProviderBase.PersistSettings">
@@ -755,6 +775,14 @@
             <summary>
             Number of minutes upto which <see cref="T:GSF.Security.ISecurityProvider"/>s are to be cached.
             </summary>
+        </member>
+        <member name="M:GSF.Security.SecurityProviderCache.TryGetCachedProvider(System.String,GSF.Security.ISecurityProvider@)">
+            <summary>
+            Attempts to get cached <see cref="T:GSF.Security.ISecurityProvider"/> for the given username.
+            </summary>
+            <param name="username">Name of the user.</param>
+            <param name="provider">Security provider to return.</param>
+            <returns>True if provider is cached; false otherwise.</returns>
         </member>
         <member name="P:GSF.Security.SecurityProviderCache.CurrentProvider">
             <summary>

@@ -7582,6 +7582,11 @@
             Configuration source is a XML file.
             </summary>
         </member>
+        <member name="F:GSF.TimeSeries.ConfigurationType.BinaryFile">
+            <summary>
+            Configuration source is a binary file.
+            </summary>
+        </member>
         <member name="T:GSF.TimeSeries.DataOperationFunction">
             <summary>
             Defines a method signature for a bootstrap data source operation.
