@@ -521,38 +521,6 @@
             </summary>
             <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         </member>
-        <member name="M:PhasorProtocolAdapters.CommonPhasorServices.Initialize">
-            <summary>
-            Intializes <see cref="T:PhasorProtocolAdapters.CommonPhasorServices"/>.
-            </summary>
-        </member>
-        <member name="M:PhasorProtocolAdapters.CommonPhasorServices.Start">
-            <summary>
-            Starts the <see cref="T:PhasorProtocolAdapters.CommonPhasorServices"/> or restarts it if it is already running.
-            </summary>
-        </member>
-        <member name="M:PhasorProtocolAdapters.CommonPhasorServices.Stop">
-            <summary>
-            Stops the <see cref="T:PhasorProtocolAdapters.CommonPhasorServices"/>.
-            </summary>		
-        </member>
-        <member name="M:PhasorProtocolAdapters.CommonPhasorServices.EnumerateClients">
-            <summary>
-            Enumerates connected clients.
-            </summary>
-        </member>
-        <member name="M:PhasorProtocolAdapters.CommonPhasorServices.RotateCipherKeys(System.Int32)">
-            <summary>
-            Rotates cipher keys for specified client connection.
-            </summary>
-            <param name="clientIndex">Enumerated index for client connection.</param>
-        </member>
-        <member name="M:PhasorProtocolAdapters.CommonPhasorServices.GetSubscriberInfo(System.Int32)">
-            <summary>
-            Gets subscriber information for specified client connection.
-            </summary>
-            <param name="clientIndex">Enumerated index for client connection.</param>
-        </member>
         <member name="M:PhasorProtocolAdapters.CommonPhasorServices.AssignParentCollection(GSF.TimeSeries.Adapters.IAdapterCollection)">
             <summary>
             Assigns the reference to the parent <see cref="T:GSF.TimeSeries.Adapters.IAdapterCollection"/> that will contain this <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
@@ -578,12 +546,6 @@
             Sends the specified <see cref="T:GSF.PhasorProtocols.DeviceCommand"/> to the current device connection.
             </summary>
             <param name="command"><see cref="T:GSF.PhasorProtocols.DeviceCommand"/> to send to connected device.</param>
-        </member>
-        <member name="M:PhasorProtocolAdapters.CommonPhasorServices.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{GSF.TimeSeries.IMeasurement})">
-            <summary>
-            Queues a collection of measurements for processing.
-            </summary>
-            <param name="measurements">Collection of measurements to queue for processing.</param>
         </member>
         <member name="M:PhasorProtocolAdapters.CommonPhasorServices.PhasorDataSourceValidation(System.Data.IDbConnection,System.Type,System.String,System.String,System.Action{System.Object,GSF.EventArgs{System.String}},System.Action{System.Object,GSF.EventArgs{System.Exception}})">
             <summary>
@@ -966,29 +928,6 @@
             <param name="source">Source OutputStream.</param>
             <param name="arguments">Any needed arguments for statistic calculation.</param>
             <returns>Output Stream Connected Statistic.</returns>
-        </member>
-        <member name="P:PhasorProtocolAdapters.CommonPhasorServices.Status">
-            <summary>
-            Gets the status of this <see cref="T:PhasorProtocolAdapters.CommonPhasorServices"/> instance.
-            </summary>
-            <remarks>
-            Derived classes should provide current status information about the adapter for display purposes.
-            </remarks>
-        </member>
-        <member name="P:PhasorProtocolAdapters.CommonPhasorServices.DataSource">
-            <summary>
-            Gets or sets <see cref="T:System.Data.DataSet"/> based data source available to the <see cref="T:PhasorProtocolAdapters.CommonPhasorServices"/> instance.
-            </summary>
-        </member>
-        <member name="P:PhasorProtocolAdapters.CommonPhasorServices.InputMeasurementKeys">
-            <summary>
-            Gets or sets primary keys of input measurements the <see cref="T:PhasorProtocolAdapters.CommonPhasorServices"/> expects, if any.
-            </summary>
-        </member>
-        <member name="P:PhasorProtocolAdapters.CommonPhasorServices.OutputMeasurements">
-            <summary>
-            Gets or sets output measurements that the <see cref="T:PhasorProtocolAdapters.CommonPhasorServices"/> will produce, if any.
-            </summary>
         </member>
         <member name="P:PhasorProtocolAdapters.CommonPhasorServices.SupportsTemporalProcessing">
             <summary>

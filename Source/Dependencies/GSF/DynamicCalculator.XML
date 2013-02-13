@@ -50,13 +50,5 @@
             Gets the flag indicating if this adapter supports temporal processing.
             </summary>
         </member>
-        <member name="P:DynamicCalculator.DynamicCalculator.WaitHandleReleaseName">
-            <summary>
-            Gets or sets the name of the wait handle to be released when
-            the calculation is finished. The default value of null indicates
-            that there will be no wait handle sent and therefore no adapter
-            synchronization.
-            </summary>
-        </member>
     </members>
 </doc>
