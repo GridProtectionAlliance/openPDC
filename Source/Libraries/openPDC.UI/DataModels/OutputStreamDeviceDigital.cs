@@ -317,8 +317,8 @@ namespace openPDC.UI.DataModels
                 if ((object)keys != null && keys.Count > 0)
                 {
                     commaSeparatedKeys = keys.Select(key => "" + key.ToString() + "").Aggregate((str1, str2) => str1 + "," + str2);
-                    query = string.Format("SELECT NodeID, OutputStreamDeviceID, ID, Label, MaskValue, LoadOrder " +
-                           "FROM OutputStreamDeviceDigital WHERE ID IN ({0})", commaSeparatedKeys);
+                    query = database.ParameterizedQueryString(string.Format("SELECT NodeID, OutputStreamDeviceID, ID, Label, MaskValue, LoadOrder " +
+                             "FROM OutputStreamDeviceDigital WHERE ID IN ({0})", commaSeparatedKeys));
 
                     outputStreamDeviceDigitalTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout);
 
@@ -326,7 +326,7 @@ namespace openPDC.UI.DataModels
                     {
                         outputStreamDeviceDigitalList.Add(new OutputStreamDeviceDigital()
                         {
-                            NodeID = row.ConvertField<Guid>("NodeID"),
+                            NodeID = database.Guid(row, "NodeID"),
                             OutputStreamDeviceID = row.ConvertField<int>("OutputStreamDeviceID"),
                             ID = row.ConvertField<int>("ID"),
                             Label = row.Field<string>("Label"),
