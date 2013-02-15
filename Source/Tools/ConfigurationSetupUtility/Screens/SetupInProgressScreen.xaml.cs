@@ -1206,7 +1206,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 IDbCommand nodeCommand = connection.CreateCommand();
                 nodeCommand.CommandText = "INSERT INTO Node(Name, CompanyID, Description, Settings, MenuType, MenuData, Master, LoadOrder, Enabled) " +
-                    "VALUES('Default', NULL, 'Default node', 'TimeSeriesDataServiceUrl=http://localhost:6152/historian;RemoteStatusServerConnectionString={server=localhost:8500};datapublisherport=6165;RealTimeStatisticServiceUrl=http://localhost:6052/historian;AlarmServiceUrl=http://localhost:5018/alarmservices', 'File', 'Menu.xml', 1, 0, 1)";
+                    "VALUES('Default', NULL, 'Default node', 'RemoteStatusServerConnectionString={server=localhost:8500;integratedSecurity=true};datapublisherport=6165;AlarmServiceUrl=http://localhost:5018/alarmservices', 'File', 'Menu.xml', 1, 0, 1)";
                 nodeCommand.ExecuteNonQuery();
                 m_defaultNodeAdded = true;
                 defaultNodeCreated = true;
@@ -1596,41 +1596,6 @@ namespace ConfigurationSetupUtility.Screens
 
                 alarmServicesNode.AppendChild(addElement);
                 configFile.SelectSingleNode("configuration/categorizedSettings").AppendChild(alarmServicesNode);
-            }
-
-            // Make sure desired run-time garbage collection settings exist
-            if (serviceConfigFile)
-            {
-                XmlNode runtime = configFile.SelectSingleNode("configuration/runtime");
-
-                if (runtime == null)
-                {
-                    // Add runtime section
-                    runtime = configFile.CreateElement("runtime");
-                    configFile.SelectSingleNode("configuration").AppendChild(runtime);
-                }
-
-                // Make sure settings exist
-                XmlNode gcConcurrent = runtime.SelectSingleNode("gcConcurrent");
-                XmlNode gcServer = runtime.SelectSingleNode("gcServer");
-
-                if (gcConcurrent == null)
-                {
-                    XmlElement elem = configFile.CreateElement("gcConcurrent");
-                    XmlAttribute attrib = configFile.CreateAttribute("enabled");
-                    attrib.Value = "false";
-                    elem.Attributes.Append(attrib);
-                    runtime.AppendChild(elem);
-                }
-
-                if (gcServer == null)
-                {
-                    XmlElement elem = configFile.CreateElement("gcServer");
-                    XmlAttribute attrib = configFile.CreateAttribute("enabled");
-                    attrib.Value = "true";
-                    elem.Attributes.Append(attrib);
-                    runtime.AppendChild(elem);
-                }
             }
 
             // Modify ADO metadata provider sections.

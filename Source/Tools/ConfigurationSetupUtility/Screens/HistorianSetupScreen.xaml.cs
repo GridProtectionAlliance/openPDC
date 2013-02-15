@@ -188,10 +188,8 @@ namespace ConfigurationSetupUtility.Screens
 
                 m_parametersScreen.RefreshConnectionStringParameters(assemblyName, typeName);
 
-                // As long as there are parameters for this adapter
-                // (excluding InputMeasurementKeys and OutputMeasurements),
-                // go to the connection string parameters setup screen
-                if (m_parametersScreen.ConnectionStringParameters.Count > 2)
+                // Skip the connection parameters screen when selecting virtual historian
+                if (assemblyName != "TestingAdapters.dll" || typeName != "TestingAdapters.VirtualOutputAdapter")
                     return m_parametersScreen;
 
                 // Otherwise, setup is ready
