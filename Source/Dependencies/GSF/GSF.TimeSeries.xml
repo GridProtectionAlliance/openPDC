@@ -1079,16 +1079,6 @@
             </para>
             </remarks>
         </member>
-        <member name="P:GSF.TimeSeries.ConcentratorBase.ExternalEventHandles">
-            <summary>
-            Gets or sets collection of <see cref="T:System.Threading.AutoResetEvent"/> wait handles used to synchronize concentration publication with external events.
-            </summary>
-        </member>
-        <member name="P:GSF.TimeSeries.ConcentratorBase.ExternalEventTimeout">
-            <summary>
-            Gets or sets maximum to time to wait, in milliseconds, for external events before publishing proceeds.
-            </summary>
-        </member>
         <member name="P:GSF.TimeSeries.ConcentratorBase.TimeResolution">
             <summary>
             Gets or sets the maximum time resolution, in ticks, to use when sorting measurements by timestamps into their proper destination frame.

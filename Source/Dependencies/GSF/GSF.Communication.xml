@@ -4422,13 +4422,15 @@
             Raises the <see cref="E:GSF.Communication.UdpClient.ReceiveDataFrom"/> event.
             </summary>
             <param name="remoteEndPoint">End-point from which data has been received.</param>
+            <param name="packetInformation">Packet information for received data, if available.</param>
             <param name="size">Number of bytes received from the client.</param>
         </member>
         <member name="M:GSF.Communication.UdpClient.OnReceiveDataFromComplete(System.Net.EndPoint,System.Net.Sockets.IPPacketInformation,System.Byte[],System.Int32)">
             <summary>
-            Raises the <see cref="E:GSF.Communication.UdpClient.ReceiveDataFrom"/> event.
+            Raises the <see cref="E:GSF.Communication.UdpClient.ReceiveDataFromComplete"/> event.
             </summary>
             <param name="remoteEndPoint">End-point from which data has been received.</param>
+            <param name="packetInformation">Packet information for received data, if available.</param>
             <param name="data">Data received from the client.</param>
             <param name="size">Number of bytes received from the client.</param>
         </member>
@@ -4613,7 +4615,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:GSF.Communication.UdpServer"/> class.
             </summary>
-            <param name="configString">Config string of the <see cref="T:GSF.Communication.UdpServer"/>. See <see cref="F:GSF.Communication.UdpServer.DefaultConfigurationString"/> for format.</param>
+            <param name="configString">Configuration string of the <see cref="T:GSF.Communication.UdpServer"/>. See <see cref="F:GSF.Communication.UdpServer.DefaultConfigurationString"/> for format.</param>
         </member>
         <member name="M:GSF.Communication.UdpServer.#ctor(System.ComponentModel.IContainer)">
             <summary>
