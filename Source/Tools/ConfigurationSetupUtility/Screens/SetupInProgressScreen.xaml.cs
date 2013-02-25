@@ -1452,6 +1452,9 @@ namespace ConfigurationSetupUtility.Screens
         // Modifies the configuration file with the given file name to contain the given connection string and data provider string.
         private void ModifyConfigFile(string configFileName, string connectionString, string dataProviderString, bool encrypted, bool serviceConfigFile)
         {
+            // Replace all instances of "TVA." with "GSF." to fix errors caused by namespace changes when upgrading
+            File.WriteAllText(configFileName, File.ReadAllText(configFileName).Replace("TVA.", "GSF."));
+
             // Modify system settings.
             XmlDocument configFile = new XmlDocument();
             configFile.Load(configFileName);
@@ -1459,6 +1462,7 @@ namespace ConfigurationSetupUtility.Screens
             XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
 
             bool databaseConfigurationType = (m_state["configurationType"].ToString() == "database");
+            bool existing = Convert.ToBoolean(m_state["existing"]);
 
             if (encrypted)
                 connectionString = Cipher.Encrypt(connectionString, App.CipherLookupKey, App.CryptoStrength);
@@ -1539,6 +1543,31 @@ namespace ConfigurationSetupUtility.Screens
                     addElement.Attributes.Append(attribute);
 
                     errorLoggerNode.AppendChild(addElement);
+                }
+            }
+
+            // Make sure remotingServer integrated security is set to true
+            XmlNode remotingServerNode = configFile.SelectSingleNode("configuration/categorizedSettings/remotingServer");
+            if (serviceConfigFile && !existing && (object)remotingServerNode != null)
+            {
+                foreach (XmlNode child in remotingServerNode.ChildNodes)
+                {
+                    string name = null;
+                    XmlAttribute valueAttribute = null;
+
+                    if ((object)child.Attributes == null)
+                        continue;
+
+                    foreach (XmlAttribute attribute in child.Attributes)
+                    {
+                        if (attribute.Name == "name")
+                            name = attribute.Value;
+                        else if (attribute.Name == "value")
+                            valueAttribute = attribute;
+                    }
+
+                    if (name == "IntegratedSecurity")
+                        valueAttribute.Value = "True";
                 }
             }
 
