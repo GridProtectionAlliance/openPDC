@@ -164,6 +164,11 @@
         <File Id="FILE_SourceDir.OneSecondFrequencyAveragerDLL" Name="OneSecondFrequencyAverager.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.OneSecondFrequencyAveragerDLL" AssemblyApplication="FILE_SourceDir.OneSecondFrequencyAveragerDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\OneSecondFrequencyAverager.dll" />
       </Component>
 
+      <Component Id="CMP_SourceDir.PhasorProtocolAdaptersDLL" Guid="{A93986ED-29AE-4BE9-980A-15D9B0AB7342}" Win64="yes">
+        <Condition>INSTALLOPENPDC=1</Condition>
+        <File Id="FILE_SourceDir.PhasorProtocolAdaptersDLL" Name="PhasorProtocolAdapters.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.PhasorProtocolAdaptersDLL" AssemblyApplication="FILE_SourceDir.PhasorProtocolAdaptersDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\PhasorProtocolAdapters.dll" />
+      </Component>
+
       <Component Id="CMP_SourceDir.PowerCalculationsDLL" Guid="{C669B903-F790-44C4-D046-C3F4759FC3C1}" Win64="yes">
         <Condition>INSTALLOPENPDC=1</Condition>
         <File Id="FILE_SourceDir.PowerCalculationsDLL" Name="PowerCalculations.dll" KeyPath="yes" Assembly=".net" AssemblyManifest="FILE_SourceDir.PowerCalculationsDLL" AssemblyApplication="FILE_SourceDir.PowerCalculationsDLL" DiskId="1" Source="..\..\..\Dependencies\GSF\PowerCalculations.dll" />
@@ -492,6 +497,7 @@
       <ComponentRef Id="CMP_SourceDir.MongoDB.GridFSDLL" Primary="yes" />
       <ComponentRef Id="CMP_SourceDir.MySqlAdaptersDLL" Primary="yes" />
       <ComponentRef Id="CMP_SourceDir.OneSecondFrequencyAveragerDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.PhasorProtocolAdaptersDLL" Primary="yes" />
       <ComponentRef Id="CMP_SourceDir.PowerCalculationsDLL" Primary="yes" />
       <ComponentRef Id="CMP_SourceDir.TestingAdaptersDLL" Primary="yes" />
       <ComponentRef Id="CMP_SourceDir.WavInputAdapterDLL" Primary="yes" />
