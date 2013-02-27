@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="{493D6CED-50C6-4CF5-93A3-306C364F10A3}" Codepage="1252" Language="1033" Manufacturer="Grid Protection Alliance" Name="openPDC 64-bit" UpgradeCode="{672ED075-C482-49A6-86D5-7B3FEB4AEAC8}" Version="1.5.150">
+  <Product Id="{493D6CED-50C6-4CF5-93A3-306C364F10A3}" Codepage="1252" Language="1033" Manufacturer="Grid Protection Alliance" Name="openPDC 64-bit" UpgradeCode="{672ED075-C482-49A6-86D5-7B3FEB4AEAC8}" Version="!(bind.FileVersion.FILE_SourceDir.openPDCEXE)">
 
     <Package Comments="openPDC" Compressed="yes" InstallerVersion="200" Keywords="PDC Phasor Data Concentrator" Languages="1033" Manufacturer="GPA" Platform="x64" />
 
