@@ -2000,13 +2000,22 @@
             <param name="itemsPerPage"> No of Maximum items in each page.</param>
             <param name="autoSave">Default value true.</param>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:GSF.TimeSeries.UI.ViewModels.ErrorLogViewModel.Initialize" -->
+        <member name="M:GSF.TimeSeries.UI.ViewModels.ErrorLogViewModel.Initialize">
+            <summary>
+            Initialization to be done before the initial call to <see cref="M:GSF.TimeSeries.UI.ViewModels.ErrorLogViewModel.Load"/>.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.UI.ViewModels.ErrorLogViewModel.SortData(System.String,System.ComponentModel.ListSortDirection)">
             <summary>
             Sorts model data.
             </summary>
             <param name="sortMemberPath">Member path for sorting.</param>
             <param name="sortDirection">Ascending or descending.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.ViewModels.ErrorLogViewModel.ShowErrorLog">
+            <summary>
+            Show brief error log details.
+            </summary>
         </member>
         <member name="M:GSF.TimeSeries.UI.ViewModels.ErrorLogViewModel.Load">
             <summary>
@@ -2033,6 +2042,11 @@
             Checks for new item in Error list.
             Since this is an error viewer, no new records can be added.
             Always returns false.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.ErrorLogViewModel.ShowCommand">
+            <summary>
+            Gets Show command.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.UI.ViewModels.Historians">

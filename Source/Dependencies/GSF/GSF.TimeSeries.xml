@@ -4233,13 +4233,6 @@
             </summary>
             <param name="parent">Parent adapter collection.</param>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.AdapterBase.WaitForExternalEvents(System.Int32)">
-            <summary>
-            Waits for all external events to fire; no wait will happen if no external events are defined.
-            </summary>
-            <param name="timeout">Maximum to time to wait, in milliseconds, for external events before proceeding - value defaults to <see cref="P:GSF.TimeSeries.Adapters.AdapterBase.ExternalEventTimeout"/>.</param>
-            <returns><c>true</c> when every all <see cref="P:GSF.TimeSeries.Adapters.AdapterBase.ExternalEventHandles"/> have received a signal or there are no external events defined; otherwise, <c>false</c>.</returns>
-        </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterBase.SetInitializedState(System.Boolean)">
             <summary>
             Manually sets the initialized state of the <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
@@ -4726,19 +4719,6 @@
             <remarks>
             Derived classes should provide current status information about the adapter for display purposes.
             </remarks>
-        </member>
-        <member name="P:GSF.TimeSeries.Adapters.AdapterBase.ExternalEventHandles">
-            <summary>
-            Gets or sets collection of <see cref="T:System.Threading.AutoResetEvent"/> wait handles used to synchronize activity with external events.
-            </summary>
-            <remarks>
-            Each defined external event in the collection should be acquired via <see cref="!:GetExternalEventHandle"/>.
-            </remarks>
-        </member>
-        <member name="P:GSF.TimeSeries.Adapters.AdapterBase.ExternalEventTimeout">
-            <summary>
-            Gets or sets maximum to time to wait, in milliseconds, for external events before proceeding.
-            </summary>
         </member>
         <member name="T:GSF.TimeSeries.Adapters.AdapterCommandAttribute">
             <summary>
@@ -5725,6 +5705,11 @@
             destined for archival.
             </summary>
         </member>
+        <member name="T:GSF.TimeSeries.NativeMethods">
+            <summary>
+            Windows API methods available to time-series library.
+            </summary>
+        </member>
         <member name="T:GSF.TimeSeries.PrecisionInputTimer">
             <summary>
             Precision input timer.
@@ -6098,6 +6083,11 @@
             <paramref name="startIndex"/> or <paramref name="length"/> is less than 0 -or- 
             <paramref name="startIndex"/> and <paramref name="length"/> will exceed <paramref name="buffer"/> length.
             </exception>
+        </member>
+        <member name="M:GSF.TimeSeries.BufferBlockMeasurement.Finalize">
+            <summary>
+            Finalizer for <see cref="T:GSF.TimeSeries.BufferBlockMeasurement"/>.
+            </summary>
         </member>
         <member name="P:GSF.TimeSeries.BufferBlockMeasurement.Buffer">
             <summary>
@@ -6680,6 +6670,11 @@
             Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.CipherKeyRotationPeriod"/>.
             </summary>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.DataPublisher.DefaultMetadataTables">
+            <summary>
+            Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.MetadataTables"/>.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.#ctor">
             <summary>
             Creates a new <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
@@ -6976,7 +6971,7 @@
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.MetadataTables">
             <summary>
-            Gets or sets comma separated list of tables to include in meta-data exchange.
+            Gets or sets semi-colon separated list of SQL select statements used to create data for meta-data exchange.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.ClientConnections">

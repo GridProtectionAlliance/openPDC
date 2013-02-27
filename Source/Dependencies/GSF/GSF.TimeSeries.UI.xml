@@ -1490,7 +1490,8 @@
             <summary>
             Loads <see cref="T:GSF.TimeSeries.UI.DataModels.Historian"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
-            <param name="database"><see cref="T:GSF.Data.AdoDataConnection"/> to connection to database.</param>        
+            <param name="database"><see cref="T:GSF.Data.AdoDataConnection"/> to connection to database.</param>
+            <param name="keys">Keys to load, if any.</param>
             <returns>Collection of <see cref="T:GSF.TimeSeries.UI.DataModels.Historian"/>.</returns>
         </member>
         <member name="M:GSF.TimeSeries.UI.DataModels.Historian.GetLookupList(GSF.Data.AdoDataConnection,System.Boolean,System.Boolean)">
@@ -2538,10 +2539,9 @@
             LoadKeys <see cref="T:GSF.TimeSeries.UI.DataModels.Vendor"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
             <param name="database"><see cref="T:GSF.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="deviceID">ID of the <see cref="!:Device"/> to filter data.</param>
             <param name="sortMember">The field to sort by.</param>
             <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
-            <returns>Collection of <see cref="!:Phasor"/>.</returns>
+            <returns>Collection of vendor IDs.</returns>
         </member>
         <member name="M:GSF.TimeSeries.UI.DataModels.Vendor.Load(GSF.Data.AdoDataConnection,System.Collections.Generic.IList{System.Int32})">
             <summary>
@@ -2635,10 +2635,9 @@
             LoadKeys <see cref="T:GSF.TimeSeries.UI.DataModels.VendorDevice"/> information as an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
             <param name="database"><see cref="T:GSF.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="deviceID">ID of the <see cref="!:Device"/> to filter data.</param>
             <param name="sortMember">The field to sort by.</param>
             <param name="sortDirection"><c>ASC</c> or <c>DESC</c> for ascending or descending respectively.</param>
-            <returns>Collection of <see cref="!:Phasor"/>.</returns>
+            <returns>Collection of vendor device IDs.</returns>
         </member>
         <member name="M:GSF.TimeSeries.UI.DataModels.VendorDevice.Load(GSF.Data.AdoDataConnection,System.Collections.Generic.IList{System.Int32})">
             <summary>

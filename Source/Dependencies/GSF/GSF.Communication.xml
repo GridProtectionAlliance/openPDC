@@ -4239,6 +4239,11 @@
             Specifies the default value for the <see cref="P:GSF.Communication.ClientBase.ReceiveBufferSize"/> property.
             </summary>
         </member>
+        <member name="F:GSF.Communication.UdpClient.DefaultMaxPacketSize">
+            <summary>
+            Specifies the default value for the <see cref="P:GSF.Communication.UdpClient.MaxPacketSize"/> property.
+            </summary>
+        </member>
         <member name="F:GSF.Communication.UdpClient.DefaultAllowDualStackSocket">
             <summary>
             Specifies the default value for the <see cref="P:GSF.Communication.UdpClient.AllowDualStackSocket"/> property.
@@ -4485,6 +4490,11 @@
             Gets or sets the size of the buffer used by the client for receiving data from the server.
             </summary>
             <exception cref="T:System.ArgumentException">The value being assigned is either zero or negative.</exception>
+        </member>
+        <member name="P:GSF.Communication.UdpClient.MaxPacketSize">
+            <summary>
+            Gets or sets the maximum expected size for packets being received by this <see cref="T:GSF.Communication.UdpClient"/>.
+            </summary>
         </member>
         <member name="P:GSF.Communication.UdpClient.ReceivePacketInfo">
             <summary>
