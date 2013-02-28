@@ -171,7 +171,9 @@ namespace openPDCManager.UI.DataModels
             set
             {
                 m_type = value;
+                m_typeName = (m_type == 1) ? "IEEE C37.118" : (m_type == 2) ? "BPA" : "IEC 61850-90-5";
                 OnPropertyChanged("Type");
+                OnPropertyChanged("TypeName");
             }
         }
 
@@ -807,13 +809,14 @@ namespace openPDCManager.UI.DataModels
                     outputStreamTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout);
 
                     outputStreamList = new ObservableCollection<OutputStream>(from item in outputStreamTable.AsEnumerable()
+                                                                              let type = Convert.ToInt32(item.Field<object>("Type")) + 1
                                                                               select new OutputStream()
                                                                               {
                                                                                   NodeID = database.Guid(item, "NodeID"),
                                                                                   ID = Convert.ToInt32(item.Field<object>("ID")),
                                                                                   Acronym = item.Field<string>("Acronym"),
                                                                                   Name = item.Field<string>("Name"),
-                                                                                  Type = Convert.ToInt32(item.Field<object>("Type")),
+                                                                                  Type = type,
                                                                                   ConnectionString = item.Field<string>("ConnectionString"),
                                                                                   IDCode = Convert.ToInt32(item.Field<object>("IDCode")),
                                                                                   CommandChannel = item.Field<string>("CommandChannel"),
@@ -829,7 +832,7 @@ namespace openPDCManager.UI.DataModels
                                                                                   LoadOrder = Convert.ToInt32(item.Field<object>("LoadOrder")),
                                                                                   Enabled = Convert.ToBoolean(item.Field<object>("Enabled")),
                                                                                   m_nodeName = item.Field<string>("NodeName"),
-                                                                                  m_typeName = Convert.ToInt32(item.Field<object>("Type")) == 0 ? "IEEE C37.118" : "BPA",
+                                                                                  m_typeName = (type == 1) ? "IEEE C37.118" : (type == 2) ? "BPA" : "IEC 61850-90-5",
                                                                                   IgnoreBadTimeStamps = Convert.ToBoolean(item.Field<object>("IgnoreBadTimeStamps")),
                                                                                   TimeResolution = Convert.ToInt32(item.Field<object>("TimeResolution")),
                                                                                   AllowPreemptivePublishing = Convert.ToBoolean(item.Field<object>("AllowPreemptivePublishing")),
@@ -918,7 +921,7 @@ namespace openPDCManager.UI.DataModels
                         "performTimeReasonabilityCheck", "updatedBy", "updatedOn", "createdBy", "createdOn");
 
                     database.Connection.ExecuteNonQuery(query,
-                        database.CurrentNodeID(), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name.ToNotNull(), outputStream.Type, outputStream.ConnectionString.ToNotNull(),
+                        database.CurrentNodeID(), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name.ToNotNull(), outputStream.Type - 1, outputStream.ConnectionString.ToNotNull(),
                         outputStream.IDCode, outputStream.CommandChannel.ToNotNull(), outputStream.DataChannel.ToNotNull(), database.Bool(outputStream.AutoPublishConfigFrame), database.Bool(outputStream.AutoStartDataChannel),
                         outputStream.NominalFrequency, outputStream.FramesPerSecond, outputStream.LagTime, outputStream.LeadTime, database.Bool(outputStream.UseLocalClockAsRealTime), database.Bool(outputStream.AllowSortsByArrival),
                         outputStream.LoadOrder, database.Bool(outputStream.Enabled), database.Bool(outputStream.IgnoreBadTimeStamps), outputStream.TimeResolution, database.Bool(outputStream.AllowPreemptivePublishing),
@@ -942,7 +945,7 @@ namespace openPDCManager.UI.DataModels
                         "analogScalingValue", "digitalMaskValue", "performTimeReasonabilityCheck", "updatedBy", "updatedOn", "id");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout,
-                        database.Guid(outputStream.NodeID), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name.ToNotNull(), outputStream.Type, outputStream.ConnectionString.ToNotNull(),
+                        database.Guid(outputStream.NodeID), outputStream.Acronym.Replace(" ", "").ToUpper(), outputStream.Name.ToNotNull(), outputStream.Type - 1, outputStream.ConnectionString.ToNotNull(),
                         outputStream.IDCode, outputStream.CommandChannel.ToNotNull(), outputStream.DataChannel.ToNotNull(), database.Bool(outputStream.AutoPublishConfigFrame), database.Bool(outputStream.AutoStartDataChannel),
                         outputStream.NominalFrequency, outputStream.FramesPerSecond, outputStream.LagTime, outputStream.LeadTime, database.Bool(outputStream.UseLocalClockAsRealTime),
                         database.Bool(outputStream.AllowSortsByArrival), outputStream.LoadOrder, database.Bool(outputStream.Enabled), database.Bool(outputStream.IgnoreBadTimeStamps), outputStream.TimeResolution,
@@ -1078,13 +1081,15 @@ namespace openPDCManager.UI.DataModels
                     return null;
 
                 DataRow row = outputStreamTable.Rows[0];
+                int type = Convert.ToInt32(row.Field<object>("Type"));
+
                 OutputStream outputStream = new OutputStream()
                 {
                     NodeID = database.Guid(row, "NodeID"),
                     ID = Convert.ToInt32(row.Field<object>("ID")),
                     Acronym = row.Field<string>("Acronym"),
                     Name = row.Field<string>("Name"),
-                    Type = Convert.ToInt32(row.Field<object>("Type")),
+                    Type = type,
                     ConnectionString = row.Field<string>("ConnectionString"),
                     IDCode = Convert.ToInt32(row.Field<object>("IDCode")),
                     CommandChannel = row.Field<string>("CommandChannel"),
@@ -1100,7 +1105,7 @@ namespace openPDCManager.UI.DataModels
                     LoadOrder = Convert.ToInt32(row.Field<object>("LoadOrder")),
                     Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
                     m_nodeName = row.Field<string>("NodeName"),
-                    m_typeName = Convert.ToInt32(row.Field<object>("Type")) == 0 ? "IEEE C37.118" : "BPA",
+                    m_typeName = (type == 1) ? "IEEE C37.118" : (type == 2) ? "BPA" : "IEC 61850-90-5",
                     IgnoreBadTimeStamps = Convert.ToBoolean(row.Field<object>("IgnoreBadTimeStamps")),
                     TimeResolution = Convert.ToInt32(row.Field<object>("TimeResolution")),
                     AllowPreemptivePublishing = Convert.ToBoolean(row.Field<object>("AllowPreemptivePublishing")),

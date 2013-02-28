@@ -329,9 +329,9 @@ namespace openPDCManager.UI.ViewModels
                 MirroringSourceLookupList = Device.GetDevicesForMirroringOutputStream(null);
 
             m_typeLookupList = new Dictionary<int, string>();
-            m_typeLookupList.Add(0, "IEEE C37.118-2005");
-            m_typeLookupList.Add(1, "BPA PDCstream");
-            m_typeLookupList.Add(2, "IEC 61850-90-5");
+            m_typeLookupList.Add(1, "IEEE C37.118-2005");
+            m_typeLookupList.Add(2, "BPA PDCstream");
+            m_typeLookupList.Add(3, "IEC 61850-90-5");
 
             m_downSamplingMethodLookupList = new Dictionary<string, string>();
             m_downSamplingMethodLookupList.Add("LastReceived", "LastReceived");
