@@ -1249,7 +1249,7 @@ CREATE VIEW RuntimeOutputStream
 AS
 SELECT OutputStream.NodeID, Runtime.ID, OutputStream.Acronym AS AdapterName, 
     'PhasorProtocolAdapters.dll' AS AssemblyName, 
-    CASE Type WHEN 1 THEN 'PhasorProtocolAdapters.BpaPdcStream.Concentrator' ELSE 'PhasorProtocolAdapters.IeeeC37_118.Concentrator' END AS TypeName,
+    CASE Type WHEN 1 THEN 'PhasorProtocolAdapters.BpaPdcStream.Concentrator' WHEN 2 THEN 'PhasorProtocolAdapters.Iec61850_90_5.Concentrator' ELSE 'PhasorProtocolAdapters.IeeeC37_118.Concentrator' END AS TypeName,
     OutputStream.ConnectionString || ';' ||
     NVL2(OutputStream.DataChannel, 'dataChannel={' || OutputStream.DataChannel || '}', '') || ';' ||
     NVL2(OutputStream.CommandChannel, 'commandChannel={' || OutputStream.CommandChannel || '}', '') || ';' ||

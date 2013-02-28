@@ -819,7 +819,7 @@ CREATE VIEW RuntimeOutputStream
 AS
 SELECT OutputStream.NodeID, Runtime.ID, OutputStream.Acronym AS AdapterName, 
  'PhasorProtocolAdapters.dll' AS AssemblyName, 
- CASE WHEN Type = 1 THEN 'PhasorProtocolAdapters.BpaPdcStream.Concentrator' ELSE 'PhasorProtocolAdapters.IeeeC37_118.Concentrator' END AS TypeName,
+ CASE Type WHEN 1 THEN 'PhasorProtocolAdapters.BpaPdcStream.Concentrator' WHEN 2 THEN 'PhasorProtocolAdapters.Iec61850_90_5.Concentrator' ELSE 'PhasorProtocolAdapters.IeeeC37_118.Concentrator' END AS TypeName,
  OutputStream.ConnectionString || ';' ||
  CASE WHEN OutputStream.DataChannel IS NULL THEN '' ELSE ('dataChannel={' || OutputStream.DataChannel || '}') END || ';' ||
  CASE WHEN OutputStream.CommandChannel IS NULL THEN '' ELSE ('commandChannel={' || OutputStream.CommandChannel || '}') END || ';' ||
