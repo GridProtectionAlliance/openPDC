@@ -92,19 +92,12 @@ namespace openPDC.UI.UserControls
 
         private void ButtonAddMore_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            IList<int> outputMeasurementKeys;
-            IEnumerable<int> pointIDs;
-            
             IEnumerable<Measurement> selectedMeasurements;
             ObservableCollection<Measurement> addedMeasurements;
 
-            // Get the list of point IDs that are defined for this output stream
-            outputMeasurementKeys = OutputStreamMeasurement.LoadKeys(null, m_outputStreamID);
-            pointIDs = OutputStreamMeasurement.Load(null, outputMeasurementKeys).Select(outputMeasurement => outputMeasurement.PointID);
-
             // Determine which of the selected measurements have been added to the output stream measurements
             selectedMeasurements = Measurement.LoadFromKeys(null, MeasurementPager.SelectedMeasurements.ToList());
-            addedMeasurements = new ObservableCollection<Measurement>(selectedMeasurements.Where(measurement => !pointIDs.Any(id => measurement.PointID == id)));
+            addedMeasurements = new ObservableCollection<Measurement>(selectedMeasurements);
 
             // Add measurements to output stream measurements
             OutputStreamMeasurement.AddMeasurements(null, m_outputStreamID, addedMeasurements);
@@ -124,31 +117,7 @@ namespace openPDC.UI.UserControls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            IList<int> outputMeasurementKeys;
-            IEnumerable<int> pointIDs;
-
-            string pointIDList = string.Empty;
-            IList<Guid> signalIDs = new List<Guid>();
-
-            // Get the list of point IDs that are defined for this output stream
-            outputMeasurementKeys = OutputStreamMeasurement.LoadKeys(null, m_outputStreamID);
-            pointIDs = OutputStreamMeasurement.Load(null, outputMeasurementKeys).Select(outputMeasurement => outputMeasurement.PointID);
-
-            if (pointIDs.Any())
-            {
-                // Get the signal IDs of the measurements to be automatically selected
-                pointIDList = pointIDs.Select(id => id.ToString()).Aggregate((str1, str2) => str1 + "," + str2);
-                signalIDs = Measurement.LoadSignalIDs(null, string.Format("PointID IN ({0})", pointIDList));
-            }
-
-            // Clear out the set of selected measurements
-            MeasurementPager.SelectedMeasurements.Clear();
-
-            // Add the measurements which are defined for this output stream
-            foreach (Guid signalID in signalIDs)
-                MeasurementPager.SelectedMeasurements.Add(signalID);
-
-            MeasurementPager.UpdateSelections();
+            MeasurementPager.ClearSelections();
             PopupAddMore.IsOpen = true;
         }
 
