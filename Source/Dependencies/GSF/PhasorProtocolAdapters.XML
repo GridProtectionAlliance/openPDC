@@ -324,6 +324,31 @@
             Returns the detailed status of this <see cref="T:PhasorProtocolAdapters.PhasorDataConcentratorBase"/>.
             </summary>
         </member>
+        <member name="P:PhasorProtocolAdapters.PhasorDataConcentratorBase.TotalBytesSent">
+            <summary>
+            Gets the total number of bytes sent to clients of this output stream.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorDataConcentratorBase.LifetimeMeasurements">
+            <summary>
+            Gets the total number of measurements processed through this output stream over the lifetime of the output stream.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorDataConcentratorBase.MinimumMeasurementsPerSecond">
+            <summary>
+            Gets the minimum value of the measurements per second calculation.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorDataConcentratorBase.MaximumMeasurementsPerSecond">
+            <summary>
+            Gets the maximum value of the measurements per second calculation.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorDataConcentratorBase.AverageMeasurementsPerSecond">
+            <summary>
+            Gets the average value of the measurements per second calculation.
+            </summary>
+        </member>
         <member name="M:PhasorProtocolAdapters.BpaPdcStream.Concentrator.Initialize">
             <summary>
             Initializes <see cref="T:PhasorProtocolAdapters.BpaPdcStream.Concentrator"/>.
@@ -965,6 +990,81 @@
             <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> to populate with data.</param>
             <param name="context">The destination <see cref="T:System.Runtime.Serialization.StreamingContext"/> for this serialization.</param>
         </member>
+        <member name="T:PhasorProtocolAdapters.Iec61850_90_5.Concentrator">
+            <summary>
+            Represents an IEC 61850-90-5 phasor data concentrator.
+            </summary>
+        </member>
+        <member name="M:PhasorProtocolAdapters.Iec61850_90_5.Concentrator.Initialize">
+            <summary>
+            Initializes <see cref="T:PhasorProtocolAdapters.Iec61850_90_5.Concentrator"/>.
+            </summary>
+        </member>
+        <member name="M:PhasorProtocolAdapters.Iec61850_90_5.Concentrator.CreateNewConfigurationFrame(GSF.PhasorProtocols.Anonymous.ConfigurationFrame)">
+            <summary>
+            Creates a new IEEE C37.118 specific <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/> based on provided protocol independent <paramref name="baseConfigurationFrame"/>.
+            </summary>
+            <param name="baseConfigurationFrame">Protocol independent <see cref="!:TVA.PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
+            <returns>A new IEEE C37.118 specific <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/>.</returns>
+        </member>
+        <member name="M:PhasorProtocolAdapters.Iec61850_90_5.Concentrator.CreateNewFrame(GSF.Ticks)">
+            <summary>
+            Creates a new IEEE C37.118 specific <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/> for the given <paramref name="timestamp"/>.
+            </summary>
+            <param name="timestamp">Timestamp for new <see cref="T:GSF.TimeSeries.IFrame"/> in <see cref="T:GSF.Ticks"/>.</param>
+            <returns>New IEEE C37.118 <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/> at given <paramref name="timestamp"/>.</returns>
+            <remarks>
+            Note that the <see cref="T:GSF.TimeSeries.ConcentratorBase"/> class (which the <see cref="T:GSF.TimeSeries.Adapters.ActionAdapterBase"/> is derived from)
+            is designed to sort <see cref="T:GSF.TimeSeries.IMeasurement"/> implementations into an <see cref="T:GSF.TimeSeries.IFrame"/> which represents
+            a collection of measurements at a given timestamp. The <c>CreateNewFrame</c> method allows consumers to create
+            their own <see cref="T:GSF.TimeSeries.IFrame"/> implementations, in our case this will be an IEEE C37.118 data frame.
+            </remarks>
+        </member>
+        <member name="M:PhasorProtocolAdapters.Iec61850_90_5.Concentrator.DeviceCommandHandler(System.Guid,System.String,System.Byte[],System.Int32)">
+            <summary>
+            Handles incoming commands from devices connected over the command channel.
+            </summary>
+            <param name="clientID">Guid of client that sent the command.</param>
+            <param name="connectionID">Remote client connection identification (i.e., IP:Port).</param>
+            <param name="commandBuffer">Data buffer received from connected client device.</param>
+            <param name="length">Valid length of data within the buffer.</param>
+        </member>
+        <member name="M:PhasorProtocolAdapters.Iec61850_90_5.Concentrator.CreateConfigurationFrame(GSF.PhasorProtocols.Anonymous.ConfigurationFrame,System.UInt32,GSF.PhasorProtocols.LineFrequency)">
+            <summary>
+            Creates a new IEC 61850-90-5 (i.e., IEEE C37.118) <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame"/> based on provided protocol independent <paramref name="baseConfigurationFrame"/>.
+            </summary>
+            <param name="baseConfigurationFrame">Protocol independent <see cref="!:TVA.PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
+            <param name="timeBase">Timebase to use for fraction second resolution.</param>
+            <param name="nominalFrequency">The nominal <see cref="T:GSF.PhasorProtocols.LineFrequency"/> to use for the new <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame"/></param>.
+            <returns>A new IEEE C37.118 <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame"/>.</returns>
+        </member>
+        <member name="M:PhasorProtocolAdapters.Iec61850_90_5.Concentrator.CreateDataFrame(GSF.Ticks,GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame,System.String,System.Int32,System.Byte[][],System.UInt32)">
+            <summary>
+            Creates a new IEC 61850-90-5 specific <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/> for the given <paramref name="timestamp"/>.
+            </summary>
+            <param name="timestamp">Timestamp for new <see cref="T:GSF.TimeSeries.IFrame"/> in <see cref="T:GSF.Ticks"/>.</param>
+            <param name="configurationFrame">Associated <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame"/> for the new <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/>.</param>
+            <param name="msvID">MSVID to use for <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/>.</param>
+            <param name="asduCount">ASDU count.</param>
+            <param name="asduImages">Concentrator's ASDU image cache.</param>
+            <param name="configurationRevision">Configuration revision.</param>
+            <returns>New IEC 61850-90-5 <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/> at given <paramref name="timestamp"/>.</returns>
+        </member>
+        <member name="P:PhasorProtocolAdapters.Iec61850_90_5.Concentrator.TimeBase">
+            <summary>
+            Gets or sets IEEE C37.118 time base for this concentrator instance.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.Iec61850_90_5.Concentrator.ValidateIDCode">
+            <summary>
+            Gets or sets flag that determines if concentrator will validate ID code before processing commands.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.Iec61850_90_5.Concentrator.Status">
+            <summary>
+            Returns the detailed status of this <see cref="T:PhasorProtocolAdapters.Iec61850_90_5.Concentrator"/>.
+            </summary>
+        </member>
         <member name="T:PhasorProtocolAdapters.IeeeC37_118.Concentrator">
             <summary>
             Represents an IEEE C37.118 phasor data concentrator.
@@ -1328,6 +1428,31 @@
         <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.FrameParser">
             <summary>
             Gets or sets reference to <see cref="T:GSF.PhasorProtocols.MultiProtocolFrameParser"/>, attaching and/or detaching to events as needed.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.TotalBytesReceived">
+            <summary>
+            Gets total data packet bytes received during this session.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.LifetimeMeasurements">
+            <summary>
+            Gets the total number of measurements processed through this data publisher over the lifetime of the publisher.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.MinimumMeasurementsPerSecond">
+            <summary>
+            Gets the minimum value of the measurements per second calculation.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.MaximumMeasurementsPerSecond">
+            <summary>
+            Gets the maximum value of the measurements per second calculation.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.AverageMeasurementsPerSecond">
+            <summary>
+            Gets the average value of the measurements per second calculation.
             </summary>
         </member>
         <member name="M:PhasorProtocolAdapters.PhasorMeasurementMapper.MissingDataMonitor.Start">

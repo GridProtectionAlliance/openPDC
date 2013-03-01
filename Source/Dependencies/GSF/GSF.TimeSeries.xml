@@ -6718,12 +6718,6 @@
             Terminate <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/> and stop listening for client connections.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.Transport.DataPublisher.AssignParentCollection(GSF.TimeSeries.Adapters.IAdapterCollection)">
-            <summary>
-            Assigns the reference to the parent <see cref="T:GSF.TimeSeries.Adapters.IAdapterCollection"/> that will contain this <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>, if any.
-            </summary>
-            <param name="parent">Parent adapter collection.</param>
-        </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.WaitForInitialize(System.Int32)">
             <summary>
             Blocks the <see cref="P:System.Threading.Thread.CurrentThread"/> until the adapter is <see cref="P:GSF.TimeSeries.Transport.DataPublisher.Initialized"/>.
@@ -6760,6 +6754,11 @@
             Gets subscriber status for specified subscriber ID.
             </summary>
             <param name="subscriberID">Guid based subscriber ID for client connection.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.Transport.DataPublisher.ResetLifetimeCounters">
+            <summary>
+            Resets the counters for the lifetime statistics without interrupting the adapter's operations.
+            </summary>
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.UpdateSignalIndexCache(System.Guid,GSF.TimeSeries.Transport.SignalIndexCache,GSF.TimeSeries.MeasurementKey[])">
             <summary>
@@ -6992,6 +6991,31 @@
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.IsConnected">
             <summary>
             Gets flag indicating if publisher is connected and listening.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.TotalBytesSent">
+            <summary>
+            Gets the total number of bytes sent to clients of this data publisher.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.LifetimeMeasurements">
+            <summary>
+            Gets the total number of measurements processed through this data publisher over the lifetime of the publisher.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.MinimumMeasurementsPerSecond">
+            <summary>
+            Gets the minimum value of the measurements per second calculation.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.MaximumMeasurementsPerSecond">
+            <summary>
+            Gets the maximum value of the measurements per second calculation.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.AverageMeasurementsPerSecond">
+            <summary>
+            Gets the average value of the measurements per second calculation.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.Transport.DataSubscriber">
@@ -7482,6 +7506,26 @@
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.CommandChannel">
             <summary>
             Gets or sets reference to <see cref="T:GSF.Communication.TcpClient"/> command channel, attaching and/or detaching to events as needed.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.LifetimeMeasurements">
+            <summary>
+            Gets the total number of measurements processed through this data publisher over the lifetime of the publisher.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.MinimumMeasurementsPerSecond">
+            <summary>
+            Gets the minimum value of the measurements per second calculation.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.MaximumMeasurementsPerSecond">
+            <summary>
+            Gets the maximum value of the measurements per second calculation.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.AverageMeasurementsPerSecond">
+            <summary>
+            Gets the average value of the measurements per second calculation.
             </summary>
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.LocalConcentrator.#ctor(GSF.TimeSeries.Transport.DataSubscriber)">

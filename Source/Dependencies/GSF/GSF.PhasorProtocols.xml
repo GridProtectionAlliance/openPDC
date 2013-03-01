@@ -7662,7 +7662,7 @@
             </summary>
             <param name="buffer">Buffer containing sampled value tag length.</param>
             <param name="tag">Sampled value tag to validate.</param>
-            <param name="startIndex">Start index of buffer where tag length begins - will be auto-incremented.</param>
+            <param name="index">Start index of buffer where tag length begins - will be auto-incremented.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.ParseByteTag(System.Byte[],GSF.PhasorProtocols.Iec61850_90_5.SampledValueTag,System.Int32@)">
             <summary>
@@ -7670,7 +7670,7 @@
             </summary>
             <param name="buffer">Buffer containing sampled value.</param>
             <param name="tag">Sampled value tag to parse.</param>
-            <param name="startIndex">Start index of buffer where tag length begins - will be auto-incremented.</param>
+            <param name="index">Start index of buffer where tag length begins - will be auto-incremented.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.ParseUInt16Tag(System.Byte[],GSF.PhasorProtocols.Iec61850_90_5.SampledValueTag,System.Int32@)">
             <summary>
@@ -7678,7 +7678,7 @@
             </summary>
             <param name="buffer">Buffer containing sampled value.</param>
             <param name="tag">Sampled value tag to parse.</param>
-            <param name="startIndex">Start index of buffer where tag length begins - will be auto-incremented.</param>
+            <param name="index">Start index of buffer where tag length begins - will be auto-incremented.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.ParseUInt24Tag(System.Byte[],GSF.PhasorProtocols.Iec61850_90_5.SampledValueTag,System.Int32@)">
             <summary>
@@ -7686,7 +7686,7 @@
             </summary>
             <param name="buffer">Buffer containing sampled value.</param>
             <param name="tag">Sampled value tag to parse.</param>
-            <param name="startIndex">Start index of buffer where tag length begins - will be auto-incremented.</param>
+            <param name="index">Start index of buffer where tag length begins - will be auto-incremented.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.ParseUInt32Tag(System.Byte[],GSF.PhasorProtocols.Iec61850_90_5.SampledValueTag,System.Int32@)">
             <summary>
@@ -7694,7 +7694,7 @@
             </summary>
             <param name="buffer">Buffer containing sampled value.</param>
             <param name="tag">Sampled value tag to parse.</param>
-            <param name="startIndex">Start index of buffer where tag length begins - will be auto-incremented.</param>
+            <param name="index">Start index of buffer where tag length begins - will be auto-incremented.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.ParseUInt64Tag(System.Byte[],GSF.PhasorProtocols.Iec61850_90_5.SampledValueTag,System.Int32@)">
             <summary>
@@ -7702,7 +7702,7 @@
             </summary>
             <param name="buffer">Buffer containing sampled value.</param>
             <param name="tag">Sampled value tag to parse.</param>
-            <param name="startIndex">Start index of buffer where tag length begins - will be auto-incremented.</param>
+            <param name="index">Start index of buffer where tag length begins - will be auto-incremented.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.ParseStringTag(System.Byte[],GSF.PhasorProtocols.Iec61850_90_5.SampledValueTag,System.Int32@)">
             <summary>
@@ -7710,15 +7710,59 @@
             </summary>
             <param name="buffer">Buffer containing sampled value.</param>
             <param name="tag">Sampled value tag to parse.</param>
-            <param name="startIndex">Start index of buffer where tag length begins - will be auto-incremented.</param>
+            <param name="index">Start index of buffer where tag length begins - will be auto-incremented.</param>
         </member>
-        <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.GetTagLength(System.Byte[],System.Int32@)">
+        <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.EncodeTagLength(System.UInt16,GSF.PhasorProtocols.Iec61850_90_5.SampledValueTag,System.Byte[],System.Int32@)">
             <summary>
-            Gets decoded sample value tag length.
+            Encodes sampled value tag with only a 16-bit length.
+            </summary>
+            <param name="length">Value to encode.</param>
+            <param name="tag">Sampled value tag to encode.</param>
+            <param name="buffer">Buffer to hold encoded sampled value.</param>
+            <param name="index">Start index of buffer where tag will begin - will be auto-incremented.</param>
+        </member>
+        <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.EncodeTagValue``1(``0,GSF.PhasorProtocols.Iec61850_90_5.SampledValueTag,System.Byte[],System.Int32@)">
+            <summary>
+            Encodes primitive type sampled value tag.
+            </summary>
+            <param name="value">Value to encode.</param>
+            <param name="tag">Sampled value tag to encode.</param>
+            <param name="buffer">Buffer to hold encoded sampled value.</param>
+            <param name="index">Start index of buffer where tag will begin - will be auto-incremented.</param>
+        </member>
+        <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.EncodeTagValue(System.Byte,GSF.PhasorProtocols.Iec61850_90_5.SampledValueTag,System.Byte[],System.Int32@)">
+            <summary>
+            Encodes byte based sampled value tag.
+            </summary>
+            <param name="value">Value to encode.</param>
+            <param name="tag">Sampled value tag to encode.</param>
+            <param name="buffer">Buffer to hold encoded sampled value.</param>
+            <param name="index">Start index of buffer where tag will begin - will be auto-incremented.</param>
+        </member>
+        <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.EncodeTagValue(System.String,GSF.PhasorProtocols.Iec61850_90_5.SampledValueTag,System.Byte[],System.Int32@)">
+            <summary>
+            Encodes string based sampled value tag.
+            </summary>
+            <param name="value">String to encode - null string will be encoded as empty string.</param>
+            <param name="tag">Sampled value tag to encode.</param>
+            <param name="buffer">Buffer to hold encoded sampled value.</param>
+            <param name="index">Start index of buffer where tag will begin - will be auto-incremented.</param>
+        </member>
+        <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.ParseTagLength(System.Byte[],System.Int32@)">
+            <summary>
+            Gets decoded sample value tag length (currently limited to 16-bits).
             </summary>
             <param name="buffer">Buffer containing sampled value tag length.</param>
-            <param name="startIndex">Start index of buffer where tag length begins - will be auto-incremented.</param>
+            <param name="index">Start index of buffer where tag length begins - will be auto-incremented.</param>
             <returns>Decoded sample value tag length.</returns>
+        </member>
+        <member name="M:GSF.PhasorProtocols.Iec61850_90_5.Common.EncodeTagLength(System.UInt16,System.Byte[],System.Int32@)">
+            <summary>
+            Encodes sample value tag length (currently limited to 16-bits).
+            </summary>
+            <param name="length">Sample value tag length.</param>
+            <param name="buffer">Buffer to hold encoded sampled value tag length.</param>
+            <param name="index">Start index of buffer where tag length encoding begins - will be auto-incremented.</param>
         </member>
         <member name="T:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader">
             <summary>
@@ -7727,22 +7771,30 @@
         </member>
         <member name="F:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.FixedLength">
             <summary>
-            Total fixed length of <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader"/>.
+            Total fixed length of <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader"/> for IEEE C37.118 frames.
             </summary>
         </member>
-        <member name="M:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.#ctor(GSF.PhasorProtocols.Iec61850_90_5.FrameType,System.UInt16,GSF.Ticks)">
+        <member name="F:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.IECFixedLength">
+            <summary>
+            Total fixed length of <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader"/> for IEC 61850-90-5 data frames.
+            </summary>
+        </member>
+        <member name="M:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.#ctor(GSF.PhasorProtocols.Iec61850_90_5.FrameType,System.UInt16,GSF.Ticks,System.String,System.Int32,System.UInt32)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader"/> from specified parameters.
             </summary>
             <param name="typeID">The IEC 61850-90-5 specific frame type of this frame.</param>
             <param name="idCode">The ID code of this frame.</param>
             <param name="timestamp">The timestamp of this frame.</param>
+            <param name="msvID">MSVID to use for this frame, if any.</param>
+            <param name="asduCount">ASDU count.</param>
+            <param name="configurationRevision">Configuration revision.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.#ctor(GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,GSF.PhasorProtocols.AngleFormat,System.Byte[],System.Int32,System.Int32)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader"/> from given <paramref name="buffer"/>.
             </summary>
-            <param name="configurationFrame">IEC 61850-90-5 <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame"/> if already parsed.</param>
+            <param name="configurationFrame">IEC 61850-90-5 <see cref="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.ConfigurationFrame"/> if already parsed.</param>
             <param name="useETRConfiguration">Determines if system should find associated ETR file using MSVID with same name for configuration.</param>
             <param name="guessConfiguration">Determines if system should try to guess at a possible configuration given payload size.</param>
             <param name="parseRedundantASDUs">Determines if system should expose redundantly parsed ASDUs.</param>
@@ -7808,12 +7860,27 @@
         </member>
         <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.PacketNumber">
             <summary>
-            Gets packet number of this frame.
+            Gets or sets packet number of this frame.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.AsduCount">
             <summary>
-            Gets number of ASDUs in this frame.
+            Gets or sets number of ASDUs in this frame.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.ConfigurationRevision">
+            <summary>
+            Gets or sets configuration revision;
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.AsduLength">
+            <summary>
+            Gets or sets ASDU length in this frame.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.KeyID">
+            <summary>
+            Gets or sets key ID - lookup into table of current keys.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.FrameLength">
@@ -7824,6 +7891,11 @@
         <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.DataLength">
             <summary>
             Gets or sets the length of the data in the IEC 61850-90-5 frame (i.e., the <see cref="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.FrameLength"/> minus the header length and checksum: <see cref="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.FrameLength"/> - 8).
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.SpduLength">
+            <summary>
+            Gets SPDU length.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.IDCode">
@@ -7897,6 +7969,26 @@
         <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.State">
             <summary>
             Gets or sets the parsing state for the <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader"/> object.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.SignatureAlgorithm">
+            <summary>
+            Gets or sets signature algorithm used by IEC61850-90-5 data frames.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.SecurityAlgorithm">
+            <summary>
+            Gets or sets security algorithm used by IEC61850-90-5 data frames.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.MsvID">
+            <summary>
+            Gets or sets the MSVID to be used by IEC 61850-90-5 data frames.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.ConfigurationFrame">
+            <summary>
+            Gets or sets current configuration frame.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader.FrameType">
@@ -8420,12 +8512,16 @@
             This constructor is used by <see cref="T:GSF.Parsing.FrameImageParserBase`2"/> to parse an IEC 61850-90-5 data frame.
             </remarks>
         </member>
-        <member name="M:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.#ctor(GSF.Ticks,GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame)">
+        <member name="M:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.#ctor(GSF.Ticks,GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame,System.String,System.Int32,System.Byte[][],System.UInt32)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/> from specified parameters.
             </summary>
             <param name="timestamp">The exact timestamp, in <see cref="T:GSF.Ticks"/>, of the data represented by this <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/>.</param>
             <param name="configurationFrame">The <see cref="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.ConfigurationFrame"/> associated with this <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/>.</param>
+            <param name="msvID">MSVID to use for <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/>.</param>
+            <param name="asduCount">ASDU count.</param>
+            <param name="asduImages">Concentrator's ASDU image cache.</param>
+            <param name="configurationRevision">Configuration revision.</param>
             <remarks>
             This constructor is used by a consumer to generate an IEC 61850-90-5 data frame.
             </remarks>
@@ -8498,6 +8594,11 @@
             Gets or sets IEC 61850-90-5 sample synchronization state.
             </summary>
         </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.SampleCount">
+            <summary>
+            Gets or sets sample count for the <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/>.
+            </summary>
+        </member>
         <member name="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.CommonHeader">
             <summary>
             Gets or sets current <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.CommonFrameHeader"/>.
@@ -8506,6 +8607,31 @@
         <member name="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.HeaderLength">
             <summary>
             Gets the length of the header image.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.HeaderImage">
+            <summary>
+            Gets the binary header image of the <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/> object.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.BinaryLength">
+            <summary>
+            Gets the length of the <see cref="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.BinaryImage"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.BinaryImage">
+            <summary>
+            Gets the binary image of this <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/> object.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.FooterLength">
+            <summary>
+            Gets the length of the <see cref="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.FooterImage"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.FooterImage">
+            <summary>
+            Gets the binary footer image of the <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.DataFrame"/> object.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.Iec61850_90_5.DataFrame.Attributes">
