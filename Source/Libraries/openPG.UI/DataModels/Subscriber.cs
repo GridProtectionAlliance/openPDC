@@ -901,11 +901,11 @@ namespace openPG.UI.DataModels
 
                 try
                 {
-                    CommonFunctions.SendCommandToService("Initialize");
+                    CommonFunctions.SendCommandToService("ReloadConfig");
                 }
                 catch (Exception ex)
                 {
-                    return "Subscriber information saved successfully. Failed to send Initialize command to backend service." + Environment.NewLine + ex.Message;
+                    return "Subscriber information saved successfully. Failed to send ReloadConfig command to backend service." + Environment.NewLine + ex.Message;
                 }
 
                 return "Subscriber information saved successfully";
