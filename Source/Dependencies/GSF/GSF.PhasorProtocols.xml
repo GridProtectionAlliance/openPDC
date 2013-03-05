@@ -4932,6 +4932,11 @@
             <param name="offset">The zero-based byte offset in buffer at which to begin copying bytes to the current stream.</param>
             <param name="count">The number of bytes to be written to the current stream.</param>
         </member>
+        <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.ResetTotalBytesReceived">
+            <summary>
+            Resets the value for the <see cref="P:GSF.PhasorProtocols.MultiProtocolFrameParser.TotalBytesReceived"/> statistic.
+            </summary>
+        </member>
         <member name="M:GSF.PhasorProtocols.MultiProtocolFrameParser.OnParsingException(System.Exception)">
             <summary>
             Raises the <see cref="E:GSF.PhasorProtocols.MultiProtocolFrameParser.ParsingException"/> event.

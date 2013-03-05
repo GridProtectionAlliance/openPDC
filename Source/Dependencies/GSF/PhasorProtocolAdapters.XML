@@ -65,6 +65,11 @@
             Reloads the configuration for this <see cref="T:PhasorProtocolAdapters.PhasorDataConcentratorBase"/>.
             </summary>
         </member>
+        <member name="M:PhasorProtocolAdapters.PhasorDataConcentratorBase.ResetLifetimeCounters">
+            <summary>
+            Resets the counters for the lifetime statistics without interrupting the adapter's operations.
+            </summary>
+        </member>
         <member name="M:PhasorProtocolAdapters.PhasorDataConcentratorBase.QueueMeasurementForProcessing(GSF.TimeSeries.IMeasurement)">
             <summary>
             Queues a single measurement for processing.
@@ -1174,6 +1179,11 @@
             Resets the statistics of the specified device associated with this connection.
             </summary>
             <param name="idCode">Integer ID code of device on which to reset statistics.</param>
+        </member>
+        <member name="M:PhasorProtocolAdapters.PhasorMeasurementMapper.ResetLifetimeCounters">
+            <summary>
+            Resets the counters for the lifetime statistics without interrupting the adapter's operations.
+            </summary>
         </member>
         <member name="M:PhasorProtocolAdapters.PhasorMeasurementMapper.ResetLatencyCounters">
             <summary>

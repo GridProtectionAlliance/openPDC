@@ -7304,6 +7304,11 @@
             Initiate a metadata refresh.
             </summary>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.DataSubscriber.ResetLifetimeCounters">
+            <summary>
+            Resets the counters for the lifetime statistics without interrupting the adapter's operations.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.SendServerCommand(GSF.TimeSeries.Transport.ServerCommand,System.Byte[])">
             <summary>
             Sends a server command to the publisher connection.
