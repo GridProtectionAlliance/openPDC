@@ -62,7 +62,7 @@ namespace openPG.UI.UserControls
 
             if (propertyName == "CurrentItem")
             {
-                MemberMeasurementsPager.FilterExpression = string.Format("SignalID IN (SELECT SignalID FROM MeasurementGroupMeasurement WHERE NodeID = '{0}' AND MeasurementGroupID = {1})", currentItem.NodeID.ToString().ToUpper(), currentItem.ID);
+                MemberMeasurementsPager.FilterExpression = string.Format("SignalID IN (SELECT SignalID FROM MeasurementGroupMeasurement WHERE NodeID = '{0}' AND MeasurementGroupID = {1})", currentItem.NodeID.ToString().ToLower(), currentItem.ID);
                 MemberMeasurementsPager.ReloadDataGrid();
             }
         }
