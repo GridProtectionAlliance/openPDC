@@ -1862,12 +1862,12 @@
         </member>
         <member name="F:GSF.TimeSeries.MeasurementStateFlags.UpSampled">
             <summary>
-            Defines upsampled state.
+            Defines up-sampled state.
             </summary>
         </member>
         <member name="F:GSF.TimeSeries.MeasurementStateFlags.DownSampled">
             <summary>
-            Defines downsampled state.
+            Defines down-sampled state.
             </summary>
         </member>
         <member name="F:GSF.TimeSeries.MeasurementStateFlags.DiscardedValue">
@@ -2084,6 +2084,14 @@
             </summary>
             <param name="measurements"><see cref="T:GSF.TimeSeries.IMeasurement"/> enumeration to convert.</param>
             <returns><see cref="T:GSF.TimeSeries.MeasurementKey"/> values of the <see cref="T:GSF.TimeSeries.IMeasurement"/> enumeration.</returns>
+        </member>
+        <member name="M:GSF.TimeSeries.IMeasurementExtensions.GetSignalType(GSF.TimeSeries.IMeasurement,System.Data.DataSet)">
+            <summary>
+            Gets a unique (run-time only) signal type ID for the given <paramref name="measurement"/> useful for sorting.
+            </summary>
+            <param name="measurement"><see cref="T:GSF.TimeSeries.IMeasurement"/> to obtain signal type for.</param>
+            <param name="dataSource"><see cref="T:System.Data.DataSet"/> that contains measurement metadata.</param>
+            <returns>Unique (run-time only) signal type ID for the given <paramref name="measurement"/>.</returns>
         </member>
         <member name="T:GSF.TimeSeries.ImmediateMeasurements">
             <summary>
@@ -6512,6 +6520,22 @@
             Bit set = use odd cipher index (i.e., 1), bit clear = use even cipher index (i.e., 0).
             </remarks>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.DataPacketFlags.Compressed">
+            <summary>
+            Determines if data packet payload is compressed.
+            </summary>
+            <remarks>
+            Bit set = payload compressed, bit clear = payload normal.
+            </remarks>
+        </member>
+        <member name="F:GSF.TimeSeries.Transport.DataPacketFlags.LittleEndianCompression">
+            <summary>
+            Determines if the compressed data payload is in little-endian order.
+            </summary>
+            <remarks>
+            Bit set = little-endian order compression, bit clear = big-endian order compression.
+            </remarks>
+        </member>
         <member name="F:GSF.TimeSeries.Transport.DataPacketFlags.NoFlags">
             <summary>
             No flags set.
@@ -6562,6 +6586,14 @@
             </summary>
             <remarks>
             Bit set = common serialization format, bit clear = .NET serialization format
+            </remarks>
+        </member>
+        <member name="F:GSF.TimeSeries.Transport.OperationalModes.CompressPayloadData">
+            <summary>
+            Determines whether payload data is compressed when exchanging between publisher and subscriber.
+            </summary>
+            <remarks>
+            Bit set = compress, bit clear = no compression
             </remarks>
         </member>
         <member name="F:GSF.TimeSeries.Transport.OperationalModes.CompressSignalIndexCache">
@@ -6655,6 +6687,16 @@
             Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.SharedDatabase"/>.
             </summary>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.DataPublisher.DefaultAllowPayloadCompression">
+            <summary>
+            Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.AllowPayloadCompression"/>.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.Transport.DataPublisher.DefaultCompressionStrength">
+            <summary>
+            Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.CompressionStrength"/>.
+            </summary>
+        </member>
         <member name="F:GSF.TimeSeries.Transport.DataPublisher.DefaultAllowSynchronizedSubscription">
             <summary>
             Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.AllowSynchronizedSubscription"/>.
@@ -6674,6 +6716,19 @@
             <summary>
             Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.MetadataTables"/>.
             </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.Transport.DataPublisher.MaxPacketSize">
+            <summary>
+            Maximum packet size before software fragmentation of payload.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.Transport.DataPublisher.ClientResponseHeaderSize">
+            <summary>
+            Size of client response header in bytes.
+            </summary>
+            <remarks>
+            Header consists of response byte, in-response-to server command byte, 4-byte int representing payload length.
+            </remarks>
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.#ctor">
             <summary>
@@ -6914,9 +6969,19 @@
             data that this node subscribed to from another node in a shared database.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.AllowPayloadCompression">
+            <summary>
+            Gets or sets flag that indicates if this publisher will allow payload compression when requested by subscribers.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.CompressionStrength">
+            <summary>
+            Gets or sets the compression strength value to use when compressing data for subscribers.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.AllowSynchronizedSubscription">
             <summary>
-            Gets or sets flag that indicates if this publisher will allow synchronized subscriptions.
+            Gets or sets flag that indicates if this publisher will allow synchronized subscriptions when requested by subscribers.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.UseBaseTimeOffsets">
@@ -7597,6 +7662,11 @@
         <member name="P:GSF.TimeSeries.DebugHostBase.ServiceClientName">
             <summary>
             Gets the executable name of the service client that can remotely access the time-series framework service.
+            </summary>
+        </member>
+        <member name="T:GSF.TimeSeries.Transport.IBinaryMeasurement">
+            <summary>
+            Defines a <see cref="T:GSF.TimeSeries.IMeasurement"/> that supports <see cref="T:GSF.Parsing.ISupportBinaryImage"/>.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.Transport.SerializableMeasurement">
@@ -8382,6 +8452,68 @@
             Gets the length of the <see cref="T:GSF.TimeSeries.Transport.CompactMeasurement"/>.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.CompactMeasurement.TimestampC2">
+            <summary>
+            Gets offset compressed millisecond-resolution 2-byte timestamp.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.CompactMeasurement.TimestampC4">
+            <summary>
+            Gets offset compressed tick-resolution 4-byte timestamp.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.CompactMeasurement.CompactStateFlags">
+            <summary>
+            Gets or sets byte level compact state flags with encoded time index and base time offset bits.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.CompactMeasurement.RuntimeID">
+            <summary>
+            Gets or sets the 2-byte run-time signal index for this measurement.
+            </summary>
+        </member>
+        <member name="T:GSF.TimeSeries.Transport.CompactMeasurementExtensions">
+            <summary>
+            Defines extension functions related to <see cref="T:GSF.TimeSeries.Transport.CompactMeasurement"/>.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.Transport.CompactMeasurementExtensions.CompressPayload(System.Collections.Generic.IEnumerable{GSF.TimeSeries.Transport.CompactMeasurement},System.IO.MemoryStream,System.Byte,System.Boolean,GSF.TimeSeries.Transport.DataPacketFlags@)">
+            <summary>
+            Attempts to compress payload of <see cref="T:GSF.TimeSeries.Transport.CompactMeasurement"/> values onto the <paramref name="destination"/> stream.
+            </summary>
+            <param name="compactMeasurements">Payload of <see cref="T:GSF.TimeSeries.Transport.CompactMeasurement"/> values.</param>
+            <param name="destination">Memory based <paramref name="destination"/> stream to hold compressed payload.</param>
+            <param name="compressionStrength">Compression strength to use.</param>
+            <param name="includeTime">Flag that determines if time should be included in the compressed payload.</param>
+            <param name="flags">Current <see cref="T:GSF.TimeSeries.Transport.DataPacketFlags"/>.</param>
+            <returns><c>true</c> if payload was compressed and encoded onto <paramref name="destination"/> stream; otherwise <c>false</c>.</returns>
+            <remarks>
+            <para>
+            Compressed payload will only be encoded onto <paramref name="destination"/> stream if compressed size would be smaller
+            than normal serialized size.
+            </para>
+            <para>
+            As an optimization this function uses a compression method that uses pointers to native structures, as such the
+            endian order encoding of the compressed data will always be in the native-endian order of the operating system.
+            This will be an important consideration when writing a endian order neutral payload decompressor. To help with
+            this the actual endian order used during compression is marked in the data flags. However, measurements values
+            are consistently encoded in big-endian order prior to buffer compression.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GSF.TimeSeries.Transport.CompactMeasurementExtensions.DecompressPayload(System.Byte[],GSF.TimeSeries.Transport.SignalIndexCache,System.Int32,System.Int32,System.Int32,System.Boolean,GSF.TimeSeries.Transport.DataPacketFlags)">
+            <summary>
+            Decompresses <see cref="T:GSF.TimeSeries.Transport.CompactMeasurement"/> values from the given <paramref name="source"/> buffer.
+            </summary>
+            <param name="source">Buffer with compressed <see cref="T:GSF.TimeSeries.Transport.CompactMeasurement"/> payload.</param>
+            <param name="signalIndexCache">Current <see cref="T:GSF.TimeSeries.Transport.SignalIndexCache"/>.</param>
+            <param name="index">Index into buffer where compressed payload begins.</param>
+            <param name="length">Length of all data within <paramref name="source"/> buffer.</param>
+            <param name="measurementCount">Number of compressed measurements in the payload.</param>
+            <param name="includeTime">Flag that determines if timestamps as included in the payload.</param>
+            <param name="flags">Current <see cref="T:GSF.TimeSeries.Transport.DataPacketFlags"/>.</param>
+            <returns>Decompressed <see cref="T:GSF.TimeSeries.Transport.CompactMeasurement"/> values from the given <paramref name="source"/> buffer.</returns>
+        </member>
         <member name="T:GSF.TimeSeries.Transport.IClientSubscription">
             <summary>
             Represents a common set of interfaces for a client adapter subscription to the <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
@@ -8433,6 +8565,16 @@
         <member name="P:GSF.TimeSeries.Transport.IClientSubscription.RequestedInputFilter">
             <summary>
             Gets the input filter requested by the subscriber when establishing this <see cref="T:GSF.TimeSeries.Transport.IClientSubscription"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.IClientSubscription.UsePayloadCompression">
+            <summary>
+            Gets or sets flag that determines if payload compression should be enabled in data packets of this <see cref="T:GSF.TimeSeries.Transport.IClientSubscription"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.IClientSubscription.CompressionStrength">
+            <summary>
+            Gets or sets the compression strength value to use when <see cref="P:GSF.TimeSeries.Transport.IClientSubscription.UsePayloadCompression"/> is <c>true</c> for this <see cref="T:GSF.TimeSeries.Transport.IClientSubscription"/>.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.IClientSubscription.UseCompactMeasurementFormat">
@@ -8930,6 +9072,16 @@
             Gets the current signal index cache of this <see cref="T:GSF.TimeSeries.Transport.SynchronizedClientSubscription"/>.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.SynchronizedClientSubscription.UsePayloadCompression">
+            <summary>
+            Gets or sets flag that determines if payload compression should be enabled in data packets of this <see cref="T:GSF.TimeSeries.Transport.SynchronizedClientSubscription"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.SynchronizedClientSubscription.CompressionStrength">
+            <summary>
+            Gets or sets the compression strength value to use when <see cref="P:GSF.TimeSeries.Transport.SynchronizedClientSubscription.UsePayloadCompression"/> is <c>true</c> for this <see cref="T:GSF.TimeSeries.Transport.SynchronizedClientSubscription"/>.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.SynchronizedClientSubscription.UseCompactMeasurementFormat">
             <summary>
             Gets or sets flag that determines if the compact measurement format should be used in data packets of this <see cref="T:GSF.TimeSeries.Transport.SynchronizedClientSubscription"/>.
@@ -9085,6 +9237,16 @@
         <member name="P:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.RequestedInputFilter">
             <summary>
             Gets the input filter requested by the subscriber when establishing this <see cref="T:GSF.TimeSeries.Transport.IClientSubscription"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.UsePayloadCompression">
+            <summary>
+            Gets or sets flag that determines if payload compression should be enabled in data packets of this <see cref="T:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.CompressionStrength">
+            <summary>
+            Gets or sets the compression strength value to use when <see cref="P:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.UsePayloadCompression"/> is <c>true</c> for this <see cref="T:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription"/>.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.UseCompactMeasurementFormat">

@@ -479,7 +479,7 @@
         </member>
         <member name="M:PhasorProtocolAdapters.CalculatedMeasurementBase.Initialize">
             <summary>
-            Intializes <see cref="T:PhasorProtocolAdapters.CalculatedMeasurementBase"/>.
+            Initializes <see cref="T:PhasorProtocolAdapters.CalculatedMeasurementBase"/>.
             </summary>
         </member>
         <member name="P:PhasorProtocolAdapters.CalculatedMeasurementBase.InputMeasurementKeys">

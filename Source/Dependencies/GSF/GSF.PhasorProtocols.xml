@@ -14696,6 +14696,19 @@
             <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
             <returns>The length of the data that was parsed.</returns>
         </member>
+        <member name="M:GSF.PhasorProtocols.IeeeC37_118.DataFrame.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Parses the binary image.
+            </summary>
+            <param name="buffer">Binary image to parse.</param>
+            <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
+            <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
+            <returns>The length of the data that was parsed.</returns>
+            <remarks>
+            This method is overriden to ensure that the return value is the frame length
+            defined in the header of the frame rather than the number of bytes parsed.
+            </remarks>
+        </member>
         <member name="M:GSF.PhasorProtocols.IeeeC37_118.DataFrame.CalculateChecksum(System.Byte[],System.Int32,System.Int32)">
             <summary>
             Calculates checksum of given <paramref name="buffer"/>.

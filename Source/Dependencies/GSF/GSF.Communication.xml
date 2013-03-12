@@ -4508,6 +4508,26 @@
             Gets the descriptive status of the client.
             </summary>
         </member>
+        <member name="T:GSF.Communication.ClientIdentificationMode">
+            <summary>
+            Defines modes by which the UDP server will identify its clients when receiving messages.
+            </summary>
+        </member>
+        <member name="F:GSF.Communication.ClientIdentificationMode.IP">
+            <summary>
+            Identify clients by their IP address.
+            </summary>
+        </member>
+        <member name="F:GSF.Communication.ClientIdentificationMode.Port">
+            <summary>
+            Identify clients by the port they are bound to.
+            </summary>
+        </member>
+        <member name="F:GSF.Communication.ClientIdentificationMode.EndPoint">
+            <summary>
+            Identify clients by both their IP address and the port they are bound to.
+            </summary>
+        </member>
         <member name="T:GSF.Communication.UdpServer">
             <summary>
             Represents a UDP-based communication server.
@@ -4595,6 +4615,11 @@
             }
             </code>
             </example>
+        </member>
+        <member name="F:GSF.Communication.UdpServer.DefaultClientIdentificationMode">
+            <summary>
+            Specifies the default value for the <see cref="P:GSF.Communication.UdpServer.ClientIdentificationMode"/> property.
+            </summary>
         </member>
         <member name="F:GSF.Communication.UdpServer.DefaultAllowDualStackSocket">
             <summary>
@@ -4743,6 +4768,11 @@
         <member name="M:GSF.Communication.UdpServer.ProcessReceive(System.Net.Sockets.SocketAsyncEventArgs)">
             <summary>
             Callback method for asynchronous receive operation of payload data from any endpoint.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.UdpServer.ClientIdentificationMode">
+            <summary>
+            Gets or sets the mode by which the UDP server will identify its clients when receiving messages.
             </summary>
         </member>
         <member name="P:GSF.Communication.UdpServer.AllowDualStackSocket">
