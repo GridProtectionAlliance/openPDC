@@ -7088,6 +7088,11 @@
             Represents a data subscribing client that will connect to a data publisher for a data subscription.
             </summary>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.DataSubscriber.DefaultOperationalModes">
+            <summary>
+            Defines default value for <see cref="P:GSF.TimeSeries.Transport.DataSubscriber.OperationalModes"/>.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.#ctor">
             <summary>
             Creates a new <see cref="T:GSF.TimeSeries.Transport.DataSubscriber"/>.
@@ -7139,8 +7144,8 @@
             </summary>
             <param name="compactFormat">Boolean value that determines if the compact measurement format should be used. Set to <c>false</c> for full fidelity measurement serialization; otherwise set to <c>true</c> for bandwidth conservation.</param>
             <param name="framesPerSecond">The desired number of data frames per second.</param>
-            <param name="lagTime">Allowed past time deviation tolerance, in seconds (can be subsecond).</param>
-            <param name="leadTime">Allowed future time deviation tolerance, in seconds (can be subsecond).</param>
+            <param name="lagTime">Allowed past time deviation tolerance, in seconds (can be sub-second).</param>
+            <param name="leadTime">Allowed future time deviation tolerance, in seconds (can be sub-second).</param>
             <param name="filterExpression">Filtering expression that defines the measurements that are being subscribed.</param>
             <param name="dataChannel">Desired UDP return data channel connection string to use for data packet transmission. Set to <c>null</c> to use TCP channel for data transmission.</param>
             <param name="useLocalClockAsRealTime">Boolean value that determines whether or not to use the local clock time as real-time.</param>
@@ -7148,7 +7153,7 @@
             <param name="allowSortsByArrival"> Gets or sets flag that determines whether or not to allow incoming measurements with bad timestamps to be sorted by arrival time.</param>
             <param name="timeResolution">Gets or sets the maximum time resolution, in ticks, to use when sorting measurements by timestamps into their proper destination frame.</param>
             <param name="allowPreemptivePublishing">Gets or sets flag that allows system to preemptively publish frames assuming all expected measurements have arrived.</param>
-            <param name="downsamplingMethod">Gets the total number of downsampled measurements processed by the concentrator.</param>
+            <param name="downsamplingMethod">Gets the total number of down-sampled measurements processed by the concentrator.</param>
             <param name="startTime">Defines a relative or exact start time for the temporal constraint to use for historical playback.</param>
             <param name="stopTime">Defines a relative or exact stop time for the temporal constraint to use for historical playback.</param>
             <param name="constraintParameters">Defines any temporal parameters related to the constraint to use for historical playback.</param>
@@ -7158,13 +7163,13 @@
             <returns><c>true</c> if subscribe transmission was successful; otherwise <c>false</c>.</returns>
             <remarks>
             <para>
-            When the <paramref name="startTime"/> or <paramref name="stopTime"/> temporal processing contraints are defined (i.e., not <c>null</c>), this
+            When the <paramref name="startTime"/> or <paramref name="stopTime"/> temporal processing constraints are defined (i.e., not <c>null</c>), this
             specifies the start and stop time over which the subscriber session will process data. Passing in <c>null</c> for the <paramref name="startTime"/>
             and <paramref name="stopTime"/> specifies the the subscriber session will process data in standard, i.e., real-time, operation.
             </para>
             <para>
             With the exception of the values of -1 and 0, the <paramref name="processingInterval"/> value specifies the desired historical playback data
-            processing interval in milliseconds. This is basically a delay, or timer interval, overwhich to process data. Setting this value to -1 means
+            processing interval in milliseconds. This is basically a delay, or timer interval, over which to process data. Setting this value to -1 means
             to use the default processing interval while setting the value to 0 means to process data as fast as possible.
             </para>
             <para>
@@ -7209,8 +7214,8 @@
             </summary>
             <param name="compactFormat">Boolean value that determines if the compact measurement format should be used. Set to <c>false</c> for full fidelity measurement serialization; otherwise set to <c>true</c> for bandwidth conservation.</param>
             <param name="framesPerSecond">The desired number of data frames per second.</param>
-            <param name="lagTime">Allowed past time deviation tolerance, in seconds (can be subsecond).</param>
-            <param name="leadTime">Allowed future time deviation tolerance, in seconds (can be subsecond).</param>
+            <param name="lagTime">Allowed past time deviation tolerance, in seconds (can be sub-second).</param>
+            <param name="leadTime">Allowed future time deviation tolerance, in seconds (can be sub-second).</param>
             <param name="filterExpression">Filtering expression that defines the measurements that are being subscribed.</param>
             <param name="dataChannel">Desired UDP return data channel connection string to use for data packet transmission. Set to <c>null</c> to use TCP channel for data transmission.</param>
             <param name="useLocalClockAsRealTime">Boolean value that determines whether or not to use the local clock time as real-time.</param>
@@ -7218,7 +7223,7 @@
             <param name="allowSortsByArrival"> Gets or sets flag that determines whether or not to allow incoming measurements with bad timestamps to be sorted by arrival time.</param>
             <param name="timeResolution">Gets or sets the maximum time resolution, in ticks, to use when sorting measurements by timestamps into their proper destination frame.</param>
             <param name="allowPreemptivePublishing">Gets or sets flag that allows system to preemptively publish frames assuming all expected measurements have arrived.</param>
-            <param name="downsamplingMethod">Gets the total number of downsampled measurements processed by the concentrator.</param>
+            <param name="downsamplingMethod">Gets the total number of down-sampled measurements processed by the concentrator.</param>
             <param name="startTime">Defines a relative or exact start time for the temporal constraint to use for historical playback.</param>
             <param name="stopTime">Defines a relative or exact stop time for the temporal constraint to use for historical playback.</param>
             <param name="constraintParameters">Defines any temporal parameters related to the constraint to use for historical playback.</param>
@@ -7228,13 +7233,13 @@
             <returns><c>true</c> if subscribe transmission was successful; otherwise <c>false</c>.</returns>
             <remarks>
             <para>
-            When the <paramref name="startTime"/> or <paramref name="stopTime"/> temporal processing contraints are defined (i.e., not <c>null</c>), this
+            When the <paramref name="startTime"/> or <paramref name="stopTime"/> temporal processing constraints are defined (i.e., not <c>null</c>), this
             specifies the start and stop time over which the subscriber session will process data. Passing in <c>null</c> for the <paramref name="startTime"/>
             and <paramref name="stopTime"/> specifies the the subscriber session will process data in standard, i.e., real-time, operation.
             </para>
             <para>
             With the exception of the values of -1 and 0, the <paramref name="processingInterval"/> value specifies the desired historical playback data
-            processing interval in milliseconds. This is basically a delay, or timer interval, overwhich to process data. Setting this value to -1 means
+            processing interval in milliseconds. This is basically a delay, or timer interval, over which to process data. Setting this value to -1 means
             to use the default processing interval while setting the value to 0 means to process data as fast as possible.
             </para>
             <para>
@@ -7282,8 +7287,8 @@
             <param name="filterExpression">Filtering expression that defines the measurements that are being subscribed.</param>
             <param name="dataChannel">Desired UDP return data channel connection string to use for data packet transmission. Set to <c>null</c> to use TCP channel for data transmission.</param>
             <param name="includeTime">Boolean value that determines if time is a necessary component in streaming data.</param>
-            <param name="lagTime">When <paramref name="throttled"/> is <c>true</c>, defines the data transmission speed in seconds (can be subsecond).</param>
-            <param name="leadTime">When <paramref name="throttled"/> is <c>true</c>, defines the allowed time deviation tolerance to real-time in seconds (can be subsecond).</param>
+            <param name="lagTime">When <paramref name="throttled"/> is <c>true</c>, defines the data transmission speed in seconds (can be sub-second).</param>
+            <param name="leadTime">When <paramref name="throttled"/> is <c>true</c>, defines the allowed time deviation tolerance to real-time in seconds (can be sub-second).</param>
             <param name="useLocalClockAsRealTime">When <paramref name="throttled"/> is <c>true</c>, defines boolean value that determines whether or not to use the local clock time as real-time. Set to <c>false</c> to use latest received measurement timestamp as real-time.</param>
             <param name="startTime">Defines a relative or exact start time for the temporal constraint to use for historical playback.</param>
             <param name="stopTime">Defines a relative or exact stop time for the temporal constraint to use for historical playback.</param>
@@ -7294,13 +7299,13 @@
             <returns><c>true</c> if subscribe transmission was successful; otherwise <c>false</c>.</returns>
             <remarks>
             <para>
-            When the <paramref name="startTime"/> or <paramref name="stopTime"/> temporal processing contraints are defined (i.e., not <c>null</c>), this
+            When the <paramref name="startTime"/> or <paramref name="stopTime"/> temporal processing constraints are defined (i.e., not <c>null</c>), this
             specifies the start and stop time over which the subscriber session will process data. Passing in <c>null</c> for the <paramref name="startTime"/>
             and <paramref name="stopTime"/> specifies the the subscriber session will process data in standard, i.e., real-time, operation.
             </para>
             <para>
             With the exception of the values of -1 and 0, the <paramref name="processingInterval"/> value specifies the desired historical playback data
-            processing interval in milliseconds. This is basically a delay, or timer interval, overwhich to process data. Setting this value to -1 means
+            processing interval in milliseconds. This is basically a delay, or timer interval, over which to process data. Setting this value to -1 means
             to use the default processing interval while setting the value to 0 means to process data as fast as possible.
             </para>
             <para>
@@ -7486,7 +7491,7 @@
             </summary>
             <remarks>
             This event is expected to only be raised when an input adapter has been designed to process
-            a finite amount of data, e.g., reading a historical range of data during temporal procesing.
+            a finite amount of data, e.g., reading a historical range of data during temporal processing.
             </remarks>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.SecurityMode">
@@ -7501,7 +7506,7 @@
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.AutoConnect">
             <summary>
-            Gets or sets flag that determines if <see cref="T:GSF.TimeSeries.Transport.DataSubscriber"/> should attempt to autoconnection to <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/> using defined connection settings.
+            Gets or sets flag that determines if <see cref="T:GSF.TimeSeries.Transport.DataSubscriber"/> should attempt to auto-connection to <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/> using defined connection settings.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.UseMillisecondResolution">
@@ -7551,7 +7556,7 @@
             </summary>
             <remarks>
             With the exception of the values of -1 and 0, this value specifies the desired processing interval for data, i.e.,
-            basically a delay, or timer interval, overwhich to process data. A value of -1 means to use the default processing
+            basically a delay, or timer interval, over which to process data. A value of -1 means to use the default processing
             interval while a value of 0 means to process data as fast as possible.
             </remarks>
         </member>
