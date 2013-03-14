@@ -8513,7 +8513,7 @@
             <param name="source">Buffer with compressed <see cref="T:GSF.TimeSeries.Transport.CompactMeasurement"/> payload.</param>
             <param name="signalIndexCache">Current <see cref="T:GSF.TimeSeries.Transport.SignalIndexCache"/>.</param>
             <param name="index">Index into buffer where compressed payload begins.</param>
-            <param name="length">Length of all data within <paramref name="source"/> buffer.</param>
+            <param name="dataLength">Length of all data within <paramref name="source"/> buffer.</param>
             <param name="measurementCount">Number of compressed measurements in the payload.</param>
             <param name="includeTime">Flag that determines if timestamps as included in the payload.</param>
             <param name="flags">Current <see cref="T:GSF.TimeSeries.Transport.DataPacketFlags"/>.</param>
