@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -143,41 +144,68 @@ namespace openPDC.UI.ViewModels
             {
                 try
                 {
+                    //Cycle through a collection of measurements.
                     foreach (IMeasurement newMeasurement in e.Argument)
                     {
+                        //Identify measurement by ID and set the quality, value, and the timetag properties for it.
                         StatisticMeasurement measurement;
 
-                        if (RealTimeStatistic.StatisticMeasurements.TryGetValue(newMeasurement.ID, out measurement))
+                        if (RealTimeStatistic.StatisticMeasurements.TryGetValue(newMeasurement.ID, out measurement) &&     //reference the StatisticsMeasurement key/value dictionary and insure that a value exists for this key AND get the value 
+                           !string.IsNullOrEmpty(measurement.DisplayFormat) &&                                             //insure that the measurement has a display format
+                           !string.IsNullOrEmpty(measurement.DataType))													   //insure that the measurement data type is not null or empty
                         {
-                            if (!string.IsNullOrEmpty(measurement.DisplayFormat) && !string.IsNullOrEmpty(measurement.DataType))
-                            {
-                                measurement.Quality = newMeasurement.ValueQualityIsGood() ? "GOOD" : "BAD";
-                                measurement.Value = string.Format(measurement.DisplayFormat, ConvertValueToType(newMeasurement.AdjustedValue.ToString(), measurement.DataType));
-                                measurement.TimeTag = newMeasurement.Timestamp.ToString("HH:mm:ss.fff");
 
-                                StreamStatistic streamStatistic;
-                                if (measurement.ConnectedState) //if measurement defines connection state.
+                            measurement.Quality = newMeasurement.ValueQualityIsGood() ? "GOOD" : "BAD";
+                            measurement.Value = string.Format(measurement.DisplayFormat, ConvertValueToType(newMeasurement.AdjustedValue.ToString(), measurement.DataType));
+                            measurement.TimeTag = newMeasurement.Timestamp.ToString("HH:mm:ss.fff");
+
+                            //Identify the source of a statistic associated with a particular device by ID and set the statistical value and status color of the stream
+                            StreamStatistic streamStatistic;
+
+                            if ((measurement.ConnectedState) && (measurement.Source == "System" && RealTimeStatistic.SystemStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
+                                    (measurement.Source == "Publisher" && RealTimeStatistic.DataPublisherStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
+                                    (measurement.Source == "OutputStream" && RealTimeStatistic.OutputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
+                                    (measurement.Source == "InputStream" && RealTimeStatistic.InputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)))
+                            {
+
+                                if (measurement.Source == "InputStream")
                                 {
-                                    if ((measurement.Source == "System" && RealTimeStatistic.SystemStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
-                                        (measurement.Source == "InputStream" && RealTimeStatistic.InputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
-                                        (measurement.Source == "Publisher" && RealTimeStatistic.DataPublisherStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)) ||
-                                        (measurement.Source == "OutputStream" && RealTimeStatistic.OutputStreamStatistics.TryGetValue(measurement.DeviceID, out streamStatistic)))
+                                    StatisticMeasurement totalFramesStat = RealTimeStatistic.StatisticMeasurements.Values.FirstOrDefault(stat => string.Compare(stat.SignalReference.ToNonNullString().Trim(), string.Format("{0}!IS-ST1", streamStatistic.Acronym.ToNonNullString().Trim()), true) == 0);
+
+                                    if ((object)totalFramesStat != null)
                                     {
-                                        if (Convert.ToBoolean(newMeasurement.AdjustedValue))
+                                        IMeasurement totalFramesStatMeasurement = e.Argument.FirstOrDefault(m => m.ID == totalFramesStat.SignalID);
+
+                                        if ((object)totalFramesStatMeasurement != null && totalFramesStatMeasurement.AdjustedValue > 0.0D || Convert.ToBoolean(newMeasurement.AdjustedValue))
+                                        {
                                             streamStatistic.StatusColor = "Green";
+                                        }
                                         else
+                                        {
                                             streamStatistic.StatusColor = "Red";
+                                        }
                                     }
+                                }
+
+                                else if (Convert.ToBoolean(newMeasurement.AdjustedValue))
+                                {
+                                    streamStatistic.StatusColor = "Green";
+                                }
+                                else
+                                {
+                                    streamStatistic.StatusColor = "Red";
                                 }
                             }
                         }
+                        if ((object)NewMeasurements != null)
+                        {
+                            NewMeasurements(this, e);
+                        }
+
+                        LastRefresh = "Last Refresh: " + DateTime.UtcNow.ToString("HH:mm:ss.fff");
                     }
-
-                    LastRefresh = "Last Refresh: " + DateTime.UtcNow.ToString("HH:mm:ss.fff");
-
-                    if ((object)NewMeasurements != null)
-                        NewMeasurements(this, e);
                 }
+
                 finally
                 {
                     Interlocked.Exchange(ref m_processingUnsynchronizedMeasurements, 0);
