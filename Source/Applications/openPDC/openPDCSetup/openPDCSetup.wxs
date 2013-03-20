@@ -348,7 +348,13 @@
       <Component Id="CMP_REMOVEFOLDER_ProgramMenuFolder.openPDC" Guid="{493D6CED-50C6-4CF5-93A3-306C364F10A3}" KeyPath="yes">
         <RemoveFolder Id="REMOVEFOLDER_ProgramMenuFolder.openPDC" Directory="ProgramMenuFolder.openPDC" On="uninstall" />
       </Component>
-      <!-- 
+ 
+     <!-- Makecert -->
+      <Component Id="CMP_SourceDir.makecertEXE" Guid="{C7079B01-BF25-4E5E-BF88-DCA8B9900FF0}" Win64="yes">
+        <File Id="FILE_SourceDir.makecertEXE" Name="makecert.exe" KeyPath="yes" DiskId="1" Source="makecert.exe" />
+      </Component>
+ 
+ <!-- 
 				Database Scripts Directory
 			-->
       <Directory Id="DIR_DBScripts" Name="Database Scripts">
@@ -501,6 +507,7 @@
       <ComponentRef Id="CMP_SourceDir.PowerCalculationsDLL" Primary="yes" />
       <ComponentRef Id="CMP_SourceDir.TestingAdaptersDLL" Primary="yes" />
       <ComponentRef Id="CMP_SourceDir.WavInputAdapterDLL" Primary="yes" />
+      <ComponentRef Id="CMP_SourceDir.makecertEXE" Primary="yes" />
       <!--
 				Microsoft Dependencies
 			-->
