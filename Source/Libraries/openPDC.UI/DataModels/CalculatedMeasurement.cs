@@ -630,10 +630,11 @@ namespace openPDC.UI.DataModels
                 if ((object)keys != null && keys.Count > 0)
                 {
                     commaSeparatedKeys = keys.Select(key => key.ToString()).Aggregate((str1, str2) => str1 + "," + str2);
+
                     query = string.Format("SELECT NodeID, ID, Acronym, Name, AssemblyName, " +
                         "TypeName, ConnectionString, ConfigSection, InputMeasurements, OutputMeasurements, MinimumMeasurementsToUse, FramesPerSecond, LagTime, " +
                         "LeadTime, UseLocalClockAsRealTime, AllowSortsByArrival, LoadOrder, Enabled, IgnoreBadTimeStamps, TimeResolution, AllowPreemptivePublishing, " +
-                        "DownSamplingMethod, NodeName, PerformTimeReasonabilityCheck From CalculatedMeasurementDetail WHERE ID IN ({0})", commaSeparatedKeys);
+                        "DownSamplingMethod, NodeName, PerformTimeReasonabilityCheck From CalculatedMeasurementDetail WHERE ID IN ({0}) AND NodeID = '{1}'", commaSeparatedKeys, database.CurrentNodeID());
 
                     calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType, query);
 
@@ -695,9 +696,8 @@ namespace openPDC.UI.DataModels
 
                 if (isOptional)
                     calculatedMeasurementList.Add(0, "Select CalculatedMeasurement");
-
-                DataTable calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Name FROM CalculatedMeasurement ORDER BY LoadOrder");
-
+                DataTable calculatedMeasurementTable = database.Connection.RetrieveData(database.AdapterType, "SELECT ID, Name FROM CalculatedMeasurement  ORDER BY LoadOrder");
+                
                 foreach (DataRow row in calculatedMeasurementTable.Rows)
                     calculatedMeasurementList[row.ConvertField<int>("ID")] = row.Field<string>("Name");
 
