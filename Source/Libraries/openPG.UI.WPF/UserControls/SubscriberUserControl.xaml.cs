@@ -38,6 +38,8 @@ using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GSF.TimeSeries.Transport;
+using Microsoft.Win32;
 using openPG.UI.DataModels;
 using openPG.UI.ViewModels;
 using GSF.TimeSeries.UI;
@@ -71,7 +73,7 @@ namespace openPG.UI.UserControls
             InitializeComponent();
             this.Loaded += SubscriberUserControl_Loaded;
             this.Unloaded += SubscriberUserControl_Unloaded;
-            m_dataContext = new Subscribers(10);
+            m_dataContext = new Subscribers(10, true);
             this.DataContext = m_dataContext;
         }
 
@@ -90,7 +92,7 @@ namespace openPG.UI.UserControls
             m_dataContext.PropertyChanged += SubscriberUserControl_PropertyChanged;
             m_dataContext.BeforeSave += SubscriberUserControl_BeforeSave;
             LoadCurrentKeyIV();
-                  
+
             try
             {
                 using (AdoDataConnection database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory))
@@ -161,23 +163,26 @@ namespace openPG.UI.UserControls
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(m_sharedSecretField.Text) || string.IsNullOrWhiteSpace(m_key) || string.IsNullOrWhiteSpace(m_iv))
+                if (m_dataContext.SecurityMode == SecurityMode.Gateway)
                 {
-                    MessageBox.Show("Failed to import key and initialization vectors for associated shared secret - these fields cannot be blank.", "Crypto Key Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    e.Cancel = true;
-                }
-                else
-                {
-                    // Import key and initialization vector for subscriber into common crypto cache
-                    if (ImportCipherKey(m_sharedSecretField.Text.Trim(), 256, m_key.Trim() + "|" + m_iv.Trim()))
+                    if (string.IsNullOrWhiteSpace(m_sharedSecretField.Text) || string.IsNullOrWhiteSpace(m_key) || string.IsNullOrWhiteSpace(m_iv))
                     {
-                        ReloadServiceCryptoCache();
-                        Cipher.ReloadCache();
+                        MessageBox.Show("Failed to import key and initialization vectors for associated shared secret - these fields cannot be blank.", "Crypto Key Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        e.Cancel = true;
                     }
                     else
                     {
-                        MessageBox.Show("Failed to import key and initialization vectors for associated shared secret.", "Crypto Key Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        e.Cancel = true;
+                        // Import key and initialization vector for subscriber into common crypto cache
+                        if (ImportCipherKey(m_sharedSecretField.Text.Trim(), 256, m_key.Trim() + "|" + m_iv.Trim()))
+                        {
+                            ReloadServiceCryptoCache();
+                            Cipher.ReloadCache();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to import key and initialization vectors for associated shared secret.", "Crypto Key Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            e.Cancel = true;
+                        }
                     }
                 }
             }
@@ -202,6 +207,7 @@ namespace openPG.UI.UserControls
             configCrypter.WaitForExit();
 
             return configCrypter.ExitCode == 0;
+
         }
 
         // Send service command to reload crypto cache.
@@ -229,6 +235,27 @@ namespace openPG.UI.UserControls
                     CommonFunctions.LogException(null, "Subscription Request", ex);
                 }
             }
+        }
+
+        private void SecurityModeRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton tlsRadioButton = sender as RadioButton;
+            ViewModels.Subscribers viewModel = m_dataContext as ViewModels.Subscribers;
+            SecurityMode securityMode;
+
+            if ((object)tlsRadioButton != null && (object)viewModel != null)
+            {
+                if (Enum.TryParse(tlsRadioButton.Content.ToString(), out securityMode))
+                    viewModel.SecurityMode = securityMode;
+            }
+
+        }
+
+        private void SelfSignedCertificateGenerator_ProcessException(object sender, EventArgs<Exception> e)
+        {
+            Exception ex = e.Argument;
+            Popup(ex.Message, "Certificate generation error", MessageBoxImage.Error);
+            CommonFunctions.LogException(null, "Generate certificate", ex);
         }
 
         // Display popup message for the user
@@ -275,7 +302,7 @@ namespace openPG.UI.UserControls
 
                 Subscriber subscriber = new Subscriber()
                 {
-                    //NodeID = ((KeyValuePair<Guid, string>)ComboboxNode.SelectedItem).Key,
+                    ////NodeID = ((KeyValuePair<Guid, string>)ComboboxNode.SelectedItem).Key,
                     Acronym = m_request.Acronym.ToUpper(),
                     Name = m_request.Name,
                     SharedSecret = m_request.SharedSecret,
@@ -284,8 +311,38 @@ namespace openPG.UI.UserControls
                 };
 
                 m_dataContext.CurrentItem = subscriber;
+                m_dataContext.ValidIPAddresses = m_request.ValidIPAddresses;
                 m_key = m_request.Key;
                 m_iv = m_request.IV;
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void btnBrowse_Click(object sender, RoutedEventArgs e)
+        {
+            // AuthenticationRequest m_request = new AuthenticationRequest();
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+
+            openFileDialog.Filter = "Certificate files|*.cer|All Files|*.*";
+            openFileDialog.DefaultExt = ".cer";
+            System.Windows.Forms.DialogResult res = openFileDialog.ShowDialog();
+
+            if (res != System.Windows.Forms.DialogResult.Cancel)
+            {
+                // m_request = Serialization.Deserialize<AuthenticationRequest>(File.ReadAllBytes(openFileDialog.FileName), SerializationFormat.Xml);
+
+                Subscriber subscriber = new Subscriber()
+                {
+                    RemoteCertificateFile = openFileDialog.FileName
+
+                };
+
+                m_dataContext.CurrentItem = subscriber;
+                //m_dataContext.ValidIPAddresses = m_request.ValidIPAddresses;
+                m_dataContext.RemoteCertificateFile = openFileDialog.FileName;
             }
             else
             {

@@ -25,6 +25,9 @@
 //
 //******************************************************************************************************
 
+using System.Linq;
+using System.Net;
+using GSF.Collections;
 using GSF.Data;
 using GSF.TimeSeries.UI;
 using GSF.TimeSeries.UI.DataModels;
@@ -53,8 +56,8 @@ namespace openPG.UI.DataModels
         private string m_name;
         private string m_sharedSecret;
         private string m_authKey;
-        private string m_validIpAddresses;
-        private string m_certificateFile;
+        private string m_validIPAddresses;
+        private string m_RemotecertificateFile;
         private SslPolicyErrors? m_validPolicyErrors;
         private X509ChainStatusFlags? m_validChainFlags;
         private bool m_enabled;
@@ -319,11 +322,11 @@ namespace openPG.UI.DataModels
         {
             get
             {
-                return m_validIpAddresses;
+                return m_validIPAddresses;
             }
             set
             {
-                m_validIpAddresses = value;
+                m_validIPAddresses = value;
                 OnPropertyChanged("ValidIPAddresses");
             }
         }
@@ -332,16 +335,16 @@ namespace openPG.UI.DataModels
         /// Gets or sets the path to the certificate file used to
         /// validate the identity of the <see cref="Subscriber"/>.
         /// </summary>
-        public string CertificateFile
+        public string RemoteCertificateFile
         {
             get
             {
-                return m_certificateFile;
+                return m_RemotecertificateFile;
             }
             set
             {
-                m_certificateFile = value;
-                OnPropertyChanged("CertificateFile");
+                m_RemotecertificateFile = value;
+                OnPropertyChanged("RemoteCertificateFile");
             }
         }
 
@@ -476,8 +479,9 @@ namespace openPG.UI.DataModels
                 DataTable subscriberTable;
                 string query;
 
+
                 query = database.ParameterizedQueryString("SELECT ID, NodeID, Acronym, Name, SharedSecret, AuthKey, ValidIPAddresses, " +
-                    "CertificateFile, ValidPolicyErrors, ValidChainFlags, Enabled FROM Subscriber WHERE NodeID = {0} ORDER BY Name", "nodeID");
+                    "RemoteCertificateFile, ValidPolicyErrors, ValidChainFlags, Enabled FROM Subscriber WHERE NodeID = {0} ORDER BY Name", "nodeID");
 
                 subscriberTable = database.Connection.RetrieveData(database.AdapterType, query, DefaultTimeout, database.CurrentNodeID());
 
@@ -494,8 +498,8 @@ namespace openPG.UI.DataModels
                         Name = row.Field<string>("Name"),
                         SharedSecret = row.Field<string>("SharedSecret"),
                         AuthKey = row.Field<string>("AuthKey"),
-                        ValidIPAddresses = row.Field<string>("ValidIPAddresses"),
-                        CertificateFile = row.Field<string>("CertificateFile"),
+                        ValidIPAddresses =  row.Field<string>("ValidIPAddresses"),
+                        RemoteCertificateFile = row.Field<string>("RemoteCertificateFile"),
                         ValidPolicyErrors = Enum.TryParse(row.Field<string>("ValidPolicyErrors"), out validPolicyErrors) ? validPolicyErrors : (SslPolicyErrors?)null,
                         ValidChainFlags = Enum.TryParse(row.Field<string>("ValidChainFlags"), out validChainFlags) ? validChainFlags : (X509ChainStatusFlags?)null,
                         Enabled = Convert.ToBoolean(row.Field<object>("Enabled")),
@@ -874,13 +878,13 @@ namespace openPG.UI.DataModels
 
                 if (subscriber.ID == Guid.Empty || subscriber.ID == null)
                 {
-                    query = database.ParameterizedQueryString("INSERT INTO Subscriber (NodeID, Acronym, Name, SharedSecret, AuthKey, ValidIPAddresses, CertificateFile, " +
+                    query = database.ParameterizedQueryString("INSERT INTO Subscriber (NodeID, Acronym, Name, SharedSecret, AuthKey, ValidIPAddresses, RemoteCertificateFile, " +
                         "ValidPolicyErrors, ValidChainFlags, Enabled, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, " +
-                        "{10}, {11}, {12}, {13})", "nodeID", "acronym", "name", "sharedSecret", "authKey", "validIPAddresses", "certificateFile", "validPolicyErrors",
+                        "{10}, {11}, {12}, {13})", "nodeID", "acronym", "name", "sharedSecret", "authKey", "validIPAddresses", "RemotecertificateFile", "validPolicyErrors",
                         "validChainFlags", "enabled", "updatedBy", "updatedOn", "createdBy", "createdOn");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.CurrentNodeID(), subscriber.Acronym, subscriber.Name.ToNotNull(),
-                        subscriber.SharedSecret.ToNotNull(), subscriber.AuthKey.ToNotNull(), subscriber.ValidIPAddresses.ToNotNull(), subscriber.CertificateFile.ToNotNull(),
+                        subscriber.SharedSecret.ToNotNull(), subscriber.AuthKey.ToNotNull(), subscriber.ValidIPAddresses.ToNotNull(), subscriber.RemoteCertificateFile.ToNotNull(),
                         ((object)subscriber.ValidPolicyErrors != null) ? subscriber.ValidPolicyErrors.ToString() : (object)DBNull.Value,
                         ((object)subscriber.ValidChainFlags != null) ? subscriber.ValidChainFlags.ToString() : (object)DBNull.Value,
                         database.Bool(subscriber.Enabled), CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
@@ -888,12 +892,12 @@ namespace openPG.UI.DataModels
                 else
                 {
                     query = database.ParameterizedQueryString("UPDATE Subscriber SET NodeID = {0}, Acronym = {1}, Name = {2}, SharedSecret = {3}, AuthKey = {4}, " +
-                        "ValidIPAddresses = {5}, CertificateFile = {6}, ValidPolicyErrors = {7}, ValidChainFlags = {8}, Enabled = {9}, UpdatedBy = {10}, UpdatedOn = {11} " +
-                        "WHERE ID = {12}", "nodeID", "acronym", "name", "sharedSecret", "authKey", "validIPAddresses", "certificateFile", "validPolicyErrors", "validChainFlags",
+                        "ValidIPAddresses = {5}, RemoteCertificateFile = {6}, ValidPolicyErrors = {7}, ValidChainFlags = {8}, Enabled = {9}, UpdatedBy = {10}, UpdatedOn = {11} " +
+                        "WHERE ID = {12}", "nodeID", "acronym", "name", "sharedSecret", "authKey", "validIPAddresses", "RemotecertificateFile", "validPolicyErrors", "validChainFlags",
                         "enabled", "updatedBy", "updatedOn", "id");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.Guid(subscriber.NodeID), subscriber.Acronym, subscriber.Name.ToNotNull(),
-                        subscriber.SharedSecret.ToNotNull(), subscriber.AuthKey.ToNotNull(), subscriber.ValidIPAddresses.ToNotNull(), subscriber.CertificateFile.ToNotNull(),
+                        subscriber.SharedSecret.ToNotNull(), subscriber.AuthKey.ToNotNull(), subscriber.ValidIPAddresses.ToNotNull(), subscriber.RemoteCertificateFile.ToNotNull(),
                         ((object)subscriber.ValidPolicyErrors != null) ? subscriber.ValidPolicyErrors.ToString() : (object)DBNull.Value,
                         ((object)subscriber.ValidChainFlags != null) ? subscriber.ValidChainFlags.ToString() : (object)DBNull.Value,
                         database.Bool(subscriber.Enabled), CommonFunctions.CurrentUser, database.UtcNow(), database.Guid(subscriber.ID));
