@@ -932,7 +932,7 @@ CREATE TABLE Subscriber (
     SharedSecret VARCHAR2(200) NULL,
     AuthKey VARCHAR2(4000) NULL,
     ValidIPAddresses VARCHAR2(4000) NULL,
-	CertificateFile VARCHAR2(500) NULL,
+	RemoteCertificateFile VARCHAR2(500) NULL,
 	ValidPolicyErrors VARCHAR2(200) NULL,
 	ValidChainFlags VARCHAR2(500) NULL,
     Enabled NUMBER DEFAULT 0 NOT NULL,

@@ -641,7 +641,7 @@ CREATE TABLE Subscriber (
     SharedSecret VARCHAR(200) NULL,
     AuthKey TEXT NULL,
     ValidIPAddresses TEXT NULL,
-	CertificateFile VARCHAR(500) NULL,
+	RemoteCertificateFile VARCHAR(500) NULL,
 	ValidPolicyErrors VARCHAR(200) NULL,
 	ValidChainFlags VARCHAR(500) NULL,
     Enabled TINYINT NOT NULL DEFAULT 0,
