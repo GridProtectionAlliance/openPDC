@@ -31,6 +31,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GSF.TimeSeries.UI;
 using openPDC.UI.DataModels;
 using openPDC.UI.ViewModels;
 using GSF.TimeSeries.UI.DataModels;
@@ -117,8 +118,12 @@ namespace openPDC.UI.UserControls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MeasurementPager.ClearSelections();
-            PopupAddMore.IsOpen = true;
+            if ((object) CommonFunctions.CurrentPrincipal != null &&
+                CommonFunctions.CurrentPrincipal.IsInRole("Administrator, Editor"))
+            {
+                MeasurementPager.ClearSelections();
+                PopupAddMore.IsOpen = true;    
+            }
         }
 
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)

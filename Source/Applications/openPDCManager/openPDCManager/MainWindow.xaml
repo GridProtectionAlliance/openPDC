@@ -22,7 +22,7 @@
     <Window.Resources>
         <tsfconv:RoleBasedVisibilityConverter x:Key="roleBasedVisibilityConverter" />
         <HierarchicalDataTemplate DataType="{x:Type tsf:MenuDataItem}" ItemsSource="{Binding Path=SubMenuItems}">
-            <ContentPresenter Content="{Binding Path=MenuText}" RecognizesAccessKey="True"/>
+            <ContentPresenter Content="{Binding Path=MenuText}" RecognizesAccessKey="True"  Visibility="{Binding Roles, Converter={StaticResource roleBasedVisibilityConverter}}"/>
         </HierarchicalDataTemplate>
     </Window.Resources>
 
