@@ -410,6 +410,14 @@
             <param name="nodeID">ID of the node to filter data.</param>
             <returns>KeyValuePair containing min and max point id.</returns>
         </member>
+        <member name="M:GSF.TimeSeries.UI.CommonFunctions.LogEvent(System.String,System.Int32,System.Diagnostics.EventLogEntryType)">
+            <summary>
+            Logs an event to the Windows event log.
+            </summary>
+            <param name="message">The message to write to the log.</param>
+            <param name="eventID">The application-specific identifier for the event.</param>
+            <param name="eventType">The type of the event.</param>
+        </member>
         <member name="M:GSF.TimeSeries.UI.CommonFunctions.LogException(GSF.Data.AdoDataConnection,System.String,System.Exception)">
             <summary>
             Stores exception in the database

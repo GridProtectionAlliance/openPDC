@@ -354,6 +354,21 @@
             Gets the average value of the measurements per second calculation.
             </summary>
         </member>
+        <member name="P:PhasorProtocolAdapters.PhasorDataConcentratorBase.LifetimeMinimumLatency">
+            <summary>
+            Gets the minimum latency calculated over the full lifetime of the output stream.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorDataConcentratorBase.LifetimeMaximumLatency">
+            <summary>
+            Gets the maximum latency calculated over the full lifetime of the output stream.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorDataConcentratorBase.LifetimeAverageLatency">
+            <summary>
+            Gets the average latency calculated over the full lifetime of the output stream.
+            </summary>
+        </member>
         <member name="M:PhasorProtocolAdapters.BpaPdcStream.Concentrator.Initialize">
             <summary>
             Initializes <see cref="T:PhasorProtocolAdapters.BpaPdcStream.Concentrator"/>.
@@ -1447,7 +1462,7 @@
         </member>
         <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.LifetimeMeasurements">
             <summary>
-            Gets the total number of measurements processed through this data publisher over the lifetime of the publisher.
+            Gets the total number of measurements processed through this data publisher over the lifetime of the input stream.
             </summary>
         </member>
         <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.MinimumMeasurementsPerSecond">
@@ -1463,6 +1478,21 @@
         <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.AverageMeasurementsPerSecond">
             <summary>
             Gets the average value of the measurements per second calculation.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.LifetimeMinimumLatency">
+            <summary>
+            Gets the minimum latency calculated over the full lifetime of the input stream.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.LifetimeMaximumLatency">
+            <summary>
+            Gets the maximum latency calculated over the full lifetime of the input stream.
+            </summary>
+        </member>
+        <member name="P:PhasorProtocolAdapters.PhasorMeasurementMapper.LifetimeAverageLatency">
+            <summary>
+            Gets the average latency calculated over the full lifetime of the input stream.
             </summary>
         </member>
         <member name="M:PhasorProtocolAdapters.PhasorMeasurementMapper.MissingDataMonitor.Start">

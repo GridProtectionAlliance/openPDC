@@ -6913,6 +6913,12 @@
             <param name="data">Data to return to client; null if none.</param>
             <returns><c>true</c> if send was successful; otherwise <c>false</c>.</returns>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.DataPublisher.UpdateLatencyStatistics(System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>
+            Updates latency statistics based on the collection of latencies passed into the method.
+            </summary>
+            <param name="latencies">The latencies of the measurements sent by the publisher.</param>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.OnProcessingComplete">
             <summary>
             Raises the <see cref="E:GSF.TimeSeries.Transport.DataPublisher.ProcessingComplete"/> event.
@@ -7081,6 +7087,21 @@
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.AverageMeasurementsPerSecond">
             <summary>
             Gets the average value of the measurements per second calculation.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.LifetimeMinimumLatency">
+            <summary>
+            Gets the minimum latency calculated over the full lifetime of the publisher.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.LifetimeMaximumLatency">
+            <summary>
+            Gets the maximum latency calculated over the full lifetime of the publisher.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.LifetimeAverageLatency">
+            <summary>
+            Gets the average latency calculated over the full lifetime of the publisher.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.Transport.DataSubscriber">
@@ -7585,7 +7606,7 @@
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.LifetimeMeasurements">
             <summary>
-            Gets the total number of measurements processed through this data publisher over the lifetime of the publisher.
+            Gets the total number of measurements processed through this data publisher over the lifetime of the subscriber.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.MinimumMeasurementsPerSecond">
@@ -7601,6 +7622,21 @@
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.AverageMeasurementsPerSecond">
             <summary>
             Gets the average value of the measurements per second calculation.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.LifetimeMinimumLatency">
+            <summary>
+            Gets the minimum latency calculated over the full lifetime of the subscriber.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.LifetimeMaximumLatency">
+            <summary>
+            Gets the maximum latency calculated over the full lifetime of the subscriber.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.LifetimeAverageLatency">
+            <summary>
+            Gets the average latency calculated over the full lifetime of the subscriber.
             </summary>
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.LocalConcentrator.#ctor(GSF.TimeSeries.Transport.DataSubscriber)">
@@ -8027,7 +8063,13 @@
             </summary>
             <param name="requestInfo"><see cref="T:GSF.ServiceProcess.ClientRequestInfo"/> instance containing the client request.</param>
         </member>
-        <member name="M:GSF.TimeSeries.ServiceHostBase.ReloadConfigRequstHandler(GSF.ServiceProcess.ClientRequestInfo)">
+        <member name="M:GSF.TimeSeries.ServiceHostBase.ReloadConfigRequestHandler(GSF.ServiceProcess.ClientRequestInfo)">
+            <summary>
+            Manually reloads system configuration.
+            </summary>
+            <param name="requestInfo"><see cref="T:GSF.ServiceProcess.ClientRequestInfo"/> instance containing the client request.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.ServiceHostBase.AugmentConfigRequestHandler(GSF.ServiceProcess.ClientRequestInfo)">
             <summary>
             Manually reloads system configuration.
             </summary>
