@@ -38,15 +38,15 @@ using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using GSF.TimeSeries.Transport;
-using Microsoft.Win32;
-using openPG.UI.DataModels;
-using openPG.UI.ViewModels;
-using GSF.TimeSeries.UI;
 using GSF;
 using GSF.Data;
 using GSF.IO;
 using GSF.Security.Cryptography;
+using GSF.TimeSeries.Transport;
+using GSF.TimeSeries.UI;
+using Microsoft.Win32;
+using openPG.UI.DataModels;
+using openPG.UI.ViewModels;
 
 namespace openPG.UI.UserControls
 {
@@ -73,8 +73,10 @@ namespace openPG.UI.UserControls
             InitializeComponent();
             this.Loaded += SubscriberUserControl_Loaded;
             this.Unloaded += SubscriberUserControl_Unloaded;
-            m_dataContext = new Subscribers(10, true);
+            m_dataContext = new Subscribers(10);
             this.DataContext = m_dataContext;
+            m_dataContext.PropertyChanged += DataContext_PropertyChanged;
+            m_dataContext.SecurityMode = !string.IsNullOrEmpty(m_dataContext.CurrentItem.RemoteCertificateFile) ? SecurityMode.TLS : SecurityMode.Gateway;
         }
 
         #endregion
@@ -207,7 +209,6 @@ namespace openPG.UI.UserControls
             configCrypter.WaitForExit();
 
             return configCrypter.ExitCode == 0;
-
         }
 
         // Send service command to reload crypto cache.
@@ -237,25 +238,25 @@ namespace openPG.UI.UserControls
             }
         }
 
+        private void DataContext_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (m_dataContext.SecurityMode == SecurityMode.TLS)
+                TlsRadioButton.IsChecked = true;
+            else
+                GatewayRadioButton.IsChecked = true;
+        }
+
         private void SecurityModeRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             RadioButton tlsRadioButton = sender as RadioButton;
-            ViewModels.Subscribers viewModel = m_dataContext as ViewModels.Subscribers;
             SecurityMode securityMode;
 
-            if ((object)tlsRadioButton != null && (object)viewModel != null)
+            if ((object)tlsRadioButton != null && (object)m_dataContext != null)
             {
                 if (Enum.TryParse(tlsRadioButton.Content.ToString(), out securityMode))
-                    viewModel.SecurityMode = securityMode;
+                    m_dataContext.SecurityMode = securityMode;
             }
 
-        }
-
-        private void SelfSignedCertificateGenerator_ProcessException(object sender, EventArgs<Exception> e)
-        {
-            Exception ex = e.Argument;
-            Popup(ex.Message, "Certificate generation error", MessageBoxImage.Error);
-            CommonFunctions.LogException(null, "Generate certificate", ex);
         }
 
         // Display popup message for the user
@@ -302,7 +303,7 @@ namespace openPG.UI.UserControls
 
                 Subscriber subscriber = new Subscriber()
                 {
-                    ////NodeID = ((KeyValuePair<Guid, string>)ComboboxNode.SelectedItem).Key,
+                    //NodeID = ((KeyValuePair<Guid, string>)ComboboxNode.SelectedItem).Key,
                     Acronym = m_request.Acronym.ToUpper(),
                     Name = m_request.Name,
                     SharedSecret = m_request.SharedSecret,
@@ -311,7 +312,6 @@ namespace openPG.UI.UserControls
                 };
 
                 m_dataContext.CurrentItem = subscriber;
-                m_dataContext.ValidIPAddresses = m_request.ValidIPAddresses;
                 m_key = m_request.Key;
                 m_iv = m_request.IV;
             }
@@ -323,26 +323,16 @@ namespace openPG.UI.UserControls
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
-            // AuthenticationRequest m_request = new AuthenticationRequest();
-            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            OpenFileDialog openFileDialog = new OpenFileDialog();
 
-            openFileDialog.Filter = "Certificate files|*.cer|All Files|*.*";
+            openFileDialog.FileName = m_dataContext.CurrentItem.RemoteCertificateFile;
             openFileDialog.DefaultExt = ".cer";
-            System.Windows.Forms.DialogResult res = openFileDialog.ShowDialog();
+            openFileDialog.Filter = "Certificate files|*.cer|All Files|*.*";
 
-            if (res != System.Windows.Forms.DialogResult.Cancel)
+            if (openFileDialog.ShowDialog() == true)
             {
-                // m_request = Serialization.Deserialize<AuthenticationRequest>(File.ReadAllBytes(openFileDialog.FileName), SerializationFormat.Xml);
-
-                Subscriber subscriber = new Subscriber()
-                {
-                    RemoteCertificateFile = openFileDialog.FileName
-
-                };
-
-                m_dataContext.CurrentItem = subscriber;
-                //m_dataContext.ValidIPAddresses = m_request.ValidIPAddresses;
-                m_dataContext.RemoteCertificateFile = openFileDialog.FileName;
+                if ((object)m_dataContext.CurrentItem != null)
+                    m_dataContext.CurrentItem.RemoteCertificateFile = openFileDialog.FileName;
             }
             else
             {
@@ -376,7 +366,7 @@ namespace openPG.UI.UserControls
             m_dataContext.SortData(e.Column.SortMemberPath);
         }
 
-        private void GridDetailView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void DetailView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (m_dataContext.IsNewRecord)
                 DataGridList.SelectedIndex = -1;

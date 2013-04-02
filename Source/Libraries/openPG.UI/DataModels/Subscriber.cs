@@ -25,12 +25,6 @@
 //
 //******************************************************************************************************
 
-using System.Linq;
-using System.Net;
-using GSF.Collections;
-using GSF.Data;
-using GSF.TimeSeries.UI;
-using GSF.TimeSeries.UI.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -38,6 +32,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using GSF.Data;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.DataModels;
 
 namespace openPG.UI.DataModels
 {
@@ -57,7 +54,8 @@ namespace openPG.UI.DataModels
         private string m_sharedSecret;
         private string m_authKey;
         private string m_validIPAddresses;
-        private string m_RemotecertificateFile;
+        private string m_remoteCertificateFile;
+        private bool m_remoteCertificateIsSelfSigned;
         private SslPolicyErrors? m_validPolicyErrors;
         private X509ChainStatusFlags? m_validChainFlags;
         private bool m_enabled;
@@ -339,12 +337,27 @@ namespace openPG.UI.DataModels
         {
             get
             {
-                return m_RemotecertificateFile;
+                return m_remoteCertificateFile;
             }
             set
             {
-                m_RemotecertificateFile = value;
+                m_remoteCertificateFile = value;
                 OnPropertyChanged("RemoteCertificateFile");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the flag that indicates whether the remote certificate is self-signed.
+        /// </summary>
+        public bool RemoteCertificateIsSelfSigned
+        {
+            get
+            {
+                return m_remoteCertificateIsSelfSigned;
+            }
+            set
+            {
+                m_remoteCertificateIsSelfSigned = value;
             }
         }
 
@@ -498,7 +511,7 @@ namespace openPG.UI.DataModels
                         Name = row.Field<string>("Name"),
                         SharedSecret = row.Field<string>("SharedSecret"),
                         AuthKey = row.Field<string>("AuthKey"),
-                        ValidIPAddresses =  row.Field<string>("ValidIPAddresses"),
+                        ValidIPAddresses = row.Field<string>("ValidIPAddresses"),
                         RemoteCertificateFile = row.Field<string>("RemoteCertificateFile"),
                         ValidPolicyErrors = Enum.TryParse(row.Field<string>("ValidPolicyErrors"), out validPolicyErrors) ? validPolicyErrors : (SslPolicyErrors?)null,
                         ValidChainFlags = Enum.TryParse(row.Field<string>("ValidChainFlags"), out validChainFlags) ? validChainFlags : (X509ChainStatusFlags?)null,
@@ -870,37 +883,37 @@ namespace openPG.UI.DataModels
         public static string Save(AdoDataConnection database, Subscriber subscriber)
         {
             bool createdConnection = false;
+            SslPolicyErrors validPolicyErrors;
+            X509ChainStatusFlags validChainFlags;
             string query;
 
             try
             {
                 createdConnection = CreateConnection(ref database);
+                validPolicyErrors = (subscriber.ValidPolicyErrors ?? SslPolicyErrors.None) | (subscriber.RemoteCertificateIsSelfSigned ? SslPolicyErrors.RemoteCertificateChainErrors : SslPolicyErrors.None);
+                validChainFlags = (subscriber.ValidChainFlags ?? X509ChainStatusFlags.NoError) | (subscriber.RemoteCertificateIsSelfSigned ? X509ChainStatusFlags.UntrustedRoot : X509ChainStatusFlags.NoError);
 
-                if (subscriber.ID == Guid.Empty || subscriber.ID == null)
+                if (subscriber.ID == Guid.Empty)
                 {
-                    query = database.ParameterizedQueryString("INSERT INTO Subscriber (NodeID, Acronym, Name, SharedSecret, AuthKey, ValidIPAddresses, RemoteCertificateFile, " +
-                        "ValidPolicyErrors, ValidChainFlags, Enabled, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, " +
-                        "{10}, {11}, {12}, {13})", "nodeID", "acronym", "name", "sharedSecret", "authKey", "validIPAddresses", "RemotecertificateFile", "validPolicyErrors",
-                        "validChainFlags", "enabled", "updatedBy", "updatedOn", "createdBy", "createdOn");
+                    query = database.ParameterizedQueryString("INSERT INTO Subscriber (NodeID, Acronym, Name, SharedSecret, AuthKey, ValidIPAddresses, RemoteCertificateFile, ValidPolicyErrors, ValidChainFlags, " +
+                                                              "Enabled, UpdatedBy, UpdatedOn, CreatedBy, CreatedOn) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13})", "nodeID",
+                                                              "acronym", "name", "sharedSecret", "authKey", "validIPAddresses", "remoteCertificateFile", "validPolicyErrors", "validChainFlags", "enabled",
+                                                              "updatedBy", "updatedOn", "createdBy", "createdOn");
 
                     database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.CurrentNodeID(), subscriber.Acronym, subscriber.Name.ToNotNull(),
-                        subscriber.SharedSecret.ToNotNull(), subscriber.AuthKey.ToNotNull(), subscriber.ValidIPAddresses.ToNotNull(), subscriber.RemoteCertificateFile.ToNotNull(),
-                        ((object)subscriber.ValidPolicyErrors != null) ? subscriber.ValidPolicyErrors.ToString() : (object)DBNull.Value,
-                        ((object)subscriber.ValidChainFlags != null) ? subscriber.ValidChainFlags.ToString() : (object)DBNull.Value,
-                        database.Bool(subscriber.Enabled), CommonFunctions.CurrentUser, database.UtcNow(), CommonFunctions.CurrentUser, database.UtcNow());
+                                                        subscriber.SharedSecret.ToNotNull(), subscriber.AuthKey.ToNotNull(), subscriber.ValidIPAddresses.ToNotNull(), subscriber.RemoteCertificateFile.ToNotNull(),
+                                                        validPolicyErrors.ToString(), validChainFlags.ToString(), database.Bool(subscriber.Enabled), CommonFunctions.CurrentUser, database.UtcNow(),
+                                                        CommonFunctions.CurrentUser, database.UtcNow());
                 }
                 else
                 {
-                    query = database.ParameterizedQueryString("UPDATE Subscriber SET NodeID = {0}, Acronym = {1}, Name = {2}, SharedSecret = {3}, AuthKey = {4}, " +
-                        "ValidIPAddresses = {5}, RemoteCertificateFile = {6}, ValidPolicyErrors = {7}, ValidChainFlags = {8}, Enabled = {9}, UpdatedBy = {10}, UpdatedOn = {11} " +
-                        "WHERE ID = {12}", "nodeID", "acronym", "name", "sharedSecret", "authKey", "validIPAddresses", "RemotecertificateFile", "validPolicyErrors", "validChainFlags",
-                        "enabled", "updatedBy", "updatedOn", "id");
+                    query = database.ParameterizedQueryString("UPDATE Subscriber SET NodeID = {0}, Acronym = {1}, Name = {2}, SharedSecret = {3}, AuthKey = {4}, ValidIPAddresses = {5}, RemoteCertificateFile = {6}, " +
+                                                              "ValidPolicyErrors = {7}, ValidChainFlags = {8}, Enabled = {9}, UpdatedBy = {10}, UpdatedOn = {11} WHERE ID = {12}", "nodeID", "acronym", "name",
+                                                              "sharedSecret", "authKey", "validIPAddresses", "remoteCertificateFile", "validPolicyErrors", "validChainFlags", "enabled", "updatedBy", "updatedOn", "id");
 
-                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.Guid(subscriber.NodeID), subscriber.Acronym, subscriber.Name.ToNotNull(),
-                        subscriber.SharedSecret.ToNotNull(), subscriber.AuthKey.ToNotNull(), subscriber.ValidIPAddresses.ToNotNull(), subscriber.RemoteCertificateFile.ToNotNull(),
-                        ((object)subscriber.ValidPolicyErrors != null) ? subscriber.ValidPolicyErrors.ToString() : (object)DBNull.Value,
-                        ((object)subscriber.ValidChainFlags != null) ? subscriber.ValidChainFlags.ToString() : (object)DBNull.Value,
-                        database.Bool(subscriber.Enabled), CommonFunctions.CurrentUser, database.UtcNow(), database.Guid(subscriber.ID));
+                    database.Connection.ExecuteNonQuery(query, DefaultTimeout, database.Guid(subscriber.NodeID), subscriber.Acronym, subscriber.Name.ToNotNull(), subscriber.SharedSecret.ToNotNull(),
+                                                        subscriber.AuthKey.ToNotNull(), subscriber.ValidIPAddresses.ToNotNull(), subscriber.RemoteCertificateFile.ToNotNull(), validPolicyErrors.ToString(),
+                                                        validChainFlags.ToString(), database.Bool(subscriber.Enabled), CommonFunctions.CurrentUser, database.UtcNow(), database.Guid(subscriber.ID));
                 }
 
                 try

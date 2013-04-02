@@ -26,16 +26,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using GSF.TimeSeries.Transport;
-using Microsoft.Win32;
-using openPG.UI.DataModels;
 using GSF.TimeSeries.UI;
 using GSF.TimeSeries.UI.Commands;
 using GSF.TimeSeries.UI.DataModels;
+using openPG.UI.DataModels;
 
 namespace openPG.UI.ViewModels
 {
@@ -48,10 +48,6 @@ namespace openPG.UI.ViewModels
 
         // Fields
         private Dictionary<Guid, string> m_nodeLookupList;
-        private RelayCommand m_addAllowedMeasurementCommand;
-        private RelayCommand m_removeAllowedMeasurementCommand;
-        private RelayCommand m_addDeniedMeasurementCommand;
-        private RelayCommand m_removeDeniedMeasurementCommand;
         private RelayCommand m_addAllowedMeasurementGroupCommand;
         private RelayCommand m_removeAllowedMeasurementGroupCommand;
         private RelayCommand m_addDeniedMeasurementGroupCommand;
@@ -60,14 +56,7 @@ namespace openPG.UI.ViewModels
         private SubscriberStatusQuery m_subscriberStatusQuery;
         private object m_subscriberStatusQueryLock;
         private List<Guid> m_subscriberIDs;
-
-        private RelayCommand m_remoteBrowseCommand;
-        private int m_port;
         private SecurityMode m_securityMode;
-        private string m_remoteCertificateFile;
-        private bool m_isRemoteCertificateSelfSigned;
-
-        private string m_validIPAddress;
 
         // Delegates
 
@@ -101,30 +90,12 @@ namespace openPG.UI.ViewModels
             m_subscriberStatusQueryLock = new object();
             m_subscriberStatusQuery = new SubscriberStatusQuery();
             m_subscriberStatusQuery.SubscriberStatuses += new EventHandler<GSF.EventArgs<Dictionary<Guid, Tuple<bool, string>>>>(m_subscriberStatusQuery_SubscriberStatuses);
-
-            m_port = 6172;
-            m_securityMode = SecurityMode.TLS;
+            PropertyChanged += PropertyChangedHandler;
         }
 
         #endregion
 
         #region [ Properties ]
-
-        /// <summary>
-        /// Gets or sets the valid IP addresses of the current <see cref="Subscriber"/>.
-        /// </summary>
-        public string ValidIPAddresses
-        {
-            get
-            {
-                return m_validIPAddress;
-            }
-            set
-            {
-                m_validIPAddress = value;
-                OnPropertyChanged("ValidIPAddresses");
-            }
-        }
 
         /// <summary>
         /// Gets flag that determines if <see cref="PagedViewModelBase{T1, T2}.CurrentItem"/> is a new record.
@@ -205,36 +176,6 @@ namespace openPG.UI.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the port that the data Subscriber is listening on.
-        /// </summary>
-        public int Port
-        {
-            get
-            {
-                return m_port;
-            }
-            set
-            {
-                m_port = value;
-                OnPropertyChanged("Port");
-            }
-        }
-
-        /// <summary>
-        /// Gets the command that executes when the user chooses to browse for a remote certificate.
-        /// </summary>
-        public ICommand RemoteBrowseCommand
-        {
-            get
-            {
-                if ((object)m_remoteBrowseCommand == null)
-                    m_remoteBrowseCommand = new RelayCommand(BrowseRemoteCertificateFile, () => true);
-
-                return m_remoteBrowseCommand;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the security mode used by the data Subscriber.
         /// </summary>
         public SecurityMode SecurityMode
@@ -271,38 +212,6 @@ namespace openPG.UI.ViewModels
             get
             {
                 return m_securityMode == SecurityMode.Gateway;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the flag that indicates whether the remote certificate is a self-signed certificate.
-        /// </summary>
-        public bool RemoteCertificateIsSelfSigned
-        {
-            get
-            {
-                return m_isRemoteCertificateSelfSigned;
-            }
-            set
-            {
-                m_isRemoteCertificateSelfSigned = value;
-                OnPropertyChanged("SelfSigned");
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the path to the remote certificate used to identify the Subscriber.
-        /// </summary>
-        public string RemoteCertificateFile
-        {
-            get
-            {
-                return m_remoteCertificateFile;
-            }
-            set
-            {
-                m_remoteCertificateFile = value;
-                OnPropertyChanged("RemoteCertificateFile");
             }
         }
 
@@ -504,7 +413,6 @@ namespace openPG.UI.ViewModels
             {
                 CommonFunctions.SendCommandToService("ReloadConfig");
             }
-
             catch (Exception ex)
             {
                 CommonFunctions.LogException(null, "", ex);
@@ -636,20 +544,8 @@ namespace openPG.UI.ViewModels
             }
         }
 
-        private void BrowseRemoteCertificateFile()
-        {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-
-            fileDialog.FileName = RemoteCertificateFile;
-            fileDialog.DefaultExt = ".cer";
-            fileDialog.Filter = "Certificate files|*.cer|All Files|*.*";
-
-            if (fileDialog.ShowDialog() == true)
-                RemoteCertificateFile = fileDialog.FileName;
-        }
-
         /// <summary>
-        /// Hanldes <see cref="RemoveDeniedMeasurementGroupCommand"/>.
+        /// Handles <see cref="RemoveDeniedMeasurementGroupCommand"/>.
         /// </summary>
         /// <param name="parameter">Collection of measurement groups to be removed.</param>
         private void RemoveDeniedMeasurementGroup(object parameter)
@@ -680,6 +576,12 @@ namespace openPG.UI.ViewModels
                     CommonFunctions.LogException(null, "", ex);
                 }
             }
+        }
+
+        private void PropertyChangedHandler(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "CurrentItem")
+                m_securityMode = !string.IsNullOrEmpty(CurrentItem.RemoteCertificateFile) ? SecurityMode.TLS : SecurityMode.Gateway;
         }
 
         #endregion

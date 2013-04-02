@@ -7,9 +7,6 @@
              xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:uc="clr-namespace:GSF.TimeSeries.UI.UserControls;assembly=GSF.TimeSeries.UI.WPF"
              xmlns:tsfBinding="clr-namespace:GSF.TimeSeries.UI.Binding;assembly=GSF.TimeSeries.UI"
-             xmlns:userControls="clr-namespace:openPG.UI.UserControls" 
-             xmlns:vm="clr-namespace:openPG.UI.ViewModels"
-             xmlns:dataModels="clr-namespace:openPG.UI.DataModels;assembly=openPG.UI"
              Background="Transparent">
 
     <UserControl.Resources>
@@ -17,9 +14,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/GSF.TimeSeries.UI.WPF;Component/Resources/CommonResource.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <!--<vm:Subscribers x:Key="ViewModel" />-->
-
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -27,120 +21,107 @@
         <StackPanel.Resources>
             <CollectionViewSource Source="{Binding Path=NodeLookupList}" x:Key="NodeLookupList"/>
         </StackPanel.Resources>
-        <GroupBox Header="Subscriber Info" HorizontalAlignment="Center">
-            <Grid x:Name="GridDetailView" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" DataContext="{Binding Path=CurrentItem, Mode=TwoWay}" DataContextChanged="GridDetailView_DataContextChanged">
-                <Grid.BindingGroup>
-                    <BindingGroup Name="input"/>
-                </Grid.BindingGroup>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Vertical" DataContext="{Binding Path=CurrentItem, Mode=TwoWay}" DataContextChanged="DetailView_DataContextChanged">
+            <GroupBox Header="Subscriber Info" HorizontalAlignment="Center">
+                <Grid x:Name="GridDetailView" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
+                    <Grid.BindingGroup>
+                        <BindingGroup Name="input"/>
+                    </Grid.BindingGroup>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <!--First Row-->
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Acronym"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=Acronym}" Name="m_acronymField" CharacterCasing="Upper"/>
-                <TextBlock Grid.Row="1" Grid.Column="2" Text="Name"/>
-                <TextBox Grid.Row="1" Grid.Column="3" Text="{tsfBinding:Column Path=Name}" Name="m_nameField"/>
-
-                <!--Third Row-->
-                <!--Second Row-->
-                <Label Grid.Row="2" Grid.Column="0" Content="Security mode" />
-                <StackPanel Grid.Row="2" Grid.Column="1" Margin="5">
-                    <RadioButton GroupName="SecurityMode" Content="TLS" IsChecked="True" Checked="SecurityModeRadioButton_Checked"/>
-                    <RadioButton GroupName="SecurityMode" Content="Gateway" Checked="SecurityModeRadioButton_Checked"/>
-                </StackPanel>
-
-                <!--Second Row-->
-                <CheckBox Grid.Row="2" Grid.Column="3" Content="Enable PG Connection" IsChecked="{tsfBinding:Column Path=Enabled}" Name="m_enablePGConnection" />
-                
-            </Grid>
-        </GroupBox>
-
-        <GroupBox Header="TLS" IsEnabled="{Binding TransportLayerSecuritySelected}" HorizontalAlignment="Center">
-            <StackPanel HorizontalAlignment="Center">
-                <!--<Label Content="Generate self-signed local certificate (optional):" FontSize="10" />
-                <userControls:SelfSignedCertificateGenerator Margin="20,0,0,0" CertificateFile="{Binding Mode=TwoWay, Path=LocalCertificateFile}" ProcessException="SelfSignedCertificateGenerator_ProcessException" />-->
-
-                <Grid Margin="0,20,0,0" HorizontalAlignment="Center">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <!--First Row-->
-                    <Label Grid.Row="1" Grid.Column="0" Content="Remote certificate" />
-                    <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
-                        <TextBox Width="{StaticResource XXLargeItemSize}" Text="{Binding Mode=TwoWay, Path=RemoteCertificateFile}"/>
-                        <Button Height="25" Content="Browse..." Click="btnBrowse_Click" Name="m_buttonBrowseClick"/>
-                        <CheckBox Content="Self-signed?" IsChecked="{Binding Mode=TwoWay, Path=RemoteCertificateIsSelfSigned}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Acronym"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=Acronym}" Name="m_acronymField" CharacterCasing="Upper"/>
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Name"/>
+                    <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=Name}" Name="m_nameField"/>
+
+                    <!--Second Row-->
+                    <Label Grid.Row="1" Grid.Column="0" Content="Security mode" />
+                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="5" DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}, Path=DataContext}">
+                        <RadioButton Name="TlsRadioButton" GroupName="SecurityMode" Content="TLS" IsChecked="True" Checked="SecurityModeRadioButton_Checked"/>
+                        <RadioButton Name="GatewayRadioButton" GroupName="SecurityMode" Content="Gateway" Checked="SecurityModeRadioButton_Checked"/>
                     </StackPanel>
-
-                    <!--Second Row-->
-                    <Label Grid.Row="2" Grid.Column="0" Content="Valid Policy Errors" />
-                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Mode=TwoWay, Path=ValidPolicyErrors}"/>
-                    <Label Grid.Row="2" Grid.Column="2" Content="Valid Chain Flags" />
-                    <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding Mode=TwoWay, Path=ValidChainFlags}"/>
-                </Grid>
-            </StackPanel>
-        </GroupBox>
-
-        <GroupBox Header="Gateway" IsEnabled="{Binding GatewaySecuritySelected}" HorizontalAlignment="Center">
-            <StackPanel HorizontalAlignment="Center">
-
-                <Grid Margin="0,20,0,0" HorizontalAlignment="Center">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <!--First Row-->
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Pre-shared Key"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" Text="{tsfBinding:Column Path=SharedSecret}" Name="m_sharedSecretField"/>
-                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Identity Certificate"/>
-                    <TextBox Grid.Row="1" Grid.Column="3" Text="{tsfBinding:Column Path=AuthKey}" Name="m_authenticationID"/>
-
-                    <!--Second Row-->
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Valid IP Addresses"/>
-                    <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Width="480" Text="{tsfBinding:Column Path=ValidIPAddresses}" Name="m_validIpAddressesField"/>
-
-                    <!--Thrird Row-->
-                    <Button Grid.Row="3" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="1" Content="Import" Click="Button_Click" Name="m_buttonClick"/>
+                    <CheckBox Grid.Row="1" Grid.Column="3" Content="Enable PG Connection" IsChecked="{tsfBinding:Column Path=Enabled}" Name="m_enablePGConnection" />
 
                 </Grid>
-            </StackPanel>
-        </GroupBox>
+            </GroupBox>
+
+            <GroupBox Header="TLS" IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}, Path=DataContext.TransportLayerSecuritySelected}" HorizontalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center">
+                    <Grid Margin="0,20,0,0" HorizontalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--First Row-->
+                        <Label Grid.Row="0" Grid.Column="0" Content="Remote certificate" />
+                        <StackPanel Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
+                            <TextBox Width="{StaticResource XXLargeItemSize}" Text="{Binding Mode=TwoWay, Path=RemoteCertificateFile}"/>
+                            <Button Height="25" Content="Browse..." Click="btnBrowse_Click" Name="m_buttonBrowseClick"/>
+                            <CheckBox Content="Self-signed?" IsChecked="{Binding Mode=TwoWay, Path=RemoteCertificateIsSelfSigned}"/>
+                        </StackPanel>
+
+                        <!--Second Row-->
+                        <Label Grid.Row="1" Grid.Column="0" Content="Valid Policy Errors" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Mode=TwoWay, Path=ValidPolicyErrors}"/>
+                        <Label Grid.Row="1" Grid.Column="2" Content="Valid Chain Flags" />
+                        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Mode=TwoWay, Path=ValidChainFlags}"/>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Gateway" IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl, AncestorLevel=1}, Path=DataContext.GatewaySecuritySelected}" HorizontalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center">
+                    <Grid Margin="0,20,0,0" HorizontalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--First Row-->
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Pre-shared Key"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{tsfBinding:Column Path=SharedSecret}" Name="m_sharedSecretField"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Identity Certificate"/>
+                        <TextBox Grid.Row="0" Grid.Column="3" Text="{tsfBinding:Column Path=AuthKey}" Name="m_authenticationID"/>
+
+                        <!--Second Row-->
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Valid IP Addresses"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Width="480" Text="{tsfBinding:Column Path=ValidIPAddresses}" Name="m_validIpAddressesField"/>
+
+                        <!--Third Row-->
+                        <Button Grid.Row="2" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="1" Content="Import" Click="Button_Click" Name="m_buttonClick"/>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
 
         <uc:DetailViewFooterUserControl DeleteCommand="{Binding DeleteCommand}" ClearCommand="{Binding ClearCommand}" SaveCommand="{Binding SaveCommand}"
                 SaveEnabled="{tsfBinding:DataOperation Path=(Validation.HasError)}" Name="m_footerControl"/>
