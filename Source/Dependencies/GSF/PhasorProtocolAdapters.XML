@@ -1175,7 +1175,7 @@
         </member>
         <member name="M:PhasorProtocolAdapters.PhasorMeasurementMapper.Initialize">
             <summary>
-            Intializes <see cref="T:PhasorProtocolAdapters.PhasorMeasurementMapper"/>.
+            Initializes <see cref="T:PhasorProtocolAdapters.PhasorMeasurementMapper"/>.
             </summary>
         </member>
         <member name="M:PhasorProtocolAdapters.PhasorMeasurementMapper.SendCommand(GSF.PhasorProtocols.DeviceCommand)">
