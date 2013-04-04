@@ -203,16 +203,20 @@ namespace ConfigurationSetupUtility.Screens
                         // Always make sure the datapublisher record in the config file is changed to internaldatapublisher.
                         ValidateInternalDataPublisher();
 
-                        // Always make sure skipOptimization is true after an upgrade
                         if (migrate)
                         {
+                            // Always make sure data operation assembly names
+                            // and type names are correct after an upgrade.
+                            ValidateGridSolutionsNamespaces();
+
+                            // Always make sure skipOptimization is true after an upgrade
                             ValidatePhasorDataSourceValidation();
                         }
 
                         // Always make sure new configuration entity records are defined in the database.
                         ValidateConfigurationEntity();
 
-                        // Always make sure that node settings defines the alarm service URL.
+                        // Always make sure that node settings defines security settings and the alarm service URL.
                         ValidateNodeSettings();
 
                         // Always make sure that all three needed roles are available for each defined node(s) in the database
@@ -368,6 +372,49 @@ namespace ConfigurationSetupUtility.Screens
             File.WriteAllText(configFile, replacedConfigText);
         }
 
+        private void ValidateGridSolutionsNamespaces()
+        {
+            const string assemblyNameUpdateQuery = "UPDATE {0} SET AssemblyName = '{1}' WHERE AssemblyName = '{2}'";
+            const string typeNameUpdateQuery = "UPDATE {0} SET TypeName = '{1}' WHERE TypeName = '{2}'";
+
+            string[] tables = { "DataOperation", "Historian", "Protocol", "CustomInputAdapter", "CustomActionAdapter", "CustomOutputAdapter", "CalculatedMeasurement", "Statistic" };
+
+            Tuple<string, string>[] assemblyNames = { Tuple.Create("GSF.TimeSeries.dll", "TimeSeriesFramework.dll"), Tuple.Create("PhasorProtocolAdapters.dll", "TVA.PhasorProtocols.dll") };
+
+            Tuple<string, string>[] typeNames =
+            {
+                Tuple.Create("GSF.TimeSeries.TimeSeriesStartupOperations", "TimeSeriesFramework.TimeSeriesStartupOperations"),
+                Tuple.Create("GSF.TimeSeries.Transport.DataSubscriber", "TimeSeriesFramework.Transport.DataSubscriber"),
+                Tuple.Create("GSF.TimeSeries.Transport.DataPublisher", "TimeSeriesFramework.Transport.DataPublisher"),
+                Tuple.Create("GSF.TimeSeries.Statistics.StatisticsEngine", "TimeSeriesFramework.Statistics.StatisticsEngine"),
+                Tuple.Create("GSF.TimeSeries.Statistics.PerformanceStatistics", "TimeSeriesFramework.Statistics.PerformanceStatistics"),
+                Tuple.Create("GSF.TimeSeries.Statistics.GatewayStatistics", "TimeSeriesFramework.Statistics.GatewayStatistics"),
+                Tuple.Create("PhasorProtocolAdapters.CommonPhasorServices", "TVA.PhasorProtocols.CommonPhasorServices"),
+                Tuple.Create("PhasorProtocolAdapters.PhasorMeasurementMapper", "TVA.PhasorProtocols.PhasorMeasurementMapper")
+            };
+
+            IDbConnection connection = null;
+
+            try
+            {
+                connection = OpenNewConnection();
+
+                foreach (string table in tables)
+                {
+                    foreach (Tuple<string, string> assemblyNamePair in assemblyNames)
+                        connection.ExecuteNonQuery(string.Format(assemblyNameUpdateQuery, table, assemblyNamePair.Item1, assemblyNamePair.Item2));
+
+                    foreach (Tuple<string, string> typeNamePair in typeNames)
+                        connection.ExecuteNonQuery(string.Format(typeNameUpdateQuery, table, typeNamePair.Item1, typeNamePair.Item2));
+                }
+            }
+            finally
+            {
+                if ((object)connection != null)
+                    connection.Dispose();
+            }
+        }
+
         private void ValidatePhasorDataSourceValidation()
         {
             const string updateQuery = "UPDATE DataOperation SET Arguments = 'skipOptimization = True' WHERE AssemblyName = 'GSF.PhasorProtocols.dll' AND TypeName = 'GSF.PhasorProtocols.CommonPhasorServices' AND MethodName = 'PhasorDataSourceValidation'";
@@ -420,6 +467,8 @@ namespace ConfigurationSetupUtility.Screens
             object nodeSettingsConnectionString;
             Dictionary<string, string> nodeSettings;
 
+            Dictionary<string, string> remoteStatusServerSettings;
+            string remoteStatusServerConnectionString;
             string alarmServiceUrl;
 
             try
@@ -435,16 +484,27 @@ namespace ConfigurationSetupUtility.Screens
                     nodeSettingsConnectionString = connection.ExecuteScalar(string.Format(settingsQuery, nodeIDQueryString));
                     nodeSettings = nodeSettingsConnectionString.ToNonNullString().ParseKeyValuePairs();
 
+                    // Make sure security settings are enabled for the node
+                    if (!nodeSettings.TryGetValue("RemoteStatusServerConnectionString", out remoteStatusServerConnectionString))
+                    {
+                        nodeSettings.Add("RemoteStatusServerConnectionString", "server=localhost:8500;integratedSecurity=true");
+                    }
+                    else
+                    {
+                        remoteStatusServerSettings = remoteStatusServerConnectionString.ParseKeyValuePairs();
+                        remoteStatusServerSettings["integratedSecurity"] = "true";
+                        nodeSettings["RemoteStatusServerConnectionString"] = remoteStatusServerSettings.JoinKeyValuePairs();
+                    }
+
                     // If the AlarmServiceUrl does not exist in node settings, add it and then update the database record
                     if (!nodeSettings.TryGetValue("AlarmServiceUrl", out alarmServiceUrl))
-                    {
-                        if (connection.GetType().Name == "OracleConnection")
-                            updateQuery = updateQuery.Replace('@', ':');
-
                         nodeSettings.Add("AlarmServiceUrl", "http://localhost:5018/alarmservices");
-                        nodeSettingsConnectionString = nodeSettings.JoinKeyValuePairs();
-                        connection.ExecuteNonQuery(string.Format(updateQuery, nodeIDQueryString), nodeSettingsConnectionString);
-                    }
+
+                    // Execute query to update node settings
+                    if (connection.GetType().Name == "OracleConnection")
+                        updateQuery = updateQuery.Replace('@', ':');
+
+                    connection.ExecuteNonQuery(string.Format(updateQuery, nodeIDQueryString), nodeSettings.JoinKeyValuePairs());
                 }
             }
             finally
