@@ -4626,6 +4626,11 @@
             Specifies the default value for the <see cref="P:GSF.Communication.UdpServer.AllowDualStackSocket"/> property.
             </summary>
         </member>
+        <member name="F:GSF.Communication.UdpServer.DefaultDynamicClientEndPoints">
+            <summary>
+            Specifies the default value for the <see cref="P:GSF.Communication.UdpServer.DynamicClientEndPoints"/> property.
+            </summary>
+        </member>
         <member name="F:GSF.Communication.UdpServer.DefaultMaxSendQueueSize">
             <summary>
             Specifies the default value for the <see cref="P:GSF.Communication.UdpServer.MaxSendQueueSize"/> property.
@@ -4778,6 +4783,12 @@
         <member name="P:GSF.Communication.UdpServer.AllowDualStackSocket">
             <summary>
             Gets or sets a boolean value that determines if dual-mode socket is allowed when endpoint address is IPv6.
+            </summary>
+        </member>
+        <member name="P:GSF.Communication.UdpServer.DynamicClientEndPoints">
+            <summary>
+            Gets or sets a boolean value that determines if UDP server should always
+            send responses to clients on the port that data is received from the client.
             </summary>
         </member>
         <member name="P:GSF.Communication.UdpServer.MaxSendQueueSize">
