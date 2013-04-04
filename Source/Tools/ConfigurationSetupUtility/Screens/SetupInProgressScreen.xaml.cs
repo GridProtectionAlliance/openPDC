@@ -1215,9 +1215,9 @@ namespace ConfigurationSetupUtility.Screens
             // Get the node ID from the database.
             nodeIdCommand = connection.CreateCommand();
             nodeIdCommand.CommandText = "SELECT ID FROM Node WHERE Name = 'Default'";
+
             using (nodeIdReader = nodeIdCommand.ExecuteReader())
             {
-
                 if (nodeIdReader.Read())
                     nodeId = nodeIdReader["ID"].ToNonNullString();
 
@@ -1462,7 +1462,6 @@ namespace ConfigurationSetupUtility.Screens
             XmlNode systemSettings = configFile.SelectSingleNode("configuration/categorizedSettings/systemSettings");
 
             bool databaseConfigurationType = (m_state["configurationType"].ToString() == "database");
-            bool existing = Convert.ToBoolean(m_state["existing"]);
 
             if (encrypted)
                 connectionString = Cipher.Encrypt(connectionString, App.CipherLookupKey, App.CryptoStrength);
@@ -1502,6 +1501,12 @@ namespace ConfigurationSetupUtility.Screens
                             // the ID that the user selected in the previous step.
                             string selectedNodeId = m_state["selectedNodeId"].ToString();
                             child.Attributes["value"].Value = selectedNodeId;
+                        }
+                        else
+                        {
+                            // Select the node that's in the configuration file in order
+                            // to run validation routines at the end of the setup.
+                            m_state["selectedNodeId"] = child.Attributes["value"].Value;
                         }
                     }
                 }
@@ -1548,7 +1553,7 @@ namespace ConfigurationSetupUtility.Screens
 
             // Make sure remotingServer integrated security is set to true
             XmlNode remotingServerNode = configFile.SelectSingleNode("configuration/categorizedSettings/remotingServer");
-            if (serviceConfigFile && !existing && (object)remotingServerNode != null)
+            if (serviceConfigFile && (object)remotingServerNode != null)
             {
                 foreach (XmlNode child in remotingServerNode.ChildNodes)
                 {
@@ -1597,6 +1602,34 @@ namespace ConfigurationSetupUtility.Screens
 
                 externalDataPublisherNode.AppendChild(addElement);
                 configFile.SelectSingleNode("configuration/categorizedSettings").AppendChild(externalDataPublisherNode);
+            }
+
+            // Make sure tlsDataPublisher settings exist
+            XmlNode tlsDataPublisherNode = configFile.SelectSingleNode("configuration/categorizedSettings/tlsdatapublisher");
+            if (serviceConfigFile && (object)tlsDataPublisherNode == null)
+            {
+                tlsDataPublisherNode = configFile.CreateElement("tlsdatapublisher");
+
+                XmlElement addElement = configFile.CreateElement("add");
+
+                XmlAttribute attribute = configFile.CreateAttribute("name");
+                attribute.Value = "ConfigurationString";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("value");
+                attribute.Value = "port=6167";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("description");
+                attribute.Value = "Data required by the server to initialize.";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("encrypted");
+                attribute.Value = "false";
+                addElement.Attributes.Append(attribute);
+
+                tlsDataPublisherNode.AppendChild(addElement);
+                configFile.SelectSingleNode("configuration/categorizedSettings").AppendChild(tlsDataPublisherNode);
             }
 
             // Make sure alarm services settings exist
