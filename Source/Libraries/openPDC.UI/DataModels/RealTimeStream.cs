@@ -215,15 +215,6 @@ namespace openPDC.UI.DataModels
 
                 resultSet.Tables[0].TableName = "PdcTable";
 
-                // Add a dummy device row in PDC table to associate PMUs which are not PDC and connected directly.
-                DataRow row = resultSet.Tables["PdcTable"].NewRow();
-                row["ID"] = 0;
-                row["Acronym"] = string.Empty;
-                row["Name"] = "Devices Connected Directly";
-                row["CompanyName"] = string.Empty;
-                row["Enabled"] = false;
-                resultSet.Tables["PdcTable"].Rows.Add(row);
-
                 // Get Non-PDC device list.
                 resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, " +
                     "ParentAcronym, Enabled FROM DeviceDetail WHERE NodeID = {0} AND IsConcentrator = {1} AND Enabled = {2} ORDER BY Acronym", "nodeID", "isConcentrator", "enabled"),
@@ -243,53 +234,6 @@ namespace openPDC.UI.DataModels
                 DataTable otherMeasurements = database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, 0 AS DeviceID, SignalID, PointID, PointTag, SignalReference, " +
                     "SignalAcronym, Description, SignalName, EngineeringUnits, HistorianAcronym, Subscribed, Internal FROM MeasurementDetail WHERE NodeID <> {0} AND " +
                     "SignalAcronym <> {1} AND Subscribed <> 0 ORDER BY SignalReference", "nodeID", "signalAcronym"), DefaultTimeout, database.CurrentNodeID(), "STAT");
-
-                // Copy in subscribed measurements from other nodes into existing measurement list
-                DataTable measurements = resultSet.Tables[2];
-
-                if (otherMeasurements.Rows.Count > 0)
-                {
-                    // Add a subscribed measurement device placeholder - all associated measurements will have deviceID of zero
-                    row = resultSet.Tables["DeviceTable"].NewRow();
-                    row["ID"] = 0;
-                    row["Acronym"] = "SUBSCRIBED";
-                    row["Name"] = "Subscribed Measurements";
-                    row["CompanyName"] = string.Empty;
-                    row["ProtocolName"] = string.Empty;
-                    row["VendorDeviceName"] = string.Empty;
-                    row["ParentAcronym"] = string.Empty;
-                    row["Enabled"] = false;
-                    resultSet.Tables["DeviceTable"].Rows.Add(row);
-
-                    // Manually copy new measurement rows into existing table
-                    foreach (DataRow existingRow in otherMeasurements.Rows)
-                    {
-                        DataRow newRow = measurements.NewRow();
-
-                        for (int x = 0; x < otherMeasurements.Columns.Count; x++)
-                        {
-                            newRow[x] = existingRow[x];
-                        }
-
-                        measurements.Rows.Add(newRow);
-                    }
-                }
-
-                // If any non-statistic measurement has DeviceID set to NULL, then we will treat it as a calculated measurement.
-                // And associate it with a dummy device "CALCULATED" record as defined below.
-                if (resultSet.Tables[2].Select("DeviceID IS NULL").GetLength(0) > 0)
-                {
-                    row = resultSet.Tables["DeviceTable"].NewRow();
-                    row["ID"] = DBNull.Value;
-                    row["Acronym"] = "CALCULATED";
-                    row["Name"] = "Calculated Measurements";
-                    row["CompanyName"] = string.Empty;
-                    row["ProtocolName"] = string.Empty;
-                    row["VendorDeviceName"] = string.Empty;
-                    row["ParentAcronym"] = string.Empty;
-                    row["Enabled"] = false;
-                    resultSet.Tables["DeviceTable"].Rows.Add(row);
-                }
 
                 realTimeStreamList = new ObservableCollection<RealTimeStream>(
                         from pdc in resultSet.Tables["PdcTable"].AsEnumerable()
@@ -344,6 +288,126 @@ namespace openPDC.UI.DataModels
                                 )
                         }
                     );
+
+                if (otherMeasurements.Rows.Count > 0)
+                {
+                    // Add subscribed measurements from other nodes
+                    realTimeStreamList.Add(new RealTimeStream()
+                    {
+                        ID = 0,
+                        Acronym = "SUBSCRIBED",
+                        Name = "Subscribed Measurements",
+                        CompanyName = string.Empty,
+                        StatusColor = "Transparent",
+                        Enabled = false,
+                        Expanded = false,
+                        DeviceList = new ObservableCollection<RealTimeDevice>(
+                            otherMeasurements.Rows
+                            .Cast<DataRow>()
+                            .Where(row => row.ConvertNullableField<int>("DeviceID") == null)
+                            .Select(row => row.Field<string>("SignalReference"))
+                            .Select(sigref => sigref.Substring(0, sigref.LastIndexOf('-')))
+                            .Distinct()
+                            .Select(source => new RealTimeDevice()
+                            {
+                                ID = 0,
+                                Acronym = source,
+                                Name = source,
+                                ProtocolName = string.Empty,
+                                VendorDeviceName = string.Empty,
+                                ParentAcronym = "SUBSCRIBED",
+                                Expanded = false,
+                                StatusColor = "Gray",
+                                Enabled = false,
+                                MeasurementList = new ObservableCollection<RealTimeMeasurement>(
+                                    otherMeasurements.Rows
+                                    .Cast<DataRow>()
+                                    .Where(row => row.ConvertNullableField<int>("DeviceID") == null && row.Field<string>("SignalReference").StartsWith(source))
+                                    .Select(row => new RealTimeMeasurement()
+                                    {
+                                        ID = row.Field<string>("ID"),
+                                        DeviceID = row.ConvertNullableField<int>("DeviceID"),
+                                        SignalID = Guid.Parse(row.Field<object>("SignalID").ToString()),
+                                        PointID = row.ConvertField<int>("PointID"),
+                                        PointTag = row.Field<string>("PointTag"),
+                                        SignalReference = row.Field<string>("SignalReference"),
+                                        Description = row.Field<string>("description"),
+                                        SignalName = row.Field<string>("SignalName"),
+                                        SignalAcronym = row.Field<string>("SignalAcronym"),
+                                        EngineeringUnit = row.Field<string>("SignalAcronym") == "FLAG" ? "Hex" : row.Field<string>("EngineeringUnits"),
+                                        Expanded = false,
+                                        Selected = false,
+                                        Selectable = row.Field<string>("SignalAcronym") == "IPHM" || row.Field<string>("SignalAcronym") == "IPHA" || row.Field<string>("SignalAcronym") == "VPHM" || row.Field<string>("SignalAcronym") == "VPHA" || row.Field<string>("SignalAcronym") == "FREQ",
+                                        TimeTag = "N/A",
+                                        Value = "--",
+                                        Quality = "N/A",
+                                        Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0))
+                                    })
+                                )
+                            })
+                        )
+                    });
+                }
+
+                if (resultSet.Tables["MeasurementTable"].Select("DeviceID IS NULL").Length > 0)
+                {
+                    // Add direct connected measurements with no associated device (DeviceID IS NULL)
+                    realTimeStreamList.Add(new RealTimeStream()
+                    {
+                        ID = 0,
+                        Acronym = "DIRECT CONNECTED",
+                        Name = "Devices Connected Directory",
+                        CompanyName = string.Empty,
+                        StatusColor = "Transparent",
+                        Enabled = false,
+                        Expanded = false,
+                        DeviceList = new ObservableCollection<RealTimeDevice>(
+                            resultSet.Tables["MeasurementTable"].Rows
+                            .Cast<DataRow>()
+                            .Where(row => row.ConvertNullableField<int>("DeviceID") == null)
+                            .Select(row => row.Field<string>("SignalReference"))
+                            .Select(sigref => sigref.Substring(0, sigref.LastIndexOf('-')))
+                            .Distinct()
+                            .Select(source => new RealTimeDevice()
+                            {
+                                ID = 0,
+                                Acronym = source,
+                                Name = source,
+                                ProtocolName = string.Empty,
+                                VendorDeviceName = string.Empty,
+                                ParentAcronym = "DIRECT CONNECTED",
+                                Expanded = false,
+                                StatusColor = "Gray",
+                                Enabled = false,
+                                MeasurementList = new ObservableCollection<RealTimeMeasurement>(
+                                    resultSet.Tables["MeasurementTable"].Rows
+                                    .Cast<DataRow>()
+                                    .Where(row => row.ConvertNullableField<int>("DeviceID") == null && row.Field<string>("SignalReference").StartsWith(source))
+                                    .Select(row => new RealTimeMeasurement()
+                                    {
+                                        ID = row.Field<string>("ID"),
+                                        DeviceID = row.ConvertNullableField<int>("DeviceID"),
+                                        SignalID = Guid.Parse(row.Field<object>("SignalID").ToString()),
+                                        PointID = row.ConvertField<int>("PointID"),
+                                        PointTag = row.Field<string>("PointTag"),
+                                        SignalReference = row.Field<string>("SignalReference"),
+                                        Description = row.Field<string>("description"),
+                                        SignalName = row.Field<string>("SignalName"),
+                                        SignalAcronym = row.Field<string>("SignalAcronym"),
+                                        EngineeringUnit = row.Field<string>("SignalAcronym") == "FLAG" ? "Hex" : row.Field<string>("EngineeringUnits"),
+                                        Expanded = false,
+                                        Selected = false,
+                                        Selectable = row.Field<string>("SignalAcronym") == "IPHM" || row.Field<string>("SignalAcronym") == "IPHA" || row.Field<string>("SignalAcronym") == "VPHM" || row.Field<string>("SignalAcronym") == "VPHA" || row.Field<string>("SignalAcronym") == "FREQ",
+                                        TimeTag = "N/A",
+                                        Value = "--",
+                                        Quality = "N/A",
+                                        Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0))
+                                    })
+                                )
+                            })
+                        )
+                    });
+                }
 
                 // Assign parent references for real-time measurements
                 foreach (RealTimeStream stream in realTimeStreamList)

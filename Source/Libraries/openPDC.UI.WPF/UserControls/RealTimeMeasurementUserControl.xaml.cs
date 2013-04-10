@@ -21,6 +21,8 @@
 //
 //******************************************************************************************************
 
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -59,6 +61,22 @@ namespace openPDC.UI.UserControls
 
         #region [ Methods ]
 
+        private RealTimeStreams CreateDataContext()
+        {
+            RealTimeStreams dataContext = new RealTimeStreams(1, m_measurementsDataRefreshInterval);
+            List<RealTimeStream> realTimeStreams = dataContext.ItemsSource.ToList();
+            List<RealTimeDevice> realTimeDevices = realTimeStreams.SelectMany(stream => stream.DeviceList).ToList();
+            List<RealTimeMeasurement> realTimeMeasurements = realTimeDevices.SelectMany(device => device.MeasurementList).ToList();
+
+            if (realTimeMeasurements.Count < 100)
+                realTimeDevices.ForEach(device => device.Expanded = true);
+
+            if (realTimeDevices.Count < 100)
+                realTimeStreams.ForEach(stream => stream.Expanded = true);
+
+            return dataContext;
+        }
+
         private void RealTimeMeasurementUserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             m_dataContext.RestartConnectionCycle = false;
@@ -77,7 +95,7 @@ namespace openPDC.UI.UserControls
 
             TextBlockMeasurementRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString() + " sec";
             TextBoxRefreshInterval.Text = m_measurementsDataRefreshInterval.ToString();
-            m_dataContext = new RealTimeStreams(1, m_measurementsDataRefreshInterval);
+            m_dataContext = CreateDataContext();
             this.DataContext = m_dataContext;
             this.KeyUp += new System.Windows.Input.KeyEventHandler(RealTimeMeasurementUserControl_KeyUp);
         }
@@ -94,8 +112,6 @@ namespace openPDC.UI.UserControls
             DeviceUserControl deviceUserControl = new DeviceUserControl(device);
             CommonFunctions.LoadUserControl(deviceUserControl, "Manage Device Configuration");
         }
-
-        #endregion
 
         private void ButtonDisplaySettings_Click(object sender, RoutedEventArgs e)
         {
@@ -143,5 +159,7 @@ namespace openPDC.UI.UserControls
         {
             ShowuserStatusDoc.IsOpen = false;
         }
+
+        #endregion
     }
 }

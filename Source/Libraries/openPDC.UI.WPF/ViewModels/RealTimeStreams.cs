@@ -51,11 +51,12 @@ namespace openPDC.UI.ViewModels
         private bool m_restartConnectionCycle;
         private string m_lastRefresh;
         private ObservableCollection<StatisticMeasurement> m_statisticMeasurements;
+        private Dictionary<Guid, RealTimeMeasurement> m_realTimeMeasurements; 
         private RealTimeStatistics m_statistics;
         private int m_statisticRefreshInterval = 5;
         private bool m_temporalSupportEnabled;
         private string m_startTime = "*-10m";
-        private string m_stopTime = "*";
+        private string m_stopTime = "*"; 
 
         // Unsynchronized Subscription Fields.
         private DataSubscriber m_unsynchronizedSubscriber;
@@ -260,7 +261,7 @@ namespace openPDC.UI.ViewModels
         {
             try
             {
-                Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+                Mouse.OverrideCursor = Cursors.Wait;
 
                 base.Load();
 
@@ -280,6 +281,7 @@ namespace openPDC.UI.ViewModels
                 }
 
                 m_allSignalIDs = sb.ToString();
+
                 if (m_allSignalIDs.Length > 0)
                     m_allSignalIDs = m_allSignalIDs.Substring(0, m_allSignalIDs.Length - 1);
             }
@@ -307,13 +309,15 @@ namespace openPDC.UI.ViewModels
             try
             {
                 StatisticMeasurements.Clear();
+
                 ObservableCollection<StatisticMeasurement> tempMeasurements = new ObservableCollection<StatisticMeasurement>(
-                        RealTimeStatistic.GetStatisticMeasurements(null).Where(sm => sm.DeviceID == device.ID)
-                    );
+                    RealTimeStatistic.GetStatisticMeasurements(null).Where(sm => sm.DeviceID == device.ID)
+                );
 
                 foreach (StatisticMeasurement measurement in tempMeasurements)
                 {
                     StatisticMeasurement tempMeasurement;
+
                     if (RealTimeStatistic.StatisticMeasurements.TryGetValue(measurement.SignalID, out tempMeasurement))
                         StatisticMeasurements.Add(tempMeasurement);
                 }
@@ -356,13 +360,13 @@ namespace openPDC.UI.ViewModels
                                 else if (RealTimeStatistic.DevicesWithStatisticMeasurements.TryGetValue((int)device.ID, out statisticMeasurements))
                                 {
                                     device.StatusColor = "Green";
+
                                     foreach (StatisticMeasurement statisticMeasurement in statisticMeasurements)
                                     {
                                         int value;
+
                                         if (int.TryParse(statisticMeasurement.Value, out value) && value > 0)
-                                        {
                                             device.StatusColor = "Yellow";
-                                        }
                                     }
                                 }
                             }
@@ -394,6 +398,27 @@ namespace openPDC.UI.ViewModels
                 {
                     ObservableCollection<StatisticMeasurement> statisticMeasurements;
                     StreamStatistic streamStatistic;
+                    RealTimeMeasurement realTimeMeasurement;
+
+                    if ((object)m_realTimeMeasurements == null)
+                    {
+                        m_realTimeMeasurements = ItemsSource
+                            .SelectMany(stream => stream.DeviceList)
+                            .SelectMany(device => device.MeasurementList)
+                            .GroupBy(measurement => measurement.SignalID)
+                            .Select(group => group.First())
+                            .ToDictionary(measurement => measurement.SignalID);
+                    }
+
+                    foreach (IMeasurement newMeasurement in e.Argument)
+                    {
+                        if (m_realTimeMeasurements.TryGetValue(newMeasurement.ID, out realTimeMeasurement))
+                        {
+                            realTimeMeasurement.Quality = newMeasurement.ValueQualityIsGood() ? "GOOD" : "BAD";
+                            realTimeMeasurement.TimeTag = newMeasurement.Timestamp.ToString("HH:mm:ss.fff");
+                            realTimeMeasurement.Value = newMeasurement.AdjustedValue.ToString("0.###");
+                        }
+                    }
 
                     foreach (RealTimeStream stream in ItemsSource)
                     {
@@ -413,52 +438,29 @@ namespace openPDC.UI.ViewModels
                                 else if (RealTimeStatistic.DevicesWithStatisticMeasurements.TryGetValue((int)device.ID, out statisticMeasurements))
                                 {
                                     device.StatusColor = "Green";
+
                                     foreach (StatisticMeasurement statisticMeasurement in statisticMeasurements)
                                     {
                                         int value;
+
                                         if (int.TryParse(statisticMeasurement.Value, out value) && value > 0)
-                                        {
                                             device.StatusColor = "Yellow";
-                                        }
                                     }
                                 }
                             }
-
-                            foreach (RealTimeMeasurement measurement in device.MeasurementList)
+                            else
                             {
-                                foreach (IMeasurement newMeasurement in e.Argument)
-                                {
-                                    if (measurement.SignalID == newMeasurement.ID)
-                                    {
-                                        measurement.Quality = newMeasurement.ValueQualityIsGood() ? "GOOD" : "BAD";
-                                        measurement.TimeTag = newMeasurement.Timestamp.ToString("HH:mm:ss.fff");
-                                        measurement.Value = newMeasurement.AdjustedValue.ToString("0.###");
+                                // Direct connected or subscribed device colors should be based on the quality of its measurements
+                                List<RealTimeMeasurement> measurementList = device.MeasurementList.Where(m => m.Value != "--").ToList();
 
-                                        //if (measurement.SignalAcronym == "FLAG")
-                                        //{
-                                        //    if (stream.Enabled && stream.StatusColor != "Transparent")
-                                        //    {
-                                        //        stream.StatusColor = "Gray";
-                                        //        device.StatusColor = "Gray";
-                                        //    }
-                                        //}
-                                        //else if (!device.Enabled)
-                                        //{
-                                        //    device.StatusColor = "Gray";
-                                        //}
-                                        //else if (stream.StatusColor == "Red")
-                                        //{
-                                        //    device.StatusColor = "Red";
-                                        //}
-                                        //else if (newMeasurement.ValueQualityIsGood())
-                                        //{
-                                        //    device.StatusColor = "Green";
-                                        //}
-                                        //else
-                                        //{
-                                        //    device.StatusColor = "Yellow";
-                                        //}
-                                    }
+                                if (measurementList.Count > 0)
+                                {
+                                    if (measurementList.All(m => m.Quality != "BAD"))
+                                        device.StatusColor = "Green";
+                                    else if (measurementList.Any(m => m.Quality != "BAD"))
+                                        device.StatusColor = "Yellow";
+                                    else
+                                        device.StatusColor = "Red";
                                 }
                             }
                         }
@@ -481,7 +483,7 @@ namespace openPDC.UI.ViewModels
 
         private void m_unsynchronizedSubscriber_ProcessException(object sender, EventArgs<Exception> e)
         {
-
+            CommonFunctions.LogException(null, "RealTimeStreams subscription", e.Argument);
         }
 
         private void m_unsynchronizedSubscriber_StatusMessage(object sender, EventArgs<string> e)

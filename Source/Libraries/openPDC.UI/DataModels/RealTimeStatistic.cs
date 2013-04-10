@@ -146,6 +146,7 @@ namespace openPDC.UI.DataModels
 
                 // Get list of statistic measurements detail.
                 ObservableCollection<StatisticMeasurement> statisticMeasurements = GetStatisticMeasurements(database);
+                bool expanded = (statisticMeasurements.Count < 100);
 
                 // We do this for later use in refreshing data.
                 StatisticMeasurements = new Dictionary<Guid, StatisticMeasurement>();
@@ -162,6 +163,7 @@ namespace openPDC.UI.DataModels
                     Acronym = "SYSTEM",
                     Name = "System",
                     StatusColor = "Green",
+                    Expanded = expanded,
                     StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(
                         statisticMeasurements.Where(sm => sm.SignalReference.Contains("!SYSTEM"))
                         ),
@@ -180,6 +182,7 @@ namespace openPDC.UI.DataModels
                         DeviceID = 0,
                         DeviceAcronym = "Run-time Statistics",
                         DeviceName = "",
+                        Expanded = expanded,
                         StatisticMeasurementList = streamStatistic.StatisticMeasurementList
                     });
 
@@ -198,6 +201,7 @@ namespace openPDC.UI.DataModels
                             Acronym = stream.Field<string>("Acronym"),
                             Name = stream.Field<string>("Name"),
                             StatusColor = "Gray",
+                            Expanded = expanded,
                             StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(
                                 (from statisticMeasurement in statisticMeasurements
                                  where statisticMeasurement.DeviceID == Convert.ToInt32(stream.Field<object>("ID"))
@@ -212,6 +216,7 @@ namespace openPDC.UI.DataModels
                                         ParentID = Convert.ToInt32(pdcdevice.Field<object>("ParentID")),
                                         DeviceAcronym = pdcdevice.Field<string>("Acronym"),
                                         DeviceName = pdcdevice.Field<string>("Name"),
+                                        Expanded = expanded,
                                         StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(
                                             (from statisticMeasurement in statisticMeasurements
                                              where statisticMeasurement.DeviceID == Convert.ToInt32(pdcdevice.Field<object>("ID"))
@@ -232,6 +237,7 @@ namespace openPDC.UI.DataModels
                             DeviceID = 0,
                             DeviceAcronym = "Run-time Statistics",
                             DeviceName = "",
+                            Expanded = expanded,
                             StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(streamStatistic.StatisticMeasurementList)
                         });
 
@@ -263,6 +269,7 @@ namespace openPDC.UI.DataModels
                             Name = outputStream.Field<string>("Name"),
                             StatusColor = "Gray",
                             DeviceStatisticList = new ObservableCollection<PdcDeviceStatistic>(),
+                            Expanded = expanded,
                             StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(
                                     (from statisticMeasurement in statisticMeasurements
                                      where statisticMeasurement.SignalReference.StartsWith(outputStream.Field<string>("Acronym") + "!OS-")
@@ -283,6 +290,7 @@ namespace openPDC.UI.DataModels
                         DeviceID = 0,
                         DeviceAcronym = "Run-time Statistics",
                         DeviceName = "",
+                        Expanded = expanded,
                         StatisticMeasurementList = streamStatistic.StatisticMeasurementList
                     });
 
@@ -302,6 +310,7 @@ namespace openPDC.UI.DataModels
                             Name = "",
                             StatusColor = "Gray",
                             DeviceStatisticList = new ObservableCollection<PdcDeviceStatistic>(),
+                            Expanded = expanded,
                             StatisticMeasurementList = new ObservableCollection<StatisticMeasurement>(
                                     (from statisticMeasurement in statisticMeasurements
                                      where statisticMeasurement.SignalReference.StartsWith(publisher.Field<string>("AdapterName") + "!PUB-")
@@ -322,6 +331,7 @@ namespace openPDC.UI.DataModels
                         DeviceID = 0,
                         DeviceAcronym = "Run-time Statistics",
                         DeviceName = "",
+                        Expanded = expanded,
                         StatisticMeasurementList = streamStatistic.StatisticMeasurementList
                     });
 
