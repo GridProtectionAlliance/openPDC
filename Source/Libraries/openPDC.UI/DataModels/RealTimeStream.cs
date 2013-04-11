@@ -215,6 +215,15 @@ namespace openPDC.UI.DataModels
 
                 resultSet.Tables[0].TableName = "PdcTable";
 
+                // Add a dummy device row in PDC table to associate PMUs which are not PDC and connected directly.
+                DataRow row = resultSet.Tables["PdcTable"].NewRow();
+                row["ID"] = 0;
+                row["Acronym"] = string.Empty;
+                row["Name"] = "Devices Connected Directly";
+                row["CompanyName"] = string.Empty;
+                row["Enabled"] = false;
+                resultSet.Tables["PdcTable"].Rows.Add(row);
+
                 // Get Non-PDC device list.
                 resultSet.Tables.Add(database.Connection.RetrieveData(database.AdapterType, database.ParameterizedQueryString("SELECT ID, Acronym, Name,CompanyName, ProtocolName, VendorDeviceName, " +
                     "ParentAcronym, Enabled FROM DeviceDetail WHERE NodeID = {0} AND IsConcentrator = {1} AND Enabled = {2} ORDER BY Acronym", "nodeID", "isConcentrator", "enabled"),
@@ -304,8 +313,8 @@ namespace openPDC.UI.DataModels
                         DeviceList = new ObservableCollection<RealTimeDevice>(
                             otherMeasurements.Rows
                             .Cast<DataRow>()
-                            .Where(row => row.ConvertNullableField<int>("DeviceID") == null)
-                            .Select(row => row.Field<string>("SignalReference"))
+                            .Where(measurement => measurement.ConvertNullableField<int>("DeviceID") == null)
+                            .Select(measurement => measurement.Field<string>("SignalReference"))
                             .Select(GetSourceName)
                             .Distinct()
                             .Select(source => new RealTimeDevice()
@@ -322,22 +331,22 @@ namespace openPDC.UI.DataModels
                                 MeasurementList = new ObservableCollection<RealTimeMeasurement>(
                                     otherMeasurements.Rows
                                     .Cast<DataRow>()
-                                    .Where(row => row.ConvertNullableField<int>("DeviceID") == null && row.Field<string>("SignalReference").StartsWith(source))
-                                    .Select(row => new RealTimeMeasurement()
+                                    .Where(measurement => measurement.ConvertNullableField<int>("DeviceID") == null && measurement.Field<string>("SignalReference").StartsWith(source))
+                                    .Select(measurement => new RealTimeMeasurement()
                                     {
-                                        ID = row.Field<string>("ID"),
-                                        DeviceID = row.ConvertNullableField<int>("DeviceID"),
-                                        SignalID = Guid.Parse(row.Field<object>("SignalID").ToString()),
-                                        PointID = row.ConvertField<int>("PointID"),
-                                        PointTag = row.Field<string>("PointTag"),
-                                        SignalReference = row.Field<string>("SignalReference"),
-                                        Description = row.Field<string>("description"),
-                                        SignalName = row.Field<string>("SignalName"),
-                                        SignalAcronym = row.Field<string>("SignalAcronym"),
-                                        EngineeringUnit = row.Field<string>("SignalAcronym") == "FLAG" ? "Hex" : row.Field<string>("EngineeringUnits"),
+                                        ID = measurement.Field<string>("ID"),
+                                        DeviceID = measurement.ConvertNullableField<int>("DeviceID"),
+                                        SignalID = Guid.Parse(measurement.Field<object>("SignalID").ToString()),
+                                        PointID = measurement.ConvertField<int>("PointID"),
+                                        PointTag = measurement.Field<string>("PointTag"),
+                                        SignalReference = measurement.Field<string>("SignalReference"),
+                                        Description = measurement.Field<string>("description"),
+                                        SignalName = measurement.Field<string>("SignalName"),
+                                        SignalAcronym = measurement.Field<string>("SignalAcronym"),
+                                        EngineeringUnit = measurement.Field<string>("SignalAcronym") == "FLAG" ? "Hex" : measurement.Field<string>("EngineeringUnits"),
                                         Expanded = false,
                                         Selected = false,
-                                        Selectable = row.Field<string>("SignalAcronym") == "IPHM" || row.Field<string>("SignalAcronym") == "IPHA" || row.Field<string>("SignalAcronym") == "VPHM" || row.Field<string>("SignalAcronym") == "VPHA" || row.Field<string>("SignalAcronym") == "FREQ",
+                                        Selectable = measurement.Field<string>("SignalAcronym") == "IPHM" || measurement.Field<string>("SignalAcronym") == "IPHA" || measurement.Field<string>("SignalAcronym") == "VPHM" || measurement.Field<string>("SignalAcronym") == "VPHA" || measurement.Field<string>("SignalAcronym") == "FREQ",
                                         TimeTag = "N/A",
                                         Value = "--",
                                         Quality = "N/A",
@@ -364,8 +373,8 @@ namespace openPDC.UI.DataModels
                         DeviceList = new ObservableCollection<RealTimeDevice>(
                             resultSet.Tables["MeasurementTable"].Rows
                             .Cast<DataRow>()
-                            .Where(row => row.ConvertNullableField<int>("DeviceID") == null)
-                            .Select(row => row.Field<string>("SignalReference"))
+                            .Where(measurement => measurement.ConvertNullableField<int>("DeviceID") == null)
+                            .Select(measurement => measurement.Field<string>("SignalReference"))
                             .Select(GetSourceName)
                             .Distinct()
                             .Select(source => new RealTimeDevice()
@@ -382,22 +391,22 @@ namespace openPDC.UI.DataModels
                                 MeasurementList = new ObservableCollection<RealTimeMeasurement>(
                                     resultSet.Tables["MeasurementTable"].Rows
                                     .Cast<DataRow>()
-                                    .Where(row => row.ConvertNullableField<int>("DeviceID") == null && row.Field<string>("SignalReference").StartsWith(source))
-                                    .Select(row => new RealTimeMeasurement()
+                                    .Where(measurement => measurement.ConvertNullableField<int>("DeviceID") == null && measurement.Field<string>("SignalReference").StartsWith(source))
+                                    .Select(measurement => new RealTimeMeasurement()
                                     {
-                                        ID = row.Field<string>("ID"),
-                                        DeviceID = row.ConvertNullableField<int>("DeviceID"),
-                                        SignalID = Guid.Parse(row.Field<object>("SignalID").ToString()),
-                                        PointID = row.ConvertField<int>("PointID"),
-                                        PointTag = row.Field<string>("PointTag"),
-                                        SignalReference = row.Field<string>("SignalReference"),
-                                        Description = row.Field<string>("description"),
-                                        SignalName = row.Field<string>("SignalName"),
-                                        SignalAcronym = row.Field<string>("SignalAcronym"),
-                                        EngineeringUnit = row.Field<string>("SignalAcronym") == "FLAG" ? "Hex" : row.Field<string>("EngineeringUnits"),
+                                        ID = measurement.Field<string>("ID"),
+                                        DeviceID = measurement.ConvertNullableField<int>("DeviceID"),
+                                        SignalID = Guid.Parse(measurement.Field<object>("SignalID").ToString()),
+                                        PointID = measurement.ConvertField<int>("PointID"),
+                                        PointTag = measurement.Field<string>("PointTag"),
+                                        SignalReference = measurement.Field<string>("SignalReference"),
+                                        Description = measurement.Field<string>("description"),
+                                        SignalName = measurement.Field<string>("SignalName"),
+                                        SignalAcronym = measurement.Field<string>("SignalAcronym"),
+                                        EngineeringUnit = measurement.Field<string>("SignalAcronym") == "FLAG" ? "Hex" : measurement.Field<string>("EngineeringUnits"),
                                         Expanded = false,
                                         Selected = false,
-                                        Selectable = row.Field<string>("SignalAcronym") == "IPHM" || row.Field<string>("SignalAcronym") == "IPHA" || row.Field<string>("SignalAcronym") == "VPHM" || row.Field<string>("SignalAcronym") == "VPHA" || row.Field<string>("SignalAcronym") == "FREQ",
+                                        Selectable = measurement.Field<string>("SignalAcronym") == "IPHM" || measurement.Field<string>("SignalAcronym") == "IPHA" || measurement.Field<string>("SignalAcronym") == "VPHM" || measurement.Field<string>("SignalAcronym") == "VPHA" || measurement.Field<string>("SignalAcronym") == "FREQ",
                                         TimeTag = "N/A",
                                         Value = "--",
                                         Quality = "N/A",
