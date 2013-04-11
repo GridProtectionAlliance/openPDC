@@ -306,7 +306,7 @@ namespace openPDC.UI.DataModels
                             .Cast<DataRow>()
                             .Where(row => row.ConvertNullableField<int>("DeviceID") == null)
                             .Select(row => row.Field<string>("SignalReference"))
-                            .Select(sigref => sigref.Substring(0, sigref.LastIndexOf('-')))
+                            .Select(GetSourceName)
                             .Distinct()
                             .Select(source => new RealTimeDevice()
                             {
@@ -366,7 +366,7 @@ namespace openPDC.UI.DataModels
                             .Cast<DataRow>()
                             .Where(row => row.ConvertNullableField<int>("DeviceID") == null)
                             .Select(row => row.Field<string>("SignalReference"))
-                            .Select(sigref => sigref.Substring(0, sigref.LastIndexOf('-')))
+                            .Select(GetSourceName)
                             .Distinct()
                             .Select(source => new RealTimeDevice()
                             {
@@ -479,6 +479,32 @@ namespace openPDC.UI.DataModels
         public static string Delete(AdoDataConnection database, int streamID)
         {
             return string.Empty;
+        }
+
+        private static string GetSourceName(string signalReference)
+        {
+            int hyphenIndex;
+            int colonIndex;
+
+            // Try to parse source name based on properly formatted signal reference (SOURCENAME-XX#)
+            hyphenIndex = signalReference.LastIndexOf('-');
+
+            if (hyphenIndex >= 0)
+                return signalReference.Substring(0, hyphenIndex);
+
+            // Try to parse source name from signal reference formatted like point tag (SOURCENAME:XXXY#).
+            // This format may include company name, but should be the same for all points from the same device
+            colonIndex = signalReference.LastIndexOf(':');
+
+            if (colonIndex >= 0)
+                return signalReference.Substring(0, colonIndex);
+
+            // Default to '__' if empty
+            if (string.IsNullOrWhiteSpace(signalReference))
+                return "__";
+
+            // Assume the value itself can be used to categorize the signal
+            return signalReference;
         }
 
         #endregion
