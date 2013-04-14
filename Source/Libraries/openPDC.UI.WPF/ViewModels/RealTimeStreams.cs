@@ -335,14 +335,20 @@ namespace openPDC.UI.ViewModels
             {
                 try
                 {
-                    ObservableCollection<StatisticMeasurement> statisticMeasurements;
                     StreamStatistic streamStatistic;
+                    long now = PrecisionTimer.UtcNow.Ticks;
 
+                    // Since device health is handled by the data subscription,
+                    // this subscription will only tell us whether devices have
+                    // been disconnected -- colors can only turn red
                     foreach (RealTimeStream stream in ItemsSource)
                     {
                         if (stream.ID > 0 && RealTimeStatistic.InputStreamStatistics.TryGetValue(stream.ID, out streamStatistic))
                         {
-                            stream.StatusColor = streamStatistic.StatusColor;
+                            // Stream has input stream statistics
+                            // that determine its connectivity state
+                            if (streamStatistic.StatusColor == "Red")
+                                stream.StatusColor = "Red";
                         }
 
                         foreach (RealTimeDevice device in stream.DeviceList)
@@ -351,24 +357,31 @@ namespace openPDC.UI.ViewModels
                             {
                                 if (stream.StatusColor == "Red")
                                 {
-                                    device.StatusColor = stream.StatusColor;
+                                    // If a stream is disconnected,
+                                    // its devices are also disconnected
+                                    device.StatusColor = "Red";
                                 }
                                 else if (RealTimeStatistic.InputStreamStatistics.TryGetValue((int)device.ID, out streamStatistic))
                                 {
-                                    device.StatusColor = streamStatistic.StatusColor;
+                                    // The device is direct connected, so it has input stream
+                                    // statistics that determine its connectivity state
+                                    if (streamStatistic.StatusColor == "Red")
+                                        device.StatusColor = "Red";
                                 }
-                                else if (RealTimeStatistic.DevicesWithStatisticMeasurements.TryGetValue((int)device.ID, out statisticMeasurements))
-                                {
-                                    device.StatusColor = "Green";
+                            }
+                            else
+                            {
+                                // This device is not configured, but rather its existence is inferred based on the signal references of its measurements.
+                                // Its connectivity state is determined by the length of time since its measurements were last received
+                                if (device.MeasurementList.All(measurement => Ticks.ToSeconds(now - measurement.LastUpdated) > m_refreshInterval * 2))
+                                    device.StatusColor = "Red";
+                            }
 
-                                    foreach (StatisticMeasurement statisticMeasurement in statisticMeasurements)
-                                    {
-                                        int value;
-
-                                        if (int.TryParse(statisticMeasurement.Value, out value) && value > 0)
-                                            device.StatusColor = "Yellow";
-                                    }
-                                }
+                            if (device.StatusColor == "Red")
+                            {
+                                // For devices which are now disconnected, change their measurements to a gray color
+                                foreach (RealTimeMeasurement measurement in device.MeasurementList)
+                                    measurement.Quality = "N/A";
                             }
                         }
                     }
@@ -386,6 +399,7 @@ namespace openPDC.UI.ViewModels
         {
             m_subscribedUnsynchronized = false;
             TerminateSubscription();
+
             if (RestartConnectionCycle)
                 InitializeUnsynchronizedSubscription();
         }
@@ -397,9 +411,13 @@ namespace openPDC.UI.ViewModels
                 try
                 {
                     ObservableCollection<StatisticMeasurement> statisticMeasurements;
-                    StreamStatistic streamStatistic;
                     RealTimeMeasurement realTimeMeasurement;
 
+                    HashSet<RealTimeStream> updatedStreams = new HashSet<RealTimeStream>();
+                    HashSet<RealTimeDevice> updatedDevices = new HashSet<RealTimeDevice>();
+
+                    // If it doesn't already exist, create lookup table to allow quick
+                    // lookup of RealTimeMeasurements whose value has changed
                     if ((object)m_realTimeMeasurements == null)
                     {
                         m_realTimeMeasurements = ItemsSource
@@ -410,35 +428,53 @@ namespace openPDC.UI.ViewModels
                             .ToDictionary(measurement => measurement.SignalID);
                     }
 
+                    // Update measurements that have changed
                     foreach (IMeasurement newMeasurement in e.Argument)
                     {
                         if (m_realTimeMeasurements.TryGetValue(newMeasurement.ID, out realTimeMeasurement))
                         {
-                            realTimeMeasurement.Quality = newMeasurement.ValueQualityIsGood() ? "GOOD" : "BAD";
-                            realTimeMeasurement.TimeTag = newMeasurement.Timestamp.ToString("HH:mm:ss.fff");
-                            realTimeMeasurement.Value = newMeasurement.AdjustedValue.ToString("0.###");
+                            RealTimeDevice parentDevice = realTimeMeasurement.Parent;
+                            RealTimeStream parentStream = parentDevice.Parent;
+
+                            if (newMeasurement.Timestamp > realTimeMeasurement.LastUpdated)
+                            {
+                                realTimeMeasurement.Quality = newMeasurement.ValueQualityIsGood() ? "GOOD" : "BAD";
+                                realTimeMeasurement.TimeTag = newMeasurement.Timestamp.ToString("HH:mm:ss.fff");
+                                realTimeMeasurement.Value = newMeasurement.AdjustedValue.ToString("0.###");
+                                realTimeMeasurement.LastUpdated = newMeasurement.Timestamp;
+
+                                // Maintain collection of updated devices and streams
+                                updatedDevices.Add(parentDevice);
+
+                                if ((object)parentStream != null)
+                                    updatedStreams.Add(parentStream);
+                            }
                         }
                     }
 
-                    foreach (RealTimeStream stream in ItemsSource)
+                    // Update status color of the updated devices
+                    // NOTE: Color cannot be red since we just received data from the devices
+                    foreach (RealTimeDevice device in updatedDevices)
                     {
-                        if (stream.ID > 0 && RealTimeStatistic.InputStreamStatistics.TryGetValue(stream.ID, out streamStatistic))
+                        // By default, determine color based on measurement quality
+                        List<RealTimeMeasurement> measurementList = device.MeasurementList.Where(m => m.Value != "--").ToList();
+
+                        if (measurementList.Count > 0)
                         {
-                            stream.StatusColor = streamStatistic.StatusColor;
+                            if (measurementList.All(m => m.Quality != "BAD"))
+                                device.StatusColor = "Green";
+                            else
+                                device.StatusColor = "Yellow";
                         }
 
-                        foreach (RealTimeDevice device in stream.DeviceList)
+                        if (device.ID != null && device.ID > 0)
                         {
-                            if (device.ID != null && device.ID > 0)
+                            // Check to see if device has statistic measurements which define the number of errors reported by the device
+                            if (!RealTimeStatistic.InputStreamStatistics.ContainsKey((int)device.ID))
                             {
-                                if (RealTimeStatistic.InputStreamStatistics.TryGetValue((int)device.ID, out streamStatistic))
+                                if (RealTimeStatistic.DevicesWithStatisticMeasurements.TryGetValue((int)device.ID, out statisticMeasurements))
                                 {
-                                    device.StatusColor = streamStatistic.StatusColor;
-                                }
-                                else if (RealTimeStatistic.DevicesWithStatisticMeasurements.TryGetValue((int)device.ID, out statisticMeasurements))
-                                {
-                                    device.StatusColor = "Green";
-
+                                    // If there are any reported errors, force color to yellow
                                     foreach (StatisticMeasurement statisticMeasurement in statisticMeasurements)
                                     {
                                         int value;
@@ -448,21 +484,21 @@ namespace openPDC.UI.ViewModels
                                     }
                                 }
                             }
-                            else
-                            {
-                                // Direct connected or subscribed device colors should be based on the quality of its measurements
-                                List<RealTimeMeasurement> measurementList = device.MeasurementList.Where(m => m.Value != "--").ToList();
+                        }
+                    }
 
-                                if (measurementList.Count > 0)
-                                {
-                                    if (measurementList.All(m => m.Quality != "BAD"))
-                                        device.StatusColor = "Green";
-                                    else if (measurementList.Any(m => m.Quality != "BAD"))
-                                        device.StatusColor = "Yellow";
-                                    else
-                                        device.StatusColor = "Red";
-                                }
-                            }
+                    // Update status color of the updated streams
+                    // NOTE: Color cannot be red since we just received data from the devices
+                    foreach (RealTimeStream stream in updatedStreams)
+                    {
+                        // Streams with ID of 0 are placeholders
+                        // and must remain transparent
+                        if (stream.ID > 0)
+                        {
+                            if (stream.DeviceList.Any(device => device.StatusColor == "Green"))
+                                stream.StatusColor = "Green";
+                            else
+                                stream.StatusColor = "Yellow";
                         }
                     }
 

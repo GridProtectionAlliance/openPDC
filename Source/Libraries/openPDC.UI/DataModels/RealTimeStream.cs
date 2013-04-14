@@ -56,6 +56,18 @@ namespace openPDC.UI.DataModels
 
         #endregion
 
+        #region [ Constructors ]
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="RealTimeStream"/> class.
+        /// </summary>
+        public RealTimeStream()
+            : base(false, false)
+        {
+        }
+
+        #endregion
+
         #region [ Properties ]
 
         /// <summary>
@@ -423,6 +435,8 @@ namespace openPDC.UI.DataModels
                 {
                     foreach (RealTimeDevice device in stream.DeviceList)
                     {
+                        device.Parent = stream;
+
                         foreach (RealTimeMeasurement measurement in device.MeasurementList)
                         {
                             measurement.Parent = device;
@@ -538,7 +552,20 @@ namespace openPDC.UI.DataModels
         private string m_statusColor;
         private bool m_enabled;
         private double m_maximumSignalReferenceWidth = double.NaN;
+        private RealTimeStream m_parent;
         private ObservableCollection<RealTimeMeasurement> m_measurementList;
+
+        #endregion
+
+        #region [ Constructors ]
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="RealTimeDevice"/> class.
+        /// </summary>
+        public RealTimeDevice()
+            : base(false, false)
+        {
+        }
 
         #endregion
 
@@ -740,6 +767,22 @@ namespace openPDC.UI.DataModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets the parent.
+        /// </summary>
+        public RealTimeStream Parent
+        {
+            get
+            {
+                return m_parent;
+            }
+            set
+            {
+                m_parent = value;
+                OnPropertyChanged("Parent");
+            }
+        }
+
         #endregion
     }
 
@@ -768,8 +811,21 @@ namespace openPDC.UI.DataModels
         private string m_timeTag;
         private string m_value;
         private string m_quality;
+        private long m_lastUpdated;
         private SolidColorBrush m_foreground;
         private RealTimeDevice m_parent;
+
+        #endregion
+
+        #region [ Constructors ]
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="RealTimeMeasurement"/> class.
+        /// </summary>
+        public RealTimeMeasurement()
+            : base(false, false)
+        {
+        }
 
         #endregion
 
@@ -1076,6 +1132,22 @@ namespace openPDC.UI.DataModels
             {
                 m_quality = value;
                 OnPropertyChanged("Quality");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets LastUpdated for <see cref="RealTimeMeasurement"/> data.
+        /// </summary>
+        public long LastUpdated
+        {
+            get
+            {
+                return m_lastUpdated;
+            }
+            set
+            {
+                m_lastUpdated = value;
+                OnPropertyChanged("LastUpdated");
             }
         }
 
