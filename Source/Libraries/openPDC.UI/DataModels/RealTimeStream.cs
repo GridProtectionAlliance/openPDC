@@ -376,8 +376,8 @@ namespace openPDC.UI.DataModels
                     realTimeStreamList.Add(new RealTimeStream()
                     {
                         ID = 0,
-                        Acronym = "DIRECT CONNECTED",
-                        Name = "Devices Connected Directory",
+                        Acronym = "CALCULATED",
+                        Name = "Calculated Measurements",
                         CompanyName = string.Empty,
                         StatusColor = "Transparent",
                         Enabled = false,
@@ -396,7 +396,7 @@ namespace openPDC.UI.DataModels
                                 Name = source,
                                 ProtocolName = string.Empty,
                                 VendorDeviceName = string.Empty,
-                                ParentAcronym = "DIRECT CONNECTED",
+                                ParentAcronym = "CALCULATED",
                                 Expanded = false,
                                 StatusColor = "Gray",
                                 Enabled = false,
