@@ -27,6 +27,102 @@
   <ItemGroup>
     <Compile Include="openPDCSetup.wxs" />
   </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>..\..\..\Dependencies\WiX\WixUIExtension.dll</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Libraries\openPDC.UI.WPF\openPDC.UI.WPF.csproj">
+      <Name>openPDC.UI.WPF</Name>
+      <Project>{57261e91-7636-4f92-8d93-744a4aad7eb0}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Libraries\openPDC.UI\openPDC.UI.csproj">
+      <Name>openPDC.UI</Name>
+      <Project>{a818c4b5-52b5-4e12-917e-4854c9ab4ef3}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Libraries\openPDCSetupActions\InstallerActions.csproj">
+      <Name>InstallerActions</Name>
+      <Project>{de23eef6-ee66-42de-81b0-890b3a77b83c}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Libraries\openPG.UI.WPF\openPG.UI.WPF.csproj">
+      <Name>openPG.UI.WPF</Name>
+      <Project>{134819c5-c1bb-4ed1-be23-49ab5fb33744}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Libraries\openPG.UI\openPG.UI.csproj">
+      <Name>openPG.UI</Name>
+      <Project>{94f36768-e9a0-4783-bb0f-8c2c1771352e}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Tools\ConfigurationSetupUtility\ConfigurationSetupUtility.csproj">
+      <Name>ConfigurationSetupUtility</Name>
+      <Project>{2a74eacf-8291-47c7-a2ed-0d58771f24e2}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Tools\MacrodyneController\MacrodyneController.csproj">
+      <Name>MacrodyneController</Name>
+      <Project>{334ba160-26d6-4a3b-92e2-42deb4381176}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\openPDCManager\openPDCManager\openPDCManager.csproj">
+      <Name>openPDCManager</Name>
+      <Project>{6903507c-c289-4f8f-887c-c2d94c72ba99}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\openPDCConsole\openPDCConsole.csproj">
+      <Name>openPDCConsole</Name>
+      <Project>{449f2cb1-89bf-4e75-8e6c-c42feb1ab087}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\openPDCServices\openPDCServices.csproj">
+      <Name>openPDCServices</Name>
+      <Project>{17c0e07e-646f-4d20-9394-0cc34ad6d5b1}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\openPDC\openPDC.csproj">
+      <Name>openPDC</Name>
+      <Project>{0bf2447e-252d-4712-b154-e350af463081}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
