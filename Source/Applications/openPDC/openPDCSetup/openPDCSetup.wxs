@@ -183,12 +183,14 @@
       </Component>
       <Component Id="ConfigurationSetupUtility">
         <File Id="ConfigurationSetupUtility.exe" Name="$(var.ConfigurationSetupUtility.TargetFileName)" Source="$(var.ConfigurationSetupUtility.TargetPath)" />
+        <Shortcut Id="ConfigurationSetupUtilityStartMenuShortcut" Name="Configuration Setup Utility" Description="Utility used to set up openPDC service configuration database." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
       <Component Id="ConfigurationSetupUtilityConfig">
         <File Id="ConfigurationSetupUtility.exe.config" Name="$(var.ConfigurationSetupUtility.TargetFileName).config" Source="$(var.ConfigurationSetupUtility.TargetPath).config" />
       </Component>
       <Component Id="DataMigrationUtility">
         <File Id="DataMigrationUtility.exe" Name="DataMigrationUtility.exe" Source="$(var.ProjectDir)\DataMigrationUtility.exe" />
+        <Shortcut Id="DataMigrationUtilityStartMenuShortcut" Name="Data Migration Utility" Description="Tool used to migrate data from an old configuration database to the latest version." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
       <Component Id="DataMigrationUtilityConfig">
         <File Id="DataMigrationUtility.exe.config" Name="DataMigrationUtility.exe.config" Source="$(var.ProjectDir)\DataMigrationUtility.exe.config" />
@@ -199,10 +201,7 @@
     <ComponentGroup Id="openPDCManagerComponents" Directory="INSTALLFOLDER">
       <Component Id="openPDCManager">
         <File Id="openPDCManager.exe" Name="$(var.openPDCManager.TargetFileName)" Source="$(var.openPDCManager.TargetPath)" />
-      </Component>
-      <Component Id="openPDCManagerShortcut">
-        <Shortcut Id="openPDCManagerStartMenuShortcut" Name="openPDC Manager" Description="Manager application for the openPDC service." Target="[INSTALLFOLDER]openPDCManager.exe" WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" />
-        <RegistryValue Root="HKCU" Key="Software\Grid Protection Alliance\openPDC" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        <Shortcut Id="openPDCManagerStartMenuShortcut" Name="openPDC Manager" Description="Manager application for the openPDC service." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
       <Component Id="openPDCManagerMenu">
         <File Id="Menu.xml" Name="Menu.xml" Source="$(var.openPDCManager.ProjectDir)\Menu.xml" />
@@ -226,6 +225,7 @@
     <ComponentGroup Id="openPDCConsoleComponents" Directory="INSTALLFOLDER">
       <Component Id="openPDCConsole">
         <File Id="openPDCConsole.exe" Name="$(var.openPDCConsole.TargetFileName)" Source="$(var.openPDCConsole.TargetPath)" />
+        <Shortcut Id="openPDCConsoleStartMenuShortcut" Name="openPDC Console" Description="Console application to monitor the openPDC service." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
       <Component Id="openPDCConsoleConfig">
         <File Id="openPDCConsole.exe.config" Name="$(var.openPDCConsole.TargetFileName).config" Source="$(var.openPDCConsole.TargetPath).config" />
@@ -241,12 +241,14 @@
 
       <Component Id="MacrodyneController">
         <File Id="MacrodyneController.exe" Name="$(var.MacrodyneController.TargetFileName)" Source="$(var.MacrodyneController.TargetPath)" />
+        <Shortcut Id="MacrodyneControllerStartMenuShortcut" Name="Macrodyne Host Controller" Description="Macrodyne Serial PMU Host Controller." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
     </ComponentGroup>
     
     <ComponentGroup Id="ConfigCrypterComponents" Directory="INSTALLFOLDER">
       <Component Id="ConfigCrypter">
         <File Id="ConfigCrypter.exe" Name="ConfigCrypter.exe" Source="$(var.ProjectDir)\ConfigCrypter.exe" />
+        <Shortcut Id="ConfigurationCrypterStartMenuShortcut" Name="Cipher Key Manager" Description="Tool used to manage cryptographic cipher keys." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
       <Component Id="ConfigCrypterConfig">
         <File Id="ConfigCrypter.exe.config" Name="ConfigCrypter.exe.config" Source="$(var.ProjectDir)\ConfigCrypter.exe.config" />
@@ -256,6 +258,7 @@
     <ComponentGroup Id="ConfigurationEditorComponents" Directory="INSTALLFOLDER">
       <Component Id="ConfigurationEditor">
         <File Id="ConfigurationEditor.exe" Name="ConfigurationEditor.exe" Source="$(var.ProjectDir)\ConfigurationEditor.exe" />
+        <Shortcut Id="ConfigurationEditorStartMenuShortcut" Name="XML Configuration Editor" Description="Tool used edit the XML configuration file for the openPDC service and its components." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
       <Component Id="ConfigurationEditorConfig">
         <File Id="ConfigurationEditor.exe.config" Name="ConfigurationEditor.exe.config" Source="$(var.ProjectDir)\ConfigurationEditor.exe.config" />
@@ -265,6 +268,7 @@
     <ComponentGroup Id="HistorianPlaybackUtilityComponents" Directory="INSTALLFOLDER">
       <Component Id="HistorianPlaybackUtility">
         <File Id="HistorianPlaybackUtility.exe" Name="HistorianPlaybackUtility.exe" Source="$(var.ProjectDir)\HistorianPlaybackUtility.exe" />
+        <Shortcut Id="HistorianPlaybackUtilityStartMenuShortcut" Name="Historian Playback Utility" Description="Utility that can be used to replay historic data as a real-time feed." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
       <Component Id="HistorianPlaybackUtilityConfig">
         <File Id="HistorianPlaybackUtility.exe.config" Name="HistorianPlaybackUtility.exe.config" Source="$(var.ProjectDir)\HistorianPlaybackUtility.exe.config" />
@@ -274,6 +278,7 @@
     <ComponentGroup Id="HistorianViewComponents" Directory="INSTALLFOLDER">
       <Component Id="HistorianView">
         <File Id="HistorianView.exe" Name="HistorianView.exe" Source="$(var.ProjectDir)\HistorianView.exe" />
+        <Shortcut Id="HistorianViewStartMenuShortcut" Name="Historian Trending Tool" Description="Tool used to analyze historic files to create charts and export data to CSV format." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
       <Component Id="HistorianViewConfig">
         <File Id="HistorianView.exe.config" Name="HistorianView.exe.config" Source="$(var.ProjectDir)\HistorianView.exe.config" />
