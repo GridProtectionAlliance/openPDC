@@ -271,7 +271,7 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "openPDCSetup", "Application
 		{2A74EACF-8291-47C7-A2ED-0D58771F24E2} = {2A74EACF-8291-47C7-A2ED-0D58771F24E2}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallerActions", "Libraries\openPDCSetupActions\InstallerActions.csproj", "{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallerActions", "Libraries\InstallerActions\InstallerActions.csproj", "{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -327,10 +327,10 @@ Global
 		SccProjectTopLevelParentUniqueName12 = Synchrophasor.sln
 		SccProjectName12 = Applications/openPDC/openPDCSetup
 		SccLocalPath12 = Applications\\openPDC\\openPDCSetup
-		SccProjectUniqueName13 = Libraries\\openPDCSetupActions\\InstallerActions.csproj
+		SccProjectUniqueName13 = Libraries\\InstallerActions\\InstallerActions.csproj
 		SccProjectTopLevelParentUniqueName13 = Synchrophasor.sln
-		SccProjectName13 = Libraries/openPDCSetupActions
-		SccLocalPath13 = Libraries\\openPDCSetupActions
+		SccProjectName13 = Libraries/InstallerActions
+		SccLocalPath13 = Libraries\\InstallerActions
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
@@ -485,8 +485,8 @@ Global
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Release|x86.ActiveCfg = Release|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Debug|x86.ActiveCfg = Debug|x64
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Deploy|Any CPU.ActiveCfg = Release|x64
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Deploy|Any CPU.Build.0 = Release|x64
+		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Deploy|Any CPU.ActiveCfg = Debug|x64
+		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Deploy|Any CPU.Build.0 = Debug|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Deploy|x86.ActiveCfg = Debug|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Release|Any CPU.ActiveCfg = Release|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Release|x86.ActiveCfg = Release|x64
