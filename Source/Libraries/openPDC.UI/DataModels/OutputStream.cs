@@ -51,7 +51,7 @@ namespace openPDCManager.UI.DataModels
         private int m_ID;
         private string m_acronym;
         private string m_name;
-        private int m_type;
+        private int m_type = 1;
         private string m_connectionString;
         private int m_idCode;
         private string m_commandChannel;
