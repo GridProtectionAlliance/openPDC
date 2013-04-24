@@ -484,11 +484,13 @@ Global
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Release|Any CPU.ActiveCfg = Release|x64
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Release|x86.ActiveCfg = Release|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Debug|Any CPU.Build.0 = Debug|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Debug|x86.ActiveCfg = Debug|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Deploy|Any CPU.ActiveCfg = Debug|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Deploy|Any CPU.Build.0 = Debug|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Deploy|x86.ActiveCfg = Debug|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Release|Any CPU.ActiveCfg = Release|x64
+		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Release|Any CPU.Build.0 = Release|x64
 		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
