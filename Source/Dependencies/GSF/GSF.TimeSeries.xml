@@ -3610,7 +3610,7 @@
             ID column type should be integer based, all other column types are expected to be string based.
             </remarks>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.#ctor(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.Threading.AutoResetEvent})">
+        <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.#ctor">
             <summary>
             Constructs a new instance of the <see cref="T:GSF.TimeSeries.Adapters.AdapterCollectionBase`1"/>.
             </summary>
@@ -4089,14 +4089,8 @@
         </member>
         <member name="M:GSF.TimeSeries.Adapters.ActionAdapterCollection.#ctor">
             <summary>
-            Creates a new <see cref="T:GSF.TimeSeries.Adapters.ActionAdapterCollection"/>.
-            </summary>
-        </member>
-        <member name="M:GSF.TimeSeries.Adapters.ActionAdapterCollection.#ctor(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.Threading.AutoResetEvent})">
-            <summary>
             Constructs a new instance of the <see cref="T:GSF.TimeSeries.Adapters.ActionAdapterCollection"/>.
             </summary>
-            <param name="waitHandles">Wait handle dictionary.</param>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.ActionAdapterCollection.Initialize">
             <summary>
@@ -4758,14 +4752,8 @@
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AllAdaptersCollection.#ctor">
             <summary>
-            Creates a new <see cref="T:GSF.TimeSeries.Adapters.AllAdaptersCollection"/>.
-            </summary>
-        </member>
-        <member name="M:GSF.TimeSeries.Adapters.AllAdaptersCollection.#ctor(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.Threading.AutoResetEvent})">
-            <summary>
             Constructs a new instance of the <see cref="T:GSF.TimeSeries.Adapters.AllAdaptersCollection"/>.
             </summary>
-            <param name="waitHandles">Wait handle dictionary.</param>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AllAdaptersCollection.Initialize">
             <summary>
@@ -5254,12 +5242,6 @@
             Creates a new <see cref="T:GSF.TimeSeries.Adapters.InputAdapterCollection"/>.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.InputAdapterCollection.#ctor(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.Threading.AutoResetEvent})">
-            <summary>
-            Creates a new <see cref="T:GSF.TimeSeries.Adapters.InputAdapterCollection"/>.
-            </summary>
-            <param name="waitHandles">Wait handle dictionary.</param>
-        </member>
         <member name="M:GSF.TimeSeries.Adapters.InputAdapterCollection.OnNewMeasurements(System.Collections.Generic.ICollection{GSF.TimeSeries.IMeasurement})">
             <summary>
             Raises the <see cref="E:GSF.TimeSeries.Adapters.InputAdapterCollection.NewMeasurements"/> event.
@@ -5643,12 +5625,6 @@
             <summary>
             Creates a new <see cref="T:GSF.TimeSeries.Adapters.OutputAdapterCollection"/>.
             </summary>
-        </member>
-        <member name="M:GSF.TimeSeries.Adapters.OutputAdapterCollection.#ctor(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.Threading.AutoResetEvent})">
-            <summary>
-            Creates a new <see cref="T:GSF.TimeSeries.Adapters.OutputAdapterCollection"/>.
-            </summary>
-            <param name="waitHandles">Wait handle dictionary.</param>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.OutputAdapterCollection.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{GSF.TimeSeries.IMeasurement})">
             <summary>
@@ -6099,16 +6075,26 @@
         </member>
         <member name="P:GSF.TimeSeries.BufferBlockMeasurement.Buffer">
             <summary>
-            Cached buffer image;
+            Cached buffer image.
             </summary>
             <remarks>
             <para>
-            Copy data from this buffer onto your own buffer - this buffer is from the buffer pool
-            and will be returned back to the pool by this class.
+            Use the <see cref="P:GSF.TimeSeries.BufferBlockMeasurement.Length"/> property to determine the valid number of bytes in the
+            buffer. The actual length of the <see cref="P:GSF.TimeSeries.BufferBlockMeasurement.Buffer"/> byte array may exceed the value
+            of <see cref="P:GSF.TimeSeries.BufferBlockMeasurement.Length"/>, however any bytes in the buffer beyond <see cref="P:GSF.TimeSeries.BufferBlockMeasurement.Length"/>
+            are considered unavailable and accessing these bytes may result in an exception.
+            </para>
+            <para>
+            Do not cache <see cref="P:GSF.TimeSeries.BufferBlockMeasurement.Buffer"/> for your own use, copy data from this buffer onto
+            your own buffer as this buffer is from the buffer pool and will be returned back to
+            the pool by this class.
             </para>
             <para>
             Set <see cref="P:GSF.TimeSeries.BufferBlockMeasurement.Buffer"/> property to <c>null</c> when operations on buffer are complete
             to return buffer to pool and unregister measurement instance from the finalizer queue.
+            If measurement has multiple destinations, it is recommended that queue and notify be
+            implemented so that final user of <see cref="T:GSF.TimeSeries.BufferBlockMeasurement"/> instance can
+            return buffer back to the buffer pool.
             </para>
             </remarks>
         </member>
@@ -6734,12 +6720,6 @@
             <summary>
             Creates a new <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
             </summary>
-        </member>
-        <member name="M:GSF.TimeSeries.Transport.DataPublisher.#ctor(System.Collections.Concurrent.ConcurrentDictionary{System.String,System.Threading.AutoResetEvent})">
-            <summary>
-            Creates a new <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
-            </summary>
-            <param name="waitHandles">Wait handle dictionary.</param>
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.Finalize">
             <summary>

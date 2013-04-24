@@ -10038,12 +10038,12 @@
         </member>
         <member name="F:GSF.Data.DataType.Double">
             <summary>
-            64-dit double precision floating point numeric data type, <see cref="F:GSF.Data.DataType.Double"/>.
+            64-bit double precision floating point numeric data type, <see cref="F:GSF.Data.DataType.Double"/>.
             </summary>
         </member>
         <member name="F:GSF.Data.DataType.Guid">
             <summary>
-            Unisgned 128-bit Guid integer data type, <see cref="F:GSF.Data.DataType.Guid"/>.
+            Unsigned 128-bit Guid integer data type, <see cref="F:GSF.Data.DataType.Guid"/>.
             </summary>
         </member>
         <member name="F:GSF.Data.DataType.Int16">
@@ -10078,7 +10078,7 @@
         </member>
         <member name="F:GSF.Data.DataType.TimeSpan">
             <summary>
-            Timespan data type, <see cref="F:GSF.Data.DataType.TimeSpan"/>.
+            Time-span data type, <see cref="F:GSF.Data.DataType.TimeSpan"/>.
             </summary>
         </member>
         <member name="F:GSF.Data.DataType.UInt16">
@@ -10116,7 +10116,7 @@
             Serializes a <see cref="T:System.Data.DataSet"/> to a destination <see cref="T:System.IO.Stream"/>.
             </summary>
             <param name="source"><see cref="T:System.Data.DataSet"/> to serialize.</param>
-            <param name="destination"><see cref="T:System.IO.Stream"/> to seralize <see cref="T:System.Data.DataSet"/> on.</param>
+            <param name="destination"><see cref="T:System.IO.Stream"/> to serialize <see cref="T:System.Data.DataSet"/> on.</param>
         </member>
         <member name="M:GSF.Data.DataSetExtensions.DeserializeToDataSet(System.IO.Stream)">
             <summary>

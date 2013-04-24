@@ -443,6 +443,32 @@
             Gets a message box to display message to users.
             </summary>
         </member>
+        <member name="T:GSF.TimeSeries.UI.Converters.IndexToBooleanConverter">
+            <summary>
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes string value and converts it to boolean.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.Converters.IndexToBooleanConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts string to boolean value.
+            </summary>
+            <param name="value">String value to be converted.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use in conversion.</param>
+            <param name="culture">The culture to use in conversion.</param>
+            <returns>Boolean value.</returns>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.Converters.IndexToBooleanConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts boolean value to string.
+            </summary>
+            <param name="value">Boolean value to be converted.</param>
+            <param name="targetType">The type of the binding target property.</param>
+            <param name="parameter">The converter parameter to use in conversion.</param>
+            <param name="culture">The culture to use in conversion.</param>
+            <returns>String value.</returns>
+            <remarks>This method has not been implemented.</remarks>
+        </member>
         <member name="T:GSF.TimeSeries.UI.Converters.DictionaryToKeyValuePairConverter">
             <summary>
             Represents an <see cref="T:System.Windows.Data.IValueConverter"/> class, which takes <see cref="T:System.Collections.Generic.Dictionary`2"/> collection and returns <see cref="T:System.Collections.Generic.KeyValuePair`2"/>    
@@ -765,12 +791,12 @@
             </remarks>
             <returns>The object that is the best default value.</returns>
         </member>
-        <member name="M:GSF.TimeSeries.UI.DataModelBase.ExecuteActionForProperties(System.Action{System.Reflection.PropertyInfo},System.Reflection.BindingFlags)">
+        <member name="M:GSF.TimeSeries.UI.DataModelBase.ExecuteActionForProperties(System.Action{System.Reflection.PropertyInfo},System.Func{System.Reflection.PropertyInfo,System.Boolean})">
             <summary>
             Executes specified action over all public dervied class properties.
             </summary>
             <param name="propertyAction">Action to execute for all properties.</param>
-            <param name="isGetOrSet"><see cref="F:System.Reflection.BindingFlags.GetProperty"/> or <see cref="F:System.Reflection.BindingFlags.SetProperty"/>.</param>
+            <param name="propertyFilter">Filter used to select which properties to execute the action.</param>
         </member>
         <member name="M:GSF.TimeSeries.UI.DataModelBase.GetAttributeValue``2(System.String,``1,System.Func{``0,``1})">
             <summary>
