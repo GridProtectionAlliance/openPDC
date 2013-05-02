@@ -21884,7 +21884,7 @@
         </member>
         <member name="T:GSF.Security.Cryptography.Cipher.KeyIVCache">
             <summary>
-            Represents an interprocess serializable cryptographic key and initialization vector cache.
+            Represents an inter-process serializable cryptographic key and initialization vector cache.
             </summary>
         </member>
         <member name="M:GSF.Security.Cryptography.Cipher.KeyIVCache.GetCryptoKeyIV(System.String,System.Int32)">

@@ -6392,6 +6392,22 @@
             modes that affect how the subscriber and publisher will communicate.
             </remarks>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.ServerCommand.ConfirmNotification">
+            <summary>
+            Confirm receipt of a notification.
+            </summary>
+            <remarks>
+            This message is sent in response to <see cref="F:GSF.TimeSeries.Transport.ServerResponse.Notify"/>.
+            </remarks>
+        </member>
+        <member name="F:GSF.TimeSeries.Transport.ServerCommand.ConfirmBufferBlock">
+            <summary>
+            Confirm receipt of a buffer block measurement.
+            </summary>
+            <remarks>
+            This message is sent in response to <see cref="F:GSF.TimeSeries.Transport.ServerResponse.BufferBlock"/>.
+            </remarks>
+        </member>
         <member name="T:GSF.TimeSeries.Transport.ServerResponse">
             <summary>
             Server responses sent by <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/> and received by <see cref="T:GSF.TimeSeries.Transport.DataSubscriber"/>.
@@ -6467,6 +6483,14 @@
             </summary>
             <remarks>
             Unsolicited response informs client that a raw buffer block follows.
+            </remarks>
+        </member>
+        <member name="F:GSF.TimeSeries.Transport.ServerResponse.Notify">
+            <summary>
+            Notify response.
+            </summary>
+            <remarks>
+            Unsolicited response provides a notification message to the client.
             </remarks>
         </member>
         <member name="F:GSF.TimeSeries.Transport.ServerResponse.NoOP">
@@ -6795,6 +6819,12 @@
             Resets the counters for the lifetime statistics without interrupting the adapter's operations.
             </summary>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.DataPublisher.SendNotification(System.String)">
+            <summary>
+            Sends a notification to all subscribers.
+            </summary>
+            <param name="message">The message to be sent.</param>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.UpdateSignalIndexCache(System.Guid,GSF.TimeSeries.Transport.SignalIndexCache,GSF.TimeSeries.MeasurementKey[])">
             <summary>
             Updates signal index cache based on input measurement keys.
@@ -7042,6 +7072,11 @@
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.IsConnected">
             <summary>
             Gets flag indicating if publisher is connected and listening.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.BufferBlockRetransmissions">
+            <summary>
+            Gets the total number of buffer block retransmissions on all subscriptions over the lifetime of the publisher.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.TotalBytesSent">
@@ -7494,6 +7529,11 @@
             This event is expected to only be raised when an input adapter has been designed to process
             a finite amount of data, e.g., reading a historical range of data during temporal processing.
             </remarks>
+        </member>
+        <member name="E:GSF.TimeSeries.Transport.DataSubscriber.NotificationReceived">
+            <summary>
+            Occurs when a notification has been received from the <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
+            </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.SecurityMode">
             <summary>
@@ -8546,6 +8586,14 @@
             Represents a common set of interfaces for a client adapter subscription to the <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
             </summary>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.IClientSubscription.ConfirmBufferBlock(System.UInt32)">
+            <summary>
+            Handles the confirmation message received from the
+            subscriber to indicate that a buffer block was received.
+            </summary>
+            <param name="sequenceNumber">The sequence number of the buffer block.</param>
+            <returns>A list of buffer block sequence numbers for blocks that need to be retransmitted.</returns>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.IClientSubscription.OnStatusMessage(System.String)">
             <summary>
             Explicitly raises the <see cref="E:GSF.TimeSeries.Adapters.IAdapter.StatusMessage"/> event.
@@ -8564,6 +8612,12 @@
             </summary>
             <param name="sender"><see cref="T:GSF.TimeSeries.Adapters.IInputAdapter"/> raising the notification.</param>
             <param name="e">Event arguments for notification, if any.</param>
+        </member>
+        <member name="E:GSF.TimeSeries.Transport.IClientSubscription.BufferBlockRetransmission">
+            <summary>
+            Indicates that a buffer block needed to be retransmitted because
+            it was previously sent, but no confirmation was received.
+            </summary>
         </member>
         <member name="E:GSF.TimeSeries.Transport.IClientSubscription.ProcessingComplete">
             <summary>
@@ -9067,6 +9121,14 @@
             so that dynamic updates to keys will be synchronized with filtering to prevent interference.
             </remarks>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.SynchronizedClientSubscription.ConfirmBufferBlock(System.UInt32)">
+            <summary>
+            Handles the confirmation message received from the
+            subscriber to indicate that a buffer block was received.
+            </summary>
+            <param name="sequenceNumber">The sequence number of the buffer block.</param>
+            <returns>A list of buffer block sequence numbers for blocks that need to be retransmitted.</returns>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.SynchronizedClientSubscription.PublishFrame(GSF.TimeSeries.IFrame,System.Int32)">
             <summary>
             Publish <see cref="T:GSF.TimeSeries.IFrame"/> of time-aligned collection of <see cref="T:GSF.TimeSeries.IMeasurement"/> values that arrived within the
@@ -9074,6 +9136,12 @@
             </summary>
             <param name="frame"><see cref="T:GSF.TimeSeries.IFrame"/> of measurements with the same timestamp that arrived within <see cref="P:GSF.TimeSeries.ConcentratorBase.LagTime"/> that are ready for processing.</param>
             <param name="index">Index of <see cref="T:GSF.TimeSeries.IFrame"/> within a second ranging from zero to <c><see cref="P:GSF.TimeSeries.ConcentratorBase.FramesPerSecond"/> - 1</c>.</param>
+        </member>
+        <member name="E:GSF.TimeSeries.Transport.SynchronizedClientSubscription.BufferBlockRetransmission">
+            <summary>
+            Indicates that a buffer block needed to be retransmitted because
+            it was previously sent, but no confirmation was received.
+            </summary>
         </member>
         <member name="E:GSF.TimeSeries.Transport.SynchronizedClientSubscription.ProcessingComplete">
             <summary>
@@ -9236,6 +9304,20 @@
             Measurements are filtered against the defined <see cref="P:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.InputMeasurementKeys"/> so we override method
             so that dynamic updates to keys will be synchronized with filtering to prevent interference.
             </remarks>
+        </member>
+        <member name="M:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.ConfirmBufferBlock(System.UInt32)">
+            <summary>
+            Handles the confirmation message received from the
+            subscriber to indicate that a buffer block was received.
+            </summary>
+            <param name="sequenceNumber">The sequence number of the buffer block.</param>
+            <returns>A list of buffer block sequence numbers for blocks that need to be retransmitted.</returns>
+        </member>
+        <member name="E:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.BufferBlockRetransmission">
+            <summary>
+            Indicates that a buffer block needed to be retransmitted because
+            it was previously sent, but no confirmation was received.
+            </summary>
         </member>
         <member name="E:GSF.TimeSeries.Transport.UnsynchronizedClientSubscription.ProcessingComplete">
             <summary>

@@ -74,6 +74,11 @@
             simulated for the purposes of real-time concentration.
             </summary>
         </member>
+        <member name="P:HistorianAdapters.LocalInputAdapter.AutoRepeat">
+            <summary>
+            Gets or sets value that determines if the input data should be replayed repeatedly.
+            </summary>
+        </member>
         <member name="P:HistorianAdapters.LocalInputAdapter.SupportsTemporalProcessing">
             <summary>
             Gets the flag indicating if this adapter supports temporal processing.

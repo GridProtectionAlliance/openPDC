@@ -52,7 +52,7 @@
         </member>
         <member name="T:GSF.Security.LdapSecurityProvider">
             <summary>
-            Represents an <see cref="T:GSF.Security.ISecurityProvider"/> that uses Active Directory for its backend datastore and credential authentication.
+            Represents an <see cref="T:GSF.Security.ISecurityProvider"/> that uses Active Directory for its backend data store and credential authentication.
             </summary>
             <remarks>
             A <a href="http://en.wikipedia.org/wiki/Security_Identifier" target="_blank">Security Identifier</a> can also be specified in 
@@ -72,7 +72,7 @@
                   <add name="ApplicationName" value="" description="Name of the application being secured as defined in the backend security datastore."
                     encrypted="false" />
                   <add name="ConnectionString" value="LDAP://DC=COMPANY,DC=COM"
-                    description="Connection string to be used for connection to the backend security datastore."
+                    description="Connection string to be used for connection to the backend security data store."
                     encrypted="false" />
                   <add name="ProviderType" value="GSF.Security.LdapSecurityProvider, GSF.Security"
                     description="The type to be used for enforcing security." encrypted="false" />
@@ -511,21 +511,21 @@
             Initializes a new instance of the <see cref="T:GSF.Security.LdapSecurityProvider"/> class.
             </summary>
             <param name="username">Name that uniquely identifies the user.</param>
-            <param name="canRefreshData">true if the security provider can refresh <see cref="T:GSF.Security.UserData"/> from the backend datastore, otherwise false.</param>
-            <param name="canUpdateData">true if the security provider can update <see cref="T:GSF.Security.UserData"/> in the backend datastore, otherwise false.</param>
+            <param name="canRefreshData">true if the security provider can refresh <see cref="T:GSF.Security.UserData"/> from the backend data store, otherwise false.</param>
+            <param name="canUpdateData">true if the security provider can update <see cref="T:GSF.Security.UserData"/> in the backend data store, otherwise false.</param>
             <param name="canResetPassword">true if the security provider can reset user password, otherwise false.</param>
             <param name="canChangePassword">true if the security provider can change user password, otherwise false.</param>
         </member>
         <member name="M:GSF.Security.LdapSecurityProvider.UpdateData">
             <summary>
-            Updates the <see cref="T:GSF.Security.UserData"/> in the backend datastore.
+            Updates the <see cref="T:GSF.Security.UserData"/> in the backend data store.
             </summary>
             <returns>true if <see cref="T:GSF.Security.UserData"/> is updated, otherwise false.</returns>
             <exception cref="T:System.NotSupportedException">Always</exception>
         </member>
         <member name="M:GSF.Security.LdapSecurityProvider.ResetPassword(System.String)">
             <summary>
-            Resets user password in the backend datastore.
+            Resets user password in the backend data store.
             </summary>
             <param name="securityAnswer">Answer to the user's security question.</param>
             <returns>true if the password is reset, otherwise false.</returns>
@@ -550,13 +550,13 @@
         </member>
         <member name="M:GSF.Security.LdapSecurityProvider.RefreshData">
             <summary>
-            Refreshes the <see cref="T:GSF.Security.UserData"/> from the backend datastore.
+            Refreshes the <see cref="T:GSF.Security.UserData"/> from the backend data store.
             </summary>
             <returns>true if <see cref="P:GSF.Security.SecurityProviderBase.UserData"/> is refreshed, otherwise false.</returns>
         </member>
         <member name="M:GSF.Security.LdapSecurityProvider.RefreshData(System.Collections.Generic.List{System.String},System.Int32)">
             <summary>
-            Refreshes the <see cref="T:GSF.Security.UserData"/> from the backend datastore loading user groups into desired collection.
+            Refreshes the <see cref="T:GSF.Security.UserData"/> from the backend data store loading user groups into desired collection.
             </summary>
             <param name="groupCollection">Target collection for user groups.</param>
             <param name="providerID">Unique provider ID used to distinguish cached user data that may be different based on provider.</param>
