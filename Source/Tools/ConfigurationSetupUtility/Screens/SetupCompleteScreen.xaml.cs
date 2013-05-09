@@ -43,6 +43,7 @@ using GSF.Configuration;
 using GSF.Data;
 using GSF.Identity;
 using GSF.IO;
+using GSF.Security;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -670,7 +671,7 @@ namespace ConfigurationSetupUtility.Screens
                             updatedByParameter.ParameterName = paramChar + "updatedBy";
 
                             nameParameter.Value = m_state["adminUserName"].ToString();
-                            passwordParameter.Value = FormsAuthentication.HashPasswordForStoringInConfigFile(@"O3990\P78f9E66b:a35_V©6M13©6~2&[" + m_state["adminPassword"].ToString(), "SHA1");
+                            passwordParameter.Value = SecurityProviderUtility.EncryptPassword(m_state["adminPassword"].ToString());
                             firstNameParameter.Value = m_state["adminUserFirstName"].ToString();
                             lastNameParameter.Value = m_state["adminUserLastName"].ToString();
                             createdByParameter.Value = Thread.CurrentPrincipal.Identity.Name;
