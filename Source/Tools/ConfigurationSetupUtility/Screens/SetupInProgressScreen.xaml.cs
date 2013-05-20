@@ -363,6 +363,7 @@ namespace ConfigurationSetupUtility.Screens
             }
             catch (Exception ex)
             {
+                ((App)Application.Current).ErrorLogger.Log(ex);
                 AppendStatusMessage(ex.Message);
                 OnSetupFailed();
             }
@@ -546,6 +547,7 @@ namespace ConfigurationSetupUtility.Screens
             }
             catch (Exception ex)
             {
+                ((App)Application.Current).ErrorLogger.Log(ex);
                 AppendStatusMessage(ex.Message);
                 OnSetupFailed();
             }
@@ -680,6 +682,7 @@ namespace ConfigurationSetupUtility.Screens
             }
             catch (Exception ex)
             {
+                ((App)Application.Current).ErrorLogger.Log(ex);
                 AppendStatusMessage(ex.Message);
                 OnSetupFailed();
             }
@@ -744,6 +747,7 @@ namespace ConfigurationSetupUtility.Screens
             }
             catch (Exception ex)
             {
+                ((App)Application.Current).ErrorLogger.Log(ex);
                 AppendStatusMessage(ex.Message);
                 OnSetupFailed();
             }
