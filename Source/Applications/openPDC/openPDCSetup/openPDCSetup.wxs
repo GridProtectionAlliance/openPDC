@@ -203,6 +203,9 @@
         <File Id="openPDCManager.exe" Name="$(var.openPDCManager.TargetFileName)" Source="$(var.openPDCManager.TargetPath)" />
         <Shortcut Id="openPDCManagerStartMenuShortcut" Name="openPDC Manager" Description="Manager application for the openPDC service." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
+      <Component Id="openPDCManagerConfig">
+        <File Id="openPDCManager.exe.config" Name="$(var.openPDCManager.TargetFileName).config" Source="$(var.openPDCManager.TargetPath).config" />
+      </Component>
       <Component Id="openPDCManagerMenu">
         <File Id="Menu.xml" Name="Menu.xml" Source="$(var.openPDCManager.ProjectDir)\Menu.xml" />
       </Component>
