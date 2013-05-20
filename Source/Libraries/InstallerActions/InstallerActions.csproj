@@ -37,13 +37,13 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GSF.Core, Version=2.0.43.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="GSF.Core, Version=2.0.45.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Build\Output\Debug\Applications\openPDCManager\GSF.Core.dll</HintPath>
+      <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
     </Reference>
-    <Reference Include="GSF.ServiceProcess, Version=2.0.43.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="GSF.ServiceProcess, Version=2.0.45.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Build\Output\Debug\Applications\openPDCManager\GSF.ServiceProcess.dll</HintPath>
+      <HintPath>..\..\Dependencies\GSF\GSF.ServiceProcess.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
