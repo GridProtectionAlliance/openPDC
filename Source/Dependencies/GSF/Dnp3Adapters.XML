@@ -206,7 +206,7 @@
             Set Point Status Map
             </summary>
         </member>
-        <member name="T:Dnp3Adapters.TsfDataObserver">
+        <member name="T:Dnp3Adapters.TimeSeriesDataObserver">
             <summary>
             This is the data adapter that converts data from the dnp3 world to the TSF
             </summary>

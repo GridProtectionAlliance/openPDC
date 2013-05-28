@@ -6,7 +6,7 @@
     <members>
         <member name="T:HistorianAdapters.LocalInputAdapter">
             <summary>
-            Represents an output adapter that publishes measurements to TVA Historian for archival.
+            Represents an output adapter that publishes measurements to openHistorian for archival.
             </summary>
         </member>
         <member name="M:HistorianAdapters.LocalInputAdapter.#ctor">
@@ -145,22 +145,22 @@
         </member>
         <member name="P:HistorianAdapters.RemoteInputAdapter.Server">
             <summary>
-            Gets or sets the host name or IP address of the TVA Historian.
+            Gets or sets the host name or IP address of the openHistorian.
             </summary>
         </member>
         <member name="P:HistorianAdapters.RemoteInputAdapter.Port">
             <summary>
-            Gets or sets the port on which the TVA Historian is broadcasting data.
+            Gets or sets the port on which the openHistorian is broadcasting data.
             </summary>
         </member>
         <member name="P:HistorianAdapters.RemoteInputAdapter.Protocol">
             <summary>
-            Gets or sets the type of connection used to connect to the TVA Historian.
+            Gets or sets the type of connection used to connect to the openHistorian.
             </summary>
         </member>
         <member name="P:HistorianAdapters.RemoteInputAdapter.InitiateConnection">
             <summary>
-            Gets or sets a value that indicates whether the listener will initiate the connection to the TVA Historian.
+            Gets or sets a value that indicates whether the listener will initiate the connection to the openHistorian.
             </summary>
         </member>
         <member name="P:HistorianAdapters.RemoteInputAdapter.Status">
@@ -272,7 +272,7 @@
         </member>
         <member name="T:HistorianAdapters.RemoteOutputAdapter">
             <summary>
-            Represents an output adapter that publishes measurements to TVA Historian for archival.
+            Represents an output adapter that publishes measurements to openHistorian for archival.
             </summary>
         </member>
         <member name="M:HistorianAdapters.RemoteOutputAdapter.#ctor">
@@ -392,7 +392,7 @@
             <see cref="P:HistorianAdapters.StatisticsReader.EndTime"/> parameters are not set when using this constructor and must
             be set manually before attempting to read statistics from the archive.
             </summary>
-            <param name="openPdcConfigPath">Path to the openPDC configuration file.</param>
+            <param name="sourceConfigPath">Path to the source configuration file.</param>
         </member>
         <member name="M:HistorianAdapters.StatisticsReader.Open">
             <summary>

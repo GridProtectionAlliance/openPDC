@@ -396,11 +396,6 @@
             Represents a container for JSON serialized time-series data read request.
             </summary>
         </member>
-        <member name="M:GSF.Historian.DataServices.SerializableReadRequestData.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:GSF.Historian.DataServices.SerializableReadRequestData"/> class.
-            </summary>
-        </member>
         <member name="P:GSF.Historian.DataServices.SerializableReadRequestData.idArray">
             <summary>
             XML array of integer historian ID's.

@@ -54,6 +54,12 @@
             </summary>
             <returns>A collection containing all the raised alarms.</returns>
         </member>
+        <member name="M:DataQualityMonitoring.AlarmAdapter.GetHighestSeverityAlarms">
+            <summary>
+            Gets a collection containing raised alarms with the highest severity for each signal in the system. 
+            </summary>
+            <returns>A collection containing all the highest severity raised alarms.</returns>
+        </member>
         <member name="P:DataQualityMonitoring.AlarmAdapter.SupportsTemporalProcessing">
             <summary>
             Gets the flag indicating if this adapter supports temporal processing.

@@ -1024,7 +1024,7 @@
             <summary>
             Creates a new IEEE C37.118 specific <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/> based on provided protocol independent <paramref name="baseConfigurationFrame"/>.
             </summary>
-            <param name="baseConfigurationFrame">Protocol independent <see cref="!:TVA.PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
+            <param name="baseConfigurationFrame">Protocol independent <see cref="T:GSF.PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
             <returns>A new IEEE C37.118 specific <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/>.</returns>
         </member>
         <member name="M:PhasorProtocolAdapters.Iec61850_90_5.Concentrator.CreateNewFrame(GSF.Ticks)">
@@ -1053,7 +1053,7 @@
             <summary>
             Creates a new IEC 61850-90-5 (i.e., IEEE C37.118) <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame"/> based on provided protocol independent <paramref name="baseConfigurationFrame"/>.
             </summary>
-            <param name="baseConfigurationFrame">Protocol independent <see cref="!:TVA.PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
+            <param name="baseConfigurationFrame">Protocol independent <see cref="T:GSF.PhasorProtocols.Anonymous.ConfigurationFrame"/>.</param>
             <param name="timeBase">Timebase to use for fraction second resolution.</param>
             <param name="nominalFrequency">The nominal <see cref="T:GSF.PhasorProtocols.LineFrequency"/> to use for the new <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame"/></param>.
             <returns>A new IEEE C37.118 <see cref="T:GSF.PhasorProtocols.Iec61850_90_5.ConfigurationFrame"/>.</returns>

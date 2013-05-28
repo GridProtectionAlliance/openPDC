@@ -3614,7 +3614,6 @@
             <summary>
             Constructs a new instance of the <see cref="T:GSF.TimeSeries.Adapters.AdapterCollectionBase`1"/>.
             </summary>
-            <param name="waitHandles">Wait handle dictionary.</param>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.Finalize">
             <summary>
@@ -8070,6 +8069,12 @@
             Performs initialization or reinitialization of specified adapter or collection.
             </summary>
             <param name="requestInfo"><see cref="T:GSF.ServiceProcess.ClientRequestInfo"/> instance containing the client request.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.ServiceHostBase.LogEventRequestHandler(GSF.ServiceProcess.ClientRequestInfo)">
+            <summary>
+            Sends remote entry for logging.
+            </summary>
+            <param name="requestInfo"></param>
         </member>
         <member name="M:GSF.TimeSeries.ServiceHostBase.TemporalSupportRequestHandler(GSF.ServiceProcess.ClientRequestInfo)">
             <summary>

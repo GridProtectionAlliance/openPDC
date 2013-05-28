@@ -270,12 +270,6 @@
             </summary>
             <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
         </member>
-        <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/> class.
-            </summary>
-            <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
-        </member>
         <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.FileExists(System.String)">
             <summary>
             Gets a value that indicates whether a file exists in the virtual file system.

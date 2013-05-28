@@ -20,7 +20,7 @@
               </configSections>
               <categorizedSettings>
                 <securityProvider>
-                  <add name="ConnectionString" value="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\ProgramData\openPDC\openPDC1.mdb" 
+                  <add name="ConnectionString" value="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\ProgramData\MyApp\MyAppConfig.mdb" 
                     description="Configuration database connection string" encrypted="false"/>
                   <add name="DataProviderString" value="AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089};ConnectionType=System.Data.OleDb.OleDbConnection;AdapterType=System.Data.OleDb.OleDbDataAdapter" 
                     description="Configuration database ADO.NET data provider assembly type creation string" encrypted="false"/>    
@@ -300,6 +300,14 @@
             Gets an authentication failure reason, if set by the provider when authentication fails.
             </summary>
         </member>
+        <member name="P:GSF.Security.ISecurityProvider.LogEvent">
+            <summary>
+            Gets or sets the <see cref="T:GSF.Security.LogEventFunctionSignature"/> to use for logging security events for the <see cref="T:GSF.Security.SecurityProviderBase"/> implementation.
+            </summary>
+            <remarks>
+            Set <see cref="P:GSF.Security.ISecurityProvider.LogEvent"/> to <c>null</c> to use default handler, i.e., <see cref="!:EventLog.WriteEntry(string,string,EventLogEntryType,int)."/>.
+            </remarks>
+        </member>
         <member name="F:GSF.Security.SecurityProviderBase.DefaultApplicationName">
             <summary>
             Specifies the default value for the <see cref="P:GSF.Security.SecurityProviderBase.ApplicationName"/> property.
@@ -428,6 +436,14 @@
             <summary>
             Gets or sets <see cref="P:GSF.Security.SecurityProviderBase.SecurePassword"/> as cleartext password.
             </summary>
+        </member>
+        <member name="P:GSF.Security.SecurityProviderBase.LogEvent">
+            <summary>
+            Gets or sets the <see cref="T:GSF.Security.LogEventFunctionSignature"/> to use for logging security events for the <see cref="T:GSF.Security.SecurityProviderBase"/> implementation.
+            </summary>
+            <remarks>
+            Set <see cref="P:GSF.Security.SecurityProviderBase.LogEvent"/> to <c>null</c> to use default handler, i.e., <see cref="!:EventLog.WriteEntry(string,string,EventLogEntryType,int)."/>.
+            </remarks>
         </member>
         <member name="P:GSF.Security.SecurityProviderBase.PersistSettings">
             <summary>
@@ -686,6 +702,108 @@
             Gets last exception reported by the <see cref="T:GSF.Security.AdoSecurityProvider"/>.
             </summary>
         </member>
+        <member name="T:GSF.Security.UserRoleCache">
+            <summary>
+            Represents a secured interprocess cache for a <see cref="T:System.Collections.Generic.Dictionary`2"/> of serialized user role information.
+            </summary>
+        </member>
+        <member name="M:GSF.Security.UserRoleCache.#ctor(System.Int32)">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.Security.UserRoleCache"/> with the specified number of <paramref name="maximumConcurrentLocks"/>.
+            </summary>
+            <param name="maximumConcurrentLocks">Maximum concurrent reader locks to allow.</param>
+        </member>
+        <member name="M:GSF.Security.UserRoleCache.TryGetUserRole(System.String,System.String@)">
+            <summary>
+            Attempts to retrieve access role for given <paramref name="userName"/>.
+            </summary>
+            <param name="userName">User name associated with access role to retrieve.</param>
+            <param name="role">Access role to populate if found.</param>
+            <returns><c>true</c> if access role for given <paramref name="userName"/> was retrieved; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:GSF.Security.UserRoleCache.SaveUserRole(System.String,System.String)">
+            <summary>
+            Serializes the <paramref name="role"/> for the given <paramref name="userName"/> into the <see cref="T:GSF.Security.UserRoleCache"/>.
+            </summary>
+            <param name="userName">User name associated with access role to retrieve.</param>
+            <param name="role">Access role to update or populate.</param>
+            <remarks>
+            <para>
+            This will add an entry into the user info cache for <paramref name="userName"/> if it doesn't exist;
+            otherwise existing entry will be updated.
+            </para>
+            <para>
+            Updates are automatically queued up for serialization so user does not need to call <see cref="M:GSF.Security.UserRoleCache.Save"/>.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:GSF.Security.UserRoleCache.MergeLeft(GSF.Security.UserRoleCache)">
+            <summary>
+            Merge user roles from another <see cref="T:GSF.Security.UserRoleCache"/>, local cache taking precedence.
+            </summary>
+            <param name="other">Other <see cref="T:GSF.Security.UserRoleCache"/> to merge with.</param>
+        </member>
+        <member name="M:GSF.Security.UserRoleCache.MergeRight(GSF.Security.UserRoleCache)">
+            <summary>
+            Merge user roles from another <see cref="T:GSF.Security.UserRoleCache"/>, other cache taking precedence.
+            </summary>
+            <param name="other">Other <see cref="T:GSF.Security.UserRoleCache"/> to merge with.</param>
+        </member>
+        <member name="M:GSF.Security.UserRoleCache.Save">
+            <summary>
+            Initiates interprocess synchronized save of user role cache.
+            </summary>
+        </member>
+        <member name="M:GSF.Security.UserRoleCache.SaveFileData(System.IO.FileStream,System.Byte[])">
+            <summary>
+            Handles serialization of file to disk; virtual method allows customization (e.g., pre-save encryption and/or data merge).
+            </summary>
+            <param name="fileStream"><see cref="T:System.IO.FileStream"/> used to serialize data.</param>
+            <param name="fileData">File data to be serialized.</param>
+            <remarks>
+            Consumers overriding this method should not directly call <see cref="P:GSF.IO.InterprocessCache.FileData"/> property to avoid potential dead-locks.
+            </remarks>
+        </member>
+        <member name="M:GSF.Security.UserRoleCache.LoadFileData(System.IO.FileStream)">
+            <summary>
+            Handles deserialization of file from disk; virtual method allows customization (e.g., pre-load decryption and/or data merge).
+            </summary>
+            <param name="fileStream"><see cref="T:System.IO.FileStream"/> used to deserialize data.</param>
+            <returns>Deserialized file data.</returns>
+            <remarks>
+            Consumers overriding this method should not directly call <see cref="P:GSF.IO.InterprocessCache.FileData"/> property to avoid potential dead-locks.
+            </remarks>
+        </member>
+        <member name="M:GSF.Security.UserRoleCache.HashLoginID(System.String)">
+            <summary>
+            Calculates the hash of the <paramref name="userName"/> used as the key for the user roles dictionary.
+            </summary>
+            <param name="userName">User name to hash.</param>
+            <returns>The Base64 encoded calculated SHA-2 hash of the <paramref name="userName"/> used as the key for the user roles dictionary.</returns>
+            <remarks>
+            For added security, a hash of the <paramref name="userName"/> is used as the key for access roles
+            in the user roles cache instead of the actual <paramref name="userName"/>. This method allows the
+            consumer to properly calculate this hash when directly using the user data cache.
+            </remarks>
+        </member>
+        <member name="M:GSF.Security.UserRoleCache.GetCurrentCache">
+            <summary>
+            Loads the <see cref="T:GSF.Security.UserRoleCache"/> for the current local user.
+            </summary>
+            <returns>Loaded instance of the <see cref="T:GSF.Security.UserRoleCache"/>.</returns>
+        </member>
+        <member name="P:GSF.Security.UserRoleCache.UserRoles">
+            <summary>
+            Gets a copy of the internal user role dictionary.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.UserRoleCache.Item(System.String)">
+            <summary>
+            Gets or sets access role for given <paramref name="userName"/>.
+            </summary>
+            <param name="userName">User name for associated access role to load or save.</param>
+            <returns>Access role for given <paramref name="userName"/> if found; otherwise <c>null</c>.</returns>
+        </member>
         <member name="T:GSF.Security.RestrictAccessAttribute">
             <summary>
             Represents an <see cref="T:System.Attribute"/> that can be used restrict access to a class when using role-based security.
@@ -712,6 +830,15 @@
             <summary>
             Gets or sets the list of either roles the current thread principal must have in order to have access.
             </summary>
+        </member>
+        <member name="T:GSF.Security.LogEventFunctionSignature">
+            <summary>
+            Defines the function signature delegate used for logging events from the <see cref="T:GSF.Security.ISecurityProvider"/>.
+            </summary>
+            <param name="source">The source by which the application is registered on the specified computer.</param>
+            <param name="message">The string to write to the event log.</param>
+            <param name="type">One of the <see cref="T:System.Diagnostics.EventLogEntryType"/> values.</param>
+            <param name="eventID">The application-specific identifier for the event.</param>
         </member>
         <member name="T:GSF.Security.NamespaceDoc">
             <summary>

@@ -8711,6 +8711,7 @@
             </summary>
             <param name="argument">The argument whose value is to be retrieved.</param>
             <param name="value">Value associated with the specified argument if it exists in the command-line command, otherwise null.</param>
+            <returns><c>true</c> if argument existed and was returned; otherwise <c>false</c>.</returns>
         </member>
         <member name="M:GSF.Console.Arguments.Exists(System.String)">
             <summary>
@@ -16127,6 +16128,13 @@
             <param name="filePath">File name or relative file path.</param>
             <returns>Absolute file path for the specified file name or relative file path.</returns>
         </member>
+        <member name="M:GSF.IO.FilePath.InApplicationPath(System.String)">
+            <summary>
+            Determines if the specified <paramref name="filePath"/> is contained with the current executable path.
+            </summary>
+            <param name="filePath">File name or relative file path.</param>
+            <returns><c>true</c> if the specified <paramref name="filePath"/> is contained with the current executable path; otherwise <c>false</c>.</returns>
+        </member>
         <member name="M:GSF.IO.FilePath.GetApplicationDataFolder">
             <summary>
             Gets the path to the folder where data related to the current application can be stored.
@@ -16164,6 +16172,55 @@
             <remarks>
             Minimum value for the <paramref name="length" /> parameter is 12. 12 will be used for any value 
             specified as less than 12.
+            </remarks>
+        </member>
+        <member name="M:GSF.IO.FilePath.GetUniqueFilePath(System.String)">
+            <summary>
+            Gets a unique file path for the given file by checking for name collisions and
+            adding a sequence number to the end of the file name if there is a collision.
+            </summary>
+            <param name="originalFilePath">The path to the original file before adding the sequence number.</param>
+            <returns>The unique path to the file.</returns>
+            <remarks>
+            This method is designed to handle the case where the user wishes to create a file in a folder
+            with a given name when there is a possibility that the name is already taken. Using this method,
+            it is possible to create files with names in the following format:
+            
+            <ul>
+                <li>File.ext</li>
+                <li>File (1).ext</li>
+                <li>File (2).ext</li>
+                <li>...</li>
+            </ul>
+            
+            This method uses a linear search to find a unique file name, so it is suitable for situations where
+            there are a small number of collisions for each file name. This will detect and fill gaps that can
+            occur when files are deleted (for instance, if "File (1).ext" were deleted from the list above).
+            </remarks>
+        </member>
+        <member name="M:GSF.IO.FilePath.GetUniqueFilePathWithBinarySearch(System.String)">
+            <summary>
+            Gets a unique file path for the given file by checking for name collisions and
+            adding a sequence number to the end of the file name if there is a collision.
+            </summary>
+            <param name="originalFilePath">The path to the original file before adding the sequence number.</param>
+            <returns>The unique path to the file.</returns>
+            <remarks>
+            This method is designed to handle the case where the user wishes to create a file in a folder
+            with a given name when there is a possibility that the name is already taken. Using this method,
+            it is possible to create files with names in the following format:
+            
+            <ul>
+                <li>File.ext</li>
+                <li>File (1).ext</li>
+                <li>File (2).ext</li>
+                <li>...</li>
+            </ul>
+            
+            This method uses a binary search to find a unique file name, so it is suitable for situations where
+            a large number of files will be created with the same file name, and the next unique file name needs
+            to be found relatively quickly. It will not always detect gaps in the sequence numbers that can occur
+            when files are deleted (for instance, if "File (1).ext" were deleted from the list above).
             </remarks>
         </member>
         <member name="M:GSF.IO.FilePath.WaitForReadLock(System.String)">
@@ -17942,6 +17999,32 @@
             </summary>
         </member>
         <member name="P:GSF.Net.Security.SimpleCertificateChecker.ReasonForFailure">
+            <summary>
+            Gets the reason why the remote certificate validation
+            failed, or null if certificate validation did not fail.
+            </summary>
+        </member>
+        <member name="T:GSF.Net.Security.SimplePolicyChecker">
+            <summary>
+            Simple implementation of <see cref="T:GSF.Net.Security.ICertificateChecker"/>.
+            </summary>
+        </member>
+        <member name="M:GSF.Net.Security.SimplePolicyChecker.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.Net.Security.SimplePolicyChecker"/> class.
+            </summary>
+        </member>
+        <member name="P:GSF.Net.Security.SimplePolicyChecker.ValidPolicyErrors">
+            <summary>
+            Gets or sets the set of invalid policy errors.
+            </summary>
+        </member>
+        <member name="P:GSF.Net.Security.SimplePolicyChecker.ValidChainFlags">
+            <summary>
+            Gets or sets the set of invalid chain flags.
+            </summary>
+        </member>
+        <member name="P:GSF.Net.Security.SimplePolicyChecker.ReasonForFailure">
             <summary>
             Gets the reason why the remote certificate validation
             failed, or null if certificate validation did not fail.
@@ -21700,11 +21783,11 @@
         </member>
         <member name="M:GSF.Security.Cryptography.Cipher.GetPasswordHash(System.String,System.Int32)">
             <summary>
-            Gets the Base64 encoded SHA-2 hash of given user password.
+            Gets the Base64 encoded SHA-256 hash of given user password.
             </summary>
             <param name="password">User password to get hash for.</param>
-            <param name="keySize">Specifies the desired key size.</param>
-            <returns>Base64 encoded SHA-2 hash of user password.</returns>
+            <param name="categoryID">Specifies the desired category ID.</param>
+            <returns>Base64 encoded SHA-256 hash of user password.</returns>
         </member>
         <member name="M:GSF.Security.Cryptography.Cipher.Encrypt(System.String,System.String,GSF.Security.Cryptography.CipherStrength)">
             <summary>
@@ -22591,6 +22674,14 @@
             <param name="value">Input string.</param>
             <param name="replacementCharacter">Character used to replace the invalid characters.</param>
             <returns>>Returns <paramref name="value" /> with all invalid file name characters replaced.</returns>
+        </member>
+        <member name="M:GSF.StringExtensions.QuoteWrap(System.String,System.Char)">
+            <summary>
+            Wraps <paramref name="value"/> in the <paramref name="quoteChar"/>.
+            </summary>
+            <param name="value">Input string to process</param>
+            <param name="quoteChar">The char to wrap <paramref name="value"/></param>
+            <returns><paramref name="value"/> wrapped in <paramref name="quoteChar"/></returns>
         </member>
         <member name="M:GSF.StringExtensions.CharCount(System.String,System.Char)">
             <summary>
@@ -24249,6 +24340,31 @@
             System.Globalization.NumberStyles.AllowHexSpecifier and System.Globalization.NumberStyles.HexNumber values.
             </exception>
         </member>
+        <member name="T:GSF.TimeSpanExtensions">
+            <summary>
+            Extends the TimeSpan Class
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSpanExtensions.ToFormattedString(System.TimeSpan)">
+             <summary>
+             Returns a simple string format for a broad range of timespans.
+             </summary>
+             <param name="value">The timespan to process.</param>
+             <returns>A formated string with time lables.</returns>
+             <example>
+               DateTime g_start = DateTime.Now;
+               ...
+               DateTime EndTime = DateTime.Now;
+               TimeSpan duration = EndTime.Subtract(g_start);
+               Console.WriteLine("Elasped Time = " + duration.ToFormatedString());
+               
+               --- OR --- (See DateTimeExtensions, ElaspedTime)
+             
+               TimeSpan duration = g_start.ElaspedTime();
+               Console.WriteLine("Elasped Time = " + duration.ToFormatedString();
+            
+             </example>
+        </member>
         <member name="T:GSF.TypeExtensions">
             <summary>
             Extensions to all <see cref="T:System.Type"/> objects.
@@ -25272,6 +25388,15 @@
             Gets the <see cref="T:GSF.Units.Angle"/> value in angular mil.
             </summary>
             <returns>Value of <see cref="T:GSF.Units.Angle"/> in angular mil.</returns>
+        </member>
+        <member name="M:GSF.Units.Angle.ToRange(GSF.Units.Angle,System.Boolean)">
+            <summary>
+            Gets the equivalent angle moved within the range of <paramref name="minValue"/>
+            and <paramref name="minValue"/> + 2.0 * <see cref="F:System.Math.PI"/>.
+            </summary>
+            <param name="minValue">The minimum value of the range.</param>
+            <param name="inclusive">Indicates whether the range is inclusive of the minimum value.</param>
+            <returns>The equivalent angle within the specified range.</returns>
         </member>
         <member name="M:GSF.Units.Angle.CompareTo(System.Object)">
             <summary>

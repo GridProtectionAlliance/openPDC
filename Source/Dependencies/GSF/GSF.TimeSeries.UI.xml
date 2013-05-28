@@ -6,8 +6,8 @@
     <members>
         <member name="T:GSF.TimeSeries.UI.AlarmMonitor">
             <summary>
-            Represents a monitor that checks a web service in order to
-            keep an updated list of raised alarms defined by that service.
+            Represents an alarm monitor, for use inside a management UI application, that gets initial state of raised alarms
+            from an invoke based console connection command then maintains state with a data subscription to all alarms.
             </summary>
         </member>
         <member name="M:GSF.TimeSeries.UI.AlarmMonitor.#ctor(System.Boolean)">
@@ -16,21 +16,11 @@
             </summary>
             <param name="singleton">Indicates whether this instance should update the global reference to become the singleton.</param>
         </member>
-        <member name="M:GSF.TimeSeries.UI.AlarmMonitor.Start">
-            <summary>
-            Starts the refresh timer that checks alarm status.
-            </summary>
-        </member>
-        <member name="M:GSF.TimeSeries.UI.AlarmMonitor.Stop">
-            <summary>
-            Stops the refresh timer.
-            </summary>
-        </member>
         <member name="M:GSF.TimeSeries.UI.AlarmMonitor.GetAlarmList">
             <summary>
             Gets the current list of raised alarms.
             </summary>
-            <returns></returns>
+            <returns>Current <see cref="T:GSF.TimeSeries.UI.DataModels.RaisedAlarm"/> list.</returns>
         </member>
         <member name="M:GSF.TimeSeries.UI.AlarmMonitor.Dispose">
             <summary>
@@ -44,6 +34,16 @@
             </summary>
             <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         </member>
+        <member name="M:GSF.TimeSeries.UI.AlarmMonitor.Start">
+            <summary>
+            Starts the refresh timer that checks alarm status.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.AlarmMonitor.Stop">
+            <summary>
+            Stops the refresh timer.
+            </summary>
+        </member>
         <member name="E:GSF.TimeSeries.UI.AlarmMonitor.RefreshedAlarms">
             <summary>
             Event raised when alarms are refreshed.
@@ -55,16 +55,86 @@
             between refreshing the alarm list.
             </summary>
         </member>
-        <member name="P:GSF.TimeSeries.UI.AlarmMonitor.CurrentNodeID">
-            <summary>
-            Gets or sets the node ID currently
-            in use by the alarm monitor.
-            </summary>
-        </member>
         <member name="P:GSF.TimeSeries.UI.AlarmMonitor.Default">
             <summary>
             Gets or sets the global reference to a singleton
             of the <see cref="T:GSF.TimeSeries.UI.AlarmMonitor"/> class.
+            </summary>
+        </member>
+        <member name="T:GSF.TimeSeries.UI.AlarmStatusQuery">
+            <summary>
+            Represents as object that will query current alarm state.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.UI.AlarmStatusQuery.DefaultResponseTimeout">
+            <summary>
+            Default value for <see cref="P:GSF.TimeSeries.UI.AlarmStatusQuery.ResponseTimeout"/>.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.AlarmStatusQuery.#ctor">
+            <summary>
+            Creates a new <see cref="T:GSF.TimeSeries.UI.AlarmStatusQuery"/>.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.AlarmStatusQuery.Finalize">
+            <summary>
+            Releases the unmanaged resources before the <see cref="T:GSF.TimeSeries.UI.AlarmStatusQuery"/> object is reclaimed by <see cref="T:System.GC"/>.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.AlarmStatusQuery.Dispose">
+            <summary>
+            Releases all the resources used by the <see cref="T:GSF.TimeSeries.UI.AlarmStatusQuery"/> object.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.AlarmStatusQuery.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:GSF.TimeSeries.UI.AlarmStatusQuery"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.AlarmStatusQuery.RequestHighestSeverityAlarmStates">
+            <summary>
+            Requests the current state of highest severity alarms.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.AlarmStatusQuery.OnHighestSeverityAlarmStates(System.Collections.Generic.ICollection{GSF.TimeSeries.Alarm})">
+            <summary>
+            Raises <see cref="E:GSF.TimeSeries.UI.AlarmStatusQuery.HighestSeverityAlarmStates"/> event.
+            </summary>
+            <param name="raisedAlarms">Alarm states.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.AlarmStatusQuery.OnProcessException(System.Exception)">
+            <summary>
+            Raises <see cref="E:GSF.TimeSeries.UI.AlarmStatusQuery.ProcessException"/> event.
+            </summary>
+            <param name="ex">Processing <see cref="T:System.Exception"/>.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.AlarmStatusQuery.Helper_ReceivedServiceResponse(System.Object,GSF.EventArgs{GSF.ServiceProcess.ServiceResponse})">
+            <summary>
+            Handles ReceivedServiceResponse event.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="E:GSF.TimeSeries.UI.AlarmStatusQuery.HighestSeverityAlarmStates">
+            <summary>
+            Provides collection containing raised alarms with the highest severity for each signal in the system.
+            </summary>
+            <remarks>
+            <see cref="F:GSF.EventArgs`1.Argument"/> is a collection of the current high-severity <see cref="T:GSF.TimeSeries.Alarm"/> states.
+            </remarks>
+        </member>
+        <member name="E:GSF.TimeSeries.UI.AlarmStatusQuery.ProcessException">
+            <summary>
+            Event is raised when there is an exception encountered while processing.
+            </summary>
+            <remarks>
+            <see cref="F:GSF.EventArgs`1.Argument"/> is the exception that was thrown.
+            </remarks>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.AlarmStatusQuery.ResponseTimeout">
+            <summary>
+            Gets or sets allowed timeout, in milliseconds, for a command request response.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.UI.AuthenticationRequest">
@@ -211,7 +281,7 @@
         </member>
         <member name="T:GSF.TimeSeries.UI.Binding.GridButtonCommand">
             <summary>
-            Represents a custom <see cref="N:GSF.TimeSeries.UI.Binding"/> class.
+            Represents a custom <see cref="T:System.Windows.Data.Binding"/> class.
             </summary>
         </member>
         <member name="M:GSF.TimeSeries.UI.Binding.GridButtonCommand.#ctor">
@@ -417,6 +487,7 @@
             <param name="message">The message to write to the log.</param>
             <param name="eventID">The application-specific identifier for the event.</param>
             <param name="eventType">The type of the event.</param>
+            <remarks>This will also send a command to log the event on the remote machine if needed.</remarks>
         </member>
         <member name="M:GSF.TimeSeries.UI.CommonFunctions.LogException(GSF.Data.AdoDataConnection,System.String,System.Exception)">
             <summary>
@@ -660,7 +731,7 @@
             </summary>
             <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         </member>
-        <member name="M:GSF.TimeSeries.UI.SubscriberStatusQuery.RequestSubsscriberStatus(System.Collections.Generic.IEnumerable{System.Guid})">
+        <member name="M:GSF.TimeSeries.UI.SubscriberStatusQuery.RequestSubscriberStatus(System.Collections.Generic.IEnumerable{System.Guid})">
             <summary>
             Requests the status of the specified <paramref name="subscriberIDs"/>.
             </summary>

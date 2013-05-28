@@ -1932,11 +1932,6 @@
             Gets flag that determines if <see cref="P:GSF.TimeSeries.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
             </summary>
         </member>
-        <member name="P:GSF.TimeSeries.UI.ViewModels.Adapters.NodeLookupList">
-            <summary>
-            Gets <see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:GSF.TimeSeries.UI.DataModels.Node"/> defined in the database.
-            </summary>
-        </member>
         <member name="P:GSF.TimeSeries.UI.ViewModels.Adapters.AdapterTypeList">
             <summary>
             Gets or sets the collection containing the adapter types found
