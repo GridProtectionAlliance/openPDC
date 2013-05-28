@@ -253,7 +253,7 @@ namespace openPG.UI.ViewModels
                 foreach (Subscriber subscriber in ItemsSource)
                     m_subscriberIDs.Add(subscriber.ID);
 
-                m_subscriberStatusQuery.RequestSubsscriberStatus(m_subscriberIDs);
+                m_subscriberStatusQuery.RequestSubscriberStatus(m_subscriberIDs);
                 m_refreshTimer.Start();
             }
             catch (Exception ex)
@@ -279,7 +279,7 @@ namespace openPG.UI.ViewModels
         {
             lock (m_subscriberStatusQueryLock)
             {
-                m_subscriberStatusQuery.RequestSubsscriberStatus(m_subscriberIDs);
+                m_subscriberStatusQuery.RequestSubscriberStatus(m_subscriberIDs);
             }
         }
 
