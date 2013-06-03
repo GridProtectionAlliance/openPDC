@@ -207,6 +207,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\GSF.Core.xml = Dependencies\GSF\GSF.Core.xml
 		Dependencies\GSF\GSF.Historian.dll = Dependencies\GSF\GSF.Historian.dll
 		Dependencies\GSF\GSF.Historian.XML = Dependencies\GSF\GSF.Historian.XML
+		Dependencies\GSF\GSF.InstallerActions.CA.dll = Dependencies\GSF\GSF.InstallerActions.CA.dll
 		Dependencies\GSF\GSF.Media.dll = Dependencies\GSF\GSF.Media.dll
 		Dependencies\GSF\GSF.Media.XML = Dependencies\GSF\GSF.Media.XML
 		Dependencies\GSF\GSF.Net.dll = Dependencies\GSF\GSF.Net.dll
@@ -271,11 +272,9 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "openPDCSetup", "Application
 		{2A74EACF-8291-47C7-A2ED-0D58771F24E2} = {2A74EACF-8291-47C7-A2ED-0D58771F24E2}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallerActions", "Libraries\InstallerActions\InstallerActions.csproj", "{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}"
-EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 14
+		SccNumberOfProjects = 13
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -327,10 +326,6 @@ Global
 		SccProjectTopLevelParentUniqueName12 = Synchrophasor.sln
 		SccProjectName12 = Applications/openPDC/openPDCSetup
 		SccLocalPath12 = Applications\\openPDC\\openPDCSetup
-		SccProjectUniqueName13 = Libraries\\InstallerActions\\InstallerActions.csproj
-		SccProjectTopLevelParentUniqueName13 = Synchrophasor.sln
-		SccProjectName13 = Libraries/InstallerActions
-		SccLocalPath13 = Libraries\\InstallerActions
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
@@ -483,15 +478,6 @@ Global
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Deploy|x86.ActiveCfg = Debug|x64
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Release|Any CPU.ActiveCfg = Release|x64
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Release|x86.ActiveCfg = Release|x64
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Debug|Any CPU.Build.0 = Debug|x64
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Debug|x86.ActiveCfg = Debug|x64
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Deploy|Any CPU.ActiveCfg = Debug|x64
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Deploy|Any CPU.Build.0 = Debug|x64
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Deploy|x86.ActiveCfg = Debug|x64
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Release|Any CPU.ActiveCfg = Release|x64
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Release|Any CPU.Build.0 = Release|x64
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -509,7 +495,6 @@ Global
 		{57261E91-7636-4F92-8D93-744A4AAD7EB0} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{94F36768-E9A0-4783-BB0F-8C2C1771352E} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{134819C5-C1BB-4ED1-BE23-49AB5FB33744} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
-		{DE23EEF6-EE66-42DE-81B0-890B3A77B83C} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{D71CBFB5-291F-484E-9DAE-7442F4CA746A} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
