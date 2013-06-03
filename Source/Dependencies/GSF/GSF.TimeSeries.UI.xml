@@ -333,7 +333,7 @@
         </member>
         <member name="M:GSF.TimeSeries.UI.CommonFunctions.TimeSeriesDataServiceUrl(GSF.Data.AdoDataConnection)">
             <summary>
-            Retrieves web serivce url to query real time data.
+            Retrieves web service url to query real time data.
             </summary>
             <param name="database"><see cref="T:GSF.Data.AdoDataConnection"/> to database.</param>
             <returns>string, url to web service.</returns>
@@ -359,6 +359,12 @@
             </summary>
             <param name="database"><see cref="T:GSF.Data.AdoDataConnection"/> to database.</param>
         </member>
+        <member name="M:GSF.TimeSeries.UI.CommonFunctions.CurrentNodeID">
+            <summary>
+            Returns current node id <see cref="T:System.Guid"/> UI is connected to.
+            </summary>
+            <returns>Current Node ID.</returns>
+        </member>
         <member name="M:GSF.TimeSeries.UI.CommonFunctions.CurrentNodeID(GSF.Data.AdoDataConnection)">
             <summary>
             Returns current node id <see cref="T:System.Guid"/> UI is connected to.
@@ -368,9 +374,9 @@
         </member>
         <member name="M:GSF.TimeSeries.UI.CommonFunctions.SetAsCurrentNodeID(System.Guid)">
             <summary>
-            Assigns <see cref="M:GSF.TimeSeries.UI.CommonFunctions.CurrentNodeID(GSF.Data.AdoDataConnection)"/> based ID of currently active node.
+            Assigns <see cref="M:GSF.TimeSeries.UI.CommonFunctions.CurrentNodeID"/> based ID of currently active node.
             </summary>
-            <param name="nodeID">Current node ID <see cref="M:GSF.TimeSeries.UI.CommonFunctions.CurrentNodeID(GSF.Data.AdoDataConnection)"/> to assign.</param>
+            <param name="nodeID">Current node ID <see cref="M:GSF.TimeSeries.UI.CommonFunctions.CurrentNodeID"/> to assign.</param>
         </member>
         <member name="M:GSF.TimeSeries.UI.CommonFunctions.ToNotNull(System.Object)">
             <summary>
@@ -398,7 +404,7 @@
             </summary>
             <param name="parent">Parent UIElement.</param>
             <param name="targetType">Type of child UIElement looking for within parent UIElement.</param>
-            <param name="children">Reference paramter to return child collection.</param>
+            <param name="children">Reference parameter to return child collection.</param>
         </member>
         <member name="M:GSF.TimeSeries.UI.CommonFunctions.GetFirstChild(System.Windows.UIElement,System.Type,System.Windows.UIElement@)">
             <summary>
@@ -438,7 +444,7 @@
             <summary>
             Connects asynchronously to backend windows service.
             </summary>
-            <param name="state">paramter used.</param>
+            <param name="state">parameter used.</param>
         </member>
         <member name="M:GSF.TimeSeries.UI.CommonFunctions.DisconnectWindowsServiceClient">
             <summary>

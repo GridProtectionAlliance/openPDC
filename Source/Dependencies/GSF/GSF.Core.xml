@@ -12892,12 +12892,75 @@
              </code>
              </example>
         </member>
-        <member name="M:GSF.Identity.UserInfo.GetUserProperty(System.String)">
+        <member name="M:GSF.Identity.UserInfo.LocalGroupExists(System.String)">
             <summary>
-            Returns the value for specified active directory property.
+            Determines if local group exists.
             </summary>
-            <param name="propertyName">Name of the active directory property whose value is to be retrieved.</param>
-            <returns><see cref="T:System.String"/> value for the specified active directory property.</returns>
+            <param name="groupName">Group name to test for existence.</param>
+            <returns><c>true</c> if <paramref name="groupName"/> exists; otherwise, <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> was specified.</exception>
+        </member>
+        <member name="M:GSF.Identity.UserInfo.LocalUserExists(System.String)">
+            <summary>
+            Determines if local user exists.
+            </summary>
+            <param name="userName">User name to test for existence.</param>
+            <returns><c>true</c> if <paramref name="userName"/> exists; otherwise, <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="userName"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="userName"/> was specified.</exception>
+        </member>
+        <member name="M:GSF.Identity.UserInfo.LocalUserIsInGroup(System.String,System.String)">
+            <summary>
+            Determines if local user is in group.
+            </summary>
+            <param name="groupName">Group name to test.</param>
+            <param name="userName">User name to test.</param>
+            <returns><c>true</c> if local user is in group; otherwise, <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> or <paramref name="userName"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> or <paramref name="userName"/> was specified.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not determine if <paramref name="userName"/> is in local <paramref name="groupName"/>, user or group does not exist.</exception>
+        </member>
+        <member name="M:GSF.Identity.UserInfo.CreateLocalGroup(System.String,System.String)">
+            <summary>
+            Creates a new local user group if it does not exist already.
+            </summary>
+            <param name="groupName">Group name to create if it doesn't exist.</param>
+            <param name="groupDescription">Group description.</param>
+            <returns><c>true</c> if group was created; otherwise, <c>false</c> if group already existed.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> was specified.</exception>
+        </member>
+        <member name="M:GSF.Identity.UserInfo.RemoveLocalGroup(System.String)">
+            <summary>
+            Removes local user group if it exists.
+            </summary>
+            <param name="groupName">Group name to remove if it exists.</param>
+            <returns><c>true</c> if group was removed; otherwise, <c>false</c> if group did not exist.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> was specified.</exception>
+        </member>
+        <member name="M:GSF.Identity.UserInfo.AddUserToLocalGroup(System.String,System.String)">
+            <summary>
+            Adds an existing local user to the specified group.
+            </summary>
+            <param name="groupName">Group name to add local user to.</param>
+            <param name="userName">Existing local user name.</param>
+            <returns><c>true</c> if user was added to local group; otherwise, <c>false</c> meaning user was already in group.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> or <paramref name="userName"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> or <paramref name="userName"/> was specified.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not add <paramref name="userName"/> to local <paramref name="groupName"/>, user or group does not exist.</exception>
+        </member>
+        <member name="M:GSF.Identity.UserInfo.RemoveUserFromLocalGroup(System.String,System.String)">
+            <summary>
+            Removes local user from the specified group.
+            </summary>
+            <param name="groupName">Group name to remove local user from.</param>
+            <param name="userName">Existing local user name.</param>
+            <returns><c>true</c> if user was removed from local group; otherwise, <c>false</c> meaning user was already not in the group.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> or <paramref name="userName"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> or <paramref name="userName"/> was specified.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not add <paramref name="userName"/> to local <paramref name="groupName"/>, user or group does not exist.</exception>
         </member>
         <member name="E:GSF.Identity.UserInfo.Disposed">
             <summary>
