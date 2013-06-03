@@ -17,6 +17,7 @@
         <ComponentGroupRef Id="OracleScriptComponents" />
         <ComponentGroupRef Id="SQLServerScriptComponents" />
         <ComponentGroupRef Id="SQLiteScriptComponents" />
+        <ComponentRef Id="Sample1344"/>
       </Feature>
 
       <!-- openPDC Manager -->
@@ -147,6 +148,11 @@
       <!-- Makecert -->
       <Component Id="makecert">
         <File Id="makecert.exe" Name="makecert.exe" Source="$(var.ProjectDir)\makecert.exe" />
+      </Component>
+      
+      <!-- Sample Data -->
+      <Component Id="Sample1344">
+        <File Id="Sample1344.PmuCapture" Name="Sample1344.PmuCapture" Source="$(var.openPDC.ProjectDir)\Sample1344.PmuCapture" />
       </Component>
       
       <!-- Registry Settings -->
