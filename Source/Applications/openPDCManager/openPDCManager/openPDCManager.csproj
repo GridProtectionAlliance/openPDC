@@ -124,10 +124,7 @@
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -191,24 +188,6 @@
   </ItemGroup>
   <ItemGroup>
     <SplashScreen Include="SplashScreen.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Libraries\openPDC.UI.WPF\openPDC.UI.WPF.csproj">
-      <Project>{57261E91-7636-4F92-8D93-744A4AAD7EB0}</Project>
-      <Name>openPDC.UI.WPF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Libraries\openPDC.UI\openPDC.UI.csproj">
-      <Project>{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}</Project>
-      <Name>openPDC.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Libraries\openPG.UI.WPF\openPG.UI.WPF.csproj">
-      <Project>{134819C5-C1BB-4ED1-BE23-49AB5FB33744}</Project>
-      <Name>openPG.UI.WPF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Libraries\openPG.UI\openPG.UI.csproj">
-      <Project>{94F36768-E9A0-4783-BB0F-8C2C1771352E}</Project>
-      <Name>openPG.UI</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="openPDCManager.ico" />

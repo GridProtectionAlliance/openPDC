@@ -10,8 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		Documentation\Near GPS Quality NTP Settings.reg = Documentation\Near GPS Quality NTP Settings.reg
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{9EEDE95F-8333-4957-B270-02D3CD4629B5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infragistics", "Infragistics", "{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}"
@@ -173,15 +171,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationSetupUtility",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Setup", "Tools\Setup\Setup.csproj", "{A4C500AC-70AC-4869-8A08-E10CCD45F64F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI", "Libraries\openPDC.UI\openPDC.UI.csproj", "{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.UI.WPF", "Libraries\openPDC.UI.WPF\openPDC.UI.WPF.csproj", "{57261E91-7636-4F92-8D93-744A4AAD7EB0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDCManager", "Applications\openPDCManager\openPDCManager\openPDCManager.csproj", "{6903507C-C289-4F8F-887C-C2D94C72BA99}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPG.UI", "Libraries\openPG.UI\openPG.UI.csproj", "{94F36768-E9A0-4783-BB0F-8C2C1771352E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPG.UI.WPF", "Libraries\openPG.UI.WPF\openPG.UI.WPF.csproj", "{134819C5-C1BB-4ED1-BE23-49AB5FB33744}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22F-4900-984D-8751836859B5}"
 	ProjectSection(SolutionItems) = preProject
@@ -213,6 +203,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\GSF.Net.dll = Dependencies\GSF\GSF.Net.dll
 		Dependencies\GSF\GSF.Net.XML = Dependencies\GSF\GSF.Net.XML
 		Dependencies\GSF\GSF.PhasorProtocols.dll = Dependencies\GSF\GSF.PhasorProtocols.dll
+		Dependencies\GSF\GSF.PhasorProtocols.UI.dll = Dependencies\GSF\GSF.PhasorProtocols.UI.dll
+		Dependencies\GSF\GSF.PhasorProtocols.UI.WPF.dll = Dependencies\GSF\GSF.PhasorProtocols.UI.WPF.dll
 		Dependencies\GSF\GSF.PhasorProtocols.xml = Dependencies\GSF\GSF.PhasorProtocols.xml
 		Dependencies\GSF\GSF.Security.dll = Dependencies\GSF\GSF.Security.dll
 		Dependencies\GSF\GSF.Security.xml = Dependencies\GSF\GSF.Security.xml
@@ -223,6 +215,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\GSF.ServiceProcess.dll = Dependencies\GSF\GSF.ServiceProcess.dll
 		Dependencies\GSF\GSF.ServiceProcess.xml = Dependencies\GSF\GSF.ServiceProcess.xml
 		Dependencies\GSF\GSF.TimeSeries.dll = Dependencies\GSF\GSF.TimeSeries.dll
+		Dependencies\GSF\GSF.TimeSeries.Transport.UI.dll = Dependencies\GSF\GSF.TimeSeries.Transport.UI.dll
+		Dependencies\GSF\GSF.TimeSeries.Transport.UI.WPF.dll = Dependencies\GSF\GSF.TimeSeries.Transport.UI.WPF.dll
 		Dependencies\GSF\GSF.TimeSeries.UI.dll = Dependencies\GSF\GSF.TimeSeries.UI.dll
 		Dependencies\GSF\GSF.TimeSeries.UI.WPF.dll = Dependencies\GSF\GSF.TimeSeries.UI.WPF.dll
 		Dependencies\GSF\GSF.TimeSeries.UI.WPF.xml = Dependencies\GSF\GSF.TimeSeries.UI.WPF.xml
@@ -250,6 +244,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\OneSecondFrequencyAverager.xml = Dependencies\GSF\OneSecondFrequencyAverager.xml
 		Dependencies\GSF\PhasorProtocolAdapters.dll = Dependencies\GSF\PhasorProtocolAdapters.dll
 		Dependencies\GSF\PhasorProtocolAdapters.XML = Dependencies\GSF\PhasorProtocolAdapters.XML
+		Dependencies\GSF\PIAdapters.dll = Dependencies\GSF\PIAdapters.dll
 		Dependencies\GSF\PowerCalculations.dll = Dependencies\GSF\PowerCalculations.dll
 		Dependencies\GSF\PowerCalculations.XML = Dependencies\GSF\PowerCalculations.XML
 		Dependencies\GSF\TestingAdapters.dll = Dependencies\GSF\TestingAdapters.dll
@@ -261,20 +256,16 @@ EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "openPDCSetup", "Applications\openPDC\openPDCSetup\openPDCSetup.wixproj", "{6858B393-77B4-4F28-A4B1-14B484C10FB2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{334BA160-26D6-4A3B-92E2-42DEB4381176} = {334BA160-26D6-4A3B-92E2-42DEB4381176}
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E} = {94F36768-E9A0-4783-BB0F-8C2C1771352E}
 		{6903507C-C289-4F8F-887C-C2D94C72BA99} = {6903507C-C289-4F8F-887C-C2D94C72BA99}
 		{0BF2447E-252D-4712-B154-E350AF463081} = {0BF2447E-252D-4712-B154-E350AF463081}
 		{17C0E07E-646F-4D20-9394-0CC34AD6D5B1} = {17C0E07E-646F-4D20-9394-0CC34AD6D5B1}
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0} = {57261E91-7636-4F92-8D93-744A4AAD7EB0}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {449F2CB1-89BF-4E75-8E6C-C42FEB1AB087}
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3} = {A818C4B5-52B5-4E12-917E-4854C9AB4EF3}
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744} = {134819C5-C1BB-4ED1-BE23-49AB5FB33744}
 		{2A74EACF-8291-47C7-A2ED-0D58771F24E2} = {2A74EACF-8291-47C7-A2ED-0D58771F24E2}
 	EndProjectSection
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 13
+		SccNumberOfProjects = 9
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
 		SccLocalPath0 = .
@@ -302,30 +293,14 @@ Global
 		SccProjectTopLevelParentUniqueName6 = Synchrophasor.sln
 		SccProjectName6 = Tools/Setup
 		SccLocalPath6 = Tools\\Setup
-		SccProjectUniqueName7 = Libraries\\openPDC.UI\\openPDC.UI.csproj
+		SccProjectUniqueName7 = Applications\\openPDCManager\\openPDCManager\\openPDCManager.csproj
 		SccProjectTopLevelParentUniqueName7 = Synchrophasor.sln
-		SccProjectName7 = Libraries/openPDC.UI
-		SccLocalPath7 = Libraries\\openPDC.UI
-		SccProjectUniqueName8 = Libraries\\openPDC.UI.WPF\\openPDC.UI.WPF.csproj
+		SccProjectName7 = Applications/openPDCManager/openPDCManager
+		SccLocalPath7 = Applications\\openPDCManager\\openPDCManager
+		SccProjectUniqueName8 = Applications\\openPDC\\openPDCSetup\\openPDCSetup.wixproj
 		SccProjectTopLevelParentUniqueName8 = Synchrophasor.sln
-		SccProjectName8 = Libraries/openPDC.UI.WPF
-		SccLocalPath8 = Libraries\\openPDC.UI.WPF
-		SccProjectUniqueName9 = Applications\\openPDCManager\\openPDCManager\\openPDCManager.csproj
-		SccProjectTopLevelParentUniqueName9 = Synchrophasor.sln
-		SccProjectName9 = Applications/openPDCManager/openPDCManager
-		SccLocalPath9 = Applications\\openPDCManager\\openPDCManager
-		SccProjectUniqueName10 = Libraries\\openPG.UI\\openPG.UI.csproj
-		SccProjectTopLevelParentUniqueName10 = Synchrophasor.sln
-		SccProjectName10 = Libraries/openPG.UI
-		SccLocalPath10 = Libraries\\openPG.UI
-		SccProjectUniqueName11 = Libraries\\openPG.UI.WPF\\openPG.UI.WPF.csproj
-		SccProjectTopLevelParentUniqueName11 = Synchrophasor.sln
-		SccProjectName11 = Libraries/openPG.UI.WPF
-		SccLocalPath11 = Libraries\\openPG.UI.WPF
-		SccProjectUniqueName12 = Applications\\openPDC\\openPDCSetup\\openPDCSetup.wixproj
-		SccProjectTopLevelParentUniqueName12 = Synchrophasor.sln
-		SccProjectName12 = Applications/openPDC/openPDCSetup
-		SccLocalPath12 = Applications\\openPDC\\openPDCSetup
+		SccProjectName8 = Applications/openPDC/openPDCSetup
+		SccLocalPath8 = Applications\\openPDC\\openPDCSetup
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
@@ -411,30 +386,6 @@ Global
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F}.Release|x86.ActiveCfg = Release|x86
 		{A4C500AC-70AC-4869-8A08-E10CCD45F64F}.Release|x86.Build.0 = Release|x86
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Debug|x86.ActiveCfg = Debug|x86
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Debug|x86.Build.0 = Debug|x86
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|Any CPU.Build.0 = Release|Any CPU
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|x86.ActiveCfg = Release|x86
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Deploy|x86.Build.0 = Release|x86
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Release|x86.ActiveCfg = Release|x86
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3}.Release|x86.Build.0 = Release|x86
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Debug|x86.ActiveCfg = Debug|x86
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Debug|x86.Build.0 = Debug|x86
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|Any CPU.Build.0 = Release|Any CPU
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|x86.ActiveCfg = Release|x86
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Deploy|x86.Build.0 = Release|x86
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Release|x86.ActiveCfg = Release|x86
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0}.Release|x86.Build.0 = Release|x86
 		{6903507C-C289-4F8F-887C-C2D94C72BA99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6903507C-C289-4F8F-887C-C2D94C72BA99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6903507C-C289-4F8F-887C-C2D94C72BA99}.Debug|x86.ActiveCfg = Debug|x86
@@ -447,30 +398,6 @@ Global
 		{6903507C-C289-4F8F-887C-C2D94C72BA99}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6903507C-C289-4F8F-887C-C2D94C72BA99}.Release|x86.ActiveCfg = Release|x86
 		{6903507C-C289-4F8F-887C-C2D94C72BA99}.Release|x86.Build.0 = Release|x86
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|x86.ActiveCfg = Debug|x86
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Debug|x86.Build.0 = Debug|x86
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Deploy|Any CPU.Build.0 = Release|Any CPU
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Deploy|x86.ActiveCfg = Release|x86
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Deploy|x86.Build.0 = Release|x86
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Release|x86.ActiveCfg = Release|x86
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E}.Release|x86.Build.0 = Release|x86
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Debug|x86.ActiveCfg = Debug|x86
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Debug|x86.Build.0 = Debug|x86
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Deploy|Any CPU.ActiveCfg = Release|Any CPU
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Deploy|Any CPU.Build.0 = Release|Any CPU
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Deploy|x86.ActiveCfg = Release|x86
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Deploy|x86.Build.0 = Release|x86
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|Any CPU.Build.0 = Release|Any CPU
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|x86.ActiveCfg = Release|x86
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744}.Release|x86.Build.0 = Release|x86
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Debug|x86.ActiveCfg = Debug|x64
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Deploy|Any CPU.ActiveCfg = Release|x64
@@ -491,10 +418,6 @@ Global
 		{A72A7B6D-E22F-4900-984D-8751836859B5} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{060A349D-E92D-4F13-A857-01609631D3BE} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
-		{A818C4B5-52B5-4E12-917E-4854C9AB4EF3} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
-		{57261E91-7636-4F92-8D93-744A4AAD7EB0} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
-		{94F36768-E9A0-4783-BB0F-8C2C1771352E} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
-		{134819C5-C1BB-4ED1-BE23-49AB5FB33744} = {C34D3287-7D53-4BBE-9F60-6ECAAA663C7A}
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{D71CBFB5-291F-484E-9DAE-7442F4CA746A} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}

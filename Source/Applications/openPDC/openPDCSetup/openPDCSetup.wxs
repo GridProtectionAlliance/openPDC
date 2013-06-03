@@ -215,19 +215,6 @@
       <Component Id="openPDCManagerMenu">
         <File Id="Menu.xml" Name="Menu.xml" Source="$(var.openPDCManager.ProjectDir)\Menu.xml" />
       </Component>
-
-      <Component Id="openPDC.UI">
-        <File Id="openPDC.UI.dll" Name="$(var.openPDC.UI.TargetFileName)" Source="$(var.openPDC.UI.TargetPath)" />
-      </Component>
-      <Component Id="openPDC.UI.WPF">
-        <File Id="openPDC.UI.WPF.dll" Name="$(var.openPDC.UI.WPF.TargetFileName)" Source="$(var.openPDC.UI.WPF.TargetPath)" />
-      </Component>
-      <Component Id="openPG.UI">
-        <File Id="openPG.UI.dll" Name="$(var.openPG.UI.TargetFileName)" Source="$(var.openPG.UI.TargetPath)" />
-      </Component>
-      <Component Id="openPG.UI.WPF">
-        <File Id="openPG.UI.WPF.dll" Name="$(var.openPG.UI.WPF.TargetFileName)" Source="$(var.openPG.UI.WPF.TargetPath)" />
-      </Component>
     </ComponentGroup>
 
     <!-- openPDC Console -->
@@ -378,6 +365,12 @@
       <Component Id="GSF.PhasorProtocols">
         <File Id="GSF.PhasorProtocols.dll" Name="GSF.PhasorProtocols.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.PhasorProtocols.dll" />
       </Component>
+      <Component Id="GSF.PhasorProtocols.UI">
+        <File Id="GSF.PhasorProtocols.UI.dll" Name="GSF.PhasorProtocols.UI.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.PhasorProtocols.UI.dll" />
+      </Component>
+      <Component Id="GSF.PhasorProtocols.UI.WPF">
+        <File Id="GSF.PhasorProtocols.UI.WPF.dll" Name="GSF.PhasorProtocols.UI.WPF.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.PhasorProtocols.UI.WPF.dll" />
+      </Component>
       <Component Id="GSF.Security">
         <File Id="GSF.Security.dll" Name="GSF.Security.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.Security.dll" />
       </Component>
@@ -392,6 +385,12 @@
       </Component>
       <Component Id="GSF.TimeSeries">
         <File Id="GSF.TimeSeries.dll" Name="GSF.TimeSeries.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.TimeSeries.dll" />
+      </Component>
+      <Component Id="GSF.TimeSeries.Transport.UI">
+        <File Id="GSF.TimeSeries.Transport.UI.dll" Name="GSF.TimeSeries.Transport.UI.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.TimeSeries.Transport.UI.dll" />
+      </Component>
+      <Component Id="GSF.TimeSeries.Transport.UI.WPF">
+        <File Id="GSF.TimeSeries.Transport.UI.WPF.dll" Name="GSF.TimeSeries.Transport.UI.WPF.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.TimeSeries.Transport.UI.WPF.dll" />
       </Component>
       <Component Id="GSF.TimeSeries.UI">
         <File Id="GSF.TimeSeries.UI.dll" Name="GSF.TimeSeries.UI.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.TimeSeries.UI.dll" />
