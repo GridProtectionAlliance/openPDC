@@ -95,11 +95,26 @@
     <ApplicationIcon>openPDCManager.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamicDataDisplay">
+      <HintPath>..\..\..\Dependencies\Microsoft\D3\DynamicDataDisplay.dll</HintPath>
+    </Reference>
     <Reference Include="GSF.Communication">
       <HintPath>..\..\..\Dependencies\GSF\GSF.Communication.dll</HintPath>
     </Reference>
     <Reference Include="GSF.Core">
       <HintPath>..\..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.Historian">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.Historian.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.PhasorProtocols">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.PhasorProtocols.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.PhasorProtocols.UI">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.PhasorProtocols.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.PhasorProtocols.UI.WPF">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.PhasorProtocols.UI.WPF.dll</HintPath>
     </Reference>
     <Reference Include="GSF.Security">
       <HintPath>..\..\..\Dependencies\GSF\GSF.Security.dll</HintPath>
@@ -109,6 +124,12 @@
     </Reference>
     <Reference Include="GSF.TimeSeries">
       <HintPath>..\..\..\Dependencies\GSF\GSF.TimeSeries.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.TimeSeries.Transport.UI">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.TimeSeries.Transport.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.TimeSeries.Transport.UI.WPF">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.TimeSeries.Transport.UI.WPF.dll</HintPath>
     </Reference>
     <Reference Include="GSF.TimeSeries.UI">
       <HintPath>..\..\..\Dependencies\GSF\GSF.TimeSeries.UI.dll</HintPath>
