@@ -1,0 +1,376 @@
+﻿<UserControl x:Class="openPDC.UI.UserControls.OutputStreamUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" d:DesignHeight="650" d:DesignWidth="850"
+             xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:uc="clr-namespace:GSF.TimeSeries.UI.UserControls;assembly=GSF.TimeSeries.UI.WPF"
+             xmlns:tsfBinding="clr-namespace:GSF.TimeSeries.UI.Binding;assembly=GSF.TimeSeries.UI"
+             Background="Transparent">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GSF.TimeSeries.UI.WPF;Component/Resources/CommonResource.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel Orientation="Vertical">
+
+        <StackPanel.Resources>
+            <CollectionViewSource Source="{Binding Path=NodeLookupList}" x:Key="NodeLookupList"/>
+            <CollectionViewSource Source="{Binding Path=TypeLookupList}" x:Key="TypeLookupList"/>
+            <CollectionViewSource Source="{Binding Path=DownSamplingMethodLookupList}" x:Key="DownSamplingMethodLookupList"/>
+            <CollectionViewSource Source="{Binding Path=DataFormatLookupList}" x:Key="DataFormatLookupList"/>
+            <CollectionViewSource Source="{Binding Path=CoordinateFormatLookupList}" x:Key="CoordinateFormatLookupList"/>
+            <CollectionViewSource Source="{Binding Path=MirroringSourceLookupList}" x:Key="MirroringSourceLookupList"/>
+
+        </StackPanel.Resources>
+
+        <sdk:ScrollViewer Height="380">
+
+            <sdk:Grid x:Name="GridDetailView" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" DataContext="{tsfBinding:Column Path=CurrentItem}" DataContextChanged="GridDetailView_DataContextChanged">
+
+                <sdk:Grid.BindingGroup >
+                    <sdk:BindingGroup Name="input"/>
+                </sdk:Grid.BindingGroup>
+
+                <sdk:Grid.RowDefinitions>
+                    <sdk:RowDefinition Height="*" />
+                    <sdk:RowDefinition Height="*" />
+                    <sdk:RowDefinition Height="*" />
+                    <sdk:RowDefinition Height="*" />
+                    <sdk:RowDefinition Height="*" />
+                    <sdk:RowDefinition Height="*" />
+                    <sdk:RowDefinition Height="*" />
+                    <sdk:RowDefinition Height="*" />
+                    <sdk:RowDefinition Height="*" />
+                    <sdk:RowDefinition Height="*" />
+                </sdk:Grid.RowDefinitions>
+
+                <sdk:Grid.ColumnDefinitions>
+                    <sdk:ColumnDefinition Width="*" />
+                    <sdk:ColumnDefinition Width="2*" />
+                    <sdk:ColumnDefinition Width="*" />
+                    <sdk:ColumnDefinition Width="2*" />
+                </sdk:Grid.ColumnDefinitions>
+
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="0" sdk:Grid.Column="0" HorizontalAlignment="Right">
+                    <sdk:TextBlock Text="Acronym" Style="{sdk:StaticResource RequiredLabel}" />
+                    <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}" />
+                </sdk:StackPanel>
+                <sdk:TextBox sdk:Grid.Row="0" sdk:Grid.Column="1" Text="{tsfBinding:Column Path=Acronym}" MaxLength="200" CharacterCasing="Upper"/>
+
+                <sdk:TextBlock sdk:Grid.Row="0" sdk:Grid.Column="2" Text="Name" />
+                <sdk:TextBox sdk:Grid.Row="0" sdk:Grid.Column="3" Text="{tsfBinding:Column Path=Name}" MaxLength="200"/>
+
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="1" sdk:Grid.Column="0" HorizontalAlignment="Right">
+                    <sdk:TextBlock Text="ID Code" Style="{sdk:StaticResource RequiredLabel}"/>
+                    <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}" />
+                </sdk:StackPanel>
+                <sdk:TextBox sdk:Grid.Row="1" sdk:Grid.Column="1" Text="{tsfBinding:Column Path=IDCode}" Width="{sdk:StaticResource XXSmallItemSize}"/>
+                <sdk:TextBlock sdk:Grid.Row="1" sdk:Grid.Column="2" Text="Type" />
+                <sdk:ComboBox sdk:Grid.Row="1" sdk:Grid.Column="3" ItemsSource="{sdk:Binding Source={sdk:StaticResource TypeLookupList}}" DisplayMemberPath="Value" 
+        			SelectedItem="{tsfBinding:Column ConverterParameter={sdk:StaticResource TypeLookupList}, Converter={sdk:StaticResource DictionaryToKeyValuePairConverter}, Path=Type}"/>
+
+                <sdk:TextBlock sdk:Grid.Row="2" sdk:Grid.Column="0" Text="Connection String" />
+                <sdk:TextBox sdk:Grid.Row="2" sdk:Grid.Column="1" Text="{tsfBinding:Column Path=ConnectionString}" />
+
+                <sdk:TextBlock sdk:Grid.Row="3" sdk:Grid.Column="0" Text="TCP Channel" VerticalAlignment="Top"/>
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="3" sdk:Grid.Column="1" VerticalAlignment="Top">
+                    <sdk:TextBox Text="{tsfBinding:Column Path=CommandChannel}" Height="{sdk:StaticResource XSmallItemSize}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                    <sdk:Button sdk:ToolTipService.ToolTip="Build Command Channel String" Width="Auto" VerticalAlignment="Top"
+        				Command="{sdk:Binding DataContext.BuildCommandChannelCommand, RelativeSource={sdk:RelativeSource AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}}">
+                        <sdk:Button.Template>
+                            <sdk:ControlTemplate>
+                                <sdk:Image Source="/GSF.TimeSeries.UI;component/images/Plus.png" Height="24" Width="24" />
+                            </sdk:ControlTemplate>
+                        </sdk:Button.Template>
+                    </sdk:Button>
+                </sdk:StackPanel>
+                <sdk:TextBlock sdk:Grid.Row="3" sdk:Grid.Column="2" Text="UDP Channel"  VerticalAlignment="Top"/>
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="3" sdk:Grid.Column="3" VerticalAlignment="Top">
+                    <sdk:TextBox Text="{tsfBinding:Column Path=DataChannel}" Height="{sdk:StaticResource XSmallItemSize}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                    <sdk:Button Content=" + " sdk:ToolTipService.ToolTip="Build Data Channel String" Width="Auto" VerticalAlignment="Top"
+        				Command="{sdk:Binding DataContext.BuildDataChannelCommand, RelativeSource={sdk:RelativeSource AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}}">
+                        <sdk:Button.Template>
+                            <sdk:ControlTemplate>
+                                <sdk:Image Source="/GSF.TimeSeries.UI;component/images/Plus.png" Height="24" Width="24" />
+                            </sdk:ControlTemplate>
+                        </sdk:Button.Template>
+                    </sdk:Button>
+                </sdk:StackPanel>
+
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="4" sdk:Grid.Column="0" HorizontalAlignment="Right">
+                    <sdk:TextBlock Text="Nominal Frequency" Style="{sdk:StaticResource RequiredLabel}" />
+                    <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}" />
+                </sdk:StackPanel>
+                <sdk:TextBox sdk:Grid.Row="4" sdk:Grid.Column="1" Text="{tsfBinding:Column Path=NominalFrequency}" Width="35" />
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="4" sdk:Grid.Column="2">
+                    <sdk:TextBlock Text="Frames Per Second" Style="{sdk:StaticResource RequiredLabel}"/>
+                    <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"/>
+                </sdk:StackPanel>
+                <sdk:TextBox sdk:Grid.Row="4" sdk:Grid.Column="3" Text="{tsfBinding:Column Path=FramesPerSecond}" Width="35" />
+
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="5" sdk:Grid.Column="0" HorizontalAlignment="Right">
+                    <sdk:TextBlock Text="Lag Time" Style="{sdk:StaticResource RequiredLabel}"/>
+                    <sdk:Button Content="?" Margin="2,0,0,0" Template="{sdk:StaticResource RoundButtonTemplate}" Background="{sdk:StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="16" Height="16" FontWeight="Bold" FontSize="{sdk:StaticResource SmallTextSize}"
+        				Tag="HMC - Lag Time.png" sdk:ToolTipService.ToolTip="Click here for help on Lag Time" Click="ButtonHelp_Click"/>
+                    <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"/>
+                </sdk:StackPanel>
+                <sdk:TextBox sdk:Grid.Row="5" sdk:Grid.Column="1" Text="{tsfBinding:Column Path=LagTime}" Width="{sdk:StaticResource XSmallItemSize}" />
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="5" sdk:Grid.Column="2" HorizontalAlignment="Right">
+                    <sdk:TextBlock Text="Lead Time" Style="{sdk:StaticResource RequiredLabel}"/>
+                    <sdk:Button Content="?" Margin="2,0,0,0" Template="{sdk:StaticResource RoundButtonTemplate}" Background="{sdk:StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="16" Height="16" FontWeight="Bold" FontSize="{sdk:StaticResource SmallTextSize}"
+        				Tag="HMC - Lead Time.png" sdk:ToolTipService.ToolTip="Click here for help on Lead Time" Click="ButtonHelp_Click"/>
+                    <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"/>
+                </sdk:StackPanel>
+                <sdk:TextBox sdk:Grid.Row="5" sdk:Grid.Column="3" Text="{tsfBinding:Column Path=LeadTime}" Width="{sdk:StaticResource XSmallItemSize}" />
+
+                <sdk:Expander Header="Advanced Properties" sdk:Grid.Row="6" sdk:Grid.ColumnSpan="4" Margin="0">
+
+                    <sdk:Grid>
+
+                        <sdk:Grid.ColumnDefinitions>
+                            <sdk:ColumnDefinition Width="8*" />
+                            <sdk:ColumnDefinition Width="117*"/>
+                            <sdk:ColumnDefinition Width="230*" />
+                            <sdk:ColumnDefinition Width="126*" />
+                            <sdk:ColumnDefinition Width="230*" />
+                        </sdk:Grid.ColumnDefinitions>
+
+                        <sdk:Grid.RowDefinitions>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                            <sdk:RowDefinition Height="Auto"/>
+                        </sdk:Grid.RowDefinitions>
+
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="0" sdk:Grid.Column="1" HorizontalAlignment="Right">
+                            <sdk:TextBlock Text="Time Resolution" Style="{sdk:StaticResource RequiredLabel}"/>
+                            <sdk:Button Content="?" Margin="2,0,0,0" Template="{sdk:StaticResource RoundButtonTemplate}" Background="{sdk:StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="16" Height="16" FontWeight="Bold" FontSize="{sdk:StaticResource SmallTextSize}"
+        						Tag="HMC - Time Resolution.png" sdk:ToolTipService.ToolTip="Click here for help on Time Resolution" Click="ButtonHelp_Click"/>
+                            <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"/>
+                        </sdk:StackPanel>
+                        <sdk:TextBox sdk:Grid.Row="0" sdk:Grid.Column="2" Text="{tsfBinding:Column Path=TimeResolution}" Width="{sdk:StaticResource XSmallItemSize}" Margin="5,5,0,5" />
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="0" sdk:Grid.Column="3" HorizontalAlignment="Right">
+                            <sdk:TextBlock Text="Downsampling" Style="{sdk:StaticResource RequiredLabel}"/>
+                            <sdk:Button Content="?" Margin="2,0,0,0" Template="{sdk:StaticResource RoundButtonTemplate}" Background="{sdk:StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="16" Height="16" FontWeight="Bold" FontSize="{sdk:StaticResource SmallTextSize}"
+        						Tag="HMC - Downsampling Method.png" sdk:ToolTipService.ToolTip="Click here for help on Downsampling Method" Click="ButtonHelp_Click"/>
+                            <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"/>
+                        </sdk:StackPanel>
+                        <sdk:ComboBox sdk:Grid.Row="0" sdk:Grid.Column="4" ItemsSource="{sdk:Binding Source={sdk:StaticResource DownSamplingMethodLookupList}}" DisplayMemberPath="Value"
+        					SelectedItem="{tsfBinding:Column ConverterParameter={sdk:StaticResource DownSamplingMethodLookupList}, Converter={sdk:StaticResource DictionaryToKeyValuePairConverter}, Path=DownSamplingMethod}" Margin="2,5,0,5"/>
+
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="1" sdk:Grid.Column="1" HorizontalAlignment="Right">
+                            <sdk:TextBlock Text="Data Format" Style="{sdk:StaticResource RequiredLabel}"/>
+                            <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"/>
+                        </sdk:StackPanel>
+                        <sdk:ComboBox sdk:Grid.Row="1" sdk:Grid.Column="2" ItemsSource="{sdk:Binding Source={sdk:StaticResource DataFormatLookupList}}" DisplayMemberPath="Value"
+        					SelectedItem="{tsfBinding:Column ConverterParameter={sdk:StaticResource DataFormatLookupList}, Converter={sdk:StaticResource DictionaryToKeyValuePairConverter}, Path=DataFormat}" Margin="2,2,0,2"/>
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="1" sdk:Grid.Column="3" HorizontalAlignment="Right">
+                            <sdk:TextBlock Text="Coordinate Format" Style="{sdk:StaticResource RequiredLabel}"/>
+                            <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"/>
+                        </sdk:StackPanel>
+                        <sdk:ComboBox sdk:Grid.Row="1" sdk:Grid.Column="4" ItemsSource="{sdk:Binding Source={sdk:StaticResource CoordinateFormatLookupList}}" DisplayMemberPath="Value"
+        					SelectedItem="{tsfBinding:Column ConverterParameter={sdk:StaticResource CoordinateFormatLookupList}, Converter={sdk:StaticResource DictionaryToKeyValuePairConverter}, Path=CoordinateFormat}" Margin="2,2,0,2"/>
+
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="2" sdk:Grid.Column="0" HorizontalAlignment="Right" sdk:Grid.ColumnSpan="2">
+                            <sdk:TextBlock Text="Current Scaling Value" Style="{sdk:StaticResource RequiredLabel}"/>
+                            <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"/>
+                        </sdk:StackPanel>
+                        <sdk:TextBox sdk:Grid.Row="2" sdk:Grid.Column="2" Text="{tsfBinding:Column Path=CurrentScalingValue}" Width="{sdk:StaticResource XSmallItemSize}" Margin="5,5,0,5"/>
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="2" sdk:Grid.Column="3">
+                            <sdk:TextBlock Text="Voltage Scaling Value" Style="{sdk:StaticResource RequiredLabel}"/>
+                            <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"/>
+                        </sdk:StackPanel>
+                        <sdk:TextBox sdk:Grid.Row="2" sdk:Grid.Column="4" Text="{tsfBinding:Column Path=VoltageScalingValue}" Width="{sdk:StaticResource XSmallItemSize}" Margin="5,5,0,5" />
+
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="3" sdk:Grid.Column="0" HorizontalAlignment="Right" sdk:Grid.ColumnSpan="2">
+                            <sdk:TextBlock Text="Analog Scaling Value" Style="{sdk:StaticResource RequiredLabel}"/>
+                            <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"/>
+                        </sdk:StackPanel>
+                        <sdk:TextBox sdk:Grid.Row="3" sdk:Grid.Column="2" Text="{tsfBinding:Column Path=AnalogScalingValue}" Width="{sdk:StaticResource XSmallItemSize}" Margin="5,5,0,5"/>
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="3" sdk:Grid.Column="3" HorizontalAlignment="Right">
+                            <sdk:TextBlock Text="Digital Mask Value" Style="{sdk:StaticResource RequiredLabel}"/>
+                            <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"  />
+                        </sdk:StackPanel>
+                        <sdk:TextBox sdk:Grid.Row="3" sdk:Grid.Column="4" Text="{tsfBinding:Column Path=DigitalMaskValue}" Width="{sdk:StaticResource XSmallItemSize}" Margin="5,5,0,5"/>
+
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="4" sdk:Grid.Column="2">
+                            <sdk:CheckBox Content="Auto Start Data Channel" IsChecked="{tsfBinding:Column Path=AutoStartDataChannel}" />
+                            <sdk:Button Content="?" Margin="2,0,0,0" Template="{sdk:StaticResource RoundButtonTemplate}" Background="{sdk:StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="16" Height="16" FontWeight="Bold" FontSize="{sdk:StaticResource SmallTextSize}"
+        						Tag="HMC - Auto Start Data Channel.png" sdk:ToolTipService.ToolTip="Click here for help on Auto Start Data Channel" Click="ButtonHelp_Click"/>
+                        </sdk:StackPanel>
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="4" sdk:Grid.Column="4">
+                            <sdk:CheckBox Content="Auto Publish Config Frame" IsChecked="{tsfBinding:Column Path=AutoPublishConfigFrame}" />
+                            <sdk:Button Content="?" Margin="2,0,0,0" Template="{sdk:StaticResource RoundButtonTemplate}" Background="{sdk:StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="16" Height="16" FontWeight="Bold" FontSize="{sdk:StaticResource SmallTextSize}"
+        						Tag="HMC - Auto Publish Config Frame.png" sdk:ToolTipService.ToolTip="Click here for help on Auto Publish Config Frame" Click="ButtonHelp_Click"/>
+                        </sdk:StackPanel>
+
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="5" sdk:Grid.Column="2">
+                            <sdk:CheckBox Content="Allow Sorts By Arrival" IsChecked="{tsfBinding:Column Path=AllowSortsByArrival}"/>
+                            <sdk:Button Content="?" Margin="2,0,0,0" Template="{sdk:StaticResource RoundButtonTemplate}" Background="{sdk:StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="16" Height="16" FontWeight="Bold" FontSize="{sdk:StaticResource SmallTextSize}"
+        						Tag="HMC - Allow Sorts By Arrival.png" sdk:ToolTipService.ToolTip="Click here for help on Allow Sorts By Arrival" Click="ButtonHelp_Click"/>
+                        </sdk:StackPanel>
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="5" sdk:Grid.Column="4">
+                            <sdk:CheckBox Content="Use Local Clock As Real-time" IsChecked="{tsfBinding:Column Path=UseLocalClockAsRealTime}" />
+                            <sdk:Button Content="?" Margin="2,0,0,0" Template="{sdk:StaticResource RoundButtonTemplate}" Background="{sdk:StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="16" Height="16" FontWeight="Bold" FontSize="{sdk:StaticResource SmallTextSize}"
+        						Tag="HMC - Use Local Clock as RealTime.png" sdk:ToolTipService.ToolTip="Click here for help on Use Local Clock As Real-time" Click="ButtonHelp_Click"/>
+                        </sdk:StackPanel>
+
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="6" sdk:Grid.Column="2">
+                            <sdk:CheckBox Content="Allow Preemptive Publishing" IsChecked="{tsfBinding:Column Path=AllowPreemptivePublishing}"/>
+                            <sdk:Button Content="?" Margin="2,0,0,0" Template="{sdk:StaticResource RoundButtonTemplate}" Background="{sdk:StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="16" Height="16" FontWeight="Bold" FontSize="{sdk:StaticResource SmallTextSize}"
+        						Tag="HMC - Allow Preemptive Publishing.png" sdk:ToolTipService.ToolTip="Click here for help on Allow Preemptive Publishing" Click="ButtonHelp_Click"/>
+                        </sdk:StackPanel>
+                        <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="6" sdk:Grid.Column="4">
+                            <sdk:CheckBox Content="Ignore Bad Timestamps" IsChecked="{tsfBinding:Column Path=IgnoreBadTimeStamps}"/>
+                            <sdk:Button Content="?" Margin="2,0,0,0" Template="{sdk:StaticResource RoundButtonTemplate}" Background="{sdk:StaticResource BlueRadialGradientBrush}" Foreground="#FFFFFF" Width="16" Height="16" FontWeight="Bold" FontSize="{sdk:StaticResource SmallTextSize}"
+        						Tag="HMC - Ignore Bad Timestamps.png" sdk:ToolTipService.ToolTip="Click here for help on Ignore Bad Timestamps" Click="ButtonHelp_Click"/>
+                        </sdk:StackPanel>
+
+                        <sdk:CheckBox sdk:Grid.Row="7" sdk:Grid.Column="2" sdk:Grid.ColumnSpan="2" Content="Perform Timestamp Reasonability Check" IsChecked="{tsfBinding:Column Path=PerformTimestampReasonabilityCheck}" Margin="5,5,0,5" />
+                        <sdk:CheckBox sdk:Grid.Row="7" sdk:Grid.Column="4" Content="Phase Label Suffix" IsChecked="{tsfBinding:Column Path=PhaseLabelSuffix}" Margin="5,5,0,5" />
+
+                    </sdk:Grid>
+
+                </sdk:Expander>
+
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="7" sdk:Grid.Column="0" HorizontalAlignment="Right">
+                    <sdk:TextBlock Text="Load Order" Style="{sdk:StaticResource RequiredLabel}"/>
+                    <sdk:TextBlock Style="{sdk:StaticResource RequiredMarker}"/>
+                </sdk:StackPanel>
+                <sdk:TextBox sdk:Grid.Row="7" sdk:Grid.Column="1" Text="{tsfBinding:Column Path=LoadOrder}" Width="35" />
+
+                <sdk:TextBlock sdk:Grid.Row="7" sdk:Grid.Column="2" Text="Stream Mirror Source" Visibility="{sdk:Binding DataContext.MirrorMode, Converter={sdk:StaticResource ObjectToVisibilityConverter}, RelativeSource={sdk:RelativeSource AncestorLevel=1, AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}}"/>
+                <sdk:ComboBox x:Name="ComboBoxMirrorSource" sdk:Grid.Row="7" sdk:Grid.Column="3" ItemsSource="{sdk:Binding Source={sdk:StaticResource MirroringSourceLookupList}}" DisplayMemberPath="Value" 
+        			SelectedItem="{tsfBinding:Column ConverterParameter={sdk:StaticResource MirroringSourceLookupList}, Converter={sdk:StaticResource DictionaryToKeyValuePairConverter}, Path=MirroringSourceDevice}" 
+        			Visibility="{sdk:Binding DataContext.MirrorMode, Converter={sdk:StaticResource ObjectToVisibilityConverter}, RelativeSource={sdk:RelativeSource AncestorLevel=1, AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}}"
+        			SelectionChanged="ComboBox_SelectionChanged"/>
+                <sdk:CheckBox sdk:Grid.Row="9" sdk:Grid.Column="3" Content="Enabled" IsChecked="{tsfBinding:Column Path=Enabled}"/>
+
+                <sdk:TextBlock sdk:Grid.Row="8" sdk:Grid.Column="2" Text="ReplaceWithSpaceChar" />
+                <sdk:TextBox sdk:Grid.Row="8" sdk:Grid.Column="3" Text="{tsfBinding:Column Path=ReplaceWithSpaceChar}"  Width="{sdk:StaticResource XXSmallItemSize}" MaxLength="200"/>
+
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="8"  sdk:Grid.Column="0" HorizontalAlignment="Right">
+                    <!--<sdk:TextBlock Text="{tsfBinding:Column Path=TimeBase}"/>-->
+                    <sdk:TextBlock Text="Time Base" />
+                </sdk:StackPanel>
+                <sdk:TextBox sdk:Grid.Row="8" sdk:Grid.Column="1" Text="{tsfBinding:Column Path=TimeBase}" Width="{sdk:StaticResource XSmallItemSize}" HorizontalAlignment="left" />
+
+                <sdk:TextBlock  sdk:Grid.Row="9" sdk:Grid.Column="0" Text="Runtime ID" />
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="9" sdk:Grid.Column="1">
+                    <sdk:TextBlock Text="{tsfBinding:Column Path=DataContext.RuntimeID, RelativeSource={sdk:RelativeSource AncestorLevel=1, AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}}" />
+                    <sdk:Button Content="Initialize" Command="{sdk:Binding DataContext.InitializeCommand, RelativeSource={sdk:RelativeSource AncestorLevel=1, AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}}" 
+        			IsEnabled="{sdk:Binding DataContext.IsNewRecord, Converter={sdk:StaticResource NotConverter}, RelativeSource={sdk:RelativeSource AncestorLevel=1, AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}}"/>
+                </sdk:StackPanel>
+                <!--<sdk:TextBlock  sdk:Grid.Row="9" sdk:Grid.Column="0" Text="Runtime ID" HorizontalAlignment="Right" />
+                <sdk:StackPanel Orientation="Horizontal" sdk:Grid.Row="9" sdk:Grid.Column="0">
+                    <sdk:TextBlock Text="{tsfBinding:Column Path=DataContext.RuntimeID, RelativeSource={sdk:RelativeSource AncestorLevel=1, AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}}" />
+                </sdk:StackPanel>
+                <sdk:Button sdk:Grid.Row="9" sdk:Grid.Column="1" HorizontalAlignment="Left" Content="Initialize" Command="{sdk:Binding DataContext.InitializeCommand, RelativeSource={sdk:RelativeSource AncestorLevel=1, AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}}" 
+        			IsEnabled="{sdk:Binding DataContext.IsNewRecord, Converter={sdk:StaticResource NotConverter}, RelativeSource={sdk:RelativeSource AncestorLevel=1, AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}}"/>-->
+            </sdk:Grid>
+
+        </sdk:ScrollViewer>
+
+        <uc:DetailViewFooterUserControl x:Name="UserControlDetailViewFooter" DeleteCommand="{sdk:Binding DeleteCommand}" ClearCommand="{sdk:Binding ClearCommand}" SaveCommand="{sdk:Binding SaveCommand}"
+                SaveEnabled="{tsfBinding:DataOperation Path=(sdk:Validation.HasError)}" />
+
+
+
+        <sdk:DataGrid x:Name="DataGridList" ItemsSource="{sdk:Binding CurrentPage}" SelectedItem="{sdk:Binding CurrentItem, Mode=TwoWay}" PreviewKeyDown="DataGrid_PreviewKeyDown"
+                      Sorting="OSGrid_Sorting" SelectedIndex="{tsfBinding:Column Path=CurrentSelectedIndex}" CellEditEnding="DataGrid_CellEditEnding">
+            <sdk:DataGrid.Columns>
+                <sdk:DataGridTextColumn Header="Acronym" Width="*" Binding="{tsfBinding:Column Path=Acronym}" CellStyle="{sdk:StaticResource CenterAlignCellStyle}"/>
+                <sdk:DataGridTextColumn Header="Name" Width="*" Binding="{tsfBinding:Column Path=Name}" CellStyle="{sdk:StaticResource CenterAlignCellStyle}"/>
+                <sdk:DataGridTextColumn Header="Type" Width="*" Binding="{sdk:Binding TypeName}" CellStyle="{sdk:StaticResource CenterAlignCellStyle}" IsReadOnly="True"/>
+                <sdk:DataGridTemplateColumn Header="Enabled" Width="*">
+                    <sdk:DataGridTemplateColumn.CellTemplate>
+                        <sdk:DataTemplate>
+                            <sdk:CheckBox IsChecked="{tsfBinding:Column Path=Enabled}" HorizontalAlignment="Center" Click="DataGridEnabledCheckBox_Click" />
+                        </sdk:DataTemplate>
+                    </sdk:DataGridTemplateColumn.CellTemplate>
+                </sdk:DataGridTemplateColumn>
+                <!--<sdk:DataGridCheckBoxColumn Header="Enabled" Width="*" Binding="{tsfBinding:Column Path=Enabled}" CellStyle="{StaticResource CenterAlignCellStyle}"/>-->
+                <sdk:DataGridTemplateColumn Header="" Width="*">
+                    <sdk:DataGridTemplateColumn.CellTemplate>
+                        <sdk:DataTemplate>
+                            <sdk:Button Template="{sdk:StaticResource HyperlinkStyleButtonTemplate}" Content="Devices" Width="Auto"
+            					Command="{tsfBinding:GridButtonCommand Path=DataContext.DeviceCommand}"/>
+                        </sdk:DataTemplate>
+                    </sdk:DataGridTemplateColumn.CellTemplate>
+                </sdk:DataGridTemplateColumn>
+                <sdk:DataGridTemplateColumn Header="" Width="*">
+                    <sdk:DataGridTemplateColumn.CellTemplate>
+                        <sdk:DataTemplate>
+                            <sdk:Button Template="{sdk:StaticResource HyperlinkStyleButtonTemplate}" Content="Measurements" Width="Auto"
+            					Command="{tsfBinding:GridButtonCommand Path=DataContext.MeasurementCommand}">
+                                <sdk:Button.Visibility>
+                                    <sdk:Binding Path="DataContext.MirrorMode" RelativeSource="{sdk:RelativeSource AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}" 
+            							Converter="{sdk:StaticResource ObjectToVisibilityConverter}">
+                                        <sdk:Binding.ConverterParameter>
+                                            <sys:Boolean>True</sys:Boolean>
+                                        </sdk:Binding.ConverterParameter>
+                                    </sdk:Binding>
+                                </sdk:Button.Visibility>
+                            </sdk:Button>
+
+                        </sdk:DataTemplate>
+                    </sdk:DataGridTemplateColumn.CellTemplate>
+                </sdk:DataGridTemplateColumn>
+                <sdk:DataGridTemplateColumn Header="" Width="*">
+                    <sdk:DataGridTemplateColumn.CellTemplate>
+                        <sdk:DataTemplate>
+                            <sdk:Button Template="{sdk:StaticResource HyperlinkStyleButtonTemplate}" Content="Device Wizard" Width="Auto"
+            					Command="{tsfBinding:GridButtonCommand Path=DataContext.WizardCommand}">
+                                <sdk:Button.Visibility>
+                                    <sdk:Binding Path="DataContext.MirrorMode" RelativeSource="{sdk:RelativeSource AncestorType={x:Type sdk:UserControl}, Mode=FindAncestor}" 
+            							Converter="{sdk:StaticResource ObjectToVisibilityConverter}">
+                                        <sdk:Binding.ConverterParameter>
+                                            <sys:Boolean>True</sys:Boolean>
+                                        </sdk:Binding.ConverterParameter>
+                                    </sdk:Binding>
+                                </sdk:Button.Visibility>
+                            </sdk:Button>
+                        </sdk:DataTemplate>
+                    </sdk:DataGridTemplateColumn.CellTemplate>
+                </sdk:DataGridTemplateColumn>
+                <sdk:DataGridTemplateColumn Header="" Width="*">
+                    <sdk:DataGridTemplateColumn.CellTemplate>
+                        <sdk:DataTemplate>
+                            <sdk:StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <sdk:Button ToolTip="Update Configuration" Command="{tsfBinding:GridButtonCommand Path=DataContext.UpdateConfigurationCommand}" Width="Auto">
+                                    <sdk:Image Source="/GSF.TimeSeries.UI;component/images/EditConfiguration.png" Height="16" Width="16" Margin="0,0,5,0"/>
+                                </sdk:Button>
+                                <sdk:Button ToolTip="Make Copy" Command="{tsfBinding:GridButtonCommand Path=DataContext.CopyCommand}" CommandParameter="{tsfBinding:GridButtonCommand Path=DataContext.CurrentItem}" Width="Auto">
+                                    <sdk:Image Source="/GSF.TimeSeries.UI;component/images/Copy.png" Height="16" Width="16" Margin="5,0,0,0"/>
+                                </sdk:Button>
+                            </sdk:StackPanel>
+                        </sdk:DataTemplate>
+                    </sdk:DataGridTemplateColumn.CellTemplate>
+                </sdk:DataGridTemplateColumn>
+            </sdk:DataGrid.Columns>
+        </sdk:DataGrid>
+
+        <uc:DataPagerUserControl VerticalAlignment="Bottom" CurrentPageNumber="{sdk:Binding CurrentPageNumber}" 
+                                 FirstCommand="{sdk:Binding FirstCommand}" LastCommand="{sdk:Binding LastCommand}" 
+                                 NextCommand="{sdk:Binding NextCommand}" PageCount="{sdk:Binding PageCount}" PreviousCommand="{sdk:Binding PreviousCommand}"/>
+
+    </StackPanel>
+
+</UserControl>
