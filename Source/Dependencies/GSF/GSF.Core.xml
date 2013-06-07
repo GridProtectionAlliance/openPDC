@@ -12892,75 +12892,121 @@
              </code>
              </example>
         </member>
-        <member name="M:GSF.Identity.UserInfo.LocalGroupExists(System.String)">
-            <summary>
-            Determines if local group exists.
-            </summary>
-            <param name="groupName">Group name to test for existence.</param>
-            <returns><c>true</c> if <paramref name="groupName"/> exists; otherwise, <c>false</c>.</returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> is <c>null</c>.</exception>
-            <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> was specified.</exception>
-        </member>
         <member name="M:GSF.Identity.UserInfo.LocalUserExists(System.String)">
             <summary>
             Determines if local user exists.
             </summary>
             <param name="userName">User name to test for existence.</param>
             <returns><c>true</c> if <paramref name="userName"/> exists; otherwise, <c>false</c>.</returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="userName"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="userName"/> was <c>null</c>.</exception>
             <exception cref="T:System.ArgumentException">No <paramref name="userName"/> was specified.</exception>
         </member>
-        <member name="M:GSF.Identity.UserInfo.LocalUserIsInGroup(System.String,System.String)">
+        <member name="M:GSF.Identity.UserInfo.CreateLocalUser(System.String,System.String,System.String)">
             <summary>
-            Determines if local user is in group.
+            Creates a new local user if it does not exist already.
             </summary>
-            <param name="groupName">Group name to test.</param>
-            <param name="userName">User name to test.</param>
-            <returns><c>true</c> if local user is in group; otherwise, <c>false</c>.</returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> or <paramref name="userName"/> is <c>null</c>.</exception>
-            <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> or <paramref name="userName"/> was specified.</exception>
-            <exception cref="T:System.InvalidOperationException">Could not determine if <paramref name="userName"/> is in local <paramref name="groupName"/>, user or group does not exist.</exception>
+            <param name="userName">User name to create if it doesn't exist.</param>
+            <param name="password">Password to user for new user.</param>
+            <param name="userDescription">Optional user description.</param>
+            <returns><c>true</c> if user was created; otherwise, <c>false</c> if user already existed.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="userName"/> or <paramref name="password"/> was <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="userName"/> was specified.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not create local user.</exception>
+        </member>
+        <member name="M:GSF.Identity.UserInfo.SetLocalUserPassword(System.String,System.String)">
+            <summary>
+            Sets local user's password.
+            </summary>
+            <param name="userName">User name to change password for.</param>
+            <param name="password">New password fro user.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="userName"/> or <paramref name="password"/> was <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="userName"/> was specified or user does not exist.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not change password for local user.</exception>
+        </member>
+        <member name="M:GSF.Identity.UserInfo.RemoveLocalUser(System.String)">
+            <summary>
+            Removes local user if it exists.
+            </summary>
+            <param name="userName">User name to remove if it exists.</param>
+            <returns><c>true</c> if user was removed; otherwise, <c>false</c> if user did not exist.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="userName"/> was <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="userName"/> was specified.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not remove local user.</exception>
+        </member>
+        <member name="M:GSF.Identity.UserInfo.LocalGroupExists(System.String)">
+            <summary>
+            Determines if local group exists.
+            </summary>
+            <param name="groupName">Group name to test for existence.</param>
+            <returns><c>true</c> if <paramref name="groupName"/> exists; otherwise, <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> was <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> was specified.</exception>
         </member>
         <member name="M:GSF.Identity.UserInfo.CreateLocalGroup(System.String,System.String)">
             <summary>
-            Creates a new local user group if it does not exist already.
+            Creates a new local group if it does not exist already.
             </summary>
             <param name="groupName">Group name to create if it doesn't exist.</param>
-            <param name="groupDescription">Group description.</param>
+            <param name="groupDescription">Optional group description.</param>
             <returns><c>true</c> if group was created; otherwise, <c>false</c> if group already existed.</returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> was <c>null</c>.</exception>
             <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> was specified.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not create local group.</exception>
         </member>
         <member name="M:GSF.Identity.UserInfo.RemoveLocalGroup(System.String)">
             <summary>
-            Removes local user group if it exists.
+            Removes local group if it exists.
             </summary>
             <param name="groupName">Group name to remove if it exists.</param>
             <returns><c>true</c> if group was removed; otherwise, <c>false</c> if group did not exist.</returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> was <c>null</c>.</exception>
             <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> was specified.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not remove local group.</exception>
+        </member>
+        <member name="M:GSF.Identity.UserInfo.UserIsInLocalGroup(System.String,System.String)">
+            <summary>
+            Determines if user is in the specified local <paramref name="groupName"/>.
+            </summary>
+            <param name="groupName">Group name to test.</param>
+            <param name="userName">User name to test.</param>
+            <returns><c>true</c> if user is in group; otherwise, <c>false</c>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> or <paramref name="userName"/> was <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> or <paramref name="userName"/> was specified.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not determine if user was in local group.</exception>
+            <remarks>
+            This function will handle Windows service virtual accounts by specifying the complete virtual account name,
+            such as <c>@"NT SERVICE\MyService"</c>, as the <paramref name="userName"/>.
+            </remarks>
         </member>
         <member name="M:GSF.Identity.UserInfo.AddUserToLocalGroup(System.String,System.String)">
             <summary>
-            Adds an existing local user to the specified group.
+            Adds an existing user to the specified local <paramref name="groupName"/>.
             </summary>
             <param name="groupName">Group name to add local user to.</param>
             <param name="userName">Existing local user name.</param>
             <returns><c>true</c> if user was added to local group; otherwise, <c>false</c> meaning user was already in group.</returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> or <paramref name="userName"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> or <paramref name="userName"/> was <c>null</c>.</exception>
             <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> or <paramref name="userName"/> was specified.</exception>
-            <exception cref="T:System.InvalidOperationException">Could not add <paramref name="userName"/> to local <paramref name="groupName"/>, user or group does not exist.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not add user to local group.</exception>
+            <remarks>
+            This function will handle Windows service virtual accounts by specifying the complete virtual account name,
+            such as <c>@"NT SERVICE\MyService"</c>, as the <paramref name="userName"/>.
+            </remarks>
         </member>
         <member name="M:GSF.Identity.UserInfo.RemoveUserFromLocalGroup(System.String,System.String)">
             <summary>
-            Removes local user from the specified group.
+            Removes an existing user from the specified local <paramref name="groupName"/>.
             </summary>
             <param name="groupName">Group name to remove local user from.</param>
             <param name="userName">Existing local user name.</param>
-            <returns><c>true</c> if user was removed from local group; otherwise, <c>false</c> meaning user was already not in the group.</returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> or <paramref name="userName"/> is <c>null</c>.</exception>
+            <returns><c>true</c> if user was removed from local group; otherwise, <c>false</c> meaning user did not exist in group.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> or <paramref name="userName"/> was <c>null</c>.</exception>
             <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> or <paramref name="userName"/> was specified.</exception>
-            <exception cref="T:System.InvalidOperationException">Could not add <paramref name="userName"/> to local <paramref name="groupName"/>, user or group does not exist.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not remove user from local group.</exception>
+            <remarks>
+            This function will handle Windows service virtual accounts by specifying the complete virtual account name,
+            such as <c>@"NT SERVICE\MyService"</c>, as the <paramref name="userName"/>.
+            </remarks>
         </member>
         <member name="E:GSF.Identity.UserInfo.Disposed">
             <summary>
@@ -20128,63 +20174,10 @@
             Gets <see cref="T:System.EventArgs"/> specified in <see cref="M:GSF.PrecisionTimer.Start(System.EventArgs)"/> used to pass into <see cref="E:GSF.PrecisionTimer.Tick"/> event.
             </summary>
         </member>
-        <member name="P:GSF.PrecisionTimer.UtcNow">
-            <summary>
-            Gets a high-resolution <see cref="T:System.DateTime"/> value of the current time on this computer,
-            expressed in Coordinated Universal Time (UTC).
-            </summary>
-            <remarks>
-            <para>
-            This shared property provides a way to get a <see cref="T:System.DateTime"/> value that exhibits the relative
-            precision of <see cref="T:System.Diagnostics.Stopwatch"/>, and the absolute accuracy of <see cref="P:System.DateTime.UtcNow"/>.
-            </para>
-            <para>
-            This property is useful for obtaining high-resolution accuarate timestamps for events that occur in the
-            "sub-second" world (e.g., timestamping events happening hundreds or thousands of times per second).
-            Note that the normal <see cref="P:System.DateTime.UtcNow"/> property has a maximum resolution of ~16 milliseconds.
-            </para>
-            </remarks>
-        </member>
-        <member name="P:GSF.PrecisionTimer.Now">
-            <summary>
-            Gets a high-resolution <see cref="T:System.DateTime"/> value of the current time on this computer,
-            expressed in the local time zone.
-            </summary>
-            <remarks>
-            <para>
-            This shared property provides a way to get a <see cref="T:System.DateTime"/> value that exhibits the relative
-            precision of <see cref="T:System.Diagnostics.Stopwatch"/>, and the absolute accuracy of <see cref="P:System.DateTime.Now"/>.
-            </para>
-            <para>
-            This property is useful for obtaining high-resolution accuarate timestamps for events that occur in the
-            "sub-second" world (e.g., timestamping events happening hundreds or thousands of times per second).
-            Note that the normal <see cref="P:System.DateTime.Now"/> property has a maximum resolution of ~16 milliseconds.
-            </para>
-            </remarks>
-        </member>
         <member name="P:GSF.PrecisionTimer.Capabilities">
             <summary>
             Gets the system multimedia timer capabilities.
             </summary>
-        </member>
-        <member name="T:GSF.PrecisionTimer.PreciseTime">
-            <summary>
-            This class provides a way to get a DateTime that exhibits the relative precision of
-            System.Diagnostics.Stopwatch, and the absolute accuracy of DateTime.Now.
-            </summary>
-            <remarks>
-            This class is based on James Brock's DateTimePrecise class which can be found on the Code Project:
-            http://www.codeproject.com/KB/cs/DateTimePrecise.aspx?msg=2688543#xx2688543xx
-            </remarks>
-        </member>
-        <member name="M:GSF.PrecisionTimer.PreciseTime.#ctor(System.Int64)">
-            <summary>Creates a new instance of DateTimePrecise.</summary>
-            <remarks>
-            A large value of synchronizePeriodSeconds may cause arithmetic overthrow
-            exceptions to be thrown. A small value may cause the time to be unstable.
-            A good value is 10.
-            </remarks>
-            <param name="synchronizePeriodSeconds">The number of seconds after which the class will synchronize itself with the system clock.</param>
         </member>
         <member name="T:GSF.ProcessProgress`1">
             <summary>
