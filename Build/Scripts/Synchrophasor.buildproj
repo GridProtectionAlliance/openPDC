@@ -110,7 +110,7 @@
   <Target Name="BeforeCleanBuild">
     <ItemGroup>
       <!-- Exclude the main setup application from the list of build output files to be deleted. -->
-      <FilesToDelete Remove="$(BuildOutputFolder)\Setup\Setup.exe"/>
+      <FilesToDelete Remove="$([System.IO.Path]::GetFullPath('$(BuildOutputFolder)\Setup\Setup.exe'))"/>
       <!-- FilesToDelete Include="$(BuildOutputFolder)\Setup\Installers\openPDCManagerWebSetup.*"/ -->
       <!-- FilesToDelete Include="$(BuildOutputFolder)\Setup\Installers\openPDCManagerServicesSetup.*"/ -->
     </ItemGroup>
