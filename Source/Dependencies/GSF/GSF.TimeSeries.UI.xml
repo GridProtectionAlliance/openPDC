@@ -36,7 +36,7 @@
         </member>
         <member name="M:GSF.TimeSeries.UI.AlarmMonitor.Start">
             <summary>
-            Starts the refresh timer that checks alarm status.
+            Starts the refresh timer that notifies consumer about the current alarm status.
             </summary>
         </member>
         <member name="M:GSF.TimeSeries.UI.AlarmMonitor.Stop">
