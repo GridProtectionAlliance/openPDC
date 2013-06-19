@@ -26,13 +26,17 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Management;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using GSF;
+using GSF.Communication;
 using GSF.Data;
+using GSF.Identity;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -180,8 +184,8 @@ namespace ConfigurationSetupUtility.Screens
                     catch (Exception ex)
                     {
                         string failMessage = "Database connection issue. " + ex.Message +
-                        " Check your username and password." +
-                        " Additionally, you may need to modify your connection under advanced settings.";
+                            " Check your username and password." +
+                            " Additionally, you may need to modify your connection under advanced settings.";
 
                         MessageBox.Show(failMessage);
                         m_newUserNameTextBox.Focus();
@@ -191,6 +195,33 @@ namespace ConfigurationSetupUtility.Screens
                     {
                         if (connection != null)
                             connection.Dispose();
+                    }
+                }
+                else
+                {
+                    string host = m_sqlServerSetup.HostName.Split('\\')[0].Trim();
+                    bool hostIsLocal = (host == "." || host == "(local)" || Transport.IsLocalAddress(host));
+
+                    if (!hostIsLocal && m_createNewUserCheckBox.IsChecked != true && m_checkBoxIntegratedSecurity.IsChecked == true)
+                    {
+                        string serviceAccountName = GetServiceAccountName();
+
+                        bool serviceAccountIsLocal = (object)serviceAccountName != null &&
+                            (serviceAccountName.Equals("LocalSystem", StringComparison.InvariantCultureIgnoreCase) ||
+                             serviceAccountName.StartsWith(@"NT AUTHORITY\", StringComparison.InvariantCultureIgnoreCase) ||
+                             serviceAccountName.StartsWith(@"NT SERVICE\", StringComparison.InvariantCultureIgnoreCase) ||
+                             serviceAccountName.StartsWith(Environment.MachineName + @"\", StringComparison.InvariantCultureIgnoreCase));
+
+                        if (serviceAccountIsLocal)
+                        {
+                            const string failMessage = "Configuration Setup Utility has detected that the openPDC service account ({0}) is a local user, " +
+                                "but the database server is not local. This user will not be able to log into the database using integrated security. " +
+                                "Please either change the account under which the openPDC service runs, or choose to create a new database user.";
+
+                            MessageBox.Show(string.Format(failMessage, serviceAccountName));
+                            m_adminUserNameTextBox.Focus();
+                            return false;
+                        }
                     }
                 }
 
@@ -526,6 +557,17 @@ namespace ConfigurationSetupUtility.Screens
                 m_databaseNameTextBox.Text = m_sqlServerSetup.DatabaseName;
                 m_adminUserNameTextBox.Text = m_sqlServerSetup.UserName;
                 m_adminPasswordTextBox.Password = m_sqlServerSetup.Password;
+            }
+        }
+
+        private string GetServiceAccountName()
+        {
+            SelectQuery selectQuery = new SelectQuery(string.Format("select name, startname from Win32_Service where name = '{0}'", "openPDC"));
+
+            using (ManagementObjectSearcher managementObjectSearcher = new ManagementObjectSearcher(selectQuery))
+            {
+                ManagementObject service = managementObjectSearcher.Get().Cast<ManagementObject>().FirstOrDefault();
+                return ((object)service != null) ? service["startname"].ToString() : null;
             }
         }
 

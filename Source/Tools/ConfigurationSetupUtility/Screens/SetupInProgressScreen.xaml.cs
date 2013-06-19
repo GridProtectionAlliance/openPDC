@@ -34,6 +34,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Reflection;
 using System.ServiceProcess;
 using System.Text;
@@ -42,6 +43,8 @@ using System.Web.Security;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
+using GSF.Communication;
+using GSF.Identity;
 using GSF.Security;
 using Microsoft.Win32;
 using GSF;
@@ -390,6 +393,7 @@ namespace ConfigurationSetupUtility.Screens
                 object dataProviderStringValue;
                 string dataProviderString = null;
                 bool createNewUser = false;
+                bool useIntegratedSecurity = false;
 
                 sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
                 sqlServerSetup.OutputDataReceived += SqlServerSetup_OutputDataReceived;
@@ -404,6 +408,10 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (string.IsNullOrWhiteSpace(dataProviderString))
                     dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
+
+                // Check to see if user requested to use integrated authentication
+                if (m_state.ContainsKey("useSqlServerIntegratedSecurity"))
+                    useIntegratedSecurity = Convert.ToBoolean(m_state["useSqlServerIntegratedSecurity"]);
 
                 if (!existing || migrate)
                 {
@@ -473,25 +481,25 @@ namespace ConfigurationSetupUtility.Screens
                                 return;
                             }
 
-                            if (!sqlServerSetup.ExecuteStatement("CREATE ROLE [openPDCManagerRole] AUTHORIZATION [dbo]"))
+                            if (!sqlServerSetup.ExecuteStatement("CREATE ROLE [openPDCAdminRole] AUTHORIZATION [dbo]"))
                             {
                                 OnSetupFailed();
                                 return;
                             }
 
-                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'openPDCManagerRole', N'{0}'", user)))
+                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'openPDCAdminRole', N'{0}'", user)))
                             {
                                 OnSetupFailed();
                                 return;
                             }
 
-                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datareader', N'openPDCManagerRole'")))
+                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datareader', N'openPDCAdminRole'")))
                             {
                                 OnSetupFailed();
                                 return;
                             }
 
-                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datawriter', N'openPDCManagerRole'")))
+                            if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datawriter', N'openPDCAdminRole'")))
                             {
                                 OnSetupFailed();
                                 return;
@@ -503,6 +511,65 @@ namespace ConfigurationSetupUtility.Screens
                             UpdateProgressBar(98);
                             AppendStatusMessage("New database user created successfully.");
                             AppendStatusMessage(string.Empty);
+                        }
+                        else if (useIntegratedSecurity)
+                        {
+                            const string groupName = "openPDC Admins";
+
+                            string host = sqlServerSetup.HostName.Split('\\')[0].Trim();
+                            string db = sqlServerSetup.DatabaseName;
+                            string loginName;
+                            bool useGroupLogin;
+
+                            useGroupLogin = UserInfo.LocalGroupExists(groupName) && (host == "." || Transport.IsLocalAddress(host));
+                            loginName = useGroupLogin ? string.Format(@"{0}\{1}", Environment.MachineName, groupName) : GetServiceAccountName();
+
+                            if ((object)loginName != null)
+                            {
+                                AppendStatusMessage(string.Format("Attempting to add Windows authenticated database login for {0}...", loginName));
+
+                                sqlServerSetup.DatabaseName = "master";
+                                if (!sqlServerSetup.ExecuteStatement(string.Format("IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = N'{0}') CREATE LOGIN [{0}] FROM WINDOWS WITH DEFAULT_DATABASE=[master]", loginName)))
+                                {
+                                    OnSetupFailed();
+                                    return;
+                                }
+
+                                sqlServerSetup.DatabaseName = db;
+                                if (!sqlServerSetup.ExecuteStatement(string.Format("CREATE USER [{0}] FOR LOGIN [{0}]", loginName)))
+                                {
+                                    OnSetupFailed();
+                                    return;
+                                }
+
+                                if (!sqlServerSetup.ExecuteStatement("CREATE ROLE [openPDCAdminRole] AUTHORIZATION [dbo]"))
+                                {
+                                    OnSetupFailed();
+                                    return;
+                                }
+
+                                if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'openPDCAdminRole', N'{0}'", loginName)))
+                                {
+                                    OnSetupFailed();
+                                    return;
+                                }
+
+                                if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datareader', N'openPDCAdminRole'")))
+                                {
+                                    OnSetupFailed();
+                                    return;
+                                }
+
+                                if (!sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datawriter', N'openPDCAdminRole'")))
+                                {
+                                    OnSetupFailed();
+                                    return;
+                                }
+
+                                UpdateProgressBar(98);
+                                AppendStatusMessage("Database login created successfully.");
+                                AppendStatusMessage(string.Empty);
+                            }
                         }
 
                         if (!migrate)
@@ -529,13 +596,8 @@ namespace ConfigurationSetupUtility.Screens
 
                 // Modify the openPDC configuration file.
                 string connectionString;
-                bool useIntegratedSecurity = false;
 
-                // Check to see if user requested to use integrated authentication
-                if (m_state.ContainsKey("useSqlServerIntegratedSecurity"))
-                    useIntegratedSecurity = Convert.ToBoolean(m_state["useSqlServerIntegratedSecurity"]) && !createNewUser;
-
-                if (useIntegratedSecurity)
+                if (useIntegratedSecurity && !createNewUser)
                     connectionString = sqlServerSetup.IntegratedSecurityConnectionString;
                 else
                     connectionString = sqlServerSetup.PooledConnectionString;
@@ -750,6 +812,21 @@ namespace ConfigurationSetupUtility.Screens
                 ((App)Application.Current).ErrorLogger.Log(ex);
                 AppendStatusMessage(ex.Message);
                 OnSetupFailed();
+            }
+        }
+
+        /// <summary>
+        /// Gets the account name that the openPDC service is running under.
+        /// </summary>
+        /// <returns>The account name that the openPDC service is running under.</returns>
+        private string GetServiceAccountName()
+        {
+            SelectQuery selectQuery = new SelectQuery(string.Format("select name, startname from Win32_Service where name = '{0}'", "openPDC"));
+
+            using (ManagementObjectSearcher managementObjectSearcher = new ManagementObjectSearcher(selectQuery))
+            {
+                ManagementObject service = managementObjectSearcher.Get().Cast<ManagementObject>().FirstOrDefault();
+                return ((object)service != null) ? service["startname"].ToString() : null;
             }
         }
 

@@ -28,6 +28,10 @@
     <Compile Include="openPDCSetup.wxs" />
   </ItemGroup>
   <ItemGroup>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>..\..\..\Dependencies\WiX\WixUtilExtension.dll</HintPath>
+      <Name>WixUtilExtension</Name>
+    </WixExtension>
     <WixExtension Include="WixUIExtension">
       <HintPath>..\..\..\Dependencies\WiX\WixUIExtension.dll</HintPath>
       <Name>WixUIExtension</Name>

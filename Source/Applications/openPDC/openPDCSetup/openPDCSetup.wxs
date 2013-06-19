@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Product Id="{493D6CED-50C6-4CF5-93A3-306C364F10A3}" Name="openPDC" Language="1033" Version="!(bind.FileVersion.openPDC.exe)" Manufacturer="Grid Protection Alliance" UpgradeCode="{672ED075-C482-49A6-86D5-7B3FEB4AEAC8}">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
@@ -57,6 +57,7 @@
         <ComponentGroupRef Id="GSFDependencyComponents" />
       </Feature>
 
+      <ComponentRef Id="InstallFolderPermissions"/>
       <ComponentRef Id="Registry" />
       <ComponentRef Id="Cleanup" />
     </Feature>
@@ -66,28 +67,40 @@
       <UIRef Id="WixUI_FeatureTree" />
       <UIRef Id="WixUI_ErrorProgressText" />
       <DialogRef Id="CompanyInfoDialog" />
-      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="CompanyInfoDialog">LicenseAccepted = "1"</Publish>
-      <Publish Dialog="CompanyInfoDialog" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
-      <Publish Dialog="CompanyInfoDialog" Control="Next" Event="NewDialog" Value="CustomizeDlg">1</Publish>
-      <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="CompanyInfoDialog" Order="2">NOT Installed</Publish>
+      <DialogRef Id="ServiceAccountDialog" />
+      <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="ServiceAccountDialog"><![CDATA[&openPDCFeature=3]]></Publish>
+      <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg"><![CDATA[NOT(&openPDCFeature=3)]]></Publish>
+      <Publish Dialog="ServiceAccountDialog" Control="Back" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+      <Publish Dialog="ServiceAccountDialog" Control="Next" Event="NewDialog" Value="CompanyInfoDialog">1</Publish>
+      <Publish Dialog="CompanyInfoDialog" Control="Back" Event="NewDialog" Value="ServiceAccountDialog">1</Publish>
+      <Publish Dialog="CompanyInfoDialog" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CompanyInfoDialog">(NOT Installed OR WixUI_InstallMode = "Change") AND <![CDATA[&openPDCFeature=3]]></Publish>
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg">(NOT Installed OR WixUI_InstallMode = "Change") AND <![CDATA[NOT(&openPDCFeature=3)]]></Publish>
     </UI>
 
+    <Property Id="SERVICENAME" Value="$(var.openPDC.TargetName)" />
+    <Property Id="HTTPSERVICEPORTS" Value="6051,6052,6151,6152,5018" />
     <Property Id="COMPANYNAME" Value="Grid Protection Alliance" />
     <Property Id="COMPANYACRONYM" Value="GPA" />
+    <SetProperty Id="SERVICEACCOUNT" Value="NT SERVICE\[SERVICENAME]" After="LaunchConditions" />
     <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\INSTALL_LICENSE.rtf" />
 
     <!-- Custom Actions -->
     <Binary Id="InstallerActions" SourceFile="$(var.SolutionDir)\Dependencies\GSF\GSF.InstallerActions.CA.dll" />
-    <CustomAction Id="CompanyInfoAction.SetProperty" Property="CompanyInfoAction" Value="SERVICENAME=$(var.openPDC.TargetName);INSTALLDIR=[INSTALLFOLDER];COMPANYNAME=[COMPANYNAME];COMPANYACRONYM=[COMPANYACRONYM]" />
+    <CustomAction Id="CompanyInfoAction.SetProperty" Property="CompanyInfoAction" Value="SERVICENAME=[SERVICENAME];INSTALLDIR=[INSTALLFOLDER];COMPANYNAME=[COMPANYNAME];COMPANYACRONYM=[COMPANYACRONYM]" />
     <CustomAction Id="CompanyInfoAction" BinaryKey="InstallerActions" DllEntry="CompanyInfoAction" Execute="deferred" Impersonate="no" />
-    <CustomAction Id="ConfigureServiceAction.SetProperty" Property="ConfigureServiceAction" Value="SERVICENAME=$(var.openPDC.TargetName)" />
+    <CustomAction Id="ConfigureServiceAction.SetProperty" Property="ConfigureServiceAction" Value="SERVICENAME=[SERVICENAME]" />
     <CustomAction Id="ConfigureServiceAction" BinaryKey="InstallerActions" DllEntry="ConfigureServiceAction" Execute="deferred" Impersonate="no" />
+    <CustomAction Id="ServiceAccountAction.SetProperty" Property="ServiceAccountAction" Value="SERVICENAME=[SERVICENAME];SERVICEACCOUNT=[SERVICEACCOUNT];HTTPSERVICEPORTS=[HTTPSERVICEPORTS]" />
+    <CustomAction Id="ServiceAccountAction" BinaryKey="InstallerActions" DllEntry="ServiceAccountAction" Execute="deferred" Impersonate="no" />
 
     <InstallExecuteSequence>
-      <Custom Action="CompanyInfoAction.SetProperty" After="InstallFiles" />
-      <Custom Action="CompanyInfoAction" After="CompanyInfoAction.SetProperty" />
-      <Custom Action="ConfigureServiceAction.SetProperty" After="InstallServices" />
-      <Custom Action="ConfigureServiceAction" After="ConfigureServiceAction.SetProperty" />
+      <Custom Action="CompanyInfoAction.SetProperty" After="InstallFiles">NOT REMOVE AND <![CDATA[&openPDCFeature=3]]></Custom>
+      <Custom Action="CompanyInfoAction" After="CompanyInfoAction.SetProperty">NOT REMOVE AND <![CDATA[&openPDCFeature=3]]></Custom>
+      <Custom Action="ConfigureServiceAction.SetProperty" After="InstallServices">NOT REMOVE AND <![CDATA[&openPDCFeature=3]]></Custom>
+      <Custom Action="ConfigureServiceAction" After="ConfigureServiceAction.SetProperty">NOT REMOVE AND <![CDATA[&openPDCFeature=3]]></Custom>
+      <Custom Action="ServiceAccountAction.SetProperty" After="ConfigureServiceAction">NOT REMOVE AND <![CDATA[&openPDCFeature=3]]></Custom>
+      <Custom Action="ServiceAccountAction" After="ServiceAccountAction.SetProperty">NOT REMOVE AND <![CDATA[&openPDCFeature=3]]></Custom>
     </InstallExecuteSequence>
   </Product>
 
@@ -97,6 +110,12 @@
       <Directory Id="ProgramFiles64Folder">
         <!-- C:\Program Files\openPDC -->
         <Directory Id="INSTALLFOLDER" Name="openPDC">
+          <Component Id="InstallFolderPermissions" Guid="{F54F753D-C6A6-45D4-B9AA-E9B20CD68FA1}">
+            <CreateFolder>
+              <util:PermissionEx User="[SERVICENAME] Admins" CreateFile="yes" CreateChild="yes" GenericRead="yes" GenericWrite="yes" GenericExecute="yes" Delete="yes" DeleteChild="yes" />
+            </CreateFolder>
+          </Component>
+          
           <Directory Id="DATABASESCRIPTSFOLDER" Name="Database Scripts">
             <Directory Id="MYSQLSCRIPTSFOLDER" Name="MySQL" />
             <Directory Id="ORACLESCRIPTSFOLDER" Name="Oracle" />
@@ -107,6 +126,12 @@
       </Directory>
       <?else ?>
       <Directory Id="ProgramFilesFolder">
+        <Component Id="InstallFolderPermissions" Guid="{F54F753D-C6A6-45D4-B9AA-E9B20CD68FA1}">
+          <CreateFolder>
+            <util:PermissionEx User="[SERVICENAME] Admins" CreateFile="yes" CreateChild="yes" GenericRead="yes" GenericWrite="yes" GenericExecute="yes" Delete="yes" DeleteChild="yes" />
+          </CreateFolder>
+        </Component>
+        
         <!-- C:\Program Files (x86)\openPDC -->
         <Directory Id="INSTALLFOLDER" Name="openPDC">
           <Directory Id="DATABASESCRIPTSFOLDER" Name="Database Scripts">
@@ -181,7 +206,7 @@
     <ComponentGroup Id="openPDCComponents" Directory="INSTALLFOLDER">
       <Component Id="openPDC">
         <File Id="openPDC.exe" Name="$(var.openPDC.TargetFileName)" Source="$(var.openPDC.TargetPath)" />
-        <ServiceInstall Id="openPDCService" Name="openPDC" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Provides processing for streaming time-series data in real-time including phasor data concentration services for synchrophasor applications." />
+        <ServiceInstall Id="openPDCService" Name="openPDC" Account="[SERVICEACCOUNT]" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Provides processing for streaming time-series data in real-time including phasor data concentration services for synchrophasor applications." />
         <ServiceControl Id="openPDCServiceControl" Name="openPDC" Stop="both" Remove="uninstall" />
       </Component>
       <Component Id="openPDCConfig" Permanent="yes">
@@ -512,6 +537,25 @@
   <!-- Custom CompanyInfo Dialog -->
   <Fragment>
     <UI>
+      <Dialog Id="ServiceAccountDialog" Width="370" Height="270" Title="[ProductName] Setup">
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>{\WixUI_Font_Title}Service Account</Text>
+        </Control>
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>Please enter the account under which to start the [ProductName] service.</Text>
+        </Control>
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="ServiceAccountLabel" Type="Text" X="45" Y="73" Width="100" Height="15" TabSkip="no" Text="&amp;Service Account:" />
+        <Control Id="ServiceAccountEdit" Type="Edit" X="45" Y="85" Width="220" Height="18" Property="SERVICEACCOUNT" Text="{80}" />
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back" />
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next" />
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+      </Dialog>
+      
       <Dialog Id="CompanyInfoDialog" Width="370" Height="270" Title="[ProductName] Setup">
         <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
         <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
