@@ -671,6 +671,12 @@
             Gets or sets the state of the alarm (raised or cleared).
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Alarm.TimeRaised">
+            <summary>
+            Gets or sets the timestamp of the most recent
+            measurement that caused the alarm to be raised.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Alarm.Cause">
             <summary>
             Gets or sets the most recent measurement
@@ -4437,32 +4443,47 @@
             Any existing output measurements will be distinctly merged with those associated with specified source ID's.
             </remarks>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.AdapterBase.ParseInputMeasurementKeys(System.Data.DataSet,System.String,System.String)">
+        <member name="M:GSF.TimeSeries.Adapters.AdapterBase.ParseInputMeasurementKeys(System.Data.DataSet,System.Boolean,System.String,System.String)">
             <summary>
             Parses input measurement keys from connection string setting.
             </summary>
             <param name="dataSource">The <see cref="T:System.Data.DataSet"/> used to define input measurement keys.</param>
+            <param name="allowSelect">Determines if database access via "SELECT" statement should be allowed for defining input measurement keys (see remarks about security).</param>
             <param name="value">Value of setting used to define input measurement keys, typically "inputMeasurementKeys".</param>
             <param name="measurementTable">Measurement table name used to load additional meta-data; this is not used when specifying a FILTER expression.</param>
             <returns>User selected input measurement keys.</returns>
+            <remarks>
+            Security warning: allowing SELECT statements, i.e., setting <paramref name="allowSelect"/> to <c>true</c>, should only be allowed in cases where SQL
+            injection would not be an issue (e.g., in places where a user can already access the database and would have nothing to gain via an injection attack).
+            </remarks>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.AdapterBase.ParseOutputMeasurementKeys(System.Data.DataSet,System.String,System.String)">
+        <member name="M:GSF.TimeSeries.Adapters.AdapterBase.ParseOutputMeasurementKeys(System.Data.DataSet,System.Boolean,System.String,System.String)">
             <summary>
             Parses output measurement keys from connection string setting.
             </summary>
             <param name="dataSource">The <see cref="T:System.Data.DataSet"/> used to define output measurements.</param>
+            <param name="allowSelect">Determines if database access via "SELECT" statement should be allowed for defining output measurement keys (see remarks about security).</param>
             <param name="value">Value of setting used to define output measurements, typically "outputMeasurements".</param>
             <param name="measurementTable">Measurement table name used to load additional meta-data; this is not used when specifying a FILTER expression.</param>
             <returns>User selected output measurements.</returns>
+            <remarks>
+            Security warning: allowing SELECT statements, i.e., setting <paramref name="allowSelect"/> to <c>true</c>, should only be allowed in cases where SQL
+            injection would not be an issue (e.g., in places where a user can already access the database and would have nothing to gain via an injection attack).
+            </remarks>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.AdapterBase.ParseOutputMeasurements(System.Data.DataSet,System.String,System.String)">
+        <member name="M:GSF.TimeSeries.Adapters.AdapterBase.ParseOutputMeasurements(System.Data.DataSet,System.Boolean,System.String,System.String)">
             <summary>
             Parses output measurements from connection string setting.
             </summary>
             <param name="dataSource">The <see cref="T:System.Data.DataSet"/> used to define output measurements.</param>
+            <param name="allowSelect">Determines if database access via "SELECT" statement should be allowed for defining output measurements (see remarks about security).</param>
             <param name="value">Value of setting used to define output measurements, typically "outputMeasurements".</param>
             <param name="measurementTable">Measurement table name used to load additional meta-data; this is not used when specifying a FILTER expression.</param>
             <returns>User selected output measurements.</returns>
+            <remarks>
+            Security warning: allowing SELECT statements, i.e., setting <paramref name="allowSelect"/> to <c>true</c>, should only be allowed in cases where SQL
+            injection would not be an issue (e.g., in places where a user can already access the database and would have nothing to gain via an injection attack).
+            </remarks>
         </member>
         <member name="E:GSF.TimeSeries.Adapters.AdapterBase.Notify">
             <summary>
@@ -7472,6 +7493,13 @@
             Raises the <see cref="E:GSF.TimeSeries.Transport.DataSubscriber.ConnectionAuthenticated"/> event.
             </summary>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.DataSubscriber.OnReceivedServerResponse(GSF.TimeSeries.Transport.ServerResponse,GSF.TimeSeries.Transport.ServerCommand)">
+            <summary>
+            Raises the <see cref="E:GSF.TimeSeries.Transport.DataSubscriber.ReceivedServerResponse"/> event.
+            </summary>
+            <param name="responseCode">Response received from the server.</param>
+            <param name="commandCode">Command that the server responded to.</param>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.OnMetaDataReceived(System.Data.DataSet)">
             <summary>
             Raises the <see cref="E:GSF.TimeSeries.Transport.DataSubscriber.MetaDataReceived"/> event.
@@ -7508,6 +7536,11 @@
         <member name="E:GSF.TimeSeries.Transport.DataSubscriber.ConnectionAuthenticated">
             <summary>
             Occurs when client connection to the data publication server has successfully authenticated.
+            </summary>
+        </member>
+        <member name="E:GSF.TimeSeries.Transport.DataSubscriber.ReceivedServerResponse">
+            <summary>
+            Occurs when client receives response from the server.
             </summary>
         </member>
         <member name="E:GSF.TimeSeries.Transport.DataSubscriber.MetaDataReceived">

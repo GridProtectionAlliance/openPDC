@@ -24,17 +24,6 @@
             Starts the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>, or restarts it if it is already running.
             </summary>
         </member>
-        <member name="M:DataQualityMonitoring.AlarmAdapter.Stop">
-            <summary>
-            Stops the <see cref="T:DataQualityMonitoring.AlarmAdapter"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.AlarmAdapter.Dispose(System.Boolean)">
-            <summary>
-            Releases the unmanaged resources used by the <see cref="T:DataQualityMonitoring.AlarmAdapter"/> object and optionally releases the managed resources.
-            </summary>
-            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        </member>
         <member name="M:DataQualityMonitoring.AlarmAdapter.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{GSF.TimeSeries.IMeasurement})">
             <summary>
             Queues a collection of measurements for processing.
@@ -59,6 +48,12 @@
             Gets a collection containing raised alarms with the highest severity for each signal in the system. 
             </summary>
             <returns>A collection containing all the highest severity raised alarms.</returns>
+        </member>
+        <member name="M:DataQualityMonitoring.AlarmAdapter.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:DataQualityMonitoring.AlarmAdapter"/> object and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         </member>
         <member name="P:DataQualityMonitoring.AlarmAdapter.SupportsTemporalProcessing">
             <summary>
