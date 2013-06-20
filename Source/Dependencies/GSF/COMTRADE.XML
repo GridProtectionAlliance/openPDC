@@ -6,7 +6,7 @@
     <members>
         <member name="T:Comtrade.AnalogChannel">
             <summary>
-            Represents an analog channel defintion of the <see cref="T:Comtrade.Schema"/>.
+            Represents an analog channel definition of the <see cref="T:Comtrade.Schema"/>.
             </summary>
         </member>
         <member name="M:Comtrade.AnalogChannel.#ctor">
@@ -128,6 +128,47 @@
             Gets or sets the the primary or secondary data scaling identifer of this <see cref="T:Comtrade.AnalogChannel"/>.
             </summary>
         </member>
+        <member name="T:Comtrade.ChannelMetadata">
+            <summary>
+            Defines a minimal set of channel metadata for a COMTRADE config file.
+            </summary>
+        </member>
+        <member name="F:Comtrade.ChannelMetadata.Name">
+            <summary>
+            Channel name.
+            </summary>
+        </member>
+        <member name="F:Comtrade.ChannelMetadata.SignalType">
+            <summary>
+            Channel signal type.
+            </summary>
+        </member>
+        <member name="F:Comtrade.ChannelMetadata.IsDigital">
+            <summary>
+            Determines if channel is a digital.
+            </summary>
+            <remarks>
+            Channel is assumed to be an analog if field is <c>false</c>.
+            </remarks>
+        </member>
+        <member name="T:Comtrade.ChannelMetadataSorter">
+            <summary>
+            Defines a comparison class to property sort metadata.
+            </summary>
+        </member>
+        <member name="M:Comtrade.ChannelMetadataSorter.Compare(Comtrade.ChannelMetadata,Comtrade.ChannelMetadata)">
+            <summary>
+            Compares one metadata record to another.
+            </summary>
+            <param name="left">Left metadata record to compare.</param>
+            <param name="right">Right metadata record to compare.</param>
+            <returns>Comparison sort order of metadata record.</returns>
+        </member>
+        <member name="F:Comtrade.ChannelMetadataSorter.Default">
+            <summary>
+            Default instance of the metadata record sorter.
+            </summary>
+        </member>
         <member name="T:Comtrade.Parser">
             <summary>
             COMTRADE data file(s) parser.
@@ -218,7 +259,7 @@
         </member>
         <member name="T:Comtrade.DigitalChannel">
             <summary>
-            Represents a digital channel defintion of the <see cref="T:Comtrade.Schema"/>.
+            Represents a digital channel definition of the <see cref="T:Comtrade.Schema"/>.
             </summary>
         </member>
         <member name="M:Comtrade.DigitalChannel.#ctor">
@@ -278,10 +319,7 @@
             Represents an action adapter that exports measurements on an interval to a COMTRADE formatted file that can be imported into other systems for analysis.
             </summary>
         </member>
-        <member name="F:Comtrade.FileExporter.SqrtOf3">
-            Constants
-        </member>
-        <member name="F:Comtrade.FileExporter.m_dataExporter">
+        <member name="F:Comtrade.FileExporter.m_stationName">
             Fields
         </member>
         <member name="M:Comtrade.FileExporter.Dispose(System.Boolean)">
@@ -292,24 +330,8 @@
         </member>
         <member name="M:Comtrade.FileExporter.Initialize">
             <summary>
-            Intializes <see cref="T:Comtrade.FileExporter"/>.
+            Initializes <see cref="T:Comtrade.FileExporter"/>.
             </summary>
-        </member>
-        <member name="M:Comtrade.FileExporter.QueueMeasurementForProcessing(GSF.TimeSeries.IMeasurement)">
-            <summary>
-            Queues a single measurement for processing.
-            </summary>
-            <param name="measurement">Measurement to queue for processing.</param>
-        </member>
-        <member name="M:Comtrade.FileExporter.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{GSF.TimeSeries.IMeasurement})">
-            <summary>
-            Queues a collection of measurements for processing.
-            </summary>
-            <param name="measurements">Collection of measurements to queue for processing.</param>
-            <remarks>
-            We override this method to only queue measurements at the desired export interval - no need
-            do excess sorting work for measurements that will never be used :)
-            </remarks>
         </member>
         <member name="M:Comtrade.FileExporter.PublishFrame(GSF.TimeSeries.IFrame,System.Int32)">
             <summary>
@@ -318,29 +340,14 @@
             <param name="frame"><see cref="T:GSF.TimeSeries.IFrame"/> of measurements that arrived within lag time and are ready for processing.</param>
             <param name="index">Index of <see cref="T:GSF.TimeSeries.IFrame"/> within one second of data ranging from zero to frames per second - 1.</param>
         </member>
-        <member name="P:Comtrade.FileExporter.ExportInterval">
+        <member name="P:Comtrade.FileExporter.StationName">
             <summary>
-            Gets or sets the interval, in seconds, at which data will be queued for concentration and then exported.
+            Gets or sets station name to use in COMTRADE configuration file.
             </summary>
         </member>
-        <member name="P:Comtrade.FileExporter.UseReferenceAngle">
+        <member name="P:Comtrade.FileExporter.DeviceID">
             <summary>
-            Gets or sets a value that determines whether a reference angle is used to adjust the value of phase angles.
-            </summary>
-        </member>
-        <member name="P:Comtrade.FileExporter.ReferenceAngleMeasurement">
-            <summary>
-            Gets or sets the key of the measurement used to adjust the value of phase angles.
-            </summary>
-        </member>
-        <member name="P:Comtrade.FileExporter.CompanyTagPrefix">
-            <summary>
-            Gets or sets the prefix attached to the beginning of the measurements' point tags, excluding the underscore.
-            </summary>
-        </member>
-        <member name="P:Comtrade.FileExporter.UseNumericQuality">
-            <summary>
-            Gets or sets the value that determines whether the measurement quality is represented as a numeric value rather than a symbolic value.
+            Gets or sets device ID to use in COMTRADE configuration file.
             </summary>
         </member>
         <member name="P:Comtrade.FileExporter.SupportsTemporalProcessing">
@@ -352,9 +359,6 @@
             <summary>
             Returns the detailed status of the <see cref="T:Comtrade.FileExporter"/>.
             </summary>
-        </member>
-        <member name="T:Comtrade.FileExporter.DataQuality">
-            Nested Types
         </member>
         <member name="T:Comtrade.FileType">
             <summary>
@@ -503,6 +507,68 @@
             <summary>
             Converts <see cref="T:Comtrade.SampleRate"/> to its string format.
             </summary>
+        </member>
+        <member name="T:Comtrade.Writer">
+            <summary>
+            COMTRADE data and config file writer.
+            </summary>
+        </member>
+        <member name="M:Comtrade.Writer.CreateSchema(System.Collections.Generic.IEnumerable{Comtrade.ChannelMetadata},System.String,System.String,GSF.Ticks,System.Int32,System.Boolean,System.Double,System.Double,GSF.PhasorProtocols.LineFrequency,System.Boolean)">
+            <summary>
+            Creates a new COMTRADE configuration <see cref="T:Comtrade.Schema"/>.
+            </summary>
+            <param name="metadata">Schema <see cref="T:Comtrade.ChannelMetadata"/> records.</param>
+            <param name="stationName">Station name for the schema.</param>
+            <param name="deviceID">Device ID for the schema.</param>
+            <param name="dataStartTime">Data start time.</param>
+            <param name="sampleCount">Total data samples (i.e., total number of rows).</param>
+            <param name="isBinary">Determines if data file should be binary or ASCII - defaults to <c>true</c> for binary.</param>
+            <param name="timeFactor">Time factor to use in schema - defaults to 1000.</param>
+            <param name="samplingRate">Desired sampling rate - defaults to 33.3333Hz.</param>
+            <param name="nominalFrequency">Nominal frequency - defaults to 60Hz.</param>
+            <param name="includeFracSecDefinition">Determines if the FRACSEC word digital definitions should be included - defaults to <c>true</c>.</param>
+            <returns>New COMTRADE configuration <see cref="T:Comtrade.Schema"/>.</returns>
+            <remarks>
+            This function is primarily intended to create a configuration based on synchrophasor data
+            (see Annex H: Schema for Phasor Data 2150 Using the COMTRADE File Standard in IEEE C37.111-2010),
+            it may be necessary to manually create a schema object for other COMTRADE needs. You can call
+            the <see cref="P:Comtrade.Schema.FileImage"/> property to return a string that that can be written to a file
+            that will be the contents of the configuration file.
+            </remarks>
+        </member>
+        <member name="M:Comtrade.Writer.WriteNextRecordAscii(System.IO.StreamWriter,Comtrade.Schema,GSF.Ticks,System.Double[],System.UInt32,System.Boolean,System.UInt16)">
+            <summary>
+            Writes next COMTRADE record in ASCII format.
+            </summary>
+            <param name="output">Destination stream.</param>
+            <param name="schema">Source schema.</param>
+            <param name="timestamp">Record timestamp (implicitly castable as <see cref="T:System.DateTime"/>).</param>
+            <param name="values">Values to write - 16-bit digitals should exist as a word in an individual double value, method will write out bits.</param>
+            <param name="sample">User incremented sample index.</param>
+            <param name="injectFracSecValue">Determines if FRACSEC value should be automatically injected into stream as first digital - defaults to <c>true</c>.</param>
+            <param name="fracSecValue">FRACSEC value to inject into output stream - defaults to 0x0000.</param>
+            <remarks>
+            This function is primarily intended to write COMTRADE ASCII data records based on synchrophasor data
+            (see Annex H: Schema for Phasor Data 2150 Using the COMTRADE File Standard in IEEE C37.111-2010),
+            it may be necessary to manually write records for other COMTRADE needs (e.g., non 16-bit digitals).
+            </remarks>
+        </member>
+        <member name="M:Comtrade.Writer.WriteNextRecordBinary(System.IO.Stream,Comtrade.Schema,GSF.Ticks,System.Double[],System.UInt32,System.Boolean,System.UInt16)">
+            <summary>
+            Writes next COMTRADE record in binary format.
+            </summary>
+            <param name="output">Destination stream.</param>
+            <param name="schema">Source schema.</param>
+            <param name="timestamp">Record timestamp (implicitly castable as <see cref="T:System.DateTime"/>).</param>
+            <param name="values">Values to write - 16-bit digitals should exist as a word in an individual double value.</param>
+            <param name="sample">User incremented sample index.</param>
+            <param name="injectFracSecValue">Determines if FRACSEC value should be automatically injected into stream as first digital - defaults to <c>true</c>.</param>
+            <param name="fracSecValue">FRACSEC value to inject into output stream - defaults to 0x0000.</param>
+            <remarks>
+            This function is primarily intended to write COMTRADE binary data records based on synchrophasor data
+            (see Annex H: Schema for Phasor Data 2150 Using the COMTRADE File Standard in IEEE C37.111-2010),
+            it may be necessary to manually write records for other COMTRADE needs (e.g., non 16-bit digitals).
+            </remarks>
         </member>
     </members>
 </doc>

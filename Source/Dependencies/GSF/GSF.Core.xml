@@ -14515,6 +14515,31 @@
             Win32 UnlockServiceDatabase function.
             </summary>
         </member>
+        <member name="M:GSF.Interop.WindowsApi.LookupAccountName(System.String,System.String,System.IntPtr,System.Int32@,System.Text.StringBuilder,System.Int32@,System.Int32@)">
+            <summary>
+            Win32 LookupAccountName function.
+            </summary>
+        </member>
+        <member name="M:GSF.Interop.WindowsApi.LsaOpenPolicy(GSF.Interop.WindowsApi.LSA_UNICODE_STRING@,GSF.Interop.WindowsApi.LSA_OBJECT_ATTRIBUTES@,System.Int32,System.IntPtr@)">
+            <summary>
+            Win32 LsaOpenPolicy function.
+            </summary>
+        </member>
+        <member name="M:GSF.Interop.WindowsApi.LsaAddAccountRights(System.IntPtr,System.IntPtr,GSF.Interop.WindowsApi.LSA_UNICODE_STRING[],System.UInt32)">
+            <summary>
+            Win32 LsaAddAccountRights function.
+            </summary>
+        </member>
+        <member name="M:GSF.Interop.WindowsApi.LsaClose(System.IntPtr)">
+            <summary>
+            Win32 LsaClose function.
+            </summary>
+        </member>
+        <member name="M:GSF.Interop.WindowsApi.FreeSid(System.IntPtr)">
+            <summary>
+            Win32 FreeSid function.
+            </summary>
+        </member>
         <member name="M:GSF.Interop.WindowsApi.GetLastError">
             <summary>
             Win32 GetLastError function.
@@ -15032,6 +15057,36 @@
             terminates without reporting a status of SERVICE_STOPPED or if it enters the SERVICE_STOPPED state but the dwWin32ExitCode member
             of the SERVICE_STATUS structure is not ERROR_SUCCESS (0). If this member is FALSE and the service has configured failure actions,
             the failure actions are queued only if the service terminates without reporting a status of SERVICE_STOPPED.
+            </summary>
+        </member>
+        <member name="T:GSF.Interop.WindowsApi.LsaAccess">
+            <summary>
+            LSA API policy access enumeration.
+            </summary>
+        </member>
+        <member name="T:GSF.Interop.WindowsApi.LSA_OBJECT_ATTRIBUTES">
+            <summary>
+            Win32 LSA_OBJECT_ATTRIBUTES structure.
+            </summary>
+        </member>
+        <member name="T:GSF.Interop.WindowsApi.LSA_UNICODE_STRING">
+            <summary>
+            Win32 LSA_UNICODE_STRING structure.
+            </summary>
+        </member>
+        <member name="F:GSF.Interop.WindowsApi.LSA_UNICODE_STRING.Length">
+            <summary>
+            Specifies the length of the string.
+            </summary>
+        </member>
+        <member name="F:GSF.Interop.WindowsApi.LSA_UNICODE_STRING.MaximumLength">
+            <summary>
+            Specifies the maximum length of the string.
+            </summary>
+        </member>
+        <member name="F:GSF.Interop.WindowsApi.LSA_UNICODE_STRING.Buffer">
+            <summary>
+            Pointer to string data.
             </summary>
         </member>
         <member name="T:GSF.Interop.WindowsApi.LUID_AND_ATTRIBUTES">
