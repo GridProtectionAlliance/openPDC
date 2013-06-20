@@ -82,7 +82,7 @@
     <Property Id="HTTPSERVICEPORTS" Value="6051,6052,6151,6152,5018" />
     <Property Id="COMPANYNAME" Value="Grid Protection Alliance" />
     <Property Id="COMPANYACRONYM" Value="GPA" />
-    <SetProperty Id="SERVICEACCOUNT" Value="NT SERVICE\[SERVICENAME]" After="LaunchConditions" />
+    <SetProperty Id="SERVICEACCOUNT" Value="NT SERVICE\[SERVICENAME]" After="LaunchConditions" Sequence="first" />
     <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\INSTALL_LICENSE.rtf" />
 
     <!-- Custom Actions -->
@@ -206,7 +206,7 @@
     <ComponentGroup Id="openPDCComponents" Directory="INSTALLFOLDER">
       <Component Id="openPDC">
         <File Id="openPDC.exe" Name="$(var.openPDC.TargetFileName)" Source="$(var.openPDC.TargetPath)" />
-        <ServiceInstall Id="openPDCService" Name="openPDC" Account="[SERVICEACCOUNT]" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Provides processing for streaming time-series data in real-time including phasor data concentration services for synchrophasor applications." />
+        <ServiceInstall Id="openPDCService" Name="openPDC" Account="[SERVICEACCOUNT]" Password="[SERVICEPASSWORD]" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Provides processing for streaming time-series data in real-time including phasor data concentration services for synchrophasor applications." />
         <ServiceControl Id="openPDCServiceControl" Name="openPDC" Stop="both" Remove="uninstall" />
       </Component>
       <Component Id="openPDCConfig" Permanent="yes">
@@ -548,6 +548,14 @@
         <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
         <Control Id="ServiceAccountLabel" Type="Text" X="45" Y="73" Width="100" Height="15" TabSkip="no" Text="&amp;Service Account:" />
         <Control Id="ServiceAccountEdit" Type="Edit" X="45" Y="85" Width="220" Height="18" Property="SERVICEACCOUNT" Text="{80}" />
+        <Control Id="ServicePasswordLabel" Type="Text" X="45" Y="113" Width="100" Height="15" TabSkip="no" Text="&amp;Service Password:" />
+        <Control Id="ServicePasswordEdit" Type="Edit" X="45" Y="125" Width="220" Height="18" Property="SERVICEPASSWORD" Text="{80}" Password="yes" />
+        <Control Id="ServicePasswordInfoLine1" Type="Text" X="45" Y="153" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>NOTE: If the service account is LocalSystem or begins with NT AUTHORITY</Text>
+        </Control>
+        <Control Id="ServicePasswordInfoLine2" Type="Text" X="70" Y="163" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>or NT SERVICE you may leave the password field blank.</Text>
+        </Control>
         <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back" />
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next" />
