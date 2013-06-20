@@ -70,15 +70,12 @@
       <DialogRef Id="ServiceAccountDialog" />
       <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="ServiceAccountDialog"><![CDATA[&openPDCFeature=3]]></Publish>
       <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg"><![CDATA[NOT(&openPDCFeature=3)]]></Publish>
-      <Publish Dialog="ServiceAccountDialog" Control="Back" Event="NewDialog" Value="CustomizeDlg">1</Publish>
-      <Publish Dialog="ServiceAccountDialog" Control="Next" Event="NewDialog" Value="CompanyInfoDialog">1</Publish>
-      <Publish Dialog="CompanyInfoDialog" Control="Back" Event="NewDialog" Value="ServiceAccountDialog">1</Publish>
-      <Publish Dialog="CompanyInfoDialog" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CompanyInfoDialog">(NOT Installed OR WixUI_InstallMode = "Change") AND <![CDATA[&openPDCFeature=3]]></Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg">(NOT Installed OR WixUI_InstallMode = "Change") AND <![CDATA[NOT(&openPDCFeature=3)]]></Publish>
     </UI>
 
     <Property Id="SERVICENAME" Value="$(var.openPDC.TargetName)" />
+    <Property Id="SERVICEPASSWORD" Hidden="yes" />
     <Property Id="HTTPSERVICEPORTS" Value="6051,6052,6151,6152,5018" />
     <Property Id="COMPANYNAME" Value="Grid Protection Alliance" />
     <Property Id="COMPANYACRONYM" Value="GPA" />
@@ -87,6 +84,7 @@
 
     <!-- Custom Actions -->
     <Binary Id="InstallerActions" SourceFile="$(var.SolutionDir)\Dependencies\GSF\GSF.InstallerActions.CA.dll" />
+    <CustomAction Id="AuthenticateServiceAccountAction" BinaryKey="InstallerActions" DllEntry="AuthenticateServiceAccountAction" Execute="immediate" />
     <CustomAction Id="CompanyInfoAction.SetProperty" Property="CompanyInfoAction" Value="SERVICENAME=[SERVICENAME];INSTALLDIR=[INSTALLFOLDER];COMPANYNAME=[COMPANYNAME];COMPANYACRONYM=[COMPANYACRONYM]" />
     <CustomAction Id="CompanyInfoAction" BinaryKey="InstallerActions" DllEntry="CompanyInfoAction" Execute="deferred" Impersonate="no" />
     <CustomAction Id="ConfigureServiceAction.SetProperty" Property="ConfigureServiceAction" Value="SERVICENAME=[SERVICENAME]" />
@@ -534,9 +532,10 @@
     </ComponentGroup>
   </Fragment>
 
-  <!-- Custom CompanyInfo Dialog -->
+  <!-- Custom Dialogs -->
   <Fragment>
     <UI>
+      <!-- ServiceAccount Dialog -->
       <Dialog Id="ServiceAccountDialog" Width="370" Height="270" Title="[ProductName] Setup">
         <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
         <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
@@ -550,20 +549,49 @@
         <Control Id="ServiceAccountEdit" Type="Edit" X="45" Y="85" Width="220" Height="18" Property="SERVICEACCOUNT" Text="{80}" />
         <Control Id="ServicePasswordLabel" Type="Text" X="45" Y="113" Width="100" Height="15" TabSkip="no" Text="&amp;Service Password:" />
         <Control Id="ServicePasswordEdit" Type="Edit" X="45" Y="125" Width="220" Height="18" Property="SERVICEPASSWORD" Text="{80}" Password="yes" />
-        <Control Id="ServicePasswordInfoLine1" Type="Text" X="45" Y="153" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
-          <Text>NOTE: If the service account is LocalSystem or begins with NT AUTHORITY</Text>
-        </Control>
-        <Control Id="ServicePasswordInfoLine2" Type="Text" X="70" Y="163" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
-          <Text>or NT SERVICE you may leave the password field blank.</Text>
+        <Control Id="ServicePasswordInfo" Type="Text" X="45" Y="153" Width="280" Height="30" Transparent="yes" NoPrefix="yes">
+          <Text>NOTE: If the service account is LocalSystem or begins with NT AUTHORITY or NT SERVICE you may leave the password field blank.</Text>
         </Control>
         <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
-        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back" />
-        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+          <Publish Event="NewDialog" Value="CustomizeDlg">1</Publish>
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
+          <Publish Event="DoAction" Value="AuthenticateServiceAccountAction">1</Publish>
+          <Publish Event="NewDialog" Value="ServiceAccountErrorDialog">NOT SERVICEAUTHENTICATED</Publish>
+          <Publish Event="NewDialog" Value="CompanyInfoDialog">SERVICEAUTHENTICATED</Publish>
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+      </Dialog>
+
+      <!-- ServiceAccountError Dialog -->
+      <Dialog Id="ServiceAccountErrorDialog" Width="370" Height="270" Title="[ProductName] Setup">
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>{\WixUI_Font_Title}Service Account</Text>
+        </Control>
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>Setup encountered an error authenticating the service account.</Text>
+        </Control>
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="InfoLabel" Type="Text" X="45" Y="73" Width="280" Height="60" TabSkip="no">
+          <Text>The service account entered could not be authorized. The username or password may have been entered incorrectly. To correct this, please click the "Back" button to go back to the previous step. To ignore this error and proceed with the installation, click the "Next" button.</Text>
+        </Control>
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Back">
+          <Publish Event="NewDialog" Value="ServiceAccountDialog">1</Publish>
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
+          <Publish Event="NewDialog" Value="CompanyInfoDialog">1</Publish>
+        </Control>
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
       </Dialog>
       
+      <!-- CompanyInfo Dialog -->
       <Dialog Id="CompanyInfoDialog" Width="370" Height="270" Title="[ProductName] Setup">
         <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
         <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
@@ -578,8 +606,12 @@
         <Control Id="CompanyAcronymLabel" Type="Text" X="45" Y="113" Width="100" Height="15" TabSkip="no" Text="&amp;Company Acronym:" />
         <Control Id="CompanyAcronymEdit" Type="Edit" X="45" Y="125" Width="220" Height="18" Property="COMPANYACRONYM" Text="{80}" />
         <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
-        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back" />
-        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+          <Publish Event="NewDialog" Value="ServiceAccountDialog">1</Publish>
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
+          <Publish Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+        </Control>
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
