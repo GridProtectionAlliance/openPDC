@@ -389,6 +389,22 @@
             Time-series framework uses this handler to route new measurements to the action and output adapters; adapter will handle filtering.
             </remarks>
         </member>
+        <member name="M:GSF.TimeSeries.Adapters.RoutingTables.OnStatusMessage(System.String)">
+            <summary>
+            Raises the <see cref="E:GSF.TimeSeries.Adapters.RoutingTables.StatusMessage"/> event.
+            </summary>
+            <param name="status">New status message.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.Adapters.RoutingTables.OnStatusMessage(System.String,System.Object[])">
+            <summary>
+            Raises the <see cref="E:GSF.TimeSeries.Adapters.RoutingTables.StatusMessage"/> event with a formatted status message.
+            </summary>
+            <param name="formattedStatus">Formatted status message.</param>
+            <param name="args">Arguments for <paramref name="formattedStatus"/>.</param>
+            <remarks>
+            This overload combines string.Format and SendStatusMessage for convenience.
+            </remarks>
+        </member>
         <member name="M:GSF.TimeSeries.Adapters.RoutingTables.OnProcessException(System.Exception)">
             <summary>
             Raises <see cref="E:GSF.TimeSeries.Adapters.RoutingTables.ProcessException"/> event.
@@ -423,6 +439,14 @@
             </summary>
             <param name="sender">The source of the event.</param>
             <param name="args">The measurement that was updated.</param>
+        </member>
+        <member name="E:GSF.TimeSeries.Adapters.RoutingTables.StatusMessage">
+            <summary>
+            Provides status messages to consumer.
+            </summary>
+            <remarks>
+            <see cref="F:GSF.EventArgs`1.Argument"/> is new status message.
+            </remarks>
         </member>
         <member name="E:GSF.TimeSeries.Adapters.RoutingTables.ProcessException">
             <summary>
@@ -2762,12 +2786,6 @@
             <param name="maxLength">Maximum number of available characters for display.</param>
             <returns>A short one-line summary of the current adapter status.</returns>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.IAdapter.AssignParentCollection(GSF.TimeSeries.Adapters.IAdapterCollection)">
-            <summary>
-            Assigns the reference to the parent <see cref="T:GSF.TimeSeries.Adapters.IAdapterCollection"/> that will contain this <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/>.
-            </summary>
-            <param name="parent">Parent adapter collection.</param>
-        </member>
         <member name="M:GSF.TimeSeries.Adapters.IAdapter.WaitForInitialize(System.Int32)">
             <summary>
             Blocks the current thread until the adapter is <see cref="P:GSF.TimeSeries.Adapters.IAdapter.Initialized"/>.
@@ -2885,11 +2903,6 @@
         <member name="P:GSF.TimeSeries.Adapters.IAdapter.Settings">
             <summary>
             Gets settings <see cref="T:System.Collections.Generic.Dictionary`2"/> parsed when <see cref="P:GSF.TimeSeries.Adapters.IAdapter.ConnectionString"/> was assigned.
-            </summary>
-        </member>
-        <member name="P:GSF.TimeSeries.Adapters.IAdapter.Parent">
-            <summary>
-            Gets a read-only reference to the collection that contains this <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/>.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IAdapter.Name">
@@ -3090,12 +3103,6 @@
             <summary>
             Examines the concentrator frame queue state of the <see cref="T:GSF.TimeSeries.Adapters.ActionAdapterBase"/>.
             </summary>
-        </member>
-        <member name="M:GSF.TimeSeries.Adapters.ActionAdapterBase.AssignParentCollection(GSF.TimeSeries.Adapters.IAdapterCollection)">
-            <summary>
-            Assigns the reference to the parent <see cref="T:GSF.TimeSeries.Adapters.IAdapterCollection"/> that will contain this <see cref="T:GSF.TimeSeries.Adapters.ActionAdapterBase"/>.
-            </summary>
-            <param name="parent">Parent adapter collection.</param>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.ActionAdapterBase.ResetStatistics">
             <summary>
@@ -3360,11 +3367,6 @@
             Note that framesPerSecond, lagTime and leadTime are required parameters, all other parameters are optional.
             </para>
             </remarks>
-        </member>
-        <member name="P:GSF.TimeSeries.Adapters.ActionAdapterBase.Parent">
-            <summary>
-            Gets a read-only reference to the collection that contains this <see cref="T:GSF.TimeSeries.Adapters.ActionAdapterBase"/>.
-            </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.ActionAdapterBase.DataSource">
             <summary>
@@ -3709,12 +3711,6 @@
             Stops each <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/> implementation in this <see cref="T:GSF.TimeSeries.Adapters.AdapterCollectionBase`1"/>.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.AssignParentCollection(GSF.TimeSeries.Adapters.IAdapterCollection)">
-            <summary>
-            Assigns the reference to the parent <see cref="T:GSF.TimeSeries.Adapters.IAdapterCollection"/> that will contain this <see cref="T:GSF.TimeSeries.Adapters.AdapterCollectionBase`1"/>, if any.
-            </summary>
-            <param name="parent">Parent adapter collection.</param>
-        </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.ResetStatistics">
             <summary>
             Resets the statistics of this collection.
@@ -3929,11 +3925,6 @@
         <member name="P:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.ConnectionString">
             <summary>
             Gets or sets key/value pair connection information specific to this <see cref="T:GSF.TimeSeries.Adapters.AdapterCollectionBase`1"/>.
-            </summary>
-        </member>
-        <member name="P:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.Parent">
-            <summary>
-            Gets a read-only reference to the collection that contains this <see cref="T:GSF.TimeSeries.Adapters.AdapterCollectionBase`1"/>, if any.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.DataSource">
@@ -4234,12 +4225,6 @@
             Stops the <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
             </summary>		
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.AdapterBase.AssignParentCollection(GSF.TimeSeries.Adapters.IAdapterCollection)">
-            <summary>
-            Assigns the reference to the parent <see cref="T:GSF.TimeSeries.Adapters.IAdapterCollection"/> that will contain this <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
-            </summary>
-            <param name="parent">Parent adapter collection.</param>
-        </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterBase.SetInitializedState(System.Boolean)">
             <summary>
             Manually sets the initialized state of the <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
@@ -4524,7 +4509,7 @@
             Event is raised when <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/> is disposed.
             </summary>
             <remarks>
-            If an adapter references another adapter by enumerating the <see cref="P:GSF.TimeSeries.Adapters.AdapterBase.Parent"/> collection, this
+            If an adapter references another adapter by enumerating the <see cref="!:Parent"/> collection, this
             event should be monitored to release the reference.
             </remarks>
         </member>
@@ -4595,11 +4580,6 @@
             </list>
             </para>
             </remarks>
-        </member>
-        <member name="P:GSF.TimeSeries.Adapters.AdapterBase.Parent">
-            <summary>
-            Gets a read-only reference to the collection that contains this <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.
-            </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.AdapterBase.DataSource">
             <summary>

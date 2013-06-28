@@ -21410,6 +21410,20 @@
             <param name="assemblyInstance">Source assembly.</param>
             <returns>A NameValueCollection of assembly attributes.</returns>
         </member>
+        <member name="M:GSF.Reflection.AssemblyExtensions.TryLoadAllReferences(System.Reflection.Assembly)">
+            <summary>
+            Recursively attempts to load all assemblies referenced from the given assembly.
+            </summary>
+            <param name="assemblyInstance">The assembly whose references are to be loaded.</param>
+            <returns>True if the references were successfully loaded; false otherwise.</returns>
+            <remarks>
+            If an object is created from a type that is loaded from an assembly, and if that
+            assembly's references fail to load during instantiation, an exception may be thrown
+            from both the constructor and the finalizer of the object that was instantiated.
+            This method allows us to ensure that all referenced assemblies can be loaded
+            before attempting to instantiate a type from that assembly.
+            </remarks>
+        </member>
         <member name="T:GSF.Reflection.AssemblyInfo">
             <summary>Assembly Information Class.</summary>
         </member>
@@ -24903,7 +24917,7 @@
             <param name="binariesDirectory">The directory containing the assemblies to be processed.</param>
             <returns>Public types that implement the specified <paramref name="type"/>.</returns>
         </member>
-        <member name="M:GSF.TypeExtensions.LoadImplementations(System.Type,System.String,System.Boolean)">
+        <member name="M:GSF.TypeExtensions.LoadImplementations(System.Type,System.String,System.Boolean,System.Boolean)">
             <summary>
             Loads public types from assemblies in the specified <paramref name="binariesDirectory"/> that implement 
             the specified <paramref name="type"/> either through class inheritance or interface implementation.
@@ -24911,6 +24925,7 @@
             <param name="type">The <see cref="T:System.Type"/> that must be implemented by the public types.</param>
             <param name="binariesDirectory">The directory containing the assemblies to be processed.</param>
             <param name="excludeAbstractTypes">true to exclude public types that are abstract; otherwise false.</param>
+            <param name="validateReferences">True to validate references of loaded assemblies before attempting to instantiate types; false otherwise.</param>
             <returns>Public types that implement the specified <paramref name="type"/>.</returns>
         </member>
         <member name="T:GSF.UInt24">

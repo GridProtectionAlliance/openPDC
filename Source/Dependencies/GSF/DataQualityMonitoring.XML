@@ -495,42 +495,6 @@
             Gets or collection of <see cref="T:DataQualityMonitoring.RangeTest"/>s used by the web service for its data.
             </summary>
         </member>
-        <member name="T:DataQualityMonitoring.Services.ITimestampService">
-            <summary>
-            Defines a REST web service for measurements with bad timestamps.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadAllBadTimestampMeasurementsAsXml">
-            <summary>
-            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.ITimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadAllBadTimestampMeasurementsAsJson">
-            <summary>
-            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.ITimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadBadTimestampMeasurementsFromDeviceAsXml(System.String)">
-            <summary>
-            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.ITimestampService.ReadBadTimestampMeasurementsFromDeviceAsJson(System.String)">
-            <summary>
-            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.ITimestampService.Test">
-            <summary>
-            Gets or sets the <see cref="T:DataQualityMonitoring.TimestampTest"/> used by the web service for its data.
-            </summary>
-        </member>
         <member name="T:DataQualityMonitoring.Services.OutOfRangeService">
             <summary>
             Represents a REST web service for out-of-range measurements.
@@ -723,9 +687,9 @@
             Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableAlarm"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableAlarmCollection"/>.
             </summary>
         </member>
-        <member name="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement">
+        <member name="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement">
             <summary>
-            Represents an <see cref="T:GSF.TimeSeries.IMeasurement"/> with a bad timestamp that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
+            Represents a flatlined <see cref="T:GSF.TimeSeries.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
             </summary>
         </member>
         <member name="T:DataQualityMonitoring.SerializableMeasurement">
@@ -790,28 +754,6 @@
         <member name="P:DataQualityMonitoring.SerializableMeasurement.Device">
             <summary>
             Gets or sets the device of the <see cref="T:GSF.TimeSeries.IMeasurement"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/> class.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.#ctor(GSF.TimeSeries.IMeasurement,GSF.Ticks)">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/> class.
-            </summary>
-            <param name="measurement"><see cref="T:GSF.TimeSeries.IMeasurement"/> from which <see cref="T:DataQualityMonitoring.Services.SerializableOutOfRangeMeasurement"/> is to be initialized.</param>
-            <param name="arrivalTime">The arrival time of the <see cref="T:GSF.TimeSeries.IMeasurement"/>.</param>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement.TimeOfArrival">
-            <summary>
-            Gets or sets the arrival time of the <see cref="T:GSF.TimeSeries.IMeasurement"/>.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement">
-            <summary>
-            Represents a flatlined <see cref="T:GSF.TimeSeries.IMeasurement"/> that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/>, <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
             </summary>
         </member>
         <member name="M:DataQualityMonitoring.Services.SerializableFlatlinedMeasurement.#ctor">
@@ -923,154 +865,6 @@
         <member name="P:DataQualityMonitoring.Services.SerializableRangeTestCollection.RangeTests">
             <summary>
             Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTest"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableRangeTestCollection"/>.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.SerializableTimestampTest">
-            <summary>
-            Represents a container for <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/>s that can be serialized using <see cref="T:System.Xml.Serialization.XmlSerializer"/> or <see cref="T:System.Runtime.Serialization.Json.DataContractJsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableTimestampTest.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.SerializableTimestampTest.#ctor(System.Collections.Generic.Dictionary{GSF.Ticks,System.Collections.Generic.LinkedList{GSF.TimeSeries.IMeasurement}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
-            </summary>
-            <param name="badTimestampMeasurements">
-            A dictionary where the values are <see cref="T:System.Collections.Generic.LinkedList`1"/>s containing measurements and the keys are the arrival
-            times of the measurements. The measurements are to be stored in this <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
-            </param>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.SerializableTimestampTest.BadTimestampMeasurements">
-            <summary>
-            Gets or sets the <see cref="T:DataQualityMonitoring.Services.SerializableBadTimestampMeasurement"/>s contained in the <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/>.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.Services.TimestampService">
-            <summary>
-            Represents a REST web service for measurements with bad timestamps.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.TimestampService.#ctor(DataQualityMonitoring.TimestampTest)">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.Services.TimestampService"/> class.
-            </summary>
-            <param name="test">The test to be used by this <see cref="T:DataQualityMonitoring.Services.TimestampService"/>.</param>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadAllBadTimestampMeasurementsAsXml">
-            <summary>
-            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.TimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadAllBadTimestampMeasurementsAsJson">
-            <summary>
-            Reads all measurements with bad timestamps from the <see cref="P:DataQualityMonitoring.Services.TimestampService.Test"/> and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format.
-            </summary>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadBadTimestampMeasurementsFromDeviceAsXml(System.String)">
-            <summary>
-            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Xml"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.Services.TimestampService.ReadBadTimestampMeasurementsFromDeviceAsJson(System.String)">
-            <summary>
-            Reads all measurements with bad timestamps from the specified device and sends it in <see cref="F:System.ServiceModel.Web.WebMessageFormat.Json"/> format. 
-            </summary>
-            <param name="device">The name of the device to check for flatlined measurements.</param>
-            <returns>A <see cref="T:DataQualityMonitoring.Services.SerializableTimestampTest"/> object.</returns>
-        </member>
-        <member name="P:DataQualityMonitoring.Services.TimestampService.Test">
-            <summary>
-            Gets or sets the <see cref="T:DataQualityMonitoring.TimestampTest"/> used by the web service for its data.
-            </summary>
-        </member>
-        <member name="T:DataQualityMonitoring.TimestampTest">
-            <summary>
-            Tests measurements to determine whether their timestamps are good or bad.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DataQualityMonitoring.TimestampTest"/> class.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.GetShortStatus(System.Int32)">
-            <summary>
-            Returns a short, one-line status message about the adapter.
-            </summary>
-            <param name="maxLength">The maximum length of the message to be returned.</param>
-            <returns>A short, one-line status message.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.Initialize">
-            <summary>
-            Initializes <see cref="T:DataQualityMonitoring.TimestampTest"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.Start">
-            <summary>
-            Starts this <see cref="T:DataQualityMonitoring.TimestampTest"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.Stop">
-            <summary>
-            Stops this <see cref="T:DataQualityMonitoring.TimestampTest"/>.
-            </summary>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.QueueMeasurementsForProcessing(System.Collections.Generic.IEnumerable{GSF.TimeSeries.IMeasurement})">
-            <summary>
-            Queues a collection of measurements for processing.
-            </summary>
-            <param name="measurements">Collection of measurements to queue for processing.</param>
-            <remarks>
-            The <see cref="T:DataQualityMonitoring.TimestampTest"/> adapter doesn't process any measurements.
-            </remarks>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.Dispose(System.Boolean)">
-            <summary>
-            Releases the unmanaged resources used by the <see cref="T:DataQualityMonitoring.TimestampTest"/> object and optionally releases the managed resources.
-            </summary>
-            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.GetMeasurementsWithBadTimestamps">
-            <summary>
-            Gets all the measurements with bad timestamps.
-            </summary>
-            <returns>A dictionary where the keys are arrival times and the values are <see cref="T:System.Collections.Generic.LinkedList`1"/>s of measurements that arrived at the corresponding time.</returns>
-        </member>
-        <member name="M:DataQualityMonitoring.TimestampTest.GetBadTimestampMeasurementCount">
-            <summary>
-            Gets the number of measurements with bad timestamps received by this <see cref="T:DataQualityMonitoring.TimestampTest"/>.
-            </summary>
-            <returns>The number of measurements with bad timestamps.</returns>
-        </member>
-        <member name="P:DataQualityMonitoring.TimestampTest.TimeToPurge">
-            <summary>
-            Gets or sets the age, in seconds, at which measurements with bad timestamps are purged from the adapter.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.TimestampTest.WarnInterval">
-            <summary>
-            Gets or sets the amount of time, in seconds, between console updates.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.TimestampTest.ConcentratorName">
-            <summary>
-            Gets or sets the name of the concentrator whose measurements will be checked for bad timestamps.
-            Modifying this property will cause this adapter to search for an action adapter with the name
-            that was supplied to the property. If one is found, it will detach from the current adapter and
-            attach to the other. If one is not found, nothing will happen.
-            </summary>
-        </member>
-        <member name="P:DataQualityMonitoring.TimestampTest.SupportsTemporalProcessing">
-            <summary>
-            Gets the flag indicating if this adapter supports temporal processing.
             </summary>
         </member>
     </members>
