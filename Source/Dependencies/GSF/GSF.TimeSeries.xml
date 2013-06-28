@@ -1467,7 +1467,7 @@
             Gets or sets exact timestamp, in ticks, of when this <see cref="T:GSF.TimeSeries.IMeasurement"/> was received (i.e., created).
             </summary>
             <remarks>
-            <para>Implementors should set this timestamp to be the ticks of <see cref="P:System.DateTime.UtcNow"/> of when this class was created.</para>
+            <para>Implementers should set this timestamp to be the ticks of <see cref="P:System.DateTime.UtcNow"/> of when this class was created.</para>
             <para>The value of this property represents the number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001.</para>
             </remarks>
         </member>
@@ -1476,7 +1476,7 @@
             Gets or sets exact timestamp, in ticks, of when this <see cref="T:GSF.TimeSeries.IMeasurement"/> was published (post-processing).
             </summary>
             <remarks>
-            <para>Implementors should update all associated <see cref="P:GSF.TimeSeries.IMeasurement.PublishedTimestamp"/> values when setting this property.</para>
+            <para>Implementers should update all associated <see cref="P:GSF.TimeSeries.IMeasurement.PublishedTimestamp"/> values when setting this property.</para>
             <para>The value of this property represents the number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001.</para>
             </remarks>
         </member>
@@ -1486,7 +1486,7 @@
             </summary>
             <remarks>
             <para>This value is used to help monitor slow moving measurements that are being sorted into the <see cref="T:GSF.TimeSeries.IFrame"/>.</para>
-            <para>Implementors need only track the value.</para>
+            <para>Implementers need only track the value.</para>
             </remarks>
         </member>
         <member name="M:GSF.TimeSeries.Frame.#ctor(GSF.Ticks,System.Int32)">
@@ -1950,7 +1950,7 @@
             Get the hash code for the <see cref="P:GSF.TimeSeries.ITimeSeriesValue.ID"/>.
             </summary>
             <returns>Hash code for the <see cref="P:GSF.TimeSeries.ITimeSeriesValue.ID"/>.</returns>
-            <remarks>Implementors should always return the hash code based on <see cref="P:GSF.TimeSeries.ITimeSeriesValue.ID"/> of measurement.</remarks>
+            <remarks>Implementers should always return the hash code based on <see cref="P:GSF.TimeSeries.ITimeSeriesValue.ID"/> of measurement.</remarks>
         </member>
         <member name="P:GSF.TimeSeries.ITimeSeriesValue.ID">
             <summary>
@@ -2775,7 +2775,7 @@
             <param name="timeout">The number of milliseconds to wait.</param>
             <returns><c>true</c> if the initialization succeeds; otherwise, <c>false</c>.</returns>
             <remarks>
-            Implementors should create a wait handle (e.g., the <see cref="T:System.Threading.ManualResetEvent"/>) so that consumers
+            Implementers should create a wait handle (e.g., the <see cref="T:System.Threading.ManualResetEvent"/>) so that consumers
             can call this method and wait for the adapter intialization to complete before using the adapter.
             </remarks>
         </member>
@@ -2907,7 +2907,7 @@
             Gets or sets flag indicating if the adapter has been initialized successfully.
             </summary>
             <remarks>
-            Implementors only need to track this value.
+            Implementers only need to track this value.
             </remarks>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IAdapter.InitializationTimeout">
@@ -2915,7 +2915,7 @@
             Gets or sets maximum time system will wait during <see cref="M:GSF.TimeSeries.Adapters.IAdapter.Start"/> for initialization.
             </summary>
             <remarks>
-            Implementors should use value <see cref="F:System.Threading.Timeout.Infinite"/> to wait indefinitely.
+            Implementers should use value <see cref="F:System.Threading.Timeout.Infinite"/> to wait indefinitely.
             </remarks>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IAdapter.DependencyTimeout">
@@ -3252,7 +3252,7 @@
             <param name="formattedStatus">Formatted status message.</param>
             <param name="args">Arguments for <paramref name="formattedStatus"/>.</param>
             <remarks>
-            This overload combines string.Format and SendStatusMessage for convienence.
+            This overload combines string.Format and SendStatusMessage for convenience.
             </remarks>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.ActionAdapterBase.OnInputMeasurementKeysUpdated">
@@ -4757,9 +4757,21 @@
             </summary>
             <param name="description">Assigns the description for this adapter command.</param>
         </member>
+        <member name="M:GSF.TimeSeries.Adapters.AdapterCommandAttribute.#ctor(System.String,System.String[])">
+            <summary>
+            Creates a new <see cref="T:GSF.TimeSeries.Adapters.AdapterCommandAttribute"/> with the specified <paramref name="description"/> value.
+            </summary>
+            <param name="description">Assigns the description for this adapter command.</param>
+            <param name="allowedRoles">Assigns the roles which are allowed to invoke this adapter command.</param>
+        </member>
         <member name="P:GSF.TimeSeries.Adapters.AdapterCommandAttribute.Description">
             <summary>
             Gets the description of this adapter command.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.AdapterCommandAttribute.AllowedRoles">
+            <summary>
+            Gets the roles which are allowed to invoke this adapter command.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.Adapters.AllAdaptersCollection">
@@ -6249,6 +6261,11 @@
             Gets time of last cipher key update.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.ClientConnection.ValidIPAddresses">
+            <summary>
+            Gets or sets the list of valid IP addresses that this client can connect from.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.ClientConnection.IPAddress">
             <summary>
             Gets the IP address of the remote client connection.
@@ -6732,6 +6749,11 @@
             Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.AllowSynchronizedSubscription"/>.
             </summary>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.DataPublisher.DefaultAllowMetadataRefresh">
+            <summary>
+            Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.AllowMetadataRefresh"/>.
+            </summary>
+        </member>
         <member name="F:GSF.TimeSeries.Transport.DataPublisher.DefaultUseBaseTimeOffsets">
             <summary>
             Default value for <see cref="P:GSF.TimeSeries.Transport.DataPublisher.UseBaseTimeOffsets"/>.
@@ -6827,6 +6849,14 @@
             Gets subscriber information for specified client connection.
             </summary>
             <param name="clientIndex">Enumerated index for client connection.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.Transport.DataPublisher.ImportCertificate(System.String,System.Byte[])">
+            <summary>
+            Imports a certificate to the trusted certificates path.
+            </summary>
+            <param name="fileName">The file name to give to the certificate when imported.</param>
+            <param name="certificateData">The data to be written to the certificate file.</param>
+            <returns>The local path on the server where the file was written.</returns>
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.GetSubscriberStatus(System.Guid)">
             <summary>
@@ -6943,6 +6973,17 @@
             <param name="data">Data to return to client; null if none.</param>
             <returns><c>true</c> if send was successful; otherwise <c>false</c>.</returns>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.DataPublisher.SendClientResponse(GSF.IO.BlockAllocatedMemoryStream,System.Guid,GSF.TimeSeries.Transport.ServerResponse,GSF.TimeSeries.Transport.ServerCommand,System.Byte[])">
+            <summary>
+            Sends response back to specified client with attached data using specified working buffer.
+            </summary>
+            <param name="workingBuffer">Working buffer to use to assemble response, or <c>null</c> to have one created for you.</param>
+            <param name="clientID">ID of client to send response.</param>
+            <param name="response">Server response.</param>
+            <param name="command">In response to command.</param>
+            <param name="data">Data to return to client; null if none.</param>
+            <returns><c>true</c> if send was successful; otherwise <c>false</c>.</returns>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.UpdateLatencyStatistics(System.Collections.Generic.IEnumerable{System.Int64})">
             <summary>
             Updates latency statistics based on the collection of latencies passed into the method.
@@ -7016,6 +7057,11 @@
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.AllowSynchronizedSubscription">
+            <summary>
+            Gets or sets flag that indicates if this publisher will allow synchronized subscriptions when requested by subscribers.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.AllowMetadataRefresh">
             <summary>
             Gets or sets flag that indicates if this publisher will allow synchronized subscriptions when requested by subscribers.
             </summary>
@@ -8582,7 +8628,7 @@
             Defines extension functions related to <see cref="T:GSF.TimeSeries.Transport.CompactMeasurement"/>.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.Transport.CompactMeasurementExtensions.CompressPayload(System.Collections.Generic.IEnumerable{GSF.TimeSeries.Transport.CompactMeasurement},System.IO.MemoryStream,System.Byte,System.Boolean,GSF.TimeSeries.Transport.DataPacketFlags@)">
+        <member name="M:GSF.TimeSeries.Transport.CompactMeasurementExtensions.CompressPayload(System.Collections.Generic.IEnumerable{GSF.TimeSeries.Transport.CompactMeasurement},GSF.IO.BlockAllocatedMemoryStream,System.Byte,System.Boolean,GSF.TimeSeries.Transport.DataPacketFlags@)">
             <summary>
             Attempts to compress payload of <see cref="T:GSF.TimeSeries.Transport.CompactMeasurement"/> values onto the <paramref name="destination"/> stream.
             </summary>

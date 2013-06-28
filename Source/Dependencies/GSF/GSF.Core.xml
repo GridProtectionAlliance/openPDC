@@ -14351,7 +14351,7 @@
             <param name="length">Valid number of bytes within <paramref name="buffer"/> to read from <paramref name="startIndex"/>.</param>
             <returns>The number of bytes used for initialization in the <paramref name="buffer"/> (i.e., the number of bytes parsed).</returns>
             <remarks>
-            Implementors should validate <paramref name="startIndex"/> and <paramref name="length"/> against <paramref name="buffer"/> length.
+            Implementers should validate <paramref name="startIndex"/> and <paramref name="length"/> against <paramref name="buffer"/> length.
             The <see cref="M:GSF.BufferExtensions.ValidateParameters(System.Byte[],System.Int32,System.Int32)"/> method can be used to perform this validation.
             </remarks>
         </member>
@@ -14363,7 +14363,7 @@
             <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
             <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
             <remarks>
-            Implementors should validate <paramref name="startIndex"/> and <see cref="P:GSF.Parsing.ISupportBinaryImage.BinaryLength"/> against <paramref name="buffer"/> length.
+            Implementers should validate <paramref name="startIndex"/> and <see cref="P:GSF.Parsing.ISupportBinaryImage.BinaryLength"/> against <paramref name="buffer"/> length.
             The <see cref="M:GSF.BufferExtensions.ValidateParameters(System.Byte[],System.Int32,System.Int32)"/> method can be used to perform this validation.
             </remarks>
         </member>
@@ -15144,10 +15144,13 @@
             time you need to use one.
             </para>
             <para>
-            It is very imporant to return the buffer to the pool when you are finished using it. If you are using a buffer
+            It is very important to return the buffer to the pool when you are finished using it. If you are using a buffer
             scoped within a method, make sure to use a try/finally so that you can take the buffer within the try and
             return the buffer within the finally. If you are using a buffer as a member scoped class field, make sure
             you use the standard dispose pattern and return the buffer in the <see cref="M:System.IDisposable.Dispose"/> method.
+            </para>
+            <para>
+            Internally this class simply wraps a static instance of the WCF <see cref="T:System.ServiceModel.Channels.BufferManager"/>.
             </para>
             </remarks>
         </member>
@@ -15174,17 +15177,26 @@
         </member>
         <member name="T:GSF.IO.BlockAllocatedMemoryStream">
             <summary>
-            Defines a stream whose backing store is memory. Externally this class operates like <see cref="T:System.IO.MemoryStream"/>, internally
-            it uses dynamically allocated buffer blocks instead of one large contiguous array of data.
+            Defines a stream whose backing store is memory. Externally this class operates similar to a <see cref="T:System.IO.MemoryStream"/>,
+            internally it uses dynamically allocated buffer blocks instead of one large contiguous array of data.
             </summary>
             <remarks>
             <para>
-            The <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> has two primary benefits over a normal <see cref="T:System.IO.MemoryStream"/>, first, the
+            The <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> has three primary benefits over a normal <see cref="T:System.IO.MemoryStream"/>, first, the
             allocation of a large contiguous array of data in <see cref="T:System.IO.MemoryStream"/> can fail when the requested amount of contiguous
             memory is unavailable - the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> prevents this; second, a <see cref="T:System.IO.MemoryStream"/> will
             constantly reallocate the buffer size as the stream grows and shrinks and then copy all the data from the old buffer to the
-            new - the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> maintains its blocks over its lifecycle unless manually cleared thus
-            eliminating unnecessary allocations and garbage collections when growing and reusing a stream.
+            new - the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> maintains its blocks over its lifecycle, unless manually cleared, thus
+            eliminating unnecessary allocations and garbage collections when growing and reusing a stream; third, a managed buffer pool,
+            <see cref="T:GSF.BufferPool"/>, is used for internal buffer management allowing the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> to
+            reuse previously allocated buffers further eliminating allocations and garbage collections even for short lived instances.
+            </para>
+            <para>
+            Unlike <see cref="T:System.IO.MemoryStream"/>, the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> will not use a user provided buffer as its
+            backing buffer. Any user provided buffers used to instantiate the class will be copied into internally managed reusable memory
+            buffers. Subsequently, the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> does not support the notion of a non-expandable stream.
+            In general, if you are using a <see cref="T:System.IO.MemoryStream"/> with your own buffer, the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/>
+            will not provide any immediate benefit.
             </para>
             <para>
             Note that the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> will maintain all allocated blocks for stream use until the
@@ -15193,6 +15205,13 @@
             <para>
             No members in the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> are guaranteed to be thread safe. Make sure any calls are
             synchronized when simultaneously accessed from different threads.
+            </para>
+            <para>
+            Disposing of a <see cref="T:System.IO.MemoryStream"/> is generally not required since its actual dispose method doesn't do anything,
+            however, since the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> uses buffers obtained from a shared buffer pool, it is
+            optimal to make sure instances are properly disposed (e.g., wrapping instances in a "using(...)" statement) so that the
+            referenced buffers are returned to the pool as soon as possible instead of waiting for the destructor to be called from
+            the garbage collector.
             </para>
             </remarks>
         </member>
@@ -15212,6 +15231,11 @@
             </summary>
             <param name="buffer">Initial buffer to copy into stream.</param>
             <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
+            <remarks>
+            Unlike <see cref="T:System.IO.MemoryStream"/>, the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> will not use the provided
+            <paramref name="buffer"/> as its backing buffer. The buffer will be copied into internally managed reusable
+            memory buffers. Subsequently, the notion of a non-expandable stream is not supported.
+            </remarks>
         </member>
         <member name="M:GSF.IO.BlockAllocatedMemoryStream.#ctor(System.Byte[],System.Int32)">
             <summary>
@@ -15222,6 +15246,11 @@
             <param name="blockSize">Desired size of memory blocks.</param>
             <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Block size must be greater than zero.</exception>
+            <remarks>
+            Unlike <see cref="T:System.IO.MemoryStream"/>, the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> will not use the provided
+            <paramref name="buffer"/> as its backing buffer. The buffer will be copied into internally managed reusable
+            memory buffers. Subsequently, the notion of a non-expandable stream is not supported.
+            </remarks>
         </member>
         <member name="M:GSF.IO.BlockAllocatedMemoryStream.#ctor(System.Byte[],System.Int32,System.Int32)">
             <summary>
@@ -15235,6 +15264,11 @@
             <paramref name="startIndex"/> or <paramref name="length"/> is less than 0 -or- 
             <paramref name="startIndex"/> and <paramref name="length"/> will exceed <paramref name="buffer"/> length.
             </exception>
+            <remarks>
+            Unlike <see cref="T:System.IO.MemoryStream"/>, the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> will not use the provided
+            <paramref name="buffer"/> as its backing buffer. The buffer will be copied into internally managed reusable
+            memory buffers. Subsequently, the notion of a non-expandable stream is not supported.
+            </remarks>
         </member>
         <member name="M:GSF.IO.BlockAllocatedMemoryStream.#ctor(System.Byte[],System.Int32,System.Int32,System.Int32)">
             <summary>
@@ -15251,6 +15285,11 @@
             <paramref name="startIndex"/> and <paramref name="length"/> will exceed <paramref name="buffer"/> length.
             </exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Block size must be greater than zero.</exception>
+            <remarks>
+            Unlike <see cref="T:System.IO.MemoryStream"/>, the <see cref="T:GSF.IO.BlockAllocatedMemoryStream"/> will not use the provided
+            <paramref name="buffer"/> as its backing buffer. The buffer will be copied into internally managed reusable
+            memory buffers. Subsequently, the notion of a non-expandable stream is not supported.
+            </remarks>
         </member>
         <member name="M:GSF.IO.BlockAllocatedMemoryStream.#ctor(System.Int32)">
             <summary>
@@ -15352,7 +15391,7 @@
             This may fail if there is not enough contiguous memory available to hold current size of stream.
             When possible use methods which operate on streams directly instead.
             </remarks>
-            <exception cref="T:System.InvalidOperationException">Cannot create a byte array larger than 2,147,483,591.</exception>
+            <exception cref="T:System.InvalidOperationException">Cannot create a byte array with more than 2,147,483,591 elements.</exception>
             <exception cref="T:System.ObjectDisposedException">The stream is closed.</exception>
         </member>
         <member name="M:GSF.IO.BlockAllocatedMemoryStream.ReadFrom(System.IO.Stream,System.Int64)">
@@ -19657,7 +19696,7 @@
             <returns>The length of the data that was parsed.</returns>
             <remarks>
             <para>
-            Implementors can choose to focus on parsing a single frame in the buffer even if there are other frames available in the buffer.
+            Implementers can choose to focus on parsing a single frame in the buffer even if there are other frames available in the buffer.
             Base class will continue to move through buffer on behalf of derived class until all the buffer has been processed.  Just return
             the total amount of data was parsed and the remaining unparsed will be prepended to next received buffer.
             </para>
@@ -20038,7 +20077,7 @@
             <returns>A binary image of an object that implements <see cref="T:GSF.Parsing.ISupportBinaryImage"/>.</returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="imageSource"/> cannot be null.</exception>
             <remarks>
-            This is a convienence method. It is often optimal to use <see cref="M:GSF.Parsing.ISupportBinaryImage.GenerateBinaryImage(System.Byte[],System.Int32)"/>
+            This is a convenience method. It is often optimal to use <see cref="M:GSF.Parsing.ISupportBinaryImage.GenerateBinaryImage(System.Byte[],System.Int32)"/>
             directly using a common buffer instead of always allocating new buffers.
             </remarks>
         </member>
@@ -22635,7 +22674,7 @@
             Attempts binary deserialization on the byte array and returns the typed object for it.
             </summary>
             <param name="serializedObject">A <see cref="T:System.Byte"/> array representing the object (<paramref name="serializedObject"/>) to de-serialize.</param>
-            <param name="deserializedObject">A byref type T that is passed in to be hold the de-serialized object.</param>
+            <param name="deserializedObject">A type T object, passed by reference, that is used to be hold the de-serialized object.</param>
             <typeparam name="T">The generic type T that is to be deserialized.</typeparam>
             <returns>A <see cref="T:System.Boolean"/> which indicates whether the de-serialization process was successful.</returns>
         </member>
@@ -22657,7 +22696,7 @@
             Attempts binary deserialization on the byte array and returns the typed object for it.
             </summary>
             <param name="serializedObject">A <see cref="T:System.Byte"/> array representing the object (<paramref name="serializedObject"/>) to de-serialize.</param>
-            <param name="deserializedObject">A byref <see cref="T:System.Object"></see> that is passed in to be hold the de-serialized object.</param>
+            <param name="deserializedObject">An <see cref="T:System.Object"/>, passed by reference, that is used to be hold the de-serialized object.</param>
             <returns>A <see cref="T:System.Boolean"/> which indicates whether the de-serialization process was successful.</returns>
         </member>
         <member name="M:GSF.Serialization.GetString(System.Object)">
@@ -22715,7 +22754,7 @@
             Deserializes a serialized <see cref="T:System.Object"/>.
             </summary>
             <typeparam name="T"><see cref="T:System.Type"/> of the deserialized <see cref="T:System.Object"/> to be returned.</typeparam>
-            <param name="serializedObject"><see cref="T:System.Array"/> of <see cref="T:System.Byte"/>s contaning the serialized <see cref="T:System.Object"/> that is to be deserialized.</param>
+            <param name="serializedObject"><see cref="T:System.Array"/> of <see cref="T:System.Byte"/>s containing the serialized <see cref="T:System.Object"/> that is to be deserialized.</param>
             <param name="serializationFormat"><see cref="T:GSF.SerializationFormat"/> in which the <paramref name="serializedObject"/> was serialized.</param>
             <returns>The deserialized <see cref="T:System.Object"/>.</returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="serializedObject"/> is null.</exception>
@@ -22726,7 +22765,7 @@
             Deserializes a serialized <see cref="T:System.Object"/>.
             </summary>
             <typeparam name="T"><see cref="T:System.Type"/> of the deserialized <see cref="T:System.Object"/> to be returned.</typeparam>
-            <param name="serializedObject"><see cref="T:System.IO.Stream"/> contaning the serialized <see cref="T:System.Object"/> that is to be deserialized.</param>
+            <param name="serializedObject"><see cref="T:System.IO.Stream"/> containing the serialized <see cref="T:System.Object"/> that is to be deserialized.</param>
             <param name="serializationFormat"><see cref="T:GSF.SerializationFormat"/> in which the <paramref name="serializedObject"/> was serialized.</param>
             <returns>The deserialized <see cref="T:System.Object"/>.</returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="serializedObject"/> is null.</exception>
@@ -22737,7 +22776,7 @@
             Attempts to deserialize a serialized <see cref="T:System.Object"/>.
             </summary>
             <typeparam name="T"><see cref="T:System.Type"/> of the deserialized <see cref="T:System.Object"/> to be returned.</typeparam>
-            <param name="serializedObject"><see cref="T:System.Array"/> of <see cref="T:System.Byte"/>s contaning the serialized <see cref="T:System.Object"/> that is to be deserialized.</param>
+            <param name="serializedObject"><see cref="T:System.Array"/> of <see cref="T:System.Byte"/>s containing the serialized <see cref="T:System.Object"/> that is to be deserialized.</param>
             <param name="serializationFormat"><see cref="T:GSF.SerializationFormat"/> in which the <paramref name="serializedObject"/> was serialized.</param>
             <param name="deserializedObject">Deserialized <see cref="T:System.Object"/>.</param>
             <returns><c>true</c>if deserialization succeeded; otherwise <c>false</c>.</returns>
@@ -22747,7 +22786,7 @@
             Attempts to deserialize a serialized <see cref="T:System.Object"/>.
             </summary>
             <typeparam name="T"><see cref="T:System.Type"/> of the deserialized <see cref="T:System.Object"/> to be returned.</typeparam>
-            <param name="serializedObject"><see cref="T:System.IO.Stream"/> contaning the serialized <see cref="T:System.Object"/> that is to be deserialized.</param>
+            <param name="serializedObject"><see cref="T:System.IO.Stream"/> containing the serialized <see cref="T:System.Object"/> that is to be deserialized.</param>
             <param name="serializationFormat"><see cref="T:GSF.SerializationFormat"/> in which the <paramref name="serializedObject"/> was serialized.</param>
             <param name="deserializedObject">Deserialized <see cref="T:System.Object"/>.</param>
             <returns><c>true</c>if deserialization succeeded; otherwise <c>false</c>.</returns>

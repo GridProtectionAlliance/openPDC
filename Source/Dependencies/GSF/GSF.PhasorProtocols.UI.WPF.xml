@@ -1317,7 +1317,7 @@
         <member name="P:GSF.PhasorProtocols.UI.ViewModels.InputWizardDevices.ProtocolIsBpaPdcStream">
             <summary>
             Gets a flag indicating if selected protocol is BpaPdcStream. 
-            This is used to hide or display Ini file selection on input wizard screen.
+            This is used to hide or display INI file selection on input wizard screen.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.UI.ViewModels.InputWizardDevices.ConnectToConcentrator">
@@ -1327,17 +1327,17 @@
         </member>
         <member name="P:GSF.PhasorProtocols.UI.ViewModels.InputWizardDevices.PdcID">
             <summary>
-            Gets or sets ID of the concetrator device.
+            Gets or sets ID of the concentrator device.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.UI.ViewModels.InputWizardDevices.PdcAcronym">
             <summary>
-            Gets or setc acronym of the concentrator device.
+            Gets or sets acronym of the concentrator device.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.UI.ViewModels.InputWizardDevices.PdcMessage">
             <summary>
-            Gets or sets message to be displayed on the screen when pdc acronym changes.
+            Gets or sets message to be displayed on the screen when PDC acronym changes.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.UI.ViewModels.InputWizardDevices.PdcName">
@@ -1412,7 +1412,7 @@
         </member>
         <member name="P:GSF.PhasorProtocols.UI.ViewModels.InputWizardDevices.ConfigurationSummary">
             <summary>
-            Gets or sets summary message to be displayed on UI aftern parsing configuration file or frame.
+            Gets or sets summary message to be displayed on UI after parsing configuration file or frame.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.UI.ViewModels.InputWizardDevices.CanSave">

@@ -352,9 +352,16 @@
             <param name="sender">Source of the event.</param>
             <param name="e">Event arguments.</param>
         </member>
-        <member name="M:GSF.TimeSeries.Transport.UI.UserControls.SubscriberUserControl.Button_Click(System.Object,System.Windows.RoutedEventArgs)">
+        <member name="M:GSF.TimeSeries.Transport.UI.UserControls.SubscriberUserControl.ImportSRQButton_Click(System.Object,System.Windows.RoutedEventArgs)">
             <summary>
-            Handles click event on button.
+            Handles click event on "Import SRQ..." button.
+            </summary>
+            <param name="sender">Source of the event.</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.Transport.UI.UserControls.SubscriberUserControl.ImportCERButton_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handles click event on "Import CER..." button.
             </summary>
             <param name="sender">Source of the event.</param>
             <param name="e">Event arguments.</param>
@@ -572,14 +579,14 @@
             Creates a new instance of the <see cref="T:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel"/> class.
             </summary>
         </member>
-        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.Acronym">
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.PublisherAcronym">
             <summary>
-            Gets or sets the string identifier used to identify the subscriber.
+            Gets or sets the string identifier used to identify the publisher.
             </summary>
         </member>
-        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.Name">
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.PublisherName">
             <summary>
-            Gets or sets the name of the subscriber.
+            Gets or sets the name of the publisher.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.Hostname">
@@ -587,7 +594,7 @@
             Gets or sets the host name or IP address of the server hosting the data publisher.
             </summary>
         </member>
-        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.Port">
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.PublisherPort">
             <summary>
             Gets or sets the port that the data publisher is listening on.
             </summary>
@@ -595,6 +602,21 @@
         <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.SecurityMode">
             <summary>
             Gets or sets the security mode used by the data publisher.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.InternalDataPublisherPort">
+            <summary>
+            Gets or sets the port used by the internal data publisher.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.SubscriberAcronym">
+            <summary>
+            Gets or sets the string identifier used to identify the subscriber.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.SubscriberName">
+            <summary>
+            Gets or sets the name of the subscriber.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.TransportLayerSecuritySelected">
@@ -660,6 +682,11 @@
         <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.CreateCommand">
             <summary>
             Gets the command that executes when the user chooses to create the authentication request.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.DefaultPort">
+            <summary>
+            Gets the default port based on the current security mode selection.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.Transport.UI.ViewModels.Subscribers">
@@ -802,6 +829,11 @@
         <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.Subscribers.GatewaySecuritySelected">
             <summary>
             Gets the flag that indicates whether the user has selected Gateway security.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.Subscribers.RemoteCertificateData">
+            <summary>
+            Gets or sets the remote certificate file data that was imported from the subscription request file.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.Transport.UI.ViewModels.Subscribers.OnMeasurementsAdded">

@@ -157,6 +157,11 @@
             Gets or sets the suggested subscriber name.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.UI.AuthenticationRequest.ValidIPAddresses">
+            <summary>
+            Gets or sets the list of valid IP addresses for the subscriber.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.UI.AuthenticationRequest.SharedSecret">
             <summary>
             Gets or sets the shared secret for the subscriber.
@@ -167,11 +172,6 @@
             Gets or sets the authentication ID for the subscriber.
             </summary>
         </member>
-        <member name="P:GSF.TimeSeries.UI.AuthenticationRequest.ValidIPAddresses">
-            <summary>
-            Gets or sets the list of valid IP addresses for the subscriber.
-            </summary>
-        </member>
         <member name="P:GSF.TimeSeries.UI.AuthenticationRequest.Key">
             <summary>
             Gets or sets the cryptographic key for the subscriber.
@@ -180,6 +180,11 @@
         <member name="P:GSF.TimeSeries.UI.AuthenticationRequest.IV">
             <summary>
             Gets or sets the cryptographic initialization vector for the subscriber.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.AuthenticationRequest.CertificateFile">
+            <summary>
+            Gets or sets the file data loaded from the certificate for this subscriber.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.UI.AuthorizedMeasurementsQuery">

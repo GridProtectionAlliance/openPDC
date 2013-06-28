@@ -1826,7 +1826,7 @@
             </summary>
             <remarks>
             This property defines the number of samples per second defined in each second of data in
-            the <see cref="T:GSF.Media.WaveFile"/>.  See <see cref="P:GSF.Media.WaveFile.SampleRate"/> enumeraion for more details.
+            the <see cref="T:GSF.Media.WaveFile"/>.  See <see cref="P:GSF.Media.WaveFile.SampleRate"/> enumeration for more details.
             </remarks>
         </member>
         <member name="P:GSF.Media.WaveFile.ByteRate">
@@ -1840,7 +1840,7 @@
             <para>
             This is typically just the arithmetic result of:
             <see cref="P:GSF.Media.WaveFile.SampleRate"/> * <see cref="P:GSF.Media.WaveFile.Channels"/> * <see cref="P:GSF.Media.WaveFile.BitsPerSample"/> / 8.
-            However, this value can be changed as needed to accomodate better buffer estimations during
+            However, this value can be changed as needed to accommodate better buffer estimations during
             data read cycle.
             </para>
             </remarks>
@@ -1857,7 +1857,7 @@
             <para>
             This is typically just the arithmetic result of:
             <see cref="P:GSF.Media.WaveFile.Channels"/> * <see cref="P:GSF.Media.WaveFile.BitsPerSample"/> / 8.
-            However, this value can be changed as needed to accomodate even block-alignment of non-standard
+            However, this value can be changed as needed to accommodate even block-alignment of non-standard
             <see cref="P:GSF.Media.WaveFile.BitsPerSample"/> values.
             </para>
             </remarks>
@@ -3043,7 +3043,7 @@
             <summary>Standard pulse-code modulation audio format</summary>
         </member>
         <member name="F:GSF.Media.WaveFormat.ADPCM">
-            <summary>Adpative differential pulse-code modulation encoding algorithm</summary>
+            <summary>Adaptive differential pulse-code modulation encoding algorithm</summary>
         </member>
         <member name="F:GSF.Media.WaveFormat.IeeeFloat">
             <summary>Floating point PCM encoding algorithm</summary>
@@ -3187,7 +3187,7 @@
             </summary>
             <remarks>
             This property defines the number of samples per second defined in each second of data in
-            the <see cref="T:GSF.Media.WaveFile"/>.  See <see cref="P:GSF.Media.WaveFormatChunk.SampleRate"/> enumeraion for more details.
+            the <see cref="T:GSF.Media.WaveFile"/>.  See <see cref="P:GSF.Media.WaveFormatChunk.SampleRate"/> enumeration for more details.
             </remarks>
         </member>
         <member name="P:GSF.Media.WaveFormatChunk.ByteRate">
@@ -3201,7 +3201,7 @@
             <para>
             This is typically just the arithmetic result of:
             <see cref="P:GSF.Media.WaveFormatChunk.SampleRate"/> * <see cref="P:GSF.Media.WaveFormatChunk.Channels"/> * <see cref="P:GSF.Media.WaveFormatChunk.BitsPerSample"/> / 8.
-            However, this value can be changed as needed to accomodate better buffer estimations during
+            However, this value can be changed as needed to accommodate better buffer estimations during
             data read cycle.
             </para>
             </remarks>
@@ -3218,7 +3218,7 @@
             <para>
             This is typically just the arithmetic result of:
             <see cref="P:GSF.Media.WaveFormatChunk.Channels"/> * <see cref="P:GSF.Media.WaveFormatChunk.BitsPerSample"/> / 8.
-            However, this value can be changed as needed to accomodate even block-alignment of non-standard
+            However, this value can be changed as needed to accommodate even block-alignment of non-standard
             <see cref="P:GSF.Media.WaveFormatChunk.BitsPerSample"/> values.
             </para>
             </remarks>
