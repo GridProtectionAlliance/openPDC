@@ -313,60 +313,9 @@ namespace ConfigurationSetupUtility.Screens
         {
             return typeof(IOutputAdapter).LoadImplementations(true).Where(type =>
             {
-                try
-                {
-                    if (TryLoadAllReferences(type.Assembly, new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(assembly => assembly.GetName().ToString()))))
-                    {
-                        IOutputAdapter adapter = Activator.CreateInstance(type) as IOutputAdapter;
-                        return (adapter != null) && adapter.OutputIsForArchive;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // If we have trouble creating adapter, we won't add it to the list - but we'll log the issue for debugging
-                    string message = string.Format("Failed to create instance of {0}: {1}", type, ex.Message);
-                    ((App)Application.Current).ErrorLogger.Log(new InvalidOperationException(message));
-                }
-
-                return false;
+                IOutputAdapter adapter = Activator.CreateInstance(type) as IOutputAdapter;
+                return (adapter != null) && adapter.OutputIsForArchive;
             }).ToList();
-        }
-
-        // Recursively attempts to load all assemblies referenced from the given assembly.
-        //
-        // If an object is created from a type that is loaded from an assembly, and if that
-        // assembly's references fail to load during instantiation, an exception may be thrown
-        // from both the constructor and the finalizer of the object that was instantiated.
-        // This method allows us to ensure that all referenced assemblies can be loaded
-        // before attempting to instantiate a type from that assembly.
-        private bool TryLoadAllReferences(Assembly assembly, ISet<string> validNames)
-        {
-            try
-            {
-                Assembly referencedAssembly;
-
-                // Base case: all referenced assemblies' names are present in the set of valid names
-                IEnumerable<AssemblyName> referencedAssemblyNames = assembly.GetReferencedAssemblies()
-                    .Where(referencedAssemblyName => !validNames.Contains(referencedAssemblyName.ToString()));
-
-                // Load each referenced assembly and recursively load their references as well
-                foreach (AssemblyName referencedAssemblyName in referencedAssemblyNames)
-                {
-                    referencedAssembly = Assembly.Load(referencedAssemblyName);
-                    validNames.Add(referencedAssemblyName.ToString());
-
-                    if (!TryLoadAllReferences(referencedAssembly, validNames))
-                        return false;
-                }
-
-                // All referenced assemblies loaded successfully
-                return true;
-            }
-            catch
-            {
-                // Error loading a referenced assembly
-                return false;
-            }
         }
 
         // Occurs when the user changes the selection in the historian list box.
