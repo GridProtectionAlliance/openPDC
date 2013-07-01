@@ -52,6 +52,11 @@
             <param name="maxLength">Maximum number of characters in the status string</param>
             <returns>Status</returns>
         </member>
+        <member name="P:PIAdapters.PIOutputAdapter.BulkUpdate">
+            <summary>
+            Set this property true to force the adapter to send bulk updates to PI with the UpdateValues method. Set this property to false to update points one value at a time using UpdateValue method.
+            </summary>
+        </member>
         <member name="P:PIAdapters.PIOutputAdapter.OutputIsForArchive">
             <summary>
             Returns true to indicate that this <see cref="T:PIAdapters.PIOutputAdapter"/> is sending measurements to a historian, OSISoft PI.
