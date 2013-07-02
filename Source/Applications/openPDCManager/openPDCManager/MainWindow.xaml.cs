@@ -199,7 +199,7 @@ namespace openPDCManager
                 m_alarmMonitor.Dispose();
                 Application.Current.Shutdown();
             }
-            catch (System.NullReferenceException)
+            catch (NullReferenceException)
             {
                 Application.Current.Shutdown();
                 MessageBox.Show("Please Re-run the ConfigrationSetupUtility");
@@ -217,30 +217,23 @@ namespace openPDCManager
         /// <param name="e">Event argument.</param>
         private void ComboboxNode_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (ComboboxNode.SelectedItem != null)
-            {
+            if ((object)ComboboxNode.SelectedItem != null)
                 ((App)Application.Current).NodeID = ((KeyValuePair<Guid, string>)ComboboxNode.SelectedItem).Key;
-            }
-            m_menuDataItems[0].Command.Execute(null);
-            ConnectToService();
 
+            m_menuDataItems[0].Command.Execute(null);
         }
 
         private void ConnectToService()
         {
-            if (m_windowsServiceClient != null)
+            if ((object)m_windowsServiceClient != null && (object)m_windowsServiceClient.Helper != null && (object)m_windowsServiceClient.Helper.RemotingClient != null)
             {
-                try
-                {
-                    m_windowsServiceClient.Helper.RemotingClient.ConnectionEstablished -= RemotingClient_ConnectionEstablished;
-                    m_windowsServiceClient.Helper.RemotingClient.ConnectionTerminated -= RemotingClient_ConnectionTerminated;
-                }
-                catch { }
+                m_windowsServiceClient.Helper.RemotingClient.ConnectionEstablished -= RemotingClient_ConnectionEstablished;
+                m_windowsServiceClient.Helper.RemotingClient.ConnectionTerminated -= RemotingClient_ConnectionTerminated;
             }
 
             m_windowsServiceClient = CommonFunctions.GetWindowsServiceClient();
 
-            if (m_windowsServiceClient != null)
+            if ((object)m_windowsServiceClient != null)
             {
                 m_windowsServiceClient.Helper.RemotingClient.ConnectionEstablished += RemotingClient_ConnectionEstablished;
                 m_windowsServiceClient.Helper.RemotingClient.ConnectionTerminated += RemotingClient_ConnectionTerminated;
