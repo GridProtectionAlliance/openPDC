@@ -450,11 +450,10 @@
             Connects to backend windows service.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.UI.CommonFunctions.ConnectAsync(System.Object)">
+        <member name="M:GSF.TimeSeries.UI.CommonFunctions.ConnectAsync">
             <summary>
             Connects asynchronously to backend windows service.
             </summary>
-            <param name="state">parameter used.</param>
         </member>
         <member name="M:GSF.TimeSeries.UI.CommonFunctions.DisconnectWindowsServiceClient">
             <summary>

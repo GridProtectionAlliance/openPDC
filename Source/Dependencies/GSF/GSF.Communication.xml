@@ -2709,6 +2709,11 @@
             Specifies the default value for the <see cref="P:GSF.Communication.TlsClient.IntegratedSecurity"/> property.
             </summary>
         </member>
+        <member name="F:GSF.Communication.TlsClient.DefaultIgnoreInvalidCredentials">
+            <summary>
+            Specifies the default value for the <see cref="P:GSF.Communication.TlsClient.IgnoreInvalidCredentials"/> property.
+            </summary>
+        </member>
         <member name="F:GSF.Communication.TlsClient.DefaultAllowDualStackSocket">
             <summary>
             Specifies the default value for the <see cref="P:GSF.Communication.TlsClient.AllowDualStackSocket"/> property.
@@ -2802,16 +2807,23 @@
             <param name="length">The number of bytes to be sent from <paramref name="data"/> starting at the <paramref name="offset"/>.</param>
             <returns><see cref="T:System.Threading.WaitHandle"/> for the asynchronous operation.</returns>
         </member>
-        <member name="M:GSF.Communication.TlsClient.OnReceiveDataException(System.Exception)">
+        <member name="M:GSF.Communication.TlsClient.OnSendDataException(System.Exception)">
+            <summary>
+            Raises the <see cref="E:GSF.Communication.ClientBase.SendDataException"/> event.
+            </summary>
+            <param name="ex">Exception to send to <see cref="E:GSF.Communication.ClientBase.SendDataException"/> event.</param>
+        </member>
+        <member name="M:GSF.Communication.TlsClient.OnReceiveDataException(System.Net.Sockets.SocketException)">
             <summary>
             Raises the <see cref="E:GSF.Communication.ClientBase.ReceiveDataException"/> event.
             </summary>
             <param name="ex">Exception to send to <see cref="E:GSF.Communication.ClientBase.ReceiveDataException"/> event.</param>
         </member>
-        <member name="M:GSF.Communication.TlsClient.OnConnectionTerminated">
+        <member name="M:GSF.Communication.TlsClient.OnReceiveDataException(System.Exception)">
             <summary>
-            Raises the <see cref="E:GSF.Communication.ClientBase.ConnectionTerminated"/> event.
+            Raises the <see cref="E:GSF.Communication.ClientBase.ReceiveDataException"/> event.
             </summary>
+            <param name="ex">Exception to send to <see cref="E:GSF.Communication.ClientBase.ReceiveDataException"/> event.</param>
         </member>
         <member name="M:GSF.Communication.TlsClient.ProcessConnect(System.Net.Sockets.SocketAsyncEventArgs)">
             <summary>
@@ -2890,6 +2902,16 @@
             </summary>
             <remarks>   
             This option is ignored under Mono deployments.
+            </remarks>
+        </member>
+        <member name="P:GSF.Communication.TlsClient.IgnoreInvalidCredentials">
+            <summary>
+            Gets or sets a boolean value that indicates whether the server
+            should ignore errors when the client's credentials are invalid.
+            </summary>
+            <remarks>
+            This property should only be set to true if there is an alternative by which
+            to authenticate the client when integrated security fails.
             </remarks>
         </member>
         <member name="P:GSF.Communication.TlsClient.AllowDualStackSocket">
@@ -2994,6 +3016,11 @@
         <member name="F:GSF.Communication.TlsServer.DefaultIntegratedSecurity">
             <summary>
             Specifies the default value for the <see cref="P:GSF.Communication.TlsServer.IntegratedSecurity"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.Communication.TlsServer.DefaultIgnoreInvalidCredentials">
+            <summary>
+            Specifies the default value for the <see cref="P:GSF.Communication.TlsServer.IgnoreInvalidCredentials"/> property.
             </summary>
         </member>
         <member name="F:GSF.Communication.TlsServer.DefaultAllowDualStackSocket">
@@ -3198,6 +3225,18 @@
             This option is ignored under Mono deployments.
             </remarks>
         </member>
+        <member name="P:GSF.Communication.TlsServer.IgnoreInvalidCredentials">
+            <summary>
+            Gets or sets a boolean value that indicates whether the server
+            should ignore errors when the client's credentials are invalid.
+            </summary>
+            <remarks>
+            This property should only be set to true if there is an alternative by which
+            to authenticate the client when integrated security fails. When this is set
+            to true, if the client's credentials are invalid, the <see cref="M:GSF.Communication.TlsServer.TryGetClientPrincipal(System.Guid,System.Security.Principal.WindowsPrincipal@)"/>
+            method will return true for that client, but the principal will still be null.
+            </remarks>
+        </member>
         <member name="P:GSF.Communication.TlsServer.AllowDualStackSocket">
             <summary>
             Gets or sets a boolean value that determines if dual-mode socket is allowed when endpoint address is IPv6.
@@ -3381,6 +3420,11 @@
             Specifies the default value for the <see cref="P:GSF.Communication.TcpClient.IntegratedSecurity"/> property.
             </summary>
         </member>
+        <member name="F:GSF.Communication.TcpClient.DefaultIgnoreInvalidCredentials">
+            <summary>
+            Specifies the default value for the <see cref="P:GSF.Communication.TcpClient.IgnoreInvalidCredentials"/> property.
+            </summary>
+        </member>
         <member name="F:GSF.Communication.TcpClient.DefaultAllowDualStackSocket">
             <summary>
             Specifies the default value for the <see cref="P:GSF.Communication.TcpClient.AllowDualStackSocket"/> property.
@@ -3560,6 +3604,16 @@
             This option is ignored under Mono deployments.
             </remarks>
         </member>
+        <member name="P:GSF.Communication.TcpClient.IgnoreInvalidCredentials">
+            <summary>
+            Gets or sets a boolean value that indicates whether the server
+            should ignore errors when the client's credentials are invalid.
+            </summary>
+            <remarks>
+            This property should only be set to true if there is an alternative by which
+            to authenticate the client when integrated security fails.
+            </remarks>
+        </member>
         <member name="P:GSF.Communication.TcpClient.AllowDualStackSocket">
             <summary>
             Gets or sets a boolean value that determines if dual-mode socket is allowed when endpoint address is IPv6.
@@ -3684,6 +3738,11 @@
         <member name="F:GSF.Communication.TcpServer.DefaultIntegratedSecurity">
             <summary>
             Specifies the default value for the <see cref="P:GSF.Communication.TcpServer.IntegratedSecurity"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.Communication.TcpServer.DefaultIgnoreInvalidCredentials">
+            <summary>
+            Specifies the default value for the <see cref="P:GSF.Communication.TcpServer.IgnoreInvalidCredentials"/> property.
             </summary>
         </member>
         <member name="F:GSF.Communication.TcpServer.DefaultAllowDualStackSocket">
@@ -3891,6 +3950,18 @@
             </summary>
             <remarks>   
             This option is ignored under Mono deployments.
+            </remarks>
+        </member>
+        <member name="P:GSF.Communication.TcpServer.IgnoreInvalidCredentials">
+            <summary>
+            Gets or sets a boolean value that indicates whether the server
+            should ignore errors when the client's credentials are invalid.
+            </summary>
+            <remarks>
+            This property should only be set to true if there is an alternative by which
+            to authenticate the client when integrated security fails. When this is set
+            to true, if the client's credentials are invalid, the <see cref="M:GSF.Communication.TcpServer.TryGetClientPrincipal(System.Guid,System.Security.Principal.WindowsPrincipal@)"/>
+            method will return true for that client, but the principal will still be null.
             </remarks>
         </member>
         <member name="P:GSF.Communication.TcpServer.AllowDualStackSocket">
