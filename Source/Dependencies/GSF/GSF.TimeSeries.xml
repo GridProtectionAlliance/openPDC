@@ -46,11 +46,6 @@
             </summary>
             <param name="autoStart">Sets flag that determines if adapters should be automatically started.</param>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.IaonSession.DetermineTemporalSupport">
-            <summary>
-            Determines which adapters in the <see cref="T:GSF.TimeSeries.Adapters.IaonSession"/> support temporal processing.
-            </summary>
-        </member>
         <member name="M:GSF.TimeSeries.Adapters.IaonSession.TemporalProcessingSupportExists(System.String)">
             <summary>
             Gets flag that determines if temporal processing is supported in this <see cref="T:GSF.TimeSeries.Adapters.IaonSession"/>.
@@ -173,6 +168,16 @@
             <remarks>
             Time-series framework uses this handler to monitor the number of unpublished samples, in seconds of data, in action adapters.<br/>
             This method is typically called once every five seconds.
+            </remarks>
+        </member>
+        <member name="M:GSF.TimeSeries.Adapters.IaonSession.RequestTemporalSupportHandler(System.Object,System.EventArgs)">
+            <summary>
+            Event handler for requesting temporal support.
+            </summary>
+            <param name="sender">Event source reference to adapter collection, typically an action adapter collection, that is requesting temporal support.</param>
+            <param name="e">Event arguments are not used.</param>
+            <remarks>
+            Action adapter collections use this handler to make sure temporal support is initialized before setting up temporal sessions.
             </remarks>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.IaonSession.UnprocessedMeasurementsHandler(System.Object,GSF.EventArgs{System.Int32})">
@@ -2786,17 +2791,6 @@
             <param name="maxLength">Maximum number of available characters for display.</param>
             <returns>A short one-line summary of the current adapter status.</returns>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.IAdapter.WaitForInitialize(System.Int32)">
-            <summary>
-            Blocks the current thread until the adapter is <see cref="P:GSF.TimeSeries.Adapters.IAdapter.Initialized"/>.
-            </summary>
-            <param name="timeout">The number of milliseconds to wait.</param>
-            <returns><c>true</c> if the initialization succeeds; otherwise, <c>false</c>.</returns>
-            <remarks>
-            Implementers should create a wait handle (e.g., the <see cref="T:System.Threading.ManualResetEvent"/>) so that consumers
-            can call this method and wait for the adapter intialization to complete before using the adapter.
-            </remarks>
-        </member>
         <member name="M:GSF.TimeSeries.Adapters.IAdapter.SetTemporalConstraint(System.String,System.String,System.String)">
             <summary>
             Defines a temporal processing constraint for the adapter.
@@ -3146,13 +3140,6 @@
             </summary>
             <param name="item">Primary key of measurement to find.</param>
             <returns>true if specified measurement key is defined in <see cref="P:GSF.TimeSeries.Adapters.ActionAdapterBase.InputMeasurementKeys"/>.</returns>
-        </member>
-        <member name="M:GSF.TimeSeries.Adapters.ActionAdapterBase.WaitForInitialize(System.Int32)">
-            <summary>
-            Blocks the <see cref="P:System.Threading.Thread.CurrentThread"/> until the action adapter is <see cref="P:GSF.TimeSeries.Adapters.ActionAdapterBase.Initialized"/>.
-            </summary>
-            <param name="timeout">The number of milliseconds to wait.</param>
-            <returns><c>true</c> if the initialization succeeds; otherwise, <c>false</c>.</returns>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.ActionAdapterBase.SetTemporalConstraint(System.String,System.String,System.String)">
             <summary>
@@ -3723,13 +3710,6 @@
             <param name="maxLength">Maximum number of available characters for display.</param>
             <returns>A short one-line summary of the current status of this <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/>.</returns>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.WaitForInitialize(System.Int32)">
-            <summary>
-            This method does not wait for <see cref="T:GSF.TimeSeries.Adapters.AdapterCollectionBase`1"/>.
-            </summary>
-            <param name="timeout">This parameter is ignored.</param>
-            <returns><c>true</c> for <see cref="T:GSF.TimeSeries.Adapters.AdapterCollectionBase`1"/>.</returns>
-        </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.SetTemporalConstraint(System.String,System.String,System.String)">
             <summary>
             Defines a temporal processing constraint for the adapter collection and applies this constraint to each adapter.
@@ -4118,6 +4098,11 @@
             </summary>
             <param name="measurements">Enumeration of <see cref="T:GSF.TimeSeries.IMeasurement"/> values being discarded.</param>
         </member>
+        <member name="M:GSF.TimeSeries.Adapters.ActionAdapterCollection.OnRequestTemporalSupport">
+            <summary>
+            Raises <see cref="E:GSF.TimeSeries.Adapters.ActionAdapterCollection.RequestTemporalSupport"/> event.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Adapters.ActionAdapterCollection.InitializeItem(GSF.TimeSeries.Adapters.IActionAdapter)">
             <summary>
             Wires events and initializes new <see cref="T:GSF.TimeSeries.Adapters.IActionAdapter"/> implementation.
@@ -4153,6 +4138,11 @@
             <remarks>
             <see cref="F:GSF.EventArgs`1.Argument"/> is the enumeration of <see cref="T:GSF.TimeSeries.IMeasurement"/> values that are being discarded during the sorting process.
             </remarks>
+        </member>
+        <member name="E:GSF.TimeSeries.Adapters.ActionAdapterCollection.RequestTemporalSupport">
+            <summary>
+            Event is raised when temporal support is requested.
+            </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.ActionAdapterCollection.RespectInputDemands">
             <summary>
@@ -4244,13 +4234,6 @@
             </summary>
             <param name="item">Primary key of measurement to find.</param>
             <returns>true if specified measurement key is defined in <see cref="P:GSF.TimeSeries.Adapters.AdapterBase.InputMeasurementKeys"/>.</returns>
-        </member>
-        <member name="M:GSF.TimeSeries.Adapters.AdapterBase.WaitForInitialize(System.Int32)">
-            <summary>
-            Blocks the <see cref="P:System.Threading.Thread.CurrentThread"/> until the adapter is <see cref="P:GSF.TimeSeries.Adapters.AdapterBase.Initialized"/>.
-            </summary>
-            <param name="timeout">The number of milliseconds to wait.</param>
-            <returns><c>true</c> if the initialization succeeds; otherwise, <c>false</c>.</returns>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterBase.SetTemporalConstraint(System.String,System.String,System.String)">
             <summary>
@@ -6799,13 +6782,6 @@
             Terminate <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/> and stop listening for client connections.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.Transport.DataPublisher.WaitForInitialize(System.Int32)">
-            <summary>
-            Blocks the <see cref="P:System.Threading.Thread.CurrentThread"/> until the adapter is <see cref="P:GSF.TimeSeries.Transport.DataPublisher.Initialized"/>.
-            </summary>
-            <param name="timeout">The number of milliseconds to wait.</param>
-            <returns><c>true</c> if the initialization succeeds; otherwise, <c>false</c>.</returns>
-        </member>
         <member name="M:GSF.TimeSeries.Transport.DataPublisher.GetShortStatus(System.Int32)">
             <summary>
             Gets a short one-line status of this <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
@@ -7100,6 +7076,12 @@
             Gets or sets semi-colon separated list of SQL select statements used to create data for meta-data exchange.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.AutoInitialize">
+            <summary>
+            Gets flag that determines if <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/> subscriptions
+            are automatically initialized when they are added to the collection.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.ClientConnections">
             <summary>
             Gets dictionary of connected clients.
@@ -7108,11 +7090,6 @@
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.CommandChannel">
             <summary>
             Gets or sets reference to <see cref="T:GSF.Communication.TcpServer"/> command channel, attaching and/or detaching to events as needed.
-            </summary>
-        </member>
-        <member name="P:GSF.TimeSeries.Transport.DataPublisher.Initialized">
-            <summary>
-            Gets or sets flag indicating if the adapter has been initialized successfully.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.IsConnected">

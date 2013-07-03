@@ -1228,11 +1228,6 @@
             <param name="maxLength">Maximum number of available characters for display.</param>
             <returns>A short one-line summary of the current status of this <see cref="T:PhasorProtocolAdapters.PhasorMeasurementMapper"/>.</returns>
         </member>
-        <member name="M:PhasorProtocolAdapters.PhasorMeasurementMapper.Start">
-            <summary>
-            Starts the <see cref="T:PhasorProtocolAdapters.PhasorMeasurementMapper"/> or restarts it if it is already running.
-            </summary>
-        </member>
         <member name="M:PhasorProtocolAdapters.PhasorMeasurementMapper.AttemptConnection">
             <summary>
             Attempts to connect to data input source.
