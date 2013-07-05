@@ -36,6 +36,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using GSF.Identity;
+using Microsoft.Win32;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -126,87 +127,87 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                if (!CheckUserAuthentication())
+                if (!CheckCurrentUserAuthentication())
                 {
-                    if ((bool)RadioButtonWindowsAuthentication.IsChecked)
+                    if (RadioButtonWindowsAuthentication.IsChecked == true)
                     {
                         string errorMessage = string.Empty;
 
                         try
                         {
-                            string[] userData = m_userNameTextBox.Text.Split(new char[] { '\\' });
+                            string[] userData = ToLoginID(WindowsUserNameTextBox.Text.Trim()).Split('\\');
 
                             if (userData.Length == 2)
                             {
-                                if (UserInfo.AuthenticateUser(userData[0].Trim(), userData[1].Trim(), m_userPasswordTextBox.Password.Trim(), out errorMessage) == null)
+                                if (UserInfo.AuthenticateUser(userData[0], userData[1], WindowsUserPasswordTextBox.Password, out errorMessage) == null)
                                 {
                                     MessageBox.Show("Authentication failed. Please verify your username and password.\r\n\r\n" + errorMessage, "Windows Authentication User Setup Error");
-                                    m_userPasswordTextBox.Focus();
+                                    WindowsUserPasswordTextBox.Focus();
                                     return false;
                                 }
-
-                                // We only store user account name in the database in Windows authentication mode - so we make sure it is well formatted
-                                m_userNameTextBox.Text = userData[0].Trim() + "\\" + userData[1].Trim();
                             }
                             else
                             {
                                 MessageBox.Show("Username format is invalid: for Windows authentication please provide a username formatted like \"domain\\username\".\r\nUse the machine name \"" + Environment.MachineName + "\" as the domain name if the system is not on a domain or you want to use a local account.", "Windows Authentication User Setup Error");
-                                m_userNameTextBox.Focus();
+                                WindowsUserNameTextBox.Focus();
                                 return false;
                             }
                         }
                         catch (Exception ex)
                         {
                             MessageBox.Show(ex.Message + Environment.NewLine + errorMessage, "Windows Authentication User Setup Error");
-                            m_userPasswordTextBox.Focus();
+                            WindowsUserPasswordTextBox.Focus();
                             return false;
                         }
                     }
                     else
                     {
-                        string passwordRequirementRegex = "^.*(?=.{8,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).*$";
-                        string passwordRequirementError = "Invalid Password: Password must be at least 8 characters and must contain at least 1 number, 1 upper case letter and 1 lower case letter";
+                        const string PasswordRequirementRegex = "^.*(?=.{8,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).*$";
+                        const string PasswordRequirementError = "Invalid Password: Password must be at least 8 characters and must contain at least 1 number, 1 upper case letter and 1 lower case letter";
 
-                        string userName = m_userNameTextBox.Text.Trim();
-                        string password = m_userPasswordTextBox.Password.Trim();
-                        string confirmPassword = m_userConfirmPasswordTextBox.Password.Trim();
-                        string firstName = m_userFirstNameTextBox.Text.Trim();
-                        string lastName = m_userLastNameTextBox.Text.Trim();
+                        string userName = DbUserNameTextBox.Text.Trim();
+                        string password = DbUserPasswordTextBox.Password.Trim();
+                        string confirmPassword = DbUserConfirmPasswordTextBox.Password.Trim();
 
                         if (string.IsNullOrEmpty(userName))
                         {
                             MessageBox.Show("Please provide administrative user account name.", "Database Authentication User Setup Error");
-                            m_userNameTextBox.Focus();
+                            DbUserNameTextBox.Focus();
                             return false;
                         }
-                        else if (userName.Contains("\\"))
+
+                        if (userName.Contains("\\"))
                         {
                             MessageBox.Show("User name being used for database authentication appears to have a domain name prefix.\r\n\r\nAvoid using a \"\\\" in the user name or switch to Windows authentication mode.", "Database Authentication User Setup Error");
-                            m_userNameTextBox.Focus();
+                            DbUserNameTextBox.Focus();
                             return false;
                         }
-                        else if (string.IsNullOrEmpty(password) || !Regex.IsMatch(password, passwordRequirementRegex))
+
+                        if (string.IsNullOrEmpty(password) || !Regex.IsMatch(password, PasswordRequirementRegex))
                         {
-                            MessageBox.Show("Please provide valid password for administrative user." + Environment.NewLine + passwordRequirementError, "Database Authentication User Setup Error");
-                            m_userPasswordTextBox.Focus();
+                            MessageBox.Show("Please provide valid password for administrative user." + Environment.NewLine + PasswordRequirementError, "Database Authentication User Setup Error");
+                            DbUserPasswordTextBox.Focus();
                             return false;
                         }
-                        else if (password != confirmPassword)
+
+                        if (password != confirmPassword)
                         {
                             MessageBox.Show("Password does not match the cofirm password", "Database Authentication User Setup Error");
-                            m_userConfirmPasswordTextBox.Focus();
+                            DbUserConfirmPasswordTextBox.Focus();
                             return false;
                         }
-                        else if (string.IsNullOrEmpty(m_userFirstNameTextBox.Text.Trim()))
+
+                        if (string.IsNullOrEmpty(DbUserFirstNameTextBox.Text.Trim()))
                         {
                             MessageBox.Show("Please provide first name for administrative user", "Database Authentication User Setup Error");
-                            m_userFirstNameTextBox.Focus();
+                            DbUserFirstNameTextBox.Focus();
                             return false;
                         }
-                        else if (string.IsNullOrEmpty(m_userLastNameTextBox.Text.Trim()))
+
+                        if (string.IsNullOrEmpty(DbUserLastNameTextBox.Text.Trim()))
                         {
                             MessageBox.Show("Please provide last name for administrative user", "Database Authentication User Setup Error");
-                            m_userLastNameTextBox.Focus();
+                            DbUserLastNameTextBox.Focus();
                             return false;
                         }
                     }
@@ -214,22 +215,9 @@ namespace ConfigurationSetupUtility.Screens
 
                 // Update state values to the latest entered on the form.
                 InitializeState();
+
                 return true;
             }
-        }
-
-        private SecureString ConvertToSecureString(string value)
-        {
-            SecureString ret = new SecureString();
-
-            foreach (char c in value)
-            {
-                ret.AppendChar(c);
-            }
-
-            ret.MakeReadOnly();
-
-            return ret;
         }
 
         /// <summary>
@@ -265,27 +253,25 @@ namespace ConfigurationSetupUtility.Screens
         // Initializes the state keys to their default values.
         private void InitializeState()
         {
-            if (m_state != null)
+            if ((object)m_state != null)
             {
-                m_state["authenticationType"] = (bool)RadioButtonWindowsAuthentication.IsChecked ? "windows" : "database";
-                m_state["adminUserName"] = m_userNameTextBox.Text.Trim();
-                m_state["adminPassword"] = m_userPasswordTextBox.Password.Trim();
-                m_state["adminUserFirstName"] = m_userFirstNameTextBox.Text.Trim();
-                m_state["adminUserLastName"] = m_userLastNameTextBox.Text.Trim();
-                m_state["allowPassThroughAuthentication"] = (bool)m_checkBoxPassThroughAuthentication.IsChecked ? "True" : "False";
+                m_state["authenticationType"] = (RadioButtonWindowsAuthentication.IsChecked == true) ? "windows" : "database";
+                m_state["adminUserName"] = (RadioButtonWindowsAuthentication.IsChecked == true) ? ToLoginID(WindowsUserNameTextBox.Text.Trim()) : DbUserNameTextBox.Text.Trim();
+                m_state["adminPassword"] = DbUserPasswordTextBox.Password.Trim();
+                m_state["adminUserFirstName"] = DbUserFirstNameTextBox.Text.Trim();
+                m_state["adminUserLastName"] = DbUserLastNameTextBox.Text.Trim();
+                m_state["allowPassThroughAuthentication"] = (CheckBoxPassThroughAuthentication.IsChecked == true) ? "True" : "False";
             }
         }
 
         private void RadioButtonWindowsAuthentication_Checked(object sender, RoutedEventArgs e)
         {
             // Windows Authentication Selected.            
-            m_messageTextBlock.Text = "Please enter current credentials for the Windows authenticated user setup to be the administrator for openPDC. Credentials validated by operating system.";
-            m_userAccountHeaderTextBlock.Text = "Windows Authentication";
-            m_userNameTextBox.Text = Thread.CurrentPrincipal.Identity.Name;
-            m_userPasswordTextBox.IsEnabled = !CheckUserAuthentication();
-            m_dbInfoGrid.Visibility = Visibility.Collapsed;
-            m_checkBoxPassThroughAuthentication.Visibility = Visibility.Visible;
-            m_textBlockPassThroughMessage.Visibility = Visibility.Visible;
+            MessageTextBlock.Text = "Please enter current credentials for the Windows authenticated user setup to be the administrator for openPDC. Credentials validated by operating system.";
+            UserAccountHeaderTextBlock.Text = "Windows Authentication";
+            WindowsUserPasswordTextBox.IsEnabled = !CheckCurrentUserAuthentication();
+            WindowsInfoGrid.Visibility = Visibility.Visible;
+            DbInfoGrid.Visibility = Visibility.Collapsed;
             SetFocus();
 
         }
@@ -293,67 +279,134 @@ namespace ConfigurationSetupUtility.Screens
         private void RadioButtonWindowsAuthentication_Unchecked(object sender, RoutedEventArgs e)
         {
             // Database Authentication Selected.
-            m_messageTextBlock.Text = "Please provide the desired credentials for database user setup to be the administrator for openPDC. Password complexity rules apply.";
-            m_userAccountHeaderTextBlock.Text = "Database Authentication";
-            m_userNameTextBox.Text = string.Empty;
-            m_userPasswordTextBox.IsEnabled = true;
-            m_dbInfoGrid.Visibility = Visibility.Visible;
-            m_checkBoxPassThroughAuthentication.Visibility = Visibility.Collapsed;
-            m_textBlockPassThroughMessage.Visibility = Visibility.Collapsed;
+            MessageTextBlock.Text = "Please provide the desired credentials for database user setup to be the administrator for openPDC. Password complexity rules apply.";
+            UserAccountHeaderTextBlock.Text = "Database Authentication";
+            WindowsInfoGrid.Visibility = Visibility.Collapsed;
+            DbInfoGrid.Visibility = Visibility.Visible;
             SetFocus();
         }
 
         private void UserAccountCredentialsSetupScreen_Loaded(object sender, RoutedEventArgs e)
         {            
             RadioButtonWindowsAuthentication.IsChecked = true;
-            m_userNameTextBox.Text = Thread.CurrentPrincipal.Identity.Name;
+
+            if (string.IsNullOrEmpty(WindowsUserNameTextBox.Text))
+                WindowsUserNameTextBox.Text = Thread.CurrentPrincipal.Identity.Name;
+
             SetFocus();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void WindowsUserNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            m_userPasswordTextBox.IsEnabled = !CheckUserAuthentication();
+            WindowsUserPasswordTextBox.IsEnabled = !CheckCurrentUserAuthentication();
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (sender is TextBox)
-                ((TextBox)sender).SelectAll();
-            else if (sender is PasswordBox)
-                ((PasswordBox)sender).SelectAll();
+            TextBox textBox;
+            PasswordBox passwordBox;
+
+            textBox = sender as TextBox;
+
+            if ((object)textBox != null)
+            {
+                textBox.SelectAll();
+            }
+            else
+            {
+                passwordBox = sender as PasswordBox;
+
+                if ((object)passwordBox != null)
+                    passwordBox.SelectAll();
+            }
         }
 
-        private bool CheckUserAuthentication()
+        private bool CheckCurrentUserAuthentication()
         {
             string userName;
-            UserInfo userInfo;
-            WindowsPrincipal currentPrincipal;
+            string loginID;
 
-            userName = m_userNameTextBox.Text;
-
-            if (RadioButtonWindowsAuthentication.IsChecked == true && !string.IsNullOrEmpty(userName))
+            try
             {
-                currentPrincipal = Thread.CurrentPrincipal as WindowsPrincipal;
+                userName = WindowsUserNameTextBox.Text.Trim();
 
-                if ((object)currentPrincipal != null)
+                if (RadioButtonWindowsAuthentication.IsChecked == true && !string.IsNullOrEmpty(userName))
                 {
-                    userInfo = new UserInfo(m_userNameTextBox.Text);
-                    userInfo.Initialize();
+                    loginID = ToLoginID(userName);
 
-                    if (string.Compare(currentPrincipal.Identity.Name, userInfo.LoginID, true) == 0 && currentPrincipal.Identity.IsAuthenticated)
+                    if (string.Compare(Thread.CurrentPrincipal.Identity.Name, loginID, true) == 0 && Thread.CurrentPrincipal.Identity.IsAuthenticated)
                         return true;
                 }
-            }
 
-            return false;
+                return false;
+            }
+            catch
+            {
+                // If an error occurs, assume
+                // the user is not authenticated
+                return false;
+            }
         }
 
         private void SetFocus()
         {
-            if (!string.IsNullOrEmpty(m_userNameTextBox.Text))
-                m_userPasswordTextBox.Focus();
+            TextBox userNameTextBox = (RadioButtonWindowsAuthentication.IsChecked == true) ? WindowsUserNameTextBox : DbUserNameTextBox;
+            PasswordBox userPasswordBox = (RadioButtonWindowsAuthentication.IsChecked == true) ? WindowsUserPasswordTextBox : DbUserPasswordTextBox;
+
+            if (!string.IsNullOrEmpty(userNameTextBox.Text))
+                userPasswordBox.Focus();
             else
-                m_userNameTextBox.Focus();
+                userNameTextBox.Focus();
+        }
+
+        #endregion
+
+        #region [ Static ]
+
+        private static string ToLoginID(string userID)
+        {
+            const string LogonDomainRegistryKey = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon";
+            const string LogonDomainRegistryValue = "DefaultDomainName";
+
+            string domain;
+            string userName;
+            string[] splitID = userID.Trim().Split('\\');
+
+            if (splitID.Length == 2)
+            {
+                domain = splitID[0];
+                userName = splitID[1];
+            }
+            else
+            {
+                userName = userID.Trim();
+
+                // Attempt to use the default logon domain of the host machine. Note that this key will not exist on machines
+                // that do not connect to a domain and the Environment.UserDomainName property will return the machine name.
+                domain = Registry.GetValue(LogonDomainRegistryKey, LogonDomainRegistryValue, Environment.UserDomainName).ToString();
+
+                // Set the domain as the local machine if one is not specified
+                if (string.IsNullOrEmpty(domain))
+                    domain = Environment.MachineName;
+
+                // Handle special case - '.' is an alias for local system
+                if (domain == ".")
+                    domain = Environment.MachineName;
+            }
+
+            return domain + "\\" + userName;
+        }
+
+        private static SecureString ConvertToSecureString(string value)
+        {
+            SecureString secureString = new SecureString();
+
+            foreach (char c in value)
+                secureString.AppendChar(c);
+
+            secureString.MakeReadOnly();
+
+            return secureString;
         }
 
         #endregion
