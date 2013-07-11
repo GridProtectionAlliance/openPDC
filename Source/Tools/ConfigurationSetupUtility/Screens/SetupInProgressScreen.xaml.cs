@@ -36,6 +36,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
@@ -514,15 +515,15 @@ namespace ConfigurationSetupUtility.Screens
                         }
                         else if (useIntegratedSecurity)
                         {
-                            const string groupName = "openPDC Admins";
+                            const string GroupName = "openPDC Admins";
 
                             string host = sqlServerSetup.HostName.Split('\\')[0].Trim();
                             string db = sqlServerSetup.DatabaseName;
                             string loginName;
                             bool useGroupLogin;
 
-                            useGroupLogin = UserInfo.LocalGroupExists(groupName) && (host == "." || Transport.IsLocalAddress(host));
-                            loginName = useGroupLogin ? string.Format(@"{0}\{1}", Environment.MachineName, groupName) : GetServiceAccountName();
+                            useGroupLogin = UserInfo.LocalGroupExists(GroupName) && (host == "." || Transport.IsLocalAddress(host));
+                            loginName = useGroupLogin ? string.Format(@"{0}\{1}", Environment.MachineName, GroupName) : GetServiceAccountName();
 
                             if ((object)loginName != null && !loginName.Equals("Local System", StringComparison.InvariantCultureIgnoreCase))
                             {
@@ -755,8 +756,13 @@ namespace ConfigurationSetupUtility.Screens
         {
             try
             {
+                const string GroupName = "openPDC Admins";
+                DirectorySecurity destinationSecurity;
+                string loginName;
+
                 string filePath = null;
                 string destination = m_state["sqliteDatabaseFilePath"].ToString();
+                string destinationDirectory = Path.GetDirectoryName(destination);
                 string connectionString = "Data Source=" + destination + "; Version=3";
                 string dataProviderString = "AssemblyName={System.Data.SQLite, Version=1.0.79.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139}; ConnectionType=System.Data.SQLite.SQLiteConnection; AdapterType=System.Data.SQLite.SQLiteDataAdapter";
                 bool existing = Convert.ToBoolean(m_state["existing"]);
@@ -776,6 +782,27 @@ namespace ConfigurationSetupUtility.Screens
 
                     UpdateProgressBar(2);
                     AppendStatusMessage(string.Format("Attempting to copy file {0} to {1}...", filePath, destination));
+
+                    // Create directory and set permissions
+                    if ((object)destinationDirectory != null)
+                    {
+                        if (!Directory.Exists(destinationDirectory))
+                            Directory.CreateDirectory(destinationDirectory);
+
+                        loginName = UserInfo.LocalGroupExists(GroupName) ? string.Format(@"{0}\{1}", Environment.MachineName, GroupName) : GetServiceAccountName();
+
+                        if ((object)loginName != null && !loginName.Equals("Local System", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            destinationSecurity = Directory.GetAccessControl(destinationDirectory);
+                            destinationSecurity.AddAccessRule(new FileSystemAccessRule(loginName, FileSystemRights.ListDirectory, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+                            destinationSecurity.AddAccessRule(new FileSystemAccessRule(loginName, FileSystemRights.DeleteSubdirectoriesAndFiles, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+                            destinationSecurity.AddAccessRule(new FileSystemAccessRule(loginName, FileSystemRights.Read, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+                            destinationSecurity.AddAccessRule(new FileSystemAccessRule(loginName, FileSystemRights.Read, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+                            destinationSecurity.AddAccessRule(new FileSystemAccessRule(loginName, FileSystemRights.Write, InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
+                            destinationSecurity.AddAccessRule(new FileSystemAccessRule(loginName, FileSystemRights.Write, InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+                            Directory.SetAccessControl(destinationDirectory, destinationSecurity);
+                        }
+                    }
 
                     // Copy the file to the specified path.
                     File.Copy(filePath, destination, true);
