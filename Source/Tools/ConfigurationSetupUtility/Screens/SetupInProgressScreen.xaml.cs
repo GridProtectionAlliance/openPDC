@@ -524,7 +524,7 @@ namespace ConfigurationSetupUtility.Screens
                             useGroupLogin = UserInfo.LocalGroupExists(groupName) && (host == "." || Transport.IsLocalAddress(host));
                             loginName = useGroupLogin ? string.Format(@"{0}\{1}", Environment.MachineName, groupName) : GetServiceAccountName();
 
-                            if ((object)loginName != null)
+                            if ((object)loginName != null && !loginName.Equals("Local System", StringComparison.InvariantCultureIgnoreCase))
                             {
                                 AppendStatusMessage(string.Format("Attempting to add Windows authenticated database login for {0}...", loginName));
 
