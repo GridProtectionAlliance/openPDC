@@ -1660,10 +1660,36 @@ namespace ConfigurationSetupUtility.Screens
                 }
             }
 
+            // Make sure serviceHelper SecureRemoteInteractions is set to true
+            XmlNode serviceHelperNode = configFile.SelectSingleNode("configuration/categorizedSettings/serviceHelper");
+            if (serviceConfigFile && (object)serviceHelperNode != null)
+            {
+                foreach (XmlNode child in serviceHelperNode.ChildNodes)
+                {
+                    string name = null;
+                    XmlAttribute valueAttribute = null;
+
+                    if ((object)child.Attributes == null)
+                        continue;
+
+                    foreach (XmlAttribute attribute in child.Attributes)
+                    {
+                        if (attribute.Name == "name")
+                            name = attribute.Value;
+                        else if (attribute.Name == "value")
+                            valueAttribute = attribute;
+                    }
+
+                    if (name == "SecureRemoteInteractions")
+                        valueAttribute.Value = "True";
+                }
+            }
+
             // Make sure remotingServer integrated security is set to true
             XmlNode remotingServerNode = configFile.SelectSingleNode("configuration/categorizedSettings/remotingServer");
             if (serviceConfigFile && (object)remotingServerNode != null)
             {
+                // Fix integrated security attribute
                 foreach (XmlNode child in remotingServerNode.ChildNodes)
                 {
                     string name = null;
@@ -1683,6 +1709,27 @@ namespace ConfigurationSetupUtility.Screens
                     if (name == "IntegratedSecurity")
                         valueAttribute.Value = "True";
                 }
+
+                // Add certificate file attribute
+                XmlElement addElement = configFile.CreateElement("add");
+
+                XmlAttribute certificateFileAttribute = configFile.CreateAttribute("name");
+                certificateFileAttribute.Value = "CertificateFile";
+                addElement.Attributes.Append(certificateFileAttribute);
+
+                certificateFileAttribute = configFile.CreateAttribute("value");
+                certificateFileAttribute.Value = "openPDC.cer";
+                addElement.Attributes.Append(certificateFileAttribute);
+
+                certificateFileAttribute = configFile.CreateAttribute("description");
+                certificateFileAttribute.Value = "Path to the local certificate used by this server for authentication.";
+                addElement.Attributes.Append(certificateFileAttribute);
+
+                certificateFileAttribute = configFile.CreateAttribute("encrypted");
+                certificateFileAttribute.Value = "false";
+                addElement.Attributes.Append(certificateFileAttribute);
+
+                remotingServerNode.AppendChild(addElement);
             }
 
             // Make sure externalDataPublisher settings exist
@@ -1719,6 +1766,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 tlsDataPublisherNode = configFile.CreateElement("tlsdatapublisher");
 
+                // Add ConfigurationString setting
                 XmlElement addElement = configFile.CreateElement("add");
 
                 XmlAttribute attribute = configFile.CreateAttribute("name");
@@ -1731,6 +1779,27 @@ namespace ConfigurationSetupUtility.Screens
 
                 attribute = configFile.CreateAttribute("description");
                 attribute.Value = "Data required by the server to initialize.";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("encrypted");
+                attribute.Value = "false";
+                addElement.Attributes.Append(attribute);
+
+                tlsDataPublisherNode.AppendChild(addElement);
+
+                // Add CertificateFile setting
+                addElement = configFile.CreateElement("add");
+
+                attribute = configFile.CreateAttribute("name");
+                attribute.Value = "CertificateFile";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("value");
+                attribute.Value = "openPDC.cer";
+                addElement.Attributes.Append(attribute);
+
+                attribute = configFile.CreateAttribute("description");
+                attribute.Value = "Path to the local certificate used by this server for authentication.";
                 addElement.Attributes.Append(attribute);
 
                 attribute = configFile.CreateAttribute("encrypted");
