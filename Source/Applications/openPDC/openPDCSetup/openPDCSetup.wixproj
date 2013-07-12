@@ -87,6 +87,11 @@
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="openPDCSetupBanner.bmp" />
+    <Content Include="openPDCSetupDialog.bmp" />
+    <Content Include="openPDCSetupLogo.jpg" />
+  </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
