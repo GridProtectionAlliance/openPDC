@@ -77,40 +77,17 @@ namespace ConfigurationSetupUtility
             // a short system delay that exists before you can write to a new event log source after it is first created.
             try
             {
-                // Attempt to load the application defined for the openPDC Manager in its configuration file
-                string configFileName = FilePath.GetAbsolutePath("openPDCManager.exe.config");
+                string applicationName = "openPDC";
 
-                if (File.Exists(configFileName))
-                {
-                    XmlDocument configFile = new XmlDocument();
-                    configFile.Load(configFileName);
+                // Create the event log source based on defined application name for openPDC if it does not already exist
+                if (!EventLog.SourceExists(applicationName))
+                    EventLog.CreateEventSource(applicationName, "Application");
 
-                    XmlNode securitySettings = configFile.SelectSingleNode("configuration/categorizedSettings/securityProvider");
+                applicationName = "openPDC Manager";
 
-                    if ((object)securitySettings != null)
-                    {
-                        string applicationName = null;
-
-                        foreach (XmlNode child in securitySettings.ChildNodes)
-                        {
-                            if ((object)child.Attributes != null && (object)child.Attributes["name"] != null)
-                            {
-                                if (child.Attributes["name"].Value == "ApplicationName")
-                                {
-                                    applicationName = child.Attributes["value"].Value;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (string.IsNullOrWhiteSpace(applicationName))
-                            applicationName = "openPDC Manager";
-
-                        // Create the event log source based on defined application name for openPDC Manager if it does not already exist
-                        if (!EventLog.SourceExists(applicationName))
-                            EventLog.CreateEventSource(applicationName, "Application");
-                    }
-                }
+                // Create the event log source based on defined application name for openPDC Manager if it does not already exist
+                if (!EventLog.SourceExists(applicationName))
+                    EventLog.CreateEventSource(applicationName, "Application");
             }
             catch (Exception ex)
             {
