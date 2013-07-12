@@ -44,6 +44,7 @@ using System.Web.Security;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
+using System.Xml.Linq;
 using GSF.Communication;
 using GSF.Identity;
 using GSF.Security;
@@ -1709,27 +1710,6 @@ namespace ConfigurationSetupUtility.Screens
                     if (name == "IntegratedSecurity")
                         valueAttribute.Value = "True";
                 }
-
-                // Add certificate file attribute
-                XmlElement addElement = configFile.CreateElement("add");
-
-                XmlAttribute certificateFileAttribute = configFile.CreateAttribute("name");
-                certificateFileAttribute.Value = "CertificateFile";
-                addElement.Attributes.Append(certificateFileAttribute);
-
-                certificateFileAttribute = configFile.CreateAttribute("value");
-                certificateFileAttribute.Value = "openPDC.cer";
-                addElement.Attributes.Append(certificateFileAttribute);
-
-                certificateFileAttribute = configFile.CreateAttribute("description");
-                certificateFileAttribute.Value = "Path to the local certificate used by this server for authentication.";
-                addElement.Attributes.Append(certificateFileAttribute);
-
-                certificateFileAttribute = configFile.CreateAttribute("encrypted");
-                certificateFileAttribute.Value = "false";
-                addElement.Attributes.Append(certificateFileAttribute);
-
-                remotingServerNode.AppendChild(addElement);
             }
 
             // Make sure externalDataPublisher settings exist
@@ -1855,33 +1835,6 @@ namespace ConfigurationSetupUtility.Screens
                 }
             }
 
-            //// Update the data publisher default shared secret, if defined
-            //XmlNode dataPublisherPassword = configFile.SelectSingleNode("configuration/categorizedSettings/dataPublisher/add[@name = 'SharedSecret']");
-
-            //if (dataPublisherPassword != null)
-            //{
-            //    string existingPassword = dataPublisherPassword.Attributes["value"].Value;
-
-            //    if (Convert.ToBoolean(dataPublisherPassword.Attributes["encrypted"].Value))
-            //    {
-            //        try
-            //        {
-            //            existingPassword = Cipher.Decrypt(existingPassword, App.CipherLookupKey, App.CryptoStrength);
-            //        }
-            //        catch
-            //        {
-            //            existingPassword = "openPDC";
-            //        }
-            //    }
-
-            //    // During upgrade from older versions this password will be defaulted to openPDC
-            //    if (string.Compare(existingPassword, "openPDC", true) == 0)
-            //    {
-            //        dataPublisherPassword.Attributes["value"].Value = "TSF-E1CCE965-39A6-4476-8C60-EF02D8212F16";
-            //        dataPublisherPassword.Attributes["encrypted"].Value = "False";
-            //    }
-            //}
-
             // The following change will be done only for openPDCManager configuration.
             if (Convert.ToBoolean(m_state["applyChangesToLocalManager"]) && m_state.ContainsKey("allowPassThroughAuthentication"))
             {
@@ -1889,6 +1842,108 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (forceLoginDisplayValue != null)
                     forceLoginDisplayValue.InnerXml = Convert.ToBoolean(m_state["allowPassThroughAuthentication"]) ? "False" : "True";
+            }
+
+            configFile.Save(configFileName);
+            ModifyConfigFile2(configFileName, connectionString, dataProviderString, encrypted, serviceConfigFile);
+        }
+
+        private void ModifyConfigFile2(string configFileName, string connectionString, string dataProviderString, bool encrypted, bool serviceConfigFile)
+        {
+            XDocument configFile = XDocument.Load(configFileName);
+            XElement categorizedSettings = configFile.Descendants("categorizedSettings").FirstOrDefault() ?? new XElement("categorizedSettings");
+            IEnumerable<XAttribute> attributes;
+
+            XElement remotingServer = categorizedSettings.Element("remotingServer");
+
+            if (serviceConfigFile && (object)remotingServer != null)
+            {
+                attributes = remotingServer
+                    .Elements("add")
+                    .Where(setting => (string)setting.Attribute("name") == "SecureRemoteInteractions")
+                    .Attributes("value");
+
+                foreach (XAttribute attribute in attributes)
+                    attribute.SetValue("True");
+
+                attributes = remotingServer
+                    .Elements("add")
+                    .Where(setting => (string)setting.Attribute("name") == "CertificateFile")
+                    .Attributes("value");
+
+                if (!attributes.Any())
+                {
+                    remotingServer.Add(new XElement("add",
+                        new XAttribute("name", "CertificateFile"),
+                        new XAttribute("value", "openPDC.cer"),
+                        new XAttribute("description", "Path to the local certificate used by this server for authentication."),
+                        new XAttribute("encrypted", "false")));
+                }
+            }
+
+            XElement securityProvider = categorizedSettings.Element("securityProvider");
+            string ldapPath = string.Empty;
+            string providerType;
+            
+            if (serviceConfigFile && (object)securityProvider != null)
+            {
+                providerType = (string)securityProvider
+                    .Elements("add")
+                    .Where(setting => (string)setting.Attribute("name") == "ProviderType")
+                    .Attributes("value")
+                    .FirstOrDefault();
+
+                if ((object)providerType != null && providerType.Contains("LdapSecurityProvider"))
+                {
+                    ldapPath = (string)securityProvider
+                        .Elements("add")
+                        .Where(setting => (string)setting.Attribute("name") == "ConnectionString")
+                        .Attributes("value")
+                        .FirstOrDefault();
+
+                    securityProvider.Remove();
+                    securityProvider = null;
+                }
+            }
+
+            if (serviceConfigFile && (object)securityProvider == null)
+            {
+                const string IncludedResources = "Settings,Schedules,Help,Status,Version,Time,Health,List=*;" +
+                    " Processes,Start,ReloadCryptoCache,ReloadSettings,ResetHealthMonitor,Connect,Disconnect,Invoke,ListCommands,Initialize,ReloadConfig,Authenticate,RefreshRoutes,TemporalSupport,LogEvent=Administrator,Editor;" +
+                    " *=Administrator";
+
+                securityProvider = new XElement("securityProvider",
+                    new XElement("add",
+                        new XAttribute("name", "ProviderType"),
+                        new XAttribute("value", "GSF.Security.AdoSecurityProvider, GSF.Security"),
+                        new XAttribute("description", "The type to be used for enforcing security."),
+                        new XAttribute("encrypted", "false")),
+                    new XElement("add",
+                        new XAttribute("name", "IncludedResources"),
+                        new XAttribute("value", IncludedResources),
+                        new XAttribute("description", "Semicolon delimited list of resources to be secured along with role names."),
+                        new XAttribute("encrypted", "false")),
+                    new XElement("add",
+                        new XAttribute("name", "LdapPath"),
+                        new XAttribute("value", ldapPath),
+                        new XAttribute("description", "Specifies the LDAP path used to initialize the security provider."),
+                        new XAttribute("encrypted", "false")));
+
+                categorizedSettings.Add(securityProvider);
+            }
+
+            if (serviceConfigFile)
+            {
+                configFile.Descendants("runtime").Remove();
+
+                foreach (XElement configuration in configFile.Descendants("configuration"))
+                {
+                    configuration.Add(new XElement("runtime",
+                        new XElement("gcConcurrent",
+                            new XAttribute("enabled", "true")),
+                        new XElement("gcServer",
+                            new XAttribute("enabled", "true"))));
+                }
             }
 
             configFile.Save(configFileName);
