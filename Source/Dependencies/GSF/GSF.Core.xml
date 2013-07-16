@@ -19460,7 +19460,7 @@
             <paramref name="startIndex"/> and <paramref name="length"/> will exceed <paramref name="buffer"/> length.
             </exception>
             <remarks>
-            This method is not typically overriden since it is parses the header, body and footer images in sequence.
+            This method is not typically overridden since it is parses the header, body and footer images in sequence.
             </remarks>
         </member>
         <member name="M:GSF.Parsing.BinaryImageBase.ParseHeaderImage(System.Byte[],System.Int32,System.Int32)">
@@ -19472,7 +19472,7 @@
             <param name="length">Valid number of bytes within <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
             <returns>The number of bytes used for initialization in the <paramref name="buffer"/> (i.e., the number of bytes parsed).</returns>
             <remarks>
-            This method is typically overriden by a specific protocol implementation.
+            This method is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="M:GSF.Parsing.BinaryImageBase.ParseBodyImage(System.Byte[],System.Int32,System.Int32)">
@@ -19484,7 +19484,7 @@
             <param name="length">Valid number of bytes within <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
             <returns>The number of bytes used for initialization in the <paramref name="buffer"/> (i.e., the number of bytes parsed).</returns>
             <remarks>
-            This method is typically overriden by a specific protocol implementation.
+            This method is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="M:GSF.Parsing.BinaryImageBase.ParseFooterImage(System.Byte[],System.Int32,System.Int32)">
@@ -19496,7 +19496,7 @@
             <param name="length">Valid number of bytes within <paramref name="buffer"/> from <paramref name="startIndex"/>.</param>
             <returns>The number of bytes used for initialization in the <paramref name="buffer"/> (i.e., the number of bytes parsed).</returns>
             <remarks>
-            This method is typically overriden by a specific protocol implementation.
+            This method is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="M:GSF.Parsing.BinaryImageBase.GenerateBinaryImage(System.Byte[],System.Int32)">
@@ -19512,7 +19512,7 @@
             <paramref name="startIndex"/> and <see cref="P:GSF.Parsing.ISupportBinaryImage.BinaryLength"/> will exceed <paramref name="buffer"/> length.
             </exception>
             <remarks>
-            This property is not typically overriden since it is the generates the combination of the header, body and footer images.
+            This property is not typically overridden since it is the generates the combination of the header, body and footer images.
             </remarks>
         </member>
         <member name="M:GSF.Parsing.BinaryImageBase.GenerateHeaderImage(System.Byte[],System.Int32)">
@@ -19523,7 +19523,7 @@
             <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
             <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
             <remarks>
-            This method is typically overriden by a specific protocol implementation.
+            This method is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="M:GSF.Parsing.BinaryImageBase.GenerateBodyImage(System.Byte[],System.Int32)">
@@ -19534,7 +19534,7 @@
             <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
             <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
             <remarks>
-            This method is typically overriden by a specific protocol implementation.
+            This method is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="M:GSF.Parsing.BinaryImageBase.GenerateFooterImage(System.Byte[],System.Int32)">
@@ -19545,7 +19545,7 @@
             <param name="startIndex">0-based starting index in the <paramref name="buffer"/> to start writing.</param>
             <returns>The number of bytes written to the <paramref name="buffer"/>.</returns>
             <remarks>
-            This method is typically overriden by a specific protocol implementation.
+            This method is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="P:GSF.Parsing.BinaryImageBase.BinaryLength">
@@ -19553,7 +19553,7 @@
             Gets the length of the <see cref="T:GSF.Parsing.BinaryImageBase"/> object.
             </summary>
             <remarks>
-            This property is not typically overriden since it is the sum of the header, body and footer lengths.
+            This property is not typically overridden since it is the sum of the header, body and footer lengths.
             </remarks>
         </member>
         <member name="P:GSF.Parsing.BinaryImageBase.HeaderLength">
@@ -19561,7 +19561,7 @@
             Gets the length of the header portion of the <see cref="T:GSF.Parsing.BinaryImageBase"/> object.
             </summary>
             <remarks>
-            This property is typically overriden by a specific protocol implementation.
+            This property is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="P:GSF.Parsing.BinaryImageBase.BodyLength">
@@ -19569,7 +19569,7 @@
             Gets the length of the body portion of the <see cref="T:GSF.Parsing.BinaryImageBase"/> object.
             </summary>
             <remarks>
-            This property is typically overriden by a specific protocol implementation.
+            This property is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="P:GSF.Parsing.BinaryImageBase.FooterLength">
@@ -19577,7 +19577,7 @@
             Gets the length of the footer portion of the <see cref="T:GSF.Parsing.BinaryImageBase"/> object.
             </summary>
             <remarks>
-            This property is typically overriden by a specific protocol implementation.
+            This property is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="T:GSF.Parsing.BinaryImageParserBase">

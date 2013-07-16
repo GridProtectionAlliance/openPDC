@@ -91,7 +91,7 @@
             Gets the binary image of the <see cref="T:GSF.PhasorProtocols.ChannelBase"/> object.
             </summary>
             <remarks>
-            This property is not typically overriden since it is the combination of the header, body and footer images.
+            This property is not typically overridden since it is the combination of the header, body and footer images.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.ChannelBase.HeaderImage">
@@ -99,7 +99,7 @@
             Gets the binary header image of the <see cref="T:GSF.PhasorProtocols.ChannelBase"/> object.
             </summary>
             <remarks>
-            This property is typically overriden by a specific protocol implementation.
+            This property is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.ChannelBase.BodyImage">
@@ -107,7 +107,7 @@
             Gets the binary body image of the <see cref="T:GSF.PhasorProtocols.ChannelBase"/> object.
             </summary>
             <remarks>
-            This property is typically overriden by a specific protocol implementation.
+            This property is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.ChannelBase.FooterImage">
@@ -115,7 +115,7 @@
             Gets the binary footer image of the <see cref="T:GSF.Parsing.BinaryImageBase"/> object.
             </summary>
             <remarks>
-            This property is typically overriden by a specific protocol implementation.
+            This property is typically overridden by a specific protocol implementation.
             </remarks>
         </member>
         <member name="T:GSF.PhasorProtocols.IChannelDefinition">
@@ -1324,7 +1324,7 @@
             <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
             <returns>The length of the data that was parsed.</returns>
             <remarks>
-            This method is overriden to validate the checksum in the <see cref="T:GSF.PhasorProtocols.ChannelFrameBase`1"/>.
+            This method is overridden to validate the checksum in the <see cref="T:GSF.PhasorProtocols.ChannelFrameBase`1"/>.
             </remarks>
             <exception cref="T:System.InvalidOperationException">Invalid binary image detected - check sum did not match.</exception>
         </member>
@@ -1536,7 +1536,7 @@
             Gets the length of the <see cref="P:GSF.PhasorProtocols.ChannelFrameBase`1.BinaryImage"/>.
             </summary>
             <remarks>
-            This property is overriden so the length can be extended to include a checksum.
+            This property is overridden so the length can be extended to include a checksum.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.ChannelFrameBase`1.BinaryImage">
@@ -1544,7 +1544,7 @@
             Gets the binary image of this <see cref="T:GSF.PhasorProtocols.ChannelFrameBase`1"/>.
             </summary>
             <remarks>
-            This property is overriden to include a checksum in the image.
+            This property is overridden to include a checksum in the image.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.ChannelFrameBase`1.BodyLength">
@@ -3313,7 +3313,7 @@
             <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
             <returns>The length of the data that was parsed.</returns>
             <remarks>
-            This method is overriden to ensure assignment of configuration frame.
+            This method is overridden to ensure assignment of configuration frame.
             </remarks>
         </member>
         <member name="M:GSF.PhasorProtocols.DataFrameBase.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
@@ -5126,7 +5126,7 @@
             </summary>
             <remarks>
             This property is automatically derived based on the selected <see cref="P:GSF.PhasorProtocols.MultiProtocolFrameParser.PhasorProtocol"/>, <see cref="P:GSF.PhasorProtocols.MultiProtocolFrameParser.TransportProtocol"/>
-            and <see cref="P:GSF.PhasorProtocols.MultiProtocolFrameParser.ConnectionString"/>, but can be overriden if the consumer already knows that a device supports commands.
+            and <see cref="P:GSF.PhasorProtocols.MultiProtocolFrameParser.ConnectionString"/>, but can be overridden if the consumer already knows that a device supports commands.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.DeviceID">
@@ -9959,7 +9959,7 @@
             <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
             <returns>The length of the data that was parsed.</returns>
             <remarks>
-            This method is overriden so INI file can be loaded after binary image has been parsed.
+            This method is overridden so INI file can be loaded after binary image has been parsed.
             </remarks>
         </member>
         <member name="M:GSF.PhasorProtocols.BpaPdcStream.ConfigurationFrame.Refresh">
@@ -10219,7 +10219,7 @@
             <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
             <returns>The length of the data that was parsed.</returns>
             <remarks>
-            This property is overriden to extend parsed length evenly at 4-byte intervals.
+            This property is overridden to extend parsed length evenly at 4-byte intervals.
             </remarks>
         </member>
         <member name="M:GSF.PhasorProtocols.BpaPdcStream.DataCell.ParseHeaderImage(System.Byte[],System.Int32,System.Int32)">
@@ -10349,7 +10349,7 @@
             Gets the length of the <see cref="T:GSF.PhasorProtocols.BpaPdcStream.DataCell"/>.
             </summary>
             <remarks>
-            This property is overriden to extend length evenly at 4-byte intervals.
+            This property is overridden to extend length evenly at 4-byte intervals.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.BpaPdcStream.DataCell.HeaderLength">
@@ -10414,7 +10414,7 @@
             <param name="timestamp">The exact timestamp, in <see cref="T:GSF.Ticks"/>, of the data represented by this <see cref="T:GSF.PhasorProtocols.BpaPdcStream.DataFrame"/>.</param>
             <param name="configurationFrame">The <see cref="P:GSF.PhasorProtocols.BpaPdcStream.DataFrame.ConfigurationFrame"/> associated with this <see cref="T:GSF.PhasorProtocols.BpaPdcStream.DataFrame"/>.</param>
             <param name="packetNumber">Packet number for this <see cref="T:GSF.PhasorProtocols.BpaPdcStream.DataFrame"/>.</param>
-            <param name="sampleNumber">Sample number for thie <see cref="T:GSF.PhasorProtocols.BpaPdcStream.DataFrame"/>.</param>
+            <param name="sampleNumber">Sample number for this <see cref="T:GSF.PhasorProtocols.BpaPdcStream.DataFrame"/>.</param>
             <remarks>
             This constructor is used by a consumer to generate a BPA PDCstream data frame.
             </remarks>
@@ -10435,7 +10435,7 @@
             <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
             <returns>The length of the data that was parsed.</returns>
             <remarks>
-            This method is overriden to compensate for lack of CRC in DST files.
+            This method is overridden to compensate for lack of CRC in DST files.
             </remarks>
         </member>
         <member name="M:GSF.PhasorProtocols.BpaPdcStream.DataFrame.ParseHeaderImage(System.Byte[],System.Int32,System.Int32)">
@@ -11575,18 +11575,6 @@
             <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with populated with data.</param>
             <param name="context">The source <see cref="T:System.Runtime.Serialization.StreamingContext"/> for this deserialization.</param>
         </member>
-        <member name="M:GSF.PhasorProtocols.FNet.DataFrame.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Parses the binary image.
-            </summary>
-            <param name="buffer">Binary image to parse.</param>
-            <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
-            <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
-            <returns>The length of the data that was parsed.</returns>
-            <remarks>
-            This method is overriden to compensate for lack of CRC in F-NET frame.
-            </remarks>
-        </member>
         <member name="M:GSF.PhasorProtocols.FNet.DataFrame.ChecksumIsValid(System.Byte[],System.Int32)">
             <summary>
             Determines if checksum in the <paramref name="buffer"/> is valid.
@@ -12512,7 +12500,7 @@
             <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
             <returns>The length of the data that was parsed.</returns>
             <remarks>
-            This method is overriden to parse from cumulated frame images.
+            This method is overridden to parse from cumulated frame images.
             </remarks>
         </member>
         <member name="M:GSF.PhasorProtocols.Ieee1344.ConfigurationFrame.ParseHeaderImage(System.Byte[],System.Int32,System.Int32)">
@@ -13243,7 +13231,7 @@
             <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
             <returns>The length of the data that was parsed.</returns>
             <remarks>
-            This method is overriden to parse from cumulated frame images.
+            This method is overridden to parse from cumulated frame images.
             </remarks>
         </member>
         <member name="M:GSF.PhasorProtocols.Ieee1344.HeaderFrame.ParseHeaderImage(System.Byte[],System.Int32,System.Int32)">
@@ -14713,7 +14701,7 @@
             <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
             <returns>The length of the data that was parsed.</returns>
             <remarks>
-            This method is overriden to ensure that the return value is the frame length
+            This method is overridden to ensure that the return value is the frame length
             defined in the header of the frame rather than the number of bytes parsed.
             </remarks>
         </member>
@@ -15491,16 +15479,6 @@
             <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with populated with data.</param>
             <param name="context">The source <see cref="T:System.Runtime.Serialization.StreamingContext"/> for this deserialization.</param>
         </member>
-        <member name="M:GSF.PhasorProtocols.Macrodyne.HeaderFrame.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Parses the binary image.
-            </summary>
-            <param name="buffer">Binary image to parse.</param>
-            <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
-            <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
-            <returns>The length of the data that was parsed.</returns>
-            <exception cref="T:System.InvalidOperationException">Invalid binary image detected - check sum did not match.</exception>
-        </member>
         <member name="M:GSF.PhasorProtocols.Macrodyne.HeaderFrame.ParseHeaderImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
             Parses the binary header image.
@@ -15557,7 +15535,7 @@
             Gets the length of the <see cref="T:GSF.PhasorProtocols.Macrodyne.HeaderFrame"/>.
             </summary>
             <remarks>
-            This property is overriden so the length can be extended to include a 1-byte checksum.
+            This property is overridden so the length can be extended to include a 1-byte checksum.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.Macrodyne.HeaderFrame.HeaderLength">
@@ -16978,7 +16956,7 @@
             <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
             <returns>The length of the data that was parsed.</returns>
             <remarks>
-            This method is overriden so INI file can be loaded after binary image has been parsed as well as adjusting CRC length.
+            This method is overridden so INI file can be loaded after binary image has been parsed as well as adjusting CRC length.
             </remarks>
         </member>
         <member name="M:GSF.PhasorProtocols.Macrodyne.ConfigurationFrame.ParseHeaderImage(System.Byte[],System.Int32,System.Int32)">
@@ -17129,7 +17107,7 @@
             Gets the length of the <see cref="T:GSF.PhasorProtocols.Macrodyne.ConfigurationFrame"/>.
             </summary>
             <remarks>
-            This property is overriden so the length can be extended to include a 1-byte checksum.
+            This property is overridden so the length can be extended to include a 1-byte checksum.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.Macrodyne.ConfigurationFrame.HeaderLength">
@@ -17326,16 +17304,6 @@
             <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with populated with data.</param>
             <param name="context">The source <see cref="T:System.Runtime.Serialization.StreamingContext"/> for this deserialization.</param>
         </member>
-        <member name="M:GSF.PhasorProtocols.Macrodyne.DataFrame.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Parses the binary image.
-            </summary>
-            <param name="buffer">Binary image to parse.</param>
-            <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
-            <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
-            <returns>The length of the data that was parsed.</returns>
-            <exception cref="T:System.InvalidOperationException">Invalid binary image detected - check sum did not match.</exception>
-        </member>
         <member name="M:GSF.PhasorProtocols.Macrodyne.DataFrame.ParseHeaderImage(System.Byte[],System.Int32,System.Int32)">
             <summary>
             Parses the binary header image.
@@ -17409,7 +17377,7 @@
             Gets the length of the <see cref="T:GSF.PhasorProtocols.Macrodyne.DataFrame"/>.
             </summary>
             <remarks>
-            This property is overriden so the length can be adjusted for 1-byte checksum.
+            This property is overridden so the length can be adjusted for 1-byte checksum.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.Macrodyne.DataFrame.HeaderLength">
@@ -17552,6 +17520,12 @@
             <param name="buffer">An array of bytes. This method copies count bytes from buffer to the current stream.</param>
             <param name="offset">The zero-based byte offset in buffer at which to begin copying bytes to the current stream.</param>
             <param name="count">The number of bytes to be written to the current stream.</param>
+        </member>
+        <member name="M:GSF.PhasorProtocols.Macrodyne.FrameParser.OnReceivedConfigurationFrame(GSF.PhasorProtocols.IConfigurationFrame)">
+            <summary>
+            Raises the <see cref="E:GSF.PhasorProtocols.FrameParserBase`1.ReceivedConfigurationFrame"/> event.
+            </summary>
+            <param name="frame"><see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/> to send to <see cref="E:GSF.PhasorProtocols.FrameParserBase`1.ReceivedConfigurationFrame"/> event.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.Macrodyne.FrameParser.OnReceivedHeaderFrame(GSF.PhasorProtocols.IHeaderFrame)">
             <summary>
