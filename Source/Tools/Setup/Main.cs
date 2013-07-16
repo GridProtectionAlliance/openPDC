@@ -49,11 +49,6 @@ namespace Setup
 
         private void Main_Load(object sender, EventArgs e)
         {
-            radioButton64bit.Enabled = (IntPtr.Size > 4);
-
-            if (radioButton64bit.Enabled)
-                radioButton64bit.Checked = true;
-
             try
             {
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
@@ -172,10 +167,7 @@ namespace Setup
             else
             {
                 // Install current version of the openPDC
-                if (radioButton64bit.Checked)
-                    openPDCInstall.StartInfo.Arguments = "/i Installers\\openPDCSetup.msi";
-                else
-                    openPDCInstall.StartInfo.Arguments = "/i Installers\\openPDCSetup.msi";
+                openPDCInstall.StartInfo.Arguments = "/i Installers\\openPDCSetup.msi";
             }
 
             openPDCInstall.StartInfo.UseShellExecute = false;
@@ -191,18 +183,9 @@ namespace Setup
                     // Read registry installation parameters
                     string installPath, targetBitSize;
 
-                    if (IntPtr.Size == 4 || radioButton64bit.Checked)
-                    {
-                        // Read values from primary registry location
-                        installPath = AddPathSuffix(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "InstallPath", "").ToString().Trim());
-                        targetBitSize = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "TargetBitSize", "32bit").ToString().Trim();
-                    }
-                    else
-                    {
-                        // Read values from 32-bit virtualized registry location
-                        installPath = AddPathSuffix(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grid Protection Alliance\openPDC", "InstallPath", "").ToString().Trim());
-                        targetBitSize = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grid Protection Alliance\openPDC", "TargetBitSize", "32bit").ToString().Trim();
-                    }
+                    // Read values from primary registry location
+                    installPath = AddPathSuffix(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "InstallPath", "").ToString().Trim());
+                    targetBitSize = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "TargetBitSize", "32bit").ToString().Trim();
 
                     try
                     {
@@ -236,10 +219,7 @@ namespace Setup
                     else
                     {
                         // Install current version of the PMU Connection Tester
-                        if (radioButton64bit.Checked)
-                            connectionTesterInstall.StartInfo.Arguments = "/i Installers\\PMUConnectionTesterSetup64.msi";
-                        else
-                            connectionTesterInstall.StartInfo.Arguments = "/i Installers\\PMUConnectionTesterSetup.msi";
+                        connectionTesterInstall.StartInfo.Arguments = "/i Installers\\PMUConnectionTesterSetup64.msi";
                     }
 
                     connectionTesterInstall.StartInfo.UseShellExecute = false;
