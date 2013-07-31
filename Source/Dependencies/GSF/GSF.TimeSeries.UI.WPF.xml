@@ -1938,6 +1938,16 @@
             in the assemblies residing in the <see cref="P:GSF.TimeSeries.UI.ViewModels.Adapters.SearchDirectory"/>.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Adapters.AdapterTypeSelectedIndex">
+            <summary>
+            Gets or sets the index of the selected item in the <see cref="P:GSF.TimeSeries.UI.ViewModels.Adapters.AdapterTypeList"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Adapters.TypeInfo">
+            <summary>
+            Gets additional information about the type selected from the dropdown.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.UI.ViewModels.Adapters.ParameterList">
             <summary>
             Gets or sets the list of <see cref="P:GSF.TimeSeries.UI.DataModels.Adapter.ConnectionString"/> parameters found by
@@ -1957,6 +1967,16 @@
             Gets or sets the currently selected parameter from the
             <see cref="P:GSF.TimeSeries.UI.ViewModels.Adapters.ParameterList"/>. This is used to reselect previously
             selected parameters when the ParameterList is updated.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Adapters.InitializeCommand">
+            <summary>
+            Gets the command whose action is evoked when the user clicks the initialize button.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.Adapters.CustomConfigurationButtonVisibility">
+            <summary>
+            Determines whether the custom configuration button is visible.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.UI.ViewModels.Companies">

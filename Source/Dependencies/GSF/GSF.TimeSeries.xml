@@ -9,6 +9,29 @@
             Marks a parameter as being a connection string parameter used to configure an <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/>.
             </summary>
         </member>
+        <member name="T:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute">
+            <summary>
+            Marks a parameter or class as having a custom configuration editor page used to configure that parameter or class.
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute"/> class.
+            </summary>
+            <param name="assemblyName">The name of the assembly in which the editor type resides.</param>
+            <param name="typeName">The full name of the type of the editor.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute.#ctor(System.Type)">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute"/> class.
+            </summary>
+            <param name="editorType">The type of the editor.</param>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute.EditorType">
+            <summary>
+            Gets the type of the UI editor used to configure the custom adapter.
+            </summary>
+        </member>
         <member name="T:GSF.TimeSeries.Adapters.IaonSession">
             <summary>
             Represents a new Input, Action, Output interface session.
