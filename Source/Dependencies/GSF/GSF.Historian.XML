@@ -2946,7 +2946,7 @@
             Gets or sets the maximum number of historic <see cref="T:GSF.Historian.Files.ArchiveFile"/>s to be kept at both the primary and offload locations combined.
             </summary>
             <remarks>
-            Set <see cref="P:GSF.Historian.Files.ArchiveFile.MaxHistoricArchiveFiles"/> to -1 to keep historic <see cref="T:GSF.Historian.Files.ArchiveFile"/>s indefinately.
+            Set <see cref="P:GSF.Historian.Files.ArchiveFile.MaxHistoricArchiveFiles"/> to -1 to keep historic <see cref="T:GSF.Historian.Files.ArchiveFile"/>s indefinitely.
             </remarks>
         </member>
         <member name="P:GSF.Historian.Files.ArchiveFile.LeadTimeTolerance">

@@ -14,14 +14,14 @@
             Marks a parameter or class as having a custom configuration editor page used to configure that parameter or class.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute.#ctor(System.String,System.String)">
+        <member name="M:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute.#ctor(System.String,System.String,System.String)">
             <summary>
             Creates a new instance of the <see cref="T:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute"/> class.
             </summary>
             <param name="assemblyName">The name of the assembly in which the editor type resides.</param>
             <param name="typeName">The full name of the type of the editor.</param>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute.#ctor(System.Type)">
+        <member name="M:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute.#ctor(System.Type,System.String)">
             <summary>
             Creates a new instance of the <see cref="T:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute"/> class.
             </summary>
@@ -30,6 +30,11 @@
         <member name="P:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute.EditorType">
             <summary>
             Gets the type of the UI editor used to configure the custom adapter.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.CustomConfigurationEditorAttribute.ConnectionString">
+            <summary>
+            Gets the connection string used to configure the editor.
             </summary>
         </member>
         <member name="T:GSF.TimeSeries.Adapters.IaonSession">
@@ -127,6 +132,12 @@
             </summary>
             <param name="sender">Object source raising the event.</param>
         </member>
+        <member name="M:GSF.TimeSeries.Adapters.IaonSession.OnConfigurationChanged(System.Object)">
+            <summary>
+            Raises <see cref="E:GSF.TimeSeries.Adapters.IaonSession.ConfigurationChanged"/> event.
+            </summary>
+            <param name="sender">Object source raising the event.</param>
+        </member>
         <member name="M:GSF.TimeSeries.Adapters.IaonSession.OnUnpublishedSamples(System.Object,System.Int32)">
             <summary>
             Raises the <see cref="E:GSF.TimeSeries.Adapters.IaonSession.UnpublishedSamples"/> event.
@@ -178,6 +189,13 @@
         <member name="M:GSF.TimeSeries.Adapters.IaonSession.OutputMeasurementsUpdatedHandler(System.Object,System.EventArgs)">
             <summary>
             Event handler for updates to adapter output measurement definitions.
+            </summary>
+            <param name="sender">Sending object.</param>
+            <param name="e">Event arguments, if any.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.Adapters.IaonSession.ConfigurationChangedHandler(System.Object,System.EventArgs)">
+            <summary>
+            Event handler for adapter notifications about configuration changes.
             </summary>
             <param name="sender">Sending object.</param>
             <param name="e">Event arguments, if any.</param>
@@ -260,6 +278,11 @@
         <member name="E:GSF.TimeSeries.Adapters.IaonSession.OutputMeasurementsUpdated">
             <summary>
             Event is raised when <see cref="P:GSF.TimeSeries.Adapters.IAdapter.OutputMeasurements"/> are updated.
+            </summary>
+        </member>
+        <member name="E:GSF.TimeSeries.Adapters.IaonSession.ConfigurationChanged">
+            <summary>
+            Event is raised when adapter is aware of a configuration change.
             </summary>
         </member>
         <member name="E:GSF.TimeSeries.Adapters.IaonSession.UnpublishedSamples">
@@ -2907,6 +2930,11 @@
             Event is raised when <see cref="P:GSF.TimeSeries.Adapters.IAdapter.OutputMeasurements"/> are updated.
             </summary>
         </member>
+        <member name="E:GSF.TimeSeries.Adapters.IAdapter.ConfigurationChanged">
+            <summary>
+            Event is raised when adapter is aware of a configuration change.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Adapters.IAdapter.DataSource">
             <summary>
             Gets or sets <see cref="T:System.Data.DataSet"/> based data source available to <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/>.
@@ -3282,6 +3310,11 @@
             Raises <see cref="E:GSF.TimeSeries.Adapters.ActionAdapterBase.OutputMeasurementsUpdated"/> event.
             </summary>
         </member>
+        <member name="M:GSF.TimeSeries.Adapters.ActionAdapterBase.OnConfigurationChanged">
+            <summary>
+            Raises <see cref="E:GSF.TimeSeries.Adapters.ActionAdapterBase.ConfigurationChanged"/> event.
+            </summary>
+        </member>
         <member name="E:GSF.TimeSeries.Adapters.ActionAdapterBase.Notify">
             <summary>
             Notifies dependent adapters that this adapter has finished processing a measurement.
@@ -3306,6 +3339,11 @@
         <member name="E:GSF.TimeSeries.Adapters.ActionAdapterBase.OutputMeasurementsUpdated">
             <summary>
             Event is raised when <see cref="P:GSF.TimeSeries.Adapters.ActionAdapterBase.OutputMeasurements"/> are updated.
+            </summary>
+        </member>
+        <member name="E:GSF.TimeSeries.Adapters.ActionAdapterBase.ConfigurationChanged">
+            <summary>
+            Event is raised when adapter is aware of a configuration change.
             </summary>
         </member>
         <member name="E:GSF.TimeSeries.Adapters.ActionAdapterBase.NewMeasurements">
@@ -3828,6 +3866,11 @@
             Raises <see cref="E:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.OutputMeasurementsUpdated"/> event.
             </summary>
         </member>
+        <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.OnConfigurationChanged">
+            <summary>
+            Raises <see cref="E:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.ConfigurationChanged"/> event.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.ClearItems">
             <summary>
             Removes all elements from the <see cref="T:System.Collections.ObjectModel.Collection`1"/>.
@@ -3903,6 +3946,11 @@
         <member name="E:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.OutputMeasurementsUpdated">
             <summary>
             Event is raised when <see cref="P:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.OutputMeasurements"/> are updated.
+            </summary>
+        </member>
+        <member name="E:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.ConfigurationChanged">
+            <summary>
+            Event is raised when adapter is aware of a configuration change.
             </summary>
         </member>
         <member name="E:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.Disposed">
@@ -4359,6 +4407,11 @@
             Raises <see cref="E:GSF.TimeSeries.Adapters.AdapterBase.OutputMeasurementsUpdated"/> event.
             </summary>
         </member>
+        <member name="M:GSF.TimeSeries.Adapters.AdapterBase.OnConfigurationChanged">
+            <summary>
+            Raises <see cref="E:GSF.TimeSeries.Adapters.AdapterBase.ConfigurationChanged"/> event.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterBase.IncrementProcessedMeasurements(System.Int64)">
             <summary>
             Safely increments the total processed measurements.
@@ -4508,6 +4561,11 @@
         <member name="E:GSF.TimeSeries.Adapters.AdapterBase.OutputMeasurementsUpdated">
             <summary>
             Event is raised when <see cref="P:GSF.TimeSeries.Adapters.AdapterBase.OutputMeasurements"/> are updated.
+            </summary>
+        </member>
+        <member name="E:GSF.TimeSeries.Adapters.AdapterBase.ConfigurationChanged">
+            <summary>
+            Event is raised when adapter is aware of a configuration change.
             </summary>
         </member>
         <member name="E:GSF.TimeSeries.Adapters.AdapterBase.Disposed">
@@ -5246,6 +5304,14 @@
             Derived classes should extend status with implementation specific information.
             </remarks>
         </member>
+        <member name="P:GSF.TimeSeries.Adapters.InputAdapterBase.InputMeasurementKeys">
+            <summary>
+            Gets or sets primary keys of input measurements the <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/> expects, if any.
+            </summary>
+            <remarks>
+            Redefined to hide attributes defined in the base class.
+            </remarks>
+        </member>
         <member name="T:GSF.TimeSeries.Adapters.InputAdapterCollection">
             <summary>
             Represents a collection of <see cref="T:GSF.TimeSeries.Adapters.IInputAdapter"/> implementations.
@@ -5623,6 +5689,14 @@
             <summary>
             Returns the detailed status of the data input source.  Derived classes should extend status with implementation specific information.
             </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.OutputAdapterBase.OutputMeasurements">
+            <summary>
+            Gets or sets output measurements that the <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/> will produce, if any.
+            </summary>
+            <remarks>
+            Redefined to hide attributes defined in the base class.
+            </remarks>
         </member>
         <member name="T:GSF.TimeSeries.Adapters.OutputAdapterCollection">
             <summary>
@@ -6506,6 +6580,15 @@
             Unsolicited response provides a notification message to the client.
             </remarks>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.ServerResponse.ConfigurationChanged">
+            <summary>
+            Configuration changed response.
+            </summary>
+            <remarks>
+            Unsolicited response provides a notification that the publisher's source configuration has changed and that
+            client may want to request a meta-data refresh.
+            </remarks>
+        </member>
         <member name="F:GSF.TimeSeries.Transport.ServerResponse.NoOP">
             <summary>
             No operation keep-alive ping.
@@ -7062,6 +7145,12 @@
             dependencies before publishing queued measurements to an adapter.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.DataPublisher.CacheMeasurementKeys">
+            <summary>
+            Gets or sets the set of measurements which are cached by the data
+            publisher to be published to subscribers immediately upon subscription.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.DataPublisher.DataSource">
             <summary>
             Gets or sets <see cref="T:System.Data.DataSet"/> based data source used to load each <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/>.
@@ -7441,15 +7530,24 @@
             Returns the measurements signal IDs that were unauthorized after the last successful subscription request.
             </summary>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.DataSubscriber.ResetLifetimeCounters">
+            <summary>
+            Resets the counters for the lifetime statistics without interrupting the adapter's operations.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.RefreshMetadata">
             <summary>
             Initiate a metadata refresh.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.Transport.DataSubscriber.ResetLifetimeCounters">
+        <member name="M:GSF.TimeSeries.Transport.DataSubscriber.SynchronizeMetadata(System.Data.DataSet)">
             <summary>
-            Resets the counters for the lifetime statistics without interrupting the adapter's operations.
+            Spawn meta-data synchronization.
             </summary>
+            <param name="metadata"><see cref="T:System.Data.DataSet"/> to use for synchronization.</param>
+            <remarks>
+            This method makes sure only one meta-data synchronization happens at a time.
+            </remarks>
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.SendServerCommand(GSF.TimeSeries.Transport.ServerCommand,System.Byte[])">
             <summary>
@@ -7487,11 +7585,13 @@
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.SynchronizeMetadata(System.Object)">
             <summary>
-            Handles auto-connection metadata synchronization to local system. 
+            Handles meta-data synchronization to local system.
             </summary>
-            <param name="state"><see cref="T:System.Data.DataSet"/> metadata collection passed into state parameter.</param>
+            <param name="state"><see cref="T:System.Data.DataSet"/> meta-data collection passed into state parameter.</param>
             <remarks>
-            This function is normally called from thread pool since synchronization can take some time.
+            This function should only be initiated from call to <see cref="M:GSF.TimeSeries.Transport.DataSubscriber.SynchronizeMetadata(System.Data.DataSet)"/> to make
+            sure only one meta-data synchronization happens at once. Users can override this method to customize
+            process of meta-data synchronization.
             </remarks>
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.OnConnectionEstablished">
@@ -7533,6 +7633,17 @@
             Raises the <see cref="E:GSF.TimeSeries.Transport.DataSubscriber.ProcessingComplete"/> event.
             </summary>
             <param name="source">Type name of adapter that sent the processing completed notification.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.Transport.DataSubscriber.OnNotificationReceived(System.String)">
+            <summary>
+            Raises the <see cref="E:GSF.TimeSeries.Transport.DataSubscriber.NotificationReceived"/> event.
+            </summary>
+            <param name="message">Message for the notification.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.Transport.DataSubscriber.OnServerConfigurationChanged">
+            <summary>
+            Raises the <see cref="E:GSF.TimeSeries.Transport.DataSubscriber.ServerConfigurationChanged"/> event.
+            </summary>
         </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.DisposeLocalConcentrator">
             <summary>
@@ -7581,6 +7692,12 @@
         <member name="E:GSF.TimeSeries.Transport.DataSubscriber.NotificationReceived">
             <summary>
             Occurs when a notification has been received from the <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/>.
+            </summary>
+        </member>
+        <member name="E:GSF.TimeSeries.Transport.DataSubscriber.ServerConfigurationChanged">
+            <summary>
+            Occurs when the server has sent a notification that its configuration has changed, this
+            can allow subscriber to request updated meta-data if desired.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.SecurityMode">
@@ -8031,6 +8148,16 @@
             <param name="e">Event arguments containing the exception to report.</param>
             <remarks>
             The time-series framework <see cref="T:GSF.TimeSeries.Adapters.IaonSession"/> uses this event to report exceptions.
+            </remarks>
+        </member>
+        <member name="M:GSF.TimeSeries.ServiceHostBase.m_iaonSession_ConfigurationChanged(System.Object,System.EventArgs)">
+            <summary>
+            Event handler for processing notifications from adapters that configuration has changed.
+            </summary>
+            <param name="sender">Event source of the notification.</param>
+            <param name="e">Event arguments, if any.</param>
+            <remarks>
+            The time-series framework <see cref="T:GSF.TimeSeries.Adapters.IaonSession"/> uses this event to report configuration changes.
             </remarks>
         </member>
         <member name="M:GSF.TimeSeries.ServiceHostBase.LogExceptionHandler(System.Object,GSF.EventArgs{System.Exception})">

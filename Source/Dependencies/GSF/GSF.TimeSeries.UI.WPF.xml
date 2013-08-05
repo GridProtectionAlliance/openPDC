@@ -103,6 +103,83 @@
             Occurs when changes occur that affect whether or not the command should execute.
             </summary>
         </member>
+        <member name="T:GSF.TimeSeries.UI.Editors.FileDialogEditor">
+            <summary>
+            Interaction logic for FileDialogEditor.xaml
+            </summary>
+            <summary>
+            FileDialogEditor
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.Editors.FileDialogEditor.#ctor(GSF.TimeSeries.UI.DataModels.Adapter,System.String,System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TimeSeries.UI.Editors.FolderBrowserEditor"/> class.
+            </summary>
+            <param name="adapter">The adapter to be configured.</param>
+            <param name="parameterName">The name of the parameter to be configured.</param>
+            <param name="connectionString">Parameters for the file dialog.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.Editors.FileDialogEditor.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:GSF.TimeSeries.UI.Editors.FolderBrowserEditor">
+            <summary>
+            Interaction logic for FolderBrowserEditor.xaml
+            </summary>
+            <summary>
+            FolderBrowserEditor
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.Editors.FolderBrowserEditor.#ctor(GSF.TimeSeries.UI.DataModels.Adapter,System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TimeSeries.UI.Editors.FolderBrowserEditor"/> class.
+            </summary>
+            <param name="adapter">The adapter to be configured.</param>
+            <param name="parameterName">The name of the parameter to be configured.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.Editors.FolderBrowserEditor.#ctor(GSF.TimeSeries.UI.DataModels.Adapter,System.String,System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TimeSeries.UI.Editors.FolderBrowserEditor"/> class.
+            </summary>
+            <param name="adapter">The adapter to be configured.</param>
+            <param name="parameterName">The name of the parameter to be configured.</param>
+            <param name="connectionString">Parameters for the folder browser.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.Editors.FolderBrowserEditor.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:GSF.TimeSeries.UI.Editors.MeasurementEditor">
+            <summary>
+            Interaction logic for MeasurementEditor.xaml
+            </summary>
+            <summary>
+            MeasurementEditor
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.Editors.MeasurementEditor.#ctor(GSF.TimeSeries.UI.DataModels.Adapter,System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TimeSeries.UI.Editors.MeasurementEditor"/> class.
+            </summary>
+            <param name="adapter">The adapter to be configured.</param>
+            <param name="parameterName">The name of the parameter being configured.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.Editors.MeasurementEditor.#ctor(GSF.TimeSeries.UI.DataModels.Adapter,System.String,System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TimeSeries.UI.Editors.MeasurementEditor"/> class.
+            </summary>
+            <param name="adapter">The adapter to be configured.</param>
+            <param name="parameterName">The name of the parameter being configured.</param>
+            <param name="connectionString">Parameters which define how this control interacts with the user.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.UI.Editors.MeasurementEditor.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
         <member name="T:GSF.TimeSeries.UI.IViewModel">
             <summary>
             Represents an interface and common methods and properties each data model definition should use.
@@ -1615,6 +1692,13 @@
             this simply returns true if the value in the Value property is the word "false".
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.UI.ViewModels.AdapterConnectionStringParameter.IsCustom">
+            <summary>
+            Gets a value that indicates whether the value of this parameter can be configured via a
+            custom control. This determines whether the hyperlink that links to the custom configuration
+            popup is visible.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.UI.ViewModels.AdapterConnectionStringParameter.IsBoolean">
             <summary>
             Gets a value that indicates whether the type of this <see cref="T:GSF.TimeSeries.UI.ViewModels.AdapterConnectionStringParameter"/>
@@ -2551,6 +2635,36 @@
         <member name="P:GSF.TimeSeries.UI.ViewModels.Vendors.IsNewRecord">
             <summary>
             Gets flag that determines if <see cref="P:GSF.TimeSeries.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
+            </summary>
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
             </summary>
         </member>
     </members>

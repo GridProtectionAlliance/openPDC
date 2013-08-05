@@ -1295,7 +1295,7 @@
             Send a request to the server and waits for a response back.
             </summary>
             <param name="request">Request to be sent to the server.</param>
-            <returns>Response packet if a valid reponse is received from the server; otherwise Nothing.</returns>
+            <returns>Response packet if a valid response is received from the server; otherwise Nothing.</returns>
         </member>
         <member name="M:GSF.Communication.Radius.RadiusClient.CreateNewPin(System.String,System.String,System.String)">
             <summary>

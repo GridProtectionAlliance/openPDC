@@ -30,7 +30,7 @@
             </summary>
             <typeparam name="T"><see cref="T:System.Type"/> of adapters to be loaded.</typeparam>
             <example>
-            This example show how to use the <see cref="T:GSF.Adapters.AdapterLoader`1"/> to isolate adapters in seperate <see cref="T:System.AppDomain"/>s and monitor their resource usage:
+            This example show how to use the <see cref="T:GSF.Adapters.AdapterLoader`1"/> to isolate adapters in separate <see cref="T:System.AppDomain"/>s and monitor their resource usage:
             <code>
             using System;
             using System.Collections.Generic;
@@ -384,7 +384,7 @@
             <summary>
             Gets the % processor usage of the specified <paramref name="process"/>.
             </summary>
-            <param name="process">The <see cref="T:System.Diagnostics.Process"/> whose processot usage is to be determined.</param>
+            <param name="process">The <see cref="T:System.Diagnostics.Process"/> whose processor usage is to be determined.</param>
             <returns>Processor usage in % of the specified <paramref name="process"/>.</returns>
         </member>
         <member name="M:GSF.Adapters.AdapterLoader`1.ExecuteAdapterOperation(`0,System.Object)">
@@ -467,7 +467,7 @@
             <summary>
             Occurs when an adapter has exceeded either the <see cref="P:GSF.Adapters.AdapterLoader`1.AllowableAdapterMemoryUsage"/> or <see cref="P:GSF.Adapters.AdapterLoader`1.AllowableAdapterProcessorUsage"/>.
             </summary>
-            <see cref="F:GSF.EventArgs`1.Argument"/> is the adapter that exceeded the allowable system resource utlization.
+            <see cref="F:GSF.EventArgs`1.Argument"/> is the adapter that exceeded the allowable system resource utilization.
         </member>
         <member name="E:GSF.Adapters.AdapterLoader`1.AdapterLoadException">
             <summary>
@@ -518,7 +518,7 @@
         </member>
         <member name="P:GSF.Adapters.AdapterLoader`1.IsolateAdapters">
             <summary>
-            Gets or sets a boolean value that indicates whether <see cref="P:GSF.Adapters.AdapterLoader`1.Adapters"/> are loaded in seperate <see cref="T:System.AppDomain"/> for isolated execution.
+            Gets or sets a boolean value that indicates whether <see cref="P:GSF.Adapters.AdapterLoader`1.Adapters"/> are loaded in separate <see cref="T:System.AppDomain"/> for isolated execution.
             </summary>
         </member>
         <member name="P:GSF.Adapters.AdapterLoader`1.MonitorAdapters">
@@ -602,14 +602,14 @@
         </member>
         <member name="T:GSF.Adapters.Adapter">
             <summary>
-            Represents an adapter that could execute in isolation in a seperate <see cref="T:System.AppDomain"/>.
+            Represents an adapter that could execute in isolation in a separate <see cref="T:System.AppDomain"/>.
             </summary>
             <seealso cref="T:GSF.Adapters.IAdapter"/>
             <seealso cref="T:GSF.Adapters.AdapterLoader`1"/>
         </member>
         <member name="T:GSF.Adapters.IAdapter">
             <summary>
-            Defines an adapter that could execute in isolation in a seperate <see cref="T:System.AppDomain"/>.
+            Defines an adapter that could execute in isolation in a separate <see cref="T:System.AppDomain"/>.
             </summary>
         </member>
         <member name="E:GSF.Adapters.IAdapter.StatusUpdate">
@@ -647,12 +647,12 @@
         </member>
         <member name="P:GSF.Adapters.IAdapter.MemoryUsage">
             <summary>
-            Gets the memory utilzation of the <see cref="T:GSF.Adapters.IAdapter"/> in bytes if executing in a seperate <see cref="T:System.AppDomain"/>, otherwise <see cref="F:System.Double.NaN"/>.
+            Gets the memory utilization of the <see cref="T:GSF.Adapters.IAdapter"/> in bytes if executing in a separate <see cref="T:System.AppDomain"/>, otherwise <see cref="F:System.Double.NaN"/>.
             </summary>
         </member>
         <member name="P:GSF.Adapters.IAdapter.ProcessorUsage">
             <summary>
-            Gets the % processor utilization of the <see cref="T:GSF.Adapters.IAdapter"/> if executing in a seperate <see cref="T:System.AppDomain"/> otherwise <see cref="F:System.Double.NaN"/>.
+            Gets the % processor utilization of the <see cref="T:GSF.Adapters.IAdapter"/> if executing in a separate <see cref="T:System.AppDomain"/> otherwise <see cref="F:System.Double.NaN"/>.
             </summary>
         </member>
         <member name="M:GSF.Adapters.Adapter.#ctor">
@@ -770,11 +770,11 @@
         </member>
         <member name="P:GSF.Adapters.Adapter.MemoryUsage">
             <summary>
-            Gets the memory utilzation of the <see cref="T:GSF.Adapters.Adapter"/> in bytes if executing in a seperate <see cref="T:System.AppDomain"/>, otherwise <see cref="F:System.Double.NaN"/>.
+            Gets the memory utilization of the <see cref="T:GSF.Adapters.Adapter"/> in bytes if executing in a separate <see cref="T:System.AppDomain"/>, otherwise <see cref="F:System.Double.NaN"/>.
             </summary>
             <remarks>
             <para>
-            <see cref="P:GSF.Adapters.Adapter.MemoryUsage"/> gets updated only after a full blocking collection by <see cref="T:System.GC"/> (eg. <see cref="M:System.GC.Collect"/>).
+            <see cref="P:GSF.Adapters.Adapter.MemoryUsage"/> gets updated only after a full blocking collection by <see cref="T:System.GC"/> (e.g. <see cref="M:System.GC.Collect"/>).
             </para>
             <para>
             This method always returns <c><see cref="F:System.Double.NaN"/></c> under Mono deployments.
@@ -783,7 +783,7 @@
         </member>
         <member name="P:GSF.Adapters.Adapter.ProcessorUsage">
             <summary>
-            Gets the % processor utilization of the <see cref="T:GSF.Adapters.Adapter"/> if executing in a seperate <see cref="T:System.AppDomain"/> otherwise <see cref="F:System.Double.NaN"/>.
+            Gets the % processor utilization of the <see cref="T:GSF.Adapters.Adapter"/> if executing in a separate <see cref="T:System.AppDomain"/> otherwise <see cref="F:System.Double.NaN"/>.
             </summary>
             <remarks>
             This method always returns <c><see cref="F:System.Double.NaN"/></c> under Mono deployments.
@@ -3520,21 +3520,21 @@
         </member>
         <member name="M:GSF.CharExtensions.IsWordTerminator(System.Char)">
             <summary>
-            Tests a character to determine if it marks the end of a typical english word.
+            Tests a character to determine if it marks the end of a typical English word.
             </summary>
             <param name="value">Input character to check.</param>
-            <returns><c>true</c> if character is a work seperator.</returns>
+            <returns><c>true</c> if character is a work separator.</returns>
             <remarks>
-            Preforms no testing for ASCII codes &gt; 127.<br/>
-            Does not seperate words based on punctuation of ' %  - _  <br/>
-            However does include the angle bracket symbols &lt; &gt; as seperators<br/>
+            Performs no testing for ASCII codes &gt; 127.<br/>
+            Does not separate words based on punctuation of ' %  - _  <br/>
+            However does include the angle bracket symbols &lt; &gt; as separators<br/>
             <br/>
             For reference the standard char tests are:
             <ul>
             <li>"IsSperator (1) == simple space (32 or 160) only.</li>
             <li>IsPunctuation (23) == . , ! ? : ; " ' [ ] { } ( ) \ / @ % # * &amp; - _  (plus other char's &gt; 127)</li>
             <li>IsSymbol (8) == $ + &lt; &gt; = ^ ` ~</li>
-            <li>IsWhiteSpace (6) == control char's 9 thry 13, plus 32 -- TAB, LF, VT, FF, CR, SP</li>
+            <li>IsWhiteSpace (6) == control char's 9 thru 13, plus 32 -- TAB, LF, VT, FF, CR, SP</li>
             </ul>
             </remarks>
         </member>
@@ -3677,7 +3677,7 @@
             <param name="others">Other dictionaries to merge with source dictionary.</param>
             <returns>
             A merged collection of all unique dictionary elements, all <paramref name="others"/> merged left to the source with no duplicate
-            key values overwritten (i.e., first encounted key value pair is the one that remains in the returned merged dictionary).
+            key values overwritten (i.e., first encountered key value pair is the one that remains in the returned merged dictionary).
             </returns>
         </member>
         <member name="M:GSF.Collections.CollectionExtensions.Merge``3(``0,System.Boolean,System.Collections.Generic.IDictionary{``1,``2}[])">
@@ -3826,7 +3826,7 @@
             <returns>Returns a generic type.</returns>
         </member>
         <member name="M:GSF.Collections.CollectionExtensions.ToDelimitedString``1(System.Collections.Generic.IEnumerable{``0})">
-            <summary>Converts an enumeration to a string, using the default delimeter ("|") that can later be
+            <summary>Converts an enumeration to a string, using the default delimiter ("|") that can later be
             converted back to a list using LoadDelimitedString.</summary>
             <typeparam name="TSource">The generic type used.</typeparam>
             <param name="source">The source object to be converted into a delimited string.</param>
@@ -3854,12 +3854,12 @@
             <typeparam name="TSource">The generic enumeration type used.</typeparam>
             <typeparam name="TDelimiter">The generic delimiter type used.</typeparam>
             <param name="source">The source object to be converted into a delimited string.</param>
-            <param name="delimiter">The delimeter of type TDelimiter used.</param>
+            <param name="delimiter">The delimiter of type TDelimiter used.</param>
             <returns>Returns a <see cref="T:System.String"/> that is result of combining all elements in the list delimited by <paramref name="delimiter"/>.</returns>
         </member>
         <member name="M:GSF.Collections.CollectionExtensions.LoadDelimitedString``1(System.Collections.Generic.IList{``0},System.String,System.Func{System.String,``0})">
             <summary>Appends items parsed from delimited string, created with ToDelimitedString, using the default
-            delimeter ("|") into the given list.</summary>
+            delimiter ("|") into the given list.</summary>
             <remarks>Items that are converted are added to list. The list is not cleared in advance.</remarks>
             <typeparam name="TSource">The generic type used.</typeparam>
             <param name="destination">The list we are adding items to.</param>
@@ -3872,7 +3872,7 @@
             <typeparam name="TSource">The generic type used.</typeparam>
             <param name="destination">The list we are adding items to.</param>
             <param name="delimitedString">The delimited string to parse for items.</param>
-            <param name="delimeter">The <see cref="T:System.Char"/> value to look for in the <paramref name="delimitedString"/> as the delimiter.</param>
+            <param name="delimiter">The <see cref="T:System.Char"/> value to look for in the <paramref name="delimitedString"/> as the delimiter.</param>
             <param name="convertFromString">Delegate that takes one parameter and converts from string to type TSource.</param>
         </member>
         <member name="M:GSF.Collections.CollectionExtensions.LoadDelimitedString``1(System.Collections.Generic.IList{``0},System.String,System.String[],System.Func{System.String,``0})">
@@ -3910,20 +3910,24 @@
             <typeparam name="TSource">The generic type of the list.</typeparam>
             <remarks>This function uses the <see cref="T:System.Random"/> generator to perform the unscramble using a sequence that is repeatable.</remarks>
         </member>
-        <member name="M:GSF.Collections.CollectionExtensions.CompareTo``1(``0[],``0[])">
+        <member name="M:GSF.Collections.CollectionExtensions.CompareTo``1(``0[],``0[],System.Boolean)">
             <summary>Compares two arrays.</summary>
             <param name="array1">The first type array to compare to.</param>
             <param name="array2">The second type array to compare against.</param>
+            <param name="orderIsImportant"><c>true</c> if order of elements should be considered for equality; otherwise, <c>false</c>.</param>
             <returns>An <see cref="T:System.Int32"/> which returns 0 if they are equal, 1 if <paramref name="array1"/> is larger, or -1 if <paramref name="array2"/> is larger.</returns>
-            <typeparam name="TSource">The generic type of the list.</typeparam>
+            <typeparam name="TSource">The generic type of the array.</typeparam>
+            <exception cref="T:System.ArgumentException">Cannot compare multidimensional arrays.</exception>
         </member>
-        <member name="M:GSF.Collections.CollectionExtensions.CompareTo(System.Array,System.Array,System.Collections.IComparer)">
+        <member name="M:GSF.Collections.CollectionExtensions.CompareTo(System.Array,System.Array,System.Collections.IComparer,System.Boolean)">
             <summary>Compares two arrays.</summary>
             <param name="array1">The first <see cref="T:System.Array"/> to compare to.</param>
             <param name="array2">The second <see cref="T:System.Array"/> to compare against.</param>
             <param name="comparer">An interface <see cref="T:System.Collections.IComparer"/> that exposes a method to compare the two arrays.</param>
+            <param name="orderIsImportant"><c>true</c> if order of elements should be considered for equality; otherwise, <c>false</c>.</param>
             <returns>An <see cref="T:System.Int32"/> which returns 0 if they are equal, 1 if <paramref name="array1"/> is larger, or -1 if <paramref name="array2"/> is larger.</returns>
             <remarks>This is a default comparer to make arrays comparable.</remarks>
+            <exception cref="T:System.ArgumentException">Cannot compare multidimensional arrays.</exception>
         </member>
         <member name="T:GSF.Collections.DictionaryList`2">
             <summary>
@@ -7265,13 +7269,13 @@
         </member>
         <member name="M:GSF.Configuration.SettingsBase.ExecuteActionForFields(System.Action{System.Reflection.FieldInfo})">
             <summary>
-            Executes specified action over all public dervied class member fields.
+            Executes specified action over all public derived class member fields.
             </summary>
-            <param name="fieldAction">Action to excute for all dervied class member fields.</param>
+            <param name="fieldAction">Action to excute for all derived class member fields.</param>
         </member>
         <member name="M:GSF.Configuration.SettingsBase.ExecuteActionForProperties(System.Action{System.Reflection.PropertyInfo},System.Reflection.BindingFlags)">
             <summary>
-            Executes specified action over all public dervied class properties.
+            Executes specified action over all public derived class properties.
             </summary>
             <param name="propertyAction">Action to execute for all properties.</param>
             <param name="isGetOrSet"><see cref="F:System.Reflection.BindingFlags.GetProperty"/> or <see cref="F:System.Reflection.BindingFlags.SetProperty"/>.</param>
@@ -7294,7 +7298,7 @@
         </member>
         <member name="P:GSF.Configuration.SettingsBase.MemberAccessBindingFlags">
             <summary>
-            Gets or sets <see cref="T:System.Reflection.BindingFlags"/> used to access fields and properties of dervied class.
+            Gets or sets <see cref="T:System.Reflection.BindingFlags"/> used to access fields and properties of derived class.
             </summary>
             <remarks>
             Value defaults to <c><see cref="F:System.Reflection.BindingFlags.Public"/> | <see cref="F:System.Reflection.BindingFlags.Instance"/> | <see cref="F:System.Reflection.BindingFlags.DeclaredOnly"/></c>.
@@ -8858,6 +8862,11 @@
         <member name="P:GSF.Console.Arguments.OrderedArgCount">
             <summary>
             Gets the total number of ordered arguments in the command-line command.
+            </summary>
+        </member>
+        <member name="P:GSF.Console.Arguments.OrderedArgs">
+            <summary>
+            Gets the ordered arguments as an array of strings.
             </summary>
         </member>
         <member name="P:GSF.Console.Arguments.ContainsHelpRequest">
@@ -12488,7 +12497,7 @@
         </member>
         <member name="P:GSF.FastObjectFactory`1.CreateObjectFunction">
             <summary>
-            Gets delegate that quickly creates new instance of the specfied type.
+            Gets delegate that quickly creates new instance of the specified type.
             </summary>
         </member>
         <member name="T:GSF.FastObjectFactory">
@@ -16590,7 +16599,7 @@
             <param name="sharename">UNC share name to connect to.</param>
             <param name="username">Username to use for connection.</param>
             <param name="password">Password to use for connection.</param>
-            <param name="domain">Domain name to use for connetion. Specify the computer name for local system accounts.</param>
+            <param name="domain">Domain name to use for connection. Specify the computer name for local system accounts.</param>
         </member>
         <member name="M:GSF.IO.FilePath.DisconnectFromNetworkShare(System.String)">
             <summary>
@@ -17425,7 +17434,7 @@
             Gets or sets the name of the file.
             </summary>
             <remarks>
-            Changing the <see cref="P:GSF.IO.IsamDataFileBase`1.FileName"/> when the file is open will cause the file to be re-opend.
+            Changing the <see cref="P:GSF.IO.IsamDataFileBase`1.FileName"/> when the file is open will cause the file to be re-opened.
             </remarks>
         </member>
         <member name="P:GSF.IO.IsamDataFileBase`1.FileAccessMode">
@@ -17725,7 +17734,7 @@
         </member>
         <member name="M:GSF.IO.LogFile.ReadLines">
             <summary>
-            Reads text from the <see cref="T:GSF.IO.LogFile"/> and returns a list of lines created by seperating the text by the "newline"
+            Reads text from the <see cref="T:GSF.IO.LogFile"/> and returns a list of lines created by separating the text by the "newline"
             characters if and where present.
             </summary>
             <returns>A list of lines from the text read from the <see cref="T:GSF.IO.LogFile"/>.</returns>
@@ -22848,7 +22857,7 @@
         </member>
         <member name="T:GSF.Collections.SettingsCollection">
             <summary>
-            A collection of settings that can be represented as a string of key-value pairs for easy persistance and also provide built-in validation support for the settings.
+            A collection of settings that can be represented as a string of key-value pairs for easy persistence and also provide built-in validation support for the settings.
             </summary>
             <example>
             This example shows how to use <see cref="T:GSF.Collections.SettingsCollection"/> for key-value pair type settings and apply validation to them:
@@ -22971,7 +22980,7 @@
             </summary>
             <typeparam name="T"><see cref="T:System.Type"/> to convert string to.</typeparam>
             <param name="value">Source string to convert to type.</param>
-            <returns><see cref="T:System.String"/> converted to specfied <see cref="T:System.Type"/>; default value of specified type T if conversion fails.</returns>
+            <returns><see cref="T:System.String"/> converted to specified <see cref="T:System.Type"/>; default value of specified type T if conversion fails.</returns>
             <remarks>
             This function makes use of a <see cref="T:System.ComponentModel.TypeConverter"/> to convert this <see cref="T:System.String"/> to the specified type T,
             the best way to make sure <paramref name="value"/> can be converted back to its original type is to use the same
@@ -22986,7 +22995,7 @@
             <typeparam name="T"><see cref="T:System.Type"/> to convert string to.</typeparam>
             <param name="value">Source string to convert to type.</param>
             <param name="type"><see cref="T:System.Type"/> to convert string to.</param>
-            <returns><see cref="T:System.String"/> converted to specfied <see cref="T:System.Type"/>; default value of specified type T if conversion fails.</returns>
+            <returns><see cref="T:System.String"/> converted to specified <see cref="T:System.Type"/>; default value of specified type T if conversion fails.</returns>
             <remarks>
             This function makes use of a <see cref="T:System.ComponentModel.TypeConverter"/> to convert this <see cref="T:System.String"/> to the specified <paramref name="type"/>,
             the best way to make sure <paramref name="value"/> can be converted back to its original type is to use the same
@@ -23002,7 +23011,7 @@
             <param name="value">Source string to convert to type.</param>
             <param name="type"><see cref="T:System.Type"/> to convert string to.</param>
             <param name="culture"><see cref="T:System.Globalization.CultureInfo"/> to use for the conversion.</param>
-            <returns><see cref="T:System.String"/> converted to specfied <see cref="T:System.Type"/>; default value of specified type T if conversion fails.</returns>
+            <returns><see cref="T:System.String"/> converted to specified <see cref="T:System.Type"/>; default value of specified type T if conversion fails.</returns>
             <remarks>
             This function makes use of a <see cref="T:System.ComponentModel.TypeConverter"/> to convert this <see cref="T:System.String"/> to the specified <paramref name="type"/>,
             the best way to make sure <paramref name="value"/> can be converted back to its original type is to use the same
@@ -23012,9 +23021,9 @@
         </member>
         <member name="M:GSF.StringExtensions.GetSegments(System.String,System.Int32)">
             <summary>
-            Turns source string into an array of string segements - each with a set maximum width - for parsing or displaying.
+            Turns source string into an array of string segments - each with a set maximum width - for parsing or displaying.
             </summary>
-            <param name="value">Input string to break up into segements.</param>
+            <param name="value">Input string to break up into segments.</param>
             <param name="segmentSize">Maximum size of returned segment.</param>
             <returns>Array of string segments as parsed from source string.</returns>
             <remarks>Returns a single element array with an empty string if source string is null or empty.</remarks>
@@ -23024,8 +23033,8 @@
             Combines a dictionary of key-value pairs in to a string.
             </summary>
             <param name="pairs">Dictionary of key-value pairs.</param>
-            <param name="parameterDelimeter">Character that delimits one key-value pair from another (eg. ';').</param>
-            <param name="keyValueDelimeter">Character that delimits a key from its value (eg. '=').</param>
+            <param name="parameterDelimeter">Character that delimits one key-value pair from another (e.g. ';').</param>
+            <param name="keyValueDelimeter">Character that delimits a key from its value (e.g. '=').</param>
             <param name="startValueDelimeter">Optional character that marks the start of a value such that value could contain other
             <paramref name="parameterDelimeter"/> or <paramref name="keyValueDelimeter"/> characters (e.g., "{").</param>
             <param name="endValueDelimeter">Optional character that marks the end of a value such that value could contain other
@@ -23067,7 +23076,7 @@
             </para>
             </remarks>
             <exception cref="T:System.ArgumentNullException">value is null.</exception>
-            <exception cref="T:System.ArgumentException">All delimeters must be unique -or- all keys must be unique when
+            <exception cref="T:System.ArgumentException">All delimiters must be unique -or- all keys must be unique when
             <paramref name="ignoreDuplicateKeys"/> is set to <c>false</c>.</exception>
             <exception cref="T:System.FormatException">Total nested key/value value pair expressions are mismatched -or- encountered
             <paramref name="endValueDelimeter"/> before <paramref name="startValueDelimeter"/>.</exception>
@@ -23216,11 +23225,11 @@
         </member>
         <member name="M:GSF.StringExtensions.CharCount(System.String,System.Char)">
             <summary>
-            Counts the total number of the occurances of a character in the given string.
+            Counts the total number of the occurrences of a character in the given string.
             </summary>
             <param name="value">Input string.</param>
             <param name="characterToCount">Character to be counted.</param>
-            <returns>Total number of the occurances of <paramref name="characterToCount" /> in the given string.</returns>
+            <returns>Total number of the occurrences of <paramref name="characterToCount" /> in the given string.</returns>
         </member>
         <member name="M:GSF.StringExtensions.IsAllDigits(System.String)">
             <summary>

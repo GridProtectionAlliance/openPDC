@@ -50,7 +50,7 @@
         </member>
         <member name="E:AverageFrequencyUI.AverageFrequencyViewModel.PropertyChanged">
             <summary>
-            Event triggered when a property is changed.
+            Occurs when a property value changes.
             </summary>
         </member>
         <member name="P:AverageFrequencyUI.AverageFrequencyViewModel.VirtualDeviceNames">

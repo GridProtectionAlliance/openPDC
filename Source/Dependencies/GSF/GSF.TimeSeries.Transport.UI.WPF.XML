@@ -405,6 +405,11 @@
             Creates a new instance of <see cref="T:GSF.TimeSeries.Transport.UI.DataModels.MeasurementGroup"/> and assigns it to CurrentItem.
             </summary>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.UI.ViewModels.MeasurementGroups.Save">
+            <summary>
+            Saves the record for the associated <see cref="T:GSF.TimeSeries.Transport.UI.DataModels.MeasurementGroup"/>.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.UI.ViewModels.MeasurementGroups.AddMeasurement(System.Collections.Generic.ICollection{System.Guid})">
             <summary>
             Adds the measurements identified by the given collection to the measurement group.
@@ -604,6 +609,17 @@
             Gets or sets the security mode used by the data publisher.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.UseUdpDataChannel">
+            <summary>
+            Gets or sets the flag that determines whether the subscriber
+            should be configured with or without a UDP data channel.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.UdpDataChannelPort">
+            <summary>
+            Gets or sets the port used for the UDP data channel.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.InternalDataPublisherPort">
             <summary>
             Gets or sets the port used by the internal data publisher.
@@ -723,11 +739,6 @@
             </summary>
             <returns>The string based named identifier of the <see cref="P:GSF.TimeSeries.UI.PagedViewModelBase`2.CurrentItem"/>.</returns>
         </member>
-        <member name="M:GSF.TimeSeries.Transport.UI.ViewModels.Subscribers.Clear">
-            <summary>
-            Creates a new instance of <see cref="T:GSF.TimeSeries.Transport.UI.DataModels.Subscriber"/> and assigns it to CurrentItem.
-            </summary>
-        </member>
         <member name="M:GSF.TimeSeries.Transport.UI.ViewModels.Subscribers.Initialize">
             <summary>
             Initialization to be done before the initial call to <see cref="M:GSF.TimeSeries.UI.PagedViewModelBase`2.Load"/>.
@@ -781,6 +792,13 @@
             </summary>
             <param name="parameter">Collection of measurement groups to be removed.</param>
         </member>
+        <member name="M:GSF.TimeSeries.Transport.UI.ViewModels.Subscribers.SubscriberHasRights(System.Guid)">
+            <summary>
+            Determines if subscriber has rights to specified <paramref name="signalID"/>.
+            </summary>
+            <param name="signalID"><see cref="T:System.Guid"/> signal ID to lookup.</param>
+            <returns><c>true</c> if subscriber has rights to specified <paramref name="signalID"/>; otherwise <c>false</c>.</returns>
+        </member>
         <member name="E:GSF.TimeSeries.Transport.UI.ViewModels.Subscribers.MeasurementsAdded">
             <summary>
             Event to notify subscribers that measurements have been added to the group.
@@ -791,9 +809,9 @@
             Gets flag that determines if <see cref="P:GSF.TimeSeries.UI.PagedViewModelBase`2.CurrentItem"/> is a new record.
             </summary>
         </member>
-        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.Subscribers.NodeLookupList">
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.Subscribers.CurrentAvailableMeasurementsPage">
             <summary>
-            Gets <see cref="T:System.Collections.Generic.Dictionary`2"/> type collection of <see cref="T:GSF.TimeSeries.UI.DataModels.Node"/> defined in the database.
+            Gets or sets measurements with Subscribed flag set to true.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.Subscribers.AddAllowedMeasurementGroupCommand">

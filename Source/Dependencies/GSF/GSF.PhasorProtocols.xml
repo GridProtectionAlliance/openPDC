@@ -1007,7 +1007,7 @@
             </summary>
             <remarks>
             This phasor protocol implementation defines a "cell" as a portion of a frame, i.e., a logical unit of data.
-            For example, a <see cref="T:GSF.PhasorProtocols.DataCellBase"/> (dervied from <see cref="T:GSF.PhasorProtocols.ChannelCellBase"/>) could be defined as a PMU
+            For example, a <see cref="T:GSF.PhasorProtocols.DataCellBase"/> (derived from <see cref="T:GSF.PhasorProtocols.ChannelCellBase"/>) could be defined as a PMU
             within a frame of data, a <see cref="T:GSF.PhasorProtocols.DataFrameBase"/>, that contains multiple PMU's coming from a PDC.
             </remarks>
         </member>
@@ -1017,7 +1017,7 @@
             </summary>
             <remarks>
             This phasor protocol implementation defines a "cell" as a portion of a "frame", i.e., a logical unit of data.
-            For example, a <see cref="T:GSF.PhasorProtocols.IDataCell"/> (dervied from <see cref="T:GSF.PhasorProtocols.IChannelCell"/>) could be defined as a PMU
+            For example, a <see cref="T:GSF.PhasorProtocols.IDataCell"/> (derived from <see cref="T:GSF.PhasorProtocols.IChannelCell"/>) could be defined as a PMU
             within a frame of data, a <see cref="T:GSF.PhasorProtocols.IDataFrame"/>, that contains multiple PMU's coming from a PDC.
             </remarks>
         </member>
@@ -5204,7 +5204,7 @@
             </summary>
             <remarks>
             When connection is made to a file for replay purposes or consumer doesn't trust remote clock source, this flag
-            can be set to true replace all frame timestamps with a UTC timestamp dervied from the local system clock.
+            can be set to true replace all frame timestamps with a UTC timestamp derived from the local system clock.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.AutoRepeatCapturedPlayback">
