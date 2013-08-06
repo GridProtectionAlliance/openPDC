@@ -74,7 +74,7 @@ namespace Setup
                     if (MessageBox.Show("Microsoft .NET 4.5 does not appear to be installed on this computer. The .NET 4.5 framework is required to be installed before you continue installation. Would you like to install it now?", ".NET 4.5 Check", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         Process net45Install;
-                        string netInstallPath = "Installers\\dotNetFx45_Full_setup.exe";
+                        string netInstallPath = "Installers\\dotnetfx45_full_x86_x64.exe";
 
                         if (File.Exists(netInstallPath))
                         {
