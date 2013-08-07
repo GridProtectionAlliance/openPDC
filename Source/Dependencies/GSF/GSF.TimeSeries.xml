@@ -6694,6 +6694,22 @@
             Bit set = common serialization format, bit clear = .NET serialization format
             </remarks>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.OperationalModes.ReceiveExternalMetadata">
+            <summary>
+            Determines whether external measurements are exchanged during metadata synchronization.
+            </summary>
+            <remarks>
+            Bit set = external measurements are exchanged, bit clear = no external measurements are exchanged
+            </remarks>
+        </member>
+        <member name="F:GSF.TimeSeries.Transport.OperationalModes.ReceiveInternalMetadata">
+            <summary>
+            Determines whether internal measurements are exchanged during metadata synchronization.
+            </summary>
+            <remarks>
+            Bit set = internal measurements are exchanged, bit clear = no internal measurements are exchanged
+            </remarks>
+        </member>
         <member name="F:GSF.TimeSeries.Transport.OperationalModes.CompressPayloadData">
             <summary>
             Determines whether payload data is compressed when exchanging between publisher and subscriber.
@@ -7254,6 +7270,11 @@
             Defines default value for <see cref="P:GSF.TimeSeries.Transport.DataSubscriber.OperationalModes"/>.
             </summary>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.DataSubscriber.DefaultMetadataSynchronizationTimeout">
+            <summary>
+            Defines the default value for the <see cref="P:GSF.TimeSeries.Transport.DataSubscriber.MetadataSynchronizationTimeout"/> property.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.#ctor">
             <summary>
             Creates a new <see cref="T:GSF.TimeSeries.Transport.DataSubscriber"/>.
@@ -7715,6 +7736,13 @@
             Gets or sets flag that determines if <see cref="T:GSF.TimeSeries.Transport.DataSubscriber"/> should attempt to auto-connection to <see cref="T:GSF.TimeSeries.Transport.DataPublisher"/> using defined connection settings.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.AutoSynchronizeMetadata">
+            <summary>
+            Gets or sets flag that determines if <see cref="T:GSF.TimeSeries.Transport.DataSubscriber"/> should
+            automatically request metadata synchronization and synchronize publisher
+            metadata with its own database configuration.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.UseMillisecondResolution">
             <summary>
             Gets or sets flag that informs publisher if base time-offsets can use millisecond resolution to conserve bandwidth.
@@ -7741,9 +7769,49 @@
             which the subscriber and publisher communicate.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.CompressMetadata">
+            <summary>
+            Gets or sets the operational mode flag to compress metadata.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.CompressSignalIndexCache">
+            <summary>
+            Gets or sets the operational mode flag to compress the signal index cache.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.CompressPayload">
+            <summary>
+            Gets or sets the operational mode flag to compress data payloads.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.ReceiveInternalMetadata">
+            <summary>
+            Gets or sets the operational mode flag to receive internal metadata.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.ReceiveExternalMetadata">
+            <summary>
+            Gets or sets the operational mode flag to receive external metadata.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.UseCommonSerializationFormat">
+            <summary>
+            Gets or sets the operational mode flag to use the common serialization format.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.OperationalEncoding">
             <summary>
             Gets or sets the <see cref="P:GSF.TimeSeries.Transport.DataSubscriber.OperationalEncoding"/> used by the subscriber and publisher.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.GatewayCompressionMode">
+            <summary>
+            Gets or sets the <see cref="P:GSF.TimeSeries.Transport.DataSubscriber.GatewayCompressionMode"/> used by the subscriber and publisher.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.Version">
+            <summary>
+            Gets the version number of the protocol in use by this subscriber.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.SupportsTemporalProcessing">
@@ -7765,6 +7833,11 @@
             basically a delay, or timer interval, over which to process data. A value of -1 means to use the default processing
             interval while a value of 0 means to process data as fast as possible.
             </remarks>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.MetadataSynchronizationTimeout">
+            <summary>
+            Gets or sets the timeout used when executing database queries during metadata synchronization.
+            </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.Status">
             <summary>
