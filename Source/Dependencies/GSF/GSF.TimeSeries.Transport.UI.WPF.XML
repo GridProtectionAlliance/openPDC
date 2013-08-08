@@ -49,6 +49,19 @@
             InitializeComponent
             </summary>
         </member>
+        <member name="T:GSF.TimeSeries.Transport.UI.UserControls.InternalSubscriptionUserControl">
+            <summary>
+            Interaction logic for InternalSubscriptionUserControl.xaml
+            </summary>
+            <summary>
+            InternalSubscriptionUserControl
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.Transport.UI.UserControls.InternalSubscriptionUserControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
         <member name="T:GSF.TimeSeries.Transport.UI.UserControls.MeasurementGroupUserControl">
             <summary>
             Interaction logic for MeasurementGroupUserControl.xaml
@@ -609,6 +622,18 @@
             Gets or sets the security mode used by the data publisher.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.ReceiveInternalMetadata">
+            <summary>
+            Gets or sets the flag that determines whether the subscriber is
+            requesting metadata for internal signals from the publisher.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.ReceiveExternalMetadata">
+            <summary>
+            Gets or sets the flag that determines whether the subscriber is
+            requesting metadata for external signals from the publisher.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.UseUdpDataChannel">
             <summary>
             Gets or sets the flag that determines whether the subscriber
@@ -698,6 +723,11 @@
         <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.CreateCommand">
             <summary>
             Gets the command that executes when the user chooses to create the authentication request.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.SaveCommand">
+            <summary>
+            Gets the command that executes when the user chooses to save their subscriber.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.UI.ViewModels.SubscriberRequestViewModel.DefaultPort">
