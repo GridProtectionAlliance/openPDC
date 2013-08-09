@@ -10798,6 +10798,36 @@
             <param name="header">true, if the delimited text should have header information.</param>
             <returns>A string of delimited text.</returns>
         </member>
+        <member name="T:GSF.Data.DataSetEqualityComparer">
+            <summary>
+            Equality comparer for <see cref="T:System.Data.DataSet"/> objects.
+            </summary>
+        </member>
+        <member name="M:GSF.Data.DataSetEqualityComparer.Equals(System.Data.DataSet,System.Data.DataSet)">
+            <summary>
+            Determines whether the specified objects are equal.
+            </summary>
+            <returns>
+            true if the specified objects are equal; otherwise, false.
+            </returns>
+            <param name="x">The first object of type <see cref="T:System.Data.DataSet"/> to compare.</param>
+            <param name="y">The second object of type <see cref="T:System.Data.DataSet"/> to compare.</param>
+        </member>
+        <member name="M:GSF.Data.DataSetEqualityComparer.GetHashCode(System.Data.DataSet)">
+            <summary>
+            Returns a hash code for the specified object.
+            </summary>
+            <returns>
+            A hash code for the specified object.
+            </returns>
+            <param name="obj">The <see cref="T:System.Data.DataSet"/> for which a hash code is to be returned.</param>
+            <exception cref="T:System.ArgumentNullException">The type of <paramref name="obj"/> is a reference type and <paramref name="obj"/> is null.</exception>
+        </member>
+        <member name="F:GSF.Data.DataSetEqualityComparer.Default">
+            <summary>
+            Default instance of the <see cref="T:GSF.Data.DataSetEqualityComparer"/> class.
+            </summary>
+        </member>
         <member name="T:GSF.Data.DataType">
             <summary>
             Data types available to a <see cref="T:System.Data.DataSet"/> object.
@@ -10914,14 +10944,14 @@
             <summary>
             Deserializes a <see cref="T:System.Data.DataSet"/> from a <see cref="T:System.IO.Stream"/>.
             </summary>
-            <param name="source"><see cref="T:System.IO.Stream"/> to deseralize <see cref="T:System.Data.DataSet"/> from.</param>
+            <param name="source"><see cref="T:System.IO.Stream"/> to deserialize <see cref="T:System.Data.DataSet"/> from.</param>
         </member>
         <member name="M:GSF.Data.DataSetExtensions.GetDataType(System.Type)">
             <summary>
             Attempts to derive <see cref="T:GSF.Data.DataType"/> based on object <see cref="T:System.Type"/>.
             </summary>
             <param name="objectType"><see cref="T:System.Type"/> of object to test.</param>
-            <returns>Derived <see cref="T:GSF.Data.DataType"/> based on object <see cref="T:System.Type"/> if matched; otherse <see cref="F:GSF.Data.DataType.Object"/>.</returns>
+            <returns>Derived <see cref="T:GSF.Data.DataType"/> based on object <see cref="T:System.Type"/> if matched; otherwise <see cref="F:GSF.Data.DataType.Object"/>.</returns>
         </member>
         <member name="M:GSF.Data.DataSetExtensions.DeriveColumnType(GSF.Data.DataType)">
             <summary>
