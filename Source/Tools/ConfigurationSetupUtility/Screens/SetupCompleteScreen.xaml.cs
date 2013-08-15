@@ -33,7 +33,6 @@ using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
-using System.Web.Security;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -41,7 +40,6 @@ using System.Xml.Linq;
 using GSF;
 using GSF.Configuration;
 using GSF.Data;
-using GSF.Identity;
 using GSF.IO;
 using GSF.Security;
 
