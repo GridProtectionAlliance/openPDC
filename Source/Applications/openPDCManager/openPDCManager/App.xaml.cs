@@ -27,7 +27,7 @@ using System.Windows;
 using GSF.TimeSeries;
 using GSF.TimeSeries.UI;
 using GSF.Data;
-using GSF.ErrorManagement;
+using GSF.Windows.ErrorManagement;
 using GSF.Reflection;
 
 namespace openPDCManager
@@ -44,7 +44,7 @@ namespace openPDCManager
         private ErrorLogger m_errorLogger;
         private Func<string> m_defaultErrorText;
         private string m_title;
-        
+
         #endregion
 
         #region [ Constructors ]
@@ -82,7 +82,7 @@ namespace openPDCManager
                 database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
                 MeasurementKey.EstablishDefaultCache(database.Connection, database.AdapterType);
             }
-            
+
             catch (InvalidOperationException ex)
             {
                 // Wpf does not support Displaying message boxes, Until the window is open;
@@ -100,7 +100,7 @@ namespace openPDCManager
                 };
 
                 WpfBugWindow.Show();
-                MessageBox.Show(ex.Message.ToString(),"Failed to Subscribe",MessageBoxButton.OK,MessageBoxImage.Error);
+                MessageBox.Show(ex.Message.ToString(), "Failed to Subscribe", MessageBoxButton.OK, MessageBoxImage.Error);
                 WpfBugWindow.Close();
             }
             catch (Exception ex)
