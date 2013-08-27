@@ -1,6 +1,3 @@
--- Script auto-generated generated from Access database openPDC.mdb method GenerateInitialDataScript
--- 11/5/2010 4:57:08 PM
-
 USE openPDC
 GO
 
@@ -226,7 +223,7 @@ INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(11, 'SEL-5077'
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(11, 'SEL-451', 'SEL-451 Relay', 'http://www.selinc.com/sel-451.htm')
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(11, 'SEL-3306', 'SEL-3306 Synchrophasor Processor', 'http://synchrophasor.selinc.com/')
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(5, 'GE N60', 'GE N60 Synchrophasor Measurement System', 'http://www.geindustrial.com/cwc/products?pnlid=6&famid=31&catid=234&id=n60&lang=en_US')
-INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(12, 'openPDC', 'TVA Open Source Phasor Data Concentrator', 'http://www.openpdc.com/')
+INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(12, 'openPDC', 'Open Source Phasor Data Concentrator', 'http://www.openpdc.com/')
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(13, 'FNET', 'UTK FNET Device', '')
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(11, 'SEL-3373', 'SEL-3373 Synchrophasor Data Concentrator', 'http://www.selinc.com/SEL-3373/')
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(14, 'SIMEAS R-PMU', '7KE6100 Digital Fault Recorder & PMU', 'http://www.energy.siemens.com/mx/en/automation/power-transmission-distribution/power-quality/simeas-r-pmu.htm')
