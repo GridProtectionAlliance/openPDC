@@ -27,8 +27,11 @@
 
 SET vs="%VS110COMNTOOLS%\..\IDE\devenv.com"
 SET tfs="%VS110COMNTOOLS%\..\IDE\tf.exe"
+SET replace="\\GPAWEB\NightlyBuilds\Tools\ReplaceInFiles\ReplaceInFiles.exe"
 SET source1="\\GPAWEB\NightlyBuilds\GridSolutionsFramework\Beta\Libraries\*.*"
 SET target1="..\..\Source\Dependencies\GSF"
+SET sourceschema=..\..\Source\Dependencies\GSF\Data
+SET targetschema=..\..\Source\Data
 SET solution="..\..\Source\Synchrophasor.sln"
 SET sourcetools=..\..\Source\Applications\openPDC\openPDCSetup\
 SET frameworktools=\\GPAWEB\NightlyBuilds\GridSolutionsFramework\Beta\Tools\
@@ -51,15 +54,27 @@ ECHO Checking out dependencies...
 %tfs% checkout "%sourcetools%DataMigrationUtility.exe" /noprompt
 %tfs% checkout "%sourcetools%HistorianPlaybackUtility.exe" /noprompt
 %tfs% checkout "%sourcetools%HistorianView.exe" /noprompt
+%tfs% checkout "%targetschema%" /recursive /noprompt
 
 ECHO.
 ECHO Updating dependencies...
-XCOPY %source1% %target1% /Y /U
+XCOPY %source1% %target1% /Y /E
 XCOPY "%frameworktools%ConfigCrypter\ConfigCrypter.exe" "%sourcetools%ConfigCrypter.exe" /Y
 XCOPY "%frameworktools%ConfigEditor\ConfigEditor.exe" "%sourcetools%ConfigurationEditor.exe" /Y
 XCOPY "%frameworktools%DataMigrationUtility\DataMigrationUtility.exe" "%sourcetools%DataMigrationUtility.exe" /Y
 XCOPY "%frameworktools%HistorianPlaybackUtility\HistorianPlaybackUtility.exe" "%sourcetools%HistorianPlaybackUtility.exe" /Y
 XCOPY "%frameworktools%HistorianView\HistorianView.exe" "%sourcetools%HistorianView.exe" /Y
+
+ECHO.
+ECHO Updating database schema defintions...
+FOR /R "%sourceschema%" %%x IN (GSFSchema.*) DO REN "%%x" "openPDC.*"
+FOR /R "%sourceschema%" %%x IN (GSFSchema-InitialDataSet.*) DO REN "%%x" "openPDC-InitialDataSet.*"
+FOR /R "%sourceschema%" %%x IN (GSFSchema-SampleDataSet.*) DO REN "%%x" "openPDC-SampleDataSet.*"
+MOVE /Y "%sourceschema%\MySQL\*.*" "%targetschema%\MySQL\"
+MOVE /Y "%sourceschema%\Oracle\*.*" "%targetschema%\Oracle\"
+MOVE /Y "%sourceschema%\SQL Server\*.*" "%targetschema%\SQL Server\"
+MOVE /Y "%sourceschema%\SQLite\*.*" "%targetschema%\SQLite\"
+%replace% /r /v "%targetschema%\*.sql" GSFSchema openPDC
 
 :: ECHO.
 :: ECHO Building solution...
@@ -77,6 +92,7 @@ ECHO Checking in dependencies...
 %tfs% checkin "%sourcetools%DataMigrationUtility.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated grid solutions framework tool: DataMigrationUtility."
 %tfs% checkin "%sourcetools%HistorianPlaybackUtility.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated openHistorian playback / export tool: HistorianPlaybackUtility."
 %tfs% checkin "%sourcetools%HistorianView.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated openHistorian trending tool: HistorianView."
+%tfs% checkin "%targetschema%" /noprompt /recursive /comment:"Synchrophasor-VS2012: Updated database schema definitions from GSF source."
 
 :Finalize
 ECHO.
