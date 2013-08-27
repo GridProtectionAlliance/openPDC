@@ -43,7 +43,7 @@
         </member>
         <member name="M:PIAdapters.PIOutputAdapter.MapKeysToPoints">
             <summary>
-            Resets the PI tag to MeasurementKey mapping for loading data into PI by finding PI points that match either the openPDC pointtag or alternatetag
+            Resets the PI tag to MeasurementKey mapping for loading data into PI by finding PI points that match either the GSFSchema pointtag or alternatetag
             </summary>
         </member>
         <member name="M:PIAdapters.PIOutputAdapter.RefreshMetadata">
@@ -131,7 +131,7 @@
         </member>
         <member name="M:PIAdapters.PIPBInputAdapter.GetShortStatus(System.Int32)">
             <summary>
-            Returns a 1-line status for openPDC console
+            Returns a 1-line status for time-series host console
             </summary>
             <param name="maxLength">Maximum number of characters in the status</param>
             <returns>status message</returns>
@@ -185,7 +185,7 @@
         </member>
         <member name="T:PIAdapters.PIRTInputAdapter">
             <summary>
-            Uses PI event pipes to deliver real-time PI data to openPDC
+            Uses PI event pipes to deliver real-time PI data to GSF host
             </summary>
         </member>
         <member name="M:PIAdapters.PIRTInputAdapter.#ctor">
