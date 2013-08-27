@@ -1,34 +1,22 @@
 Database Updates
----------------------------------------
+---------------------------------------------------------------------------------------------
 
-Updating the databases in openPDC requires a number of steps. At this time,
-there are 5 different databases in openPDC. Four (MySQL, Oracle, SQL Server, 
-and SQLite) require editing their respective openPDC.sql files. SQLite requires
-running a script. Access is more involved. We'll start with the four standard
-databases
+Updating the Grid Solutions Framework databases requires a number of steps, enumerated below.
+There are four different databases types supported: MySQL, Oracle, SQL Server, and SQLite.
 
-MySQL, Oracle, SQL Server, and SQLite
-1)  Open Synchrophasor.sln
-2)  In the 'Data' folder, select the subfolder for the database you wish to 
-    edit
-3)  In that folder, open the openPDC.sql file
-4)  Modify as needed
-5)  Repeat steps 2-4 for the remaining databases
+1) Open GridSolutionsFramework.sln
+2) In the 'Data' folder in the GSF.TimeSeries project and select the subfolder for the
+   database type you wish to edit - GSFSchema.sql contains the primary schema.
+3) Edit the schema as needed - repeat for other databases.
 
-After completely those updates, we'll move on to Access.
-6)  Close the solution. If the solution is not closed, the access files have a 
-    habit of disappearing from the solution file, requiring you to re-add them
-7)  Open the openPDC.mdb file in Access, and make your changes
-8)  Duplicate your changes in openPDC-InitialDataSet.mdb and 
-    openPDC-SampleDataSet.mdb
-9)  Reopen the solution, and commit your changes
+To initialize the SQLite databases:
 
-You're not done yet; one more step to initialise the SQLite databases
-
-10) Close the solution to avoid any conflicts
-11) Navigate to the Data\SQLite folder
-12) Run db-update.bat
-13) The update script will ask if you want to check in the database updates.
-    Select Yes.
+4) Close the solution to avoid any conflicts
+4) Navigate to the ...\Data\SQLite folder
+6) Run db-update.bat
+7) The update script will ask if you want to check in the database updates, select Yes
 
 Your database changes are now complete!
+
+You will need to run roll-down scripts for specific projects to make sure schema changes
+are applied to specific time-series implementations.
