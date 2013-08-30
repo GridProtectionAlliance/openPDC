@@ -252,19 +252,13 @@ namespace ConfigurationSetupUtility.Screens
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
                 string adminUserName, adminPassword;
-                object dataProviderStringValue;
                 string dataProviderString = null;
 
                 mySqlSetup = m_state["mySqlSetup"] as MySqlSetup;
-                mySqlSetup.OutputDataReceived += MySqlSetup_OutputDataReceived;
-                mySqlSetup.ErrorDataReceived += MySqlSetup_ErrorDataReceived;
                 m_state["newOleDbConnectionString"] = mySqlSetup.OleDbConnectionString;
-                adminUserName = mySqlSetup.UserName;
-                adminPassword = mySqlSetup.Password;
 
                 // Get user customized data provider string
-                if (m_state.TryGetValue("mySqlDataProviderString", out dataProviderStringValue))
-                    dataProviderString = dataProviderStringValue.ToString();
+                dataProviderString = mySqlSetup.DataProviderString;
 
                 if (string.IsNullOrWhiteSpace(dataProviderString))
                     dataProviderString = "AssemblyName={MySql.Data, Version=6.5.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
@@ -296,13 +290,7 @@ namespace ConfigurationSetupUtility.Screens
                         {
                             string scriptPath = Directory.GetCurrentDirectory() + "\\Database scripts\\MySQL\\" + scriptName;
                             AppendStatusMessage(string.Format("Attempting to run {0} script...", scriptName));
-
-                            if (!mySqlSetup.ExecuteScript(scriptPath))
-                            {
-                                OnSetupFailed();
-                                return;
-                            }
-
+                            mySqlSetup.ExecuteScript(scriptPath);
                             progress += 90 / scriptNames.Count;
                             UpdateProgressBar(progress);
                             AppendStatusMessage(string.Format("{0} ran successfully.", scriptName));
@@ -320,13 +308,7 @@ namespace ConfigurationSetupUtility.Screens
                             string pass = m_state["newMySqlUserPassword"].ToString();
                             AppendStatusMessage(string.Format("Attempting to create new user {0}...", user));
 
-                            if (!mySqlSetup.ExecuteStatement(string.Format("GRANT SELECT, UPDATE, INSERT, DELETE ON {0}.* TO {1} IDENTIFIED BY '{2}'", mySqlSetup.DatabaseName, user, pass)))
-                            {
-                                // If we couldn't grant the necessary permissions to
-                                // the database user, then the setup should fail.
-                                OnSetupFailed();
-                                return;
-                            }
+                            mySqlSetup.ExecuteStatement(string.Format("GRANT SELECT, UPDATE, INSERT, DELETE ON {0}.* TO {1} IDENTIFIED BY '{2}'", mySqlSetup.DatabaseName, user, pass));
 
                             mySqlSetup.UserName = user;
                             mySqlSetup.Password = pass;
@@ -369,14 +351,6 @@ namespace ConfigurationSetupUtility.Screens
                 ((App)Application.Current).ErrorLogger.Log(ex);
                 AppendStatusMessage(ex.Message);
                 OnSetupFailed();
-            }
-            finally
-            {
-                if (mySqlSetup != null)
-                {
-                    mySqlSetup.OutputDataReceived -= MySqlSetup_OutputDataReceived;
-                    mySqlSetup.ErrorDataReceived -= MySqlSetup_ErrorDataReceived;
-                }
             }
         }
 
@@ -867,11 +841,16 @@ namespace ConfigurationSetupUtility.Screens
                         }
                         else
                         {
-                            MySqlSetup mySqlSetup = m_state["mySqlSetup"] as MySqlSetup;
-                            if (!mySqlSetup.ExecuteStatement(string.Format("DROP DATABASE {0}", databaseName)))
-                                MessageBox.Show(string.Format("Failed to delete database {0}", databaseName), "Delete Database Failed");
-                            else
+                            try
+                            {
+                                MySqlSetup mySqlSetup = m_state["mySqlSetup"] as MySqlSetup;
+                                mySqlSetup.ExecuteStatement(string.Format("DROP DATABASE {0}", databaseName));
                                 AppendStatusMessage(string.Format("Dropped database {0} successfully.", databaseName));
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(string.Format("Failed to delete database {0} due to exception: {1}", databaseName, ex.Message), "Delete Database Failed");
+                            }
                         }
                         return false;
                     }
