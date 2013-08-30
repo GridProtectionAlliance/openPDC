@@ -859,10 +859,7 @@ namespace ConfigurationSetupUtility.Screens
                 {
                     SqlServerSetup sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
                     connectionString = sqlServerSetup.ConnectionString;
-
-                    object dataProviderStringValue;
-                    if (m_state.TryGetValue("sqlServerDataProviderString", out dataProviderStringValue))
-                        dataProviderString = dataProviderStringValue.ToString();
+                    dataProviderString = sqlServerSetup.DataProviderString;
 
                     if (string.IsNullOrWhiteSpace(dataProviderString))
                         dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";

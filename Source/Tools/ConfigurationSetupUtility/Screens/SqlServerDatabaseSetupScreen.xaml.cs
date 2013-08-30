@@ -62,6 +62,7 @@ namespace ConfigurationSetupUtility.Screens
         public SqlServerDatabaseSetupScreen()
         {
             m_sqlServerSetup = new SqlServerSetup();
+            m_sqlServerSetup.DataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(SqlServerDatabaseSetupScreen_Loaded);
         }
@@ -175,7 +176,7 @@ namespace ConfigurationSetupUtility.Screens
 
                     try
                     {
-                        OpenConnection(ref connection);
+                        m_sqlServerSetup.OpenConnection(ref connection);
                         if ((int)connection.ExecuteScalar("SELECT COUNT(*) FROM UserAccount") > 0)
                             m_state["securityUpgrade"] = false;
                         else
@@ -301,9 +302,6 @@ namespace ConfigurationSetupUtility.Screens
                     m_passwordLabel.Content = "Admin password:";
                 }
 
-                if (!m_state.ContainsKey("sqlServerDataProviderString"))
-                    m_state.Add("sqlServerDataProviderString", "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter");
-
                 if (!m_state.ContainsKey("createNewSqlServerUser"))
                     m_state.Add("createNewSqlServerUser", m_createNewUserCheckBox.IsChecked.Value);
 
@@ -401,7 +399,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 databaseName = m_sqlServerSetup.DatabaseName;
                 m_sqlServerSetup.DatabaseName = null;
-                OpenConnection(ref connection);
+                m_sqlServerSetup.OpenConnection(ref connection);
                 MessageBox.Show("Database connection succeeded.");
             }
             catch
@@ -422,45 +420,6 @@ namespace ConfigurationSetupUtility.Screens
             }
         }
 
-        private void OpenConnection(ref IDbConnection connection)
-        {
-            Dictionary<string, string> settings;
-            string assemblyName, connectionTypeName, adapterTypeName;
-            Assembly assembly;
-            Type connectionType, adapterType;
-            string dataProviderString;
-            bool useIntegratedSecurity = false;
-
-            dataProviderString = m_state["sqlServerDataProviderString"].ToString();
-            settings = dataProviderString.ParseKeyValuePairs();
-            assemblyName = settings["AssemblyName"].ToNonNullString();
-            connectionTypeName = settings["ConnectionType"].ToNonNullString();
-            adapterTypeName = settings["AdapterType"].ToNonNullString();
-
-            if (string.IsNullOrEmpty(connectionTypeName))
-                throw new InvalidOperationException("Database connection type was not defined.");
-
-            if (string.IsNullOrEmpty(adapterTypeName))
-                throw new InvalidOperationException("Database adapter type was not defined.");
-
-            assembly = Assembly.Load(new AssemblyName(assemblyName));
-            connectionType = assembly.GetType(connectionTypeName);
-            adapterType = assembly.GetType(adapterTypeName);
-
-            connection = (IDbConnection)Activator.CreateInstance(connectionType);
-
-            if (m_state.ContainsKey("useSqlServerIntegratedSecurity"))
-                useIntegratedSecurity = Convert.ToBoolean(m_state["useSqlServerIntegratedSecurity"]);
-
-            // Force use of non-pooled connection string such that database can later be deleted if needed
-            if (useIntegratedSecurity)
-                connection.ConnectionString = m_sqlServerSetup.IntegratedSecurityConnectionString + "; pooling=false";
-            else
-                connection.ConnectionString = m_sqlServerSetup.PooledConnectionString + "; pooling=false";
-
-            connection.Open();
-        }
-
         // Occurs when the user chooses to create a new database user.
         private void CreateNewUserCheckBox_Checked(object sender, RoutedEventArgs e)
         {
@@ -478,27 +437,25 @@ namespace ConfigurationSetupUtility.Screens
         // Occurs when the user chooses to use pass-through authentication.
         private void UseIntegratedSecurity_Checked(object sender, RoutedEventArgs e)
         {
-            if (m_state != null)
-                m_state["useSqlServerIntegratedSecurity"] = true;
-
             m_userNameLabel.IsEnabled = false;
             m_passwordLabel.IsEnabled = false;
             m_adminUserNameTextBox.Text = "";
             m_adminPasswordTextBox.Password = "";
             m_adminUserNameTextBox.IsEnabled = false;
             m_adminPasswordTextBox.IsEnabled = false;
+            m_sqlServerSetup.UserName = null;
+            m_sqlServerSetup.Password = null;
+            m_sqlServerSetup.IntegratedSecurity = "SSPI";
         }
 
         // Occurs when the user chooses to not use pass-through authentication.
         private void UseIntegratedSecurity_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (m_state != null)
-                m_state["useSqlServerIntegratedSecurity"] = false;
-
             m_userNameLabel.IsEnabled = true;
             m_passwordLabel.IsEnabled = true;
             m_adminUserNameTextBox.IsEnabled = true;
             m_adminPasswordTextBox.IsEnabled = true;
+            m_sqlServerSetup.IntegratedSecurity = null;
         }
 
         // Occurs when the user changes the user name of the new database user.
@@ -521,21 +478,12 @@ namespace ConfigurationSetupUtility.Screens
             if (m_state != null)
             {
                 string password = m_sqlServerSetup.Password;
-                string dataProviderString = m_state["sqlServerDataProviderString"].ToString();
+                string connectionString = m_sqlServerSetup.PooledConnectionString;
+                string dataProviderString = m_sqlServerSetup.DataProviderString;
                 bool encrypt = Convert.ToBoolean(m_state["encryptSqlServerConnectionStrings"]);
-                bool useIntegratedSecurity = false;
-                string connectionString;
                 AdvancedSettingsWindow advancedWindow;
 
                 m_sqlServerSetup.Password = null;
-
-                if (m_state.ContainsKey("useSqlServerIntegratedSecurity"))
-                    useIntegratedSecurity = Convert.ToBoolean(m_state["useSqlServerIntegratedSecurity"]);
-
-                if (useIntegratedSecurity)
-                    connectionString = m_sqlServerSetup.IntegratedSecurityConnectionString;
-                else
-                    connectionString = m_sqlServerSetup.PooledConnectionString;
 
                 advancedWindow = new AdvancedSettingsWindow(connectionString, dataProviderString, encrypt);
                 advancedWindow.Owner = App.Current.MainWindow;
@@ -544,9 +492,8 @@ namespace ConfigurationSetupUtility.Screens
                 {
                     // Force use of non-pooled connection string such that database can later be deleted if needed
                     Dictionary<string, string> settings = advancedWindow.ConnectionString.ParseKeyValuePairs();
-                    settings.Remove("Integrated Security");
                     m_sqlServerSetup.ConnectionString = settings.JoinKeyValuePairs() + "; pooling=false";
-                    m_state["sqlServerDataProviderString"] = advancedWindow.DataProviderString;
+                    m_sqlServerSetup.DataProviderString = advancedWindow.DataProviderString;
                     m_state["encryptSqlServerConnectionStrings"] = advancedWindow.Encrypt;
                 }
 
@@ -557,6 +504,7 @@ namespace ConfigurationSetupUtility.Screens
                 m_databaseNameTextBox.Text = m_sqlServerSetup.DatabaseName;
                 m_adminUserNameTextBox.Text = m_sqlServerSetup.UserName;
                 m_adminPasswordTextBox.Password = m_sqlServerSetup.Password;
+                m_checkBoxIntegratedSecurity.IsChecked = ((object)m_sqlServerSetup.IntegratedSecurity != null);
             }
         }
 
