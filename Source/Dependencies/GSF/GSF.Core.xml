@@ -9154,6 +9154,12 @@
             <param name="usePrecisionTime">Set to <c>true</c> to use precision time.</param>
             <returns>Current UTC time in implementation that is proper for connected <see cref="T:GSF.Data.AdoDataConnection"/> database type.</returns>
         </member>
+        <member name="M:GSF.Data.AdoDataConnection.DefaultIsloationLevel">
+            <summary>
+            Gets the default <see cref="T:System.Data.IsolationLevel"/> for the connected <see cref="T:GSF.Data.AdoDataConnection"/> database type.
+            </summary>
+            <returns>Default <see cref="T:System.Data.IsolationLevel"/> for the connected <see cref="T:GSF.Data.AdoDataConnection"/> database type.</returns>
+        </member>
         <member name="M:GSF.Data.AdoDataConnection.ParameterizedQueryString(System.String,System.String[])">
             <summary>
             Creates a parameterized query string for the underlying database type based on the given format string and parameter names.
