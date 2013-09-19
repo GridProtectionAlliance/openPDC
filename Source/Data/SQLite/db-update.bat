@@ -24,10 +24,10 @@
 @ECHO OFF
 
 SET tfs="%VS110COMNTOOLS%\..\IDE\tf.exe"
-SET db1="GSFSchema.db"
-SET db2="GSFSchema-InitialDataSet.db"
-SET db3="GSFSchema-SampleDataSet.db"
-SET script1="GSFSchema.sql"
+SET db1="openPDC.db"
+SET db2="openPDC-InitialDataSet.db"
+SET db3="openPDC-SampleDataSet.db"
+SET script1="openPDC.sql"
 SET script2="InitialDataSet.sql"
 SET script3="SampleDataSet.sql"
 SET dbfiles=%db1% %db2% %db3%
