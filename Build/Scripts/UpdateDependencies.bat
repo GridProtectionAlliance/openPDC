@@ -77,6 +77,8 @@ MOVE /Y "%sourceschema%\SQL Server\*.*" "%targetschema%\SQL Server\"
 MOVE /Y "%sourceschema%\SQLite\*.*" "%targetschema%\SQLite\"
 %replace% /r /v "%targetschema%\*.sql" GSFSchema openPDC
 %replace% /r /v "%targetschema%\*.sql" "--*" ""
+%replace% /r /v "%targetschema%\*SampleDataSet.sql" TestingAdapters HistorianAdapters
+%replace% /r /v "%targetschema%\*SampleDataSet.sql" VirtualOutputAdapter LocalOutputAdapter
 %replace% /r /v "%targetschema%\*SampleDataSet.sql" TESTDEVICE SHELBY
 %replace% /r /v "%targetschema%\*SampleDataSet.sql" "Test Device" Shelby
 %replace% /r /v "%targetschema%\*SampleDataSet.sql" "'TEST'" "'SHEL'"
