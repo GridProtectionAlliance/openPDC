@@ -3886,7 +3886,7 @@
         </member>
         <member name="M:GSF.Collections.CollectionExtensions.Scramble``1(System.Collections.Generic.IList{``0})">
             <summary>
-            Rearranges all the elements in the list into a random order.
+            Rearranges all the elements in the list into a highly-random order.
             </summary>
             <typeparam name="TSource">The generic type of the list.</typeparam>
             <param name="source">The input list of generic types to scramble.</param>

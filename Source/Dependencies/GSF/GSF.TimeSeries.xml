@@ -7304,6 +7304,11 @@
             Defines the default value for the <see cref="P:GSF.TimeSeries.Transport.DataSubscriber.MetadataSynchronizationTimeout"/> property.
             </summary>
         </member>
+        <member name="F:GSF.TimeSeries.Transport.DataSubscriber.DefaultUseTransactionForMetadata">
+            <summary>
+            Defines the default value for the <see cref="P:GSF.TimeSeries.Transport.DataSubscriber.UseTransactionForMetadata"/> property.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Transport.DataSubscriber.#ctor">
             <summary>
             Creates a new <see cref="T:GSF.TimeSeries.Transport.DataSubscriber"/>.
@@ -7887,6 +7892,11 @@
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.MetadataSynchronizationTimeout">
             <summary>
             Gets or sets the timeout used when executing database queries during metadata synchronization.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.UseTransactionForMetadata">
+            <summary>
+            Gets or sets flag that determines if metadata synchronization should be performed within a transaction.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.Status">
