@@ -1552,6 +1552,11 @@
             Gets or sets flag that determines if header lengths should be trusted over parsed byte count.
             </summary>
         </member>
+        <member name="P:GSF.PhasorProtocols.ChannelFrameBase`1.ValidateCheckSum">
+            <summary>
+            Gets or sets flag that determines if frame's check-sum should be validated - this should normally be left as <c>true</c>.
+            </summary>
+        </member>
         <member name="P:GSF.PhasorProtocols.ChannelFrameBase`1.BodyLength">
             <summary>
             Gets the length of the <see cref="P:GSF.PhasorProtocols.ChannelFrameBase`1.BodyImage"/>.
@@ -1633,12 +1638,30 @@
             Gets or sets number of cells that are expected in associated <see cref="T:GSF.PhasorProtocols.IChannelFrame"/> being parsed.
             </summary>
         </member>
-        <member name="M:GSF.PhasorProtocols.ChannelFrameParsingStateBase`1.#ctor(System.Int32,GSF.PhasorProtocols.CreateNewCellFunction{`0})">
+        <member name="P:GSF.PhasorProtocols.IChannelFrameParsingState`1.TrustHeaderLength">
+            <summary>
+            Gets or sets flag that determines if header lengths should be trusted over parsed byte count.
+            </summary>
+            <remarks>
+            It is expected that this will normally be left as <c>true</c>.
+            </remarks>
+        </member>
+        <member name="P:GSF.PhasorProtocols.IChannelFrameParsingState`1.ValidateCheckSum">
+            <summary>
+            Gets or sets flag that determines if frame's check-sum should be validated.
+            </summary>
+            <remarks>
+            It is expected that this will normally be left as <c>true</c>.
+            </remarks>
+        </member>
+        <member name="M:GSF.PhasorProtocols.ChannelFrameParsingStateBase`1.#ctor(System.Int32,GSF.PhasorProtocols.CreateNewCellFunction{`0},System.Boolean,System.Boolean)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.ChannelFrameParsingStateBase`1"/> from specified parameters.
             </summary>
             <param name="parsedBinaryLength">Binary length of the <see cref="T:GSF.PhasorProtocols.IChannelFrame"/> being parsed.</param>
             <param name="createNewCellFunction">Reference to delegate to create new <see cref="T:GSF.PhasorProtocols.IChannelCell"/> instances.</param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
+            <param name="validateCheckSum">Determines if frame's check-sum should be validated.</param>
         </member>
         <member name="P:GSF.PhasorProtocols.ChannelFrameParsingStateBase`1.CreateNewCell">
             <summary>
@@ -1649,6 +1672,22 @@
             <summary>
             Gets or sets number of cells that are expected in associated <see cref="T:GSF.PhasorProtocols.IChannelFrame"/> being parsed.
             </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.ChannelFrameParsingStateBase`1.TrustHeaderLength">
+            <summary>
+            Gets or sets flag that determines if header lengths should be trusted over parsed byte count.
+            </summary>
+            <remarks>
+            It is expected that this will normally be left as <c>true</c>.
+            </remarks>
+        </member>
+        <member name="P:GSF.PhasorProtocols.ChannelFrameParsingStateBase`1.ValidateCheckSum">
+            <summary>
+            Gets or sets flag that determines if frame's check-sum should be validated.
+            </summary>
+            <remarks>
+            It is expected that this will normally be left as <c>true</c>.
+            </remarks>
         </member>
         <member name="T:GSF.PhasorProtocols.ChannelValueMeasurement`1">
             <summary>
@@ -2009,12 +2048,14 @@
             Represents a protocol independent interface representation of the parsing state of a <see cref="T:GSF.PhasorProtocols.ICommandFrame"/>.
             </summary>
         </member>
-        <member name="M:GSF.PhasorProtocols.CommandFrameParsingState.#ctor(System.Int32,System.Int32)">
+        <member name="M:GSF.PhasorProtocols.CommandFrameParsingState.#ctor(System.Int32,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.CommandFrameParsingState"/> from specified parameters.
             </summary>
             <param name="parsedBinaryLength">Binary length of the <see cref="T:GSF.PhasorProtocols.ICommandFrame"/> being parsed.</param>
             <param name="dataLength">Length of data in <see cref="T:GSF.PhasorProtocols.ICommandFrame"/> being parsed (i.e., number of cells).</param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
+            <param name="validateCheckSum">Determines if frame's check-sum should be validated.</param>
         </member>
         <member name="T:GSF.PhasorProtocols.Common">
             <summary>
@@ -2743,19 +2784,23 @@
             Represents a protocol independent interface representation of the parsing state of a <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/>.
             </summary>
         </member>
-        <member name="M:GSF.PhasorProtocols.ConfigurationFrameParsingState.#ctor(System.Int32,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IConfigurationCell})">
+        <member name="M:GSF.PhasorProtocols.ConfigurationFrameParsingState.#ctor(System.Int32,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IConfigurationCell},System.Boolean,System.Boolean)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.ConfigurationFrameParsingState"/> from specified parameters.
             </summary>
             <param name="parsedBinaryLength">Binary length of the <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/> being parsed.</param>
             <param name="createNewCellFunction">Reference to delegate to create new <see cref="T:GSF.PhasorProtocols.IConfigurationCell"/> instances.</param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
+            <param name="validateCheckSum">Determines if frame's check-sum should be validated.</param>
         </member>
-        <member name="M:GSF.PhasorProtocols.ConfigurationFrameParsingState.#ctor(System.Int32,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IConfigurationCell},System.Int32)">
+        <member name="M:GSF.PhasorProtocols.ConfigurationFrameParsingState.#ctor(System.Int32,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IConfigurationCell},System.Boolean,System.Boolean,System.Int32)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.ConfigurationFrameParsingState"/> from specified parameters.
             </summary>
             <param name="parsedBinaryLength">Binary length of the <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/> being parsed.</param>
             <param name="createNewCellFunction">Reference to delegate to create new <see cref="T:GSF.PhasorProtocols.IConfigurationCell"/> instances.</param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
+            <param name="validateCheckSum">Determines if frame's check-sum should be validated.</param>
             <param name="cellCount">Number of cells that exist in the frame to be parsed.</param>
         </member>
         <member name="T:GSF.PhasorProtocols.ConnectionParametersBase">
@@ -3404,13 +3449,15 @@
             Gets reference to the <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/> associated with the <see cref="T:GSF.PhasorProtocols.IDataFrame"/> being parsed.
             </summary>
         </member>
-        <member name="M:GSF.PhasorProtocols.DataFrameParsingState.#ctor(System.Int32,GSF.PhasorProtocols.IConfigurationFrame,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IDataCell})">
+        <member name="M:GSF.PhasorProtocols.DataFrameParsingState.#ctor(System.Int32,GSF.PhasorProtocols.IConfigurationFrame,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IDataCell},System.Boolean,System.Boolean)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.DataFrameParsingState"/> from specified parameters.
             </summary>
             <param name="parsedBinaryLength">Binary length of the <see cref="T:GSF.PhasorProtocols.IDataFrame"/> being parsed.</param>
             <param name="configurationFrame">Reference to the <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/> associated with the <see cref="T:GSF.PhasorProtocols.IDataFrame"/> being parsed.</param>
             <param name="createNewCellFunction">Reference to delegate to create new <see cref="T:GSF.PhasorProtocols.IDataCell"/> instances.</param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
+            <param name="validateCheckSum">Determines if frame's check-sum should be validated.</param>
         </member>
         <member name="P:GSF.PhasorProtocols.DataFrameParsingState.ConfigurationFrame">
             <summary>
@@ -3791,15 +3838,33 @@
             Gets or sets any connection specific <see cref="T:GSF.PhasorProtocols.IConnectionParameters"/> that may be needed for parsing.
             </summary>
         </member>
+        <member name="P:GSF.PhasorProtocols.IFrameParser.CheckSumValidationFrameTypes">
+            <summary>
+            Gets or sets flags that determine if check-sums for specified frames should be validated.
+            </summary>
+            <remarks>
+            It is expected that this will normally be set to <see cref="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames"/>.
+            </remarks>
+        </member>
+        <member name="P:GSF.PhasorProtocols.IFrameParser.TrustHeaderLength">
+            <summary>
+            Gets or sets flag that determines if header lengths should be trusted over parsed byte count.
+            </summary>
+            <remarks>
+            It is expected that this will normally be left as <c>true</c>.
+            </remarks>
+        </member>
         <member name="P:GSF.PhasorProtocols.IFrameParser.Enabled">
             <summary>
             Gets or sets a boolean value that indicates whether the data parser is currently enabled.
             </summary>
         </member>
-        <member name="M:GSF.PhasorProtocols.FrameParserBase`1.#ctor">
+        <member name="M:GSF.PhasorProtocols.FrameParserBase`1.#ctor(GSF.PhasorProtocols.CheckSumValidationFrameTypes,System.Boolean)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.FrameParserBase`1"/>.
             </summary>
+            <param name="checkSumValidationFrameTypes">Frame types that should perform check-sum validation; default to <see cref="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames"/></param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.FrameParserBase`1.Dispose(System.Boolean)">
             <summary>
@@ -3961,6 +4026,42 @@
             <summary>
             Gets or sets any connection specific <see cref="T:GSF.PhasorProtocols.IConnectionParameters"/> that may be needed for parsing.
             </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.FrameParserBase`1.CheckSumValidationFrameTypes">
+            <summary>
+            Gets or sets flags that determine if check-sums for specified frames should be validated.
+            </summary>
+            <remarks>
+            It is expected that this will normally be set to <see cref="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames"/>.
+            </remarks>
+        </member>
+        <member name="P:GSF.PhasorProtocols.FrameParserBase`1.ValidateConfigurationFrameCheckSum">
+            <summary>
+            Gets flag based on <see cref="P:GSF.PhasorProtocols.FrameParserBase`1.CheckSumValidationFrameTypes"/> property that determines if configuration frames are selected for check-sum validation.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.FrameParserBase`1.ValidateDataFrameCheckSum">
+            <summary>
+            Gets flag based on <see cref="P:GSF.PhasorProtocols.FrameParserBase`1.CheckSumValidationFrameTypes"/> property that determines if data frames are selected for check-sum validation.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.FrameParserBase`1.ValidateHeaderFrameCheckSum">
+            <summary>
+            Gets flag based on <see cref="P:GSF.PhasorProtocols.FrameParserBase`1.CheckSumValidationFrameTypes"/> property that determines if header frames are selected for check-sum validation.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.FrameParserBase`1.ValidateCommandFrameCheckSum">
+            <summary>
+            Gets flag based on <see cref="P:GSF.PhasorProtocols.FrameParserBase`1.CheckSumValidationFrameTypes"/> property that determines if command frames are selected for check-sum validation.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.FrameParserBase`1.TrustHeaderLength">
+            <summary>
+            Gets or sets flag that determines if header lengths should be trusted over parsed byte count.
+            </summary>
+            <remarks>
+            It is expected that this will normally be left as <c>true</c>
+            </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.FrameParserBase`1.Status">
             <summary>
@@ -4451,12 +4552,14 @@
             Represents a protocol independent interface representation of the parsing state of a <see cref="T:GSF.PhasorProtocols.IHeaderFrame"/>.
             </summary>
         </member>
-        <member name="M:GSF.PhasorProtocols.HeaderFrameParsingState.#ctor(System.Int32,System.Int32)">
+        <member name="M:GSF.PhasorProtocols.HeaderFrameParsingState.#ctor(System.Int32,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.HeaderFrameParsingState"/> from specified parameters.
             </summary>
             <param name="parsedBinaryLength">Binary length of the <see cref="T:GSF.PhasorProtocols.IHeaderFrame"/> being parsed.</param>
             <param name="dataLength">Length of data in <see cref="T:GSF.PhasorProtocols.IHeaderFrame"/> being parsed (i.e., number of cells).</param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
+            <param name="validateCheckSum">Determines if frame's check-sum should be validated.</param>
         </member>
         <member name="T:GSF.PhasorProtocols.AnalogType">
             <summary>
@@ -4615,25 +4718,6 @@
             <typeparam name="TDefinition">Specific <see cref="T:GSF.PhasorProtocols.IChannelDefinition"/> type that the <see cref="T:GSF.PhasorProtocols.IChannelValue`1"/> references.</typeparam>
             <typeparam name="TValue">Specific <see cref="T:GSF.PhasorProtocols.IChannelValue`1"/> type that the <see cref="T:GSF.PhasorProtocols.CreateNewValueFunction`2"/> creates.</typeparam>
         </member>
-        <member name="T:GSF.PhasorProtocols.IEEEC37_118.DataFrameParsingState">
-            <summary>
-            Represents the IEEE C37.118 protocol implementation of the parsing state used by a <see cref="T:GSF.PhasorProtocols.IEEEC37_118.DataFrame"/>.
-            </summary>
-        </member>
-        <member name="M:GSF.PhasorProtocols.IEEEC37_118.DataFrameParsingState.#ctor(System.Int32,GSF.PhasorProtocols.IConfigurationFrame,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IDataCell},System.Boolean)">
-            <summary>
-            Creates a new <see cref="T:GSF.PhasorProtocols.IEEEC37_118.DataFrameParsingState"/> from specified parameters.
-            </summary>
-            <param name="parsedBinaryLength">Binary length of the <see cref="T:GSF.PhasorProtocols.IDataFrame"/> being parsed.</param>
-            <param name="configurationFrame">Reference to the <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/> associated with the <see cref="T:GSF.PhasorProtocols.IDataFrame"/> being parsed.</param>
-            <param name="createNewCellFunction">Reference to delegate to create new <see cref="T:GSF.PhasorProtocols.IDataCell"/> instances.</param>
-            <param name="trustHeaderLength">Determines if length defined in common frame header should be trusted over parsed byte count.</param>
-        </member>
-        <member name="P:GSF.PhasorProtocols.IEEEC37_118.DataFrameParsingState.TrustHeaderLength">
-            <summary>
-            Gets or sets flag that determines if length defined in common frame header should be trusted over parsed byte count.
-            </summary>
-        </member>
         <member name="T:GSF.PhasorProtocols.SourceChannel">
             <summary>
             Source channel, i.e., data or command.
@@ -4652,6 +4736,41 @@
         <member name="F:GSF.PhasorProtocols.SourceChannel.Other">
             <summary>
             Source channel is other.
+            </summary>
+        </member>
+        <member name="T:GSF.PhasorProtocols.CheckSumValidationFrameTypes">
+            <summary>
+            Check-sum validation frame-type flags.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.NoFrames">
+            <summary>
+            Include no frame types for check-sum validation.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.ConfigurationFrame">
+            <summary>
+            Include configuration frame for check-sum validation.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.DataFrame">
+            <summary>
+            Include data frame for check-sum validation.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.HeaderFrame">
+            <summary>
+            Include header frame for check-sum validation.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.CommandFrame">
+            <summary>
+            Include command frame for check-sum validation.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames">
+            <summary>
+            Include all frame types for check-sum validation.
             </summary>
         </member>
         <member name="T:GSF.PhasorProtocols.LineFrequency">
@@ -5264,6 +5383,22 @@
             <remarks>
             If a <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/> has been parsed, this will return a reference to the parsed frame.  Consumer can manually assign a
             <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/> to start parsing data if one has not been encountered in the stream.
+            </remarks>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.CheckSumValidationFrameTypes">
+            <summary>
+            Gets or sets flags that determine if check-sums for specified frames should be validated.
+            </summary>
+            <remarks>
+            It is expected that this will normally be set to <see cref="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames"/>.
+            </remarks>
+        </member>
+        <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.TrustHeaderLength">
+            <summary>
+            Gets or sets flag that determines if header lengths should be trusted over parsed byte count.
+            </summary>
+            <remarks>
+            It is expected that this will normally be left as <c>true</c>.
             </remarks>
         </member>
         <member name="P:GSF.PhasorProtocols.MultiProtocolFrameParser.RedundantFramesPerPacket">
@@ -8863,6 +8998,13 @@
             Frame parser is implemented as a write-only stream - this way data can come from any source.
             </remarks>
         </member>
+        <member name="M:GSF.PhasorProtocols.IEC61850_90_5.FrameParser.#ctor(GSF.PhasorProtocols.CheckSumValidationFrameTypes,System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:GSF.PhasorProtocols.IEC61850_90_5.FrameParser"/>.
+            </summary>
+            <param name="checkSumValidationFrameTypes">Frame types that should perform check-sum validation; default to <see cref="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames"/></param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
+        </member>
         <member name="M:GSF.PhasorProtocols.IEC61850_90_5.FrameParser.Start">
             <summary>
             Start the data parser.
@@ -10154,13 +10296,15 @@
             Represents the BPA PDCstream implementation of the parsing state used by a <see cref="T:GSF.PhasorProtocols.BPAPDCstream.ConfigurationFrame"/>.
             </summary>
         </member>
-        <member name="M:GSF.PhasorProtocols.BPAPDCstream.ConfigurationFrameParsingState.#ctor(System.Int32,System.String,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IConfigurationCell})">
+        <member name="M:GSF.PhasorProtocols.BPAPDCstream.ConfigurationFrameParsingState.#ctor(System.Int32,System.String,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IConfigurationCell},System.Boolean,System.Boolean)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.BPAPDCstream.ConfigurationFrameParsingState"/> from specified parameters.
             </summary>
             <param name="parsedBinaryLength">Binary length of the <see cref="T:GSF.PhasorProtocols.BPAPDCstream.ConfigurationFrame"/> being parsed.</param>
             <param name="configurationFileName">The required external BPA PDCstream INI based configuration file.</param>
             <param name="createNewCellFunction">Reference to delegate to create new <see cref="T:GSF.PhasorProtocols.BPAPDCstream.ConfigurationCell"/> instances.</param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
+            <param name="validateCheckSum">Determines if frame's check-sum should be validated.</param>
         </member>
         <member name="P:GSF.PhasorProtocols.BPAPDCstream.ConfigurationFrameParsingState.ConfigurationFileName">
             <summary>
@@ -10603,13 +10747,15 @@
             Represents the BPA PDCstream protocol implementation of the parsing state used by a <see cref="T:GSF.PhasorProtocols.BPAPDCstream.DataFrame"/>.
             </summary>
         </member>
-        <member name="M:GSF.PhasorProtocols.BPAPDCstream.DataFrameParsingState.#ctor(System.Int32,GSF.PhasorProtocols.IConfigurationFrame,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IDataCell})">
+        <member name="M:GSF.PhasorProtocols.BPAPDCstream.DataFrameParsingState.#ctor(System.Int32,GSF.PhasorProtocols.IConfigurationFrame,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IDataCell},System.Boolean,System.Boolean)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.BPAPDCstream.DataFrameParsingState"/> from specified parameters.
             </summary>
             <param name="parsedBinaryLength">Binary length of the <see cref="T:GSF.PhasorProtocols.IDataFrame"/> being parsed.</param>
             <param name="configurationFrame">Reference to the <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/> associated with the <see cref="T:GSF.PhasorProtocols.IDataFrame"/> being parsed.</param>
             <param name="createNewCellFunction">Reference to delegate to create new <see cref="T:GSF.PhasorProtocols.IDataCell"/> instances.</param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
+            <param name="validateCheckSum">Determines if frame's check-sum should be validated.</param>
         </member>
         <member name="P:GSF.PhasorProtocols.BPAPDCstream.DataFrameParsingState.ConfigurationFrame">
             <summary>
@@ -10714,15 +10860,12 @@
             Frame parser is implemented as a write-only stream - this way data can come from any source.
             </remarks>
         </member>
-        <member name="M:GSF.PhasorProtocols.BPAPDCstream.FrameParser.#ctor">
+        <member name="M:GSF.PhasorProtocols.BPAPDCstream.FrameParser.#ctor(GSF.PhasorProtocols.CheckSumValidationFrameTypes,System.Boolean,System.String)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.BPAPDCstream.FrameParser"/>.
             </summary>
-        </member>
-        <member name="M:GSF.PhasorProtocols.BPAPDCstream.FrameParser.#ctor(System.String)">
-            <summary>
-            Creates a new <see cref="T:GSF.PhasorProtocols.BPAPDCstream.FrameParser"/> from specified parameters.
-            </summary>
+            <param name="checkSumValidationFrameTypes">Frame types that should perform check-sum validation; default to <see cref="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames"/></param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
             <param name="configurationFileName">The required external BPA PDCstream INI based configuration file.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.BPAPDCstream.FrameParser.Dispose(System.Boolean)">
@@ -11690,15 +11833,12 @@
             Frame parser is implemented as a write-only stream - this way data can come from any source.
             </remarks>
         </member>
-        <member name="M:GSF.PhasorProtocols.FNET.FrameParser.#ctor">
+        <member name="M:GSF.PhasorProtocols.FNET.FrameParser.#ctor(GSF.PhasorProtocols.CheckSumValidationFrameTypes,System.Boolean,System.UInt16,GSF.PhasorProtocols.LineFrequency,System.Int64,System.String)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.FNET.FrameParser"/>.
             </summary>
-        </member>
-        <member name="M:GSF.PhasorProtocols.FNET.FrameParser.#ctor(System.UInt16,GSF.PhasorProtocols.LineFrequency,GSF.Ticks,System.String)">
-            <summary>
-            Creates a new <see cref="T:GSF.PhasorProtocols.FNET.FrameParser"/> from specified parameters.
-            </summary>
+            <param name="checkSumValidationFrameTypes">Frame types that should perform check-sum validation; default to <see cref="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames"/></param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
             <param name="frameRate">The defined frame rate of this <see cref="P:GSF.PhasorProtocols.FNET.FrameParser.ConfigurationFrame"/>.</param>
             <param name="nominalFrequency">The nominal <see cref="T:GSF.PhasorProtocols.LineFrequency"/> of this <see cref="P:GSF.PhasorProtocols.FNET.FrameParser.ConfigurationFrame"/>.</param>
             <param name="timeOffset">The time offset of F-NET device in <see cref="T:GSF.Ticks"/>.</param>
@@ -13007,6 +13147,13 @@
             <remarks>
             Frame parser is implemented as a write-only stream - this way data can come from any source.
             </remarks>
+        </member>
+        <member name="M:GSF.PhasorProtocols.IEEE1344.FrameParser.#ctor(GSF.PhasorProtocols.CheckSumValidationFrameTypes,System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:GSF.PhasorProtocols.IEEE1344.FrameParser"/>.
+            </summary>
+            <param name="checkSumValidationFrameTypes">Frame types that should perform check-sum validation; default to <see cref="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames"/></param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.IEEE1344.FrameParser.Start">
             <summary>
@@ -14741,19 +14888,6 @@
             <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
             <returns>The length of the data that was parsed.</returns>
         </member>
-        <member name="M:GSF.PhasorProtocols.IEEEC37_118.DataFrame.ParseBinaryImage(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Parses the binary image.
-            </summary>
-            <param name="buffer">Binary image to parse.</param>
-            <param name="startIndex">Start index into <paramref name="buffer"/> to begin parsing.</param>
-            <param name="length">Length of valid data within <paramref name="buffer"/>.</param>
-            <returns>The length of the data that was parsed.</returns>
-            <remarks>
-            This method is overridden to ensure that the return value is the frame length
-            defined in the header of the frame rather than the number of bytes parsed.
-            </remarks>
-        </member>
         <member name="M:GSF.PhasorProtocols.IEEEC37_118.DataFrame.CalculateChecksum(System.Byte[],System.Int32,System.Int32)">
             <summary>
             Calculates checksum of given <paramref name="buffer"/>.
@@ -14796,11 +14930,6 @@
         <member name="P:GSF.PhasorProtocols.IEEEC37_118.DataFrame.CommonHeader">
             <summary>
             Gets or sets current <see cref="T:GSF.PhasorProtocols.IEEEC37_118.CommonFrameHeader"/>.
-            </summary>
-        </member>
-        <member name="P:GSF.PhasorProtocols.IEEEC37_118.DataFrame.State">
-            <summary>
-            Gets or sets the parsing state for the this <see cref="T:GSF.PhasorProtocols.IEEEC37_118.DataFrame"/>.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.IEEEC37_118.DataFrame.Version">
@@ -15000,10 +15129,12 @@
             Frame parser is implemented as a write-only stream - this way data can come from any source.
             </remarks>
         </member>
-        <member name="M:GSF.PhasorProtocols.IEEEC37_118.FrameParser.#ctor(GSF.PhasorProtocols.IEEEC37_118.DraftRevision)">
+        <member name="M:GSF.PhasorProtocols.IEEEC37_118.FrameParser.#ctor(GSF.PhasorProtocols.CheckSumValidationFrameTypes,System.Boolean,GSF.PhasorProtocols.IEEEC37_118.DraftRevision)">
             <summary>
-            Creates a new <see cref="T:GSF.PhasorProtocols.IEEEC37_118.FrameParser"/> from specified parameters.
+            Creates a new <see cref="T:GSF.PhasorProtocols.IEEEC37_118.FrameParser"/>.
             </summary>
+            <param name="checkSumValidationFrameTypes">Frame types that should perform check-sum validation; default to <see cref="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames"/></param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
             <param name="draftRevision">The <see cref="T:GSF.PhasorProtocols.IEEEC37_118.DraftRevision"/> of this <see cref="T:GSF.PhasorProtocols.IEEEC37_118.FrameParser"/>.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.IEEEC37_118.FrameParser.Start">
@@ -15113,11 +15244,6 @@
         <member name="P:GSF.PhasorProtocols.IEEEC37_118.FrameParser.DraftRevision">
             <summary>
             Gets or sets the <see cref="T:GSF.PhasorProtocols.IEEEC37_118.DraftRevision"/> of this <see cref="T:GSF.PhasorProtocols.IEEEC37_118.FrameParser"/>.
-            </summary>
-        </member>
-        <member name="P:GSF.PhasorProtocols.IEEEC37_118.FrameParser.TrustHeaderLength">
-            <summary>
-            Gets or sets flag that determines if header lengths should be trusted over parsed byte count.
             </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.IEEEC37_118.FrameParser.Timebase">
@@ -15431,13 +15557,15 @@
             Represents the Macrodyne implementation of the parsing state used by a <see cref="T:GSF.PhasorProtocols.Macrodyne.ConfigurationFrame"/>.
             </summary>
         </member>
-        <member name="M:GSF.PhasorProtocols.Macrodyne.ConfigurationFrameParsingState.#ctor(System.Int32,GSF.PhasorProtocols.Macrodyne.HeaderFrame,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IConfigurationCell})">
+        <member name="M:GSF.PhasorProtocols.Macrodyne.ConfigurationFrameParsingState.#ctor(System.Int32,GSF.PhasorProtocols.Macrodyne.HeaderFrame,GSF.PhasorProtocols.CreateNewCellFunction{GSF.PhasorProtocols.IConfigurationCell},System.Boolean,System.Boolean)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.Macrodyne.ConfigurationFrameParsingState"/> from specified parameters.
             </summary>
             <param name="parsedBinaryLength">Binary length of the <see cref="T:GSF.PhasorProtocols.Macrodyne.ConfigurationFrame"/> being parsed.</param>
             <param name="headerFrame">Previously parsed header frame that contains needed station name.</param>
             <param name="createNewCellFunction">Reference to delegate to create new <see cref="T:GSF.PhasorProtocols.Macrodyne.ConfigurationCell"/> instances.</param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
+            <param name="validateCheckSum">Determines if frame's check-sum should be validated.</param>
         </member>
         <member name="P:GSF.PhasorProtocols.Macrodyne.ConfigurationFrameParsingState.HeaderFrame">
             <summary>
@@ -17524,15 +17652,12 @@
             Frame parser is implemented as a write-only stream - this way data can come from any source.
             </remarks>
         </member>
-        <member name="M:GSF.PhasorProtocols.Macrodyne.FrameParser.#ctor">
-            <summary>
-            Creates a new <see cref="T:GSF.PhasorProtocols.Macrodyne.FrameParser"/>.
-            </summary>
-        </member>
-        <member name="M:GSF.PhasorProtocols.Macrodyne.FrameParser.#ctor(GSF.PhasorProtocols.Macrodyne.ProtocolVersion,System.String,System.String)">
+        <member name="M:GSF.PhasorProtocols.Macrodyne.FrameParser.#ctor(GSF.PhasorProtocols.CheckSumValidationFrameTypes,System.Boolean,GSF.PhasorProtocols.Macrodyne.ProtocolVersion,System.String,System.String)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.Macrodyne.FrameParser"/> from specified parameters.
             </summary>
+            <param name="checkSumValidationFrameTypes">Frame types that should perform check-sum validation; default to <see cref="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames"/></param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
             <param name="protocolVersion">The protocol version that the parser should use.</param>
             <param name="configurationFileName">The optional external Macrodyne configuration in BPA PDCstream INI file based format.</param>
             <param name="deviceLabel">The INI section device label to use.</param>
@@ -18786,15 +18911,12 @@
             Frame parser is implemented as a write-only stream - this way data can come from any source.
             </remarks>
         </member>
-        <member name="M:GSF.PhasorProtocols.SelFastMessage.FrameParser.#ctor">
-            <summary>
-            Creates a new <see cref="T:GSF.PhasorProtocols.SelFastMessage.FrameParser"/>.
-            </summary>
-        </member>
-        <member name="M:GSF.PhasorProtocols.SelFastMessage.FrameParser.#ctor(GSF.PhasorProtocols.SelFastMessage.MessagePeriod)">
+        <member name="M:GSF.PhasorProtocols.SelFastMessage.FrameParser.#ctor(GSF.PhasorProtocols.CheckSumValidationFrameTypes,System.Boolean,GSF.PhasorProtocols.SelFastMessage.MessagePeriod)">
             <summary>
             Creates a new <see cref="T:GSF.PhasorProtocols.SelFastMessage.FrameParser"/> from specified parameters.
             </summary>
+            <param name="checkSumValidationFrameTypes">Frame types that should perform check-sum validation; default to <see cref="F:GSF.PhasorProtocols.CheckSumValidationFrameTypes.AllFrames"/></param>
+            <param name="trustHeaderLength">Determines if header lengths should be trusted over parsed byte count.</param>
             <param name="messagePeriod">The desired <see cref="T:GSF.PhasorProtocols.SelFastMessage.MessagePeriod"/> for SEL device connection.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.SelFastMessage.FrameParser.Start">
