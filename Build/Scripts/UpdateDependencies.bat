@@ -64,6 +64,7 @@ XCOPY "%frameworktools%ConfigEditor\ConfigEditor.exe" "%sourcetools%Configuratio
 XCOPY "%frameworktools%DataMigrationUtility\DataMigrationUtility.exe" "%sourcetools%DataMigrationUtility.exe" /Y
 XCOPY "%frameworktools%HistorianPlaybackUtility\HistorianPlaybackUtility.exe" "%sourcetools%HistorianPlaybackUtility.exe" /Y
 XCOPY "%frameworktools%HistorianView\HistorianView.exe" "%sourcetools%HistorianView.exe" /Y
+XCOPY "%frameworktools%NoInetFixUtil\NoInetFixUtil.exe" "%sourcetools%NoInetFixUtil.exe" /Y
 
 ECHO.
 ECHO Updating database schema defintions...
@@ -104,6 +105,7 @@ ECHO Checking in dependencies...
 %tfs% checkin "%sourcetools%DataMigrationUtility.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated grid solutions framework tool: DataMigrationUtility."
 %tfs% checkin "%sourcetools%HistorianPlaybackUtility.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated openHistorian playback / export tool: HistorianPlaybackUtility."
 %tfs% checkin "%sourcetools%HistorianView.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated openHistorian trending tool: HistorianView."
+%tfs% checkin "%sourcetools%NoInetFixUtil.exe" /noprompt /comment:"Synchrophasor-VS2012: Updated grid solutions framework tool: NoInetFixUtil."
 %tfs% checkin "%targetschema%" /noprompt /recursive /comment:"Synchrophasor-VS2012: Updated database schema definitions from GSF source."
 
 :Finalize

@@ -51,6 +51,9 @@
         <Feature Id="HistorianViewFeature" Title="Historian Trending Tool">
           <ComponentGroupRef Id="HistorianViewComponents" />
         </Feature>
+        <Feature Id="NoInetFixUtilFeature" Title="No-Internet Fix Utility">
+          <ComponentRef Id="NoInetFixUtil" />
+        </Feature>
         <Feature Id="MacrodyneControllerFeature" Title="Macrodyne Controller">
           <ComponentRef Id="MacrodyneController" />
         </Feature>
@@ -84,6 +87,7 @@
     <Icon Id="ConfigurationEditor.ico.exe" SourceFile="$(var.ProjectDir)\ConfigurationEditor.exe" />
     <Icon Id="HistorianPlaybackUtility.ico.exe" SourceFile="$(var.ProjectDir)\HistorianPlaybackUtility.exe" />
     <Icon Id="HistorianView.ico.exe" SourceFile="$(var.ProjectDir)\HistorianView.exe" />
+    <Icon Id="NoInetFixUtil.ico.exe" SourceFile="$(var.ProjectDir)\NoInetFixUtil.exe" />
     <Icon Id="MacrodyneController.ico.exe" SourceFile="$(var.MacrodyneController.TargetPath)" />
 
     <Property Id="SERVICENAME" Value="$(var.openPDC.TargetName)" />
@@ -276,6 +280,11 @@
       <ComponentGroupRef Id="ConfigurationEditorComponents" />
       <ComponentGroupRef Id="HistorianPlaybackUtilityComponents" />
       <ComponentGroupRef Id="HistorianViewComponents" />
+
+      <Component Id="NoInetFixUtil">
+        <File Id="NoInetFixUtil.exe" Name="NoInetFixUtil.exe" Source="$(var.ProjectDir)\NoInetFixUtil.exe" />
+        <Shortcut Id="NoInetFixUtilStartMenuShortcut" Name="No-Internet Fix Utility" Icon="NoInetFixUtil.ico.exe" Description="Tool used to fix long timeouts on systems with no internet access available." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
+      </Component>
 
       <Component Id="MacrodyneController">
         <File Id="MacrodyneController.exe" Name="$(var.MacrodyneController.TargetFileName)" Source="$(var.MacrodyneController.TargetPath)" />
