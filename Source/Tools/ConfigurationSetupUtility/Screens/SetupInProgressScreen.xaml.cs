@@ -427,8 +427,8 @@ namespace ConfigurationSetupUtility.Screens
                             sqlServerSetup.ExecuteStatement(string.Format("IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = N'{0}') CREATE LOGIN [{0}] WITH PASSWORD=N'{1}', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF", user, pass));
                             
                             sqlServerSetup.DatabaseName = db;
-                            sqlServerSetup.ExecuteStatement(string.Format("CREATE USER [{0}] FOR LOGIN [{0}]", user));
-                            sqlServerSetup.ExecuteStatement("CREATE ROLE [openPDCAdminRole] AUTHORIZATION [dbo]");
+                            sqlServerSetup.ExecuteStatement(string.Format("IF DATABASE_PRINCIPAL_ID('{0}') IS NULL CREATE USER [{0}] FOR LOGIN [{0}]", user));
+                            sqlServerSetup.ExecuteStatement("IF DATABASE_PRINCIPAL_ID('openPDCAdminRole') IS NULL CREATE ROLE [openPDCAdminRole] AUTHORIZATION [dbo]");
                             sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'openPDCAdminRole', N'{0}'", user));
                             sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datareader', N'openPDCAdminRole'"));
                             sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datawriter', N'openPDCAdminRole'"));
@@ -446,15 +446,24 @@ namespace ConfigurationSetupUtility.Screens
 
                             string host = sqlServerSetup.HostName.Split('\\')[0].Trim();
                             string db = sqlServerSetup.DatabaseName;
-                            string[] loginNames;
+
                             bool useGroupLogin;
+                            string serviceAccountName;
+                            string groupAccountName;
+                            string[] loginNames;
 
                             useGroupLogin = UserInfo.LocalGroupExists(GroupName) && (host == "." || Transport.IsLocalAddress(host));
-                            loginNames = new string[] { (useGroupLogin ? string.Format(@"{0}\{1}", Environment.MachineName, GroupName) : null), GetServiceAccountName() };
+                            serviceAccountName = GetServiceAccountName();
+                            groupAccountName = useGroupLogin ? string.Format(@"{0}\{1}", Environment.MachineName, GroupName) : null;
+
+                            if (serviceAccountName.Equals("LocalSystem", StringComparison.InvariantCultureIgnoreCase))
+                                serviceAccountName = @"NT Authority\System";
+
+                            loginNames = new string[] { groupAccountName, serviceAccountName };
 
                             foreach (string loginName in loginNames)
                             {
-                                if ((object)loginName != null && !loginName.Equals("LocalSystem", StringComparison.InvariantCultureIgnoreCase))
+                                if ((object)loginName != null)
                                 {
                                     AppendStatusMessage(string.Format("Attempting to add Windows authenticated database login for {0}...", loginName));
 
@@ -462,8 +471,8 @@ namespace ConfigurationSetupUtility.Screens
                                     sqlServerSetup.ExecuteStatement(string.Format("IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = N'{0}') CREATE LOGIN [{0}] FROM WINDOWS WITH DEFAULT_DATABASE=[master]", loginName));
 
                                     sqlServerSetup.DatabaseName = db;
-                                    sqlServerSetup.ExecuteStatement(string.Format("CREATE USER [{0}] FOR LOGIN [{0}]", loginName));
-                                    sqlServerSetup.ExecuteStatement("CREATE ROLE [openPDCAdminRole] AUTHORIZATION [dbo]");
+                                    sqlServerSetup.ExecuteStatement(string.Format("IF DATABASE_PRINCIPAL_ID('{0}') IS NULL CREATE USER [{0}] FOR LOGIN [{0}]", loginName));
+                                    sqlServerSetup.ExecuteStatement("IF DATABASE_PRINCIPAL_ID('openPDCAdminRole') IS NULL CREATE ROLE [openPDCAdminRole] AUTHORIZATION [dbo]");
                                     sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'openPDCAdminRole', N'{0}'", loginName));
                                     sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datareader', N'openPDCAdminRole'"));
                                     sqlServerSetup.ExecuteStatement(string.Format("EXEC sp_addrolemember N'db_datawriter', N'openPDCAdminRole'"));
