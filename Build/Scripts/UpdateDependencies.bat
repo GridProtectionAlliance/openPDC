@@ -45,6 +45,7 @@ ECHO Getting latest version...
 %tfs% get "%sourcetools%DataMigrationUtility.exe" /force /recursive /noprompt
 %tfs% get "%sourcetools%HistorianPlaybackUtility.exe" /force /recursive /noprompt
 %tfs% get "%sourcetools%HistorianView.exe" /force /recursive /noprompt
+%tfs% get "%sourcetools%NoInetFixUtil.exe" /version:T /force /recursive /noprompt
 
 ECHO.
 ECHO Checking out dependencies...
@@ -54,6 +55,7 @@ ECHO Checking out dependencies...
 %tfs% checkout "%sourcetools%DataMigrationUtility.exe" /noprompt
 %tfs% checkout "%sourcetools%HistorianPlaybackUtility.exe" /noprompt
 %tfs% checkout "%sourcetools%HistorianView.exe" /noprompt
+%tfs% checkout "%sourcetools%NoInetFixUtil.exe" /noprompt
 %tfs% checkout "%targetschema%" /recursive /noprompt
 
 ECHO.
