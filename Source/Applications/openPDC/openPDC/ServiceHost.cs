@@ -29,9 +29,9 @@ namespace openPDC
 {
     public class ServiceHost : ServiceHostBase
     {
-        public ServiceHost() : base()
+        public ServiceHost()
         {
-            InitializeComponent();
+            ServiceName = "openPDC";
         }
 
         protected override void ServiceStartingHandler(object sender, EventArgs<string[]> e)
@@ -44,14 +44,6 @@ namespace openPDC
 
             systemSettings.Add("CompanyName", "Grid Protection Alliance", "The name of the company who owns this instance of the openPDC.");
             systemSettings.Add("CompanyAcronym", "GPA", "The acronym representing the company who owns this instance of the openPDC.");
-        }
-
-        private void InitializeComponent()
-        {
-            // 
-            // ServiceHost
-            // 
-            this.ServiceName = "openPDC";
         }
     }
 }
