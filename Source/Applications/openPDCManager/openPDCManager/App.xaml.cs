@@ -68,9 +68,6 @@ namespace openPDCManager
             m_errorLogger.LogToUI = true;
             m_errorLogger.Initialize();
 
-            //Version appVersion = AssemblyInfo.EntryAssembly.Version;
-            // (v" + appVersion.Major + "." + appVersion.Minor + "." + appVersion.Build + ") ";
-
             m_title = AssemblyInfo.EntryAssembly.Title;
 
             // Setup default cache for measurement keys and associated Guid based signal ID's
@@ -82,32 +79,14 @@ namespace openPDCManager
                 database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
                 MeasurementKey.EstablishDefaultCache(database.Connection, database.AdapterType);
             }
-
-            catch (InvalidOperationException ex)
-            {
-                // Wpf does not support Displaying message boxes, Until the window is open;
-                // Creating a dummy window to display the message box.
-                Window WpfBugWindow = new Window()
-                {
-                    AllowsTransparency = true,
-                    Background = System.Windows.Media.Brushes.Transparent,
-                    WindowStyle = WindowStyle.None,
-                    Top = 0,
-                    Left = 0,
-                    Width = 1,
-                    Height = 1,
-                    ShowInTaskbar = false
-                };
-
-                WpfBugWindow.Show();
-                MessageBox.Show(ex.Message.ToString(), "Failed to Subscribe", MessageBoxButton.OK, MessageBoxImage.Error);
-                WpfBugWindow.Close();
-            }
             catch (Exception ex)
             {
+                // First attempt to display a modal dialog will fail to block this
+                // thread -- modal dialog displayed by the error logger will block now
+                MessageBox.Show(ex.Message);
+
                 // Log and display error, then exit application - manager must connect to database to continue
                 m_errorLogger.Log(new InvalidOperationException(string.Format("{0} cannot connect to database: {1}", m_title, ex.Message), ex), true);
-
             }
             finally
             {
