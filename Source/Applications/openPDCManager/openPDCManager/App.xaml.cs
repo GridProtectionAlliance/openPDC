@@ -75,7 +75,6 @@ namespace openPDCManager
 
             try
             {
-
                 database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
                 MeasurementKey.EstablishDefaultCache(database.Connection, database.AdapterType);
             }
