@@ -550,6 +550,12 @@
             Used to notify main window that connection to service has changed.
             </summary>
         </member>
+        <member name="E:GSF.TimeSeries.UI.CommonFunctions.CurrentPrincipalRefreshed">
+            <summary>
+            Event raised when the <see cref="P:GSF.TimeSeries.UI.CommonFunctions.CurrentPrincipal"/> property changes as
+            a result of its security provider expiring from the security provider cache.
+            </summary>
+        </member>
         <member name="E:GSF.TimeSeries.UI.CommonFunctions.CanGoForwardChanged">
             <summary>
             Triggered when the flag that indicates whether we can move forward in page history changes.
