@@ -140,28 +140,37 @@ namespace ConfigurationSetupUtility.Screens
 
                         if (migrate)
                         {
+                            const string SerializedSchemaPath = "SerializedSchema.bin";
+
                             string dataFolder = FilePath.GetApplicationDataFolder();
                             string dataMigrationUtilityUserSettingsFolder = dataFolder + "\\..\\DataMigrationUtility";
-                            string newOleDbConnectionString = m_state["newOleDbConnectionString"].ToString();
-                            string databaseType = m_state["databaseType"].ToString().Replace(" ", "");
                             string userSettingsFile = dataMigrationUtilityUserSettingsFolder + "\\Settings.xml";
+
+                            string newConnectionString = m_state["newConnectionString"].ToString();
+                            string oldConnectionString = m_state.ContainsKey("oldConnectionString") ? m_state["oldConnectionString"].ToString() : string.Empty;
+                            string newDataProviderString = m_state["newDataProviderString"].ToString();
+                            string oldDataProviderString = m_state.ContainsKey("oldDataProviderString") ? m_state["oldDataProviderString"].ToString() : string.Empty;
+                            string newDatabaseType = m_state["newDatabaseType"].ToString().Replace(" ", "");
 
                             if (!Directory.Exists(dataMigrationUtilityUserSettingsFolder))
                                 Directory.CreateDirectory(dataMigrationUtilityUserSettingsFolder);
+
+                            oldConnectionString += string.Format("; dataProviderString={{ {0} }}; serializedSchema={1}", oldDataProviderString, SerializedSchemaPath);
+                            newConnectionString += string.Format("; dataProviderString={{ {0} }}; serializedSchema={1}", newDataProviderString, SerializedSchemaPath);
 
                             XDocument doc = new XDocument(
                                                 new XElement("settings",
                                                     new XElement("applicationSettings",
                                                         new XElement("add", new XAttribute("name", "FromConnectionString"),
-                                                                            new XAttribute("value", m_state.ContainsKey("oldOleDbConnectionString") ? m_state["oldOleDbConnectionString"].ToString() : string.Empty)),
+                                                                            new XAttribute("value", oldConnectionString)),
                                                         new XElement("add", new XAttribute("name", "ToConnectionString"),
-                                                                            new XAttribute("value", newOleDbConnectionString)),
+                                                                            new XAttribute("value", newConnectionString)),
                                                         new XElement("add", new XAttribute("name", "ToDataType"),
-                                                                            new XAttribute("value", databaseType)),
+                                                                            new XAttribute("value", newDatabaseType)),
                                                         new XElement("add", new XAttribute("name", "UseFromConnectionForRI"),
                                                                             new XAttribute("value", string.Empty)),
                                                         new XElement("add", new XAttribute("name", "FromDataType"),
-                                                                            new XAttribute("value", m_state.ContainsKey("oldOleDbDataType") ? m_state["oldOleDbDataType"].ToString() : "Unspecified"))
+                                                                            new XAttribute("value", m_state.ContainsKey("oldDatabaseType") ? m_state["oldDatabaseType"].ToString() : "Unspecified"))
                                                     )
                                                 )
                                             );
@@ -525,7 +534,7 @@ namespace ConfigurationSetupUtility.Screens
                 try
                 {
                     IDbCommand nodeCommand;
-                    string databaseType = m_state["databaseType"].ToString();
+                    string databaseType = m_state["newDatabaseType"].ToString();
 
                     nodeCommand = connection.CreateCommand();
                     nodeCommand.CommandText = "SELECT ID FROM Node";
@@ -600,7 +609,7 @@ namespace ConfigurationSetupUtility.Screens
             IDbCommand command = connection.CreateCommand();
             command.CommandText = string.Format("SELECT ID FROM ApplicationRole WHERE Name = 'Administrator' AND NodeID = {0}", nodeID);
             string adminRoleID = command.ExecuteScalar().ToNonNullString();
-            string databaseType = m_state["databaseType"].ToString();
+            string databaseType = m_state["newDatabaseType"].ToString();
 
             adminRoleID = adminRoleID.StartsWith("'") ? adminRoleID : "'" + adminRoleID + "'";
 
@@ -624,7 +633,7 @@ namespace ConfigurationSetupUtility.Screens
                     }
                     else    //we need to add user to the UserAccount table and then attach it to admin role.
                     {
-                        bool databaseIsOracle = (databaseType == "oracle");
+                        bool databaseIsOracle = (databaseType == "Oracle");
                         char paramChar = databaseIsOracle ? ':' : '@';
 
                         // Add Administrative User.                
@@ -708,7 +717,6 @@ namespace ConfigurationSetupUtility.Screens
                             if (userIdReader.Read())
                                 adminUserID = userIdReader["ID"].ToNonNullString();
                         }
-                        
 
                         // Assign Administrative User to Administrator Role.
                         if (!string.IsNullOrEmpty(adminRoleID) && !string.IsNullOrEmpty(adminUserID))
@@ -735,16 +743,16 @@ namespace ConfigurationSetupUtility.Screens
                 switch (oldConnection.GetType().Name)
                 {
                     case "SqlConnection":
-                        oldDatabaseType = "sql server";
+                        oldDatabaseType = "SQLServer";
                         break;
                     case "MySqlConnection":
-                        oldDatabaseType = "mysql";
+                        oldDatabaseType = "MySQL";
                         break;
                     case "OracleConnection":
-                        oldDatabaseType = "oracle";
+                        oldDatabaseType = "Oracle";
                         break;
                     case "SQLiteConnection":
-                        oldDatabaseType = "sqlite";
+                        oldDatabaseType = "SQLite";
                         break;
                     case "OleDbConnection":
                         string connectionSetting;
@@ -851,11 +859,11 @@ namespace ConfigurationSetupUtility.Screens
 
             try
             {
-                string databaseType = m_state["databaseType"].ToString();
+                string databaseType = m_state["newDatabaseType"].ToString();
                 string connectionString = null;
                 string dataProviderString = null;
 
-                if (databaseType == "sql server")
+                if (databaseType == "SQLServer")
                 {
                     SqlServerSetup sqlServerSetup = m_state["sqlServerSetup"] as SqlServerSetup;
                     connectionString = sqlServerSetup.ConnectionString;
@@ -864,7 +872,7 @@ namespace ConfigurationSetupUtility.Screens
                     if (string.IsNullOrWhiteSpace(dataProviderString))
                         dataProviderString = "AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter";
                 }
-                else if (databaseType == "mysql")
+                else if (databaseType == "MySQL")
                 {
                     MySqlSetup mySqlSetup = m_state["mySqlSetup"] as MySqlSetup;
                     connectionString = mySqlSetup.ConnectionString;
@@ -873,7 +881,7 @@ namespace ConfigurationSetupUtility.Screens
                     if (string.IsNullOrWhiteSpace(dataProviderString))
                         dataProviderString = "AssemblyName={MySql.Data, Version=6.5.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter";
                 }
-                else if (databaseType == "oracle")
+                else if (databaseType == "Oracle")
                 {
                     OracleSetup oracleSetup = m_state["oracleSetup"] as OracleSetup;
                     connectionString = oracleSetup.ConnectionString;
