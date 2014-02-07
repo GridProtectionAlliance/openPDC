@@ -25,7 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -177,8 +176,13 @@ namespace ConfigurationSetupUtility.Screens
             IDbConnection connection;
 
             Guid nodeId;
-            NodeInfo defaultSelection;
             int defaultIndex;
+
+            bool applyChangesToService;
+            bool applyChangesToLocalManager;
+
+            applyChangesToService = Convert.ToBoolean(m_state["applyChangesToService"]);
+            applyChangesToLocalManager = Convert.ToBoolean(m_state["applyChangesToLocalManager"]);
 
             // Avoid accessing the database again
             // if we already have database nodes.
@@ -189,12 +193,11 @@ namespace ConfigurationSetupUtility.Screens
             }
 
             m_nodeList = new List<NodeInfo>(m_dbNodes);
-            nodeId = GetNodeIdFromConfigFile();
-            defaultSelection = m_nodeList.SingleOrDefault(info => info.Id == nodeId);
-            defaultIndex = (defaultSelection == null) ? 0 : m_nodeList.IndexOf(defaultSelection);
 
             if (m_nodeList.Count > 0)
+            {
                 m_infoTextBlock.Text = "Please select the node you would like the openPDC to use.";
+            }
             else
             {
                 // Inform the user that the node list could not be found.
@@ -203,23 +206,31 @@ namespace ConfigurationSetupUtility.Screens
                     + " This will not affect your ability to complete the setup.";
             }
 
+            if (applyChangesToService)
+                nodeId = GetNodeIdFromConfigFile("openPDC.exe.config");
+            else if (applyChangesToLocalManager)
+                nodeId = GetNodeIdFromConfigFile("openPDCManager.exe.config");
+            else
+                nodeId = Guid.Empty;
+
+            defaultIndex = m_nodeList.TakeWhile(info => info.Id != nodeId).Count();
+
+            if (defaultIndex == m_nodeList.Count)
+                defaultIndex = 0;
+
             // If the configuration file node is not already in the list,
             // add it as a possible selection in case the user does not wish to change it.
-            if (defaultSelection == null)
-            {
-                m_nodeList.Add(new NodeInfo()
-                {
-                    Name = "ConfigFile",
-                    Company = GetCompanyNameFromConfigFile(),
-                    Description = "This node was found in the configuration file.",
-                    Id = nodeId
-                });
-            }
-            else if (m_nodeList.Count == 1)
+            if (applyChangesToService)
+                TryAddNodeInfo("openPDC.exe.config");
+
+            if (applyChangesToLocalManager)
+                TryAddNodeInfo("openPDCManager.exe.config");
+            
+            if (m_nodeList.Count == 1)
             {
                 ScreenManager manager = m_state["screenManager"] as ScreenManager;
 
-                if (manager != null)
+                if ((object)manager != null)
                 {
                     manager.GoToNextScreen(false);
                     return;
@@ -228,6 +239,22 @@ namespace ConfigurationSetupUtility.Screens
 
             m_dataGrid.ItemsSource = new ObservableCollection<NodeInfo>(m_nodeList);
             m_dataGrid.SelectedIndex = defaultIndex;
+        }
+
+        private void TryAddNodeInfo(string configFileName)
+        {
+            Guid nodeId = GetNodeIdFromConfigFile(configFileName);
+
+            if (m_nodeList.All(info => info.Id != nodeId))
+            {
+                m_nodeList.Add(new NodeInfo()
+                {
+                    Name = "ConfigFile",
+                    Company = GetCompanyNameFromConfigFile(),
+                    Description = string.Format("This node was found in {0}.", configFileName),
+                    Id = nodeId
+                });
+            }
         }
 
         // Updates the new node with the name entered by the user.
@@ -428,12 +455,12 @@ namespace ConfigurationSetupUtility.Screens
         }
 
         // Gets the node ID that is currently stored in the config file.
-        private Guid GetNodeIdFromConfigFile()
+        private Guid GetNodeIdFromConfigFile(string configFileName)
         {
             string nodeIDString;
             Guid nodeID;
 
-            nodeIDString = GetValueOfSystemSetting("NodeID").ToNonNullString();
+            nodeIDString = GetValueOfSystemSetting(configFileName, "NodeID").ToNonNullString();
 
             if (Guid.TryParse(nodeIDString, out nodeID))
                 return nodeID;
@@ -444,13 +471,13 @@ namespace ConfigurationSetupUtility.Screens
         // Gets the company acronym that is currently stored in the config file.
         private string GetCompanyNameFromConfigFile()
         {
-            return GetValueOfSystemSetting("CompanyName");
+            return GetValueOfSystemSetting("openPDC.exe.config", "CompanyName");
         }
 
         // Gets the value of the config file system setting with the given name.
-        private string GetValueOfSystemSetting(string settingName)
+        private string GetValueOfSystemSetting(string configFileName, string settingName)
         {
-            string configFileName = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
+            string configFilePath = Directory.GetCurrentDirectory() + "\\" + configFileName;
             XmlDocument doc = new XmlDocument();
 
             IEnumerable<XmlNode> systemSettings;
@@ -459,7 +486,7 @@ namespace ConfigurationSetupUtility.Screens
 
             try
             {
-                doc.Load(configFileName);
+                doc.Load(configFilePath);
                 systemSettings = doc.SelectNodes("configuration/categorizedSettings/systemSettings/add").Cast<XmlNode>();
                 idNode = systemSettings.SingleOrDefault(node => node.Attributes != null && node.Attributes["name"].Value == settingName);
 
