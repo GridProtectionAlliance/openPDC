@@ -24,10 +24,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Xml.Linq;
 using GSF.Data;
+using GSF.IO;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -244,6 +247,9 @@ namespace ConfigurationSetupUtility.Screens
                 string newDatabaseMessage = "Please enter the needed information about the\r\nOracle database you would like to create.";
                 string oldDatabaseMessage = "Please enter the needed information about\r\nyour existing Oracle database.";
 
+                XDocument serviceConfig;
+                string connectionString;
+
                 m_state["oracleSetup"] = m_oracleSetup;
                 m_oracleSetup.TnsName = m_tnsNameTextBox.Text;
                 m_oracleSetup.AdminUserName = m_adminUserNameTextBox.Text;
@@ -274,6 +280,27 @@ namespace ConfigurationSetupUtility.Screens
                 }
 
                 m_schemaUserNameTextBox.Text = migrate ? "openPDCv2" : "openPDC";
+
+                // When using an existing database as-is, read existing connection settings out of the configuration file
+                if (existing && !migrate)
+                {
+                    serviceConfig = XDocument.Load(FilePath.GetAbsolutePath("openPDC.exe.config"));
+
+                    connectionString = serviceConfig
+                        .Descendants("systemSettings")
+                        .SelectMany(systemSettings => systemSettings.Elements("add"))
+                        .Where(element => "ConnectionString".Equals((string)element.Attribute("name"), StringComparison.OrdinalIgnoreCase))
+                        .Select(element => (string)element.Attribute("value"))
+                        .FirstOrDefault();
+
+                    if (!string.IsNullOrEmpty(connectionString))
+                    {
+                        m_oracleSetup.ConnectionString = connectionString;
+                        m_tnsNameTextBox.Text = m_oracleSetup.TnsName;
+                        m_schemaUserNameTextBox.Text = m_oracleSetup.SchemaUserName;
+                        m_schemaUserPasswordTextBox.Password = m_oracleSetup.SchemaPassword;
+                    }
+                }
             }
         }
 
