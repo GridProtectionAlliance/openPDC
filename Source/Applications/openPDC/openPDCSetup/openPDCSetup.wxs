@@ -343,8 +343,8 @@
       <Component Id="Ciloci.Flee">
         <File Id="Ciloci.Flee.dll" Name="Ciloci.Flee.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Ciloci.Flee.dll" />
       </Component>
-      <Component Id="Comtrade">
-        <File Id="Comtrade.dll" Name="Comtrade.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Comtrade.dll" />
+      <Component Id="COMTRADEAdapters">
+        <File Id="COMTRADEAdapters.dll" Name="COMTRADEAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\COMTRADEAdapters.dll" />
       </Component>
       <Component Id="CsvAdapters">
         <File Id="CsvAdapters.dll" Name="CsvAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\CsvAdapters.dll" />
@@ -403,6 +403,9 @@
     <ComponentGroup Id="GSFDependencyComponents" Directory="INSTALLFOLDER">
       <Component Id="GSF.Communication">
         <File Id="GSF.Communication.dll" Name="GSF.Communication.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.Communication.dll" />
+      </Component>
+      <Component Id="GSF.COMTRADE">
+        <File Id="GSF.COMTRADE.dll" Name="GSF.COMTRADE.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.COMTRADE.dll" />
       </Component>
       <Component Id="GSF.Core">
         <File Id="GSF.Core.dll" Name="GSF.Core.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.Core.dll" />
