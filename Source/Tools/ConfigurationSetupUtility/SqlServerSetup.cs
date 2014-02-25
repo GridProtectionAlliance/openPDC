@@ -250,6 +250,34 @@ namespace ConfigurationSetupUtility
 
         #region [ Methods ]
 
+        public void CreateLogin(string loginName)
+        {
+            string databaseName = DatabaseName;
+            DatabaseName = "master";
+            ExecuteStatement(string.Format("IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = N'{0}') CREATE LOGIN [{0}] FROM WINDOWS WITH DEFAULT_DATABASE=[master]", loginName));
+            DatabaseName = databaseName;
+        }
+
+        public void CreateLogin(string loginName, string password)
+        {
+            string databaseName = DatabaseName;
+            DatabaseName = "master";
+            ExecuteStatement(string.Format("IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = N'{0}') CREATE LOGIN [{0}] WITH PASSWORD=N'{1}', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF", loginName, password));
+            DatabaseName = databaseName;
+        }
+
+        public void GrantDatabaseAccess(string loginName)
+        {
+            ExecuteStatement(string.Format("IF EXISTS (SELECT * FROM sys.server_principals WHERE name = N'{0}') " +
+                "AND NOT EXISTS (SELECT * FROM sys.server_principals svr INNER JOIN sys.database_principals db ON svr.sid = db.sid WHERE svr.name = N'{0}') " +
+                "AND DATABASE_PRINCIPAL_ID('{0}') IS NULL CREATE USER [{0}] FOR LOGIN [{0}]", loginName));
+
+            ExecuteStatement("IF DATABASE_PRINCIPAL_ID('openPDCAdminRole') IS NULL CREATE ROLE [openPDCAdminRole] AUTHORIZATION [dbo]");
+            ExecuteStatement(string.Format("IF DATABASE_PRINCIPAL_ID('{0}') IS NOT NULL AND DATABASE_PRINCIPAL_ID('openPDCAdminRole') IS NOT NULL EXEC sp_addrolemember N'openPDCAdminRole', N'{0}'", loginName));
+            ExecuteStatement(string.Format("IF DATABASE_PRINCIPAL_ID('openPDCAdminRole') IS NOT NULL EXEC sp_addrolemember N'db_datareader', N'openPDCAdminRole'"));
+            ExecuteStatement(string.Format("IF DATABASE_PRINCIPAL_ID('openPDCAdminRole') IS NOT NULL EXEC sp_addrolemember N'db_datawriter', N'openPDCAdminRole'"));
+        }
+
         public void ExecuteStatement(string statement)
         {
             IDbConnection connection = null;
