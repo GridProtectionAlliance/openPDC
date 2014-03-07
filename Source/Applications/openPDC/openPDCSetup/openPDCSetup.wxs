@@ -247,6 +247,12 @@
       <Component Id="DataMigrationUtilityConfig">
         <File Id="DataMigrationUtility.exe.config" Name="DataMigrationUtility.exe.config" Source="$(var.ProjectDir)\DataMigrationUtility.exe.config" />
       </Component>
+      <Component Id="StatHistorianReportGenerator">
+        <File Id="StatHistorianReportGenerator.exe" Name="StatHistorianReportGenerator.exe" Source="$(var.ProjectDir)\StatHistorianReportGenerator.exe" />
+      </Component>
+      <Component Id="StatHistorianReportGeneratorConfig">
+        <File Id="StatHistorianReportGenerator.exe.config" Name="StatHistorianReportGenerator.exe.config" Source="$(var.ProjectDir)\StatHistorianReportGenerator.exe.config" />
+      </Component>
       <Component Id="SerializedSchema">
         <File Id="SerializedSchema.bin" Name="SerializedSchema.bin" Source="$(var.SolutionDir)\Data\SerializedSchema.bin" />
       </Component>
