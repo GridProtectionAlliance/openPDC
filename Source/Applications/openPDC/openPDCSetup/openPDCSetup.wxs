@@ -91,7 +91,6 @@
     <Icon Id="HistorianPlaybackUtility.ico.exe" SourceFile="$(var.ProjectDir)\HistorianPlaybackUtility.exe" />
     <Icon Id="HistorianView.ico.exe" SourceFile="$(var.ProjectDir)\HistorianView.exe" />
     <Icon Id="NoInetFixUtil.ico.exe" SourceFile="$(var.ProjectDir)\NoInetFixUtil.exe" />
-    <Icon Id="DNP3ConfigGenerator.ico.exe" SourceFile="$(var.ProjectDir)\DNP3ConfigGenerator.exe" />
     <Icon Id="MacrodyneController.ico.exe" SourceFile="$(var.MacrodyneController.TargetPath)" />
 
     <Property Id="SERVICENAME" Value="$(var.openPDC.TargetName)" />
