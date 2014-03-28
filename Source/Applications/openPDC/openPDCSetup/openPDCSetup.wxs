@@ -304,7 +304,6 @@
 
       <Component Id="DNP3ConfigGenerator">
         <File Id="DNP3ConfigGenerator.exe" Name="DNP3ConfigGenerator.exe" Source="$(var.ProjectDir)\DNP3ConfigGenerator.exe" />
-        <Shortcut Id="DNP3ConfigGeneratorStartMenuShortcut" Name="DNP3 Configuration Generator" Icon="DNP3ConfigGenerator.ico.exe" Description="Assists with configuration of DNP3." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
 
       <Component Id="MacrodyneController">
