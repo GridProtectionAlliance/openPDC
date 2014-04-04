@@ -301,6 +301,7 @@ namespace ConfigurationSetupUtility.Screens
 
                 XDocument serviceConfig;
                 string connectionString;
+                string dataProviderString;
 
                 m_state["mySqlSetup"] = m_mySqlSetup;
                 m_mySqlSetup.HostName = m_hostNameTextBox.Text;
@@ -350,7 +351,14 @@ namespace ConfigurationSetupUtility.Screens
                         .Select(element => (string)element.Attribute("value"))
                         .FirstOrDefault();
 
-                    if (!string.IsNullOrEmpty(connectionString))
+                    dataProviderString = serviceConfig
+                        .Descendants("systemSettings")
+                        .SelectMany(systemSettings => systemSettings.Elements("add"))
+                        .Where(element => "DataProviderString".Equals((string)element.Attribute("name"), StringComparison.OrdinalIgnoreCase))
+                        .Select(element => (string)element.Attribute("value"))
+                        .FirstOrDefault();
+
+                    if (!string.IsNullOrEmpty(connectionString) && m_mySqlSetup.DataProviderString.Equals(dataProviderString, StringComparison.InvariantCultureIgnoreCase))
                     {
                         m_mySqlSetup.ConnectionString = connectionString;
                         m_hostNameTextBox.Text = m_mySqlSetup.HostName;
