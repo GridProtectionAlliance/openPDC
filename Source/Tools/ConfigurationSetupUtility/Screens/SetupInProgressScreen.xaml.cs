@@ -347,6 +347,10 @@ namespace ConfigurationSetupUtility.Screens
                 ModifyConfigFiles(mySqlSetup.ConnectionString, dataProviderString, Convert.ToBoolean(m_state["encryptMySqlConnectionStrings"]));
                 SaveOldConnectionString();
 
+                // Remove cached configuration since it will
+                // likely be different from the new configuration
+                RemoveCachedConfiguration();
+
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -554,6 +558,10 @@ namespace ConfigurationSetupUtility.Screens
                     }
                 }
 
+                // Remove cached configuration since it will
+                // likely be different from the new configuration
+                RemoveCachedConfiguration();
+
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -681,6 +689,10 @@ namespace ConfigurationSetupUtility.Screens
                 ModifyConfigFiles(connectionString, dataProviderString, oracleSetup.EncryptConnectionString);
                 SaveOldConnectionString();
 
+                // Remove cached configuration since it will
+                // likely be different from the new configuration
+                RemoveCachedConfiguration();
+
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -772,6 +784,10 @@ namespace ConfigurationSetupUtility.Screens
                 // Modify the openPDC configuration file.
                 ModifyConfigFiles(connectionString, dataProviderString, false);
                 SaveOldConnectionString();
+
+                // Remove cached configuration since it will
+                // likely be different from the new configuration
+                RemoveCachedConfiguration();
 
                 OnSetupSucceeded();
             }
@@ -972,6 +988,11 @@ namespace ConfigurationSetupUtility.Screens
             {
                 // Modify the openPDC configuration file.
                 ModifyConfigFiles(m_state["xmlFilePath"].ToString(), string.Empty, false);
+
+                // Remove cached configuration since it will
+                // likely be different from the new configuration
+                RemoveCachedConfiguration();
+
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -988,6 +1009,11 @@ namespace ConfigurationSetupUtility.Screens
             {
                 // Modify the openPDC configuration file.
                 ModifyConfigFiles(m_state["webServiceUrl"].ToString(), string.Empty, false);
+
+                // Remove cached configuration since it will
+                // likely be different from the new configuration
+                RemoveCachedConfiguration();
+
                 OnSetupSucceeded();
             }
             catch (Exception ex)
@@ -1981,16 +2007,18 @@ namespace ConfigurationSetupUtility.Screens
             }
         }
 
-        // Called when mysql.exe receives data on its standard output stream.
-        private void MySqlSetup_OutputDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
+        // Removes the cached configuration files.
+        private void RemoveCachedConfiguration()
         {
-            AppendStatusMessage(e.Data);
-        }
+            string configurationCachePath = Path.Combine(Directory.GetCurrentDirectory(), "ConfigurationCache");
+            string binaryCachePath = Path.Combine(configurationCachePath, "SystemConfiguration.bin");
+            string xmlCachePath = Path.Combine(configurationCachePath, "SystemConfiguration.xml");
 
-        // Called when mysql.exe receives data on its standard error stream.
-        private void MySqlSetup_ErrorDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
-        {
-            AppendStatusMessage(e.Data);
+            if (File.Exists(binaryCachePath))
+                File.Delete(binaryCachePath);
+
+            if (File.Exists(xmlCachePath))
+                File.Delete(xmlCachePath);
         }
 
         // Updates the progress bar to have the specified value.
