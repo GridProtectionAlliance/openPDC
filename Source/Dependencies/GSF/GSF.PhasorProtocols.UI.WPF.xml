@@ -1861,6 +1861,16 @@
             Gets or sets list of devices to use for mirroring.
             </summary>
         </member>
+        <member name="P:GSF.PhasorProtocols.UI.ViewModels.OutputStreams.ConfigFrameSizeText">
+            <summary>
+            Gets or sets the text to be displayed as the configuration frame size.
+            </summary>
+        </member>
+        <member name="P:GSF.PhasorProtocols.UI.ViewModels.OutputStreams.ConfigFrameSizeColor">
+            <summary>
+            Gets or sets the color of the text to be displayed as the configuration frame size.
+            </summary>
+        </member>
         <member name="T:GSF.PhasorProtocols.UI.ViewModels.PhasorMeasurements">
             <summary>
             Class to hold bindable <see cref="T:GSF.TimeSeries.UI.DataModels.Measurement"/> collection.
