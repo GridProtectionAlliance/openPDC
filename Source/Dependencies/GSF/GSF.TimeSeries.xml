@@ -5654,6 +5654,11 @@
             Initiates request for metadata refresh for <see cref="T:GSF.TimeSeries.Adapters.OutputAdapterBase"/>, if implemented.
             </summary>
         </member>
+        <member name="M:GSF.TimeSeries.Adapters.OutputAdapterBase.ExecuteMetadataRefresh">
+            <summary>
+            Executes the metadata refresh in a synchronous fashion.
+            </summary>
+        </member>
         <member name="M:GSF.TimeSeries.Adapters.OutputAdapterBase.Start">
             <summary>
             Starts this <see cref="T:GSF.TimeSeries.Adapters.OutputAdapterBase"/> and initiates connection cycle to data output stream.
@@ -5792,6 +5797,11 @@
             </para>
             </remarks>
         </member>
+        <member name="P:GSF.TimeSeries.Adapters.OutputAdapterBase.DataSource">
+            <summary>
+            Gets or sets <see cref="T:System.Data.DataSet"/> based data source available to this <see cref="T:GSF.TimeSeries.Adapters.OutputAdapterBase"/>.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Adapters.OutputAdapterBase.RequeueOnException">
             <summary>
             Gets or sets whether or not to automatically place measurements back into the processing
@@ -5858,6 +5868,11 @@
         <member name="P:GSF.TimeSeries.Adapters.OutputAdapterBase.ConnectionAttemptInterval">
             <summary>
             Gets or sets the connection attempt interval, in milliseconds, for the data output adapter.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.OutputAdapterBase.MetadataRefreshOperation">
+            <summary>
+            Gets the operation that calls <see cref="M:GSF.TimeSeries.Adapters.OutputAdapterBase.ExecuteMetadataRefresh"/>.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.OutputAdapterBase.InternalProcessQueue">
@@ -6483,28 +6498,6 @@
             The engine automatically unregisters them by attaching to the
             <see cref="E:GSF.ISupportLifecycle.Disposed"/> event.
             </remarks>
-        </member>
-        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.GetStatSignalTypeID(GSF.Data.AdoDataConnection)">
-            <summary>
-            Gets the signal type ID used for statistic measurements.
-            </summary>
-            <param name="database">The database to be queried.</param>
-            <returns>The signal type ID used for statistic measurements.</returns>
-        </member>
-        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.GetStatHistorianID(GSF.Data.AdoDataConnection)">
-            <summary>
-            Gets the ID of the statistics historian.
-            </summary>
-            <param name="database">The database to be queried.</param>
-            <returns>The ID of the statistics historian.</returns>
-        </member>
-        <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.GetDeviceID(GSF.Data.AdoDataConnection,GSF.TimeSeries.Adapters.IAdapter)">
-            <summary>
-            Gets the device ID of the given adapter, or <see cref="F:System.DBNull.Value"/> if the adapter is not a device.
-            </summary>
-            <param name="database">The database to be queried.</param>
-            <param name="adapter">The adapter whose device ID is queried.</param>
-            <returns>The device ID of the given adapter, or <see cref="F:System.DBNull.Value"/> if the adapter is not a device.</returns>
         </member>
         <member name="M:GSF.TimeSeries.Statistics.StatisticsEngine.RegexMatch(System.String,System.String)">
             <summary>

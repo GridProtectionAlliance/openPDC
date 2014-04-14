@@ -3610,6 +3610,12 @@
             safe to use this class with multiple consumer threads.
             </remarks>
             <typeparam name="T">The types of items to be queued.</typeparam>
+            <remarks>
+            It is not safe to use this class with multiple consumer threads.
+            The list returned by <see cref="M:GSF.Collections.DoubleBufferedQueueManager`1.Dequeue"/> is not thread-safe and
+            is reused on each Dequeue operation, so no other thread should
+            access the list while another thread is calling Dequeue.
+            </remarks>
         </member>
         <member name="M:GSF.Collections.DoubleBufferedQueueManager`1.#ctor">
             <summary>
@@ -4500,6 +4506,12 @@
             item processing in single-producer, single-consumer scenarios.
             </summary>
             <typeparam name="T">Type of items being queued.</typeparam>
+            <remarks>
+            It is not safe to use this class with multiple consumer threads.
+            The <see cref="M:GSF.Collections.DoubleBufferedQueue`1.Dequeue"/> method must be called by one thread at
+            a time, and the consumer must not access a list returned by Dequeue
+            after its next call to Dequeue.
+            </remarks>
         </member>
         <member name="M:GSF.Collections.DoubleBufferedQueue`1.#ctor">
             <summary>
@@ -4521,6 +4533,12 @@
             or no items if none have been enqueued since last dequeue.
             </returns>
         </member>
+        <member name="M:GSF.Collections.DoubleBufferedQueue`1.Clear">
+            <summary>
+            Empties the producer's buffer so that the
+            items can no longer be consumed by the consumer.
+            </summary>
+        </member>
         <member name="M:GSF.Collections.DoubleBufferedQueue`1.TryEnqueue(System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Attempts to enqueue a collection of items into the double-buffered queue.
@@ -4539,6 +4557,14 @@
             <returns>
             The number of items left in the queue after
             dequeuing as many items as possible.
+            </returns>
+        </member>
+        <member name="M:GSF.Collections.DoubleBufferedQueue`1.TryClear">
+            <summary>
+            Attempts to enqueue a collection of items into the double-buffered queue.
+            </summary>
+            <returns>
+            True if the items were successfully enqueued; false otherwise.
             </returns>
         </member>
         <member name="E:GSF.Collections.DoubleBufferedQueue`1.ProcessException">
