@@ -6325,7 +6325,7 @@
             of measurements expected in the <see cref="T:GSF.TimeSeries.IDevice"/> wrapped by this helper.
             </summary>
             <remarks>
-            Call this periodically, preferrably on a slow timer (e.g., once per second),
+            Call this periodically, preferably on a slow timer (e.g., once per second),
             in order to update the <see cref="P:GSF.TimeSeries.IDevice.MeasurementsReceived"/> and
             <see cref="P:GSF.TimeSeries.IDevice.MeasurementsExpected"/> statistics.
             </remarks>
@@ -6337,7 +6337,7 @@
             </summary>
             <param name="nowTicks">The current time, in ticks.</param>
             <remarks>
-            Call this periodically, preferrably on a slow timer (e.g., once per second),
+            Call this periodically, preferably on a slow timer (e.g., once per second),
             in order to update the <see cref="P:GSF.TimeSeries.IDevice.MeasurementsReceived"/> and
             <see cref="P:GSF.TimeSeries.IDevice.MeasurementsExpected"/> statistics. This method is preferred
             when tracking statistics for multiple <see cref="T:GSF.TimeSeries.IDevice"/>s to reduce the number

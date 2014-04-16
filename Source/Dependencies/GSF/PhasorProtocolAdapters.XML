@@ -726,7 +726,7 @@
         </member>
         <member name="M:PhasorProtocolAdapters.CommonPhasorServices.GetOutputStreamStatistic_ReceivedMeasurements(System.Object,System.String)">
             <summary>
-            Calculates number of received measurements reported by the output strean during last reporting interval.
+            Calculates number of received measurements reported by the output stream during last reporting interval.
             </summary>
             <param name="source">Source OutputStream.</param>
             <param name="arguments">Any needed arguments for statistic calculation.</param>
@@ -753,7 +753,7 @@
         </member>
         <member name="M:PhasorProtocolAdapters.CommonPhasorServices.GetOutputStreamStatistic_MeasurementsSortedByArrival(System.Object,System.String)">
             <summary>
-            Calculates number of measurments sorted by arrival reported by the output stream during last reporting interval.
+            Calculates number of measurements sorted by arrival reported by the output stream during last reporting interval.
             </summary>
             <param name="source">Source OutputStream.</param>
             <param name="arguments">Any needed arguments for statistic calculation.</param>
@@ -769,11 +769,11 @@
         </member>
         <member name="M:PhasorProtocolAdapters.CommonPhasorServices.GetOutputStreamStatistic_DownsampledMeasurements(System.Object,System.String)">
             <summary>
-            Calculates number of downsampled measurements reported by the output stream during last reporting interval.
+            Calculates number of down-sampled measurements reported by the output stream during last reporting interval.
             </summary>
             <param name="source">Source OutputStream.</param>
             <param name="arguments">Any needed arguments for statistic calculation.</param>
-            <returns>Downsampled Measurements Statistic.</returns>
+            <returns>Down-sampled Measurements Statistic.</returns>
         </member>
         <member name="M:PhasorProtocolAdapters.CommonPhasorServices.GetOutputStreamStatistic_MissedSortsByTimeout(System.Object,System.String)">
             <summary>
