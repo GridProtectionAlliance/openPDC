@@ -604,11 +604,10 @@
             OutputStreamCurrentDeviceUserControl
             </summary>
         </member>
-        <member name="M:GSF.PhasorProtocols.UI.UserControls.OutputStreamCurrentDeviceUserControl.#ctor(System.Int32,System.String)">
+        <member name="M:GSF.PhasorProtocols.UI.UserControls.OutputStreamCurrentDeviceUserControl.#ctor(System.Int32)">
             <summary>
             Creates an instance of <see cref="T:GSF.PhasorProtocols.UI.UserControls.OutputStreamCurrentDeviceUserControl"/>.
             <param name="outputStreamID">ID of the output stream to filter data.</param>
-            <param name="outputStreamAcronym">Acronym of the output stream for display purpose.</param>
             </summary>
         </member>
         <member name="M:GSF.PhasorProtocols.UI.UserControls.OutputStreamCurrentDeviceUserControl.InitializeComponent">
