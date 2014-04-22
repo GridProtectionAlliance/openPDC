@@ -23,13 +23,12 @@
 
 #if !DEBUG
     #define RunAsService
-#endif 
-
-#if RunAsService
-    using System.ServiceProcess;
-#else
-    using System.Windows.Forms;
 #endif
+
+using System;
+using System.Linq;
+using System.ServiceProcess;
+using System.Windows.Forms;
 
 namespace openPDC
 {
@@ -38,19 +37,46 @@ namespace openPDC
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
             ServiceHost host = new ServiceHost();
 
+            bool runAsService;
+            bool serviceArgExists;
+            bool applicationArgExists;
+
 #if RunAsService
-            // Run as Windows Service.
-            ServiceBase.Run(new ServiceBase[] { host });
+            runAsService = true;
 #else
-            // Run as Windows Application.
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DebugHost(host));
+            runAsService = false;
 #endif
+
+            serviceArgExists = args.Any(arg => arg.Equals("/RunAsService", StringComparison.OrdinalIgnoreCase));
+            applicationArgExists = args.Any(arg => arg.Equals("/RunAsApplication", StringComparison.OrdinalIgnoreCase));
+
+            if (serviceArgExists && applicationArgExists)
+            {
+                MessageBox.Show("Too many arguments specified. Cannot run as both an application and a service.");
+                Environment.Exit(0);
+            }
+
+            if (serviceArgExists)
+                runAsService = true;
+            else if (applicationArgExists)
+                runAsService = false;
+
+            if (runAsService)
+            {
+                // Run as Windows Service.
+                ServiceBase.Run(new ServiceBase[] { host });
+            }
+            else
+            {
+                // Run as Windows Application.
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new DebugHost(host));
+            }
         }
     }
 }
