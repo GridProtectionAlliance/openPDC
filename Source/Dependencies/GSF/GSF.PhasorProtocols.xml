@@ -2067,11 +2067,6 @@
             Typical data stream synchronization byte.
             </summary>
         </member>
-        <member name="F:GSF.PhasorProtocols.Common.UndefinedKey">
-            <summary>
-            Undefined measurement key.
-            </summary>
-        </member>
         <member name="M:GSF.PhasorProtocols.Common.CopyImage(System.Byte[],System.Byte[],System.Int32@,System.Int32)">
             <summary>
             This is a common optimized block copy function for binary data.
@@ -6349,17 +6344,17 @@
         </member>
         <member name="T:GSF.PhasorProtocols.SignalKind">
             <summary>
-            Fundamental signal types enumeration.
+            Fundamental signal type enumeration that represents a kind of signal, not an explicit type.
             </summary>
             <remarks>
             <para>
-            This signal type represents the basic type of a signal used to suffix a formatted signal reference. When
-            used in context along with an optional index the fundamental signal type will identify a signal's location
-            within a frame of data (see <see cref="T:GSF.PhasorProtocols.SignalReference"/>).
+            This enumeration represents the basic type of a signal used to suffix a formatted signal
+            reference. When used in context along with an optional index the fundamental signal type
+            will identify a signal's location within a frame of data (see <see cref="T:GSF.PhasorProtocols.SignalReference"/>).
             </para>
             <para>
-            Contrast this to the <see cref="T:GSF.PhasorProtocols.SignalType"/> enumeration which further defines an
-            explicit type for a signal (e.g., a voltage or current type for an angle).
+            Contrast this to the <see cref="T:GSF.PhasorProtocols.SignalType"/> enumeration which further defines an explicit
+            type for a signal (e.g., a voltage or current type for an angle).
             </para>
             </remarks>
         </member>
@@ -6425,11 +6420,11 @@
         </member>
         <member name="T:GSF.PhasorProtocols.SignalType">
             <summary>
-            Signal type enumeration.
+            Fundamental signal type enumeration that represents an explicit type of signal.
             </summary>
             <remarks>
             <para>
-            The signal type represents the explicit type of a signal that a value represents.
+            This enumeration represents the explicit type of a signal that a value represents.
             </para>
             <para>
             Contrast this to the <see cref="T:GSF.PhasorProtocols.SignalKind"/> enumeration which only defines an
@@ -6835,22 +6830,6 @@
             <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with populated with data.</param>
             <param name="context">The source <see cref="T:System.Runtime.Serialization.StreamingContext"/> for this deserialization.</param>
         </member>
-        <member name="M:GSF.PhasorProtocols.Anonymous.ConfigurationCell.Finalize">
-            <summary>
-            Releases the unmanaged resources before the <see cref="T:GSF.PhasorProtocols.Anonymous.ConfigurationCell"/> object is reclaimed by <see cref="T:System.GC"/>.
-            </summary>
-        </member>
-        <member name="M:GSF.PhasorProtocols.Anonymous.ConfigurationCell.Dispose">
-            <summary>
-            Releases all the resources used by the <see cref="T:GSF.PhasorProtocols.Anonymous.ConfigurationCell"/> object.
-            </summary>
-        </member>
-        <member name="M:GSF.PhasorProtocols.Anonymous.ConfigurationCell.Dispose(System.Boolean)">
-            <summary>
-            Releases the unmanaged resources used by the <see cref="T:GSF.PhasorProtocols.Anonymous.ConfigurationCell"/> object and optionally releases the managed resources.
-            </summary>
-            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        </member>
         <member name="M:GSF.PhasorProtocols.Anonymous.ConfigurationCell.GetSignalReference(GSF.PhasorProtocols.SignalKind)">
             <summary>
             Get signal reference for specified <see cref="T:GSF.PhasorProtocols.SignalKind"/>.
@@ -6873,11 +6852,6 @@
             </summary>
             <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> to populate with data.</param>
             <param name="context">The destination <see cref="T:System.Runtime.Serialization.StreamingContext"/> for this serialization.</param>
-        </member>
-        <member name="E:GSF.PhasorProtocols.Anonymous.ConfigurationCell.Disposed">
-            <summary>
-            Event is raised when <see cref="T:GSF.PhasorProtocols.Anonymous.ConfigurationCell"/> is disposed.
-            </summary>
         </member>
         <member name="P:GSF.PhasorProtocols.Anonymous.ConfigurationCell.AnalogDataFormat">
             <summary>

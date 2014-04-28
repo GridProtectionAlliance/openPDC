@@ -1954,7 +1954,7 @@
             Loads information about <see cref="T:GSF.TimeSeries.UI.DataModels.Measurement"/> assigned to MeasurementGroup as <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
             <param name="database"><see cref="T:GSF.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="measurementGroupId">ID of the MeasurementGroup to filter data.</param>
+            <param name="measurementGroupID">ID of the MeasurementGroup to filter data.</param>
             <returns>Collection of <see cref="T:GSF.TimeSeries.UI.DataModels.Measurement"/>.</returns>
         </member>
         <member name="M:GSF.TimeSeries.UI.DataModels.Measurement.GetMeasurementsBySubscriber(GSF.Data.AdoDataConnection,System.Guid)">
@@ -1962,7 +1962,7 @@
             Loads information about <see cref="T:GSF.TimeSeries.UI.DataModels.Measurement"/> assigned to Subscriber as <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> style list.
             </summary>
             <param name="database"><see cref="T:GSF.Data.AdoDataConnection"/> to connection to database.</param>
-            <param name="subscriberId">ID of the Subscriber to filter data.</param>
+            <param name="subscriberID">ID of the Subscriber to filter data.</param>
             <returns>Collection of <see cref="T:GSF.TimeSeries.UI.DataModels.Measurement"/>.</returns>
         </member>
         <member name="M:GSF.TimeSeries.UI.DataModels.Measurement.GetLookupList(GSF.Data.AdoDataConnection,System.Boolean,System.Boolean)">

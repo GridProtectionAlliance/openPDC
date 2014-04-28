@@ -1051,13 +1051,13 @@
             <summary>
             Handles <see cref="P:GSF.PhasorProtocols.UI.ViewModels.Devices.EditCommand"/>.
             </summary>
-            <param name="parameter">Parameter to use for the command provided by commandparameter from UI.</param>
+            <param name="parameter">Parameter to use for the command provided by command parameter from UI.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.UI.ViewModels.Devices.MakeCopy(System.Object)">
             <summary>
             Handles <see cref="P:GSF.PhasorProtocols.UI.ViewModels.Devices.CopyCommand"/>.
             </summary>
-            <param name="parameter">Parameter to use for the command provided by commandparameter from UI.</param>
+            <param name="parameter">Parameter to use for the command provided by command parameter from UI.</param>
         </member>
         <member name="M:GSF.PhasorProtocols.UI.ViewModels.Devices.GoToMeasurements">
             <summary>
@@ -1076,7 +1076,7 @@
         </member>
         <member name="M:GSF.PhasorProtocols.UI.ViewModels.Devices.Search(System.Object)">
             <summary>
-            Hanldes <see cref="P:GSF.PhasorProtocols.UI.ViewModels.Devices.SearchCommand"/>.
+            Handles <see cref="P:GSF.PhasorProtocols.UI.ViewModels.Devices.SearchCommand"/>.
             </summary>
             <param name="parameter">string value to search for in measurement collection.</param>
         </member>
