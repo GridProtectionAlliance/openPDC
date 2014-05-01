@@ -13423,6 +13423,26 @@
             Manual comparison tolerance.
             </summary>
         </member>
+        <member name="T:GSF.GaussianDistribution">
+            <summary>
+            Implements a BoxMuller method for generating statistically normal random numbers.
+            </summary>
+        </member>
+        <member name="M:GSF.GaussianDistribution.#ctor(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Creates a <see cref="T:GSF.GaussianDistribution"/>
+            </summary>
+            <param name="mean">the mean of the distrubtion</param>
+            <param name="standardDeviation">the standard deviation</param>
+            <param name="min">a clipping boundary</param>
+            <param name="max">a clipping boundary</param>
+        </member>
+        <member name="M:GSF.GaussianDistribution.Next">
+            <summary>
+            Gets the next random value.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:GSF.IdentifiableItem`2">
             <summary>
             Represents an identifiable item.
@@ -16780,36 +16800,6 @@
             <summary>
             Returns the CRCCCITT data checksum computed so far.
             </summary>
-        </member>
-        <member name="T:GSF.IO.Checksums.GuidSHA1Helper">
-            <summary>
-            This class is a helper class to quickly generate a strong hash code for a GUID type.
-            </summary>
-            <remarks>
-            A strong hash function is important in Dictionary Lookups. If the hash is sufficently strong, 
-            a mod operation over the largest prime can be avoided, thus allowing for faster customized dictionary lookups.
-            
-            Method is the same as taking the first 4 bytes of a SHA1 hashsum, except zero is reserved and converted to 1.
-            
-            Customized implementation is about twice as fast as .NET's and requires no class allocation. 
-            All memory is allocated on the stack (approximately 400 bytes)
-            </remarks>
-        </member>
-        <member name="M:GSF.IO.Checksums.GuidSHA1Helper.ComputeHashCode(System.Guid)">
-            <summary>
-            Computes the non-zero hashcode of the <see cref="!:input"/>.
-            </summary>
-            <param name="input"></param>
-            <returns>
-            A Non-zero hash of the <see cref="!:input"/>. If the hash would have been 0, the value 1 is substituded.
-            </returns>
-        </member>
-        <member name="M:GSF.IO.Checksums.GuidSHA1Helper.InternalHashBlock(System.UInt32*,System.UInt32*)">
-            <summary>
-            Computes the hash of the blocks. Words must already be in big endian format.
-            </summary>
-            <param name="hash">the current values of the hash</param>
-            <param name="words">16 words that are already in big endian format.</param>
         </member>
         <member name="T:GSF.IO.Checksums.NamespaceDoc">
             <summary>

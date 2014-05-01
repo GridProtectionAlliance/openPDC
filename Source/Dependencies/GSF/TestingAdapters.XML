@@ -14,6 +14,16 @@
             Default value for the <see cref="P:TestingAdapters.FrameBasedRandomValueInputAdapter.PublishRate"/> property.
             </summary>
         </member>
+        <member name="F:TestingAdapters.FrameBasedRandomValueInputAdapter.DefaultLatency">
+            <summary>
+            The default number of milliseconds for the dealy;
+            </summary>
+        </member>
+        <member name="F:TestingAdapters.FrameBasedRandomValueInputAdapter.DefaultJitter">
+            <summary>
+            The default jitter in the channel (1 standard deviation);
+            </summary>
+        </member>
         <member name="M:TestingAdapters.FrameBasedRandomValueInputAdapter.Initialize">
             <summary>
             Initializes <see cref="T:TestingAdapters.MovingValueInputAdapter"/>.

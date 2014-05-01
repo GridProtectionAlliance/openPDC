@@ -2449,7 +2449,7 @@
             <param name="newMeasurement">New measurement value to update.</param>
             <remarks>Value is only stored if it is newer than the cached value.</remarks>
         </member>
-        <member name="M:GSF.TimeSeries.ImmediateMeasurements.Measurement(System.Guid)">
+        <member name="M:GSF.TimeSeries.ImmediateMeasurements.Measurement(GSF.TimeSeries.MeasurementKey)">
             <summary>Retrieves the specified immediate temporal measurement, creating it if needed.</summary>
             <param name="id"><see cref="T:System.Guid"/> based signal ID of measurement.</param>
             <returns>A <see cref="T:GSF.TimeSeries.TemporalMeasurement"/> object.</returns>
@@ -2469,7 +2469,7 @@
             <remarks>Expects <see cref="T:System.String"/> based tag field to be aliased as "Tag" and <see cref="T:System.Guid"/> based measurement ID field to be aliased as "ID".</remarks>
             <param name="taggedMeasurements">A <see cref="T:System.Data.DataTable"/> to use for defining the tagged measurements.</param>
         </member>
-        <member name="M:GSF.TimeSeries.ImmediateMeasurements.AddTaggedMeasurement(System.String,System.Guid)">
+        <member name="M:GSF.TimeSeries.ImmediateMeasurements.AddTaggedMeasurement(System.String,GSF.TimeSeries.MeasurementKey)">
             <summary>Associates a new measurement ID with a tag, creating the new tag if needed.</summary>
             <remarks>Allows you to define "grouped" points so you can aggregate certain measurements.</remarks>
             <param name="tag">A <see cref="T:System.String"/> to represent the key.</param>
@@ -2509,7 +2509,7 @@
             </summary>
             <param name="leadTime">New lead time.</param>
         </member>
-        <member name="P:GSF.TimeSeries.ImmediateMeasurements.Item(System.Guid)">
+        <member name="P:GSF.TimeSeries.ImmediateMeasurements.Item(GSF.TimeSeries.MeasurementKey)">
             <summary>We retrieve adjusted measurement values within time tolerance of concentrator real-time.</summary>
             <param name="id">A <see cref="T:System.Guid"/> representing the measurement ID.</param>
             <returns>A <see cref="T:System.Double"/> representing the adjusted measurement value.</returns>
