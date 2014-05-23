@@ -3,8 +3,13 @@
   <Product Id="{493D6CED-50C6-4CF5-93A3-306C364F10A3}" Name="openPDC" Language="1033" Version="!(bind.FileVersion.openPDC.exe)" Manufacturer="Grid Protection Alliance" UpgradeCode="{672ED075-C482-49A6-86D5-7B3FEB4AEAC8}">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
+    <MediaTemplate EmbedCab="yes" />    
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-    <MediaTemplate EmbedCab="yes" />
+    
+    <PropertyRef Id="NETFRAMEWORK45"/>    
+    <Condition Message='This setup requires Microsoft .NET Framework 4.5 or greater - this will need to be installed before installation can continue.'>
+      <![CDATA[Installed OR NETFRAMEWORK45]]>
+    </Condition>
 
     <Feature Id="AllProducts" Title="All Products" Level="1" Display="expand" ConfigurableDirectory="INSTALLFOLDER">
       <!-- openPDC -->

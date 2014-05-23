@@ -270,6 +270,7 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "openPDCSetup", "Application
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WiX", "WiX", "{6CFC0EB9-8610-4200-806B-E2B62B63F8B3}"
 	ProjectSection(SolutionItems) = preProject
+		Dependencies\WiX\WixNetFxExtension.dll = Dependencies\WiX\WixNetFxExtension.dll
 		Dependencies\WiX\WixUIExtension.dll = Dependencies\WiX\WixUIExtension.dll
 		Dependencies\WiX\WixUtilExtension.dll = Dependencies\WiX\WixUtilExtension.dll
 	EndProjectSection
