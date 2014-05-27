@@ -37,13 +37,13 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonInstall = new System.Windows.Forms.Button();
             this.checkBoxConnectionTester = new System.Windows.Forms.CheckBox();
+            this.labelInstallationOptions = new System.Windows.Forms.Label();
             this.labelNotes = new System.Windows.Forms.Label();
             this.tabPageReleaseNotes = new System.Windows.Forms.TabPage();
             this.richTextBoxReleaseNotes = new System.Windows.Forms.RichTextBox();
             this.labelVersion = new System.Windows.Forms.Label();
             this.pictureBoxLogo = new System.Windows.Forms.PictureBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.labelInstallationOptions = new System.Windows.Forms.Label();
             this.tabControlMain.SuspendLayout();
             this.tabPageInstallOptions.SuspendLayout();
             this.groupBoxInstallationOptions.SuspendLayout();
@@ -134,10 +134,22 @@
             this.checkBoxConnectionTester.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxConnectionTester.Location = new System.Drawing.Point(41, 85);
             this.checkBoxConnectionTester.Name = "checkBoxConnectionTester";
-            this.checkBoxConnectionTester.Size = new System.Drawing.Size(303, 20);
+            this.checkBoxConnectionTester.Size = new System.Drawing.Size(305, 20);
             this.checkBoxConnectionTester.TabIndex = 2;
-            this.checkBoxConnectionTester.Text = "Install PMU Connection Tester v4.4.0 - July 2013";
+            this.checkBoxConnectionTester.Text = "Install PMU Connection Tester v4.5.4 - May 2014";
             this.checkBoxConnectionTester.UseVisualStyleBackColor = true;
+            // 
+            // labelInstallationOptions
+            // 
+            this.labelInstallationOptions.Location = new System.Drawing.Point(6, 15);
+            this.labelInstallationOptions.Name = "labelInstallationOptions";
+            this.labelInstallationOptions.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.labelInstallationOptions.Size = new System.Drawing.Size(379, 66);
+            this.labelInstallationOptions.TabIndex = 6;
+            this.labelInstallationOptions.Text = "This setup utility will install the openPDC and/or related tools. This installati" +
+    "on requires .NET 4.5. Starting with version 2.0, the openPDC is only available a" +
+    "s a 64-bit installation.";
+            this.labelInstallationOptions.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelNotes
             // 
@@ -195,18 +207,6 @@
             this.pictureBoxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBoxLogo.TabIndex = 1;
             this.pictureBoxLogo.TabStop = false;
-            // 
-            // labelInstallationOptions
-            // 
-            this.labelInstallationOptions.Location = new System.Drawing.Point(6, 15);
-            this.labelInstallationOptions.Name = "labelInstallationOptions";
-            this.labelInstallationOptions.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.labelInstallationOptions.Size = new System.Drawing.Size(379, 66);
-            this.labelInstallationOptions.TabIndex = 6;
-            this.labelInstallationOptions.Text = "This setup utility will install the openPDC and/or related tools. This installati" +
-    "on requires .NET 4.5. Starting with version 2.0, the openPDC is only available a" +
-    "s a 64-bit installation.";
-            this.labelInstallationOptions.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Main
             // 

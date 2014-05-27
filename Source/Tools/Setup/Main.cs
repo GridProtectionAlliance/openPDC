@@ -185,7 +185,7 @@ namespace Setup
 
                     // Read values from primary registry location
                     installPath = AddPathSuffix(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "InstallPath", "").ToString().Trim());
-                    targetBitSize = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "TargetBitSize", "32bit").ToString().Trim();
+                    targetBitSize = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "TargetBitSize", "64bit").ToString().Trim();
 
                     try
                     {
@@ -211,16 +211,9 @@ namespace Setup
 
                     connectionTesterInstall.StartInfo.FileName = "msiexec.exe";
 
-                    if (type == SetupType.Uninstall)
-                    {
-                        // Uninstall any version of the PMU Connection Tester
-                        connectionTesterInstall.StartInfo.Arguments = "/x {6602B32E-0671-4FE1-A7A4-63025D325F49} /qr";
-                    }
-                    else
-                    {
-                        // Install current version of the PMU Connection Tester
+                    // Install current version of the PMU Connection Tester
+                    if (type == SetupType.Install)
                         connectionTesterInstall.StartInfo.Arguments = "/i Installers\\PMUConnectionTesterSetup64.msi";
-                    }
 
                     connectionTesterInstall.StartInfo.UseShellExecute = false;
                     connectionTesterInstall.StartInfo.CreateNoWindow = true;
