@@ -196,9 +196,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Content Include="Installers\PMUConnectionTesterSetup.msi">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Installers\PMUConnectionTesterSetup64.msi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

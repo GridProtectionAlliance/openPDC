@@ -74,7 +74,7 @@ namespace Setup
                     if (MessageBox.Show("Microsoft .NET 4.5 does not appear to be installed on this computer. The .NET 4.5 framework is required to be installed before you continue installation. Would you like to install it now?", ".NET 4.5 Check", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         Process net45Install;
-                        string netInstallPath = "Installers\\dotnetfx45_full_x86_x64.exe";
+                        const string netInstallPath = "Installers\\dotnetfx45_full_x86_x64.exe";
 
                         if (File.Exists(netInstallPath))
                         {
@@ -211,9 +211,16 @@ namespace Setup
 
                     connectionTesterInstall.StartInfo.FileName = "msiexec.exe";
 
-                    // Install current version of the PMU Connection Tester
-                    if (type == SetupType.Install)
+                    if (type == SetupType.Uninstall)
+                    {
+                        // Uninstall any version of the PMU Connection Tester
+                        connectionTesterInstall.StartInfo.Arguments = "/x Installers\\PMUConnectionTesterSetup64.msi /passive";
+                    }
+                    else
+                    {
+                        // Install current version of the PMU Connection Tester
                         connectionTesterInstall.StartInfo.Arguments = "/i Installers\\PMUConnectionTesterSetup64.msi";
+                    }
 
                     connectionTesterInstall.StartInfo.UseShellExecute = false;
                     connectionTesterInstall.StartInfo.CreateNoWindow = true;
@@ -294,13 +301,10 @@ namespace Setup
 
                 if (instances.Length > 0)
                 {
-                    int total = 0;
-
                     // Terminate all instances of openPDC Manager running on the local computer
                     foreach (Process process in instances)
                     {
                         process.Kill();
-                        total++;
                     }
                 }
             }
@@ -350,13 +354,10 @@ namespace Setup
 
                 if (instances.Length > 0)
                 {
-                    int total = 0;
-
                     // Terminate all instances of openPDC running on the local computer
                     foreach (Process process in instances)
                     {
                         process.Kill();
-                        total++;
                     }
                 }
             }
@@ -373,13 +374,10 @@ namespace Setup
 
                     if (instances.Length > 0)
                     {
-                        int total = 0;
-
                         // Terminate all instances of PMU Connection Tester running on the local computer
                         foreach (Process process in instances)
                         {
                             process.Kill();
-                            total++;
                         }
                     }
                 }
