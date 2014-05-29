@@ -227,18 +227,12 @@ namespace Setup
                     connectionTesterInstall.Start();
                     connectionTesterInstall.WaitForExit();
 
-                    if (connectionTesterInstall.ExitCode == 0)
-                    {
-                        if (closeOnSuccess)
-                            this.Close();
-                        else
-                            this.WindowState = FormWindowState.Normal;
+                    if (closeOnSuccess)
+                        this.Close();
+                    else
+                        this.WindowState = FormWindowState.Normal;
 
-                        return true;
-                    }
-
-                    this.WindowState = FormWindowState.Normal;
-                    return false;
+                    return true;
                 }
 
                 if (closeOnSuccess)
