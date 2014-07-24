@@ -134,9 +134,9 @@
             this.checkBoxConnectionTester.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxConnectionTester.Location = new System.Drawing.Point(41, 85);
             this.checkBoxConnectionTester.Name = "checkBoxConnectionTester";
-            this.checkBoxConnectionTester.Size = new System.Drawing.Size(305, 20);
+            this.checkBoxConnectionTester.Size = new System.Drawing.Size(303, 20);
             this.checkBoxConnectionTester.TabIndex = 2;
-            this.checkBoxConnectionTester.Text = "Install PMU Connection Tester v4.5.4 - May 2014";
+            this.checkBoxConnectionTester.Text = "Install PMU Connection Tester v4.5.5 - July 2014";
             this.checkBoxConnectionTester.UseVisualStyleBackColor = true;
             // 
             // labelInstallationOptions
