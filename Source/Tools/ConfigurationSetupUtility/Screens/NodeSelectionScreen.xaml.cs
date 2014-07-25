@@ -47,10 +47,26 @@ namespace ConfigurationSetupUtility.Screens
 
         private class NodeInfo
         {
-            public string Name { get; set; }
-            public string Company { get; set; }
-            public string Description { get; set; }
-            public Guid Id { get; set; }
+            public string Name
+            {
+                get;
+                set;
+            }
+            public string Company
+            {
+                get;
+                set;
+            }
+            public string Description
+            {
+                get;
+                set;
+            }
+            public Guid Id
+            {
+                get;
+                set;
+            }
         }
 
         // Fields
@@ -153,7 +169,11 @@ namespace ConfigurationSetupUtility.Screens
         /// Allows the screen to update the navigation buttons after a change is made
         /// that would affect the user's ability to navigate to other screens.
         /// </summary>
-        public Action UpdateNavigation { get; set; }
+        public Action UpdateNavigation
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -225,7 +245,7 @@ namespace ConfigurationSetupUtility.Screens
 
             if (applyChangesToLocalManager)
                 TryAddNodeInfo("openPDCManager.exe.config");
-            
+
             if (m_nodeList.Count == 1)
             {
                 ScreenManager manager = m_state["screenManager"] as ScreenManager;
@@ -336,7 +356,7 @@ namespace ConfigurationSetupUtility.Screens
         {
             string databaseFileName = m_state["sqliteDatabaseFilePath"].ToString();
             string connectionString = "Data Source=" + databaseFileName + "; Version=3";
-            string dataProviderString = "AssemblyName={System.Data.SQLite, Version=1.0.79.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139}; ConnectionType=System.Data.SQLite.SQLiteConnection; AdapterType=System.Data.SQLite.SQLiteDataAdapter";
+            string dataProviderString = "AssemblyName={System.Data.SQLite, Version=1.0.93.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139}; ConnectionType=System.Data.SQLite.SQLiteConnection; AdapterType=System.Data.SQLite.SQLiteDataAdapter";
             return GetConnection(connectionString, dataProviderString);
         }
 

@@ -7,10 +7,10 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Linq;
-using Microsoft.Win32;
 using GSF;
 using GSF.Data;
 using GSF.IO;
+using Microsoft.Win32;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -22,7 +22,7 @@ namespace ConfigurationSetupUtility.Screens
         #region [ Members ]
 
         // Constants
-        private const string DataProviderString = "AssemblyName={System.Data.SQLite, Version=1.0.79.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139}; ConnectionType=System.Data.SQLite.SQLiteConnection; AdapterType=System.Data.SQLite.SQLiteDataAdapter";
+        private const string DataProviderString = "AssemblyName={System.Data.SQLite, Version=1.0.93.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139}; ConnectionType=System.Data.SQLite.SQLiteConnection; AdapterType=System.Data.SQLite.SQLiteDataAdapter";
 
         // Fields
         private Dictionary<string, object> m_state;
@@ -205,7 +205,11 @@ namespace ConfigurationSetupUtility.Screens
         /// Allows the screen to update the navigation buttons after a change is made
         /// that would affect the user's ability to navigate to other screens.
         /// </summary>
-        public Action UpdateNavigation { get; set; }
+        public Action UpdateNavigation
+        {
+            get;
+            set;
+        }
 
         #endregion
 

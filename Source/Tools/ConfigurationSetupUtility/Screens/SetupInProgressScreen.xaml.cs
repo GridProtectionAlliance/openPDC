@@ -28,13 +28,6 @@
 //
 //******************************************************************************************************
 
-using GSF;
-using GSF.Communication;
-using GSF.Data;
-using GSF.Identity;
-using GSF.Security;
-using GSF.Security.Cryptography;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -51,6 +44,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using System.Xml.Linq;
+using GSF;
+using GSF.Communication;
+using GSF.Data;
+using GSF.Identity;
+using GSF.Security;
+using GSF.Security.Cryptography;
+using Microsoft.Win32;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -715,7 +715,7 @@ namespace ConfigurationSetupUtility.Screens
                 string destination = m_state["sqliteDatabaseFilePath"].ToString();
                 string destinationDirectory = Path.GetDirectoryName(destination);
                 string connectionString = "Data Source=" + destination + "; Version=3; Foreign Keys=True; FailIfMissing=True";
-                string dataProviderString = "AssemblyName={System.Data.SQLite, Version=1.0.79.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139}; ConnectionType=System.Data.SQLite.SQLiteConnection; AdapterType=System.Data.SQLite.SQLiteDataAdapter";
+                string dataProviderString = "AssemblyName={System.Data.SQLite, Version=1.0.93.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139}; ConnectionType=System.Data.SQLite.SQLiteConnection; AdapterType=System.Data.SQLite.SQLiteDataAdapter";
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
 
@@ -1901,7 +1901,7 @@ namespace ConfigurationSetupUtility.Screens
             XElement securityProvider = categorizedSettings.Element("securityProvider");
             string ldapPath = string.Empty;
             string providerType;
-            
+
             if (serviceConfigFile && (object)securityProvider != null)
             {
                 providerType = (string)securityProvider
