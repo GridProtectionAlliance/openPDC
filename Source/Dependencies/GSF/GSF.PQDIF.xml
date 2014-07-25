@@ -393,6 +393,11 @@
             Tag that identifies the channel definition index.
             </summary>
         </member>
+        <member name="F:GSF.PQDIF.Logical.ChannelInstance.ChannelGroupIDTag">
+            <summary>
+            Tag that identifies the channel group ID.
+            </summary>
+        </member>
         <member name="F:GSF.PQDIF.Logical.ChannelInstance.SeriesInstancesTag">
             <summary>
             Tag that identifies the series instances collection.
@@ -429,6 +434,12 @@
             Gets the channel definition which defines the channel instance.
             </summary>
         </member>
+        <member name="P:GSF.PQDIF.Logical.ChannelInstance.ChannelGroupID">
+            <summary>
+            Gets the identifier for the harmonic or
+            interharmonic group represented by this channel.
+            </summary>
+        </member>
         <member name="P:GSF.PQDIF.Logical.ChannelInstance.TriggerModuleName">
             <summary>
             Gets the name of the of a device specific code or hardware
@@ -446,6 +457,1175 @@
             <summary>
             Gets the series instances contained in this channel.
             </summary>
+        </member>
+        <member name="T:GSF.PQDIF.Logical.Equipment">
+            <summary>
+            Power quality equipment and software.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.WPT5530">
+            <summary>
+            The ID of the WPT 5530 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.WPT5540">
+            <summary>
+            The ID of the WPT 5540 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.BMI3100">
+            <summary>
+            The ID of the BMI 3100 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.BMI7100">
+            <summary>
+            The ID of the BMI 7100 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.BMI8010">
+            <summary>
+            The ID of the BMI 7100 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.BMI8020">
+            <summary>
+            The ID of the BMI 7100 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.BMI9010">
+            <summary>
+            The ID of the BMI 7100 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.CooperVHarm">
+            <summary>
+            The ID of the Cooper V-Harm device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.CooperVFlicker">
+            <summary>
+            The ID of the Cooper V-Flicker device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.DCGEMTP">
+            <summary>
+            The ID of the DCG EMTP device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.Dranetz656">
+            <summary>
+            The ID of the Dranetz 656 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.Dranetz658">
+            <summary>
+            The ID of the Dranetz 658 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKTestProgram">
+            <summary>
+            The ID of the Electrotek test program.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.Dranetz8000">
+            <summary>
+            The ID of the Dranetz 8000 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKPQDIFEditor">
+            <summary>
+            The ID of the Electrotek PQDIF editor.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKPASS">
+            <summary>
+            The ID of Electrotek PASS.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKSuperHarm">
+            <summary>
+            The ID of Electrotek Super-Harm.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKSuperTran">
+            <summary>
+            The ID of Electrotek Super-Tran.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKTOP">
+            <summary>
+            The ID of Electrotek TOP.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKPQView">
+            <summary>
+            The ID of Electrotek PQView.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKHarmoni">
+            <summary>
+            The ID of Electrotek Harmoni.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.FlukeCUR">
+            <summary>
+            The ID of the Fluke CUR device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.IEEECOMTRADE">
+            <summary>
+            The ID of IEEE COMTRADE.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.FlukeF41">
+            <summary>
+            The ID of the Fluke F41 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.PublicATP">
+            <summary>
+            The ID of public ATP.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.MetrosonicM1">
+            <summary>
+            The ID of the Metrosonic M1 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.SQDSMS">
+            <summary>
+            The ID of the Square D PowerLogic SMS device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.TelogM1">
+            <summary>
+            The ID of the Telog M1 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.PML3710">
+            <summary>
+            The ID of the PML 3710 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.PML3720">
+            <summary>
+            The ID of the PML 3720 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.PML3800">
+            <summary>
+            The ID of the PML 3800 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.PML7300">
+            <summary>
+            The ID of the PML 7300 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.PML7700">
+            <summary>
+            The ID of the PML 7700 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.PMLVIP">
+            <summary>
+            The ID of the PML VIP device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.PMLLogServer">
+            <summary>
+            The ID of the PML Log Server.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.MetOneELT15">
+            <summary>
+            The ID of the Met One ELT15 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.PMIScanner">
+            <summary>
+            The ID of the PMI scanner.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM4017">
+            <summary>
+            The ID of the AdvanTech ADAM 4017 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKDSS">
+            <summary>
+            The ID of ETK DSS.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM4018">
+            <summary>
+            The ID of the AdvanTech ADAM 4018 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM4018M">
+            <summary>
+            The ID of the AdvanTech ADAM 4018M device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM4052">
+            <summary>
+            The ID of the AdvanTech ADAM 4052 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.BMI8800">
+            <summary>
+            The ID of the BMI 8800 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.TrinergiPQM">
+            <summary>
+            The ID of the Trinergi Power Quality Meter.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.Medcal">
+            <summary>
+            The ID of the Medcal device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.GEKV">
+            <summary>
+            The ID of the GE kV Energy Meter.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.GEKV2">
+            <summary>
+            The ID of the GE kV2 Energy Meter.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AcumentricsControl">
+            <summary>
+            The ID of the Acumentrics Control device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKTextPQDIF">
+            <summary>
+            The ID of Electrotek Text PQDIF.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKPQWeb">
+            <summary>
+            The ID of Electrotek PQWeb.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.QWavePowerDistribution">
+            <summary>
+            The ID of the QWave Power Distribution device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.QWavePowerTransmission">
+            <summary>
+            The ID of the QWave Power Transmission device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.QWaveMicro">
+            <summary>
+            The ID of the QWave Micro device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.QWaveTWin">
+            <summary>
+            The ID of the QWave TWin device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.QWavePremium">
+            <summary>
+            The ID of the QWave Premium device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.QWaveLight">
+            <summary>
+            The ID of the QWave Light device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.QWaveNomad">
+            <summary>
+            The ID of the QWave Nomad device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.EWON4000">
+            <summary>
+            The ID of the EWON 4000 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.Qualimetre">
+            <summary>
+            The ID of the Qualimetre device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMAnalyst3Q">
+            <summary>
+            The ID of the LEM Analyst 3Q device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMAnalyst1Q">
+            <summary>
+            The ID of the LEM Analyst 1Q device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMAnalyst2050">
+            <summary>
+            The ID of the LEM Analyst 2050 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMAnalyst2060">
+            <summary>
+            The ID of the LEM Analyst 2060 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMMidget200">
+            <summary>
+            The ID of the LEM Midget 200 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMMBX300">
+            <summary>
+            The ID of the LEM MBX 300 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMMBX800">
+            <summary>
+            The ID of the LEM MBX 800 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMMBX601">
+            <summary>
+            The ID of the LEM MBX 601 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMMBX602">
+            <summary>
+            The ID of the LEM MBX 602 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMMBX603">
+            <summary>
+            The ID of the LEM MBX 603 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMMBX686">
+            <summary>
+            The ID of the LEM MBX 686 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMPerma701">
+            <summary>
+            The ID of the LEM Perma 701 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMPerma702">
+            <summary>
+            The ID of the LEM Perma 702 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMPerma705">
+            <summary>
+            The ID of the LEM Perma 705 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMPerma706">
+            <summary>
+            The ID of the LEM Perma 706 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMQWaveMicro">
+            <summary>
+            The ID of the LEM QWave Micro device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMQWaveNomad">
+            <summary>
+            The ID of the LEM QWave Nomad device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMQWaveLight">
+            <summary>
+            The ID of the LEM QWave Light device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMQWaveTWin">
+            <summary>
+            The ID of the LEM QWave TWin device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMQWavePowerDistribution">
+            <summary>
+            The ID of the LEM QWave Power Distribution device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMQWavePremium">
+            <summary>
+            The ID of the LEM QWave Premium device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMQWavePowerTransport">
+            <summary>
+            The ID of the LEM QWave Power Transport device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMTOPASLT">
+            <summary>
+            The ID of the LEM TOPAS LT device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMTOPAS1000">
+            <summary>
+            The ID of the LEM TOPAS 1000 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMTOPAS1019">
+            <summary>
+            The ID of the LEM TOPAS 1019 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMTOPAS1020">
+            <summary>
+            The ID of the LEM TOPAS 1020 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMTOPAS1040">
+            <summary>
+            The ID of the LEM TOPAS 1040 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMBEN5000">
+            <summary>
+            The ID of the LEM BEN 5000 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMBEN6000">
+            <summary>
+            The ID of the LEM BEN 6000 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMEWave">
+            <summary>
+            The ID of the LEM EWave device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.LEMEWON4000">
+            <summary>
+            The ID of the LEM EWON 4000 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.WPT5510">
+            <summary>
+            The ID of the LEM WPT 5510 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.WPT5520">
+            <summary>
+            The ID of the LEM WPT 5520 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.WPT5530T">
+            <summary>
+            The ID of the LEM WPT 5530T device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.WPT5560">
+            <summary>
+            The ID of the LEM WPT 5560 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.WPT5590">
+            <summary>
+            The ID of the LEM WPT 5590 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ETKNodeCenter">
+            <summary>
+            The ID of Electrotek Node Center.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.WPTDranView">
+            <summary>
+            The ID of WPT Dran View.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM5017">
+            <summary>
+            The ID of the AdvanTech ADAM 5017 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM5018">
+            <summary>
+            The ID of the AdvanTech ADAM 5018 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM5080">
+            <summary>
+            The ID of the AdvanTech ADAM 5080 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM5052">
+            <summary>
+            The ID of the AdvanTech ADAM 5052 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM4050">
+            <summary>
+            The ID of the AdvanTech ADAM 4050 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM4053">
+            <summary>
+            The ID of the AdvanTech ADAM 4053 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM4080">
+            <summary>
+            The ID of the AdvanTech ADAM 4080 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM5050">
+            <summary>
+            The ID of the AdvanTech ADAM 5050 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.AdvanTechADAM5051">
+            <summary>
+            The ID of the AdvanTech ADAM 5051 device.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Equipment.ELCOMBK550">
+            <summary>
+            The ID of the ELCOM BK 550 device.
+            </summary>
+        </member>
+        <member name="M:GSF.PQDIF.Logical.Equipment.ToString(System.Guid)">
+            <summary>
+            Converts the given equpiment ID to a string containing the name of the equipment.
+            </summary>
+            <param name="equipmentID">The ID of the equipment to be converted to a string.</param>
+            <returns>A string containing the name of the equipment with the given ID.</returns>
+        </member>
+        <member name="T:GSF.PQDIF.Logical.QuantityCharacteristic">
+            <summary>
+            Specifies additional detail about the meaning of the series data.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.None">
+            <summary>
+            No quantity characteristic.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.Instantaneous">
+            <summary>
+            Instantaneous f(t).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.Spectra">
+            <summary>
+            Spectra F(F).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.Peak">
+            <summary>
+            Peak value.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.RMS">
+            <summary>
+            RMS value.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.HRMS">
+            <summary>
+            Harmonic RMS.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.Frequency">
+            <summary>
+            Frequency.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.TotalTHD">
+            <summary>
+            Total harmonic distortion (%).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.EvenTHD">
+            <summary>
+            Even harmonic distortion (%).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.OddTHD">
+            <summary>
+            Odd harmonic distortion (%).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.CrestFactor">
+            <summary>
+            Crest factor.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FormFactor">
+            <summary>
+            Form factor.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.ArithSum">
+            <summary>
+            Arithmetic sum.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.S0S1">
+            <summary>
+            Zero sequence component unbalance (%).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.S2S1">
+            <summary>
+            Negative sequence component unbalance (%).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SPos">
+            <summary>
+            Positive sequence component.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SNeg">
+            <summary>
+            Negative sequence component.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SZero">
+            <summary>
+            Zero sequence component.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.AvgImbal">
+            <summary>
+            Imbalance by max deviation from average.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.TotalTHDRMS">
+            <summary>
+            Total THD normalized to RMS.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.OddTHDRMS">
+            <summary>
+            Odd THD normalized to RMS.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.EvenTHDRMS">
+            <summary>
+            Even THD normalized to RMS.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.TID">
+            <summary>
+            Total interharmonic distortion.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.TIDRMS">
+            <summary>
+            Total interharmonic distortion normalized to RMS.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.IHRMS">
+            <summary>
+            Interharmonic RMS.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SpectraHGroup">
+            <summary>
+            Spectra by harmonic group index.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SpectraIGroup">
+            <summary>
+            Spectra by interharmonic group index.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.TIF">
+            <summary>
+            TIF.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrMagAvg">
+            <summary>
+            Flicker average RMS value.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrMaxDVV">
+            <summary>
+            dV/V base.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrFreqMax">
+            <summary>
+            Frequence of maximum flicker harmonic.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrMagMax">
+            <summary>
+            Magnitude of maximum flicker harmonic.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrWgtAvg">
+            <summary>
+            Spectrum weighted average.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrSpectrum">
+            <summary>
+            Flicker spectrum VRMS(F).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrPST">
+            <summary>
+            Short term flicker.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrPLT">
+            <summary>
+            Long term flicker.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.TIFRMS">
+            <summary>
+            TIF normalized to RMS.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrPLTSlide">
+            <summary>
+            Sliding PLT.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrPiLPF">
+            <summary>
+            Pi LPF.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrPiMax">
+            <summary>
+            Pi max.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrPiRoot">
+            <summary>
+            Pi root.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.FlkrPiRootLPF">
+            <summary>
+            Pi root LPF.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.IT">
+            <summary>
+            IT.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.RMSDemand">
+            <summary>
+            RMS value of current for a demand interval.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.ANSITDF">
+            <summary>
+            Transformer derating factor.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.KFactor">
+            <summary>
+            Transformer K factor.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.TDD">
+            <summary>
+            Total demand distortion.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.RMSPeakDemand">
+            <summary>
+            Peak demand current.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.P">
+            <summary>
+            Real power (watts).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.Q">
+            <summary>
+            Reactive power (VAR).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.S">
+            <summary>
+            Apparent power (VA).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PF">
+            <summary>
+            True power factor - (Vrms * Irms) / P.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.DF">
+            <summary>
+            Displacement factor - Cosine of the phase angle between fundamental frequency voltage and current phasors.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PDemand">
+            <summary>
+            Value of active power for a demand interval.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QDemand">
+            <summary>
+            Value of reactive power for a demand interval.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SDemand">
+            <summary>
+            Value of apparent power for a demand interval.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.DFDemand">
+            <summary>
+            Value of displacement power factor for a demand interval.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PFDemand">
+            <summary>
+            Value of true power factor for a demand interval.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PPredDemand">
+            <summary>
+            Predicted value of active power for current demand interval.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QPredDemand">
+            <summary>
+            Predicted value of reactive power for current demand interval.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SPredDemand">
+            <summary>
+            Predicted value of apparent power for current demand interval.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PCoQDemand">
+            <summary>
+            Value of active power coincident with reactive power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PCoSDemand">
+            <summary>
+            Value of active power coincident with apparent power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QCoPDemand">
+            <summary>
+            Value of reactive power coincident with active power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QCoSDemand">
+            <summary>
+            Value of reactive power coincident with apparent power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.DFCoSDemand">
+            <summary>
+            Value of displacement power factor coincident with apparent power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PFCoSDemand">
+            <summary>
+            Value of true power factor coincident with apparent power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PFCoPDemand">
+            <summary>
+            Value of true power factor coincident with active power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PFCoQDemand">
+            <summary>
+            Value of true power factor coincident with reactive power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.AngleFund">
+            <summary>
+            Value of the power angle at fundamental frequency. 
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QFund">
+            <summary>
+            Value of the reactive power at fundamental frequency.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PFVector">
+            <summary>
+            True power factor - IEEE vector calculations.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.DFVector">
+            <summary>
+            Displacement factor - IEEE vector calculations.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SVector">
+            <summary>
+            Value of apparent power - IEEE vector calculations.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SVectorFund">
+            <summary>
+            Value of fundamental frequency apparent power - IEEE vector calculations.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SFund">
+            <summary>
+            Value of fundamental frequency apparent power.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SCoPDemand">
+            <summary>
+            Apparent power coincident with active power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SCoQDemand">
+            <summary>
+            Apparent power coincident with reactive power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PFArith">
+            <summary>
+            True power factor - IEEE arithmetic calculations.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.DFArith">
+            <summary>
+            Displacement factor - IEEE arithmetic calculations.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SArith">
+            <summary>
+            Value of apparent power - IEEE arithmetic calculations.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SArithFund">
+            <summary>
+            Value of fundamental frequency apparent power - IEEE arithmetic calculations.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SPeakDemand">
+            <summary>
+            Peak apparent power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QPeakDemand">
+            <summary>
+            Peak reactive power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PPeakDemand">
+            <summary>
+            Peak active power demand.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PHarmonic">
+            <summary>
+            Net harmonic active power.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PHarmonicUnsigned">
+            <summary>
+            Arithmetic sum harmonic active power.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PFund">
+            <summary>
+            Value of fundamental frequency real power.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PIntg">
+            <summary>
+            Value of active power integrated over time (Energy - watt-hours).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PIntgPos">
+            <summary>
+            Value of active power integrated over time (Energy - watt-hours) in the positive direction (toward load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PIntgPosFund">
+            <summary>
+            Value of active fundamental frequency power integrated over time
+            (Energy - watt-hours) in the positive direction (toward load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PIntgNeg">
+            <summary>
+            Value of active power integrated over time (Energy - watt-hours) in the negative direction (away from load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PIntgNegFund">
+            <summary>
+            Value of active fundamental frequency power integrated over time
+            (Energy - watt-hours) in the negative direction (away from load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QIntg">
+            <summary>
+            Value of reactive power integrated over time (var-hours).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QIntgPos">
+            <summary>
+            Value of reactive power integrated over time (Energy - watt-hours) in the positive direction (toward load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QIntgPosFund">
+            <summary>
+            Value of fundamental frequency reactive power integrated over time
+            (Energy - watt-hours) in the positive direction (toward load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QIntgNegFund">
+            <summary>
+            Value of fundamental frequency reactive power integrated over time
+            (Energy - watt-hours) in the negative direction (away from load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QIntgNeg">
+            <summary>
+            Value of reactive power integrated over time (Energy - watt-hours) in the negative direction (away from load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SIntg">
+            <summary>
+            Value of apparent power integrated over time (VA-hours).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SIntgFund">
+            <summary>
+            Value of fundamental frequency apparent power integrated over time (VA-hours).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PIVLIntg">
+            <summary>
+            Value of active power integrated over time (Energy - watt-hours).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PIVLIntgPos">
+            <summary>
+            Value of active power integrated over time (Energy - watt-hours) in the positive direction (toward load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PIVLIntgPosFund">
+            <summary>
+            Value of active fundamental frequency power integrated over time
+            (Energy - watt-hours) in the positive direction (toward load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PIVLIntgNeg">
+            <summary>
+            Value of active power integrated over time (Energy - watt-hours) in the negative direction (away from load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.PIVLIntgNegFund">
+            <summary>
+            Value of active fundamental frequency power integrated over time
+            (Energy - watt-hours) in the negative direction (away from load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QIVLIntg">
+            <summary>
+            Value of reactive power integrated over time (var-hours).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QIVLIntgPos">
+            <summary>
+            Value of reactive power integrated over time (Energy - watt-hours) in the positive direction (toward load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QIVLIntgPosFund">
+            <summary>
+            Value of fundamental frequency reactive power integrated over time
+            (Energy - watt-hours) in the positive direction (toward load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QIVLIntgNegFund">
+            <summary>
+            Value of fundamental frequency reactive power integrated over time
+            (Energy - watt-hours) in the negative direction (away from load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QIVLIntgNeg">
+            <summary>
+            Value of reactive power integrated over time (Energy - watt-hours) in the negative direction (away from load).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SIVLIntg">
+            <summary>
+            Value of apparent power integrated over time (VA-hours).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.SIVLIntgFund">
+            <summary>
+            Value of fundamental frequency apparent power integrated over time (VA-hours).
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.DAxisField">
+            <summary>
+            D axis components.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.QAxis">
+            <summary>
+            Q axis components.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.Rotational">
+            <summary>
+            Rotational position.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.DAxis">
+            <summary>
+            D axis components.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.Linear">
+            <summary>
+            Linear position.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.TransferFunc">
+            <summary>
+            Transfer function.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.QuantityCharacteristic.Status">
+            <summary>
+            Status data.
+            </summary>
+        </member>
+        <member name="M:GSF.PQDIF.Logical.QuantityCharacteristic.ToName(System.Guid)">
+            <summary>
+            Returns the name of the given quantity characteristic.
+            </summary>
+            <param name="quantityCharacteristic">The GUID tag which identifies the quantity characteristic.</param>
+            <returns>The name of the given quantity characteristic.</returns>
+        </member>
+        <member name="M:GSF.PQDIF.Logical.QuantityCharacteristic.ToString(System.Guid)">
+            <summary>
+            Returns a string representation of the given quantity characteristic.
+            </summary>
+            <param name="quantityCharacteristic">The GUID tag which identifies the quantity characteristic.</param>
+            <returns>The name of the given quantity characteristic.</returns>
         </member>
         <member name="T:GSF.PQDIF.Logical.SeriesValueType">
             <summary>
@@ -639,6 +1819,178 @@
             <param name="seriesValueType">The GUID tag which identifies the series value type.</param>
             <returns>The name of the given series value type.</returns>
         </member>
+        <member name="T:GSF.PQDIF.Logical.Vendor">
+            <summary>
+            Vendors for power quality hardware.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.SATEC">
+            <summary>
+            The ID for vendor SATEC.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.WPT">
+            <summary>
+            The ID for vendor WPT.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.None">
+            <summary>
+            The ID representing no vendor.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.BMI">
+            <summary>
+            The ID for vendor BMI.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.BPA">
+            <summary>
+            The ID for vendor BPA.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.CESI">
+            <summary>
+            The ID for vendor CESI.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.Cooper">
+            <summary>
+            The ID for vendor Cooper.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.DCG">
+            <summary>
+            The ID for vendor DCG.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.Dranetz">
+            <summary>
+            The ID for vendor Dranetz.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.EDF">
+            <summary>
+            The ID for vendor EDF.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.EPRI">
+            <summary>
+            The ID for vendor Electric Power Research Institute.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.Electrotek">
+            <summary>
+            The ID for vendor Electrotek.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.Fluke">
+            <summary>
+            The ID for vendor Fluke.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.HydroQuebec">
+            <summary>
+            The ID for vendor Hydro-Quebec.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.IEEE">
+            <summary>
+            The ID for vendor IEEE.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.KreissJohnson">
+            <summary>
+            The ID for vendor Kreiss Johnson.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.Metrosonic">
+            <summary>
+            The ID for vendor Metrosonic.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.PML">
+            <summary>
+            The ID for vendor PML.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.PSI">
+            <summary>
+            The ID for vendor PSI.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.PTI">
+            <summary>
+            The ID for vendor PTI.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.PublicDomain">
+            <summary>
+            The ID for public domain hardware.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.RPM">
+            <summary>
+            The ID for vendor RPM.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.SquareDPowerLogic">
+            <summary>
+            The ID for vendor Square D PowerLogic.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.Telog">
+            <summary>
+            The ID for vendor Telog.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.PMI">
+            <summary>
+            The ID for vendor PMI.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.MetOne">
+            <summary>
+            The ID for vendor Met One.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.Trinergi">
+            <summary>
+            The ID for vendor Trinergi.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.GE">
+            <summary>
+            The ID for vendor General Electric.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.LEM">
+            <summary>
+            The ID for vendor LEM.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.ACTL">
+            <summary>
+            The ID for vendor ACTL.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.AdvanTech">
+            <summary>
+            The ID for vendor AdvanTech.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.Vendor.ELCOM">
+            <summary>
+            The ID for vendor ELCOM.
+            </summary>
+        </member>
+        <member name="M:GSF.PQDIF.Logical.Vendor.ToString(System.Guid)">
+            <summary>
+            Converts the given vendor ID to a string containing the name of the vendor.
+            </summary>
+            <param name="vendorID">The ID of the vendor to be converted to a string.</param>
+            <returns>A string containing the name of the vendor with the given ID.</returns>
+        </member>
         <member name="T:GSF.PQDIF.Physical.CollectionElement">
             <summary>
             Represents an <see cref="T:GSF.PQDIF.Physical.Element"/> which is a collection of other
@@ -766,6 +2118,11 @@
             Tag that identifies the date and time of creation.
             </summary>
         </member>
+        <member name="F:GSF.PQDIF.Logical.ContainerRecord.NotesTag">
+            <summary>
+            Tag that identifies the notes stored in the PQDIF file.
+            </summary>
+        </member>
         <member name="F:GSF.PQDIF.Logical.ContainerRecord.CompressionStyleTag">
             <summary>
             Tag that identifies the compression style of the PQDIF file.
@@ -815,6 +2172,11 @@
             Gets the date and time of file creation.
             </summary>
         </member>
+        <member name="P:GSF.PQDIF.Logical.ContainerRecord.Notes">
+            <summary>
+            Gets the notes stored in the file.
+            </summary>
+        </member>
         <member name="P:GSF.PQDIF.Logical.ContainerRecord.CompressionStyle">
             <summary>
             Gets the style of compression used to compress the PQDIF file.
@@ -843,9 +2205,24 @@
             Tag that identifies the data source type.
             </summary>
         </member>
+        <member name="F:GSF.PQDIF.Logical.DataSourceRecord.VendorIDTag">
+            <summary>
+            Tag that identifies the vendor ID.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.DataSourceRecord.EquipmentIDTag">
+            <summary>
+            Tag that identifies the equipment ID.
+            </summary>
+        </member>
         <member name="F:GSF.PQDIF.Logical.DataSourceRecord.DataSourceNameTag">
             <summary>
             Tag that identifies the data source name.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.DataSourceRecord.DataSourceCoordinatesTag">
+            <summary>
+            Tag that identifies the physical location of the data source.
             </summary>
         </member>
         <member name="F:GSF.PQDIF.Logical.DataSourceRecord.ChannelDefinitionsTag">
@@ -872,9 +2249,29 @@
             <param name="physicalRecord">The physical record used to create the data source record.</param>
             <returns>The new data source record, or null if the physical record does not define a data source record.</returns>
         </member>
+        <member name="P:GSF.PQDIF.Logical.DataSourceRecord.VendorID">
+            <summary>
+            Gets the ID of the vendor of the data source.
+            </summary>
+        </member>
+        <member name="P:GSF.PQDIF.Logical.DataSourceRecord.EquipmentID">
+            <summary>
+            Gets the ID of the equipment.
+            </summary>
+        </member>
         <member name="P:GSF.PQDIF.Logical.DataSourceRecord.DataSourceName">
             <summary>
             Gets the name of the data source.
+            </summary>
+        </member>
+        <member name="P:GSF.PQDIF.Logical.DataSourceRecord.Longitude">
+            <summary>
+            Gets the longitude at which the data source is located.
+            </summary>
+        </member>
+        <member name="P:GSF.PQDIF.Logical.DataSourceRecord.Latitude">
+            <summary>
+            Gets the latitude at which the device is located.
             </summary>
         </member>
         <member name="P:GSF.PQDIF.Logical.DataSourceRecord.ChannelDefinitions">

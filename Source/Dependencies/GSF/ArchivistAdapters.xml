@@ -11,7 +11,7 @@
         </member>
         <member name="M:ArchivistAdapters.ArchivistOutputAdapter.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="!:CsvOutputAdapter"/> class.
+            Initializes a new instance of the <see cref="T:ArchivistAdapters.ArchivistOutputAdapter"/> class.
             </summary>
         </member>
         <member name="M:ArchivistAdapters.ArchivistOutputAdapter.Initialize">
@@ -21,12 +21,12 @@
         </member>
         <member name="M:ArchivistAdapters.ArchivistOutputAdapter.AttemptConnection">
             <summary>
-            Attempts to connect to this <see cref="!:CsvOutputAdapter"/>.
+            Attempts to connect to this <see cref="T:ArchivistAdapters.ArchivistOutputAdapter"/>.
             </summary>
         </member>
         <member name="M:ArchivistAdapters.ArchivistOutputAdapter.AttemptDisconnection">
             <summary>
-            Attempts to disconnect from this <see cref="!:CsvOutputAdapter"/>.
+            Attempts to disconnect from this <see cref="T:ArchivistAdapters.ArchivistOutputAdapter"/>.
             </summary>
         </member>
         <member name="M:ArchivistAdapters.ArchivistOutputAdapter.ProcessMeasurements(GSF.TimeSeries.IMeasurement[])">
@@ -37,7 +37,7 @@
         </member>
         <member name="M:ArchivistAdapters.ArchivistOutputAdapter.GetShortStatus(System.Int32)">
             <summary>
-            Gets a short one-line status of this <see cref="!:CsvOutputAdapter"/>.
+            Gets a short one-line status of this <see cref="T:ArchivistAdapters.ArchivistOutputAdapter"/>.
             </summary>
             <param name="maxLength">Maximum length of the status message.</param>
             <returns>Text of the status message.</returns>
@@ -55,12 +55,12 @@
         <member name="P:ArchivistAdapters.ArchivistOutputAdapter.OutputIsForArchive">
             <summary>
             Returns a flag that determines if measurements sent to this
-            <see cref="!:CsvOutputAdapter"/> are destined for archival.
+            <see cref="T:ArchivistAdapters.ArchivistOutputAdapter"/> are destined for archival.
             </summary>
         </member>
         <member name="P:ArchivistAdapters.ArchivistOutputAdapter.UseAsyncConnect">
             <summary>
-            Gets a flag that determines if this <see cref="!:CsvOutputAdapter"/>
+            Gets a flag that determines if this <see cref="T:ArchivistAdapters.ArchivistOutputAdapter"/>
             uses an asynchronous connection.
             </summary>
         </member>
