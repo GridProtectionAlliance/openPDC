@@ -281,6 +281,9 @@
       <Component Id="openPDCManagerMenu">
         <File Id="Menu.xml" Name="Menu.xml" Source="$(var.openPDCManager.ProjectDir)\Menu.xml" />
       </Component>
+      <Component Id="openPDCManagerHelpFile">
+        <File Id="openPDCManagerHelp.mht" Name="openPDCManagerHelp.mht" Source="$(var.openPDCManager.ProjectDir)\openPDCManagerHelp.mht" />
+      </Component>
     </ComponentGroup>
 
     <!-- openPDC Console -->
@@ -361,6 +364,15 @@
       <Component Id="AdoAdapters">
         <File Id="AdoAdapters.dll" Name="AdoAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\AdoAdapters.dll" />
       </Component>
+      <Component Id="ArchivistAdapters">
+        <File Id="ArchivistAdapters.dll" Name="ArchivistAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\ArchivistAdapters.dll" />
+      </Component>
+      <Component Id="ArchivistClient">
+        <File Id="ArchivistClient.dll" Name="ArchivistClient.dll" Source="$(var.SolutionDir)\Dependencies\GSF\ArchivistClient.dll" />
+      </Component>
+      <Component Id="AudioAdapters">
+        <File Id="AudioAdapters.dll" Name="AudioAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\AudioAdapters.dll" />
+      </Component>
       <Component Id="Ciloci.Flee">
         <File Id="Ciloci.Flee.dll" Name="Ciloci.Flee.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Ciloci.Flee.dll" />
       </Component>
@@ -388,6 +400,15 @@
       <Component Id="EpriExport">
         <File Id="EpriExport.dll" Name="EpriExport.dll" Source="$(var.SolutionDir)\Dependencies\GSF\EpriExport.dll" />
       </Component>
+      <Component Id="FileAdapters">
+        <File Id="FileAdapters.dll" Name="FileAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\FileAdapters.dll" />
+      </Component>
+      <Component Id="FtpAdapters">
+        <File Id="FtpAdapters.dll" Name="FtpAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\FtpAdapters.dll" />
+      </Component>
+      <Component Id="Google.ProtocolBuffers">
+        <File Id="Google.ProtocolBuffers.dll" Name="Google.ProtocolBuffers.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Google.ProtocolBuffers.dll" />
+      </Component>
       <Component Id="Hadoop.Replication">
         <File Id="Hadoop.Replication.dll" Name="Hadoop.Replication.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Hadoop.Replication.dll" />
       </Component>
@@ -396,6 +417,9 @@
       </Component>
       <Component Id="ICCPExport">
         <File Id="ICCPExport.dll" Name="ICCPExport.dll" Source="$(var.SolutionDir)\Dependencies\GSF\ICCPExport.dll" />
+      </Component>
+      <Component Id="InfluxDBAdapters">
+        <File Id="InfluxDBAdapters.dll" Name="InfluxDBAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\InfluxDBAdapters.dll" />
       </Component>
       <Component Id="MongoAdapters">
         <File Id="MongoAdapters.dll" Name="MongoAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\MongoAdapters.dll" />
@@ -415,6 +439,9 @@
       <Component Id="PhasorProtocolAdapters">
         <File Id="PhasorProtocolAdapters.dll" Name="PhasorProtocolAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\PhasorProtocolAdapters.dll" />
       </Component>
+      <Component Id="PIAdapters"> <!-- OSI-PI Historian Adapters -->
+        <File Id="PIAdapters.dll" Name="PIAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\PIAdapters.dll" />
+      </Component>
       <Component Id="PowerCalculations">
         <File Id="PowerCalculations.dll" Name="PowerCalculations.dll" Source="$(var.SolutionDir)\Dependencies\GSF\PowerCalculations.dll" />
       </Component>
@@ -428,6 +455,9 @@
 
     <!-- GSF Dependencies -->
     <ComponentGroup Id="GSFDependencyComponents" Directory="INSTALLFOLDER">
+      <Component Id="GSF.ASN1">
+        <File Id="GSF.ASN1.dll" Name="GSF.ASN1.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.ASN1.dll" />
+      </Component>
       <Component Id="GSF.Communication">
         <File Id="GSF.Communication.dll" Name="GSF.Communication.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.Communication.dll" />
       </Component>
@@ -442,6 +472,9 @@
       </Component>
       <Component Id="GSF.Media">
         <File Id="GSF.Media.dll" Name="GSF.Media.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.Media.dll" />
+      </Component>
+      <Component Id="GSF.MMS">
+        <File Id="GSF.MMS.dll" Name="GSF.MMS.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.MMS.dll" />
       </Component>
       <Component Id="GSF.Net">
         <File Id="GSF.Net.dll" Name="GSF.Net.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.Net.dll" />

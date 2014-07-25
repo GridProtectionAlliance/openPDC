@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Windows;
@@ -32,12 +33,12 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml;
 using System.Xml.Serialization;
-using GSF.TimeSeries.UI;
-using GSF.TimeSeries.UI.DataModels;
 using GSF.Configuration;
 using GSF.IO;
 using GSF.Reflection;
 using GSF.Security;
+using GSF.TimeSeries.UI;
+using GSF.TimeSeries.UI.DataModels;
 
 namespace openPDCManager
 {
@@ -289,6 +290,7 @@ namespace openPDCManager
         private void ButtonHelp_Click(object sender, RoutedEventArgs e)
         {
             bool useLocalHelp = false;
+
             try
             {
                 // Check for internet connectivity.
@@ -307,7 +309,12 @@ namespace openPDCManager
                 try
                 {
                     // Launch the offline copy of the help page.
-                    Process.Start("openPDCManagerHelp.mht");
+                    string helpfile = FilePath.GetAbsolutePath("openPDCManagerHelp.mht");
+
+                    if (File.Exists(helpfile))
+                        Process.Start(helpfile);
+                    else
+                        MessageBox.Show("Local help file \"" + helpfile + "\" was not found", "openPDC Manager Help", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 catch (Exception ex)
                 {

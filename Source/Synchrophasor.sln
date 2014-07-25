@@ -12,19 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{9EEDE95F-8333-4957-B270-02D3CD4629B5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infragistics", "Infragistics", "{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDCManager", "openPDCManager", "{94B7694B-F813-47FF-8C50-33DCA32D183D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microsoft", "Microsoft", "{89F8C302-E1C2-4C61-9CFB-CB4879B04B38}"
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\Microsoft\System.ServiceModel.PollingDuplex.dll = Dependencies\Microsoft\System.ServiceModel.PollingDuplex.dll
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight", "Silverlight", "{20A58D77-CB7C-444E-A084-C61B40639B60}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.v9.1.dll = Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.v9.1.dll
-		Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.XamWebMenu.v9.1.dll = Dependencies\Infragistics\Silverlight\Infragistics.Silverlight.XamWebMenu.v9.1.dll
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}"
@@ -141,12 +133,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{44A76C
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "x86", "x86", "{AD1920D4-64C4-43C9-903D-3C78981C8850}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\SQLite\x86\System.Data.SQLite.dll = Dependencies\SQLite\x86\System.Data.SQLite.dll
-		Dependencies\SQLite\x86\System.Data.SQLite.Linq.dll = Dependencies\SQLite\x86\System.Data.SQLite.Linq.dll
-		Dependencies\SQLite\x86\System.Data.SQLite.Linq.xml = Dependencies\SQLite\x86\System.Data.SQLite.Linq.xml
-		Dependencies\SQLite\x86\System.Data.SQLite.xml = Dependencies\SQLite\x86\System.Data.SQLite.xml
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Oracle", "Oracle", "{051BD028-6567-442A-B7C5-A5DD9F70B357}"
 	ProjectSection(SolutionItems) = preProject
@@ -177,22 +163,39 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\GSF\AdoAdapters.dll = Dependencies\GSF\AdoAdapters.dll
 		Dependencies\GSF\AdoAdapters.XML = Dependencies\GSF\AdoAdapters.XML
+		Dependencies\GSF\ArchivistAdapters.dll = Dependencies\GSF\ArchivistAdapters.dll
+		Dependencies\GSF\ArchivistAdapters.xml = Dependencies\GSF\ArchivistAdapters.xml
+		Dependencies\GSF\ArchivistClient.dll = Dependencies\GSF\ArchivistClient.dll
+		Dependencies\GSF\AudioAdapters.dll = Dependencies\GSF\AudioAdapters.dll
+		Dependencies\GSF\AudioAdapters.XML = Dependencies\GSF\AudioAdapters.XML
 		Dependencies\GSF\Ciloci.Flee.dll = Dependencies\GSF\Ciloci.Flee.dll
 		Dependencies\GSF\Ciloci.Flee.xml = Dependencies\GSF\Ciloci.Flee.xml
-		Dependencies\GSF\Comtrade.dll = Dependencies\GSF\Comtrade.dll
-		Dependencies\GSF\COMTRADE.XML = Dependencies\GSF\COMTRADE.XML
+		Dependencies\GSF\COMTRADEAdapters.dll = Dependencies\GSF\COMTRADEAdapters.dll
+		Dependencies\GSF\COMTRADEAdapters.xml = Dependencies\GSF\COMTRADEAdapters.xml
 		Dependencies\GSF\CsvAdapters.dll = Dependencies\GSF\CsvAdapters.dll
 		Dependencies\GSF\CsvAdapters.XML = Dependencies\GSF\CsvAdapters.XML
 		Dependencies\GSF\DataQualityMonitoring.dll = Dependencies\GSF\DataQualityMonitoring.dll
 		Dependencies\GSF\DataQualityMonitoring.XML = Dependencies\GSF\DataQualityMonitoring.XML
 		Dependencies\GSF\Dnp3Adapters.dll = Dependencies\GSF\Dnp3Adapters.dll
 		Dependencies\GSF\Dnp3Adapters.XML = Dependencies\GSF\Dnp3Adapters.XML
+		Dependencies\GSF\DNP3CLRAdapter.dll = Dependencies\GSF\DNP3CLRAdapter.dll
+		Dependencies\GSF\DNP3CLRInterface.dll = Dependencies\GSF\DNP3CLRInterface.dll
 		Dependencies\GSF\DynamicCalculator.dll = Dependencies\GSF\DynamicCalculator.dll
 		Dependencies\GSF\DynamicCalculator.XML = Dependencies\GSF\DynamicCalculator.XML
+		Dependencies\GSF\DynamicDataDisplay.dll = Dependencies\GSF\DynamicDataDisplay.dll
 		Dependencies\GSF\EpriExport.dll = Dependencies\GSF\EpriExport.dll
 		Dependencies\GSF\EpriExport.XML = Dependencies\GSF\EpriExport.XML
+		Dependencies\GSF\FileAdapters.dll = Dependencies\GSF\FileAdapters.dll
+		Dependencies\GSF\FileAdapters.XML = Dependencies\GSF\FileAdapters.XML
+		Dependencies\GSF\FtpAdapters.dll = Dependencies\GSF\FtpAdapters.dll
+		Dependencies\GSF\FtpAdapters.xml = Dependencies\GSF\FtpAdapters.xml
+		Dependencies\GSF\Google.ProtocolBuffers.dll = Dependencies\GSF\Google.ProtocolBuffers.dll
+		Dependencies\GSF\GSF.ASN1.dll = Dependencies\GSF\GSF.ASN1.dll
+		Dependencies\GSF\GSF.ASN1.xml = Dependencies\GSF\GSF.ASN1.xml
 		Dependencies\GSF\GSF.Communication.dll = Dependencies\GSF\GSF.Communication.dll
 		Dependencies\GSF\GSF.Communication.xml = Dependencies\GSF\GSF.Communication.xml
+		Dependencies\GSF\GSF.COMTRADE.dll = Dependencies\GSF\GSF.COMTRADE.dll
+		Dependencies\GSF\GSF.COMTRADE.xml = Dependencies\GSF\GSF.COMTRADE.xml
 		Dependencies\GSF\GSF.Core.dll = Dependencies\GSF\GSF.Core.dll
 		Dependencies\GSF\GSF.Core.xml = Dependencies\GSF\GSF.Core.xml
 		Dependencies\GSF\GSF.Historian.dll = Dependencies\GSF\GSF.Historian.dll
@@ -200,6 +203,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\GSF.InstallerActions.CA.dll = Dependencies\GSF\GSF.InstallerActions.CA.dll
 		Dependencies\GSF\GSF.Media.dll = Dependencies\GSF\GSF.Media.dll
 		Dependencies\GSF\GSF.Media.XML = Dependencies\GSF\GSF.Media.XML
+		Dependencies\GSF\GSF.MMS.dll = Dependencies\GSF\GSF.MMS.dll
+		Dependencies\GSF\GSF.MMS.xml = Dependencies\GSF\GSF.MMS.xml
 		Dependencies\GSF\GSF.Net.dll = Dependencies\GSF\GSF.Net.dll
 		Dependencies\GSF\GSF.Net.XML = Dependencies\GSF\GSF.Net.XML
 		Dependencies\GSF\GSF.PhasorProtocols.dll = Dependencies\GSF\GSF.PhasorProtocols.dll
@@ -208,8 +213,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\GSF.PhasorProtocols.UI.WPF.xml = Dependencies\GSF\GSF.PhasorProtocols.UI.WPF.xml
 		Dependencies\GSF\GSF.PhasorProtocols.UI.xml = Dependencies\GSF\GSF.PhasorProtocols.UI.xml
 		Dependencies\GSF\GSF.PhasorProtocols.xml = Dependencies\GSF\GSF.PhasorProtocols.xml
+		Dependencies\GSF\GSF.PQDIF.dll = Dependencies\GSF\GSF.PQDIF.dll
+		Dependencies\GSF\GSF.PQDIF.xml = Dependencies\GSF\GSF.PQDIF.xml
 		Dependencies\GSF\GSF.Security.dll = Dependencies\GSF\GSF.Security.dll
 		Dependencies\GSF\GSF.Security.xml = Dependencies\GSF\GSF.Security.xml
+		Dependencies\GSF\GSF.SELEventParser.dll = Dependencies\GSF\GSF.SELEventParser.dll
 		Dependencies\GSF\GSF.ServiceBus.dll = Dependencies\GSF\GSF.ServiceBus.dll
 		Dependencies\GSF\GSF.ServiceBus.xml = Dependencies\GSF\GSF.ServiceBus.xml
 		Dependencies\GSF\GSF.ServiceModel.dll = Dependencies\GSF\GSF.ServiceModel.dll
@@ -236,6 +244,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\HistorianAdapters.XML = Dependencies\GSF\HistorianAdapters.XML
 		Dependencies\GSF\ICCPExport.dll = Dependencies\GSF\ICCPExport.dll
 		Dependencies\GSF\ICCPExport.XML = Dependencies\GSF\ICCPExport.XML
+		Dependencies\GSF\InfluxDBAdapters.dll = Dependencies\GSF\InfluxDBAdapters.dll
+		Dependencies\GSF\InfluxDBAdapters.XML = Dependencies\GSF\InfluxDBAdapters.XML
+		Dependencies\GSF\Ionic.Zlib.dll = Dependencies\GSF\Ionic.Zlib.dll
+		Dependencies\GSF\Ionic.Zlib.xml = Dependencies\GSF\Ionic.Zlib.xml
 		Dependencies\GSF\MongoAdapters.dll = Dependencies\GSF\MongoAdapters.dll
 		Dependencies\GSF\MongoAdapters.XML = Dependencies\GSF\MongoAdapters.XML
 		Dependencies\GSF\MongoDB.dll = Dependencies\GSF\MongoDB.dll
@@ -244,6 +256,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\MongoDB.xml = Dependencies\GSF\MongoDB.xml
 		Dependencies\GSF\MySqlAdapters.dll = Dependencies\GSF\MySqlAdapters.dll
 		Dependencies\GSF\MySqlAdapters.XML = Dependencies\GSF\MySqlAdapters.XML
+		Dependencies\GSF\NAudio.dll = Dependencies\GSF\NAudio.dll
 		Dependencies\GSF\OneSecondFrequencyAverager.dll = Dependencies\GSF\OneSecondFrequencyAverager.dll
 		Dependencies\GSF\OneSecondFrequencyAverager.xml = Dependencies\GSF\OneSecondFrequencyAverager.xml
 		Dependencies\GSF\PhasorProtocolAdapters.dll = Dependencies\GSF\PhasorProtocolAdapters.dll
@@ -252,6 +265,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\PIAdapters.XML = Dependencies\GSF\PIAdapters.XML
 		Dependencies\GSF\PowerCalculations.dll = Dependencies\GSF\PowerCalculations.dll
 		Dependencies\GSF\PowerCalculations.XML = Dependencies\GSF\PowerCalculations.XML
+		Dependencies\GSF\Reports.dll = Dependencies\GSF\Reports.dll
 		Dependencies\GSF\TestingAdapters.dll = Dependencies\GSF\TestingAdapters.dll
 		Dependencies\GSF\TestingAdapters.XML = Dependencies\GSF\TestingAdapters.XML
 		Dependencies\GSF\WavInputAdapter.dll = Dependencies\GSF\WavInputAdapter.dll
@@ -424,7 +438,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{94B7694B-F813-47FF-8C50-33DCA32D183D} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
 		{CE260396-797B-45DF-AC53-E4FC553B57C0} = {BD933E0E-B3FD-470B-B53B-56DA8BC27467}
-		{3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{89F8C302-E1C2-4C61-9CFB-CB4879B04B38} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{44A76C31-308D-4D46-B263-734DD9FA3570} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{A72A7B6D-E22F-4900-984D-8751836859B5} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
@@ -434,7 +447,6 @@ Global
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{D71CBFB5-291F-484E-9DAE-7442F4CA746A} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
-		{20A58D77-CB7C-444E-A084-C61B40639B60} = {3391C6A0-3CB1-4552-BBF9-E11E5B15B6DB}
 		{6903507C-C289-4F8F-887C-C2D94C72BA99} = {94B7694B-F813-47FF-8C50-33DCA32D183D}
 		{29821B31-3A0D-469E-B8BA-AD006159BC3D} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
 		{83A90AB9-3DC7-4FB6-9AF3-79AB2F6EB0C6} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
