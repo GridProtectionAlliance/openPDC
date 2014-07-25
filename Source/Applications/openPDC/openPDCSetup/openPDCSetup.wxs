@@ -421,6 +421,9 @@
       <Component Id="InfluxDBAdapters">
         <File Id="InfluxDBAdapters.dll" Name="InfluxDBAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\InfluxDBAdapters.dll" />
       </Component>
+      <Component Id="NAudio"> <!-- Dependency for AudioAdapters -->
+        <File Id="NAudio.dll" Name="NAudio.dll" Source="$(var.SolutionDir)\Dependencies\GSF\NAudio.dll" />
+      </Component>
       <Component Id="MongoAdapters">
         <File Id="MongoAdapters.dll" Name="MongoAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\MongoAdapters.dll" />
       </Component>
