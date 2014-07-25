@@ -736,30 +736,31 @@ namespace ConfigurationSetupUtility.Screens
 
             if (oldConnection != null)
             {
-                Dictionary<string, string> settings = m_state["oldConnectionString"].ToString().ParseKeyValuePairs();
                 IDbCommand nodeCommand;
-                string oldDatabaseType = "undetermined";
 
-                switch (oldConnection.GetType().Name)
-                {
-                    case "SqlConnection":
-                        oldDatabaseType = "SQLServer";
-                        break;
-                    case "MySqlConnection":
-                        oldDatabaseType = "MySQL";
-                        break;
-                    case "OracleConnection":
-                        oldDatabaseType = "Oracle";
-                        break;
-                    case "SQLiteConnection":
-                        oldDatabaseType = "SQLite";
-                        break;
-                    case "OleDbConnection":
-                        string connectionSetting;
-                        if (settings.TryGetValue("Provider", out connectionSetting) && connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
-                            oldDatabaseType = "access";
-                        break;
-                }
+                //Dictionary<string, string> settings = m_state["oldConnectionString"].ToString().ParseKeyValuePairs();
+                //string oldDatabaseType = "undetermined";
+
+                //switch (oldConnection.GetType().Name)
+                //{
+                //    case "SqlConnection":
+                //        oldDatabaseType = "SQLServer";
+                //        break;
+                //    case "MySqlConnection":
+                //        oldDatabaseType = "MySQL";
+                //        break;
+                //    case "OracleConnection":
+                //        oldDatabaseType = "Oracle";
+                //        break;
+                //    case "SQLiteConnection":
+                //        oldDatabaseType = "SQLite";
+                //        break;
+                //    case "OleDbConnection":
+                //        string connectionSetting;
+                //        if (settings.TryGetValue("Provider", out connectionSetting) && connectionSetting.StartsWith("Microsoft.Jet.OLEDB", StringComparison.OrdinalIgnoreCase))
+                //            oldDatabaseType = "access";
+                //        break;
+                //}
 
                 nodeCommand = oldConnection.CreateCommand();
                 nodeCommand.CommandText = "SELECT * FROM Node";
@@ -830,11 +831,9 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (connectionString != null && dataProviderString != null)
                 {
-                    Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
                     Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
                     string assemblyName = dataProviderSettings["AssemblyName"];
                     string connectionTypeName = dataProviderSettings["ConnectionType"];
-                    string connectionSetting;
 
                     Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
                     Type connectionType = assembly.GetType(connectionTypeName);
@@ -899,11 +898,9 @@ namespace ConfigurationSetupUtility.Screens
 
                 if (!string.IsNullOrEmpty(connectionString) && !string.IsNullOrEmpty(dataProviderString))
                 {
-                    Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
                     Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
                     string assemblyName = dataProviderSettings["AssemblyName"];
                     string connectionTypeName = dataProviderSettings["ConnectionType"];
-                    string connectionSetting;
 
                     Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
                     Type connectionType = assembly.GetType(connectionTypeName);

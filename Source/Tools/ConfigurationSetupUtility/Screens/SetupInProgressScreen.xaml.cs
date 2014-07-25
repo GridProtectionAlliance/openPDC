@@ -251,7 +251,6 @@ namespace ConfigurationSetupUtility.Screens
             {
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
-                string adminUserName, adminPassword;
                 string dataProviderString = null;
 
                 mySqlSetup = m_state["mySqlSetup"] as MySqlSetup;
@@ -1036,11 +1035,9 @@ namespace ConfigurationSetupUtility.Screens
             string historianDescription = m_state["historianDescription"].ToString();
             string historianConnectionString = m_state["historianConnectionString"].ToString();
 
-            Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
             Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
             string assemblyName = dataProviderSettings["AssemblyName"];
             string connectionTypeName = dataProviderSettings["ConnectionType"];
-            string connectionSetting;
 
             Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
             Type connectionType = assembly.GetType(connectionTypeName);
@@ -1099,11 +1096,9 @@ namespace ConfigurationSetupUtility.Screens
             bool initialDataScript = Convert.ToBoolean(m_state["initialDataScript"]);
             bool sampleDataScript = initialDataScript && Convert.ToBoolean(m_state["sampleDataScript"]);
 
-            Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
             Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
             string assemblyName = dataProviderSettings["AssemblyName"];
             string connectionTypeName = dataProviderSettings["ConnectionType"];
-            string connectionSetting;
 
             Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
             Type connectionType = assembly.GetType(connectionTypeName);
@@ -1363,11 +1358,9 @@ namespace ConfigurationSetupUtility.Screens
             string insertQuery = "INSERT INTO Node(Name, Description, MenuData, Enabled) VALUES(@name, @description, 'Menu.xml', 1)";
             string updateQuery = "UPDATE Node SET ID = {0} WHERE Name = @name";
 
-            Dictionary<string, string> settings = connectionString.ParseKeyValuePairs();
             Dictionary<string, string> dataProviderSettings = dataProviderString.ParseKeyValuePairs();
             string assemblyName = dataProviderSettings["AssemblyName"];
             string connectionTypeName = dataProviderSettings["ConnectionType"];
-            string connectionSetting;
 
             Assembly assembly = Assembly.Load(new AssemblyName(assemblyName));
             Type connectionType = assembly.GetType(connectionTypeName);
