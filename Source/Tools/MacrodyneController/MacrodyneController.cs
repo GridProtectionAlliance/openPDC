@@ -188,7 +188,7 @@ namespace MacrodyneController
                         break;
                 }
 
-                inputData.WriteByte(inputData.ToArray().Xor8CheckSum(1, (int)inputData.Length - 1));
+                inputData.WriteByte(inputData.ToArray().Xor8Checksum(1, (int)inputData.Length - 1));
                 inputData.WriteTo(m_bytesToSend);
 
                 RefreshSendReceiveByteDisplays();
