@@ -21,14 +21,11 @@
 //
 //******************************************************************************************************
 
-#if !DEBUG
-    #define RunAsService
-#endif
-
 using System;
-using System.Linq;
+using System.Diagnostics;
 using System.ServiceProcess;
 using System.Windows.Forms;
+using GSF.Console;
 
 namespace openPDC
 {
@@ -37,45 +34,70 @@ namespace openPDC
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main(string[] args)
+        static void Main()
         {
             ServiceHost host = new ServiceHost();
 
             bool runAsService;
-            bool serviceArgExists;
-            bool applicationArgExists;
+            bool runAsApplication;
 
-#if RunAsService
-            runAsService = true;
-#else
-            runAsService = false;
-#endif
+            Arguments args = new Arguments(Environment.CommandLine, true);
 
-            serviceArgExists = args.Any(arg => arg.Equals("/RunAsService", StringComparison.OrdinalIgnoreCase));
-            applicationArgExists = args.Any(arg => arg.Equals("/RunAsApplication", StringComparison.OrdinalIgnoreCase));
-
-            if (serviceArgExists && applicationArgExists)
+            if (args.Count > 1)
             {
-                MessageBox.Show("Too many arguments specified. Cannot run as both an application and a service.");
-                Environment.Exit(0);
+                MessageBox.Show("Too many arguments. If specified, argument must be one of: -RunAsService, -RunAsApplication or -RunAsConsole.");
+                Environment.Exit(1);
             }
 
-            if (serviceArgExists)
-                runAsService = true;
-            else if (applicationArgExists)
+            if (args.Count == 0)
+            {
+#if DEBUG
                 runAsService = false;
+                runAsApplication = true;
+#else
+                runAsService = true;
+                runAsApplication = false;
+#endif
+            }
+            else
+            {
+                runAsService = args.Exists("RunAsService");
+                runAsApplication = args.Exists("RunAsApplication");
+
+                if (!runAsService && !runAsApplication && !args.Exists("RunAsConsole"))
+                {
+                    MessageBox.Show("Invalid argument. If specified, argument must be one of: -RunAsService, -RunAsApplication or -RunAsConsole.");
+                    Environment.Exit(1);
+                }
+            }
 
             if (runAsService)
             {
                 // Run as Windows Service.
                 ServiceBase.Run(new ServiceBase[] { host });
             }
-            else
+            else if (runAsApplication)
             {
                 // Run as Windows Application.
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new DebugHost(host));
+            }
+            else
+            {
+                string hostedServiceSessionName = host.ServiceName + "Shell.exe";
+                Process hostedServiceSession = Process.Start(hostedServiceSessionName);
+
+                if ((object)hostedServiceSession != null)
+                {
+                    hostedServiceSession.WaitForExit();
+                    Environment.Exit(hostedServiceSession.ExitCode);
+                }
+                else
+                {
+                    MessageBox.Show(string.Format("Failed to start \"{0}\" with a hosted service.", hostedServiceSessionName));
+                    Environment.Exit(1);
+                }
             }
         }
     }
