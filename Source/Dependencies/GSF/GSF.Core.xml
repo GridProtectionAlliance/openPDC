@@ -1973,6 +1973,11 @@
             </summary>
             <returns><c>true</c> if user is found to exist; otherwise <c>false</c>.</returns>
         </member>
+        <member name="P:GSF.Identity.IUserInfo.Enabled">
+            <summary>
+            Gets or sets enabled state.
+            </summary>
+        </member>
         <member name="P:GSF.Identity.IUserInfo.LastLogon">
             <summary>
             Gets the last login time of the user.
