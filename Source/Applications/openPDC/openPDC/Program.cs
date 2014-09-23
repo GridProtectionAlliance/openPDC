@@ -85,17 +85,26 @@ namespace openPDC
             }
             else
             {
-                string hostedServiceSessionName = host.ServiceName + "Shell.exe";
-                Process hostedServiceSession = Process.Start(hostedServiceSessionName);
+                string shellHostedServiceName = host.ServiceName + "Shell.exe";
 
-                if ((object)hostedServiceSession != null)
+                try
                 {
-                    hostedServiceSession.WaitForExit();
-                    Environment.Exit(hostedServiceSession.ExitCode);
+                    Process hostedServiceSession = Process.Start(shellHostedServiceName);
+
+                    if ((object)hostedServiceSession != null)
+                    {
+                        hostedServiceSession.WaitForExit();
+                        Environment.Exit(hostedServiceSession.ExitCode);
+                    }
+                    else
+                    {
+                        MessageBox.Show(string.Format("Failed to start \"{0}\" as a shell hosted service.", shellHostedServiceName));
+                        Environment.Exit(1);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show(string.Format("Failed to start \"{0}\" with a hosted service.", hostedServiceSessionName));
+                    MessageBox.Show(string.Format("Failed to start \"{0}\" as a shell hosted service: {1}", shellHostedServiceName, ex.Message));
                     Environment.Exit(1);
                 }
             }

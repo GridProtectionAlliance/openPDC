@@ -33,13 +33,13 @@ namespace openPDCShell
         {
             try
             {
-                ConsoleHost host = new ConsoleHost(new ServiceHost());
-                host.Run();
+                ConsoleHost shellHost = new ConsoleHost(new ServiceHost());
+                shellHost.Run();
                 Environment.Exit(0);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Hosted service exception: {0}", ex.Message);
+                Console.WriteLine("Shell hosted service exception: {0}", ex.Message);
                 Environment.Exit(1);
             }
         }
