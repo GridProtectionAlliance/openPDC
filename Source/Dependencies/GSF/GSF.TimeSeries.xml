@@ -6143,7 +6143,7 @@
         </member>
         <member name="M:GSF.TimeSeries.Statistics.DeviceStatistics.GetDeviceStatistic_DataQualityErrors(System.Object,System.String)">
             <summary>
-            Calculates number of data quaility errors reported by device during last reporting interval.
+            Calculates number of data quality errors reported by device during last reporting interval.
             </summary>
             <param name="source">Source Device.</param>
             <param name="arguments">Any needed arguments for statistic calculation.</param>
@@ -7838,6 +7838,11 @@
             This name will be used to create the <see cref="P:GSF.IO.OutageLog.FileName"/>.
             </remarks>
             <exception cref="T:System.ArgumentOutOfRangeException">Value cannot be null or an empty string.</exception>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataGapRecoverer.DataSource">
+            <summary>
+            Gets or sets <see cref="T:System.Data.DataSet"/> based data source available to this <see cref="T:GSF.TimeSeries.Transport.DataGapRecoverer"/>.
+            </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataGapRecoverer.ConnectionString">
             <summary>

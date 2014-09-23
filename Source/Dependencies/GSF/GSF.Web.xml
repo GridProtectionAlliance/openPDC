@@ -334,7 +334,7 @@
             The set of assemblies configured to provide embedded resource files
             are queried for <see cref="T:GSF.Web.Hosting.EmbeddedResourceFileAttribute"/>
             attributes.  For each one present, the associated embedded resource
-            is added to the virtual filesystem served by this provider.
+            is added to the virtual file system served by this provider.
             </para>
             </remarks>
             <seealso cref="T:GSF.Web.Hosting.EmbeddedResourcePathProvider"/>
@@ -474,7 +474,7 @@
         <member name="M:GSF.Web.Hosting.EmbeddedResourcePathProvider.ProcessEmbeddedFiles(System.String)">
             <summary>
             Reads in the embedded files from an assembly an processes them into
-            the virtual filesystem.
+            the virtual file system.
             </summary>
             <param name="assemblyName">The name of the <see cref="T:System.Reflection.Assembly"/> to load and process.</param>
             <exception cref="T:System.ArgumentNullException">

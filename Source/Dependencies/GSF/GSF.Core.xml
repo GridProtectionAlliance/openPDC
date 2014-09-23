@@ -2044,6 +2044,147 @@
             </summary>
             <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         </member>
+        <member name="T:GSF.Interop.IIniFile">
+            <summary>
+            Represents an interface for common INI functions.
+            </summary>
+        </member>
+        <member name="M:GSF.Interop.IIniFile.GetSectionKeys(System.String)">
+            <summary>
+            Gets an array of keys from the specified section in the INI file.
+            </summary>
+            <param name="section">Section to retrieve keys from.</param>
+            <returns>Array of <see cref="T:System.String"/> keys from the specified section of the INI file.</returns>
+        </member>
+        <member name="M:GSF.Interop.IIniFile.GetSectionNames">
+            <summary>
+            Gets an array of that section names that exist in the INI file.
+            </summary>
+            <returns>Array of <see cref="T:System.String"/> section names from the INI file.</returns>
+        </member>
+        <member name="P:GSF.Interop.IIniFile.FileName">
+            <summary>
+            File name of the INI file.
+            </summary>
+        </member>
+        <member name="P:GSF.Interop.IIniFile.Item(System.String,System.String,System.String)">
+            <summary>
+            Gets the value of the specified key.
+            </summary>
+            <param name="section">Section key exists in.</param>
+            <param name="entry">Name of key.</param>
+            <param name="defaultValue">Default value of key.</param>
+            <returns>Value of key.</returns>
+            <remarks>This is the default member of this class.</remarks>
+        </member>
+        <member name="P:GSF.Interop.IIniFile.Item(System.String,System.String)">
+            <summary>
+            Gets or sets the value of the specified key.
+            </summary>
+            <param name="section">Section key exists in.</param>
+            <param name="entry">Name of key.</param>
+            <value>The new key value to store in the INI file.</value>
+            <returns>Value of key.</returns>
+            <remarks>This is the default member of this class.</remarks>
+        </member>
+        <member name="T:GSF.Interop.WindowsIniFile">
+            <summary>
+            Represents a Windows INI style configuration file.
+            </summary>
+        </member>
+        <member name="M:GSF.Interop.WindowsIniFile.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:GSF.Interop.WindowsIniFile"/> using the specified INI file name.
+            </summary>
+            <param name="fileName">Specified INI file name to use.</param>
+        </member>
+        <member name="M:GSF.Interop.WindowsIniFile.GetSectionKeys(System.String)">
+            <summary>
+            Gets an array of keys from the specified section in the INI file.
+            </summary>
+            <param name="section">Section to retrieve keys from.</param>
+            <returns>Array of <see cref="T:System.String"/> keys from the specified section of the INI file.</returns>
+        </member>
+        <member name="M:GSF.Interop.WindowsIniFile.GetSectionNames">
+            <summary>
+            Gets an array of that section names that exist in the INI file.
+            </summary>
+            <returns>Array of <see cref="T:System.String"/> section names from the INI file.</returns>
+        </member>
+        <member name="P:GSF.Interop.WindowsIniFile.FileName">
+            <summary>
+            File name of the INI file.
+            </summary>
+        </member>
+        <member name="P:GSF.Interop.WindowsIniFile.Item(System.String,System.String,System.String)">
+            <summary>
+            Gets the value of the specified key.
+            </summary>
+            <param name="section">Section key exists in.</param>
+            <param name="entry">Name of key.</param>
+            <param name="defaultValue">Default value of key.</param>
+            <returns>Value of key.</returns>
+            <remarks>This is the default member of this class.</remarks>
+        </member>
+        <member name="P:GSF.Interop.WindowsIniFile.Item(System.String,System.String)">
+            <summary>
+            Gets or sets the value of the specified key.
+            </summary>
+            <param name="section">Section key exists in.</param>
+            <param name="entry">Name of key.</param>
+            <value>The new key value to store in the INI file.</value>
+            <returns>Value of key.</returns>
+            <remarks>This is the default member of this class.</remarks>
+        </member>
+        <member name="T:GSF.Interop.UnixIniFile">
+            <summary>
+            Represents a Unix INI style configuration file.
+            </summary>
+        </member>
+        <member name="M:GSF.Interop.UnixIniFile.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:GSF.Interop.UnixIniFile"/> using the specified INI file name.
+            </summary>
+            <param name="fileName">Specified INI file name to use.</param>
+        </member>
+        <member name="M:GSF.Interop.UnixIniFile.GetSectionKeys(System.String)">
+            <summary>
+            Gets an array of keys from the specified section in the INI file.
+            </summary>
+            <param name="section">Section to retrieve keys from.</param>
+            <returns>Array of <see cref="T:System.String"/> keys from the specified section of the INI file.</returns>
+        </member>
+        <member name="M:GSF.Interop.UnixIniFile.GetSectionNames">
+            <summary>
+            Gets an array of that section names that exist in the INI file.
+            </summary>
+            <returns>Array of <see cref="T:System.String"/> section names from the INI file.</returns>
+        </member>
+        <member name="P:GSF.Interop.UnixIniFile.FileName">
+            <summary>
+            File name of the INI file.
+            </summary>
+        </member>
+        <member name="P:GSF.Interop.UnixIniFile.Item(System.String,System.String,System.String)">
+            <summary>
+            Gets the value of the specified key.
+            </summary>
+            <param name="section">Section key exists in.</param>
+            <param name="entry">Name of key.</param>
+            <param name="defaultValue">Default value of key.</param>
+            <returns>Value of key.</returns>
+            <remarks>This is the default member of this class.</remarks>
+        </member>
+        <member name="P:GSF.Interop.UnixIniFile.Item(System.String,System.String)">
+            <summary>
+            Gets or sets the value of the specified key.
+            </summary>
+            <param name="section">Section key exists in.</param>
+            <param name="entry">Name of key.</param>
+            <value>The new key value to store in the INI file.</value>
+            <returns>Value of key.</returns>
+            <remarks>This is the default member of this class.</remarks>
+        </member>
         <member name="T:GSF.IO.Outage">
             <summary>
             Represents an outage as a start time and an end time.
@@ -8139,10 +8280,24 @@
             Determines if the current system is a POSIX style environment.
             </summary>
             <remarks>
+            <para>
+            Since a .NET application compiled under Mono can run under both Windows and Unix style platforms,
+            you can use this property to easily determine the current operating environment.
+            </para>
+            <para>
             This property will return <c>true</c> for both MacOSX and Unix environments. Use the Platform property
             of the <see cref="P:System.Environment.OSVersion"/> to determine more specific platform type, e.g., 
             MacOSX or Unix. Note that all flavors of Linux will show up as <see cref="F:System.PlatformID.Unix"/>.
+            </para>
             </remarks>        
+        </member>
+        <member name="F:GSF.Common.IsMono">
+            <summary>
+            Determines if the code base is currently running under Mono.
+            </summary>
+            <remarks>
+            You can use this property to make a run-time determination if Windows or Mono based .NET is being used.
+            </remarks>
         </member>
         <member name="M:GSF.Common.IIf``1(System.Boolean,``0,``0)">
             <summary>Returns one of two strongly-typed objects.</summary>
@@ -8201,6 +8356,18 @@
             Gets the type of the currently executing application.
             </summary>
             <returns>One of the <see cref="T:GSF.ApplicationType"/> values.</returns>
+        </member>
+        <member name="M:GSF.Common.GetOSProductName">
+            <summary>
+            Gets the operating system product name.
+            </summary>
+            <returns>Operating system product name.</returns>
+        </member>
+        <member name="M:GSF.Common.GetProcessMemory">
+            <summary>
+            Gets the memory usage by the current process.
+            </summary>
+            <returns>Memory usage by the current process.</returns>
         </member>
         <member name="M:GSF.Common.ToNonNullString``1(``0)">
             <summary>
@@ -8792,7 +8959,7 @@
             <summary>
             Executes specified action over all public derived class member fields.
             </summary>
-            <param name="fieldAction">Action to excute for all derived class member fields.</param>
+            <param name="fieldAction">Action to execute for all derived class member fields.</param>
         </member>
         <member name="M:GSF.Configuration.SettingsBase.ExecuteActionForProperties(System.Action{System.Reflection.PropertyInfo},System.Reflection.BindingFlags)">
             <summary>
@@ -9602,6 +9769,11 @@
             <seealso cref="T:GSF.Configuration.CategorizedSettingsElement"/>
             <seealso cref="T:GSF.Configuration.CategorizedSettingsElementCollection"/>
         </member>
+        <member name="M:GSF.Configuration.CategorizedSettingsSection.#ctor">
+            <summary>
+            Creates a new <see cref="T:GSF.Configuration.CategorizedSettingsSection"/>.
+            </summary>
+        </member>
         <member name="M:GSF.Configuration.CategorizedSettingsSection.SetCryptoKey(System.String)">
             <summary>
             Sets the key to be used for encrypting and decrypting setting values.
@@ -9620,6 +9792,17 @@
             Reads XML from the configuration file.
             </summary>
             <param name="reader">The <see cref="T:System.Xml.XmlReader"/> object, which reads from the configuration file.</param>
+        </member>
+        <member name="M:GSF.Configuration.CategorizedSettingsSection.SerializeSection(System.Configuration.ConfigurationElement,System.String,System.Configuration.ConfigurationSaveMode)">
+            <summary>
+            Creates an XML string containing an unmerged view of the <see cref="T:System.Configuration.ConfigurationSection"/> object as a single section to write to a file.
+            </summary>
+            <returns>
+            An XML string containing an unmerged view of the <see cref="T:System.Configuration.ConfigurationSection"/> object.
+            </returns>
+            <param name="parentElement">The <see cref="T:System.Configuration.ConfigurationElement"/> instance to use as the parent when performing the un-merge.</param>
+            <param name="name">The name of the section to create.</param>
+            <param name="saveMode">The <see cref="T:System.Configuration.ConfigurationSaveMode"/> instance to use when writing to a string.</param>
         </member>
         <member name="P:GSF.Configuration.CategorizedSettingsSection.File">
             <summary>
@@ -13242,7 +13425,7 @@
             <returns>A <see cref="T:GSF.Diagnostics.PerformanceCounter"/> object if a match is found; otherwise null.</returns>
             <remarks>
             First <see cref="T:GSF.Diagnostics.PerformanceCounter"/> with matching name is returned. If same name exists within
-            muliple monitored categories, use <see cref="M:GSF.Diagnostics.PerformanceMonitor.FindCounter(System.String,System.String)"/> overload instead.
+            multiple monitored categories, use <see cref="M:GSF.Diagnostics.PerformanceMonitor.FindCounter(System.String,System.String)"/> overload instead.
             </remarks>
         </member>
         <member name="M:GSF.Diagnostics.PerformanceMonitor.FindCounter(System.String,System.String)">
@@ -15692,6 +15875,16 @@
             prefixed with a domain name and a backslash "\".
             </remarks>
         </member>
+        <member name="M:GSF.Identity.UserInfo.GetLocalGroupUserList(System.String)">
+            <summary>
+            Gets a list of users that exist in the specified local <paramref name="groupName"/>.
+            </summary>
+            <param name="groupName">Group name to remove local user from.</param>
+            <returns>List of users that exist in the in group.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="groupName"/> was <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">No <paramref name="groupName"/> was specified.</exception>
+            <exception cref="T:System.InvalidOperationException">Could not get members for local group.</exception>
+        </member>
         <member name="M:GSF.Identity.UserInfo.UserNameToSID(System.String)">
             <summary>
             Converts the given user name to the SID corresponding to that name.
@@ -15776,7 +15969,11 @@
             <summary>
             Gets the Login ID of the user.
             </summary>
-            <remarks>Returns the value provided in the <see cref="M:GSF.Identity.UserInfo.#ctor(System.String)"/> constructor.</remarks>
+        </member>
+        <member name="P:GSF.Identity.UserInfo.LdapID">
+            <summary>
+            Gets the ID of the user in LDAP format.
+            </summary>
         </member>
         <member name="P:GSF.Identity.UserInfo.DomainRespondsForUser">
             <summary>
@@ -15983,10 +16180,10 @@
         </member>
         <member name="P:GSF.Identity.UserInfo.CurrentUserID">
             <summary>
-            Gets the <see cref="P:GSF.Identity.UserInfo.LoginID"/> of the current user.
+            Gets the ID name of the current user.
             </summary>
             <remarks>
-            The <see cref="P:GSF.Identity.UserInfo.LoginID"/> returned is that of the user account under which the code is executing.
+            The ID name returned is that of the user account under which the code is executing.
             </remarks>
         </member>
         <member name="P:GSF.Identity.UserInfo.CurrentUserInfo">
@@ -19271,7 +19468,7 @@
             Connects to a network share with the specified user's credentials.
             </summary>
             <param name="sharename">UNC share name to connect to.</param>
-            <param name="username">Username to use for connection.</param>
+            <param name="userName">User name to use for connection.</param>
             <param name="password">Password to use for connection.</param>
             <param name="domain">Domain name to use for connection. Specify the computer name for local system accounts.</param>
         </member>
@@ -27754,6 +27951,33 @@
             Represents an operation that cannot run while it is already in progress.
             </summary>
         </member>
+        <member name="M:GSF.Threading.ISynchronizedOperation.Run">
+            <summary>
+            Executes the action on this thread or marks the
+            operation as pending if the operation is already running.
+            </summary>
+            <remarks>
+            <para>When the operation is marked as pending, it will run again after
+            the operation that is currently running has completed. This is useful
+            if an update has invalidated the operation that is currently running
+            and will therefore need to be run again.</para>
+            
+            <para>This method does not guarantee that control will be returned to the
+            thread that called it. If other threads continuously mark the operation as
+            pending, this thread will continue to run the operation indefinitely.</para>
+            </remarks>
+        </member>
+        <member name="M:GSF.Threading.ISynchronizedOperation.TryRun">
+            <summary>
+            Attempts to execute the action on this thread.
+            Does nothing if the operation is already running.
+            </summary>
+            <remarks>
+            This method does not guarantee that control will be returned to the thread
+            that called it. If other threads continuously mark the operation as pending,
+            this thread will continue to run the operation indefinitely.
+            </remarks>
+        </member>
         <member name="M:GSF.Threading.ISynchronizedOperation.RunOnce">
             <summary>
             Executes the action on this thread or marks the
@@ -27778,13 +28002,13 @@
             will therefore need to be run again.
             </remarks>
         </member>
-        <member name="M:GSF.Threading.ISynchronizedOperation.TryRun">
+        <member name="M:GSF.Threading.ISynchronizedOperation.TryRunOnce">
             <summary>
             Attempts to execute the action on this thread.
             Does nothing if the operation is already running.
             </summary>
         </member>
-        <member name="M:GSF.Threading.ISynchronizedOperation.TryRunAsync">
+        <member name="M:GSF.Threading.ISynchronizedOperation.TryRunOnceAsync">
             <summary>
             Attempts to execute the action on another thread.
             Does nothing if the operation is already running.
@@ -27836,6 +28060,33 @@
             <param name="action">The action to be performed during this operation.</param>
             <param name="exceptionAction">The action to be performed if an exception is thrown from the action.</param>
         </member>
+        <member name="M:GSF.Threading.SynchronizedOperationBase.Run">
+            <summary>
+            Executes the action on this thread or marks the
+            operation as pending if the operation is already running.
+            </summary>
+            <remarks>
+            <para>When the operation is marked as pending, it will run again after
+            the operation that is currently running has completed. This is useful
+            if an update has invalidated the operation that is currently running
+            and will therefore need to be run again.</para>
+            
+            <para>This method does not guarantee that control will be returned to the
+            thread that called it. If other threads continuously mark the operation as
+            pending, this thread will continue to run the operation indefinitely.</para>
+            </remarks>
+        </member>
+        <member name="M:GSF.Threading.SynchronizedOperationBase.TryRun">
+            <summary>
+            Attempts to execute the action on this thread.
+            Does nothing if the operation is already running.
+            </summary>
+            <remarks>
+            This method does not guarantee that control will be returned to the thread
+            that called it. If other threads continuously mark the operation as pending,
+            this thread will continue to run the operation indefinitely.
+            </remarks>
+        </member>
         <member name="M:GSF.Threading.SynchronizedOperationBase.RunOnce">
             <summary>
             Executes the action on this thread or marks the
@@ -27860,13 +28111,13 @@
             will therefore need to be run again.
             </remarks>
         </member>
-        <member name="M:GSF.Threading.SynchronizedOperationBase.TryRun">
+        <member name="M:GSF.Threading.SynchronizedOperationBase.TryRunOnce">
             <summary>
             Attempts to execute the action on this thread.
             Does nothing if the operation is already running.
             </summary>
         </member>
-        <member name="M:GSF.Threading.SynchronizedOperationBase.TryRunAsync">
+        <member name="M:GSF.Threading.SynchronizedOperationBase.TryRunOnceAsync">
             <summary>
             Attempts to execute the action on another thread.
             Does nothing if the operation is already running.
