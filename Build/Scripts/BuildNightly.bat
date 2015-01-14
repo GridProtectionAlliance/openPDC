@@ -18,4 +18,4 @@
 ::*******************************************************************************************************
 
 @ECHO OFF
-C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\msbuild.exe Synchrophasor.buildproj /l:FileLogger,Microsoft.Build.Engine;logfile=Synchrophasor.output
+C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\msbuild.exe Synchrophasor.buildproj /p:SkipHelpFiles=true /l:FileLogger,Microsoft.Build.Engine;logfile=Synchrophasor.output
