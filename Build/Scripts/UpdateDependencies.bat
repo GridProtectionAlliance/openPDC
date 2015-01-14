@@ -76,6 +76,7 @@ XCOPY "%frameworktools%DNP3ConfigGenerator\DNP3ConfigGenerator.exe" "%sourcetool
 
 ECHO.
 ECHO Updating database schema defintions...
+FOR /R "%sourceschema%" %%x IN (*.db) DO DEL "%%x"
 FOR /R "%sourceschema%" %%x IN (GSFSchema.*) DO REN "%%x" "openPDC.*"
 FOR /R "%sourceschema%" %%x IN (GSFSchema-InitialDataSet.*) DO REN "%%x" "openPDC-InitialDataSet.*"
 FOR /R "%sourceschema%" %%x IN (GSFSchema-SampleDataSet.*) DO REN "%%x" "openPDC-SampleDataSet.*"
