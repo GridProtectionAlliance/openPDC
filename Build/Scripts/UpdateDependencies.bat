@@ -94,7 +94,7 @@ MOVE /Y "%sourceschema%\SQLite\*.*" "%targetschema%\SQLite\"
 %replace% /r /v "%targetschema%\*db-update.bat" GSFSchema openPDC
 SET cwd=%CD%
 CD %targetschema%\SQLite
-ECHO "N" | db-update.bat
+CALL db-update.bat
 CD "%cwd%"
 
 :: ECHO.
