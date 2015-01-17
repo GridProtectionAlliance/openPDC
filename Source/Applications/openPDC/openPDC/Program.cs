@@ -43,12 +43,6 @@ namespace openPDC
 
             Arguments args = new Arguments(Environment.CommandLine, true);
 
-            if (args.Count > 1)
-            {
-                MessageBox.Show("Too many arguments. If specified, argument must be one of: -RunAsService, -RunAsApplication or -RunAsConsole.");
-                Environment.Exit(1);
-            }
-
             if (args.Count == 0)
             {
 #if DEBUG
