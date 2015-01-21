@@ -68,6 +68,9 @@
       <!-- Project specific settings. -->
       <ProjectSolution>$(LocalFolder)\Source\$(ProjectName).sln</ProjectSolution>
       <BuildDeployFolder Condition="'$(BuildDeployFolder)' == ''">\\GPAWEB\NightlyBuilds\openPDC\Beta-VS2012\</BuildDeployFolder>
+      
+      <SourceArchiveFileName Condition="'$(SourceArchiveFileName)' == ''">$(LocalFolder)\Source.zip</SourceArchiveFileName>
+      <SourceArchiveWorkingDirectory Condition="'$(SourceArchiveWorkingDirectory)' == ''">$(LocalFolder)\Archives\Source</SourceArchiveWorkingDirectory>
     </PropertyGroup>
   </Target>
 
@@ -107,6 +110,27 @@
     <RemoveDir Directories="%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)" Condition="Exists('%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)')"/>
   </Target>
 
+  <Target Name="AfterDeployBuild" Condition="'$(ForceBuild)' == 'true' And '$(BuildDeployFolder)' != ''">
+    <ItemGroup>
+      <!--List of source code files to archive.-->
+      <SourcesToArchive Include="$(LocalFolder)\Source\**\*.*" Exclude="$(LocalFolder)\Source\**\obj\**\*.*"/>
+    </ItemGroup>
+    
+    <!-- Create archive of source tree. -->
+    <Message Text="Archiving source code..."/>
+    <Copy SourceFiles="@(SourcesToArchive)" DestinationFolder="$(SourceArchiveWorkingDirectory)\%(SourcesToArchive.RecursiveDir)"/>
+    <ItemGroup>
+      <SourcesToArchive Remove="@(SourcesToArchive)"/>
+      <SourcesToArchive Include="$(SourceArchiveWorkingDirectory)\**\*.*"/>
+    </ItemGroup>
+    <MSBuild.Community.Tasks.Zip Files="@(SourcesToArchive)" ZipFileName="$(SourceArchiveFileName)" WorkingDirectory="$(SourceArchiveWorkingDirectory)\.." Condition="'@(SourcesToArchive)' != ''"/>
+    <ItemGroup>
+      <SourceArchive Include="$(SourceArchiveFileName)"/>
+      <SourceArchiveDestination Include="$(BuildDeployFolder)\..\"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(SourceArchive)" DestinationFolder="%(SourceArchiveDestination.FullPath)" ContinueOnError="true"/>
+  </Target>
+  
   <Target Name="BeforeCleanBuild">
     <ItemGroup>
       <!-- Exclude the main setup application from the list of build output files to be deleted. -->
