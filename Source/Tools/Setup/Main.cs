@@ -181,26 +181,31 @@ namespace Setup
                 if (type == SetupType.Install)
                 {
                     // Read registry installation parameters
-                    string installPath, targetBitSize;
+                    string installPath, targetBitSize, configurationSetupUtility;
 
                     // Read values from primary registry location
                     installPath = AddPathSuffix(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "InstallPath", "").ToString().Trim());
                     targetBitSize = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Grid Protection Alliance\openPDC", "TargetBitSize", "64bit").ToString().Trim();
+                    configurationSetupUtility = installPath + "ConfigurationSetupUtility.exe";
 
-                    try
+                    // Note that if user only installs tools, i.e., skips openPDC and Manager, the CSU will not be installed
+                    if (File.Exists(configurationSetupUtility))
                     {
-                        // Run configuration setup utility
-                        Process configSetupUtility = new Process();
+                        try
+                        {
+                            // Run configuration setup utility
+                            Process configSetupUtility = new Process();
 
-                        configSetupUtility.StartInfo.FileName = installPath + "ConfigurationSetupUtility.exe";
-                        configSetupUtility.StartInfo.Arguments = "-install -" + targetBitSize;
-                        configSetupUtility.StartInfo.UseShellExecute = false;
-                        configSetupUtility.Start();
-                        configSetupUtility.WaitForExit();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Setup program was not able to launch the openPDC Configuration Setup Utility due to an exception. You will need to run this program manually before starting the openPDC.\r\n\r\nError: " + ex.Message, "Configuration Setup Utility Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            configSetupUtility.StartInfo.FileName = configurationSetupUtility;
+                            configSetupUtility.StartInfo.Arguments = "-install -" + targetBitSize;
+                            configSetupUtility.StartInfo.UseShellExecute = false;
+                            configSetupUtility.Start();
+                            configSetupUtility.WaitForExit();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Setup program was not able to launch the openPDC Configuration Setup Utility due to an exception. You will need to run this program manually before starting the openPDC.\r\n\r\nError: " + ex.Message, "Configuration Setup Utility Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
 
