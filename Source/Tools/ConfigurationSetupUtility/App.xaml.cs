@@ -26,19 +26,18 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Security.Principal;
-using System.Windows;
-using System.Xml;
-using GSF.Windows.ErrorManagement;
 using GSF.IO;
 using GSF.Security.Cryptography;
+using GSF.Windows.ErrorManagement;
 
 namespace ConfigurationSetupUtility
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         #region [ Members ]
 
@@ -46,8 +45,8 @@ namespace ConfigurationSetupUtility
         public const CipherStrength CryptoStrength = CipherStrength.Aes256;
         public const string CipherLookupKey = "0679d9ae-aca5-4702-a3f5-604415096987";
 
-        private ErrorLogger m_errorLogger;
-        private Func<string> m_defaultErrorText;
+        private readonly ErrorLogger m_errorLogger;
+        private readonly Func<string> m_defaultErrorText;
 
         #endregion
 
@@ -131,5 +130,38 @@ namespace ConfigurationSetupUtility
         }
 
         #endregion
+
+        #region [ Static ]
+
+        // Static Methods
+
+        private static string s_currentVersionLabel;
+
+        /// <summary>
+        /// Gets database name suffix for current application version, e.g., "v21" for version 2.1
+        /// </summary>
+        public static string DatabaseVersionSuffix
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(s_currentVersionLabel))
+                    return s_currentVersionLabel;
+
+                try
+                {
+                    Version version = Assembly.GetEntryAssembly().GetName().Version;
+                    s_currentVersionLabel = string.Format("v{0}{1}", version.Major, version.Minor);
+                }
+                catch
+                {
+                    s_currentVersionLabel = "v2";
+                }
+
+                return s_currentVersionLabel;
+            }
+        }
+
+        #endregion
+
     }
 }

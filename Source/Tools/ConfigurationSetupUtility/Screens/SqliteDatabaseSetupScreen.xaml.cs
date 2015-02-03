@@ -238,15 +238,14 @@ namespace ConfigurationSetupUtility.Screens
                 string sqliteDatabaseFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "openPDC\\");
 
                 // Make sure path exists
-
                 if (!Directory.Exists(sqliteDatabaseFilePath))
                     Directory.CreateDirectory(sqliteDatabaseFilePath);
 
-                m_sqliteDatabaseFilePathTextBox.Text = Path.Combine(sqliteDatabaseFilePath, migrate ? "openPDCv2.db" : "openPDC.db");
+                m_sqliteDatabaseFilePathTextBox.Text = Path.Combine(sqliteDatabaseFilePath, migrate ? "openPDC" + App.DatabaseVersionSuffix + ".db" : "openPDC.db");
             }
             catch
             {
-                m_sqliteDatabaseFilePathTextBox.Text = migrate ? "openPDCv2.db" : "openPDC.db";
+                m_sqliteDatabaseFilePathTextBox.Text = migrate ? "openPDC" + App.DatabaseVersionSuffix + ".db" : "openPDC.db";
             }
 
             if (!m_state.ContainsKey("sqliteDatabaseFilePath"))

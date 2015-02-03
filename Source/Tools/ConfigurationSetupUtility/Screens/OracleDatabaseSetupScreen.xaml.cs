@@ -279,7 +279,7 @@ namespace ConfigurationSetupUtility.Screens
                     m_oracleSetup.SchemaPassword = m_schemaUserPasswordTextBox.Password;
                 }
 
-                m_schemaUserNameTextBox.Text = migrate ? "openPDCv2" : "openPDC";
+                m_schemaUserNameTextBox.Text = migrate ? "openPDC" + App.DatabaseVersionSuffix : "openPDC";
 
                 // When using an existing database as-is, read existing connection settings out of the configuration file
                 if (existing && !migrate)

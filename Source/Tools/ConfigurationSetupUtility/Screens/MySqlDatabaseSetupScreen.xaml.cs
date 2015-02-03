@@ -337,7 +337,7 @@ namespace ConfigurationSetupUtility.Screens
                 if (!m_state.ContainsKey("encryptMySqlConnectionStrings"))
                     m_state.Add("encryptMySqlConnectionStrings", false);
 
-                m_databaseNameTextBox.Text = migrate ? "openPDCv2" : "openPDC";
+                m_databaseNameTextBox.Text = migrate ? "openPDC" + App.DatabaseVersionSuffix : "openPDC";
 
                 // When using an existing database as-is, read existing connection settings out of the configuration file
                 if (existing && !migrate)
