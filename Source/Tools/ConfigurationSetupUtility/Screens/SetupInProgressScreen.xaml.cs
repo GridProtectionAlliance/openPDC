@@ -1925,7 +1925,7 @@ namespace ConfigurationSetupUtility.Screens
 
             if (serviceConfigFile && (object)securityProvider == null)
             {
-                const string IncludedResources = "Settings,Schedules,Help,Status,Version,Time,Health,List=*;" +
+                const string IncludedResources = "Settings,Schedules,Help,Status,Version,Time,User,Health,List=*;" +
                     " Processes,Start,ReloadCryptoCache,ReloadSettings,ResetHealthMonitor,Connect,Disconnect,Invoke,ListCommands,Initialize,ReloadConfig,Authenticate,RefreshRoutes,TemporalSupport,LogEvent=Administrator,Editor;" +
                     " *=Administrator";
 
