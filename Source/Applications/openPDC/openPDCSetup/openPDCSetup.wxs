@@ -65,7 +65,7 @@
           <ComponentRef Id="DNP3ConfigGenerator" />
         </Feature>
         <Feature Id="MacrodyneControllerFeature" Title="Macrodyne Controller">
-          <ComponentRef Id="MacrodyneController" />
+          <ComponentGroupRef Id="MacrodyneControllerComponents" />
         </Feature>
         
         <ComponentGroupRef Id="GSFDependencyComponents" />
@@ -298,6 +298,7 @@
       <ComponentGroupRef Id="ConfigurationEditorComponents" />
       <ComponentGroupRef Id="HistorianPlaybackUtilityComponents" />
       <ComponentGroupRef Id="HistorianViewComponents" />
+      <ComponentGroupRef Id="MacrodyneControllerComponents" />
 
       <Component Id="NoInetFixUtil">
         <File Id="NoInetFixUtil.exe" Name="NoInetFixUtil.exe" Source="$(var.ProjectDir)\NoInetFixUtil.exe" />
@@ -306,12 +307,7 @@
 
       <Component Id="DNP3ConfigGenerator">
         <File Id="DNP3ConfigGenerator.exe" Name="DNP3ConfigGenerator.exe" Source="$(var.ProjectDir)\DNP3ConfigGenerator.exe" />
-      </Component>
-
-      <Component Id="MacrodyneController">
-        <File Id="MacrodyneController.exe" Name="$(var.MacrodyneController.TargetFileName)" Source="$(var.MacrodyneController.TargetPath)" />
-        <Shortcut Id="MacrodyneControllerStartMenuShortcut" Name="Macrodyne Host Controller" Icon="MacrodyneController.ico.exe" Description="Macrodyne Serial PMU Host Controller." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
-      </Component>
+      </Component>      
     </ComponentGroup>
     
     <ComponentGroup Id="ConfigCrypterComponents" Directory="INSTALLFOLDER">
@@ -361,6 +357,16 @@
       </Component>
       <Component Id="HistorianViewConfig">
         <File Id="HistorianView.exe.config" Name="HistorianView.exe.config" Source="$(var.ProjectDir)\HistorianView.exe.config" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="MacrodyneControllerComponents" Directory="INSTALLFOLDER">
+      <Component Id="MacrodyneController">
+        <File Id="MacrodyneController.exe" Name="$(var.MacrodyneController.TargetFileName)" Source="$(var.MacrodyneController.TargetPath)" />
+        <Shortcut Id="MacrodyneControllerStartMenuShortcut" Name="Macrodyne Host Controller" Icon="MacrodyneController.ico.exe" Description="Macrodyne Serial PMU Host Controller." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
+      </Component>
+      <Component Id="MacrodyneControllerConfig">
+        <File Id="MacrodyneController.exe.config" Name="$(var.MacrodyneController.TargetFileName).config" Source="$(var.MacrodyneController.TargetPath).config" />
       </Component>
     </ComponentGroup>
 
