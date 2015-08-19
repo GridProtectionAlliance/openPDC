@@ -48,18 +48,18 @@
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Import Project="..\..\..\..\Contributor Resources\Tools\Build Tools\Master Build\MasterBuild.buildproj"/>
+  <Import Project="MasterBuild.buildproj"/>
 
   <Target Name="BeforePrepareSettings">
     <PropertyGroup>
       <!-- Must-override setting(s). -->
       <ProjectName>Synchrophasor</ProjectName>
-      <!-- Server folder is different for VS2012 -->
-      <ServerFolder>$/openpdc/$(ProjectName)/Current Version-VS2012</ServerFolder>
-      <!-- Use Visual Studio 11.0 common tools -->
-      <TfsClient Condition="'$(TfsClient)' == ''">$(VS110COMNTOOLS)\..\IDE\tf.exe</TfsClient>
-      <VisualStudio Condition="'$(VisualStudio)' == ''">$(VS110COMNTOOLS)\..\IDE\devenv.com</VisualStudio>
-      <MSTest Condition="'$(MSTest)' == ''">$(VS110COMNTOOLS)\..\IDE\mstest.exe</MSTest>
+      <GitServer>git@github.com:GridProtectionAlliance/openPDC.git</GitServer>
+      
+      <VersionMajorChange>None</VersionMajorChange>
+      <VersionMinorChange>None</VersionMinorChange>
+      <VersionBuildChange>Increment</VersionBuildChange>
+      <VersionRevisionChange>Reset</VersionRevisionChange>
     </PropertyGroup>
   </Target>
 
@@ -68,7 +68,6 @@
       <!-- Project specific settings. -->
       <ProjectSolution>$(LocalFolder)\Source\$(ProjectName).sln</ProjectSolution>
       <BuildDeployFolder Condition="'$(BuildDeployFolder)' == ''">\\GPAWEB\NightlyBuilds\openPDC\Beta-VS2012\</BuildDeployFolder>
-      
       <SourceArchiveFileName Condition="'$(SourceArchiveFileName)' == ''">$(LocalFolder)\Source.zip</SourceArchiveFileName>
       <SourceArchiveWorkingDirectory Condition="'$(SourceArchiveWorkingDirectory)' == ''">$(LocalFolder)\Archives\Source</SourceArchiveWorkingDirectory>
     </PropertyGroup>
@@ -92,7 +91,7 @@
     <ItemGroup>
       <!-- List of projects to build. -->
       <ProjectsToBuild Include="$(ProjectSolution)"/>
-      <ProjectsToBuild Include="$(LocalFolder)\Build\Scripts\$(ProjectName).shfbproj" Condition="'$(SkipHelpFiles)' == ''"/>
+      <!--<ProjectsToBuild Include="$(LocalFolder)\Build\Scripts\$(ProjectName).shfbproj" Condition="'$(SkipHelpFiles)' == ''"/>-->
       <!-- List of installs to build. -->
       <InstallsToBuild Include="$(LocalFolder)\Source\**\*.wixproj" />
     </ItemGroup>
@@ -109,13 +108,42 @@
     <!-- Clean-up after all unit tests have been executed and passed. -->
     <RemoveDir Directories="%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)" Condition="Exists('%(UnitTestAssemblies.RootDir)%(UnitTestAssemblies.Directory)')"/>
   </Target>
+  
+  <Target Name="BeforeCleanBuild">
+    <ItemGroup>
+      <!-- Exclude the main setup application from the list of build output files to be deleted. -->
+      <FilesToDelete Remove="$(BuildOutputFolder)\Setup\Setup.exe"/>
+    </ItemGroup>
+  </Target>
 
-  <Target Name="AfterDeployBuild" Condition="'$(ForceBuild)' == 'true' And '$(BuildDeployFolder)' != ''">
+  <Target Name="BeforeDeployBuild">
+    <!--Directories containing help files.-->
+    <PropertyGroup>
+      <HelpOutputFolder>$(BuildOutputFolder)\..\..\Help\</HelpOutputFolder>
+      <HelpDeployFolder>$(BuildDeployFolder)\..\Help\</HelpDeployFolder>
+    </PropertyGroup>
+      
     <ItemGroup>
       <!--List of source code files to archive.-->
       <SourcesToArchive Include="$(LocalFolder)\Source\**\*.*" Exclude="$(LocalFolder)\Source\**\obj\**\*.*"/>
+      
+      <!-- List of binaries to archive. -->
+      <BinariesToArchive Include="$(BuildOutputFolder)\**\*.*"/>
+      
+      <!-- List of installs to archive. -->
+      <InstallsToArchive Include="$(BuildOutputFolder)\Setup\**\*.*"/>
+
+      <!--Destinations of archive files (*.zip).-->
+      <ArchiveDestinations Include="$(BuildDeployFolder)"/>
     </ItemGroup>
-    
+  </Target>
+
+  <Target Name="AfterDeployBuild">
+    <CallTarget Targets="DeploySource"/>
+    <CallTarget Targets="DeployHelpFiles"/>
+  </Target>
+  
+  <Target Name="DeploySource" Condition="'$(ForceBuild)' == 'true' And '$(BuildDeployFolder)' != ''">
     <!-- Create archive of source tree. -->
     <Message Text="Archiving source code..."/>
     <Copy SourceFiles="@(SourcesToArchive)" DestinationFolder="$(SourceArchiveWorkingDirectory)\%(SourcesToArchive.RecursiveDir)"/>
@@ -131,24 +159,13 @@
     <Copy SourceFiles="@(SourceArchive)" DestinationFolder="%(SourceArchiveDestination.FullPath)" ContinueOnError="true"/>
   </Target>
   
-  <Target Name="BeforeCleanBuild">
+  <Target Name="DeployHelpFiles" Condition="'$(SkipHelpFiles)' != 'true' And '$(BuildOutputFolder)' != '' And '$(BuildDeployFolder)' != ''">
+    <!-- Copy help files to the deploy folder. -->
+    <Message Text="Deploying help files..."/>
     <ItemGroup>
-      <!-- Exclude the main setup application from the list of build output files to be deleted. -->
-      <FilesToDelete Remove="$(BuildOutputFolder)\Setup\Setup.exe"/>
-      <!-- FilesToDelete Include="$(BuildOutputFolder)\Setup\Installers\openPDCManagerWebSetup.*"/ -->
-      <!-- FilesToDelete Include="$(BuildOutputFolder)\Setup\Installers\openPDCManagerServicesSetup.*"/ -->
+      <HelpFilesToDeploy Include="$(HelpOutputFolder)\**\*.*"/>
     </ItemGroup>
+    <MakeDir Directories="$(HelpDeployFolder)" Condition="!Exists('$(HelpDeployFolder)')"/>
+    <Copy SourceFiles="@(HelpFilesToDeploy)" DestinationFolder="$(HelpDeployFolder)\%(HelpFilesToDeploy.RecursiveDir)"/>
   </Target>
-  
-  <Target Name="BeforeDeployBuild">
-    <ItemGroup>
-      <!-- List of binaries to archive. -->
-      <BinariesToArchive Include="$(BuildOutputFolder)\**\*.*"/>
-      <!-- List of installs to archive. -->
-      <InstallsToArchive Include="$(BuildOutputFolder)\Setup\**\*.*"/>
-      <!-- Destinations of archive files (*.zip). -->
-      <ArchiveDestinations Include="$(BuildDeployFolder)"/>
-    </ItemGroup>
-  </Target>
-
 </Project>
