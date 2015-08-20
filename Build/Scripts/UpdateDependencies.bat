@@ -38,13 +38,11 @@ SET targetschema=Source\Data
 SET sourcetools=\\GPAWEB\NightlyBuilds\GridSolutionsFramework\Beta\Tools\
 SET targettools=Source\Applications\openPDC\openPDCSetup\
 
-SET solution="..\..\Source\Synchrophasor.sln"
-
 ECHO.
 ECHO Entering working directory...
 IF EXIST %gwd% RMDIR /S /Q %gwd%
 MKDIR %gwd%
-CD %gwd%
+CD /D %gwd%
 
 ECHO.
 ECHO Getting latest version...
@@ -93,7 +91,7 @@ ECHO Committing updates to local repository...
 ECHO.
 ECHO Pushing changes to remote repository...
 %git% push
-CD %pwd%
+CD /D %pwd%
 
 ECHO.
 ECHO Update complete
