@@ -35,6 +35,8 @@ SET replace="\\GPAWEB\NightlyBuilds\Tools\ReplaceInFiles\ReplaceInFiles.exe"
 SET remote="git@github.com:GridProtectionAlliance/openPDC.git"
 SET source="\\GPAWEB\NightlyBuilds\GridSolutionsFramework\Beta\Libraries\*.*"
 SET target="Source\Dependencies\GSF"
+SET sourcemasterbuild="\\GPAWEB\NightlyBuilds\GridSolutionsFramework\Beta\Build Scripts\MasterBuild.buildproj"
+SET targetmasterbuild="Build\Scripts"
 SET sourceschema=Source\Dependencies\GSF\Data
 SET targetschema=Source\Data
 SET sourcetools=\\GPAWEB\NightlyBuilds\GridSolutionsFramework\Beta\Tools\
@@ -53,6 +55,7 @@ ECHO Getting latest version...
 ECHO.
 ECHO Updating dependencies...
 XCOPY %source% %target% /Y /E
+XCOPY %sourcemasterbuild% %targetmasterbuild% /Y
 XCOPY "%sourcetools%ConfigCrypter\ConfigCrypter.exe" "%targettools%ConfigCrypter.exe" /Y
 XCOPY "%sourcetools%ConfigEditor\ConfigEditor.exe" "%targettools%ConfigurationEditor.exe" /Y
 XCOPY "%sourcetools%DataMigrationUtility\DataMigrationUtility.exe" "%targettools%DataMigrationUtility.exe" /Y
