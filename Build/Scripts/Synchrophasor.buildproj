@@ -68,8 +68,6 @@
       <!-- Project specific settings. -->
       <ProjectSolution>$(LocalFolder)\Source\$(ProjectName).sln</ProjectSolution>
       <BuildDeployFolder Condition="'$(BuildDeployFolder)' == ''">\\GPAWEB\NightlyBuilds\openPDC\Beta-VS2012\</BuildDeployFolder>
-      <SourceArchiveFileName Condition="'$(SourceArchiveFileName)' == ''">$(LocalFolder)\Source.zip</SourceArchiveFileName>
-      <SourceArchiveWorkingDirectory Condition="'$(SourceArchiveWorkingDirectory)' == ''">$(LocalFolder)\Archives\Source</SourceArchiveWorkingDirectory>
     </PropertyGroup>
   </Target>
 
@@ -139,24 +137,13 @@
   </Target>
 
   <Target Name="AfterDeployBuild">
-    <CallTarget Targets="DeploySource"/>
-    <CallTarget Targets="DeployHelpFiles"/>
-  </Target>
-  
-  <Target Name="DeploySource" Condition="'$(ForceBuild)' == 'true' And '$(BuildDeployFolder)' != ''">
-    <!-- Create archive of source tree. -->
-    <Message Text="Archiving source code..."/>
-    <Copy SourceFiles="@(SourcesToArchive)" DestinationFolder="$(SourceArchiveWorkingDirectory)\%(SourcesToArchive.RecursiveDir)"/>
-    <ItemGroup>
-      <SourcesToArchive Remove="@(SourcesToArchive)"/>
-      <SourcesToArchive Include="$(SourceArchiveWorkingDirectory)\**\*.*"/>
-    </ItemGroup>
-    <MSBuild.Community.Tasks.Zip Files="@(SourcesToArchive)" ZipFileName="$(SourceArchiveFileName)" WorkingDirectory="$(SourceArchiveWorkingDirectory)" Condition="'@(SourcesToArchive)' != ''"/>
     <ItemGroup>
       <SourceArchive Include="$(SourceArchiveFileName)"/>
-      <SourceArchiveDestination Include="$(BuildDeployFolder)\..\"/>
     </ItemGroup>
-    <Copy SourceFiles="@(SourceArchive)" DestinationFolder="%(SourceArchiveDestination.FullPath)" ContinueOnError="true"/>
+    
+    <Move SourceFiles="@(SourceArchive->'$(BuildDeployFolder)\%(FileName)%(Extension)')" DestinationFiles="@(SourceArchive->'$(BuildDeployFolder)\..\Source.zip')"/>
+    
+    <CallTarget Targets="DeployHelpFiles"/>
   </Target>
   
   <Target Name="DeployHelpFiles" Condition="'$(SkipHelpFiles)' != 'true' And '$(BuildOutputFolder)' != '' And '$(BuildDeployFolder)' != ''">
