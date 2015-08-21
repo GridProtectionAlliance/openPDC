@@ -139,9 +139,11 @@
   <Target Name="AfterDeployBuild">
     <ItemGroup>
       <SourceArchive Include="$(SourceArchiveFileName)"/>
+      <DestinationArchive Include="$(BuildDeployFolder)\..\Source.zip"/>
     </ItemGroup>
     
-    <Move SourceFiles="@(SourceArchive->'$(BuildDeployFolder)\%(FileName)%(Extension)')" DestinationFiles="@(SourceArchive->'$(BuildDeployFolder)\..\Source.zip')"/>
+    <Delete Files="@(DestinationArchive)"/>
+    <Move SourceFiles="@(SourceArchive->'$(BuildDeployFolder)\%(FileName)%(Extension)')" DestinationFiles="@(DestinationArchive)"/>
     
     <CallTarget Targets="DeployHelpFiles"/>
   </Target>
