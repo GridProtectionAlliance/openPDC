@@ -32063,6 +32063,38 @@
             <paramref name="minimumSubSecondResolution"/> is not defined in <see cref="P:GSF.Units.SI.Factors"/> array.
             </exception>
         </member>
+        <member name="T:GSF.TransformEqualityComparer`1">
+            <summary>
+            Equality comparer that compares objects by the results of a transformation.
+            </summary>
+            <typeparam name="T">The type of the source objects to be compared.</typeparam>
+        </member>
+        <member name="M:GSF.TransformEqualityComparer`1.#ctor(System.Func{`0,System.Object})">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.TransformEqualityComparer`1"/> class.
+            </summary>
+            <param name="transformFunction">The function used to transform source objects to the type used for comparison.</param>
+        </member>
+        <member name="M:GSF.TransformEqualityComparer`1.Equals(`0,`0)">
+            <summary>
+            Determines whether the specified objects are equal.
+            </summary>
+            <param name="x">The first object of type <typeparamref name="T"/> to compare.</param>
+            <param name="y">The second object of type <typeparamref name="T"/> to compare.</param>
+            <returns>
+            true if the specified objects are equal; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:GSF.TransformEqualityComparer`1.GetHashCode(`0)">
+            <summary>
+            Returns a hash code for the specified object.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> for which a hash code is to be returned.</param>
+            <returns>
+            A hash code for the specified object.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">The type of <paramref name="obj"/> is a reference type and <paramref name="obj"/> is null.</exception>
+        </member>
         <member name="T:GSF.TypeExtensions">
             <summary>
             Extensions to all <see cref="T:System.Type"/> objects.
