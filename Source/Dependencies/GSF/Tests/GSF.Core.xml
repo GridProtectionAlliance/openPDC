@@ -7378,6 +7378,12 @@
             Creates a new <see cref="T:GSF.Collections.AsyncQueue`1"/>.
             </summary>
         </member>
+        <member name="M:GSF.Collections.AsyncQueue`1.#ctor(GSF.Threading.SynchronizedOperationType)">
+            <summary>
+            Creates a new <see cref="T:GSF.Collections.AsyncQueue`1"/>.
+            </summary>
+            <param name="synchronizedOperationType">The type of synchronized operation to use to process items in the queue.</param>
+        </member>
         <member name="M:GSF.Collections.AsyncQueue`1.Enqueue(`0)">
             <summary>
             Enqueues an item for processing.
