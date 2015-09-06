@@ -22,11 +22,13 @@ Legacy Original CodePlex Documentation Pages and Attachment Files
 ## URL Links to Wiki Pages in the openPDC Repository
 The openPDC Wiki is intended to be an independent subproject of the openPDC project.  A ***wiki*** branch is where all final wiki content should be committed before merging into the project ***master***.  This allows independent wiki authoring without affecting the project source code or build versions.
   * URL links related to wiki content should start with the following URL.
-  **https://github.com/GridProtectionAlliance/openPDC/blob/master/**
-    * For example, the URL for *This* document is:
-      **https://github.com/GridProtectionAlliance/openPDC/blob/master/Wiki/Wiki_Construction.md**
-    * These URLs only work after the ***wiki*** branch has been merged with the ***master***
+  **https://github.com/GridProtectionAlliance/openPDC/blob/master/** for project master files
+  **https://github.com/GridProtectionAlliance/openPDC/blob/Wiki/** for wiki files
+
+  * For example, the URL for *This* document is:
+      **https://github.com/GridProtectionAlliance/openPDC/blob/Wiki/Wiki/Wiki_Construction.md**
+    * The *master* URLs only work after the ***wiki*** branch has been merged with the ***master***
   
 ---
 Proposed Sep 5, 2015
-Revised 20:22 EST
+Revised 20:30 EST
