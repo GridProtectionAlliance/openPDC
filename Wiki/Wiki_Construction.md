@@ -4,7 +4,7 @@ The following describes the general layout for the Wiki within the openPDC proje
 ## Folders and Content
 ### openPDC/Wiki
 Wiki Root Folder
-  * **Home.md** = Project Welcome and Overview.  Home.md is a candidate for the project's README.md document.
+  * **Home.html** = Project Welcome and Overview.  Home.html or Home.md is a candidate for the project's README.md document.
   * **Home.files/** = Subfolder Containing Wiki Home Page's Attachment Files
   * **Wiki_Index.md** = Table of Contents Style Directory of the Wiki Pages
   * **Wiki_Construction.md** = *This* Document
@@ -28,7 +28,7 @@ The openPDC Wiki is intended to be an independent subproject of the openPDC proj
   * For example, the URL for *This* document is:
       **https://github.com/GridProtectionAlliance/openPDC/blob/Wiki/Wiki/Wiki_Construction.md**
     * The *master* URLs only work after the ***wiki*** branch has been merged with the ***master***
-  
+ 
 ---
-Proposed Sep 5, 2015
-Revised 23:00 EST
+Proposed Sep 6, 2015
+Revised 18:00 EST
