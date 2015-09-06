@@ -2,6 +2,7 @@
 
 **[Home](https://github.com/GridProtectionAlliance/openPDC/blob/Wiki/Wiki/Home.md)**
 
+* [Code Blog (Developers)](https://github.com/GridProtectionAlliance/openPDC/blob/Wiki/Wiki/Documents/Code_Blog_Developers.md)
 * [openPDC Commercial Extensions](https://github.com/GridProtectionAlliance/openPDC/blob/Wiki/Wiki/Documents/openPDC_Commercial_Extensions.md)
 
 [Wiki Construction](https://github.com/GridProtectionAlliance/openPDC/blob/Wiki/Wiki/Wiki_Construction.md)
