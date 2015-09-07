@@ -1,0 +1,19 @@
+Released: Jul 24, 2014 
+Change Set: 109945 
+Updated: Jul 25, 2014 by ritchiecarroll 
+
+
+!! This is the current release build of the PMU Connection Tester, version 4.5.5
+
+This version of the connection tester was released with openPDC 2.0, version 166.
+
+*Changes since 4.5.4:*
+
+Corrected issue with SEL Fast Message to ignore duplicate 0xFF values in streaming data that can occur with data transmission over Ethernet when Telnet protocol is being used.
+
+_This application requires that [url:.NET 4.5|http://www.microsoft.com/en-us/download/details.aspx?id=30653] already be installed on your system._
+
+*Note this release of the PMU Connection Tester is built on .NET 4.5 using the [url:Grid Solutions Framework|https://gsf.codeplex.com/] (GSF). If you want to use or browse protocol source code, please download the [url:GSF source code|https://gsf.codeplex.com/SourceControl/latest] and look for the GSF.PhasorProtocols project.*
+
+Thanks!
+Ritchie

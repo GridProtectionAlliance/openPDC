@@ -38,4 +38,4 @@
 * Fixed the SubscriberStatusQuery, used on the external subscription monitoring UI screen, to properly query the TLS!DATAPUBLISHER rather than the EXTERNAL!DATAPUBLISHER.
 
 ---
-Migrated from CodePlex Sep 6, 2015
+[Migrated from CodePlex Sep 6, 2015](https://openpdc.codeplex.com/releases/view/615595)
