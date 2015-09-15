@@ -300,6 +300,11 @@
             <param name="physicalStructure">The collection element which is the physical structure of the channel definition.</param>
             <param name="dataSource">The data source in which the channel definition resides.</param>
         </member>
+        <member name="F:GSF.PQDIF.Logical.ChannelDefinition.ChannelDefinitionIndexTag">
+            <summary>
+            Tag that identifies the channel definition index.
+            </summary>
+        </member>
         <member name="F:GSF.PQDIF.Logical.ChannelDefinition.ChannelNameTag">
             <summary>
             Tag that identifies the channel name.
@@ -388,11 +393,6 @@
             <param name="physicalStructure">The collection element which is the physical structure of the channel instance.</param>
             <param name="observationRecord">The observation record in which the channel instance resides.</param>
         </member>
-        <member name="F:GSF.PQDIF.Logical.ChannelInstance.ChannelDefinitionIndexTag">
-            <summary>
-            Tag that identifies the channel definition index.
-            </summary>
-        </member>
         <member name="F:GSF.PQDIF.Logical.ChannelInstance.ChannelGroupIDTag">
             <summary>
             Tag that identifies the channel group ID.
@@ -434,6 +434,11 @@
             Gets the channel definition which defines the channel instance.
             </summary>
         </member>
+        <member name="P:GSF.PQDIF.Logical.ChannelInstance.Setting">
+            <summary>
+            Gets the channel setting which defines the instrument settings for the channel.
+            </summary>
+        </member>
         <member name="P:GSF.PQDIF.Logical.ChannelInstance.ChannelGroupID">
             <summary>
             Gets the identifier for the harmonic or
@@ -456,6 +461,60 @@
         <member name="P:GSF.PQDIF.Logical.ChannelInstance.SeriesInstances">
             <summary>
             Gets the series instances contained in this channel.
+            </summary>
+        </member>
+        <member name="T:GSF.PQDIF.Logical.ChannelSetting">
+            <summary>
+            Represents a channel setting in a PQDIF file. A channel setting
+            resides in an <see cref="P:GSF.PQDIF.Logical.ChannelSetting.MonitorSettingsRecord"/>, and is defined by
+            a <see cref="T:GSF.PQDIF.Logical.ChannelDefinition"/> inside the observation record's
+            <see cref="T:GSF.PQDIF.Logical.DataSourceRecord"/>.
+            </summary>
+        </member>
+        <member name="M:GSF.PQDIF.Logical.ChannelSetting.#ctor(GSF.PQDIF.Physical.CollectionElement,GSF.PQDIF.Logical.MonitorSettingsRecord)">
+            <summary>
+            Creates a new instance of the <see cref="T:GSF.PQDIF.Logical.ChannelSetting"/> class.
+            </summary>
+            <param name="physicalStructure">The collection element which is the physical structure of the channel setting.</param>
+            <param name="monitorSettingsRecord">The monitor settings record in which the channel setting resides.</param>
+        </member>
+        <member name="M:GSF.PQDIF.Logical.ChannelSetting.HasElement(System.Guid)">
+            <summary>
+            Determines whether an element identified by the
+            given tag exists in this object's physical structure.
+            </summary>
+            <param name="tag">The tag of the element to search for.</param>
+            <returns>True if the element exists; false otherwise.</returns>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.ChannelSetting.XDSystemSideRatioTag">
+            <summary>
+            Tag that identifies the system side ratio.
+            </summary>
+        </member>
+        <member name="F:GSF.PQDIF.Logical.ChannelSetting.XDMonitorSideRatioTag">
+            <summary>
+            Tag that identifies the monitor side ratio.
+            </summary>
+        </member>
+        <member name="P:GSF.PQDIF.Logical.ChannelSetting.MonitorSettingsRecord">
+            <summary>
+            Gets the monitor settings record in which the channel setting resides.
+            </summary>
+        </member>
+        <member name="P:GSF.PQDIF.Logical.ChannelSetting.ChannelDefinitionIndex">
+            <summary>
+            Gets the index of the <see cref="T:GSF.PQDIF.Logical.ChannelDefinition"/>
+            which defines the channel instance.
+            </summary>
+        </member>
+        <member name="P:GSF.PQDIF.Logical.ChannelSetting.XDSystemSideRatio">
+            <summary>
+            Gets the system-side part of the transducer ratio.
+            </summary>
+        </member>
+        <member name="P:GSF.PQDIF.Logical.ChannelSetting.XDMonitorSideRatio">
+            <summary>
+            Gets the monitor-side part of the transducer ratio.
             </summary>
         </member>
         <member name="T:GSF.PQDIF.Logical.Equipment">
@@ -2414,6 +2473,25 @@
             Gets nominal frequency.
             </summary>
         </member>
+        <member name="P:GSF.PQDIF.Logical.MonitorSettingsRecord.UseCalibration">
+            <summary>
+            Gets the flag that determines whether the calibration
+            settings need to be applied before using the values
+            recorded by this monitor.
+            </summary>
+        </member>
+        <member name="P:GSF.PQDIF.Logical.MonitorSettingsRecord.UseTransducer">
+            <summary>
+            Gets the flag that determines whether the transducer
+            ratio needs to be applied before using the values
+            recorded by this monitor.
+            </summary>
+        </member>
+        <member name="P:GSF.PQDIF.Logical.MonitorSettingsRecord.ChannelSettings">
+            <summary>
+            Gets the settings for the channels defined in the data source.
+            </summary>
+        </member>
         <member name="T:GSF.PQDIF.Logical.ObservationRecord">
             <summary>
             Represents an observation record in a PQDIF file.
@@ -3393,6 +3471,11 @@
             Tag that identifies the value type name of the series.
             </summary>
         </member>
+        <member name="F:GSF.PQDIF.Logical.SeriesDefinition.SeriesNominalQuantityTag">
+            <summary>
+            Tag that identifies the nominal quantity of the series.
+            </summary>
+        </member>
         <member name="P:GSF.PQDIF.Logical.SeriesDefinition.ChannelDefinition">
             <summary>
             Gets the channel definition in which the series definition resides.
@@ -3423,6 +3506,11 @@
         <member name="P:GSF.PQDIF.Logical.SeriesDefinition.ValueTypeName">
             <summary>
             Gets the value type name of the series.
+            </summary>
+        </member>
+        <member name="P:GSF.PQDIF.Logical.SeriesDefinition.SeriesNominalQuantity">
+            <summary>
+            Gets the nominal quantity of the series.
             </summary>
         </member>
         <member name="T:GSF.PQDIF.Logical.SeriesInstance">
