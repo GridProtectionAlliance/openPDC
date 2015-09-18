@@ -44,13 +44,22 @@ SET targettools=Source\Applications\openPDC\openPDCSetup\
 
 ECHO.
 ECHO Entering working directory...
-IF EXIST %gwd% RMDIR /S /Q %gwd%
-MKDIR %gwd%
+IF EXIST %gwd% IF NOT EXIST %gwd%\.git RMDIR /S /Q %gwd%
+IF NOT EXIST %gwd% MKDIR %gwd%
 CD /D %gwd%
 
+IF EXIST .git GOTO UpdateRepository
+
 ECHO.
-ECHO Getting latest version...
+ECHO Cloning remote repository...
 %git% clone %remote% .
+
+:UpdateRepository
+ECHO.
+ECHO Updating to latest version...
+%git% reset --hard
+%git% clean -f -d
+%git% pull
 
 ECHO.
 ECHO Updating dependencies...
