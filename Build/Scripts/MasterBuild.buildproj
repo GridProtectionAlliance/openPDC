@@ -181,7 +181,6 @@
       CorePrepareSettings;
       AfterPrepareSettings;
     </PrepareSettingsDependsOn>
-    
     <CreateWorkspaceDependsOn>
       BeforeCreateWorkspace;
       CoreCreateWorkspace;
@@ -378,9 +377,9 @@
     <PropertyGroup>
       <BuildTag Condition="'$(BuildTag)' == ''">v$(Major).$(Minor).$(Build).$(Revision)-$(GitBranch)</BuildTag>
     </PropertyGroup>
-    <Exec Command="%22$(GitClient)%22 add --all" WorkingDirectory="$(LocalFolder)" ContinueOnError="true"  />
-    <Exec Command="%22$(GitClient)%22 commit -m %22$(ProjectName): Version change for build $(BuildTag).%22" WorkingDirectory="$(LocalFolder)" ContinueOnError="true"  />
-    <Exec Command="%22$(GitClient)%22 tag %22$(BuildTag)%22" WorkingDirectory="$(LocalFolder)"/>
+    <Exec Command="%22$(GitClient)%22 add --all" WorkingDirectory="$(LocalFolder)" ContinueOnError="true"/>
+    <Exec Command="%22$(GitClient)%22 commit -m %22$(ProjectName): Version change for build $(BuildTag).%22" WorkingDirectory="$(LocalFolder)" ContinueOnError="true"/>
+    <Exec Command="%22$(GitClient)%22 tag %22$(BuildTag)%22" WorkingDirectory="$(LocalFolder)" ContinueOnError="true"/>
   </Target>
 
   <Target Name="AfterVersionSource"/>
