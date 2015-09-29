@@ -4048,6 +4048,11 @@
             Derived classes should extend status with implementation specific information.
             </remarks>
         </member>
+        <member name="P:GSF.TimeSeries.Adapters.ActionAdapterBase.IsDisposed">
+            <summary>
+            Gets a flag that indicates whether the object has been disposed.
+            </summary>
+        </member>
         <member name="T:GSF.TimeSeries.Adapters.ActionAdapterCollection">
             <summary>
             Represents a collection of <see cref="T:GSF.TimeSeries.Adapters.IActionAdapter"/> implementations.
@@ -4340,7 +4345,7 @@
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.DisposeItem(`0)">
             <summary>
-            Unwires events and disposes of <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/> implementation.
+            Un-wires events and disposes of <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/> implementation.
             </summary>
             <param name="item"><see cref="T:GSF.TimeSeries.Adapters.IAdapter"/> to dispose.</param>
             <remarks>
@@ -4520,6 +4525,11 @@
         <member name="P:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.Enabled">
             <summary>
             Gets or sets enabled state of this <see cref="T:GSF.TimeSeries.Adapters.AdapterCollectionBase`1"/>.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.IsDisposed">
+            <summary>
+            Gets a flag that indicates whether the object has been disposed.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.IsReadOnly">
@@ -5165,6 +5175,11 @@
             Derived classes should provide current status information about the adapter for display purposes.
             </remarks>
         </member>
+        <member name="P:GSF.TimeSeries.Adapters.AdapterBase.IsDisposed">
+            <summary>
+            Gets a flag that indicates whether the object has been disposed.
+            </summary>
+        </member>
         <member name="T:GSF.TimeSeries.Adapters.AdapterCommandAttribute">
             <summary>
             Represents an attribute that allows a method in an <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/> class to be exposed as
@@ -5215,9 +5230,14 @@
             Initializes each <see cref="T:GSF.TimeSeries.Adapters.IAdapterCollection"/> implementation in this <see cref="T:GSF.TimeSeries.Adapters.AllAdaptersCollection"/>.
             </summary>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.AllAdaptersCollection.UpdateCollectionConfigurations">
+        <member name="M:GSF.TimeSeries.Adapters.AllAdaptersCollection.AddNewAdapters(System.Data.DataSet)">
             <summary>
-            Create newly defined adapters and remove adapters that are no longer present in the adapter collection configurations. 
+            Create newly defined adapters in the adapter collection configurations. 
+            </summary>
+        </member>
+        <member name="M:GSF.TimeSeries.Adapters.AllAdaptersCollection.RemoveOldAdapters(System.Data.DataSet)">
+            <summary>
+            Remove adapters that are no longer present in the adapter collection configurations. 
             </summary>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.AllAdaptersCollection.TryGetAnyAdapterByID(System.UInt32,GSF.TimeSeries.Adapters.IAdapter@,GSF.TimeSeries.Adapters.IAdapterCollection@)">
@@ -5266,6 +5286,18 @@
             <remarks>
             We don't auto-initialize collections added to the <see cref="T:GSF.TimeSeries.Adapters.AllAdaptersCollection"/> since no data source
             will be available when the collections are being created.
+            </remarks>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.AllAdaptersCollection.DataSource">
+            <summary>
+            Gets or sets <see cref="T:System.Data.DataSet"/> based data source used to load each <see cref="T:GSF.TimeSeries.Adapters.IAdapter"/>.
+            Updates to this property will cascade to all items in this <see cref="T:GSF.TimeSeries.Adapters.AdapterCollectionBase`1"/>.
+            </summary>
+            <remarks>
+            Table name specified in <see cref="P:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.DataMember"/> from <see cref="P:GSF.TimeSeries.Adapters.AdapterCollectionBase`1.DataSource"/> is expected
+            to have the following table column names:<br/>
+            ID, AdapterName, AssemblyName, TypeName, ConnectionString<br/>
+            ID column type should be integer based, all other column types are expected to be string based.
             </remarks>
         </member>
         <member name="T:GSF.TimeSeries.Adapters.FacileActionAdapterBase">
@@ -8221,6 +8253,11 @@
             Gets or sets a boolean value that indicates whether the <see cref="T:GSF.TimeSeries.Transport.DataGapRecoverer"/> is enabled.
             </summary>
         </member>
+        <member name="P:GSF.TimeSeries.Transport.DataGapRecoverer.IsDisposed">
+            <summary>
+            Gets a flag that indicates whether the object has been disposed.
+            </summary>
+        </member>
         <member name="P:GSF.TimeSeries.Transport.DataGapRecoverer.DataGapLog">
             <summary>
             Gets reference to the data gap <see cref="T:GSF.IO.OutageLog"/> for this <see cref="T:GSF.TimeSeries.Transport.DataGapRecoverer"/>.
@@ -9402,6 +9439,13 @@
             Attempts to restart the hose service.
             </summary>
             <param name="requestInfo"><see cref="T:GSF.ServiceProcess.ClientRequestInfo"/> instance containing the client request.</param>
+        </member>
+        <member name="M:GSF.TimeSeries.ServiceHostBase.RequestedAdapterExists(GSF.ServiceProcess.ClientRequestInfo)">
+            <summary>
+            Determines whether the requested adapter exists.
+            </summary>
+            <param name="requestInfo"><see cref="T:GSF.ServiceProcess.ClientRequestInfo"/> instance containing the client request.</param>
+            <returns>True if the requested adapter exists; false otherwise.</returns>
         </member>
         <member name="M:GSF.TimeSeries.ServiceHostBase.SendResponse(GSF.ServiceProcess.ClientRequestInfo,System.Boolean)">
             <summary>

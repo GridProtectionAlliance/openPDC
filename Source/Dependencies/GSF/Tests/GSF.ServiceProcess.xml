@@ -253,6 +253,11 @@
             <see cref="P:GSF.ServiceProcess.ClientHelper.Enabled"/> property is not be set by user-code directly.
             </remarks>
         </member>
+        <member name="P:GSF.ServiceProcess.ClientHelper.IsDisposed">
+            <summary>
+            Gets a flag that indicates whether the object has been disposed.
+            </summary>
+        </member>
         <member name="T:GSF.ServiceProcess.ClientInfo">
             <summary>
             Represents information about a client using <see cref="T:GSF.ServiceProcess.ClientHelper"/> for connecting to a Windows Service that uses <see cref="T:GSF.ServiceProcess.ServiceHelper"/>.
@@ -1128,6 +1133,11 @@
             <remarks>
             <see cref="P:GSF.ServiceProcess.ServiceHelper.Enabled"/> property is not be set by user-code directly.
             </remarks>
+        </member>
+        <member name="P:GSF.ServiceProcess.ServiceHelper.IsDisposed">
+            <summary>
+            Gets a flag that indicates whether the object has been disposed.
+            </summary>
         </member>
         <member name="P:GSF.ServiceProcess.ServiceHelper.Processes">
             <summary>

@@ -579,6 +579,11 @@
             is not connected, setting to false will disconnect the client if it is connected.
             </remarks>
         </member>
+        <member name="P:GSF.Communication.ClientBase.IsDisposed">
+            <summary>
+            Gets a flag that indicates whether the object has been disposed.
+            </summary>
+        </member>
         <member name="P:GSF.Communication.ClientBase.TextEncoding">
             <summary>
             Gets or sets the <see cref="T:System.Text.Encoding"/> to be used for the text sent to the server.
@@ -1347,6 +1352,11 @@
             Setting <see cref="P:GSF.Communication.ServerBase.Enabled"/> to true will start the server if it is not running, setting
             to false will stop the server if it is running.
             </remarks>
+        </member>
+        <member name="P:GSF.Communication.ServerBase.IsDisposed">
+            <summary>
+            Gets a flag that indicates whether the object has been disposed.
+            </summary>
         </member>
         <member name="P:GSF.Communication.ServerBase.TextEncoding">
             <summary>

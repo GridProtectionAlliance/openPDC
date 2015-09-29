@@ -534,6 +534,11 @@
             Gets or sets a boolean value that indicates whether the security provider is currently enabled.
             </summary>
         </member>
+        <member name="P:GSF.Security.SecurityProviderBase.IsDisposed">
+            <summary>
+            Gets a flag that indicates whether the object has been disposed.
+            </summary>
+        </member>
         <member name="P:GSF.Security.SecurityProviderBase.UserData">
             <summary>
             Gets the <see cref="P:GSF.Security.SecurityProviderBase.UserData"/> object containing information about the user.
