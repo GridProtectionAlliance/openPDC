@@ -469,6 +469,12 @@
 
     <!-- GSF Dependencies -->
     <ComponentGroup Id="GSFDependencyComponents" Directory="INSTALLFOLDER">
+      <Component Id="Antlr3.Runtime">
+        <File Id="Antlr3.Runtime.dll" Name="Antlr3.Runtime.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Antlr3.Runtime.dll" />
+      </Component>
+      <Component Id="ExpressionEvaluator">
+        <File Id="ExpressionEvaluator.dll" Name="ExpressionEvaluator.dll" Source="$(var.SolutionDir)\Dependencies\GSF\ExpressionEvaluator.dll" />
+      </Component>
       <Component Id="GSF.ASN1">
         <File Id="GSF.ASN1.dll" Name="GSF.ASN1.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.ASN1.dll" />
       </Component>
