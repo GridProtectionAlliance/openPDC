@@ -57,9 +57,9 @@ ECHO Cloning remote repository...
 :UpdateRepository
 ECHO.
 ECHO Updating to latest version...
-%git% reset --hard
+%git% fetch
+%git% reset --hard origin/master
 %git% clean -f -d -x
-%git% pull
 
 ECHO.
 ECHO Updating dependencies...
