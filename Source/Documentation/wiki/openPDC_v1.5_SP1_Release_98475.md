@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -360,7 +360,7 @@
 
     <div id="ReleaseNotes" class="WikiContent">
 
-        <div class="wikidoc">This is the official release of the version 1.5 Service Pack 1 of the openPDC - revision 2.<br><br>Version 1.5.247 - 09/13/2013<br><br><i>Note that revision 2 includes a few GEP meta-data synchronization fixes over the initial release of service pack 1, including updated forward compatibility with openPDC 2.0 instances. If you intend on connecting to SIEGate and/or openPDC 2.0 with an instance of openPDC 1.5 - this revision is recommended.</i><br><br>Latest version of the <a href="https://pmuconnectiontester.codeplex.com/releases/view/109471">PMU Connection Tester</a>, v4.4.0, is included with this installation.<br><br>Native OSI-PI input and output supported in this release. The OSI-PI adapters will only be available when the OSI-PI SDK is installed on the system.<br><br>This build includes a new tool called the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/GEP_Subscription_Tester.md">Gateway Exchange Protocol &#40;GEP&#41; Subscription Tester</a> used to validate internal subscription style connections. This is a multi-platform application built using the <a href="https://gsf.codeplex.com/">Grid Solutions Framework</a> Unity subscription API with deployment binaries or installers for Windows, Mac, Linux and Android devices.<br><br>Listed below are some of the various fixes and improvements included in the service pack, see <a href="https://openpdc.codeplex.com/SourceControl/list/changesets">change log</a> for complete details.<br>
+        <div class="wikidoc">This is the official release of the version 1.5 Service Pack 1 of the openPDC - revision 2.<br><br>Version 1.5.247 - 09/13/2013<br><br><i>Note that revision 2 includes a few GEP meta-data synchronization fixes over the initial release of service pack 1, including updated forward compatibility with openPDC 2.0 instances. If you intend on connecting to SIEGate and/or openPDC 2.0 with an instance of openPDC 1.5 - this revision is recommended.</i><br><br>Latest version of the <a href="https://pmuconnectiontester.codeplex.com/releases/view/109471">PMU Connection Tester</a>, v4.4.0, is included with this installation.<br><br>Native OSI-PI input and output supported in this release. The OSI-PI adapters will only be available when the OSI-PI SDK is installed on the system.<br><br>This build includes a new tool called the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GEP_Subscription_Tester.md">Gateway Exchange Protocol &#40;GEP&#41; Subscription Tester</a> used to validate internal subscription style connections. This is a multi-platform application built using the <a href="https://gsf.codeplex.com/">Grid Solutions Framework</a> Unity subscription API with deployment binaries or installers for Windows, Mac, Linux and Android devices.<br><br>Listed below are some of the various fixes and improvements included in the service pack, see <a href="https://openpdc.codeplex.com/SourceControl/list/changesets">change log</a> for complete details.<br>
 
 <ul><li><i>New since release candidate:</i> Improvements and operational fixes to the UTK F-NET, BPA PDCstream and Macrodyne protocols as well as fixes for various digital fault recorders and power quality meters </li>
 

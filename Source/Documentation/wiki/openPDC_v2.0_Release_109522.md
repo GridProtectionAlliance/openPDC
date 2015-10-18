@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -460,7 +460,7 @@ Upgrading to the 2.0 version of the openPDC will require .NET 4.5 to be installe
 
 <h3>New Features / Improvements</h3>
 
-Included with the openPDC 2.0 installation is a new tool called the <b>No Internet Fix Utility</b>. As its name suggests, you should run this utility when deploying the openPDC inside an environment that does not have Internet access. This tool will ensure all TLS/SSL style connections now required by the openPDC startup quickly by skipping timeouts even without Internet availability.<br><br>The <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/GEP_Subscription_Tester.md">Gateway Exchange Protocol &#40;GEP&#41; Subscription Tester</a> has been provided to validate internal subscription style connections. This is a multi-platform application was built using the <a href="http://gsf.codeplex.com/">Grid Solutions Framework</a> Unity subscription API with deployment binaries or installers for Windows, Mac, Linux and Android devices.<br><br>Listed below is a high-level summary of the various fixes and improvements included in this new 2.0 release, see the <a href="http://openpdc.codeplex.com/SourceControl/list/changesets">openPDC change log</a> and the <a href="https://gsf.codeplex.com/SourceControl/list/changesets">GSF change log</a> for complete details:<br>
+Included with the openPDC 2.0 installation is a new tool called the <b>No Internet Fix Utility</b>. As its name suggests, you should run this utility when deploying the openPDC inside an environment that does not have Internet access. This tool will ensure all TLS/SSL style connections now required by the openPDC startup quickly by skipping timeouts even without Internet availability.<br><br>The <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GEP_Subscription_Tester.md">Gateway Exchange Protocol &#40;GEP&#41; Subscription Tester</a> has been provided to validate internal subscription style connections. This is a multi-platform application was built using the <a href="http://gsf.codeplex.com/">Grid Solutions Framework</a> Unity subscription API with deployment binaries or installers for Windows, Mac, Linux and Android devices.<br><br>Listed below is a high-level summary of the various fixes and improvements included in this new 2.0 release, see the <a href="http://openpdc.codeplex.com/SourceControl/list/changesets">openPDC change log</a> and the <a href="https://gsf.codeplex.com/SourceControl/list/changesets">GSF change log</a> for complete details:<br>
 
 <ul><li><i>Performance</i>
 

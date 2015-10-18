@@ -100,7 +100,7 @@ Grid Solution Framework</a>&nbsp;<a title="Time-series Library" href="https://ww
 
 openPDC version 2.1 (SP1)</a>&nbsp;has been officially released. There are many new features, optimizations and enhancements plus this is the first version of the openPDC to officially support
 
-<a title="How to Deploy openPDC in a POSIX Environment" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/GPA/files/Deploying_the_openPDC_on_POSIX_Platforms.pdf" target="_blank">
+<a title="How to Deploy openPDC in a POSIX Environment" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Running_openPDC_on_Linux_and_Mac.files/Deploying_the_openPDC_on_POSIX_Platforms.pdf" target="_blank">
 
 POSIX environments</a>, e.g., Linux and Mac&nbsp;OS X operating systems. POSIX support is currently for all components within the
 

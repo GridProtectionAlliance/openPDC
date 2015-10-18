@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -70,7 +70,7 @@ The document link below lives on the cloud and is updated frequently, it documen
 
 For Raspberry Pi deployments of the openPDC, an image already exists that can be used to speed setup on these devices, see the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Running_openPDC_on_a_Raspberry_Pi.md">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Running_openPDC_on_a_Raspberry_Pi.md">
 
 Running openPDC on a Raspberry Pi</a> documentation.<br>
 
@@ -92,9 +92,9 @@ Running openPDC on a Raspberry Pi</a> documentation.<br>
 
 <hr />
 
-Last edited <span class="smartDate" title="3/27/2015 1:22:13 AM" LocalTimeTicks="1427444533">Mar 27, 2015 at 1:22 AM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 5<br />
+Last edited <span class="smartDate" title="3/27/2015 1:22:13 AM" LocalTimeTicks="1427444533">Mar 27, 2015 at 1:22 AM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 5<br />
 
-Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Running%20openPDC%20on%20Linux%20and%20Mac">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Running%20openPDC%20on%20Linux%20and%20Mac">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 
 </div>
 

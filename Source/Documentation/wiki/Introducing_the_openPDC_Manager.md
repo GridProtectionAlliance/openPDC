@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -80,7 +80,7 @@
 
 <br>
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Manager_Configuration.md">Click here for documentation on how to use the openPDC Manager</a></p>
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Manager_Configuration.md">Click here for documentation on how to use the openPDC Manager</a></p>
 
 <h3>Home Screen</h3>
 
@@ -152,9 +152,9 @@
 
 <hr />
 
-Last edited <span class="smartDate" title="6/15/2012 2:36:33 PM" LocalTimeTicks="1339796193">Jun 15, 2012 at 2:36 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 9<br />
+Last edited <span class="smartDate" title="6/15/2012 2:36:33 PM" LocalTimeTicks="1339796193">Jun 15, 2012 at 2:36 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 9<br />
 
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Introducing%20the%20openPDC%20Manager">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Introducing%20the%20openPDC%20Manager">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 
 </div>
 

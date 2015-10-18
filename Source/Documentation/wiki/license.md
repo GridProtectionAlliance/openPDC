@@ -25,9 +25,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -506,7 +506,7 @@ function doProjectSearch() {
 
 	<li id="peopleTabCell" style="width:70px;"><a id="peopleTab" href="http://openpdc.codeplex.com/team/view" class="box_people">people</a><div></div></li>
 
-	<li id="licenseTabCell" style="width:70px;"><a id="licenseTab" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/license.md" class="license_active">license</a><div></div></li>
+	<li id="licenseTabCell" style="width:70px;"><a id="licenseTab" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/license.md" class="license_active">license</a><div></div></li>
 
     
 

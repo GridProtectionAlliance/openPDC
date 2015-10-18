@@ -9,7 +9,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -25,9 +25,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -59,7 +59,7 @@ Before you begin your configuration, please note that this guide assumes you are
 
 <br>
 
-If you need to reset your database in order to do this, please read the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#reset_database">
+If you need to reset your database in order to do this, please read the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#reset_database">
 
 FAQ</a>. However, you are strongly encouraged to use the SampleDataSet as an example to help you understand how to configure your database.<br>
 
@@ -423,7 +423,7 @@ The value of this column should come from the <u>ID</u> column in the <u>Protoco
 
 The connection string is used to define how to connect to the device. A quick guide to configuring your connection string can be found on the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#configure_connection_string">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#configure_connection_string">
 
 Getting Started</a> page.<br>
 
@@ -855,7 +855,7 @@ This column defines the type of the output protocol. Enter &#39;0&#39; for IEEE 
 
 If you are using the IEEE C37.118 protocol, leave this column blank. If you are using the BPA PDCstream protocol, you will need to specify the INI configuration file. In the example on the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#create_and_verify_ieee_c37_118_2005_data_stream">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#create_and_verify_ieee_c37_118_2005_data_stream">
 
 Getting Started</a> page, the value entered into this column is &quot;iniFileName=TESTSTREAM.ini&quot;. Simply replace &quot;TESTSTREAM.ini&quot; with the name of your INI configuration file and place the file in the &quot;SOURCEDIR\Synchrophasor\Current Version\Build\Output\Debug\Applications\openPDC&quot;
 
@@ -1419,9 +1419,9 @@ Everything else is fairly straightforward, but there is a lot of configuration i
 
 </div>
 
-Last edited <span class="smartDate" title="3/25/2015 9:01:10 PM" LocalTimeTicks="1427342470">Mar 25, 2015 at 9:01 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 12<br />
+Last edited <span class="smartDate" title="3/25/2015 9:01:10 PM" LocalTimeTicks="1427342470">Mar 25, 2015 at 9:01 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 12<br />
 
-Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Manual%20Configurations">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Manual%20Configurations">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 
 </div>
 
