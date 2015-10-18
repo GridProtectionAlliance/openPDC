@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -232,7 +232,7 @@ Ritchie</span></p>
 
         <a name="C26695"></a>
 
-        <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/staphen.md">staphen</a>
+        <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/staphen.md">staphen</a>
 
         <span class="smartDate" title="2/26/2013 4:29:27 PM" localtimeticks="1361924967">Feb 26, 2013 at 4:29 PM</span>&nbsp;
 
@@ -240,7 +240,7 @@ Ritchie</span></p>
 
     See this discussion for information on how adapter dependencies are normally handled &#40;in the alarm system, for instance&#41; without the need for synchronization.<br />
 
-    <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Multiple_Adapter_Synchronization.files/Discussion_433859.md">Discussion 433859</a><p>
+    <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Multiple_Adapter_Synchronization.files/Discussion_433859.md">Discussion 433859</a><p>
 
 </div>
 
@@ -252,7 +252,7 @@ Ritchie</span></p>
 
         <a name="C24851"></a>
 
-        <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/patpentz.md">patpentz</a>
+        <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/patpentz.md">patpentz</a>
 
         <span class="smartDate" title="8/30/2012 4:00:47 PM" localtimeticks="1346367647">Aug 30, 2012 at 4:00 PM</span>&nbsp;
 
@@ -268,9 +268,9 @@ Ritchie</span></p>
 
 <hr />
 
-Last edited <span class="smartDate" title="4/17/2013 8:06:52 PM" LocalTimeTicks="1366254412">Apr 17, 2013 at 8:06 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/staphen.md">staphen</a>, version 13<br />
+Last edited <span class="smartDate" title="4/17/2013 8:06:52 PM" LocalTimeTicks="1366254412">Apr 17, 2013 at 8:06 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/staphen.md">staphen</a>, version 13<br />
 
-Migrated from <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Multiple_Adapter_Synchronization.md">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Adapter%20Synchronization%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 
 </div>
 

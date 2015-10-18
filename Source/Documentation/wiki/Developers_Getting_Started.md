@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -58,29 +58,29 @@
 
 <div class="wikidoc">This guide is intended to aid in building the openPDC software. If you're already familiar with the guide, feel free to use this navigation tool to jump around. If you need to see how to configure the openPDC, please refer to the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md">Getting Started</a> page, under the User's Documentation.<br>
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md">Getting Started</a> page, under the User's Documentation.<br>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Getting_Started.md#openpdc_developers">Build openPDC from source code</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Getting_Started.md#openpdc_developers">Build openPDC from source code</a>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Getting_Started.md#get_dev_tools">Get the development tools</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Getting_Started.md#get_dev_tools">Get the development tools</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Getting_Started.md#get_source_code">Get the source code</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Getting_Started.md#get_source_code">Get the source code</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Getting_Started.md#build_software">Build the software</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Getting_Started.md#build_software">Build the software</a>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Getting_Started.md#build_tvacodelibrary">Build the TVA Code Library</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Getting_Started.md#build_tvacodelibrary">Build the TVA Code Library</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Getting_Started.md#build_timeseriesframework">Build the Time Series Framework</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Getting_Started.md#build_timeseriesframework">Build the Time Series Framework</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Getting_Started.md#build_historian">Build the openPDC Historian</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Getting_Started.md#build_historian">Build the openPDC Historian</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Getting_Started.md#build_synchrophasor">Build the openPDC Synchrophasor</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Getting_Started.md#build_synchrophasor">Build the openPDC Synchrophasor</a>
 
 </li></ul>
 
@@ -136,7 +136,7 @@ FxCop 10.0</a>.</p>
 
 <ul>
 
-<li><a href="http://tvacodelibrary.codeplex.com">TVA Code Library</a> </li><li><a href="http://timeseriesframework.codeplex.com">Time Series Framework</a> </li><li>Historian (included in the openPDC source code) </li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md">openPDC Synchrophasor</a> (includes Historian - soon to become its own project)
+<li><a href="http://tvacodelibrary.codeplex.com">TVA Code Library</a> </li><li><a href="http://timeseriesframework.codeplex.com">Time Series Framework</a> </li><li>Historian (included in the openPDC source code) </li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md">openPDC Synchrophasor</a> (includes Historian - soon to become its own project)
 
 </li><li><a href="http://pmuconnectiontester.codeplex.com">PMU Connection Tester</a> </li><li><a href="http://pmuregistry.codeplex.com">PMU Registry</a> </li></ul>
 
@@ -152,7 +152,7 @@ FxCop 10.0</a>.</p>
 
 <li>TVA Code Library </li><li>Time Series Framework </li><li>openPDC TVA.Historian </li><li>openPDC Synchrophasor </li></ol>
 
-<p>See the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#trouble_building_solution">
+<p>See the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#trouble_building_solution">
 
 FAQ</a> for more details.<br>
 
@@ -232,7 +232,7 @@ FAQ</a> for more details.<br>
 
 <ul>
 
-<li><a href="http://tvacodelibrary.codeplex.com">TVA Code Library</a> </li><li><a href="http://timeseriesframework.codeplex.com">Time Series Framework</a> </li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md">TVA.Historian</a> </li></ul>
+<li><a href="http://tvacodelibrary.codeplex.com">TVA Code Library</a> </li><li><a href="http://timeseriesframework.codeplex.com">Time Series Framework</a> </li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md">TVA.Historian</a> </li></ul>
 
 <p><em><strong>Typical Build Procedure</strong></em></p>
 
@@ -262,9 +262,9 @@ FAQ</a> for more details.<br>
 
 <hr />
 
-Last edited <span class="smartDate" title="6/25/2012 8:25:00 PM" LocalTimeTicks="1340681100">Jun 25, 2012 at 8:25 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 3<br />
+Last edited <span class="smartDate" title="6/25/2012 8:25:00 PM" LocalTimeTicks="1340681100">Jun 25, 2012 at 8:25 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 3<br />
 
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Getting%20Started%20%28Developers%29">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Getting%20Started%20%28Developers%29">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 
 </div>
 

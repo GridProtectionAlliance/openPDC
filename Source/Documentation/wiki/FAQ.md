@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -60,111 +60,111 @@
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#pmu_connection_tester">Where can I find the installer for the PMU Connection Tester?</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#pmu_connection_tester">Where can I find the installer for the PMU Connection Tester?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#openpdc_build_scripts">Does the openPDC provide build scripts?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#openpdc_build_scripts">Does the openPDC provide build scripts?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#openpdc_on_64bit">Can I run the openPDC on a 64-bit OS?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#openpdc_on_64bit">Can I run the openPDC on a 64-bit OS?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#openpdc_x86_targets">Why does the openPDC include x86 platform targets?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#openpdc_x86_targets">Why does the openPDC include x86 platform targets?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#openpdc_on_low_performance_machines">Can I run the openPDC on low-performance machines?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#openpdc_on_low_performance_machines">Can I run the openPDC on low-performance machines?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#synchrophasor">Synchrophasor Questions</a>
-
-<ul>
-
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#synchrophasor_openpdc">openPDC Questions</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#synchrophasor">Synchrophasor Questions</a>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#synchrophasor_connection_is_to_concentrator">What happens to a device when you set a device&rsquo;s &ldquo;Connection is to Concentrator&rdquo; property to true?</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#synchrophasor_openpdc">openPDC Questions</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#initial_vs_sample_database">What is the difference between the initial data set and the sample data set?</a>
+<ul>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#synchrophasor_sql_server_cannot_see_changes">I set up the SQL Server Management Studio and executed the SQL files, but how do I see the changes I made?</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#synchrophasor_connection_is_to_concentrator">What happens to a device when you set a device&rsquo;s &ldquo;Connection is to Concentrator&rdquo; property to true?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#synchrophasor_device_acronym_unique">Does the Device ACRONYM need to be unique? The modeling instructions don't say so, but they do say that it is how the device is referenced by the program.</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#initial_vs_sample_database">What is the difference between the initial data set and the sample data set?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#what_are_status_flags">What are the status flags measurements that are defined for each device?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#synchrophasor_sql_server_cannot_see_changes">I set up the SQL Server Management Studio and executed the SQL files, but how do I see the changes I made?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#synchrophasor_measurement_signalreference_unique">Does the SignalReference field in the Measurement table need to be unique?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#synchrophasor_device_acronym_unique">Does the Device ACRONYM need to be unique? The modeling instructions don't say so, but they do say that it is how the device is referenced by the program.</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#invalid_pointer_address">I receive an error like the following... (Invalid pointer address)</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#what_are_status_flags">What are the status flags measurements that are defined for each device?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#synchrophasor_device_substation_association">Would data from a single PMU Device typically be used at more than one Substation? Or is a particular PMU strongly associated with a single Substation?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#synchrophasor_measurement_signalreference_unique">Does the SignalReference field in the Measurement table need to be unique?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#synchrophasor_concentrator_measurement_association">When the openPDC is collecting data from other PDCs, is the the parent (concentrator) device or the child device associated with a measurement?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#invalid_pointer_address">I receive an error like the following... (Invalid pointer address)</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#synchrophasor_resynchronization_buffer">Is it possible to configure the minimum and maximum time delays that the openPDC waits for the data of the PMUs in the system arrive (also known as the &quot;resynchronization
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#synchrophasor_device_substation_association">Would data from a single PMU Device typically be used at more than one Substation? Or is a particular PMU strongly associated with a single Substation?</a>
 
- buffer&quot;)?</a> </li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#syncrophasor_configuration_file_will_not_save">I cannot get a setting I entered into the configuration file to save. When the application runs it keeps coming up blank and getting removed from the
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#synchrophasor_concentrator_measurement_association">When the openPDC is collecting data from other PDCs, is the the parent (concentrator) device or the child device associated with a measurement?</a>
 
- file. What&rsquo;s wrong?</a> </li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#support_redundant_configurations">Does the openPDC support redundant configurations?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#synchrophasor_resynchronization_buffer">Is it possible to configure the minimum and maximum time delays that the openPDC waits for the data of the PMUs in the system arrive (also known as the &quot;resynchronization
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#different_connections_under_connetion_type">What is the difference between Active, Passive or Hybrid connections as it appears in device status under Connection Type?</a>
+ buffer&quot;)?</a> </li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#syncrophasor_configuration_file_will_not_save">I cannot get a setting I entered into the configuration file to save. When the application runs it keeps coming up blank and getting removed from the
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#sql_server_authentication_mode">I receive an error like the following... (SQL Server authentication mode)</a>
+ file. What&rsquo;s wrong?</a> </li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#support_redundant_configurations">Does the openPDC support redundant configurations?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#sqlite_could_not_load_assembly">When setting up a SQLite database, I receive a message like the following, &quot;Could not load file or assembly 'System.Data.SQLite' or one of its dependencies.&quot;</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#different_connections_under_connetion_type">What is the difference between Active, Passive or Hybrid connections as it appears in device status under Connection Type?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#reset_database">I need to reset my database. What should I do?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#sql_server_authentication_mode">I receive an error like the following... (SQL Server authentication mode)</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#access_database">I receive an error like the following when using an Access Database... (openPDC Manager::Access Denied)</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#sqlite_could_not_load_assembly">When setting up a SQLite database, I receive a message like the following, &quot;Could not load file or assembly 'System.Data.SQLite' or one of its dependencies.&quot;</a>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#reset_database">I need to reset my database. What should I do?</a>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#access_database">I receive an error like the following when using an Access Database... (openPDC Manager::Access Denied)</a>
 
 </li></ul>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#synchrophasor_openpdcmanager">openPDCManager Questions</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#synchrophasor_openpdcmanager">openPDCManager Questions</a>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#sha2_not_supported">When I run the openPDC Manager, I receive an error that states my operating system does not support SHA-2 algorithms. How can I fix this?</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#sha2_not_supported">When I run the openPDC Manager, I receive an error that states my operating system does not support SHA-2 algorithms. How can I fix this?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#trouble_installing_silverlight">I am having trouble installing Silverlight Tools on my system. What does &quot;The hash value is not correct&quot; mean?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#trouble_installing_silverlight">I am having trouble installing Silverlight Tools on my system. What does &quot;The hash value is not correct&quot; mean?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#trouble_installing_manager">I receive an error saying &quot;The installer was interrupted before openPDC Manager could be installed. You need to restart the installer to try again.&quot; But when I
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#trouble_installing_manager">I receive an error saying &quot;The installer was interrupted before openPDC Manager could be installed. You need to restart the installer to try again.&quot; But when I
 
- restart, it simply tells me the same thing. What should I do?</a> </li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#trouble_installing_missing_files">When I try to install openPDC, I recieve an error &quot;Cannot delete the existing openPDC.&quot;</a>
+ restart, it simply tells me the same thing. What should I do?</a> </li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#trouble_installing_missing_files">When I try to install openPDC, I recieve an error &quot;Cannot delete the existing openPDC.&quot;</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#openpdcmanager_installer">I just installed the openPDCManager. Why isn't it working properly?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#openpdcmanager_installer">I just installed the openPDCManager. Why isn't it working properly?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#mime_types">When I go to the webpage, I just get a white screen with an &quot;error on page&quot; icon on the statusbar.</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#mime_types">When I go to the webpage, I just get a white screen with an &quot;error on page&quot; icon on the statusbar.</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#not_connecting_to_database">The openPDCManager doesn't appear to be connecting to my database.</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#not_connecting_to_database">The openPDCManager doesn't appear to be connecting to my database.</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#cross_domain_error">Why am I receiving a CrossDomainError?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#cross_domain_error">Why am I receiving a CrossDomainError?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#local_historian_checkbox">What is the purpose of the local checkbox on the Manage Historians? Are there cases where they would not on the local network? What does this change when active?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#local_historian_checkbox">What is the purpose of the local checkbox on the Manage Historians? Are there cases where they would not on the local network? What does this change when active?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#local_installed_service">The specified service does not exist as a installed service</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#local_installed_service">The specified service does not exist as a installed service</a>
 
 </li></ul>
 
 </li></ul>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#historian">Historian Questions</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#historian">Historian Questions</a>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#windows_7_network_permissions">I receive an error like the following... (Windows 7 network permissions)</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#windows_7_network_permissions">I receive an error like the following... (Windows 7 network permissions)</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#how_much_history_stored">I noticed that my history file seems to stay the same size all of the time. Does it only store a certain amount of history?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#how_much_history_stored">I noticed that my history file seems to stay the same size all of the time. Does it only store a certain amount of history?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#historian_not_responding">How does the openPDC handle situations where a historian is not responding?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#historian_not_responding">How does the openPDC handle situations where a historian is not responding?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#locally_cached_measurements">How does the openPDC handle the locally cached measurements?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#locally_cached_measurements">How does the openPDC handle the locally cached measurements?</a>
 
 </li></ul>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#hadoop">Hadoop Questions</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#hadoop">Hadoop Questions</a>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#what_is_hadoop">What is Hadoop?</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#what_is_hadoop">What is Hadoop?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#how_does_hadoop_relate_to_openpdc">How does Hadoop relate to the openPDC?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#how_does_hadoop_relate_to_openpdc">How does Hadoop relate to the openPDC?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#how_are_openpdc_and_hadoop_used">How are Hadoop and openPDC used in production?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#how_are_openpdc_and_hadoop_used">How are Hadoop and openPDC used in production?</a>
 
 </li></ul>
 
@@ -174,9 +174,9 @@
 
 <p><span style="text-decoration:underline">Answer</span>: The latest installer for the PMU Connection Tester can be found in the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Nightly_Builds.md">Nightly Builds</a>. See the
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Nightly_Builds.md">Nightly Builds</a>. See the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/PMU_Connection_Tester.md">PMU Connection Tester</a> documentation page for more information.</p>
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/PMU_Connection_Tester.md">PMU Connection Tester</a> documentation page for more information.</p>
 
 <h4><a name="openpdc_build_scripts"></a><span style="text-decoration:underline">Question</span>: Does the openPDC provide build scripts?</h4>
 
@@ -246,7 +246,7 @@ Also, you change the target output for the entire solution in Visual Studio to x
 
  a MySQL database for your openPDC configuration. There is a setting in the configuration file (openPDC.exe.config, found in the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 installation directory</a>) that you can use to change the process priority of the openPDC.<br>
 
@@ -272,7 +272,7 @@ installation directory</a>) that you can use to change the process priority of t
 
 </div>
 
-<p>Starting with version 2.1 of the openPDC, you can now <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Running_openPDC_on_a_Raspberry_Pi.md" target="_blank">
+<p>Starting with version 2.1 of the openPDC, you can now <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Running_openPDC_on_a_Raspberry_Pi.md" target="_blank">
 
 run the openPDC on a Raspberry Pi</a>.<br>
 
@@ -612,11 +612,11 @@ The other important property is UseLocalClockAsRealTime which defines a flag tha
 
 <p>If you need to do this manually, follow these steps corresponding to your database:
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#reset_access">SQLite/Access</a>,
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#reset_access">SQLite/Access</a>,
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#reset_sql_server">SQL Server</a>, or
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#reset_sql_server">SQL Server</a>, or
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#reset_mysql">MySQL</a>.</p>
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#reset_mysql">MySQL</a>.</p>
 
 <p><strong>IMPORTANT</strong>: The following steps will reset the database back to the state when you first created it. Any information you entered into the database will be lost.<br>
 
@@ -630,7 +630,7 @@ The other important property is UseLocalClockAsRealTime which defines a flag tha
 
  files). <em>Note that the database may be installed in another folder if not runing from source code.</em>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#access_database">Set up your Access database</a>.
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#access_database">Set up your Access database</a>.
 
 </li></ol>
 
@@ -644,7 +644,7 @@ The other important property is UseLocalClockAsRealTime which defines a flag tha
 
 </li><li>In the Object Explorer on the left, expand &quot;Databases&quot;. </li><li>Right-click &quot;openPDC&quot; and select &quot;Delete&quot;. </li><li>Select the check box labeled &quot;Close existing connections&quot;, and select &quot;OK&quot;.
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#sql_server_database">Set up your SQL Server database</a>.
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#sql_server_database">Set up your SQL Server database</a>.
 
 </li></ol>
 
@@ -662,7 +662,7 @@ The other important property is UseLocalClockAsRealTime which defines a flag tha
 
 <li>DROP DATABASE openPDC; </li><li>exit </li></ol>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#mysql_database">Set up your MySQL database</a>.
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#mysql_database">Set up your MySQL database</a>.
 
 </li></ol>
 
@@ -808,7 +808,7 @@ This is what you should change it to.</p>
 
 <p>You need to modify the &quot;web.config&quot; file in the openPDCManagerServices (note this is not the same file as the &quot;web.config&quot; file in the openPDCManager). The process is described on the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Manager_Configuration.md#configure_database_connection">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Manager_Configuration.md#configure_database_connection">
 
 openPDCManager configuration page</a>.<br>
 
@@ -1046,7 +1046,7 @@ A GUI is available which can perform a similar task: http://www.stevestechspot.c
 
 <li>http://jpatterson.floe.tv/index.php/2009/10/29/the-smartgrid-goes-open-source &nbsp;
 
-    ++ <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.files/JPatterson_floe_tv_2009-10-29_the-smartgrid-goes-open-source.md">Archived WayBack</a>
+    ++ <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.files/JPatterson_floe_tv_2009-10-29_the-smartgrid-goes-open-source.md">Archived WayBack</a>
 
 </li>
 

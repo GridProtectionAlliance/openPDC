@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -188,7 +188,7 @@ If you feel that one of these adapters suits your needs, continue reading.<br>
 
 <li>In the Solution Explorer within Visual Studio, right-click &quot;References&quot; and select &quot;Add Reference...&quot;
 
-</li><li>Select the &quot;Browse&quot; tab and navigate to your <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+</li><li>Select the &quot;Browse&quot; tab and navigate to your <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 installation directory</a>. </li><li>Select &quot;TVA.Core.dll&quot; and &quot;TimeSeriesFramework.dll&quot;, then choose &quot;OK&quot;.
 
@@ -1002,7 +1002,7 @@ ID</a> column in the <a href="#Manual%20Configuration%23Node_table">Node</a> tab
 
 <h4><a name="AdapterName_field"></a>AdapterName</h4>
 
-<p>This field contains the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#Historian.Acronym_column">
+<p>This field contains the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#Historian.Acronym_column">
 
 Acronym</a> used to identify the adapter. By convention, it should be entered in all uppercase with no embedded spaces. Also by convention, underscore (_) is the only special character allowed. You can enter a maximum of 16 characters.</p>
 
@@ -1010,7 +1010,7 @@ Acronym</a> used to identify the adapter. By convention, it should be entered in
 
 <p>This field contains the name of the dll into which your custom adapter has been compiled. The dll should be located in the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 openPDC installation directory</a>.</p>
 
@@ -1092,7 +1092,7 @@ all adapter types</a>, the following methods are available to facile action adap
 
  into the system. More generally, this adapter type can be used whenever the custom adapter needs to know the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#Measurement.SignalTypeID_column">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#Measurement.SignalTypeID_column">
 
 signal type</a> of its input measurements. The base class for this adapter is located in the TVA.PhasorProtocols namespace. You will need to
 
@@ -1412,9 +1412,9 @@ all adapter types</a> and <a href="#action_adapters">action adapters</a>, calcul
 
 <hr />
 
-Last edited <span class="smartDate" title="6/22/2012 1:23:27 PM" LocalTimeTicks="1340396607">Jun 22, 2012 at 1:23 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 3<br />
+Last edited <span class="smartDate" title="6/22/2012 1:23:27 PM" LocalTimeTicks="1340396607">Jun 22, 2012 at 1:23 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 3<br />
 
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Custom%20Adapter%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Custom%20Adapter%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 
 </div>
 

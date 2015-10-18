@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -60,39 +60,39 @@
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#trouble_building_solution">I am having trouble building the solution, what I am doing wrong?</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#trouble_building_solution">I am having trouble building the solution, what I am doing wrong?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#synchrophasor">Synchrophasor Questions</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#synchrophasor">Synchrophasor Questions</a>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#synchrophasor_openpdc">openPDC Questions</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#synchrophasor_openpdc">openPDC Questions</a>
 
 <br>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#synchrophasor_project_type_not_supported">When I open the Synchrophasor solution, I get the following message: &ldquo;The project &ldquo;&hellip;&rdquo; cannot be
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#synchrophasor_project_type_not_supported">When I open the Synchrophasor solution, I get the following message: &ldquo;The project &ldquo;&hellip;&rdquo; cannot be
 
  opened. The project type is not supported by this installation&rdquo;. What is this?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#synchrophasor_pmu_connection_tester_shows_a_million_errors">After I have rebuilt the Framework solution while the Synchrophasor solution is open, then try to rebuild
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#synchrophasor_pmu_connection_tester_shows_a_million_errors">After I have rebuilt the Framework solution while the Synchrophasor solution is open, then try to rebuild
 
  Synchrophasor, the PMU Connection Tester shows a million errors, what is that?</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#synchrophasor_which_adapter_type">I'd like to create my own custom adapter. What are the various types of adapters used for?</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#synchrophasor_which_adapter_type">I'd like to create my own custom adapter. What are the various types of adapters used for?</a>
 
 </li></ul>
 
 </li></ul>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#historian">Historian Questions</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#historian">Historian Questions</a>
 
 <br>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#binary_format_of_history_documented">Is the binary format of the history file documented?</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.md#binary_format_of_history_documented">Is the binary format of the history file documented?</a>
 
 </li></ul>
 
@@ -180,7 +180,7 @@ OutputAdapters: Typically queues all measurements (no sorting) for processing. Q
 
 <br>
 
-You can read more about creating custom adapters on the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Custom_Adapter.md">
+You can read more about creating custom adapters on the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Custom_Adapter.md">
 
 how-to page for custom adapters</a>.<br>
 
@@ -194,7 +194,7 @@ how-to page for custom adapters</a>.<br>
 
 <h4><a name="binary_format_of_history_documented"></a><span style="text-decoration:underline">Question</span>: Is the binary format of the history file documented?</h4>
 
-<p><span style="text-decoration:underline">Answer</span>: Yes. Click <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.files/openPDC_D_Historical_File_Format.docx">
+<p><span style="text-decoration:underline">Answer</span>: Yes. Click <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Frequently_Asked_Questions.files/openPDC_D_Historical_File_Format.docx">
 
 here</a> for a document that describes the high level format. Also, the binary format for all the data stored in the archive is documented in the individual class files in TVA.Historian class library. A good place to start would be the class files under TVA.Historian.Files
 
@@ -216,9 +216,9 @@ here</a> for a document that describes the high level format. Also, the binary f
 
 <hr />
 
-Last edited <span class="smartDate" title="6/25/2012 8:27:46 PM" LocalTimeTicks="1340681266">Jun 25, 2012 at 8:27 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 4<br />
+Last edited <span class="smartDate" title="6/25/2012 8:27:46 PM" LocalTimeTicks="1340681266">Jun 25, 2012 at 8:27 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 4<br />
 
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Frequently%20Asked%20Questions%20%28Developers%29">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Frequently%20Asked%20Questions%20%28Developers%29">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 
 </div>
 

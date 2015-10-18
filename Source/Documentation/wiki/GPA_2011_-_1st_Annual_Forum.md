@@ -18,9 +18,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -530,7 +530,7 @@
 
     <span class="location">241 Ralph McGill Boulevard NE, Atlanta, GA, 30308, US</span>
 
-    <a class="url" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/GPA_2011_-_1st_Annual_Forum.md">http://events.r20.constantcontact.com/register/event?llr=cgvygggab&oeidk=a07e46l1y64fdadcaf2</a>
+    <a class="url" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GPA_2011_-_1st_Annual_Forum.md">http://events.r20.constantcontact.com/register/event?llr=cgvygggab&oeidk=a07e46l1y64fdadcaf2</a>
 
 </span>
 

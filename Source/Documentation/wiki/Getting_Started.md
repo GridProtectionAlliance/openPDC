@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -62,81 +62,81 @@
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers">Install openPDC with the installers</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers">Install openPDC with the installers</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#set_up_database">Manually set up the database</a>
-
-<ul>
-
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#access_database">Setting up an Access database</a>
-
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#sql_server_database">Setting up a SQL Server database</a>
-
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#mysql_database">Setting up a MySQL database</a>
-
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#modify_configuration">Modifying the configuration file</a>
-
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#fix_configuration">Fix the configuration settings</a>
-
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#encrypt_config_settings">Encrypt the configuration settings</a>
-
-</li></ul>
-
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">Running the openPDC</a>
-
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#use_openpdc_console">Using the openPDC console</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#set_up_database">Manually set up the database</a>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#help_command">See the list of commands (the help command)</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#access_database">Setting up an Access database</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#list_command">See the list of adapters (the list command)</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#sql_server_database">Setting up a SQL Server database</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#health_command">View performance details about the openPDC service (the health command)</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#mysql_database">Setting up a MySQL database</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#status_command">View low level data (the status command)</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#modify_configuration">Modifying the configuration file</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#connect_and_disconnect_commands">Connect and disconnect a PMU or PDC (the connect and disconnect commands)</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#fix_configuration">Fix the configuration settings</a>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#encrypt_config_settings">Encrypt the configuration settings</a>
 
 </li></ul>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#run_pmu_connection_tester">Running the PMU Connection Tester</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">Running the openPDC</a>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#use_openpdc_console">Using the openPDC console</a>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#create_and_verify_ieee_c37_118_2005_data_stream">Creating and verifying an IEEE C37.118-2005 data stream</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#help_command">See the list of commands (the help command)</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#create_and_verify_bpa_pdcstream_data_stream">Creating and verifying a BPA PDCstream data stream</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#list_command">See the list of adapters (the list command)</a>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#health_command">View performance details about the openPDC service (the health command)</a>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#status_command">View low level data (the status command)</a>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#connect_and_disconnect_commands">Connect and disconnect a PMU or PDC (the connect and disconnect commands)</a>
 
 </li></ul>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#configure_openpdc_security">Configuring openPDC security</a>
-
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#in_process_historian">Using the in-process historian adapter</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_pmu_connection_tester">Running the PMU Connection Tester</a>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#metadata_web_service">Metadata Web Service</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#create_and_verify_ieee_c37_118_2005_data_stream">Creating and verifying an IEEE C37.118-2005 data stream</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#time_series_web_service">Time-series Web Service</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#create_and_verify_bpa_pdcstream_data_stream">Creating and verifying a BPA PDCstream data stream</a>
 
 </li></ul>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#configure_connection_string">Configuring a Connection String</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#configure_openpdc_security">Configuring openPDC security</a>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#in_process_historian">Using the in-process historian adapter</a>
 
 <ul>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#file">File</a>
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#metadata_web_service">Metadata Web Service</a>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#tcp">TCP</a>
-
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#udp">UDP</a>
-
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#serial">Serial</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#time_series_web_service">Time-series Web Service</a>
 
 </li></ul>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">Installation directory</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#configure_connection_string">Configuring a Connection String</a>
+
+<ul>
+
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#file">File</a>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#tcp">TCP</a>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#udp">UDP</a>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#serial">Serial</a>
+
+</li></ul>
+
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">Installation directory</a>
 
 </li></ul>
 
@@ -154,19 +154,19 @@
 
 <ol>
 
-<li>Go to the &nbsp;<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md">openPDC Home Page</a> and select The
+<li>Go to the &nbsp;<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md">openPDC Home Page</a> and select The
 
 <strong>Downloads</strong> tab. </li><li>Under &quot;Recommended Download&quot;, click on the link labeled &quot;openPDCSetup.zip&quot;.
 
 </li><li>Click &quot;I Agree&quot;. </li><li>Download and extract the installers to a directory of your choice. </li></ol>
 
-</li><li>An alternative is to install from the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Nightly_Builds.md">
+</li><li>An alternative is to install from the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Nightly_Builds.md">
 
 Nightly Builds</a>
 
 <ol>
 
-<li>Go to the&nbsp;<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Nightly_Builds.md">Nightly Builds</a> and&nbsp;click on the&nbsp;<strong>Synchrophasor Installers</strong> link.
+<li>Go to the&nbsp;<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Nightly_Builds.md">Nightly Builds</a> and&nbsp;click on the&nbsp;<strong>Synchrophasor Installers</strong> link.
 
 </li><li>If prompted, agree to the Terms and Conditions </li><li>Download and extract the installers to a directory of your choice. </li></ol>
 
@@ -210,7 +210,7 @@ Nightly Builds</a>
 
 </table>
 
-<p><strong><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Nightly_Builds.md">Nightly Builds</a> Installers</strong> - These may vary with each build</p>
+<p><strong><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Nightly_Builds.md">Nightly Builds</a> Installers</strong> - These may vary with each build</p>
 
 <table border="1" style="border:1px solid #cccccc">
 
@@ -278,7 +278,7 @@ PMUConnectionTesterSetup64.msi</td>
 
  web based openPDC Manager, you will need to change the configuration file as described on the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/FAQ.md#openpdcmanager_installer">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#openpdcmanager_installer">
 
 Frequently Asked Questions</a> page.</p>
 
@@ -322,11 +322,11 @@ Needs IIS 4.0 or later to be installed.</td>
 
 <p style="padding-left:30px">If the database setup utility has successfully installed your database, you can skip ahead to
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">
 
 Running the openPDC</a>. Otherwise, you will need to run the database setup utility again or go to
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#set_up_database">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#set_up_database">
 
 Manually set up the database</a>.</p>
 
@@ -394,11 +394,11 @@ Manually set up the database</a>.</p>
 
 <ol>
 
-<li>The following subsections will instruct you on setting up <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#access_database">
+<li>The following subsections will instruct you on setting up <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#access_database">
 
-Access</a>, <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#sql_server_database">
+Access</a>, <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#sql_server_database">
 
-SQL Server</a>, and <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#mysql_database">
+SQL Server</a>, and <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#mysql_database">
 
 MySQL</a> databases. You only need to set up one of these in order to run the openPDC.
 
@@ -408,19 +408,19 @@ MySQL</a> databases. You only need to set up one of these in order to run the op
 
 <ol>
 
-<li>If you used the installers, navigate to the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+<li>If you used the installers, navigate to the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 installation directory</a> and go to &quot;Database Scripts\Access&quot;. Otherwise, navigate to &quot;SOURCEDIR\Synchrophasor\Current Version\Source\Data\Access&quot; (SOURCEDIR is the directory where you extracted the openPDC source code files).
 
-</li><li>Copy the file &quot;openPDC-SampleDataSet.mdb&quot; to your <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+</li><li>Copy the file &quot;openPDC-SampleDataSet.mdb&quot; to your <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 installation directory</a>. </li><li>Rename the copy to &quot;openPDC.mdb&quot;. </li></ol>
 
 <p>If you haven't configured the openPDC to use another type of database since you built it, you can skip ahead to
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">
 
-Run openPDC</a>. Otherwise, you will need to skip ahead to <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#modify_configuration">
+Run openPDC</a>. Otherwise, you will need to skip ahead to <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#modify_configuration">
 
 modify the configuration file</a>.</p>
 
@@ -446,7 +446,7 @@ modify the configuration file</a>.</p>
 
 <li>Launch SQL Server Management Studio Express, and connect to your database server.
 
-</li><li>In the toolbar, go to &quot;File &gt; Open &gt; File...&quot; </li><li>If you used the installers, navigate to the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+</li><li>In the toolbar, go to &quot;File &gt; Open &gt; File...&quot; </li><li>If you used the installers, navigate to the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 installation directory</a> and go to &quot;Database Scripts\SQL Server&quot;. Otherwise, navigate to &quot;SOURCEDIR\Synchrophasor\Current Version\Source\Data\SQL Server&quot;, select &quot;openPDC.sql&quot;, and select &quot;Open&quot; (SOURCEDIR is the directory
 
@@ -454,7 +454,7 @@ installation directory</a> and go to &quot;Database Scripts\SQL Server&quot;. Ot
 
 </li></ol>
 
-<p>Now skip ahead to <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#modify_configuration">
+<p>Now skip ahead to <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#modify_configuration">
 
 modifying the configuration file</a>.</p>
 
@@ -474,7 +474,7 @@ http://dev.mysql.com/downloads/connector/net/6.2.html</a>.<br>
 
 <ol>
 
-<li>Open your native command terminal. </li><li>If you used the installers, navigate to the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+<li>Open your native command terminal. </li><li>If you used the installers, navigate to the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 installation directory</a> and go to &quot;Database Scripts\MySQL&quot; in the command terminal. Otherwise, navigate to &quot;SOURCEDIR\Synchrophasor\Current Version\Source\Data\MySQL&quot; (SOURCEDIR is the directory where you extracted the openPDC source
 
@@ -486,13 +486,13 @@ installation directory</a> and go to &quot;Database Scripts\MySQL&quot; in the c
 
 <p>The configuration file, &quot;openPDC.exe.config&quot; or &quot;openPDC.config&quot; (found in your
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 installation directory</a>), is written in XML and can be opened with any text editor or with Microsoft Visual Studio 2008.<br>
 
 <strong>Note</strong>: The configuration file is set up to work with Access out-of-the-box, so you can
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">
 
 skip this part</a> if you are using Access and haven't modified it since you built the openPDC. Also, you may skip this part since the latest version of the openPDC provides with a database connection auto-configuration that occurs during the installation process.<br>
 
@@ -610,7 +610,7 @@ You will need to modify the value property of the following settings using the v
 
 <h3><a name="fix_configuration"></a>Fix the configuration settings</h3>
 
-<p>If you installed the openPDC using <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers">
+<p>If you installed the openPDC using <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers">
 
 the openPDC installers</a>, you may need to fix some configuration settings.</p>
 
@@ -632,9 +632,9 @@ the openPDC installers</a>, you may need to fix some configuration settings.</p>
 
 <ol>
 
-<li>Build the ConfigCrypter project which is located in the Framework solution. </li><li>Copy the ConfigCrypter executable (ConfigCrypter.exe) to the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+<li>Build the ConfigCrypter project which is located in the Framework solution. </li><li>Copy the ConfigCrypter executable (ConfigCrypter.exe) to the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
-openPDC installation directory</a>. </li><li>Run the ConfigCrypter executable in the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+openPDC installation directory</a>. </li><li>Run the ConfigCrypter executable in the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 openPDC installation directory</a>. </li><li>Enter the connection string value into the text box labeled &quot;Input&quot;.
 
@@ -674,7 +674,7 @@ The following is an example of an encrypted ConnectionString setting.</p>
 
 <h2><a name="run_openpdc"></a>Running the openPDC</h2>
 
-<p>If you installed the openPDC using <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers">
+<p>If you installed the openPDC using <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers">
 
 the openPDC installers</a>, follow these steps.</p>
 
@@ -706,7 +706,7 @@ If you built the project in Debug mode and want to run it using the debugger, fo
 
 If you built the openPDC from source, you can run it as an application by navigating to your
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 installation directory</a> and double-clicking &quot;openPDC.exe&quot;.<br>
 
@@ -724,11 +724,11 @@ installation directory</a> and double-clicking &quot;openPDC.exe&quot;.<br>
 
 <br>
 
-If you installed the openPDC using <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers">
+If you installed the openPDC using <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers">
 
 the openPDC installers</a>, you can run the console using the executable found in your
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 installation directory</a> (and there should also be a shortcut in your Start menu). If you built it from source, the console should appear as soon as you begin running the openPDC application. Once the openPDC is ready, you can begin issuing commands through
 
@@ -820,7 +820,7 @@ If you enter a command without any of the three options, it will default to the 
 
  &quot;SOURCEDIR\Synchrophasor\Current Version\Build\Output\Debug\openPDC&quot;) which saves each output seen on the screen. If you only want detailed information on a specific adapter,
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#list_command">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#list_command">
 
 the list command</a> can be used to display only that information.</p>
 
@@ -874,7 +874,7 @@ The following subsections will instruct you on creating a data stream and verify
 
 <ol>
 
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">Run openPDC</a>.
+<li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">Run openPDC</a>.
 
 </li><li>Go to the PMU Connection Tester window and select the &quot;Udp&quot; tab toward the top of the window.
 
@@ -910,7 +910,7 @@ The following subsections will instruct you on creating a data stream and verify
 
 </li></ol>
 
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">Run openPDC</a>
+</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc">Run openPDC</a>
 
 </li><li>Go to the PMU Connection Tester window and select the &quot;Udp&quot; tab toward the top of the window.
 
@@ -944,7 +944,7 @@ The following subsections will instruct you on creating a data stream and verify
 
 <h2><a name="configure_openpdc_security"></a>Configuring openPDC security</h2>
 
-<p>In the latest version, security is enabled by default. See&nbsp;<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Remote_Console_Security.md">Remote Console Security</a>&nbsp;for more information.</p>
+<p>In the latest version, security is enabled by default. See&nbsp;<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Remote_Console_Security.md">Remote Console Security</a>&nbsp;for more information.</p>
 
 <hr>
 
@@ -1016,25 +1016,25 @@ Returns historic time series data for the measurement IDs specified in the range
 
 <p>This section contains information about how to configure the connection string for the MultiProtocolFrameParser. The connection string can be found on lines 29-31 of the code snippet from the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Device_to_Data.md">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Device_to_Data.md">
 
 Device to Data in 5 easy steps</a> page and also in the Device table of the openPDC database. The first step to configuring your connection string is to determine which transport protocol you're using and change the value of the transportProtocol key accordingly.
 
  The following subsections detail the keys that are specific to each transport protocol. The possible values for the transportProtocol key are
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#file">file</a>,
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#file">file</a>,
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#tcp">tcp</a>,
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#tcp">tcp</a>,
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#udp">udp</a>, and
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#udp">udp</a>, and
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#serial">serial</a>.</p>
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#serial">serial</a>.</p>
 
 <h3><a name="file"></a>File</h3>
 
 <p><strong>Note</strong>: The connection string is already configured for the file transport protocol in the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Device_to_Data.md#step3">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Device_to_Data.md#step3">
 
 example code snippet</a>.<br>
 
@@ -1142,7 +1142,7 @@ The following is an example connection string using the serial transport protoco
 
 <h2><a name="install_directory"></a>Installation directory</h2>
 
-<p>If you installed the openPDC using <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers">
+<p>If you installed the openPDC using <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers">
 
 the openPDC installers</a> the default installation directory can be found at the following location.<br>
 
@@ -1180,7 +1180,7 @@ If you built the openPDC from source, the output directory is in one of two plac
 
         <a name="C31202"></a>
 
-        <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/avinash_e.md">avinash_e</a>
+        <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/avinash_e.md">avinash_e</a>
 
         <span class="smartDate" title="1/8/2015 2:48:33 AM" localtimeticks="1420714113">Jan 8, 2015 at 2:48 AM</span>&nbsp;
 
@@ -1200,7 +1200,7 @@ If you built the openPDC from source, the output directory is in one of two plac
 
         <a name="C31201"></a>
 
-        <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/avinash_e.md">avinash_e</a>
+        <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/avinash_e.md">avinash_e</a>
 
         <span class="smartDate" title="1/8/2015 2:40:36 AM" localtimeticks="1420713636">Jan 8, 2015 at 2:40 AM</span>&nbsp;
 
@@ -1220,7 +1220,7 @@ If you built the openPDC from source, the output directory is in one of two plac
 
         <a name="C30651"></a>
 
-        <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/priyankarjk.md">priyankarjk</a>
+        <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/priyankarjk.md">priyankarjk</a>
 
         <span class="smartDate" title="8/5/2014 6:38:31 PM" localtimeticks="1407289111">Aug 5, 2014 at 6:38 PM</span>&nbsp;
 
@@ -1240,7 +1240,7 @@ If you built the openPDC from source, the output directory is in one of two plac
 
         <a name="C18750"></a>
 
-        <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/ajstadlin.md">ajstadlin</a>
+        <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/ajstadlin.md">ajstadlin</a>
 
         <span class="smartDate" title="3/2/2011 4:40:24 PM" localtimeticks="1299112824">Mar 2, 2011 at 4:40 PM</span>&nbsp;
 
@@ -1260,7 +1260,7 @@ If you built the openPDC from source, the output directory is in one of two plac
 
         <a name="C15892"></a>
 
-        <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/jmartinbeg.md">jmartinbeg</a>
+        <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/jmartinbeg.md">jmartinbeg</a>
 
         <span class="smartDate" title="6/1/2010 11:07:24 PM" localtimeticks="1275458844">Jun 1, 2010 at 11:07 PM</span>&nbsp;
 

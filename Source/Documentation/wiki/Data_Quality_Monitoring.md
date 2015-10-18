@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -124,7 +124,7 @@ The flatline test is an action adapter and should therefore be entered into the 
 
 <td>NodeID </td>
 
-<td><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#Node.ID_column">Node.ID</a>
+<td><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#Node.ID_column">Node.ID</a>
 
 </td>
 
@@ -142,7 +142,7 @@ The flatline test is an action adapter and should therefore be entered into the 
 
 <td>AdapterName </td>
 
-<td><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#OutputStream.Acronym_column">Acronym</a>
+<td><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#OutputStream.Acronym_column">Acronym</a>
 
 </td>
 
@@ -168,7 +168,7 @@ The flatline test is an action adapter and should therefore be entered into the 
 
 <td>ConnectionString </td>
 
-<td>See <a href="#flatline_connection_string_examples">examples</a> and <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.FlatlineTest">
+<td>See <a href="#flatline_connection_string_examples">examples</a> and <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.FlatlineTest">
 
 syntax</a>. </td>
 
@@ -208,7 +208,7 @@ leadTime</span>, and <span class="codeInline">framesPerSecond</span>. </li><li>I
 
 </li><li>Other optional parameters include <span class="codeInline">minFlatline</span> and
 
-<span class="codeInline">warnInterval</span>. </li><li>See <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.FlatlineTest">
+<span class="codeInline">warnInterval</span>. </li><li>See <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.FlatlineTest">
 
 adapter connection string syntax</a> for more information.</li></ul>
 
@@ -308,7 +308,7 @@ The range test is an action adapter and should therefore be entered into the Cus
 
 <td>NodeID </td>
 
-<td><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#Node.ID_column">Node.ID</a>
+<td><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#Node.ID_column">Node.ID</a>
 
 </td>
 
@@ -326,7 +326,7 @@ The range test is an action adapter and should therefore be entered into the Cus
 
 <td>AdapterName </td>
 
-<td><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#OutputStream.Acronym_column">Acronym</a>
+<td><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#OutputStream.Acronym_column">Acronym</a>
 
 </td>
 
@@ -352,7 +352,7 @@ The range test is an action adapter and should therefore be entered into the Cus
 
 <td>ConnectionString </td>
 
-<td>See <a href="#rangetest_connection_string_examples">examples</a> and <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.RangeTest">
+<td>See <a href="#rangetest_connection_string_examples">examples</a> and <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.RangeTest">
 
 syntax</a>. </td>
 
@@ -398,7 +398,7 @@ lowRange</span> and <span class="codeInline">highRange</span> are also required.
 
 </li><li>Other optional parameters include <span class="codeInline">timeToPurge</span> and
 
-<span class="codeInline">warnInterval</span>. </li><li>See <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.RangeTest">
+<span class="codeInline">warnInterval</span>. </li><li>See <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.RangeTest">
 
 adapter connection string syntax</a> for more information.</li></ul>
 
@@ -414,7 +414,7 @@ This configuration receives all phasor angles defined in the ActiveMeasurement v
 
 This configuration receives all frequencies defined in the ActiveMeasurement view. It posts warnings to the console at 10 second intervals if any measurements have fallen outside the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.RangeTest">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.RangeTest">
 
 default frequency range</a> within the last 2 seconds.<br>
 
@@ -508,7 +508,7 @@ The timestamp test is an action adapter and should therefore be entered into the
 
 <td>NodeID </td>
 
-<td><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#Node.ID_column">Node.ID</a>
+<td><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#Node.ID_column">Node.ID</a>
 
 </td>
 
@@ -526,7 +526,7 @@ The timestamp test is an action adapter and should therefore be entered into the
 
 <td>AdapterName </td>
 
-<td><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#OutputStream.Acronym_column">Acronym</a>
+<td><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#OutputStream.Acronym_column">Acronym</a>
 
 </td>
 
@@ -552,7 +552,7 @@ The timestamp test is an action adapter and should therefore be entered into the
 
 <td>ConnectionString </td>
 
-<td>See <a href="#timestamp_connection_string_examples">examples</a> and <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.TimestampTest">
+<td>See <a href="#timestamp_connection_string_examples">examples</a> and <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.TimestampTest">
 
 syntax</a>. </td>
 
@@ -592,7 +592,7 @@ syntax</a>. </td>
 
 <span class="codeInline">warnInterval</span>. </li><li>The <span class="codeInline">concentratorName</span> parameter is the name or acronym of another action adapter that makes use of its DiscardingMeasurements event (ActionAdapterBase makes use of this event).
 
-</li><li>See <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.TimestampTest">
+</li><li>See <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Connection_Strings.md#DataQualityMonitoring.TimestampTest">
 
 adapter connection string syntax</a> for more information.</li></ul>
 
@@ -668,9 +668,9 @@ Returns all measurements from the specified device that have recently arrived wi
 
 <hr />
 
-Last edited <span class="smartDate" title="4/29/2010 4:11:27 PM" LocalTimeTicks="1272582687">Apr 29, 2010 at 4:11 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/staphen.md">staphen</a>, version 13<br />
+Last edited <span class="smartDate" title="4/29/2010 4:11:27 PM" LocalTimeTicks="1272582687">Apr 29, 2010 at 4:11 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/staphen.md">staphen</a>, version 13<br />
 
-Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Data%20Quality%20Monitoring">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Data%20Quality%20Monitoring">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 
 </div>
 

@@ -20,7 +20,7 @@
 
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -36,9 +36,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -126,7 +126,7 @@
 
 <tr>
 
-<td><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Lag_Time">lagTime</a></td>
+<td><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Lag_Time">lagTime</a></td>
 
 <td>double</td>
 
@@ -138,7 +138,7 @@
 
 <tr>
 
-<td><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Lead_Time">leadTime</a></td>
+<td><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Lead_Time">leadTime</a></td>
 
 <td>double</td>
 
@@ -158,7 +158,7 @@
 
 <tr>
 
-<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Use_Local_Clock_as_RealTime">useLocalClockAsRealTime</a></em></td>
+<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Use_Local_Clock_as_RealTime">useLocalClockAsRealTime</a></em></td>
 
 <td>bool</td>
 
@@ -174,7 +174,7 @@
 
 <tr>
 
-<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Ignore_Bad_Timestamps">ignoreBadTimestamps</a></em></td>
+<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Ignore_Bad_Timestamps">ignoreBadTimestamps</a></em></td>
 
 <td>bool</td>
 
@@ -188,7 +188,7 @@
 
 <tr>
 
-<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Allow_Sorts_By_Arrival">allowSortsByArrival</a></em></td>
+<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Allow_Sorts_By_Arrival">allowSortsByArrival</a></em></td>
 
 <td>bool</td>
 
@@ -256,7 +256,7 @@
 
 <tr>
 
-<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Time_Resolution">timeResolution</a></em></td>
+<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Time_Resolution">timeResolution</a></em></td>
 
 <td>long</td>
 
@@ -270,7 +270,7 @@
 
 <tr>
 
-<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Allow_Preemptive_Publishing">allowPreemptivePublishing</a></em></td>
+<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Allow_Preemptive_Publishing">allowPreemptivePublishing</a></em></td>
 
 <td>bool</td>
 
@@ -298,7 +298,7 @@
 
 <tr>
 
-<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Downsampling_Method">downsamplingMethod</a></em></td>
+<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Downsampling_Method">downsamplingMethod</a></em></td>
 
 <td>string</td>
 
@@ -872,7 +872,7 @@ Example: <span class="codeInline">iniFileName=TESTSTREAM.ini </span></p>
 
 <td>string</td>
 
-<td><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#OutputStream.Acronym_column">Acronym</a></td>
+<td><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#OutputStream.Acronym_column">Acronym</a></td>
 
 <td>Allows the user to define the section under which adapter settings will be found in the configuration file. If an adapter has configuration file settings, it is up to the person implementing the calculated measurement to handle this.</td>
 
@@ -1470,7 +1470,7 @@ Example: <span class="codeInline">protocol=Udp; server=openpdc; port=2004; initi
 
 <h2><a name="HistorianAdapters.LocalOutputAdapter"></a>HistorianAdapters.LocalOutputAdapter</h2>
 
-<p>This adapter is used by default when defining a <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#Historian.IsLocal_column">
+<p>This adapter is used by default when defining a <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#Historian.IsLocal_column">
 
 local historian</a> in the database. Connection strings for this adapter also include all the parameters defined for
 
@@ -1518,7 +1518,7 @@ AdapterBase</a>.<br>
 
 <td>string</td>
 
-<td>The openPDC <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
+<td>The openPDC <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory">
 
 installation directory</a>.</td>
 
@@ -1556,7 +1556,7 @@ Example: <span class="codeInline">instancename=devarchive; archivepath=C:\My Arc
 
 <h2><a name="HistorianAdapters.RemoteOutputAdapter"></a>HistorianAdapters.RemoteOutputAdapter</h2>
 
-<p>This adapter is used by default when defining a <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Manual_Configuration.md#Historian.IsLocal_column">
+<p>This adapter is used by default when defining a <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#Historian.IsLocal_column">
 
 non-local historian</a> in the database. Connection strings for this adapter also include all the parameters defined for
 
@@ -2352,7 +2352,7 @@ Example: <span class="codeInline">sourceids=DEVARCHIVE,OTHERSOURCE </span></p>
 
 <tr>
 
-<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Auto_Publish_Config_Frame">autoPublishConfigFrame</a></em></td>
+<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Auto_Publish_Config_Frame">autoPublishConfigFrame</a></em></td>
 
 <td>bool</td>
 
@@ -2364,7 +2364,7 @@ Example: <span class="codeInline">sourceids=DEVARCHIVE,OTHERSOURCE </span></p>
 
 <tr>
 
-<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Auto_Start_Data_Channel">autoStartDataChannel</a></em></td>
+<td><em><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Auto_Start_Data_Channel">autoStartDataChannel</a></em></td>
 
 <td>bool</td>
 
@@ -2698,7 +2698,7 @@ Example: <span class="codeInline">IDCode=235; dataChannel={port=-1; clients=loca
 
  as many as needed, can be defined associated with same single configuration. Redundant data will pass through the system and be handled via concentrator
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Downsampling_Method">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Help_Me_Choose_Diagrams.md#Downsampling_Method">
 
 downsampling method</a>.</td>
 
@@ -2894,7 +2894,7 @@ downsampling method</a>.</td>
 
 <br>
 
-<strong>commandChannel connection string parameters</strong> (also includes <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md#configure_connection_string">
+<strong>commandChannel connection string parameters</strong> (also includes <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#configure_connection_string">
 
 transport protocol specific parameters</a>)</p>
 
@@ -4610,9 +4610,9 @@ Click <a href="http://www.csharp-examples.net/dataview-rowfilter/">here</a> for 
 
 <hr />
 
-Last edited <span class="smartDate" title="7/24/2013 7:48:27 PM" LocalTimeTicks="1374720507">Jul 24, 2013 at 7:48 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/kevinjones.md">kevinjones</a>, version 112<br />
+Last edited <span class="smartDate" title="7/24/2013 7:48:27 PM" LocalTimeTicks="1374720507">Jul 24, 2013 at 7:48 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/kevinjones.md">kevinjones</a>, version 112<br />
 
-Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Connection%20Strings">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Connection%20Strings">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 
 </div>
 
