@@ -1,31 +1,11 @@
-
-
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
-
-    <meta charset="utf-8" />
-
+<meta charset="utf-8" />
 <title>openPDC</title>
-
-
-
-<!--HtmlToGmd.Head-->
-
-
-
-<!--/HtmlToGmd.Head-->
-
 </head>
-
 <body>
-
 <h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
-
 <hr />
-
-<!--HtmlToGmd.Body-->
-
 <div id="NavigationMenu">
 
 <table style="width: 100%; border-collapse: collapse; border: 0px solid gray;">
