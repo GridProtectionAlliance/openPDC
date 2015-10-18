@@ -4,7 +4,7 @@
 </head>
 <body>
 
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
 
 <hr />
 
@@ -20,9 +20,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -48,19 +48,19 @@
 
 <a title="About the openPDC" href="https://www.gridprotectionalliance.org/products.asp#PDC" target="_blank">
 
-About the openPDC</a> -- <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Extensions.md">
+About the openPDC</a> -- <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Extensions.md">
 
 Commercial Extensions</a></div>
 
 <div style="padding-left:30px">&nbsp;</div>
 
-<div style="padding-left:30px"><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md#Community">Community Involvement</a> --
+<div style="padding-left:30px"><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md#Community">Community Involvement</a> --
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Code_Blog_Developers.md">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Code_Blog_Developers.md">
 
 Code Blog</a> -- <a title="GPA Nightly Builds" href="https://www.gridprotectionalliance.org/nightlybuilds.asp" target="_blank">
 
-Nightly Builds</a> -- <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Home.md#Attributions">Attributions</a></div>
+Nightly Builds</a> -- <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md#Attributions">Attributions</a></div>
 
 <div class="wikidoc"><br>
 
@@ -96,7 +96,7 @@ Grid Solution Framework</a>&nbsp;<a title="Time-series Library" href="https://ww
 
 <div class="wikidoc"><strong>March 6, 2015&nbsp;</strong>After several months of pre-release testing, the
 
-<a title="openPDC version 2.1 -SP1 Release" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v2.1_SP1_Release_615595.md" target="_blank">
+<a title="openPDC version 2.1 -SP1 Release" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v2.1_SP1_Release_615595.md" target="_blank">
 
 openPDC version 2.1 (SP1)</a>&nbsp;has been officially released. There are many new features, optimizations and enhancements plus this is the first version of the openPDC to officially support
 
@@ -156,9 +156,9 @@ openHistorian</a>. With this feature, the openPDC can request data that was lost
 
 <div class="wikidoc"><strong>February&nbsp;20, 2015&nbsp;</strong>The openPDC is now licensed using
 
-<a title="MIT License" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/MIT.md" target="_blank">
+<a title="MIT License" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/MIT.md" target="_blank">
 
-MIT</a>&nbsp;- see <a title="openPDC License Information" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/license.md" target="_blank">
+MIT</a>&nbsp;- see <a title="openPDC License Information" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/license.md" target="_blank">
 
 license info</a>. This also applies to all other GPA products. See <a title="GPA Changes to MIT License" href="https://www.gridprotectionalliance.org/news.asp#N3" target="_blank">
 
@@ -170,7 +170,7 @@ GPA announcement</a>&nbsp;for more information.</div>
 
  2014</strong>&nbsp;</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>Now
 
- included with the latest release of the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v2.0_Release_109522.md">
+ included with the latest release of the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v2.0_Release_109522.md">
 
 openPDC 2.0</a>&nbsp;is a&nbsp;built-in data quality reporting service based on captured statistics of input devices.</div>
 
@@ -190,15 +190,15 @@ openPDC 2.0</a>&nbsp;is a&nbsp;built-in data quality reporting service based on 
 
 </div>
 
-<div class="wikidoc"><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Data_Quality_Reports.md">Click here</a>&nbsp;for more information on this exciting new feature.</div>
+<div class="wikidoc"><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Data_Quality_Reports.md">Click here</a>&nbsp;for more information on this exciting new feature.</div>
 
 <div class="wikidoc">&nbsp;</div>
 
-<div class="wikidoc">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Data_Quality_Reports.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/files/ReportExample.png" alt="openPDC Data Quality Report Example" width="301" height="288"></a></div>
+<div class="wikidoc">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Data_Quality_Reports.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/files/ReportExample.png" alt="openPDC Data Quality Report Example" width="301" height="288"></a></div>
 
 <div class="wikidoc">&nbsp;</div>
 
-<div class="wikidoc"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>February&nbsp;5, 2014</strong>&nbsp;</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>The&nbsp;<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v2.0_Release_109522.md" target="_blank">openPDC
+<div class="wikidoc"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>February&nbsp;5, 2014</strong>&nbsp;</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>The&nbsp;<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v2.0_Release_109522.md" target="_blank">openPDC
 
  version 2.0</a>&nbsp;is now officially released!&nbsp;&nbsp;We recommend *all* openPDC installations be updated to this new version. This version of the openPDC has been extensively tested for stability and includes a multitude of security improvements.</div>
 
@@ -246,29 +246,29 @@ openPDC 2.0</a>&nbsp;is a&nbsp;built-in data quality reporting service based on 
 
 <div class="wikidoc"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>July&nbsp;16, 2013
 
-</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>The&nbsp;<a title="openPDC v1.5-SP1" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v1.5_SP1_Release_98475.md" target="_blank">openPDC
+</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>The&nbsp;<a title="openPDC v1.5-SP1" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.5_SP1_Release_98475.md" target="_blank">openPDC
 
  v1.5 SP1</a>&nbsp;has been officially released - this update includes many important updates over the last several release candidates, including improved support for UTK F-NET, BPA PDCstream and Macrodyne protocols. We recommend that all users upgrade to this
 
  version when possible.&nbsp;Also included with this release is a new tool called the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/GEP_Subscription_Tester.md">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GEP_Subscription_Tester.md">
 
 GEP Subscription Tester</a> which can be used to validate subscription based connections are working as well as validate filter expressions for adapters.</div>
 
 <div class="wikidoc">&nbsp;</div>
 
-<div class="wikidoc">Also released today was a BETA version of the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v2.0_Release_109522.md">
+<div class="wikidoc">Also released today was a BETA version of the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v2.0_Release_109522.md">
 
 openPDC v2.0</a>. The new 2.0 version of the openPDC is&nbsp;a major upgrade over version 1.5. The openPDC v2.0 is a .NET 4.5 application built on the new integrated
 
 <a href="https://gsf.codeplex.com/">Grid Solutions Framework</a> (GSF) with a focus on performance, stability and security. Although this is labeled a BETA, the openPDC v2.0 has been through extensive testing and is considered stable and ready to use - please
 
- see <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v2.0_Release_109522.md">important notes</a> if you plan to upgrade.</div>
+ see <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v2.0_Release_109522.md">important notes</a> if you plan to upgrade.</div>
 
 <div class="wikidoc">&nbsp;</div>
 
-<div class="wikidoc"><em><em>Both openPDC releases also include the latest <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/PMU_Connection_Tester_v4.4.0_109471.md">
+<div class="wikidoc"><em><em>Both openPDC releases also include the latest <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/PMU_Connection_Tester_v4.4.0_109471.md">
 
 PMU Connection Tester, v4.4.0</a> -&nbsp;all protocol related improvements have been rolled into this connection tester update.&nbsp;</em></em>
 
@@ -278,7 +278,7 @@ PMU Connection Tester, v4.4.0</a> -&nbsp;all protocol related improvements have 
 
  will be held in the&nbsp;NERC offices in Atlanta, GA on August 13 and&nbsp;14 of 2013.
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/GPA_2013_-_3rd_Annual_Forum.md" target="_blank">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GPA_2013_-_3rd_Annual_Forum.md" target="_blank">
 
 Click here</a> for more information.&nbsp;
 
@@ -288,7 +288,7 @@ Click here</a> for more information.&nbsp;
 
 <div class="wikidoc"><strong><strong><strong><strong><strong><strong><strong><strong>December&nbsp;4, 2012
 
-</strong></strong></strong></strong></strong></strong></strong></strong>We have&nbsp;posted a release candidate for&nbsp;<a title="openPDC v1.5-SP1" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v1.5_SP1_Release_98475.md" target="_blank">service pack 1</a> to the openPDC version
+</strong></strong></strong></strong></strong></strong></strong></strong>We have&nbsp;posted a release candidate for&nbsp;<a title="openPDC v1.5-SP1" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.5_SP1_Release_98475.md" target="_blank">service pack 1</a> to the openPDC version
 
  1.5. The service pack has been very stable in general testing and we feel like we are very close to release. If you have a moment, please help us by trying it out&nbsp;and letting us know what you think&nbsp;- thanks!</div>
 
@@ -298,19 +298,19 @@ Click here</a> for more information.&nbsp;
 
 <em>how far we've come in those three short years!</em> In celebration of this event, today we are happy to announce the next major release of the openPDC,
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v1.5_Release_76146.md" target="_blank">version 1.5</a>, is now available. We've worked really hard to make this the best version yet, please let us know what you think!</div>
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.5_Release_76146.md" target="_blank">version 1.5</a>, is now available. We've worked really hard to make this the best version yet, please let us know what you think!</div>
 
 <div class="wikidoc">&nbsp;</div>
 
 <div class="wikidoc"><strong><strong>June&nbsp;29, 2012 </strong></strong>Hope you will be able to join us at the second Grid Protection Alliance User's Forum, we have a great meeting in store for you!&nbsp;The forum will be held in the&nbsp;NERC offices
 
- in Atlanta, GA on August 21 and 22 of 2012. <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/GPA_2012_-_2nd_Annual_Forum.md" target="_blank">
+ in Atlanta, GA on August 21 and 22 of 2012. <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GPA_2012_-_2nd_Annual_Forum.md" target="_blank">
 
 Click here</a> for more information.</div>
 
 <div class="wikidoc"><strong>&nbsp;</strong></div>
 
-<div class="wikidoc"><strong>March 26, 2012</strong> Check it out: we have posted an official&nbsp;<a title="/openPDC/Documentation/openPDC_v1.5_Release_76146.htm" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v1.5_Release_76146.md">release preview</a> build of the forthcoming
+<div class="wikidoc"><strong>March 26, 2012</strong> Check it out: we have posted an official&nbsp;<a title="/openPDC/Documentation/openPDC_v1.5_Release_76146.htm" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.5_Release_76146.md">release preview</a> build of the forthcoming
 
  openPDC v1.5. This&nbsp;is the recommended build for those installing&nbsp;the <a title="http://substationsbg.codeplex.com/" href="http://substationsbg.codeplex.com/">
 
@@ -320,7 +320,7 @@ open phasor gateway v1.0</a> and wanting seamless integration using the &quot;ga
 
 <div class="wikidoc"><strong>December 21, 2011 </strong>It's finally here! Download
 
-<a title="openPDC v1.4-SP2" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v1.4_SP2_Release_64388.md">
+<a title="openPDC v1.4-SP2" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.4_SP2_Release_64388.md">
 
 service pack 2 of the openPDC</a> today - we think this is the best build we've ever rolled out! With significant duration performance and usability improvements, openPDC 1.4 SP2 represents a major upgrade. This build includes a completely new user interface
 
@@ -338,7 +338,7 @@ service pack 2 of the openPDC</a> today - we think this is the best build we've 
 
  out a day early, on September 6&nbsp; we will hold a Time-series Framework / openPDC Tutorial.&nbsp;
 
-<a title="GPA User's Forum" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/GPA_2011_-_1st_Annual_Forum.md" target="_blank">
+<a title="GPA User's Forum" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GPA_2011_-_1st_Annual_Forum.md" target="_blank">
 
 Click here</a> for more information &ndash; hope to see you there!</div>
 
@@ -346,7 +346,7 @@ Click here</a> for more information &ndash; hope to see you there!</div>
 
 <div class="wikidoc"><strong>May 12, 2011</strong> Want even more speed out of your openPDC? Try out our latest
 
-<a title="v1.5.5" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v1.4_SP2_Release_64388.md">BETA</a> version (forthcoming v1.4 SP2 - schema update required). We are continuing to make optimizations that reduce CPU utilization and lock contention. The flagship deployment of this
+<a title="v1.5.5" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.4_SP2_Release_64388.md">BETA</a> version (forthcoming v1.4 SP2 - schema update required). We are continuing to make optimizations that reduce CPU utilization and lock contention. The flagship deployment of this
 
  new version of the openPDC at TVA has seen a reduction in CPU utilization from 45% to 5% as compared to original 1.4 release, please let us know if you are seeing these kinds of improvements as well! Thanks to Jian Zuo (now with Alstom) for continued testing
 
@@ -356,7 +356,7 @@ Click here</a> for more information &ndash; hope to see you there!</div>
 
 <div class="wikidoc"><strong>May 2, 2011</strong> We have deployed a service pack for the latest version of the openPDC,
 
-<a title="openPDC v1.4-SP1" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v1.4_SP1_Release_64386.md">
+<a title="openPDC v1.4-SP1" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.4_SP1_Release_64386.md">
 
 release v1.4-SP1</a>, which includes several key improvements, updates and corrections - see the
 
@@ -370,7 +370,7 @@ upgrade notes</a> for full details. One significant improvement in this service 
 
 <div class="wikidoc"><strong>March 11, 2011</strong> We are excited to announce that a new version of the openPDC,
 
-<a title="openPDC v1.4" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_v1.4_Release_52461.md">release v1.4</a>, is now available. This production release build includes integrated system user authentication along with detailed configuration change logging as well as many
+<a title="openPDC v1.4" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.4_Release_52461.md">release v1.4</a>, is now available. This production release build includes integrated system user authentication along with detailed configuration change logging as well as many
 
  performance, stability and usability enhancements (see the <a href="http://openpdc.codeplex.com/SourceControl/list/changesets">
 
@@ -382,7 +382,7 @@ upgrade notes</a> for full details. One significant improvement in this service 
 
 <div class="wikidoc"><strong>January 21, 2011</strong> One of our common openPDC open source contributors,
 
-<a title="Arnold Stadlin" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/ajstadlin.md">
+<a title="Arnold Stadlin" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/ajstadlin.md">
 
 Arnold Stadlin</a>, has created a new related project called the <a title="Open Source PMU" href="http://gtospmu.codeplex.com/">
 
@@ -438,7 +438,7 @@ Open Source PMU</a>. The Open Source PMUs are Phasor Measurement Unit (PMU) sens
 
 </div>
 
-<div class="wikidoc">See the <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/October_2010_version_1.3.11_Maintenance_Release_Features.md">
+<div class="wikidoc">See the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/October_2010_version_1.3.11_Maintenance_Release_Features.md">
 
 full feature list preview</a> for more information.</div>
 
@@ -464,7 +464,7 @@ short video</a> has been prepared that highlights the ease and speed of the open
 
 <p>The August 2010 release includes over 180 commits, an upgrade to Visual Studio 2010 and separation of the major products and frameworks. We look forward to your comments. See the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/August_2010_version_1_2_Release_Features.md">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/August_2010_version_1_2_Release_Features.md">
 
 full feature list preview</a> for more information.</p>
 
@@ -504,7 +504,7 @@ paul.sung@phasordata.com&nbsp;</a> <br>
 
  than 300 improvements made in various portions of the code and the primary submitters to the project at Grid Protection Alliance look forward to your comments. See the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/June_2010_Release.md">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/June_2010_Release.md">
 
 full feature list preview</a> for more information. <br>
 
@@ -530,7 +530,7 @@ NASPI PMU Registry&nbsp;</a> has been added to the openPDC open source community
 
  automatic retrieval of device configuration without the need to upload a configuration file and many popup connection string builders to simply system configuration. See the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/June_2010_Release.md">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/June_2010_Release.md">
 
 full feature list preview</a> for more information on this highly anticipated release.
 
@@ -552,7 +552,7 @@ Grid Protection Alliance&nbsp;</a> (GPA) has assumed responsibility for the main
 
 <strong>March 3, 2010</strong> As the openPDC is being widely adopted, many vendors are now in the process of providing commercial plug-in's and connectivity to the openPDC that work directly with their products. You can now monitor the
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Extensions.md">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Extensions.md">
 
 openPDC Commercial Extensions</a> page to watch for vendor supported commercial products that directly integrate with the openPDC.
 
@@ -580,13 +580,13 @@ jay.giri@areva-td.com&nbsp;</a>&rdquo; <br>
 
 <br>
 
-<strong>January 28, 2010</strong> We are excited to introduce the <strong><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Introducing_the_openPDC_Manager.md">openPDC Management System</a></strong>! As you know, the primary components of
+<strong>January 28, 2010</strong> We are excited to introduce the <strong><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Introducing_the_openPDC_Manager.md">openPDC Management System</a></strong>! As you know, the primary components of
 
  openPDC Management System have been under development for some time. In the latest code release you will find a very useful application called the &ldquo;openPDC Manager&rdquo; that is used to manage multiple openPDC instances from one simple to use web application.
 
  It provides tremendous improvements that simplify configuration and operation of the openPDC, including a device configuration wizard that will take a configuration collected directly from a device and use this information to automatically configure the system.
 
- Click <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Introducing_the_openPDC_Manager.md">
+ Click <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Introducing_the_openPDC_Manager.md">
 
 here</a> for more information. <br>
 
@@ -634,7 +634,7 @@ press release. It is our hope that this code will be used to support the develop
 
 Although the system was specifically developed to manage real-time streaming synchrophasors and generate time-sorted concentrated data streams using standard protocols, its completely modular based design makes the system a general purpose
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Event_stream_processing.md">distributed stream processing engine</a>. This adaptive system design also makes it simple to integrate the openPDC with other systems that you may want to use to help manage and archive streaming
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Event_stream_processing.md">distributed stream processing engine</a>. This adaptive system design also makes it simple to integrate the openPDC with other systems that you may want to use to help manage and archive streaming
 
  event data (e.g., Microsoft's StreamInsight CEP Platform, <a href="http://www.osisoft.com/software-support/what-is-pi/what_is_pi_.aspx">
 
@@ -658,7 +658,7 @@ Below is an image that shows the openPDC modular system design used to manage st
 
  to provide extensible processing of any streaming measured data. The project includes a variety of adapters to make the system operate as a &ldquo;phasor data concentrator&rdquo; as well as to archive time-series measurements into files that can be processed
 
- in bulk by <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Hadoop.md">Hadoop</a>. The map-reduce code needed to allow Hadoop to mass process the time-series archive files is also included.
+ in bulk by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Hadoop.md">Hadoop</a>. The map-reduce code needed to allow Hadoop to mass process the time-series archive files is also included.
 
 <br>
 
@@ -688,7 +688,7 @@ Below is an image that shows the openPDC modular system design used to manage st
 
 <br>
 
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Phasor_measurement_unit.md">Phasor measurements</a> complement traditional electric utility control systems and measure electrical information on the grid in order to determine its health. The electric system information is
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Phasor_measurement_unit.md">Phasor measurements</a> complement traditional electric utility control systems and measure electrical information on the grid in order to determine its health. The electric system information is
 
  sampled at very high speeds with individual measured values getting transmitted at 30 times per second. Each measurement carries a precise time stamp taken from GPS satellites so that the electric grid can be analyzed at a specific (synchronized) time (see
 
@@ -984,9 +984,9 @@ here</a> for more information on becoming an openPDC developer.</p>
 
 <hr />
 
-Last edited <span class="smartDate" title="8/7/2015 2:46:22 PM" LocalTimeTicks="1438983982">Aug 7 at 2:46 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 241<br />
+Last edited <span class="smartDate" title="8/7/2015 2:46:22 PM" LocalTimeTicks="1438983982">Aug 7 at 2:46 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 241<br />
 
-Migrated from <a href="http://openpdc.codeplex.com/releases/view/48468">CodePlex</a> Sep 30, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/releases/view/48468">CodePlex</a> Sep 30, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 
 </div>
 
