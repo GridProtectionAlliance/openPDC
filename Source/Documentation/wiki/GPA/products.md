@@ -24,9 +24,9 @@
 
 <td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
 
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
 
 </tr>
 
@@ -598,7 +598,7 @@ pen source, utility, software, synchrophasor" />
 
                         the <em>open</em>PDC inherits a modular design that allows it to be classified as a generic
 
-                        <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Event_stream_processing.md" target="_blank">event stream processor</a>:
+                        <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Event_stream_processing.md" target="_blank">event stream processor</a>:
 
                         <br /><br />
 
@@ -1634,7 +1634,7 @@ pen source, utility, software, synchrophasor" />
 
                         <strong>Gateway Exchange Protocol</strong> - 
 
-                        The <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/GEP_Subscription_Tester.md" target="_blank">GEP Subscription Tester</a>
+                        The <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GEP_Subscription_Tester.md" target="_blank">GEP Subscription Tester</a>
 
                         is a multi-platform graphical application that can be used to verify connectivity to applications that host an
 
@@ -1664,7 +1664,7 @@ pen source, utility, software, synchrophasor" />
 
                     <p style="text-align: center">
 
-                        <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/GEP_Subscription_Tester.md" target="_blank">
+                        <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GEP_Subscription_Tester.md" target="_blank">
 
                             <img src="docs/products/connectiontester/GSTscreenshot.png" alt="GEP Subscription Tester" style="float: center" />
 
