@@ -1,73 +1,27 @@
-
 <html lang="en" dir="ltr" class="client-nojs">
 <head>
 <meta charset="UTF-8" />
-<title>Apache Hadoop - Wikipedia, the free encyclopedia</title>
-<script>document.documentEl
-
-<!--HtmlToGmd.Body-->
-
-<div id="NavigationMenu">
-
-<table style="width: 100%; border-collapse: collapse; border: 0px solid gray;">
-
-<tr>
-
-<td style="width: 25%; text-align:center;"><b><a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a></b></td>
-
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
-
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
-
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
-
-</tr>
-
-</table>
-
-</div>
-
-<hr />
-
-<!--/HtmlToGmd.Body-->
-
-ement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
-<script>window.RLQ = window.RLQ || []; window.RLQ.push( function () {
-mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":!1,"wgNamespaceNumber":0,"wgPageName":"Apache_Hadoop","wgTitle":"Apache Hadoop","wgCurRevisionId":682834267,"wgRevisionId":682834267,"wgArticleId":5919308,"wgIsArticle":!0,"wgIsRedirect":!1,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["All articles with dead external links","Articles with dead external links from May 2013","Articles with inconsistent citation formats","Articles with a promotional tone from October 2013","All articles with a promotional tone","Wikipedia articles containing buzzwords from October 2013","All articles with unsourced statements","Articles with unsourced statements from October 2012","Articles containing potentially dated statements from October 2009","All articles containing potentially dated statements","Articles containing potentially dated statements from 2013","Official website different in Wikidata and Wikipedia",
-"Wikipedia articles with GND identifiers","Hadoop","Apache Software Foundation","Software using the Apache license","Free software programmed in Java (programming language)","Free system software","Distributed file systems","Cloud infrastructure","Free software for cloud computing"],"wgBreakFrames":!1,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Apache_Hadoop","wgRelevantArticleId":5919308,"wgIsProbablyEditable":!0,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgRedirectedFrom":"Hadoop","wgMediaViewerOnClick":!0,"wgMediaViewerEnabledByDefault":!0,"wikilove-recipient":"","wikilove-anon":0,"wgWikiEditorEnabledModules":{
-"toolbar":!0,"dialogs":!0,"preview":!1,"publish":!1},"wgBetaFeaturesFeatures":[],"wgVisualEditor":{"pageLanguageCode":"en","pageLanguageDir":"ltr","usePageImages":!0,"usePageDescriptions":!0},"wgGatherShouldShowTutorial":!0,"wgGatherEnableSample":0,"wgGatherPageImageThumbnail":"//upload.wikimedia.org/wikipedia/en/thumb/2/2b/Hadoop_1.png/100px-Hadoop_1.png","wgULSAcceptLanguageList":["en-us","en"],"wgULSCurrentAutonym":"English","wgFlaggedRevsParams":{"tags":{"status":{"levels":1,"quality":2,"pristine":3}}},"wgStableRevisionId":null,"wgCategoryTreePageCategoryOptions":"{\"mode\":0,\"hideprefix\":20,\"showcount\":true,\"namespaces\":false}","wgNoticeProject":"wikipedia","wgInternalRedirectTargetUrl":"/wiki/Apache_Hadoop","wgWikibaseItemId":"Q29120","wgVisualEditorToolbarScrollOffset":0});mw.loader.implement("user.options",function($,jQuery){mw.user.options.set({"variant":"en"});});mw.loader.implement("user.tokens",function($,jQuery){mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\"});});mw.loader.load(["mediawiki.action.view.redirect","mediawiki.page.startup","mediawiki.legacy.wikibits","ext.centralauth.centralautologin","mmv.head","ext.gadget.WatchlistBase","ext.gadget.WatchlistGreenIndicators","ext.visualEditor.desktopArticleTarget.init","ext.uls.init","ext.uls.interface","ext.centralNotice.bannerController","skins.vector.js"]);
-} );</script>
-<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=ext.gadget.WatchlistBase%2CWatchlistGreenIndicators%7Cext.uls.nojs%7Cext.visualEditor.desktopArticleTarget.noscript%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles%7Cwikibase.client.init&amp;only=styles&amp;skin=vector" />
-<meta name="ResourceLoaderDynamicStyles" content="" />
-<link rel="stylesheet" href="/w/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector" />
-<style>a:lang(ar),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}</style>
-<script async="" src="/w/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=vector"></script>
-<meta name="generator" content="MediaWiki 1.26wmf24" />
-<link rel="alternate" href="android-app://org.wikipedia/http/en.m.wikipedia.org/wiki/Apache_Hadoop" />
-<link rel="alternate" type="application/x-wiki" title="Edit this page" href="/w/index.php?title=Apache_Hadoop&amp;action=edit" />
-<link rel="edit" title="Edit this page" href="/w/index.php?title=Apache_Hadoop&amp;action=edit" />
-<link rel="apple-touch-icon" href="/static/apple-touch/wikipedia.png" />
-<link rel="shortcut icon" href="/static/favicon/wikipedia.ico" />
-<link rel="search" type="application/opensearchdescription+xml" href="/w/opensearch_desc.php" title="Wikipedia (en)" />
-<link rel="EditURI" type="application/rsd+xml" href="//en.wikipedia.org/w/api.php?action=rsd" />
-<link rel="copyright" href="//creativecommons.org/licenses/by-sa/3.0/" />
-<link rel="alternate" type="application/atom+xml" title="Wikipedia Atom feed" href="/w/index.php?title=Special:RecentChanges&amp;feed=atom" />
-<link rel="canonical" href="https://en.wikipedia.org/wiki/Apache_Hadoop" />
-<link rel="dns-prefetch" href="//meta.wikimedia.org" />
-<!--[if lt IE 7]><style type="text/css">body{behavior:url("/w/static/1.26wmf24/skins/Vector/csshover.min.htc")}</style><![endif]-->
-<!--HtmlToGmd.Head-->
-
-
-
-<!--/HtmlToGmd.Head-->
-
 </head>
-<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Apache_Hadoop skin-vector action-view">
+<!--HtmlToGmd.Body-->
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<hr />
+<div id="NavigationMenu">
+<table style="width: 100%; border-collapse: collapse; border: 0px solid gray;">
+<tr>
+<td style="width: 25%; text-align:center;"><b><a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+</tr>
+</table>
+</div>
+<hr />
+<!--/HtmlToGmd.Body-->
+<body>
 		<div id="mw-page-base" class="noprint"></div>
 		<div id="mw-head-base" class="noprint"></div>
 		<div id="content" class="mw-body" role="main">
 			<a id="top"></a>
-
 							<div id="siteNotice"><!-- CentralNotice --></div>
 						<div class="mw-indicators">
 </div>
@@ -716,8 +670,6 @@ A multi-node Hadoop cluster</div>
 </td>
 </tr>
 </table>
-
-
 <!-- 
 NewPP limit report
 Parsed by mw1186
@@ -735,7 +687,6 @@ Expensive parser function count: 7/500
 Lua time usage: 0.248/10.000 seconds
 Lua memory usage: 5.53 MB/50 MB
 Number of Wikibase entities loaded: 1-->
-
 <!-- 
 Transclusion expansion time report (%,ms,calls,template)
 100.00%  657.391      1 - -total
@@ -749,7 +700,6 @@ Transclusion expansion time report (%,ms,calls,template)
   5.05%   33.209      1 - Template:Navbox
   4.32%   28.425      2 - Template:As_of
 -->
-
 <!-- Saved in parser cache with key enwiki:pcache:idhash:5919308-0!*!0!!en!4!* and timestamp 20150926111044 and revision id 682834267
  -->
 <noscript><img src="//en.wikipedia.org/wiki/Special:CentralAutoLogin/start?type=1x1" alt="" title="" width="1" height="1" style="border: none; position: absolute;" /></noscript></div>					<div class="printfooter">
@@ -759,7 +709,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 		<div id="mw-navigation">
 			<h2>Navigation menu</h2>
-
 			<div id="mw-head">
 									<div id="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
 						<h3 id="p-personal-label">Personal tools</h3>
@@ -778,7 +727,6 @@ Transclusion expansion time report (%,ms,calls,template)
 												<h3 id="p-variants-label">
 							<span>Variants</span><a href="#"></a>
 						</h3>
-
 						<div class="menu">
 							<ul>
 															</ul>
@@ -796,7 +744,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 										<div id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
 						<h3 id="p-cactions-label"><span>More</span><a href="#"></a></h3>
-
 						<div class="menu">
 							<ul>
 															</ul>
@@ -806,7 +753,6 @@ Transclusion expansion time report (%,ms,calls,template)
 						<h3>
 							<label for="searchInput">Search</label>
 						</h3>
-
 						<form action="/w/index.php" id="searchform">
 							<div id="simpleSearch">
 							<input type="search" name="search" placeholder="Search" title="Search Wikipedia [f]" accesskey="f" id="searchInput" /><input type="hidden" value="Special:Search" name="title" /><input type="submit" name="fulltext" value="Search" title="Search Wikipedia for this text" id="mw-searchButton" class="searchButton mw-fallbackSearchButton" /><input type="submit" name="go" value="Go" title="Go to a page with this exact name if it exists" id="searchButton" class="searchButton" />							</div>
@@ -818,7 +764,6 @@ Transclusion expansion time report (%,ms,calls,template)
 				<div id="p-logo" role="banner"><a class="mw-wiki-logo" href="/wiki/Main_Page"  title="Visit the main page"></a></div>
 						<div class="portal" role="navigation" id='p-navigation' aria-labelledby='p-navigation-label'>
 			<h3 id='p-navigation-label'>Navigation</h3>
-
 			<div class="body">
 									<ul>
 						<li id="n-mainpage-description"><a href="/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li><li id="n-contents"><a href="/wiki/Portal:Contents" title="Guides to browsing Wikipedia">Contents</a></li><li id="n-featuredcontent"><a href="/wiki/Portal:Featured_content" title="Featured content – the best of Wikipedia">Featured content</a></li><li id="n-currentevents"><a href="/wiki/Portal:Current_events" title="Find background information on current events">Current events</a></li><li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random article [x]" accesskey="x">Random article</a></li><li id="n-sitesupport"><a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&amp;utm_medium=sidebar&amp;utm_campaign=C13_en.wikipedia.org&amp;uselang=en" title="Support us">Donate to Wikipedia</a></li><li id="n-shoplink"><a href="//shop.wikimedia.org" title="Visit the Wikipedia store">Wikipedia store</a></li>					</ul>
@@ -826,7 +771,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 			<div class="portal" role="navigation" id='p-interaction' aria-labelledby='p-interaction-label'>
 			<h3 id='p-interaction-label'>Interaction</h3>
-
 			<div class="body">
 									<ul>
 						<li id="n-help"><a href="/wiki/Help:Contents" title="Guidance on how to use and edit Wikipedia">Help</a></li><li id="n-aboutsite"><a href="/wiki/Wikipedia:About" title="Find out about Wikipedia">About Wikipedia</a></li><li id="n-portal"><a href="/wiki/Wikipedia:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li><li id="n-recentchanges"><a href="/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li><li id="n-contactpage"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us" title="How to contact Wikipedia">Contact page</a></li>					</ul>
@@ -834,7 +778,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 			<div class="portal" role="navigation" id='p-tb' aria-labelledby='p-tb-label'>
 			<h3 id='p-tb-label'>Tools</h3>
-
 			<div class="body">
 									<ul>
 						<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/Apache_Hadoop" title="List of all English Wikipedia pages containing links to this page [j]" accesskey="j">What links here</a></li><li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/Apache_Hadoop" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li><li id="t-upload"><a href="/wiki/Wikipedia:File_Upload_Wizard" title="Upload files [u]" accesskey="u">Upload file</a></li><li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li><li id="t-permalink"><a href="/w/index.php?title=Apache_Hadoop&amp;oldid=682834267" title="Permanent link to this revision of the page">Permanent link</a></li><li id="t-info"><a href="/w/index.php?title=Apache_Hadoop&amp;action=info" title="More information about this page">Page information</a></li><li id="t-wikibase"><a href="//www.wikidata.org/wiki/Q29120" title="Link to connected data repository item [g]" accesskey="g">Wikidata item</a></li><li id="t-cite"><a href="/w/index.php?title=Special:CiteThisPage&amp;page=Apache_Hadoop&amp;id=682834267" title="Information on how to cite this page">Cite this page</a></li>					</ul>
@@ -842,7 +785,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 			<div class="portal" role="navigation" id='p-coll-print_export' aria-labelledby='p-coll-print_export-label'>
 			<h3 id='p-coll-print_export-label'>Print/export</h3>
-
 			<div class="body">
 									<ul>
 						<li id="coll-create_a_book"><a href="/w/index.php?title=Special:Book&amp;bookcmd=book_creator&amp;referer=Apache+Hadoop">Create a book</a></li><li id="coll-download-as-rdf2latex"><a href="/w/index.php?title=Special:Book&amp;bookcmd=render_article&amp;arttitle=Apache+Hadoop&amp;returnto=Apache+Hadoop&amp;oldid=682834267&amp;writer=rdf2latex">Download as PDF</a></li><li id="t-print"><a href="/w/index.php?title=Apache_Hadoop&amp;printable=yes" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>					</ul>
@@ -850,7 +792,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 			<div class="portal" role="navigation" id='p-lang' aria-labelledby='p-lang-label'>
 			<h3 id='p-lang-label'>Languages</h3>
-
 			<div class="body">
 									<ul>
 						<li class="interlanguage-link interwiki-az"><a href="//az.wikipedia.org/wiki/Apache_Hadoop" title="Apache Hadoop – Azerbaijani" lang="az" hreflang="az">Azərbaycanca</a></li><li class="interlanguage-link interwiki-cs"><a href="//cs.wikipedia.org/wiki/Apache_Hadoop" title="Apache Hadoop – Czech" lang="cs" hreflang="cs">Čeština</a></li><li class="interlanguage-link interwiki-de"><a href="//de.wikipedia.org/wiki/Apache_Hadoop" title="Apache Hadoop – German" lang="de" hreflang="de">Deutsch</a></li><li class="interlanguage-link interwiki-es"><a href="//es.wikipedia.org/wiki/Hadoop" title="Hadoop – Spanish" lang="es" hreflang="es">Español</a></li><li class="interlanguage-link interwiki-fa"><a href="//fa.wikipedia.org/wiki/%D9%87%D8%A7%D8%AF%D9%88%D9%BE" title="هادوپ – Persian" lang="fa" hreflang="fa">فارسی</a></li><li class="interlanguage-link interwiki-fr"><a href="//fr.wikipedia.org/wiki/Hadoop" title="Hadoop – French" lang="fr" hreflang="fr">Français</a></li><li class="interlanguage-link interwiki-ko"><a href="//ko.wikipedia.org/wiki/%EC%95%84%ED%8C%8C%EC%B9%98_%ED%95%98%EB%91%A1" title="아파치 하둡 – Korean" lang="ko" hreflang="ko">한국어</a></li><li class="interlanguage-link interwiki-it"><a href="//it.wikipedia.org/wiki/Apache_Hadoop" title="Apache Hadoop – Italian" lang="it" hreflang="it">Italiano</a></li><li class="interlanguage-link interwiki-he"><a href="//he.wikipedia.org/wiki/Hadoop" title="Hadoop – Hebrew" lang="he" hreflang="he">עברית</a></li><li class="interlanguage-link interwiki-hu"><a href="//hu.wikipedia.org/wiki/Apache_Hadoop" title="Apache Hadoop – Hungarian" lang="hu" hreflang="hu">Magyar</a></li><li class="interlanguage-link interwiki-ml"><a href="//ml.wikipedia.org/wiki/%E0%B4%B9%E0%B4%A1%E0%B5%82%E0%B4%AA%E0%B5%8D%E0%B4%AA%E0%B5%8D" title="ഹഡൂപ്പ് – Malayalam" lang="ml" hreflang="ml">മലയാളം</a></li><li class="interlanguage-link interwiki-mn"><a href="//mn.wikipedia.org/wiki/%D0%90%D0%BF%D0%B0%D1%87%D0%B5_%D0%A5%D0%B0%D0%B4%D0%BE%D0%BE%D0%BF" title="Апаче Хадооп – Mongolian" lang="mn" hreflang="mn">Монгол</a></li><li class="interlanguage-link interwiki-ja"><a href="//ja.wikipedia.org/wiki/Apache_Hadoop" title="Apache Hadoop – Japanese" lang="ja" hreflang="ja">日本語</a></li><li class="interlanguage-link interwiki-pl"><a href="//pl.wikipedia.org/wiki/Apache_Hadoop" title="Apache Hadoop – Polish" lang="pl" hreflang="pl">Polski</a></li><li class="interlanguage-link interwiki-pt"><a href="//pt.wikipedia.org/wiki/Hadoop" title="Hadoop – Portuguese" lang="pt" hreflang="pt">Português</a></li><li class="interlanguage-link interwiki-ro"><a href="//ro.wikipedia.org/wiki/Apache_Hadoop" title="Apache Hadoop – Romanian" lang="ro" hreflang="ro">Română</a></li><li class="interlanguage-link interwiki-ru"><a href="//ru.wikipedia.org/wiki/Hadoop" title="Hadoop – Russian" lang="ru" hreflang="ru">Русский</a></li><li class="interlanguage-link interwiki-sr"><a href="//sr.wikipedia.org/wiki/%D0%90%D0%BF%D0%B0%D1%87%D0%B8_%D0%A5%D0%B0%D0%B4%D1%83%D0%BF" title="Апачи Хадуп – Serbian" lang="sr" hreflang="sr">Српски / srpski</a></li><li class="interlanguage-link interwiki-ta"><a href="//ta.wikipedia.org/wiki/%E0%AE%85%E0%AE%AA%E0%AF%8D%E0%AE%AA%E0%AE%BE%E0%AE%9A%E0%AF%8D%E0%AE%9A%E0%AE%BF_%E0%AE%B9%E0%AE%9F%E0%AF%82%E0%AE%AA%E0%AF%8D" title="அப்பாச்சி ஹடூப் – Tamil" lang="ta" hreflang="ta">தமிழ்</a></li><li class="interlanguage-link interwiki-uk"><a href="//uk.wikipedia.org/wiki/Apache_Hadoop" title="Apache Hadoop – Ukrainian" lang="uk" hreflang="uk">Українська</a></li><li class="interlanguage-link interwiki-vi"><a href="//vi.wikipedia.org/wiki/Apache_Hadoop" title="Apache Hadoop – Vietnamese" lang="vi" hreflang="vi">Tiếng Việt</a></li><li class="interlanguage-link interwiki-zh"><a href="//zh.wikipedia.org/wiki/Apache_Hadoop" title="Apache Hadoop – Chinese" lang="zh" hreflang="zh">中文</a></li><li class="uls-p-lang-dummy"><a href="#"></a></li>					</ul>
@@ -890,18 +831,11 @@ mw.loader.load(["ext.cite.a11y","mediawiki.toc","mediawiki.action.view.postEdit"
 mw.config.set({"wgBackendResponseTime":84,"wgHostname":"mw1255"});
 } );</script>
 	
-
 <!--HtmlToGmd.Foot-->
-
 <div id="copyright">
-
 <hr />
-
 Copyright 2015 <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a>
-
 </div>
-
 <!--/HtmlToGmd.Foot-->
-
 </body>
 </html>

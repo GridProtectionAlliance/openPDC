@@ -699,13 +699,8 @@ Everything else is fairly straightforward, but there is a lot of configuration i
  the configurations covered by this guide in which case you can take a look at the database documentation (coming soon) for a more detailed description of the tables and fields. Finally, if you think you may have found a bug, you are encouraged to create an
  item on the issue tracker in order to bring it to our attention.</div>
 </div>
-<hr />
-<div class="WikiComments">
-<div id="wikiCommentsEmpty">No comments yet.<br></div>
-</div>
 <div id="footer">
 <hr />
-</div>
 Last edited <span class="smartDate" title="3/25/2015 9:01:10 PM" LocalTimeTicks="1427342470">Mar 25, 2015 at 9:01 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 12<br />
 Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Manual%20Configurations">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 </div>

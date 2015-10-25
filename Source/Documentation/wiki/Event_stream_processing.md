@@ -1,37 +1,8 @@
-
 <html lang="en" dir="ltr" class="client-nojs">
 <head>
 <meta charset="UTF-8" />
 <title>Event stream processing - Wikipedia, the free encyclopedia</title>
-<script>document.
-
-<!--HtmlToGmd.Body-->
-
-<div id="NavigationMenu">
-
-<table style="width: 100%; border-collapse: collapse; border: 0px solid gray;">
-
-<tr>
-
-<td style="width: 25%; text-align:center;"><b><a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a></b></td>
-
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
-
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
-
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
-
-</tr>
-
-</table>
-
-</div>
-
-<hr />
-
-<!--/HtmlToGmd.Body-->
-
-documentElement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
+<script>document.documentElement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
 <script>window.RLQ = window.RLQ || []; window.RLQ.push( function () {
 mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":!1,"wgNamespaceNumber":0,"wgPageName":"Event_stream_processing","wgTitle":"Event stream processing","wgCurRevisionId":633566344,"wgRevisionId":633566344,"wgArticleId":1682505,"wgIsArticle":!0,"wgIsRedirect":!1,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Information systems","Cognition","Events (computing)","Radio-frequency identification"],"wgBreakFrames":!1,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Event_stream_processing","wgRelevantArticleId":1682505,"wgIsProbablyEditable":!0,"wgRestrictionEdit":[],
 "wgRestrictionMove":[],"wgMediaViewerOnClick":!0,"wgMediaViewerEnabledByDefault":!0,"wikilove-recipient":"","wikilove-anon":0,"wgWikiEditorEnabledModules":{"toolbar":!0,"dialogs":!0,"preview":!1,"publish":!1},"wgBetaFeaturesFeatures":[],"wgVisualEditor":{"pageLanguageCode":"en","pageLanguageDir":"ltr","usePageImages":!0,"usePageDescriptions":!0},"wgGatherShouldShowTutorial":!0,"wgGatherEnableSample":0,"wgULSAcceptLanguageList":["en-us"],"wgULSCurrentAutonym":"English","wgFlaggedRevsParams":{"tags":{"status":{"levels":1,"quality":2,"pristine":3}}},"wgStableRevisionId":null,"wgCategoryTreePageCategoryOptions":"{\"mode\":0,\"hideprefix\":20,\"showcount\":true,\"namespaces\":false}","wgNoticeProject":"wikipedia","wgWikibaseItemId":"Q5416729","wgVisualEditorToolbarScrollOffset":0});mw.loader.implement("user.options",function($,jQuery){mw.user.options.set({"variant":"en"});});mw.loader.implement("user.tokens",function($,jQuery){mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\"});});mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","ext.centralauth.centralautologin","ext.gadget.WatchlistBase","ext.gadget.WatchlistGreenIndicators","ext.visualEditor.desktopArticleTarget.init","ext.uls.init","ext.uls.interface","ext.centralNotice.bannerController","skins.vector.js"]);
@@ -54,19 +25,27 @@ mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":!1,"wgName
 <link rel="canonical" href="https://en.wikipedia.org/wiki/Event_stream_processing" />
 <link rel="dns-prefetch" href="//meta.wikimedia.org" />
 <!--[if lt IE 7]><style type="text/css">body{behavior:url("/w/static/1.26wmf24/skins/Vector/csshover.min.htc")}</style><![endif]-->
-<!--HtmlToGmd.Head-->
-
-
-
-<!--/HtmlToGmd.Head-->
-
 </head>
 <body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Event_stream_processing skin-vector action-view">
+<!--HtmlToGmd.Body-->
+<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
+<hr />
+<div id="NavigationMenu">
+<table style="width: 100%; border-collapse: collapse; border: 0px solid gray;">
+<tr>
+<td style="width: 25%; text-align:center;"><b><a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
+<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
+</tr>
+</table>
+</div>
+<hr />
+<!--/HtmlToGmd.Body-->
 		<div id="mw-page-base" class="noprint"></div>
 		<div id="mw-head-base" class="noprint"></div>
 		<div id="content" class="mw-body" role="main">
 			<a id="top"></a>
-
 							<div id="siteNotice"><!-- CentralNotice --></div>
 						<div class="mw-indicators">
 </div>
@@ -116,8 +95,6 @@ mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":!1,"wgName
 <li><a rel="nofollow" class="external text" href="http://www.complexevents.com">Complex Event Processing &amp; Real Time Intelligence</a> - A source of industry neutral information on applications, research, usecases, reference architectures, and developments in event processing, run by Prof David Luckham</li>
 <li><a rel="nofollow" class="external text" href="http://odysseus.informatik.uni-oldenburg.de/index.php?id=1&amp;L=2">Odysseus</a> - An open source framework for event processing engines based on Java</li>
 </ul>
-
-
 <!-- 
 NewPP limit report
 Parsed by mw1117
@@ -133,12 +110,10 @@ Template argument size: 0/2097152 bytes
 Highest expansion depth: 2/40
 Expensive parser function count: 0/500
 Number of Wikibase entities loaded: 0-->
-
 <!-- 
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.000      1 - -total
 -->
-
 <!-- Saved in parser cache with key enwiki:pcache:idhash:1682505-0!*!0!!*!*!* and timestamp 20150921124713 and revision id 633566344
  -->
 <noscript><img src="//en.wikipedia.org/wiki/Special:CentralAutoLogin/start?type=1x1" alt="" title="" width="1" height="1" style="border: none; position: absolute;" /></noscript></div>					<div class="printfooter">
@@ -148,7 +123,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 		<div id="mw-navigation">
 			<h2>Navigation menu</h2>
-
 			<div id="mw-head">
 									<div id="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
 						<h3 id="p-personal-label">Personal tools</h3>
@@ -167,7 +141,6 @@ Transclusion expansion time report (%,ms,calls,template)
 												<h3 id="p-variants-label">
 							<span>Variants</span><a href="#"></a>
 						</h3>
-
 						<div class="menu">
 							<ul>
 															</ul>
@@ -185,7 +158,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 										<div id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
 						<h3 id="p-cactions-label"><span>More</span><a href="#"></a></h3>
-
 						<div class="menu">
 							<ul>
 															</ul>
@@ -195,7 +167,6 @@ Transclusion expansion time report (%,ms,calls,template)
 						<h3>
 							<label for="searchInput">Search</label>
 						</h3>
-
 						<form action="/w/index.php" id="searchform">
 							<div id="simpleSearch">
 							<input type="search" name="search" placeholder="Search" title="Search Wikipedia [f]" accesskey="f" id="searchInput" /><input type="hidden" value="Special:Search" name="title" /><input type="submit" name="fulltext" value="Search" title="Search Wikipedia for this text" id="mw-searchButton" class="searchButton mw-fallbackSearchButton" /><input type="submit" name="go" value="Go" title="Go to a page with this exact name if it exists" id="searchButton" class="searchButton" />							</div>
@@ -207,7 +178,6 @@ Transclusion expansion time report (%,ms,calls,template)
 				<div id="p-logo" role="banner"><a class="mw-wiki-logo" href="/wiki/Main_Page"  title="Visit the main page"></a></div>
 						<div class="portal" role="navigation" id='p-navigation' aria-labelledby='p-navigation-label'>
 			<h3 id='p-navigation-label'>Navigation</h3>
-
 			<div class="body">
 									<ul>
 						<li id="n-mainpage-description"><a href="/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li><li id="n-contents"><a href="/wiki/Portal:Contents" title="Guides to browsing Wikipedia">Contents</a></li><li id="n-featuredcontent"><a href="/wiki/Portal:Featured_content" title="Featured content – the best of Wikipedia">Featured content</a></li><li id="n-currentevents"><a href="/wiki/Portal:Current_events" title="Find background information on current events">Current events</a></li><li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random article [x]" accesskey="x">Random article</a></li><li id="n-sitesupport"><a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&amp;utm_medium=sidebar&amp;utm_campaign=C13_en.wikipedia.org&amp;uselang=en" title="Support us">Donate to Wikipedia</a></li><li id="n-shoplink"><a href="//shop.wikimedia.org" title="Visit the Wikipedia store">Wikipedia store</a></li>					</ul>
@@ -215,7 +185,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 			<div class="portal" role="navigation" id='p-interaction' aria-labelledby='p-interaction-label'>
 			<h3 id='p-interaction-label'>Interaction</h3>
-
 			<div class="body">
 									<ul>
 						<li id="n-help"><a href="/wiki/Help:Contents" title="Guidance on how to use and edit Wikipedia">Help</a></li><li id="n-aboutsite"><a href="/wiki/Wikipedia:About" title="Find out about Wikipedia">About Wikipedia</a></li><li id="n-portal"><a href="/wiki/Wikipedia:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li><li id="n-recentchanges"><a href="/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li><li id="n-contactpage"><a href="//en.wikipedia.org/wiki/Wikipedia:Contact_us" title="How to contact Wikipedia">Contact page</a></li>					</ul>
@@ -223,7 +192,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 			<div class="portal" role="navigation" id='p-tb' aria-labelledby='p-tb-label'>
 			<h3 id='p-tb-label'>Tools</h3>
-
 			<div class="body">
 									<ul>
 						<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/Event_stream_processing" title="List of all English Wikipedia pages containing links to this page [j]" accesskey="j">What links here</a></li><li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/Event_stream_processing" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li><li id="t-upload"><a href="/wiki/Wikipedia:File_Upload_Wizard" title="Upload files [u]" accesskey="u">Upload file</a></li><li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li><li id="t-permalink"><a href="/w/index.php?title=Event_stream_processing&amp;oldid=633566344" title="Permanent link to this revision of the page">Permanent link</a></li><li id="t-info"><a href="/w/index.php?title=Event_stream_processing&amp;action=info" title="More information about this page">Page information</a></li><li id="t-wikibase"><a href="//www.wikidata.org/wiki/Q5416729" title="Link to connected data repository item [g]" accesskey="g">Wikidata item</a></li><li id="t-cite"><a href="/w/index.php?title=Special:CiteThisPage&amp;page=Event_stream_processing&amp;id=633566344" title="Information on how to cite this page">Cite this page</a></li>					</ul>
@@ -231,7 +199,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 			<div class="portal" role="navigation" id='p-coll-print_export' aria-labelledby='p-coll-print_export-label'>
 			<h3 id='p-coll-print_export-label'>Print/export</h3>
-
 			<div class="body">
 									<ul>
 						<li id="coll-create_a_book"><a href="/w/index.php?title=Special:Book&amp;bookcmd=book_creator&amp;referer=Event+stream+processing">Create a book</a></li><li id="coll-download-as-rdf2latex"><a href="/w/index.php?title=Special:Book&amp;bookcmd=render_article&amp;arttitle=Event+stream+processing&amp;returnto=Event+stream+processing&amp;oldid=633566344&amp;writer=rdf2latex">Download as PDF</a></li><li id="t-print"><a href="/w/index.php?title=Event_stream_processing&amp;printable=yes" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>					</ul>
@@ -239,7 +206,6 @@ Transclusion expansion time report (%,ms,calls,template)
 </div>
 			<div class="portal" role="navigation" id='p-lang' aria-labelledby='p-lang-label'>
 			<h3 id='p-lang-label'>Languages</h3>
-
 			<div class="body">
 									<ul>
 						<li class="interlanguage-link interwiki-ru"><a href="//ru.wikipedia.org/wiki/Event_stream_processing" title="Event stream processing – Russian" lang="ru" hreflang="ru">Русский</a></li><li class="uls-p-lang-dummy"><a href="#"></a></li>					</ul>
@@ -279,18 +245,11 @@ mw.loader.load(["mediawiki.action.view.postEdit","site","mediawiki.user","mediaw
 mw.config.set({"wgBackendResponseTime":91,"wgHostname":"mw1074"});
 } );</script>
 	
-
 <!--HtmlToGmd.Foot-->
-
 <div id="copyright">
-
 <hr />
-
 Copyright 2015 <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a>
-
 </div>
-
 <!--/HtmlToGmd.Foot-->
-
 </body>
 </html>
