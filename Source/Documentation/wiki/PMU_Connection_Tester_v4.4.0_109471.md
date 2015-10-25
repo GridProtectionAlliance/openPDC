@@ -174,7 +174,7 @@ As of 4.3.10, includes protocol support for IEC 61850-90-5, Macrodyne-G with INI
 <!--HtmlToGmd.Foot-->
 <div id="copyright">
 <hr />
-Copyright 2015 <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a>
+Copyright 2015 <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a>
 </div>
 <!--/HtmlToGmd.Foot-->
 </body>

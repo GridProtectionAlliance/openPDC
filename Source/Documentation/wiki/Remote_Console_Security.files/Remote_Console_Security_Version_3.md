@@ -284,7 +284,7 @@ Likewise, the following ruleset would restrict the system so that only Administr
 
 <hr />
 
-Copyright 2015 <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a>
+Copyright 2015 <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a>
 
 </div>
 

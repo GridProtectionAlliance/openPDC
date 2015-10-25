@@ -35,7 +35,7 @@ June Version 1.1 Feature List Preview</a> </li><li>10/07/2009 - <em><a href="htt
 <!--HtmlToGmd.Foot-->
 <div id="copyright">
 <hr />
-Copyright 2015 <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a>
+Copyright 2015 <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a>
 </div>
 <!--/HtmlToGmd.Foot-->
 </body>

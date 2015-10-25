@@ -241,7 +241,7 @@ Included with the openPDC 2.0 installation is a new tool called the <b>No Intern
 <!--HtmlToGmd.Foot-->
 <div id="copyright">
 <hr />
-Copyright 2015 <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a>
+Copyright 2015 <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a>
 </div>
 <!--/HtmlToGmd.Foot-->
 </body>

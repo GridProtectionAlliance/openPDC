@@ -37,7 +37,7 @@ Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Using%20a%20%
 <!--HtmlToGmd.Foot-->
 <div id="copyright">
 <hr />
-Copyright 2015 <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a>
+Copyright 2015 <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a>
 </div>
 <!--/HtmlToGmd.Foot-->
 </body>

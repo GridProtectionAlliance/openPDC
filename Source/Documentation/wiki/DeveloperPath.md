@@ -70,7 +70,7 @@ Note that some of the rules could be enforced by TFS but the codeplex TFS is a s
 <!--HtmlToGmd.Foot-->
 <div id="copyright">
 <hr />
-Copyright 2015 <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a>
+Copyright 2015 <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a>
 </div>
 <!--/HtmlToGmd.Foot-->
 </body>

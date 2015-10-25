@@ -310,7 +310,7 @@ For the last few months, we&#8217;ve been working with the TVA to help them mana
 
 <hr />
 
-Copyright 2015 <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a>
+Copyright 2015 <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a>
 
 </div>
 

@@ -20,7 +20,7 @@
 <!--/HtmlToGmd.Body-->
 <div id="LicenseContent">
 <h1 class="page_title">The MIT License (MIT)</h1>
-<p id="license_text">Copyright &#40;c&#41; 2015 <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a><br />
+<p id="license_text">Copyright &#40;c&#41; 2015 <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a><br />
 <br />
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files &#40;the &#34;Software&#34;&#41;, to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and&#47;or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions&#58;<br />
 <br />
@@ -30,7 +30,7 @@ THE SOFTWARE IS PROVIDED &#34;AS IS&#34;, WITHOUT WARRANTY OF ANY KIND, EXPRESS 
 </div>
 <div id="footer">
 <hr />
-Copyright Current (Started March 6, 2015) <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a>
+Copyright Current (Started March 6, 2015) <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a>
 </div>
 </body>
 </html>

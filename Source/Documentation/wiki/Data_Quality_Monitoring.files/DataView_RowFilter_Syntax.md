@@ -433,13 +433,6 @@ href="http://msdn2.microsoft.com/en-us/library/system.data.datacolumn.expression
 <hr />
 Copyright &copy; 2010 Jan Slama. </div>
 </div>
-
-<!--HtmlToGmd.Foot-->
-<div id="copyright">
-<hr />
-Copyright 2015 <a href="http://www.gridprotectionoalliance.org">Grid Protection Alliance</a>
-</div>
-<!--/HtmlToGmd.Foot-->
 </body>
 </html>
 
