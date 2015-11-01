@@ -139,7 +139,7 @@ PMU Connection Tester, v4.4.0</a> -&nbsp;all protocol related improvements have 
 <div class="wikidoc">&nbsp;</div>
 <span style="text-decoration:underline">Please make sure to&nbsp;join us at our third annual Grid Protection Alliance User's Forum!</span>&nbsp;We will be covering details about all these new releases as well as what we have planned for next year. The forum
  will be held in the&nbsp;NERC offices in Atlanta, GA on August 13 and&nbsp;14 of 2013.
-<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GPA_2013_-_3rd_Annual_Forum.md" target="_blank">
+<a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GPA/files/GPA_2013_-_3rd_Annual_Forum.pdf" target="_blank">
 Click here</a> for more information.&nbsp;
 <div class="wikidoc">&nbsp;</div>
 <em>&nbsp;</em></div>
@@ -152,7 +152,7 @@ Click here</a> for more information.&nbsp;
 <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.5_Release_76146.md" target="_blank">version 1.5</a>, is now available. We've worked really hard to make this the best version yet, please let us know what you think!</div>
 <div class="wikidoc">&nbsp;</div>
 <div class="wikidoc"><strong><strong>June&nbsp;29, 2012 </strong></strong>Hope you will be able to join us at the second Grid Protection Alliance User's Forum, we have a great meeting in store for you!&nbsp;The forum will be held in the&nbsp;NERC offices
- in Atlanta, GA on August 21 and 22 of 2012. <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GPA_2012_-_2nd_Annual_Forum.md" target="_blank">
+ in Atlanta, GA on August 21 and 22 of 2012. <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GPA/files/GPA_2012_-_2nd_Annual_Forum.pdf" target="_blank">
 Click here</a> for more information.</div>
 <div class="wikidoc"><strong>&nbsp;</strong></div>
 <div class="wikidoc"><strong>March 26, 2012</strong> Check it out: we have posted an official&nbsp;<a title="/openPDC/Documentation/openPDC_v1.5_Release_76146.htm" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.5_Release_76146.md">release preview</a> build of the forthcoming
@@ -169,7 +169,7 @@ service pack 2 of the openPDC</a> today - we think this is the best build we've 
 <div class="wikidoc">&nbsp;</div>
 <div class="wikidoc"><strong>July 18, 2011 </strong>Please join us for the Inaugural Grid Protection Alliance User's Forum for the Time Series Framework and openPDC to be held in the Georgia Power Building in Atlanta, GA on September 7, 2011. If you can come
  out a day early, on September 6&nbsp; we will hold a Time-series Framework / openPDC Tutorial.&nbsp;
-<a title="GPA User's Forum" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GPA_2011_-_1st_Annual_Forum.md" target="_blank">
+<a title="GPA User's Forum" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/GPA/files/GPA_2011_-_1st_Annual_Forum.pdf" target="_blank">
 Click here</a> for more information &ndash; hope to see you there!</div>
 <div class="wikidoc"><strong>&nbsp;</strong></div>
 <div class="wikidoc"><strong>May 12, 2011</strong> Want even more speed out of your openPDC? Try out our latest
