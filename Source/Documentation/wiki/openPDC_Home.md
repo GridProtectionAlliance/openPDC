@@ -493,7 +493,7 @@ here</a> for more information on becoming an openPDC developer.</p>
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="8/7/2015 2:46:22 PM" LocalTimeTicks="1438983982">Aug 7 at 2:46 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 241<br />
-Migrated from <a href="http://openpdc.codeplex.com/releases/view/48468">CodePlex</a> Sep 30, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com">CodePlex</a> Sep 30, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">
