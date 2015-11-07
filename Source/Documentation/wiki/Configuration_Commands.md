@@ -99,7 +99,7 @@ The <span class="codeInline">UpdateConfigFile</span> command is capable of addin
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="6/3/2010 8:48:55 PM" LocalTimeTicks="1275623335">Jun 3, 2010 at 8:48 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/staphen.md">staphen</a>, version 4<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Configuration%20Commands">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Configuration%20Commands">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

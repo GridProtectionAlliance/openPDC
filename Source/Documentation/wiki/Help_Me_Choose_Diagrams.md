@@ -54,8 +54,8 @@
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="2/11/2011 2:47:28 PM" LocalTimeTicks="1297464448">Feb 11, 2011 at 2:47 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 4<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Help%20Me%20Choose%20Diagrams">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="2/11/2011 2:47:28 PM" LocalTimeTicks="1297464448">Feb 11, 2011 at 2:47 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 4<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Help%20Me%20Choose%20Diagrams">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

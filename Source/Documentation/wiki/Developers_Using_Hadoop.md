@@ -144,8 +144,8 @@ In review, for time series data, we suggest that the user &ldquo;maps&rdquo; the
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="3/6/2015 9:21:41 PM" LocalTimeTicks="1425705701">Mar 6, 2015 at 9:21 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 4<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Using%20Hadoop%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="3/6/2015 9:21:41 PM" LocalTimeTicks="1425705701">Mar 6, 2015 at 9:21 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 4<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Using%20Hadoop%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

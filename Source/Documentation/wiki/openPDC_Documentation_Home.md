@@ -112,8 +112,8 @@ Nightly Builds</a> - it's included with the binaries. This help can be used as s
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="5/29/2015 4:39:56 PM" LocalTimeTicks="1432942796">May 29, 2015 at 4:39 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 97<br />
-Migrated from <a href="http://openpdc.codeplex.com/documentation">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="5/29/2015 4:39:56 PM" LocalTimeTicks="1432942796">May 29, 2015 at 4:39 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 97<br />
+Migrated from <a href="http://openpdc.codeplex.com/documentation">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

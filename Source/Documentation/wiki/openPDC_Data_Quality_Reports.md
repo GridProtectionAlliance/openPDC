@@ -27,8 +27,8 @@
 <div class="WikiComments">
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="3/14/2014 1:50:49 PM" LocalTimeTicks="1394830249">Mar 14, 2014 at 1:50 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 4<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=openPDC%20Data%20Quality%20Reports">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="3/14/2014 1:50:49 PM" LocalTimeTicks="1394830249">Mar 14, 2014 at 1:50 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 4<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=openPDC%20Data%20Quality%20Reports">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

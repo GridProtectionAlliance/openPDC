@@ -140,7 +140,7 @@
 </div>
 <div id="footer">
 <hr />
-Migrated from <a href="http://openpdc.codeplex.com/releases/view/48468">CodePlex</a> Oct 8, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/releases/view/48468">CodePlex</a> Oct 8, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">
 <hr />

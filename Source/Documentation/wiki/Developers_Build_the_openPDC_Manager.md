@@ -51,7 +51,7 @@ Now follow these steps to rebuild the Synchrophasor solution.</p>
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="6/20/2012 2:59:26 PM" LocalTimeTicks="1340229566">Jun 20, 2012 at 2:59 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 2<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Build%20openPDC%20Manager%20%28Developers%29">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Build%20openPDC%20Manager%20%28Developers%29">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

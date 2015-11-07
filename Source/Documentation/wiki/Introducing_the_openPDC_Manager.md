@@ -63,7 +63,7 @@
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="6/15/2012 2:36:33 PM" LocalTimeTicks="1339796193">Jun 15, 2012 at 2:36 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 9<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Introducing%20the%20openPDC%20Manager">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Introducing%20the%20openPDC%20Manager">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

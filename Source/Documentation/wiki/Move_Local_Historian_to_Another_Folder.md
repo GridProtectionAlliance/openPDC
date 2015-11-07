@@ -38,8 +38,8 @@ The following steps outline how to move the statistics historian to another fold
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="7/3/2014 4:35:03 PM" LocalTimeTicks="1404430503">Jul 3, 2014 at 4:35 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 3<br />
-Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Move%20Local%20Historian%20to%20Another%20Folder">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="7/3/2014 4:35:03 PM" LocalTimeTicks="1404430503">Jul 3, 2014 at 4:35 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 3<br />
+Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Move%20Local%20Historian%20to%20Another%20Folder">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

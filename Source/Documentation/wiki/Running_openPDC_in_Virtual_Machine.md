@@ -32,8 +32,8 @@ As a massively multi-threaded application, the openPDC effectively utilizes all 
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="2/23/2015 2:51:57 PM" LocalTimeTicks="1424731917">Feb 23 at 2:51 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 2<br />
-Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Running%20openPDC%20in%20Virtual%20Machine">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="2/23/2015 2:51:57 PM" LocalTimeTicks="1424731917">Feb 23 at 2:51 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 2<br />
+Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Running%20openPDC%20in%20Virtual%20Machine">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

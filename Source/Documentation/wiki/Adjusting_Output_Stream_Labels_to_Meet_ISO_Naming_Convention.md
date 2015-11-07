@@ -36,8 +36,8 @@
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="7/6/2012 6:54:55 PM" LocalTimeTicks="1341626095">Jul 6, 2012 at 6:54 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 3<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Adjusting%20Output%20Stream%20Labels%20to%20Meet%20ISO%20Naming%20Convention">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="7/6/2012 6:54:55 PM" LocalTimeTicks="1341626095">Jul 6, 2012 at 6:54 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 3<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Adjusting%20Output%20Stream%20Labels%20to%20Meet%20ISO%20Naming%20Convention">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

@@ -120,7 +120,7 @@ FAQ</a> for more details.<br>
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="6/25/2012 8:25:00 PM" LocalTimeTicks="1340681100">Jun 25, 2012 at 8:25 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 3<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Getting%20Started%20%28Developers%29">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Getting%20Started%20%28Developers%29">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

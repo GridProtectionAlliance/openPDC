@@ -274,7 +274,7 @@ Likewise, the following ruleset would restrict the system so that only Administr
 
     Last edited <span class="smartDate" title="2/17/2014 6:58:51 PM" LocalTimeTicks="1392692331">Feb 17, 2014 at 6:58 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/staphen.md">staphen</a>, version 3<br />
 
-    Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Remote%20Console%20Security&version=3">CodePlex</a> Oct 2, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+    Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Remote%20Console%20Security&version=3">CodePlex</a> Oct 2, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 
 
 

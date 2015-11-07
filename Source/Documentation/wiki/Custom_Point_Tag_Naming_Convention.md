@@ -433,8 +433,8 @@
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="7/25/2014 7:07:57 PM" LocalTimeTicks="1406340477">Jul 25, 2014 at 7:07 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 8<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Custom%20Point%20Tag%20Naming%20Convention">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="7/25/2014 7:07:57 PM" LocalTimeTicks="1406340477">Jul 25, 2014 at 7:07 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 8<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Custom%20Point%20Tag%20Naming%20Convention">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

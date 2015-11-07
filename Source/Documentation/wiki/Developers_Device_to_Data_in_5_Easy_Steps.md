@@ -161,7 +161,7 @@ PMU Connection Tester</a> project.&nbsp; Copy the &quot;Sample1344.PmuCapture&qu
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="6/22/2012 1:17:00 PM" LocalTimeTicks="1340396220">Jun 22, 2012 at 1:17 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 4<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Device%20to%20Data%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Device%20to%20Data%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

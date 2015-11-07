@@ -33,8 +33,8 @@
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="8/1/2012 4:38:32 PM" LocalTimeTicks="1343864312">Aug 1, 2012 at 4:38 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 6<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Bulk%20apply%20line-to-line%20Sqrt%283%29%20adjustment%20to%20all%20voltage%20magnitudes">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="8/1/2012 4:38:32 PM" LocalTimeTicks="1343864312">Aug 1, 2012 at 4:38 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 6<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Bulk%20apply%20line-to-line%20Sqrt%283%29%20adjustment%20to%20all%20voltage%20magnitudes">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

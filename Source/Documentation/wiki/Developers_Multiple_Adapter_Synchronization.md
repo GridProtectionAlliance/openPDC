@@ -124,7 +124,7 @@ I assume that multiple, dependent adapters would use this mechanism. How does th
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="4/17/2013 8:06:52 PM" LocalTimeTicks="1366254412">Apr 17, 2013 at 8:06 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/staphen.md">staphen</a>, version 13<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Adapter%20Synchronization%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Adapter%20Synchronization%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

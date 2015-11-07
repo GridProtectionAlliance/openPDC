@@ -2971,7 +2971,7 @@ SEL Fast Message status word flags enumeration.</p>
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="6/22/2012 1:52:42 PM" LocalTimeTicks="1340398362">Jun 22, 2012 at 1:52 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 5<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=About%20the%20Code%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=About%20the%20Code%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

@@ -498,7 +498,7 @@ Open the Windows Services Dialog Box (In Windows 7, type &#39;services.msc&#39; 
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="7/1/2012 6:27:55 PM" LocalTimeTicks="1341192475">Jul 1, 2012 at 6:27 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/kevinjones.md">kevinjones</a>, version 2<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Two%20Custom%20Adapter%20Examples">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Two%20Custom%20Adapter%20Examples">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

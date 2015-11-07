@@ -701,8 +701,8 @@ Everything else is fairly straightforward, but there is a lot of configuration i
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="3/25/2015 9:01:10 PM" LocalTimeTicks="1427342470">Mar 25, 2015 at 9:01 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 12<br />
-Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Manual%20Configurations">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="3/25/2015 9:01:10 PM" LocalTimeTicks="1427342470">Mar 25, 2015 at 9:01 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 12<br />
+Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Manual%20Configurations">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

@@ -133,8 +133,8 @@ i.e., Frequency rate of change</span></td>
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="4/12/2013 5:55:03 PM" LocalTimeTicks="1365814503">Apr 12, 2013 at 5:55 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 7<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=About%20the%20Signal%20Reference">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="4/12/2013 5:55:03 PM" LocalTimeTicks="1365814503">Apr 12, 2013 at 5:55 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 7<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=About%20the%20Signal%20Reference">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

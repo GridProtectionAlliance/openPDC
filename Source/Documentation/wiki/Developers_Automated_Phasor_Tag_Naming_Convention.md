@@ -368,8 +368,8 @@
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="8/7/2013 5:07:27 PM" LocalTimeTicks="1375920447">Aug 7, 2013 at 5:07 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 6<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Automated%20Phasor%20Tag%20Naming%20Convention">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="8/7/2013 5:07:27 PM" LocalTimeTicks="1375920447">Aug 7, 2013 at 5:07 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 6<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Automated%20Phasor%20Tag%20Naming%20Convention">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

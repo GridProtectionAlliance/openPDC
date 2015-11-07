@@ -196,8 +196,8 @@ http://timeseriesframework.codeplex.com/SourceControl/changeset/view/61589#10113
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="6/10/2014 3:08:40 PM" LocalTimeTicks="1402438120">Jun 10, 2014 at 3:08 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 3<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Data%20Access%20Options%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="6/10/2014 3:08:40 PM" LocalTimeTicks="1402438120">Jun 10, 2014 at 3:08 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 3<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Data%20Access%20Options%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

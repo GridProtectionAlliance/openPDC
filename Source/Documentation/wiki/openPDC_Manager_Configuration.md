@@ -1010,7 +1010,7 @@ Getting Started</a> page.</p>
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="6/20/2012 3:00:12 PM" LocalTimeTicks="1340229612">Jun 20, 2012 at 3:00 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia.htm</a>, version 71<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

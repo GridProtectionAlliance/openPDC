@@ -97,7 +97,7 @@ here</a> for a document that describes the high level format. Also, the binary f
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="6/25/2012 8:27:46 PM" LocalTimeTicks="1340681266">Jun 25, 2012 at 8:27 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 4<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Frequently%20Asked%20Questions%20%28Developers%29">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Frequently%20Asked%20Questions%20%28Developers%29">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

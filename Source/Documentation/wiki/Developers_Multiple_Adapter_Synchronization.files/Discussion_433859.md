@@ -720,7 +720,7 @@ I assume that, as stated above, this only affects adapters that modify existing 
 
 <hr />
 
-    Migrated from <a href="http://openpdc.codeplex.com/discussions/433859">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+    Migrated from <a href="http://openpdc.codeplex.com/discussions/433859">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 
 
 

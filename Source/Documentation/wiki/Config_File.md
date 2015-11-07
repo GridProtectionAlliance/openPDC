@@ -1251,8 +1251,8 @@ This section also includes settings from <a href="#ServerBase">ServerBase</a>.<b
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="6/23/2010 1:46:27 PM" LocalTimeTicks="1277325987">Jun 23, 2010 at 1:46 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 8<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Config%20File">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="6/23/2010 1:46:27 PM" LocalTimeTicks="1277325987">Jun 23, 2010 at 1:46 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 8<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Config%20File">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

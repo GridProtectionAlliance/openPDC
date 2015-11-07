@@ -25,8 +25,8 @@
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="7/2/2010 7:47:22 PM" LocalTimeTicks="1278125242">Jul 2, 2010 at 7:47 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 5<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=June1.1FeatureList">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="7/2/2010 7:47:22 PM" LocalTimeTicks="1278125242">Jul 2, 2010 at 7:47 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 5<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=June1.1FeatureList">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

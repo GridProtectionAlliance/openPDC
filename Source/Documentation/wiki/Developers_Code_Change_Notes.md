@@ -31,8 +31,8 @@ June Version 1.1 Feature List Preview</a> </li><li>10/07/2009 - <em><a href="/op
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="7/3/2013 4:55:55 PM" LocalTimeTicks="1372895755">Jul 3, 2013 at 4:55 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 5<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Code%20Blog%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="7/3/2013 4:55:55 PM" LocalTimeTicks="1372895755">Jul 3, 2013 at 4:55 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 5<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Code%20Blog%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

@@ -120,8 +120,8 @@ Ritchie<br>
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="3/27/2015 1:30:35 AM" LocalTimeTicks="1427445035">Mar 27, 2015 at 1:30 AM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 10
-Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Running%20openPDC%20on%20a%20Raspberry%20Pi">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="3/27/2015 1:30:35 AM" LocalTimeTicks="1427445035">Mar 27, 2015 at 1:30 AM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 10
+Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Running%20openPDC%20on%20a%20Raspberry%20Pi">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

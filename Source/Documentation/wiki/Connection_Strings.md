@@ -2294,7 +2294,7 @@ Click <a href="http://www.csharp-examples.net/dataview-rowfilter/">here</a> for 
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="7/24/2013 7:48:27 PM" LocalTimeTicks="1374720507">Jul 24, 2013 at 7:48 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/kevinjones.md">kevinjones</a>, version 112<br />
-Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Connection%20Strings">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Connection%20Strings">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

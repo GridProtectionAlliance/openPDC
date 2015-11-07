@@ -131,7 +131,7 @@ Likewise, the following ruleset would restrict the system so that only Administr
 <div id="footer">
 <hr />
 Last edited <span class="smartDate" title="3/27/2014 7:21:10 PM" LocalTimeTicks="1395973270">Mar 27, 2014 at 7:21 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/staphen.md">staphen</a>, version 4<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Remote%20Console%20Security">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Remote%20Console%20Security">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

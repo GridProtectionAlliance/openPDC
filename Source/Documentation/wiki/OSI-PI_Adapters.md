@@ -61,8 +61,8 @@ The real-time PI input adapter connects to PI using event pipes, which is the sa
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="2/9/2015 4:30:07 PM" LocalTimeTicks="1423528207">Feb 9 at 4:30 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 4<br />
-Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=OSI-PI%20Adapters">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="2/9/2015 4:30:07 PM" LocalTimeTicks="1423528207">Feb 9 at 4:30 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 4<br />
+Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=OSI-PI%20Adapters">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">

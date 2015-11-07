@@ -40,8 +40,8 @@ Unity 3D gaming engine</a> and can currently run on Windows, Mac, Linux and Andr
 </div>
 <div id="footer">
 <hr />
-Last edited <span class="smartDate" title="7/17/2013 9:46:26 AM" LocalTimeTicks="1374079586">Jul 17, 2013 at 9:46 AM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ritchiecarroll.md">ritchiecarroll</a>, version 6<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=GEP%20Subscription%20Tester">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/ajstadlin.md">ajs</a>
+Last edited <span class="smartDate" title="7/17/2013 9:46:26 AM" LocalTimeTicks="1374079586">Jul 17, 2013 at 9:46 AM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 6<br />
+Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=GEP%20Subscription%20Tester">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
 </div>
 <!--HtmlToGmd.Foot-->
 <div id="copyright">
