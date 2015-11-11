@@ -20,14 +20,14 @@
 <!--/HtmlToGmd.Body-->
 <div class="WikiContent">
 <div class="wikidoc">The Gateway Exchange Protocol (GEP) Subscription Tester is a new tool used to validate that a subscription based connection is working as expected. It can also be used to validate filter expressions that can be used to select a set of
- points in the openPDC and other products (e.g., <a href="https://siegate.codeplex.com/">
+ points in the openPDC and other products (e.g., <a href="https://github.com/GridProtectionAlliance/SIEGate/">
 SIEGate</a>) for use as inputs or outputs for any adapter.<br>
 <br>
 The GEP Subscription Tester is automatically installed as a feature of the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.5_SP1_Release_98475.md">
 openPDC v1.5 SP1</a> or can be manually downloaded from <a href="http://www.gridprotectionalliance.org/NightlyBuilds/openPDC/GEP%20Subscription%20Tester.zip">
 here</a>.<br>
 <br>
-This application is a simple graphical program that uses the <a href="http://gsf.codeplex.com/">
+This application is a simple graphical program that uses the <a href="https://github.com/GridProtectionAlliance/gsf">
 Grid Solutions Framework</a> Unity subscription API to display trending lines for each subscribed measurement in the specified filter expression - trend lines are updated as values are received in real-time. Mouse controls (or finger gestures) will allow rotation
  and zoom, arrows keys will adjust X/Y location. Clicking on the &quot;Subscription Controls&quot; area at the bottom of the screen will pop-up a control window to allow you to change connection information (e.g., server/port to connect to), the filter expression
  and even replay data if a historian is enabled.<br>
