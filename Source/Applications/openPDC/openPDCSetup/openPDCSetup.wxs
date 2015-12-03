@@ -465,6 +465,12 @@
       <Component Id="PowerCalculations">
         <File Id="PowerCalculations.dll" Name="PowerCalculations.dll" Source="$(var.SolutionDir)\Dependencies\GSF\PowerCalculations.dll" />
       </Component>
+      <Component Id="PowerCalculations.UI">
+        <File Id="PowerCalculations.UI.dll" Name="PowerCalculations.UI.dll" Source="$(var.SolutionDir)\Dependencies\GSF\PowerCalculations.UI.dll" />
+      </Component>
+      <Component Id="PowerCalculations.UI.WPF">
+        <File Id="PowerCalculations.UI.WPF.dll" Name="PowerCalculations.UI.WPF.dll" Source="$(var.SolutionDir)\Dependencies\GSF\PowerCalculations.UI.WPF.dll" />
+      </Component>
       <Component Id="TestingAdapters">
         <File Id="TestingAdapters.dll" Name="TestingAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\TestingAdapters.dll" />
       </Component>
