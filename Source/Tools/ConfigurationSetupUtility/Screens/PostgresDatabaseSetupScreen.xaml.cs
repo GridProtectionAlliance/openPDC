@@ -1,5 +1,5 @@
 ﻿//******************************************************************************************************
-//  OracleDatabaseSetupScreen.xaml.cs - Gbtc
+//  PostgresDatabaseSetupScreen.xaml.cs - Gbtc
 //
 //  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -26,24 +26,26 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml.Linq;
+using GSF;
 using GSF.Data;
 using GSF.IO;
 
 namespace ConfigurationSetupUtility.Screens
 {
     /// <summary>
-    /// Interaction logic for OracleDatabaseSetupScreen.xaml
+    /// Interaction logic for PostgresDatabaseSetupScreen.xaml
     /// </summary>
-    public partial class OracleDatabaseSetupScreen : UserControl, IScreen
+    public partial class PostgresDatabaseSetupScreen : UserControl, IScreen
     {
         #region [ Members ]
 
         // Fields
-        private OracleSetup m_oracleSetup;
+        private PostgresSetup m_postgresSetup;
         private Dictionary<string, object> m_state;
         private Button m_advancedButton;
 
@@ -52,13 +54,13 @@ namespace ConfigurationSetupUtility.Screens
         #region [ Constructors ]
 
         /// <summary>
-        /// Creates a new instance of the <see cref="OracleDatabaseSetupScreen"/> class.
+        /// Creates a new instance of the <see cref="PostgresDatabaseSetupScreen"/> class.
         /// </summary>
-        public OracleDatabaseSetupScreen()
+        public PostgresDatabaseSetupScreen()
         {
-            m_oracleSetup = new OracleSetup();
+            m_postgresSetup = new PostgresSetup();
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(OracleDatabaseSetupScreen_Loaded);
+            this.Loaded += PostgresDatabaseSetupScreen_Loaded;
         }
 
         #endregion
@@ -140,24 +142,10 @@ namespace ConfigurationSetupUtility.Screens
         {
             get
             {
-                if (string.IsNullOrEmpty(m_tnsNameTextBox.Text))
+                if (string.IsNullOrEmpty(m_hostNameTextBox.Text))
                 {
-                    MessageBox.Show("Please enter a valid name for the transparent network substrate (TNS).");
-                    m_tnsNameTextBox.Focus();
-                    return false;
-                }
-
-                if (string.IsNullOrEmpty(m_schemaUserNameTextBox.Text))
-                {
-                    MessageBox.Show("Please enter a valid user name for the schema user.");
-                    m_schemaUserNameTextBox.Focus();
-                    return false;
-                }
-
-                if (m_schemaUserNameTextBox.Text.Length > 30)
-                {
-                    MessageBox.Show("Schema user name must be 30 characters or less.");
-                    m_schemaUserNameTextBox.Focus();
+                    MessageBox.Show("Please enter a valid name for the host of the database.");
+                    m_hostNameTextBox.Focus();
                     return false;
                 }
 
@@ -170,7 +158,8 @@ namespace ConfigurationSetupUtility.Screens
 
                     try
                     {
-                        m_oracleSetup.OpenConnection(ref connection);
+                        m_postgresSetup.OpenConnection(ref connection);
+
                         if (Convert.ToInt32(connection.ExecuteScalar("SELECT COUNT(*) FROM UserAccount")) > 0)
                             m_state["securityUpgrade"] = false;
                         else
@@ -188,8 +177,7 @@ namespace ConfigurationSetupUtility.Screens
                     }
                     finally
                     {
-                        if (connection != null)
-                            connection.Dispose();
+                        connection?.Dispose();
                     }
                 }
 
@@ -228,7 +216,7 @@ namespace ConfigurationSetupUtility.Screens
         #region [ Methods ]
 
         // Set focus on the admin user name textbox onload.
-        private void OracleDatabaseSetupScreen_Loaded(object sender, RoutedEventArgs e)
+        private void PostgresDatabaseSetupScreen_Loaded(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(m_adminUserNameTextBox.Text))
                 m_adminUserNameTextBox.Focus();
@@ -251,36 +239,36 @@ namespace ConfigurationSetupUtility.Screens
                 string connectionString;
                 string dataProviderString;
 
-                m_state["oracleSetup"] = m_oracleSetup;
-                m_oracleSetup.TnsName = m_tnsNameTextBox.Text;
-                m_oracleSetup.AdminUserName = m_adminUserNameTextBox.Text;
-                m_oracleSetup.AdminPassword = m_adminPasswordTextBox.Password;
-                m_oracleSetup.CreateNewSchema = m_createNewSchemaCheckBox.IsChecked.HasValue && m_createNewSchemaCheckBox.IsChecked.Value;
+                m_state["postgresSetup"] = m_postgresSetup;
+                m_postgresSetup.HostName = m_hostNameTextBox.Text;
+                m_postgresSetup.Port = m_portTextBox.Text;
+                m_postgresSetup.DatabaseName = m_databaseTextBox.Text;
+                m_postgresSetup.AdminUserName = m_adminUserNameTextBox.Text;
+                m_postgresSetup.AdminPassword = m_adminPasswordTextBox.SecurePassword;
 
-                m_createNewSchemaCheckBox.Visibility = newUserVisibility;
-                m_schemaUserNameLabel.Visibility = newUserVisibility;
-                m_schemaUserPasswordLabel.Visibility = newUserVisibility;
-                m_schemaUserNameTextBox.Visibility = newUserVisibility;
-                m_schemaUserPasswordTextBox.Visibility = newUserVisibility;
-                m_oracleDatabaseInstructionTextBlock.Text = (!existing || migrate) ? newDatabaseMessage : oldDatabaseMessage;
+                m_roleNameLabel.Visibility = newUserVisibility;
+                m_rolePasswordLabel.Visibility = newUserVisibility;
+                m_roleNameTextBox.Visibility = newUserVisibility;
+                m_rolePasswordTextBox.Visibility = newUserVisibility;
+                m_postgresDatabaseInstructionTextBlock.Text = (!existing || migrate) ? newDatabaseMessage : oldDatabaseMessage;
 
-                // If connecting to existing database, user name and password need not be admin user:
+                // If connecting to existing database, user name and password need to be admin user:
                 if (existing && !migrate)
                 {
                     m_userNameLabel.Content = "User name:";
                     m_passwordLabel.Content = "Password:";
-                    m_oracleSetup.SchemaUserName = m_adminUserNameTextBox.Text;
-                    m_oracleSetup.SchemaPassword = m_adminPasswordTextBox.Password;
+                    m_postgresSetup.RoleName = m_adminUserNameTextBox.Text;
+                    m_postgresSetup.RolePassword = m_adminPasswordTextBox.SecurePassword;
                 }
                 else
                 {
                     m_userNameLabel.Content = "Admin user name:";
                     m_passwordLabel.Content = "Admin password:";
-                    m_oracleSetup.SchemaUserName = m_schemaUserNameTextBox.Text;
-                    m_oracleSetup.SchemaPassword = m_schemaUserPasswordTextBox.Password;
+                    m_postgresSetup.RoleName = m_roleNameTextBox.Text;
+                    m_postgresSetup.RolePassword = m_rolePasswordTextBox.SecurePassword;
                 }
 
-                m_schemaUserNameTextBox.Text = migrate ? "openPDC" + App.DatabaseVersionSuffix : "openPDC";
+                m_databaseTextBox.Text = migrate ? "openPDC" + App.DatabaseVersionSuffix : "openPDC";
 
                 // When using an existing database as-is, read existing connection settings out of the configuration file
                 string configFile = FilePath.GetAbsolutePath("openPDC.exe.config");
@@ -306,19 +294,21 @@ namespace ConfigurationSetupUtility.Screens
                         .Select(element => (string)element.Attribute("value"))
                         .FirstOrDefault();
 
-                    if (!string.IsNullOrEmpty(connectionString) && m_oracleSetup.DataProviderString.Equals(dataProviderString, StringComparison.InvariantCultureIgnoreCase))
+                    if (!string.IsNullOrEmpty(connectionString) && PostgresSetup.DataProviderString.Equals(dataProviderString, StringComparison.OrdinalIgnoreCase))
                     {
-                        m_oracleSetup.ConnectionString = connectionString;
-                        m_tnsNameTextBox.Text = m_oracleSetup.TnsName;
-                        m_adminUserNameTextBox.Text = m_oracleSetup.SchemaUserName;
-                        m_adminPasswordTextBox.Password = m_oracleSetup.SchemaPassword;
+                        m_postgresSetup.ConnectionString = connectionString;
+                        m_hostNameTextBox.Text = m_postgresSetup.HostName;
+                        m_portTextBox.Text = m_postgresSetup.Port;
+                        m_databaseTextBox.Text = m_postgresSetup.DatabaseName;
+                        m_adminUserNameTextBox.Text = m_postgresSetup.RoleName;
+                        m_adminPasswordTextBox.Password = m_postgresSetup.RolePassword?.ToUnsecureString();
                     }
                 }
             }
         }
 
         // Occurs when the screen is made visible or invisible.
-        private void SqlServerDatabaseSetupScreen_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void PostgresDatabaseSetupScreen_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (m_advancedButton == null)
             {
@@ -347,47 +337,66 @@ namespace ConfigurationSetupUtility.Screens
             }
         }
 
-        // Occurs when the user changes the host name of the SQL Server instance.
-        private void TnsNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        // Occurs when the user changes the name of the PostgreSQL database host.
+        private void HostNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            m_tnsNameTextBox.Text = m_tnsNameTextBox.Text.Trim();
-            m_oracleSetup.TnsName = m_tnsNameTextBox.Text;
+            m_hostNameTextBox.Text = m_hostNameTextBox.Text.Trim();
+            m_postgresSetup.HostName = m_hostNameTextBox.Text;
+        }
+
+        // Occurs when the user changes the port that the PostgreSQL database host is listening on.
+        private void PortTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            m_portTextBox.Text = m_portTextBox.Text.Trim();
+            m_postgresSetup.Port = m_portTextBox.Text;
+        }
+
+        // Occurs when the user changes the name of the PostgreSQL database.
+        private void DatabaseTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            m_databaseTextBox.Text = m_databaseTextBox.Text.Trim();
+            m_postgresSetup.DatabaseName = m_databaseTextBox.Text;
         }
 
         // Occurs when the user changes the administrator user name.
         private void AdminUserNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string adminUserName = m_adminUserNameTextBox.Text;
-            bool existing = Convert.ToBoolean(m_state["existing"]);
-            bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+            if ((object)m_state != null)
+            {
+                string adminUserName = m_adminUserNameTextBox.Text;
+                bool existing = Convert.ToBoolean(m_state["existing"]);
+                bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
 
-            m_oracleSetup.AdminUserName = adminUserName;
+                m_postgresSetup.AdminUserName = adminUserName;
 
-            if (existing && !migrate)
-                m_oracleSetup.SchemaUserName = adminUserName;
+                if (existing && !migrate)
+                    m_postgresSetup.RoleName = adminUserName;
+            }
         }
 
         // Occurs when the user changes the administrator password.
         private void AdminPasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            string adminPassword = m_adminPasswordTextBox.Password;
             bool existing = Convert.ToBoolean(m_state["existing"]);
             bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
 
-            m_oracleSetup.AdminPassword = adminPassword;
+            m_postgresSetup.AdminPassword = m_adminPasswordTextBox.SecurePassword;
 
             if (existing && !migrate)
-                m_oracleSetup.SchemaPassword = adminPassword;
+                m_postgresSetup.RolePassword = m_adminPasswordTextBox.SecurePassword;
         }
 
         // Occurs when the user chooses to test their database connection.
         private void TestConnectionButton_Click(object sender, RoutedEventArgs e)
         {
             IDbConnection connection = null;
+            string databaseName = m_postgresSetup.DatabaseName;
 
             try
             {
-                m_oracleSetup.OpenAdminConnection(ref connection);
+                m_postgresSetup.DatabaseName = null;
+                m_postgresSetup.OpenAdminConnection(ref connection);
+
                 MessageBox.Show("Database connection succeeded.");
             }
             catch
@@ -400,33 +409,21 @@ namespace ConfigurationSetupUtility.Screens
             }
             finally
             {
-                if (connection != null)
-                    connection.Dispose();
+                m_postgresSetup.DatabaseName = databaseName;
+                connection?.Dispose();
             }
         }
 
-        // Occurs when the user chooses to create a new database user.
-        private void CreateNewSchemaCheckBox_Checked(object sender, RoutedEventArgs e)
+        // Occurs when the user changes the name of the new database role.
+        private void RoleNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            m_oracleSetup.CreateNewSchema = true;
+            m_postgresSetup.RoleName = m_roleNameTextBox.Text;
         }
 
-        // Occurs when the user chooses not to create a new database user.
-        private void CreateNewSchemaCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        // Occurs when the user changes the password of the new database role.
+        private void RolePasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            m_oracleSetup.CreateNewSchema = false;
-        }
-
-        // Occurs when the user changes the user name of the new database user.
-        private void SchemaUserNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            m_oracleSetup.SchemaUserName = m_schemaUserNameTextBox.Text;
-        }
-
-        // Occurs when the user changes the password of the new database user.
-        private void SchemaUserPasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            m_oracleSetup.SchemaPassword = m_schemaUserPasswordTextBox.Password;
+            m_postgresSetup.RolePassword = m_rolePasswordTextBox.SecurePassword;
         }
 
         // Occurs when the user clicks the "Advanced..." button.
@@ -434,31 +431,34 @@ namespace ConfigurationSetupUtility.Screens
         {
             if (m_state != null)
             {
-                string password = m_oracleSetup.SchemaPassword;
-                string dataProviderString = m_oracleSetup.DataProviderString;
-                bool encrypt = m_oracleSetup.EncryptConnectionString;
+                SecureString password = m_postgresSetup.RolePassword;
+                string dataProviderString = PostgresSetup.DataProviderString;
+                bool encrypt = m_postgresSetup.EncryptConnectionString;
                 string connectionString;
                 AdvancedSettingsWindow advancedWindow;
 
-                m_oracleSetup.SchemaPassword = null;
-                connectionString = m_oracleSetup.ConnectionString;
+                m_postgresSetup.RolePassword = null;
+                connectionString = m_postgresSetup.ConnectionString;
 
                 advancedWindow = new AdvancedSettingsWindow(connectionString, dataProviderString, encrypt);
-                advancedWindow.Owner = App.Current.MainWindow;
+                advancedWindow.Owner = Application.Current.MainWindow;
+                (advancedWindow.FindName("m_dataProviderStringTextBox") as FrameworkElement)?.SetValue(IsEnabledProperty, false);
 
                 if (advancedWindow.ShowDialog() == true)
                 {
-                    m_oracleSetup.ConnectionString = advancedWindow.ConnectionString;
-                    m_oracleSetup.DataProviderString = advancedWindow.DataProviderString;
-                    m_oracleSetup.EncryptConnectionString = advancedWindow.Encrypt;
+                    m_postgresSetup.ConnectionString = advancedWindow.ConnectionString;
+                    m_postgresSetup.EncryptConnectionString = advancedWindow.Encrypt;
                 }
 
-                if (string.IsNullOrEmpty(m_oracleSetup.SchemaPassword))
-                    m_oracleSetup.SchemaPassword = password;
+                m_hostNameTextBox.Text = m_postgresSetup.HostName;
+                m_portTextBox.Text = m_postgresSetup.Port;
+                m_databaseTextBox.Text = m_postgresSetup.DatabaseName;
+                m_roleNameTextBox.Text = m_postgresSetup.RoleName;
 
-                m_tnsNameTextBox.Text = m_oracleSetup.TnsName;
-                m_schemaUserNameTextBox.Text = m_oracleSetup.SchemaUserName;
-                m_schemaUserPasswordTextBox.Password = m_oracleSetup.SchemaPassword;
+                if ((object)m_postgresSetup.RolePassword == null || m_postgresSetup.RolePassword.Length == 0)
+                    m_postgresSetup.RolePassword = password;
+                else
+                    m_rolePasswordTextBox.Password = m_postgresSetup.RolePassword.ToUnsecureString();
             }
         }
 

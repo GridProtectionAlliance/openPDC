@@ -321,6 +321,8 @@ namespace ConfigurationSetupUtility.Screens
                     return GetMySqlConnection();
                 else if (databaseType == "Oracle")
                     return GetOracleConnection();
+                else if (databaseType == "PostgreSQL")
+                    return GetPostgresConnection();
                 else
                     return GetSqliteDatabaseConnection();
             }
@@ -348,6 +350,14 @@ namespace ConfigurationSetupUtility.Screens
             OracleSetup oracleSetup = m_state["oracleSetup"] as OracleSetup;
             string connectionString = (oracleSetup == null) ? null : oracleSetup.ConnectionString;
             string dataProviderString = (oracleSetup == null) ? OracleSetup.DefaultDataProviderString : oracleSetup.DataProviderString;
+            return GetConnection(connectionString, dataProviderString);
+        }
+
+        private IDbConnection GetPostgresConnection()
+        {
+            PostgresSetup postgresSetup = m_state["postgresSetup"] as PostgresSetup;
+            string connectionString = postgresSetup?.ConnectionString;
+            string dataProviderString = PostgresSetup.DataProviderString;
             return GetConnection(connectionString, dataProviderString);
         }
 
