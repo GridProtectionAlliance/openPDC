@@ -158,6 +158,15 @@
       <Link>Database Scripts\Oracle\SampleDataSet.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\Data\PostgreSQL\InitialDataSet.sql">
+      <Link>Database Scripts\PostgreSQL\InitialDataSet.sql</Link>
+    </Content>
+    <Content Include="..\..\Data\PostgreSQL\openPDC.sql">
+      <Link>Database Scripts\PostgreSQL\openPDC.sql</Link>
+    </Content>
+    <Content Include="..\..\Data\PostgreSQL\SampleDataSet.sql">
+      <Link>Database Scripts\PostgreSQL\SampleDataSet.sql</Link>
+    </Content>
     <Content Include="..\..\Data\SQL Server\AuditLog.sql">
       <Link>Database Scripts\SQL Server\AuditLog.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
