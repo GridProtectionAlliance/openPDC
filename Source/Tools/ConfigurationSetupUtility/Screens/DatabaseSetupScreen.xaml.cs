@@ -341,7 +341,7 @@ namespace ConfigurationSetupUtility.Screens
             }
         }
 
-        // Occurs when the user chooses to set up a Oracle database.
+        // Occurs when the user chooses to set up an Oracle database.
         private void OracleRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             if (m_state != null)
@@ -352,7 +352,7 @@ namespace ConfigurationSetupUtility.Screens
 
             if (m_enableAuditLogCheckBox != null)
             {
-                //Make it visible for Oracle database.
+                // Make it visible for Oracle database
                 ManageEnableAuditLogCheckBox();
 
                 if (!m_enableAuditLogChanged)

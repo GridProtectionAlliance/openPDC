@@ -534,7 +534,6 @@ namespace ConfigurationSetupUtility.Screens
                 try
                 {
                     IDbCommand nodeCommand;
-                    string databaseType = m_state["newDatabaseType"].ToString();
 
                     nodeCommand = connection.CreateCommand();
                     nodeCommand.CommandText = "SELECT ID FROM Node";

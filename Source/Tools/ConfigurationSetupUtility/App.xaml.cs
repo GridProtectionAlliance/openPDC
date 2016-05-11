@@ -133,8 +133,6 @@ namespace ConfigurationSetupUtility
 
         #region [ Static ]
 
-        // Static Methods
-
         private static string s_currentVersionLabel;
 
         /// <summary>
@@ -162,6 +160,5 @@ namespace ConfigurationSetupUtility
         }
 
         #endregion
-
     }
 }

@@ -16,7 +16,7 @@
 //
 //  Code Modification History:
 //  ----------------------------------------------------------------------------------------------------
-//  09/27/2011 - Stephen C. Wills
+//  09/23/2011 - Stephen C. Wills
 //       Generated original version of source code.
 //
 //******************************************************************************************************
@@ -39,7 +39,6 @@ namespace ConfigurationSetupUtility
     /// </summary>
     public class OracleSetup
     {
-
         #region [ Members ]
 
         // Constants
@@ -89,12 +88,12 @@ namespace ConfigurationSetupUtility
         public string AdminPassword { get; set; }
 
         /// <summary>
-        /// The user name of the openPG schema user.
+        /// The user name of the openPDC schema user.
         /// </summary>
         public string SchemaUserName { get; set; }
 
         /// <summary>
-        /// The password of the openPG schema user.
+        /// The password of the openPDC schema user.
         /// </summary>
         public string SchemaPassword { get; set; }
 

@@ -296,7 +296,6 @@ namespace ConfigurationSetupUtility.Screens
             WindowsInfoGrid.Visibility = Visibility.Visible;
             DbInfoGrid.Visibility = Visibility.Collapsed;
             SetFocus();
-
         }
 
         private void RadioButtonWindowsAuthentication_Unchecked(object sender, RoutedEventArgs e)

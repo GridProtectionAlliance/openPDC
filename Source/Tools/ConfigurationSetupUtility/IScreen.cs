@@ -31,7 +31,6 @@ namespace ConfigurationSetupUtility
     /// </summary>
     public interface IScreen
     {
-
         #region [ Properties ]
 
         /// <summary>
@@ -74,6 +73,5 @@ namespace ConfigurationSetupUtility
         Action UpdateNavigation { get; set; }
 
         #endregion
-
     }
 }

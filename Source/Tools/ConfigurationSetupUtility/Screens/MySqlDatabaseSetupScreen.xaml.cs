@@ -111,8 +111,6 @@ namespace ConfigurationSetupUtility.Screens
             m_mySqlSetup.DataProviderString = m_dataProviderString;
         }
 
-
-
         #endregion
 
         #region [ Properties ]
@@ -232,8 +230,8 @@ namespace ConfigurationSetupUtility.Screens
                     catch (Exception ex)
                     {
                         string failMessage = "Database connection issue. " + ex.Message +
-                        " Check your username and password." +
-                        " Additionally, you may need to modify your connection under advanced settings.";
+                                             " Check your username and password." +
+                                             " Additionally, you may need to modify your connection under advanced settings.";
 
                         MessageBox.Show(failMessage);
                         m_newUserNameTextBox.Focus();
