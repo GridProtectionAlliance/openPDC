@@ -30,6 +30,7 @@ namespace openPDC
         public DebugHost(ServiceHost host)
         {
             this.ServiceHost = host;
+            InitializeComponent();
         }
 
         protected override string ServiceClientName
