@@ -61,7 +61,7 @@ Documentation for openPDC can be found [here](https://github.com/GridProtectionA
 
 ## Downloads
 
-* Download the latest stable release [here](http://openpdc.codeplex.com/downloads/get/1476243) (v2.1 SP1).
+* Download the latest stable release [here](https://github.com/GridProtectionAlliance/openPDC/releases/tag/v2.2) (v2.2).
 * Older releases are also available [here](http://openpdc.codeplex.com/releases/view/615595).
 * Download the nightly build [here](http://www.gridprotectionalliance.org/nightlybuilds/openPDC/Beta-VS2012/Synchrophasor.Installs.zip).
 
