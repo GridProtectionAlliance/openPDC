@@ -40,8 +40,8 @@ Documentation for openPDC can be found [here](https://github.com/GridProtectionA
 
 * For Windows:
   1. Make sure your system meets all the requirements below.
-  * Download the [latest stable release](#latest-stable-release) or [nightly build](#nightly-build).
-  * Unzip.
+  * Choose a [download](#downloads) below.
+  * Unzip if necessary.
   * Run "Setup.exe".
   * Follow the wizard.
   * Enjoy.
@@ -59,20 +59,16 @@ Documentation for openPDC can be found [here](https://github.com/GridProtectionA
   * PostgreSQL
   * SQLite (Not recommended for production use) - included.
 
-## Latest Stable Release
+## Downloads
 
-Download the latest stable release [here](http://openpdc.codeplex.com/downloads/get/1476243) (v2.1 SP1).
-
-Older releases are also available [here](http://openpdc.codeplex.com/releases/view/615595).
-
-## Nightly Build
-
-Download the nightly build [here](http://www.gridprotectionalliance.org/nightlybuilds/openHistorian/Beta/openHistorian.Installs.zip).
+* Download the latest stable release [here](http://openpdc.codeplex.com/downloads/get/1476243) (v2.1 SP1).
+* Older releases are also available [here](http://openpdc.codeplex.com/releases/view/615595).
+* Download the nightly build [here](http://www.gridprotectionalliance.org/nightlybuilds/openPDC/Beta-VS2012/Synchrophasor.Installs.zip).
 
 # Contributing
 If you would like to contribute please:
 
-1. Read the [styleguide.](https://www.gridprotectionalliance.org/docs/GPA_Coding_Guidelines_2011_03.pdf)
+1. Read our [styleguide.](https://www.gridprotectionalliance.org/docs/GPA_Coding_Guidelines_2011_03.pdf)
 * Fork the repository.
 * Code like a boss.
 * Create a pull request.
