@@ -25,20 +25,20 @@
 <ol>
 <li><a href="#step1">Create a project</a> </li><li><a href="#step2">Add references</a> </li><li><a href="#step3">Copy in the code snippet</a> </li><li><a href="#step4">Set up your data source</a> </li><li><a href="#step5">Run the application</a> </li></ol>
 <h2><a name="step1"></a>Step 1: Create a project</h2>
-<p>The first thing you need to do is create a console application in Microsoft Visual Studio 2008. The following are detailed steps to guide you through the process.</p>
+<p>The first thing you need to do is create a console application in Microsoft Visual Studio 2015. The following are detailed steps to guide you through the process.</p>
 <ol>
-<li>Launch Microsoft Visual Studio </li><li>In the toolbar, go to &quot;File &gt; New &gt; Project...&quot; </li><li>Under &quot;Project Types&quot;, click on &quot;Windows&quot;. </li><li>Under &quot;Templates&quot;, click on &quot;Console Application&quot;. </li><li>In the text box labeled &quot;Name&quot;, enter the name of your application (i.e. &quot;DeviceToData&quot;).
+<li>Launch Microsoft Visual Studio </li><li>In the toolbar, go to &quot;File &gt; New &gt; Project...&quot; </li><li>In the left pane, navigate to &quot;Installed &gt; Templates &gt; Visual C#&quot;. </li><li>In the center pane, select &quot;Console Application&quot;. </li><li>In the text box labeled &quot;Name&quot;, enter the name of your application (i.e. &quot;DeviceToData&quot;).
 </li><li>Click the button labeled &quot;Browse...&quot; and select a directory to store the project.
-</li><li>Click the &quot;OK&quot; button </li><li>Right Click on your new project and select &quot;Properties&quot; </li><li>In the Application settings, change the Target Framework to &quot;.NET Framework 4&quot;
+</li><li>Click the &quot;OK&quot; button </li><li>Right Click on your new project and select &quot;Properties&quot; </li><li>In the Application settings, change the Target Framework to &quot;.NET Framework 4.6&quot;
 </li></ol>
 <h2><a name="step2"></a>Step 2: Add references</h2>
 <p>In order to get the code to run, you will need to add references to the openPDC assemblies. The following are detailed steps to guide you through the process.<br>
-<strong>Note</strong>: In order to complete this step, you will need to <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Getting_Started.md#build_source_code">
-build openPDC</a>.</p>
+<strong>Note</strong>: In order to complete this step, you will need to <a href="http://www.gridprotectionalliance.org/NightlyBuilds/openPDC/Beta-VS2012/Synchrophasor.Binaries.zip">
+download the latest openPDC binaries</a>.</p>
 <ol>
 <li>In your project's Solution Explorer on the right, right-click &quot;References&quot;, select &quot;Add Reference...&quot;, then click the Browse button
-</li><li>Navigate to &quot;SOURCEDIR\Main\Build\Output\Debug\Libraries&quot; (SOURCEDIR is the directory where you extracted and built the openPDC source code files).
-</li><li>Select &quot;TVA.Communication.dll&quot;, &quot;TVA.Core.dll&quot;, &quot;TVA.PhasorProtocols.dll&quot;, and &quot;TimeSeriesFramework.dll&quot; then click the &quot;OK&quot; button
+</li><li>Navigate to &quot;BINARIESDIR\Applications\openPDC&quot; (BINARIESDIR is the directory where you extracted the openPDC binaries).
+</li><li>Select &quot;GSF.Communication.dll&quot;, &quot;GSF.Core.dll&quot;, &quot;GSF.PhasorProtocols.dll&quot;, and &quot;GSF.TimeSeries.dll&quot; then click the &quot;OK&quot; button
 </li></ol>
 <h2><a name="step3"></a>Step 3: Copy in the code snippet</h2>
 <p>Now you are ready to copy the source code that will interface with your device. Remove everything in Program.cs and replace it with the following code snippet.<br>
@@ -46,11 +46,8 @@ build openPDC</a>.</p>
 </p>
 <div style="color:black; background-color:white">
 <pre><span style="color:blue">using</span> System;
-<span style="color:blue">using</span> System.Collections.Generic;
-<span style="color:blue">using</span> System.Linq;
-<span style="color:blue">using</span> System.Text;
-<span style="color:blue">using</span> TVA;
-<span style="color:blue">using</span> TVA.PhasorProtocols;
+<span style="color:blue">using</span> GSF;
+<span style="color:blue">using</span> GSF.PhasorProtocols;
 <span style="color:blue">namespace</span> DeviceToData
 {
     <span style="color:blue">class</span> Program
@@ -78,8 +75,8 @@ build openPDC</a>.</p>
             <span style="color:green">// Start frame parser</span>
             parser.AutoStartDataParsingSequence = <span style="color:blue">true</span>;
             parser.Start();
-            <span style="color:green">// To keep the console open while receiving live data with AutoRepeatCapturedPlayback = false, uncomment the following line of code:</span>
-            <span style="color:green">// Console.ReadLine();</span>
+            <span style="color:green">// Keep the console open while receiving live data; application will be terminated when the user presses the Enter key:</span>
+            Console.ReadLine();
         }
         <span style="color:blue">static</span> <span style="color:blue">void</span> parser_ReceivedDataFrame(<span style="color:blue">object</span> sender, EventArgs&lt;IDataFrame&gt; e)
         {
@@ -97,7 +94,7 @@ build openPDC</a>.</p>
                     Console.WriteLine(<span style="color:#a31515">&quot;PMU {0} Phasor {1} Angle = {2}&quot;</span>, device.IDCode, x, device.PhasorValues[x].Angle);
                     Console.WriteLine(<span style="color:#a31515">&quot;PMU {0} Phasor {1} Magnitude = {2}&quot;</span>, device.IDCode, x, device.PhasorValues[x].Magnitude);
                 }
-                Console.WriteLine(<span style="color:#a31515">&quot;    Last Timestamp: {0}&quot;</span>, ((DateTime)device.Timestamp).ToString(<span style="color:#a31515">&quot;yyyy-MM-dd HH:mm:ss.fff&quot;</span>));
+                Console.WriteLine(<span style="color:#a31515">&quot;    Last Timestamp: {0}&quot;</span>, ((DateTime)e.Argument.Timestamp).ToString(<span style="color:#a31515">&quot;yyyy-MM-dd HH:mm:ss.fff&quot;</span>));
             }
         }
         <span style="color:blue">static</span> <span style="color:blue">void</span> parser_ReceivedConfigurationFrame(<span style="color:blue">object</span> sender, EventArgs&lt;IConfigurationFrame&gt; e)
@@ -146,28 +143,5 @@ PMU Connection Tester</a> project.&nbsp; Copy the &quot;Sample1344.PmuCapture&qu
 <img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Device_to_Data_in_5_Easy_Steps.files/device_to_data2.png" alt="Device_To_Data_Example" width="669" height="1047" /></p>
 </div>
 </div>
-<hr />
-<div class="WikiComments">
-    <h2>Comments</h2>
-<div id="comment25807">
-    <div class="SubText">
-        <a name="C25807"></a>
-        <a href="http://www.codeplex.com/site/users/view/alexandrun">alexandrun</a>
-        <span class="smartDate" title="12/4/2012 1:47:05 PM" localtimeticks="1354657625">Dec 4, 2012 at 1:47 PM</span>&nbsp;
-</div>
-    I did everything exactly as described. As output, I only get the two first lines. I do not get &#34;Received configuration frame with 1 device&#40;s&#41;&#34;. I think I am going crazy. Can you please help me with a piece of advice &#63; I have Microsoft Visual Studio 2010. Same code as in the code snippet. Same &#34;Sample1344.PmuCapture&#34;. What could be different is that my references are located in&#58; SOURCEDIR&#92;Synchrophasor&#92;Curren<wbr>t Version&#92;Build&#92;Output&#92;Debug&#92;Lib<wbr>raries ... The path description in Step 2 of this tutorial&#58;  &#34;SOURCEDIR&#92;Main&#92;Build&#92;Output&#92;D<wbr>ebug&#92;Libraries&#34; makes no sense to me.<p>
-</div>
-</div>
-<div id="footer">
-<hr />
-Last edited <span class="smartDate" title="6/22/2012 1:17:00 PM" LocalTimeTicks="1340396220">Jun 22, 2012 at 1:17 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/alexfoglia.md">alexfoglia</a>, version 4<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Device%20to%20Data%20%28Developers%29">CodePlex</a> Oct 5, 2015 by <a id="wikiEditByLink" href="https://github.com/ajstadlin">ajs</a>
-</div>
-<!--HtmlToGmd.Foot-->
-<div id="copyright">
-<hr />
-Copyright 2015 <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a>
-</div>
-<!--/HtmlToGmd.Foot-->
 </body>
 </html>
