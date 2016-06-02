@@ -50,8 +50,8 @@ Documentation for openPDC can be found [here](https://github.com/GridProtectionA
 
 ## Requirements
 
-* .NET 4.5 or higher.
-* 64-bit Windows 7 or newer or POSIX OS.
+* .NET 4.6 or higher.
+* 64-bit Windows 7 or newer or POSIX OS, e.g. Linux or Mac.
 * Database management system such as:
   * SQL Server (Recommended)
   * MySQL
