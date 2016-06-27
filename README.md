@@ -1,4 +1,4 @@
-# ![openPDC](https://www.gridprotectionalliance.org/images/products/openPDC.png)
+![Round Logo](http://www.gridprotectionalliance.org/images/products/icons%2064/openPDC.png)![openPDC](https://www.gridprotectionalliance.org/images/products/openPDC.png)
 
 Open Source Phasor Data Concentrator
 
@@ -30,10 +30,10 @@ With version 2.1 or later, the openPDC can be deployed in [POSIX environments](h
 * Provided output adapters for multiple historians including the [openHistorian](http://www.gridprotectionalliance.org/products.asp#Historian), [OSI-PI Historian](http://www.osisoft.com/) and [Hadoop](http://hadoop.apache.org/).
 * Automated data availability reporting
 
-See: [Getting Started with the openPDC](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md).
 
 # Documentation and Support
 * Documentation for openPDC can be found [here](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Documentation_Home.md).
+* See: [Getting Started with the openPDC](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md).
 * Get in contact with our development team on our new [discussion board](http://discussions.gridprotectionalliance.org/c/gpa-products/openpdc).
 * Check out our [old discussion board](http://openpdc.codeplex.com/discussions) to see if your question has already been answered.
 * Check out the [wiki](https://gridprotectionalliance.org/wiki/doku.php?id=openpdc:overview).
