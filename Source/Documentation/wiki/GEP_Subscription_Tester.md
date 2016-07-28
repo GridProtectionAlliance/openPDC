@@ -23,8 +23,7 @@
  points in the openPDC and other products (e.g., <a href="https://github.com/GridProtectionAlliance/SIEGate/">
 SIEGate</a>) for use as inputs or outputs for any adapter.<br>
 <br>
-The GEP Subscription Tester is automatically installed as a feature of the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_v1.5_SP1_Release_98475.md">
-openPDC v1.5 SP1</a> or can be manually downloaded from <a href="http://www.gridprotectionalliance.org/NightlyBuilds/openPDC/GEP%20Subscription%20Tester.zip">
+The GEP Subscription Tester can be downloaded from <a href="http://www.gridprotectionalliance.org/NightlyBuilds/openPDC/GEP%20Subscription%20Tester.zip">
 here</a>.<br>
 <br>
 This application is a simple graphical program that uses the <a href="https://github.com/GridProtectionAlliance/gsf">
