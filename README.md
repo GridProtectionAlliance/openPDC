@@ -48,7 +48,7 @@ With version 2.1 or later, the openPDC can be deployed in [POSIX environments](h
   * Follow the wizard.
   * Enjoy.
 * For POSIX OS:
-  * See [Deploying the openPDC on POSIX Platforms](http://www.gridprotectionalliance.org/docs/products/openPDC/openPDConPOSIX.pdf).
+  * See [Deploying the openPDC on POSIX Platforms](https://gpags.sharepoint.com/TeamSite/_layouts/15/WopiFrame.aspx?guestaccesstoken=ADyQzHPxsfTh9qs4glPelL78SoBA1pTJV1%2fWy6b0ct4%3d&docid=08819043371f24a089e4924e86525dd69&action=view).
 
 ## Requirements
 
