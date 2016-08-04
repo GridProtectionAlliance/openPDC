@@ -30,7 +30,7 @@
 --  ----------------------------------------------------------------------------------------------------
 
 -- CREATE DATABASE openPDC;
--- \c openpdc
+-- \c gsfschema
 
 -- *******************************************************************************************
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
