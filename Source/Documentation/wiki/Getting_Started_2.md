@@ -1,10 +1,9 @@
-[![The Open Source Phasor Data Concentrator](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png)](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md)
-================================================================================================================================================================================================================================================================
+[![The Open Source Phasor Data Concentrator](https://raw.githubusercontent.com/GridProtectionAlliance/openPDC/master/Source/Documentation/wiki/openPDC_Logo.png)](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md)
 
-------------------------------------------------------------------------
+---
 
-|                                                                       |                                                                                    |                                                                                                                                  |                                                                                                                                            |
-|-----------------------------------------------------------------------|------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+|   |   |   |   |
+|---|---|---|---|
 | **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md)** | **[Documentation](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Documentation_Home.md)** |
 
 ------------------------------------------------------------------------
@@ -14,34 +13,34 @@ Getting Started with openPDC
 
 This guide is intended to aid in building the openPDC software and setting it up to start using it. If you're already familiar with the guide, feel free to use this navigation tool to jump around.
 
--   [Install openPDC with the installers](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers)
--   [Manually set up the database](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#set_up_database)
-    -   [Setting up an Access database](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#access_database)
-    -   [Setting up a SQL Server database](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#sql_server_database)
-    -   [Setting up a MySQL database](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#mysql_database)
-    -   [Modifying the configuration file](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#modify_configuration)
-    -   [Fix the configuration settings](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#fix_configuration)
-    -   [Encrypt the configuration settings](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#encrypt_config_settings)
--   [Running the openPDC](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc)
--   [Using the openPDC console](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#use_openpdc_console)
-    -   [See the list of commands (the help command)](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#help_command)
-    -   [See the list of adapters (the list command)](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#list_command)
-    -   [View performance details about the openPDC service (the health command)](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#health_command)
-    -   [View low level data (the status command)](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#status_command)
-    -   [Connect and disconnect a PMU or PDC (the connect and disconnect commands)](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#connect_and_disconnect_commands)
--   [Running the PMU Connection Tester](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_pmu_connection_tester)
-    -   [Creating and verifying an IEEE C37.118-2005 data stream](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#create_and_verify_ieee_c37_118_2005_data_stream)
-    -   [Creating and verifying a BPA PDCstream data stream](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#create_and_verify_bpa_pdcstream_data_stream)
--   [Configuring openPDC security](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#configure_openpdc_security)
--   [Using the in-process historian adapter](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#in_process_historian)
-    -   [Metadata Web Service](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#metadata_web_service)
-    -   [Time-series Web Service](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#time_series_web_service)
--   [Configuring a Connection String](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#configure_connection_string)
-    -   [File](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#file)
-    -   [TCP](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#tcp)
-    -   [UDP](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#udp)
-    -   [Serial](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#serial)
--   [Installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory)
+-  [Install openPDC with the installers](#install-openpdc-with-the-installers)
+-  [Manually set up the database](#manually-set-up-the-database)
+    -   [Setting up an Access database](#setting-up-an-access-database)
+    -   [Setting up a SQL Server database](#setting-up-a-sql-server-database)
+    -   [Setting up a MySQL database](#setting-up-a-mysql-database)
+    -   [Modifying the configuration file](#modifying-the-configuration-file)
+    -   [Fix the configuration settings](#fix-the-configuration-settings)
+    -   [Encrypt the configuration settings](#encrypt-the-configuration-settings)
+-   [Running the openPDC](#running-the-openpdc)
+-   [Using the openPDC console](#using-the-openpdc-console)
+    -   [See the list of commands (the help command)](#see-the-list-of-commands-the-help-command)
+    -   [See the list of adapters (the list command)](#see-the-list-of-adapters-the-list-command)
+    -   [View performance details about the openPDC service (the health command)](#view-performance-details-about-the-openpdc-service-the-health-command)
+    -   [View low level data (the status command)](#view-low-level-data-the-status-command)
+    -   [Connect and disconnect a PMU or PDC (the connect and disconnect commands)](#connect-and-disconnect-a-pmu-or-pdc-the-connect-and-disconnect-commands)
+-   [Running the PMU Connection Tester](#running-the-pmu-connection-tester)
+    -   [Creating and verifying an IEEE C37.118-2005 data stream](#creating-and-verifying-an-ieee-c37-118-2005-data-stream)
+    -   [Creating and verifying a BPA PDCstream data stream](#creating-and-verifying-a-bpa-pdcstream-data-stream)
+-   [Configuring openPDC security](#configuring-openpdc-security)
+-   [Using the in-process historian adapter](#using-the-in-process-historian-adapter)
+    -   [Metadata Web Service](#metadata-web-service)
+    -   [Time-series Web Service](#time-series-web-service)
+-   [Configuring a Connection String](#configuring-a-connection-string)
+    -   [File](#file)
+    -   [TCP](#tcp)
+    -   [UDP](#udp)
+    -   [Serial](#serial)
+-   [Installation directory](#installation-directory)
 
 ------------------------------------------------------------------------
 
@@ -62,35 +61,31 @@ This section goes over how to setup the openPDC and related components using the
     2.  If prompted, agree to the Terms and Conditions
     3.  Download and extract the installers to a directory of your choice.
 
-     Once you have extracted the downloaded file, you can install the following programs by running openPDCSetup.exe.
+    .Once you have extracted the downloaded file, you can install the following programs by running openPDCSetup.exe.
 
-    | Program           | Installer           | Description                                            |
-    |-------------------|---------------------|--------------------------------------------------------|
-    | openPDC           | openPDCSetup.exe    | The main application installed as a Windows service.   |
-    | openPDC Manager   | openPDCSetup.exe    | Graphics application used to help configure openPDC    |
+    | Program | Installer | Description |
+    |---|---|---|
+    | openPDC | openPDCSetup.exe | The main application installed as a Windows service. |
+    | openPDC Manager   | openPDCSetup.exe | Graphics application used to help configure openPDC |
 
     **[Nightly Builds](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Nightly_Builds.md) Installers** - These may vary with each build
 
-    | Program                           | Installer                           | Description                                             |
-    |-----------------------------------|-------------------------------------|---------------------------------------------------------|
-    | openPDC                           | openPDCSetup.msi                    
-                                         openPDCSetup64.msi                   | The main application installed as a Windows service.    |
-    | PMU Connection TesterSetup        | PMUConnectionTesterSetup.msi        
-                                         PMUConnectionTesterSetup64.msi       | PMU Connection Tester Application                       |
-    | openPDC Manager (Web)             | openPDCManagerWebSetup.msi          | Web application used to help configure openPDC          |
-    | openPDC Manager Services (Web)    | openPDCManagerServicesSetup.msi     | Web services used to help configure openPDC             |
+    | Program | Installer | Description |
+    |---|---|---|
+    | openPDC  | openPDCSetup.msi / openPDCSetup64.msi | The main application installed as a Windows service.    |
+    | PMU Connection TesterSetup | PMUConnectionTesterSetup.msi / PMUConnectionTesterSetup64.msi | PMU Connection Tester Application |
+    | openPDC Manager (Web) | openPDCManagerWebSetup.msi | Web application used to help configure openPDC |
+    | openPDC Manager Services (Web)    | openPDCManagerServicesSetup.msi     | Web services used to help configure openPDC |
 
     The web based openPDCManager is not included in openPDCSetup v1.2 and later releases.  For the web based openPDCManager installers refer to the previous openPDC v1.1 release in the Synchrophasors.zip download.  If you are installing the web based openPDC Manager, you will need to change the configuration file as described on the [Frequently Asked Questions](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#openpdcmanager_installer) page.
 
-    | Web Program        | Installers                         | Description                                             |
-    |--------------------|------------------------------------|---------------------------------------------------------|
-    | openPDC Manager    | openPDCManagerWebSetup.msi,        
-                          openPDCManagerServicesSetup.msi     | Silverlight application used to help configure openPDC. 
-                                                               Needs IIS 4.0 or later to be installed.                  |
+    | Web Program | Installers | Description |
+    |---|---|---|
+    | openPDC Manager    | openPDCManagerWebSetup.msi / openPDCManagerServicesSetup.msi     | Silverlight application used to help configure openPDC. Needs IIS 4.0 or later to be installed. |
 
     The openPDC installer will automatically launch the database setup utility during the installation. Please note that the Access database will only work on 32-bit installations. If the database setup utility fails to install your database, your openPDC installation will not fail. You can run the database setup utility again once your installation has finished.
 
-If the database setup utility has successfully installed your database, you can skip ahead to [Running the openPDC](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc). Otherwise, you will need to run the database setup utility again or go to [Manually set up the database](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#set_up_database).
+If the database setup utility has successfully installed your database, you can skip ahead to [Running the openPDC](#running-the-openpdc). Otherwise, you will need to run the database setup utility again or go to [Manually set up the database](#manually-set-up-the-database).
 
 The following screen shots show how to perform a basic installation using the sample data available in the database:
 
@@ -118,7 +113,7 @@ We recommend to set up a configuration based on a database (MySQL, SQL Server, e
 
 Select the database you want to use with the openPDC. In this example, we are using SQL Server. Also, select to run the data script (that will create the database) and run sample data script (that will create the sample data in the database for the openPDC to use). This last option is important if we just want to see the functionality of the openPDC with sample data. Click next.
 
-<img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/6.png" width="458" height="389" />
+![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/6.png)
 
 Check the Use integrated security box (in the case of SQL Server) and click on Test Connection button. The connection should be successful, otherwise, there is a problem with the configuration of the database and the openPDC will not properly work.
 
@@ -130,7 +125,7 @@ Write down your windows authentication information (user name and password) and 
 
 Select the components to which you want to apply the configuration changes (by default, all checked). Click next.
 
-<img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/9.png" width="458" height="391" />
+![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/9.png)
 
 Select the primary historian. In this case, since we are using sample data, we do not need to save a history of any stream data. Therefore, we select virtual, which defines a testing output that does not save any measurements in the database. Click next two times and wait for the configuration to be completed.
 
@@ -146,121 +141,117 @@ Click next to install the PMU Connection Tester. Follow the directions and selec
 
 ------------------------------------------------------------------------
 
-[]()Manually set up the database
+## Manually set up the database
 --------------------------------
 
-1.  The following subsections will instruct you on setting up [Access](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#access_database), [SQL Server](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#sql_server_database), and [MySQL](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#mysql_database) databases. You only need to set up one of these in order to run the openPDC.
+The following subsections will instruct you on setting up [Access](#setting-up-an-access-database), [SQL Server](#setting-up-a-sql-server-database), and [MySQL](#setting-up-a-mysql-database) databases. You only need to set up one of these in order to run the openPDC.
 
-    ### []()Setting up an Access database
+### Setting up an Access database
+**Note**: Access is not recommended for use in production, but is considered to be a good option for development purposes.
+1.  If you used the installers, navigate to the [installation directory](#installation-directory) and go to "Database Scripts\\Access". Otherwise, navigate to "SOURCEDIR\\Synchrophasor\\Current Version\\Source\\Data\\Access" (SOURCEDIR is the directory where you extracted the openPDC source code files).
+2.  Copy the file "openPDC-SampleDataSet.mdb" to your [installation directory](#installation-directory).
+3.  Rename the copy to "openPDC.mdb".
 
-    **Note**: Access is not recommended for use in production, but is considered to be a good option for development purposes.
+If you haven't configured the openPDC to use another type of database since you built it, you can skip ahead to [Run openPDC](#running-the-openpdc). Otherwise, you will need to skip ahead to [modify the configuration file](#modifying-the-configuration-file).
 
-    1.  If you used the installers, navigate to the [installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory) and go to "Database Scripts\\Access". Otherwise, navigate to "SOURCEDIR\\Synchrophasor\\Current Version\\Source\\Data\\Access" (SOURCEDIR is the directory where you extracted the openPDC source code files).
-    2.  Copy the file "openPDC-SampleDataSet.mdb" to your [installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory).
-    3.  Rename the copy to "openPDC.mdb".
+### Setting up a SQL Server database
 
-    If you haven't configured the openPDC to use another type of database since you built it, you can skip ahead to [Run openPDC](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc). Otherwise, you will need to skip ahead to [modify the configuration file](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#modify_configuration).
+Microsoft SQL Server Express database engine and Management Studio are available for free from the Microsoft Download Center.  If Visual Studio is installed, SQL Server Express may have been installed during the Visual Studio installation.  You can also download and install SQL Server Express and Management Studio together.  Below are links to the current SQL Server 2008 R2 Express downloads.
 
-    ### []()Setting up a SQL Server database
+-   [Microsoft SQL Server 2008 R2 RTM - Express](http://www.microsoft.com/downloads/en/details.aspx?FamilyID=8B3695D9-415E-41F0-A079-25AB0412424B&displayLang=en)
+-   [Microsoft SQL Server 2008 R2 RTM - Management Studio Express](http://www.microsoft.com/downloads/en/details.aspx?FamilyID=56ad557c-03e6-4369-9c1d-e81b33d8026b&displayLang=en)
+-   [Microsoft SQL Server 2008 R2 RTM - Express with Management Tools](http://www.microsoft.com/downloads/en/details.aspx?FamilyID=967225EB-207B-4950-91DF-EEB5F35A80EE&displayLang=en)
 
-    Microsoft SQL Server Express database engine and Management Studio are available for free from the Microsoft Download Center.  If Visual Studio is installed, SQL Server Express may have been installed during the Visual Studio installation.  You can also download and install SQL Server Express and Management Studio together.  Below are links to the current SQL Server 2008 R2 Express downloads.
+**Note**:  Before you execute openPDC.sql, you may want to make note that beginning on line 67 are instructions on how to modify the script to create a new user with access to the openPDC database.
 
-    -   [Microsoft SQL Server 2008 R2 RTM - Express](http://www.microsoft.com/downloads/en/details.aspx?FamilyID=8B3695D9-415E-41F0-A079-25AB0412424B&displayLang=en)
-    -   [Microsoft SQL Server 2008 R2 RTM - Management Studio Express](http://www.microsoft.com/downloads/en/details.aspx?FamilyID=56ad557c-03e6-4369-9c1d-e81b33d8026b&displayLang=en)
-    -   [Microsoft SQL Server 2008 R2 RTM - Express with Management Tools](http://www.microsoft.com/downloads/en/details.aspx?FamilyID=967225EB-207B-4950-91DF-EEB5F35A80EE&displayLang=en)
+1.  Launch SQL Server Management Studio Express, and connect to your database server.
+2.  In the toolbar, go to "File &gt; Open &gt; File..."
+3.  If you used the installers, navigate to the [installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory) and go to "Database Scripts\\SQL Server". Otherwise, navigate to "SOURCEDIR\\Synchrophasor\\Current Version\\Source\\Data\\SQL Server", select "openPDC.sql", and select "Open" (SOURCEDIR is the directory where you extracted the openPDC source code files).
+4.  In the toolbar, go to "Query &gt; Execute".
+5.  Repeat steps 2-4 with the files "InitialDataSet.sql" and "SampleDataSet.sql" in the same directory.
 
-    **Note**:  Before you execute openPDC.sql, you may want to make note that beginning on line 67 are instructions on how to modify the script to create a new user with access to the openPDC database.
+Now skip ahead to [modifying the configuration file](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#modify_configuration).
 
-    1.  Launch SQL Server Management Studio Express, and connect to your database server.
-    2.  In the toolbar, go to "File &gt; Open &gt; File..."
-    3.  If you used the installers, navigate to the [installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory) and go to "Database Scripts\\SQL Server". Otherwise, navigate to "SOURCEDIR\\Synchrophasor\\Current Version\\Source\\Data\\SQL Server", select "openPDC.sql", and select "Open" (SOURCEDIR is the directory where you extracted the openPDC source code files).
-    4.  In the toolbar, go to "Query &gt; Execute".
-    5.  Repeat steps 2-4 with the files "InitialDataSet.sql" and "SampleDataSet.sql" in the same directory.
+### Setting up a MySQL database
 
-    Now skip ahead to [modifying the configuration file](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#modify_configuration).
+You will need to install MySQL 5.1 which is available at <http://dev.mysql.com/downloads/mysql/5.1.html#downloads>. Simply choose your operating system and follow the instructions. Additionally, Windows users who will be connecting to the database through openPDC will need to install MySQL Connector Net 6.2 which is available at <http://dev.mysql.com/downloads/connector/net/6.2.html>.
+**Note**: Before you execute openPDC.sql, you may want to make note that beginning on line 17 are instructions on how to modify the script to create a new user with access to the openPDC database.
 
-    ### []()Setting up a MySQL database
+1.  Open your native command terminal.
+2.  If you used the installers, navigate to the [installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory) and go to "Database Scripts\\MySQL" in the command terminal. Otherwise, navigate to "SOURCEDIR\\Synchrophasor\\Current Version\\Source\\Data\\MySQL" (SOURCEDIR is the directory where you extracted the openPDC source code files).
+3.  Run the following command: "mysql -uroot -p &lt; openPDC.sql".
+4.  Enter your root password and press "Enter".
+5.  Repeat steps 3-4 with the files "InitialDataSet.sql" and "SampleDataSet.sql".
 
-    You will need to install MySQL 5.1 which is available at <http://dev.mysql.com/downloads/mysql/5.1.html#downloads>. Simply choose your operating system and follow the instructions. Additionally, Windows users who will be connecting to the database through openPDC will need to install MySQL Connector Net 6.2 which is available at <http://dev.mysql.com/downloads/connector/net/6.2.html>.
-    **Note**: Before you execute openPDC.sql, you may want to make note that beginning on line 17 are instructions on how to modify the script to create a new user with access to the openPDC database.
+### Modifying the configuration file
 
-    1.  Open your native command terminal.
-    2.  If you used the installers, navigate to the [installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory) and go to "Database Scripts\\MySQL" in the command terminal. Otherwise, navigate to "SOURCEDIR\\Synchrophasor\\Current Version\\Source\\Data\\MySQL" (SOURCEDIR is the directory where you extracted the openPDC source code files).
-    3.  Run the following command: "mysql -uroot -p &lt; openPDC.sql".
-    4.  Enter your root password and press "Enter".
-    5.  Repeat steps 3-4 with the files "InitialDataSet.sql" and "SampleDataSet.sql".
+The configuration file, "openPDC.exe.config" or "openPDC.config" (found in your [installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory)), is written in XML and can be opened with any text editor or with Microsoft Visual Studio 2008.
+**Note**: The configuration file is set up to work with Access out-of-the-box, so you can [skip this part](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc) if you are using Access and haven't modified it since you built the openPDC. Also, you may skip this part since the latest version of the openPDC provides with a database connection auto-configuration that occurs during the installation process.
+This table contains the values for the settings in the configuration file that you need to modify. Refer to the code block below to find the settings that you need to modify.
 
-    ### []()Modifying the configuration file
+| Database | \[ConnectionString\] | \[DataProviderString\] | Notes |
+|----------|----------------------|------------------------|-------|
+| Access | Provider=Microsoft.Jet.OLEDB.4.0; Data Source=openPDC.mdb | AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter | none |
+| SQL Server | Data Source=*serverName*; Initial Catalog=openPDC; User Id=*username*; Password=*password* | AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter | Replace *serverName* with the name of your database server, *username* with your username, and *password* with your password. |
+| MySQL | Server=*serverName*; Database=openPDC; Uid=*username*; Pwd=*password* | AssemblyName={MySql.Data, Version=6.2.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter | Replace *serverName* with the name of your database server, *username* with your username, and *password* with your password. Additionally, [install MySQL Connector Net](http://dev.mysql.com/downloads/connector/net/6.2.html) if you haven't already. You may also need to modify the Version key in the data provider string depending on your version of MySQL Connector Net. |
 
-    The configuration file, "openPDC.exe.config" or "openPDC.config" (found in your [installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory)), is written in XML and can be opened with any text editor or with Microsoft Visual Studio 2008.
-    **Note**: The configuration file is set up to work with Access out-of-the-box, so you can [skip this part](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#run_openpdc) if you are using Access and haven't modified it since you built the openPDC. Also, you may skip this part since the latest version of the openPDC provides with a database connection auto-configuration that occurs during the installation process.
-    This table contains the values for the settings in the configuration file that you need to modify. Refer to the code block below to find the settings that you need to modify.
+You will need to modify the value property of the following settings using the values from the table above. Simply copy and paste the \[ConnectionString\] and \[DataProviderString\] corresponding to your database from the table.
 
-    | Database   | \[ConnectionString\]                                                                       | \[DataProviderString\]                                                                                                                                                                                   | Notes                                                                                                                                                                                                                                                                                                                                                                              |
-    |------------|--------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | Access     | Provider=Microsoft.Jet.OLEDB.4.0; Data Source=openPDC.mdb                                  | AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter          | none                                                                                                                                                                                                                                                                                                                                                                               |
-    | SQL Server | Data Source=*serverName*; Initial Catalog=openPDC; User Id=*username*; Password=*password* | AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter      | Replace *serverName* with the name of your database server, *username* with your username, and *password* with your password.                                                                                                                                                                                                                                                      |
-    | MySQL      | Server=*serverName*; Database=openPDC; Uid=*username*; Pwd=*password*                      | AssemblyName={MySql.Data, Version=6.2.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter | Replace *serverName* with the name of your database server, *username* with your username, and *password* with your password. Additionally, [install MySQL Connector Net](http://dev.mysql.com/downloads/connector/net/6.2.html) if you haven't already. You may also need to modify the Version key in the data provider string depending on your version of MySQL Connector Net. |
+```
+<configuration>
+  <categorizedSettings>
+    <systemSettings>
+      <add name="ConnectionString" value="[Connection String]" />
+      <add name="DataProviderString" value="[DataProviderString]" />
+    </systemSettings>
+    <historianAdoMetadataProvider>
+      <add name="ConnectionString" value="[ConnectionString]" />
+      <add name="DataProviderString" value="[DataProviderString]" />
+    </historianAdoMetadataProvider>
+  </categorizedSettings>
+</configuration>
+```
 
-    You will need to modify the value property of the following settings using the values from the table above. Simply copy and paste the \[ConnectionString\] and \[DataProviderString\] corresponding to your database from the table.
+*Note: "historian" in historianAdoMetadataProvider above will be replaced by the acronym of your local historian. If that section is not present in your configuration file, these settings will be copied from the systemSettings section the first time you run the openPDC.*
 
-    ```
-    <configuration>
-      <categorizedSettings>
-        <systemSettings>
-          <add name="ConnectionString" value="[Connection String]" />
-          <add name="DataProviderString" value="[DataProviderString]" />
-        </systemSettings>
-        <historianAdoMetadataProvider>
-          <add name="ConnectionString" value="[ConnectionString]" />
-          <add name="DataProviderString" value="[DataProviderString]" />
-        </historianAdoMetadataProvider>
-      </categorizedSettings>
-    </configuration>
-    ```
+### Fix the configuration settings
 
-    *Note: "historian" in historianAdoMetadataProvider above will be replaced by the acronym of your local historian. If that section is not present in your configuration file, these settings will be copied from the systemSettings section the first time you run the openPDC.*
+If you installed the openPDC using [the openPDC installers](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers), you may need to fix some configuration settings.
 
-    ### []()Fix the configuration settings
+-  If you are using the built-in Access database, you may need to change the connection strings in the configuration file to <span class="codeInline">Provider=Microsoft.Jet.OLEDB.4.0; Data Source=C:\\Program Files\\openPDC\\openPDC.mdb </span>(changing Data Source to an absolute path).
 
-    If you installed the openPDC using [the openPDC installers](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers), you may need to fix some configuration settings.
+### Encrypt the configuration settings
 
-    -   If you are using the built-in Access database, you may need to change the connection strings in the configuration file to <span class="codeInline">Provider=Microsoft.Jet.OLEDB.4.0; Data Source=C:\\Program Files\\openPDC\\openPDC.mdb </span>(changing Data Source to an absolute path).
+You may have noticed that you stored your password directly in the configuration file. The openPDC allows you to encrypt configuration file settings using a tool called the ConfigCrypter which is located in the Framework solution. The following details the steps needed to encrypt configuration file settings.
 
-     
-
-    ### []()Encrypt the configuration settings
-
-    You may have noticed that you stored your password directly in the configuration file. The openPDC allows you to encrypt configuration file settings using a tool called the ConfigCrypter which is located in the Framework solution. The following details the steps needed to encrypt configuration file settings.
-
-    1.  Build the ConfigCrypter project which is located in the Framework solution.
-    2.  Copy the ConfigCrypter executable (ConfigCrypter.exe) to the [openPDC installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory).
-    3.  Run the ConfigCrypter executable in the [openPDC installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory).
-    4.  Enter the connection string value into the text box labeled "Input".
-    5.  Click the link labeled "Copy to Clipboard".
-    6.  Open the configuration file and paste the ConfigCrypter output as the value of the ConnectionString setting.
-    7.  Change the "encrypted" attribute for the ConnectionString setting to <span class="codeInline">true</span>.
+1.  Build the ConfigCrypter project which is located in the Framework solution.
+2.  Copy the ConfigCrypter executable (ConfigCrypter.exe) to the [openPDC installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory).
+3.  Run the ConfigCrypter executable in the [openPDC installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory).
+4.  Enter the connection string value into the text box labeled "Input".
+5.  Click the link labeled "Copy to Clipboard".
+6.  Open the configuration file and paste the ConfigCrypter output as the value of the ConnectionString setting.
+7.  Change the "encrypted" attribute for the ConnectionString setting to <span class="codeInline">true</span>.
 
     The following is an example of an encrypted ConnectionString setting.
 
-    ```
-    <add name="ConnectionString"
-      value="Bb/ijHHcpbQi6ln/6w6SvmCtr4H2Ad51Ln26oiSo4YQpJbfxzlb8sNojupV8bK9qgIIoPP5CMjnq6CcrMFLd3k6BA1kSYC/1dWQKg499CsY="
-      description="Configuration database connection string" encrypted="true" />
-    ```
+```
+<add name="ConnectionString"
+  value="Bb/ijHHcpbQi6ln/6w6SvmCtr4H2Ad51Ln26oiSo4YQpJbfxzlb8sNojupV8bK9qgIIoPP5CMjnq6CcrMFLd3k6BA1kSYC/1dWQKg499CsY="
+  description="Configuration database connection string" encrypted="true" />
+```
 
-    *Note: If the historianAdoMetadataProvider section is not present in your configuration file, the ConnectionString setting will be decrypted and copied from systemSettings the first time you run the openPDC. You will need to stop the openPDC, encrypt the metadata provider setting, and then restart the openPDC to ensure that your ConnectionString setting remains encrypted.*
+*Note: If the historianAdoMetadataProvider section is not present in your configuration file, the ConnectionString setting will be decrypted and copied from systemSettings the first time you run the openPDC. You will need to stop the openPDC, encrypt the metadata provider setting, and then restart the openPDC to ensure that your ConnectionString setting remains encrypted.*
 
-    ------------------------------------------------------------------------
+---
 
-    []()Running the openPDC
-    -----------------------
+## Running the openPDC
+---
 
-    If you installed the openPDC using [the openPDC installers](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers), follow these steps.
+If you installed the openPDC using [the openPDC installers](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers), follow these steps.
 
-    1.  Go to "Start &gt; Run...".
-    2.  Type "services.msc" into the text box and click "OK".
-    3.  Find "openPDC" in the list, right-click it, and click "Start".
+1.  Go to "Start &gt; Run...".
+2.  Type "services.msc" into the text box and click "OK".
+3.  Find "openPDC" in the list, right-click it, and click "Start".
 
 **Note**: Once the openPDC is installed, its service should be running. Therefore, this step can be skipped.
 
