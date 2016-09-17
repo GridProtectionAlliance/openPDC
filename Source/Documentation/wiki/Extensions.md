@@ -2,7 +2,7 @@
 
 |   |   |   |   |
 |---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](Home)** | **[Documentation](Documentation)** |
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](Home.md)** | **[Documentation](Documentation.md)** |
 
 # openPDC Commercial Extensions</h1>
 * The openPDC is being continually extended through [plug-in adapters](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Custom_Adapters.md) that allow system integration with other commercial vendor products
