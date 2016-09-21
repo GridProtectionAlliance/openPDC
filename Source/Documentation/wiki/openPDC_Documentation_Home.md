@@ -23,24 +23,24 @@ The default IP stack for most new Windows systems is IPv6, this means all connec
     -  [The GEP Subscription Tester](GEP_Subscription_Tester.md)
     -  [Running the openPDC in Virtual Machine](Running_openPDC_in_Virtual_Machine.md)
     -  [Moving Historian to Another Location](Move_Local_Historian_to_Another_Folder.md)
-    -  [Using a "Gateway Style Connection" between openPDCs and/or openPGs](Using_a_Gateway_Style_Connection_Between_openPDCs_and_for_OpenPGs.md)
+    -  [Using a "Gateway Style Connection" between openPDCs and/or openPGs](Using_a_Gateway_Style_Connection_between_openPDCs_and_for_openPGs.md)
     -  [Controlling UDP data loss](Controlling_UDP_Data_Loss.md)
     -  [Remote Console Security](Remote_Console_Security.md)
     -  [Help Me Choose Diagrams](Help_Me_Choose_Diagrams.md)
     -  [Configuration File Settings](Config_File.md)
     -  [Setting for Uniform CPU Utilization](Settings_for_Uniform_CPU_Utilization.md)
     -  [openPDC Console Commands to Adjust Configuration Settings](Configuration_Commands.md)
-    -  [openPDC OSI-PI Adapters](OSI-PIA_dapters.md) _**UPDATED**_
+    -  [openPDC OSI-PI Adapters](OSI-PI_Adapters.md) _**UPDATED**_
     -  [Data Quality Monitoring Adapters](Data_Quality_Monitoring.md)
     -  [Adapter Connection String Syntax](Connection_Strings.md)
     -  [openHistorian 1.0 Archive Size Calculator](https://docs.google.com/spreadsheet/ccc?key=0AsRzeFw8l0JLdDNjN3hscml2ZV9SWVZGOS1jT0lqOWc&usp=sharing) ++ [Archived XLSX](Use_and_Configuration_Guides.files/Archive_Sizing_Spreadsheet_473120.xlsx)
     -  [Distributed Historian Setup Notes](Historian_Distribution_Notes.md)
-    -  [Automated Archive Data Recovery Operation](Automated_Archive_DataR_ecovery_Operation.md)  (a.k.a. Missing Data Gap Filling)
+    -  [Automated Archive Data Recovery Operation](Automated_Archive_Data_Recovery_Operation.md)  (a.k.a. Missing Data Gap Filling)
     -  [Automated Connection Failover Operation](Automated_Connection_Failover.md)
     -  [Adjusting Output Stream Labels to Meet ISO Naming Standard](Adjusting_Output_Stream_Labels_to_Meet_ISO_Naming_Convention.md)
     -  [PMU Connection Tester](http://pmuconnectiontester.codeplex.com/documentation) (accessed via host site)
     -  [How to Manually Configure the openPDC](Manual_Configuration.md)
-    -  [How to Bulk Apply line-to-line Sqrt(3) Adjustment to all Voltage Magnitudes](How_to_Bulk_Apply_Line_to_Line_Sqrt3_Adjustment_to_All_Voltage_Magnitudes.md)
+    -  [How to Bulk Apply line-to-line Sqrt(3) Adjustment to all Voltage Magnitudes](How_to_Bulk_Apply_line-to-line_Sqrt3_Adjustment_to_all_Voltage_Magnitudes.md)
     -  [Single Page Overview](openPDC_Overview.md)
 -  Developer's Documentation
     -  [Getting Started](Developers_Getting_Started.md)
@@ -50,11 +50,11 @@ The default IP stack for most new Windows systems is IPv6, this means all connec
     -  [Device to Data in 5 Easy Steps](Developers_Device_to_Data_in_5_Easy_Steps.md)
     -  [High-level Code Structure and Class Relationships](Developers_About_the_Code.md)
     -  [How to Create a Custom Adapter](Developers_Custom_Adapters.md)
-    -  [Two Custom Adapter Examples](Developers_TwoC_ustom_Adapter_Examples.md)
+    -  [Two Custom Adapter Examples](Developers_Two_Custom_Adapter_Examples.md)
     -  [Multiple Adapter Synchronization](Developers_Multiple_Adapter_Synchronization.md)
     -  [Automated Phasor Tag Naming Convention](Developers_Automated_Phasor_Tag_Naming_Convention.md)
     -  [About the Signal Reference Field](Developers_About_the_Signal_Reference.md)
-    -  [Processing openPDC data with Hadoop](Developers_UsingH_adoop.md)
+    -  [Processing openPDC data with Hadoop](Developers_Using_Hadoop.md)
     -  [Code Change Notes](Developers_Code_Change_Notes.md)
 
 **Note:** you can get a quick optimization of the openPDC run-time assemblies by using the .NET native image cache NGen. To apply these optimizations after the openPDC has been installed, run the following commands from an administrative console:
@@ -66,7 +66,7 @@ The default IP stack for most new Windows systems is IPv6, this means all connec
 -  ```C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\ngen install PowerCalculations.dll```
 -  ```C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\ngen install ICCPExport.dll```
 
-The most recent system API help and documentation can be downloaded from the [Nightly Builds](NightlyBuilds.md) - it's included with the binaries. This help can be used as standalone, compiled help files (.chm) or can be directly [integrated within Visual Studio](Developers_Getting_Started.md). We have also made our help system available online: [Synchrophasor Protocol Classes Documentation](http://www.gridsolutions.org/NightlyBuilds/openPDC/Help/)
+The most recent system API help and documentation can be downloaded from the [Nightly Builds](Nightly_Builds.md) - it's included with the binaries. This help can be used as standalone, compiled help files (.chm) or can be directly [integrated within Visual Studio](Developers_Getting_Started.md). We have also made our help system available online: [Synchrophasor Protocol Classes Documentation](http://www.gridsolutions.org/NightlyBuilds/openPDC/Help/)
 
 ---
 
