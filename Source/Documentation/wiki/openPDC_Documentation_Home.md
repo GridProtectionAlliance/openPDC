@@ -69,9 +69,9 @@ The default IP stack for most new Windows systems is IPv6, this means all connec
 The most recent system API help and documentation can be downloaded from the [Nightly Builds](NightlyBuilds) - it's included with the binaries. This help can be used as standalone, compiled help files (.chm) or can be directly [integrated within Visual Studio](DevelopersGettingStarted). We have also made our help system available online: [Synchrophasor Protocol Classes Documentation](http://www.gridsolutions.org/NightlyBuilds/openPDC/Help/)
 
 ---
-```Sep 12, 2016 HTML to Markdown by ```[chefsteph9](https://github.com/chefsteph9)
-```Oct 5, 2015 Migrated from ```[CodePlex](http://openpdc.codeplex.com/documentation)``` by ```[ajs](https://github.com/ajstadlin)
-```May 29, 2015 4:39 PM Last edited by ```[ritchiecarroll](https://github.com/ritchiecarroll)```, version 97```
+- Sep 12, 2016 HTML to Markdown by [chefsteph9](https://github.com/chefsteph9)
+- Oct 5, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/documentation) by [ajs](https://github.com/ajstadlin)
+- May 29, 2015 4:39 PM Last edited by [ritchiecarroll](https://github.com/ritchiecarroll), version 97
 ---
 
 Copyright 2016 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
