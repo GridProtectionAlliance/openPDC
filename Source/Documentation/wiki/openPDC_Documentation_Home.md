@@ -13,7 +13,7 @@ The default IP stack for most new Windows systems is IPv6, this means all connec
     -  [Frequently Asked Questions](FAQ.md)
     -  [Use and Configuration Guides](Use_and_Configuration_Guides.md)
     -  [Overview of the openPDC Management System](Introducing_the_openPDC_Manager.md)
-    -  [How to Use the openPDC Manager](OpenPDC_Manager_Configuration.md)
+    -  [How to Use the openPDC Manager](openPDC_Manager_Configuration.md)
     -  [Default openPDC Ports](FAQ.files/Default_openPDC_Ports.rtf "Default openPDC Ports")
     -  [Running openPDC on Linux / Mac](Running_openPDC_On_Linux_and_Mac.md) _**NEW**_
     -  [Running openPDC on a Raspberry Pi](Running_openPDC_on_a_Raspberry_Pi.md) _**NEW**_
