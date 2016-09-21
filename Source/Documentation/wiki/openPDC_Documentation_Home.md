@@ -12,18 +12,18 @@ The default IP stack for most new Windows systems is IPv6, this means all connec
     -  [Getting Started](Getting_Started.md)
     -  [Frequently Asked Questions](FAQ.md)
     -  [Use and Configuration Guides](Use_and_Configuration_Guides.md)
-    -  [Overview of the openPDC Management System](Introducing_the_OpenPDC_Manager.md)
+    -  [Overview of the openPDC Management System](Introducing_the_openPDC_Manager.md)
     -  [How to Use the openPDC Manager](OpenPDC_Manager_Configuration.md)
     -  [Default openPDC Ports](FAQ.files/Default_openPDC_Ports.rtf "Default openPDC Ports")
-    -  [Running openPDC on Linux / Mac](Running_OpenPDC_On_Linux_and_Mac.md) _**NEW**_
-    -  [Running openPDC on a Raspberry Pi](Running_OpenPDC_on_a_Raspberry_Pi.md) _**NEW**_
-    -  [Data Quality Reporting Services](OpenPDC_Data_Quality_Reports.md) _**NEW**_
+    -  [Running openPDC on Linux / Mac](Running_openPDC_On_Linux_and_Mac.md) _**NEW**_
+    -  [Running openPDC on a Raspberry Pi](Running_openPDC_on_a_Raspberry_Pi.md) _**NEW**_
+    -  [Data Quality Reporting Services](openPDC_Data_Quality_Reports.md) _**NEW**_
     -  [Custom Point Tag Naming Convention](Custom_Point_Tag_Naming_Convention.md) _**NEW**_
     -  [Enabling Security for Historian Web Services](Enabling_Security_for_Historian_Web_Services.md)
     -  [The GEP Subscription Tester](GEP_Subscription_Tester.md)
-    -  [Running the openPDC in Virtual Machine](Running_OpenPDC_in_Virtual_Machine.md)
+    -  [Running the openPDC in Virtual Machine](Running_openPDC_in_Virtual_Machine.md)
     -  [Moving Historian to Another Location](Move_Local_Historian_to_Another_Folder.md)
-    -  [Using a "Gateway Style Connection" between openPDCs and/or openPGs](Using_a_Gateway_Style_Connection_Between_OpenPDCs_and_for_OpenPGs.md)
+    -  [Using a "Gateway Style Connection" between openPDCs and/or openPGs](Using_a_Gateway_Style_Connection_Between_openPDCs_and_for_OpenPGs.md)
     -  [Controlling UDP data loss](Controlling_UDP_Data_Loss.md)
     -  [Remote Console Security](Remote_Console_Security.md)
     -  [Help Me Choose Diagrams](Help_Me_Choose_Diagrams.md)
@@ -45,7 +45,7 @@ The default IP stack for most new Windows systems is IPv6, this means all connec
 -  Developer's Documentation
     -  [Getting Started](Developers_Getting_Started.md)
     -  [Frequently Asked Questions](Developers_Frequently_Asked_Questions.md)
-    -  [Build the openPDC Manager](Developers_Build_the_OpenPDC_Manager.md)
+    -  [Build the openPDC Manager](Developers_Build_the_openPDC_Manager.md)
     -  [Data Access Options for the openPDC](Developers_Data_Access_Options.md)
     -  [Device to Data in 5 Easy Steps](Developers_Device_to_Data_in_5_Easy_Steps.md)
     -  [High-level Code Structure and Class Relationships](Developers_About_the_Code.md)
