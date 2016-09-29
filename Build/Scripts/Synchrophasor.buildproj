@@ -126,10 +126,13 @@
       <SourcesToArchive Include="$(LocalFolder)\Source\**\*.*" Exclude="$(LocalFolder)\Source\**\obj\**\*.*"/>
       
       <!-- List of binaries to archive. -->
-      <BinariesToArchive Include="$(BuildOutputFolder)\**\*.*"/>
+      <BinariesToArchive Include="$(BuildOutputFolder)\**\*.*" Exclude="$(BuildOutputFolder)\**\*.pdb;$(BuildOutputFolder)\**\*.wixpdb"/>
       
       <!-- List of installs to archive. -->
-      <InstallsToArchive Include="$(BuildOutputFolder)\Setup\**\*.*"/>
+      <InstallsToArchive Include="$(BuildOutputFolder)\Setup\**\*.*" Exclude="$(BuildOutputFolder)\**\*.wixpdb"/>
+      
+      <!-- List of database scripts to archive. -->
+      <ScriptsToArchive Include="$(BuildOutputFolder)\Applications\openPDC\Database Scripts\**\*.*"/>
 
       <!--Destinations of archive files (*.zip).-->
       <ArchiveDestinations Include="$(BuildDeployFolder)"/>
