@@ -155,14 +155,14 @@
       </Directory>
       <?else ?>
       <Directory Id="ProgramFilesFolder">
-        <Component Id="InstallFolderPermissions" Guid="{F54F753D-C6A6-45D4-B9AA-E9B20CD68FA1}">
-          <CreateFolder>
-            <util:PermissionEx User="[SERVICENAME] Admins" CreateFile="yes" CreateChild="yes" GenericRead="yes" GenericWrite="yes" GenericExecute="yes" Delete="yes" DeleteChild="yes" />
-          </CreateFolder>
-        </Component>
-        
         <!-- C:\Program Files (x86)\openPDC -->
         <Directory Id="INSTALLFOLDER" Name="openPDC">
+          <Component Id="InstallFolderPermissions" Guid="{F54F753D-C6A6-45D4-B9AA-E9B20CD68FA1}">
+            <CreateFolder>
+              <util:PermissionEx User="[SERVICENAME] Admins" CreateFile="yes" CreateChild="yes" GenericRead="yes" GenericWrite="yes" GenericExecute="yes" Delete="yes" DeleteChild="yes" />
+            </CreateFolder>
+          </Component>
+
           <Directory Id="DATABASESCRIPTSFOLDER" Name="Database Scripts">
             <Directory Id="MYSQLSCRIPTSFOLDER" Name="MySQL" />
             <Directory Id="ORACLESCRIPTSFOLDER" Name="Oracle" />
