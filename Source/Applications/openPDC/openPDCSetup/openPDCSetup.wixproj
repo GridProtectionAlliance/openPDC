@@ -20,11 +20,13 @@
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <OutputPath>..\..\..\..\Build\Output\Release\Setup\Installers\</OutputPath>
+    <OutputPath>..\..\..\..\Build\Output\Release\Setup\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CustomExitDialog.wxs" />
+    <Compile Include="CustomFeatureTree.wxs" />
     <Compile Include="openPDCSetup.wxs" />
   </ItemGroup>
   <ItemGroup>
@@ -104,20 +106,31 @@
     <Content Include="HistorianView.exe" />
     <Content Include="HistorianView.exe.config" />
     <Content Include="INSTALL_LICENSE.rtf" />
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="NoInetFixUtil.exe" />
     <Content Include="openPDCSetupBanner.bmp" />
     <Content Include="openPDCSetupDialog.bmp" />
     <Content Include="openPDCSetupLogo.jpg" />
+    <Content Include="README.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="StatHistorianReportGenerator.exe" />
     <Content Include="StatHistorianReportGenerator.exe.config" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <CopyFiles Include="LICENSE.txt" />
+      <CopyFiles Include="README.txt" />
+    </ItemGroup>
+    <Copy SourceFiles="@(CopyFiles)" DestinationFolder="$(OutDir)" />
+  </Target>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
 	Other similar extension points exist, see Wix.targets.
 	<Target Name="BeforeBuild">
-	</Target>
-	<Target Name="AfterBuild">
 	</Target>
 	-->
 </Project>
