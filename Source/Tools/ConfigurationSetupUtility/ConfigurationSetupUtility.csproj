@@ -396,10 +396,20 @@
     <SplashScreen Include="SplashScreen.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST "$(TargetDir)..\..\Applications\openPDC" COPY "$(TargetPath)" "$(TargetDir)..\..\Applications\openPDC"
-IF EXIST "$(TargetDir)..\..\Applications\openPDC" COPY "$(TargetDir)$(TargetFileName).config" "$(TargetDir)..\..\Applications\openPDC"</PostBuildEvent>
-  </PropertyGroup>
+  <Target Name="AfterBuild">
+    <CallTarget Targets="SignBuild"/>
+    <CallTarget Targets="CopyBuild"/>
+  </Target>
+  <Target Name="SignBuild" Condition="'$(SIGNTOOL)' != ''">
+    <Exec Command="$(SIGNTOOL) $(TargetPath)" />
+  </Target>
+  <Target Name="CopyBuild" Condition="Exists('$(TargetDir)..\..\Applications\openPDC')">
+    <ItemGroup>
+      <FilesToCopy Include="$(TargetPath)" />
+      <FilesToCopy Include="$(TargetPath).config" />
+    </ItemGroup>
+    <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(TargetDir)..\..\Applications\openPDC" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
