@@ -65,7 +65,7 @@ With version 2.1 or later, the openPDC can be deployed in [POSIX environments](h
 
 ## Downloads
 
-* Download the latest stable release [here](https://github.com/GridProtectionAlliance/openPDC/releases/tag/v2.2) (v2.2).
+* Download the latest stable release [here](https://github.com/GridProtectionAlliance/openPDC/releases).
 * Older releases are also available [here](http://openpdc.codeplex.com/releases/view/615595).
 * Download the nightly build [here](http://www.gridprotectionalliance.org/nightlybuilds/openPDC/Beta-VS2012/Synchrophasor.Installs.zip).
 
