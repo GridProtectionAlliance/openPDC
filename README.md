@@ -44,7 +44,7 @@ With version 2.1 or later, the openPDC can be deployed in [POSIX environments](h
   1. Make sure your system meets all the requirements below.
   * Choose a [download](#downloads) below.
   * Unzip if necessary.
-  * Run "Setup.exe".
+  * Run openPDCSetup.msi.
   * Follow the wizard.
   * Enjoy.
 * For POSIX OS:
@@ -55,11 +55,13 @@ With version 2.1 or later, the openPDC can be deployed in [POSIX environments](h
 * .NET 4.6 or higher.
 * 64-bit Windows 7 or newer or POSIX OS, e.g. Linux or Mac.
 * Database management system such as:
-  * SQL Server (Recommended)
+  * SQL Server (Express version is fine)
   * MySQL
   * Oracle
   * PostgreSQL
-  * SQLite (Not recommended for production use) - included.
+  * SQLite\* (included, no extra install required)
+  
+\* Not recommended for large deployments.
 
 ## Downloads
 
