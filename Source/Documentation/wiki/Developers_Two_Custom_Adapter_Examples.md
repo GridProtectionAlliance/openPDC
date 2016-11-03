@@ -26,7 +26,7 @@
  the <i>PublishFrame()</i> method and perform calculations before subsequently outputting the newly calculated values.<br>
 <br>
 A sample CSV file containing three 500kV positive sequence voltages can be found here:
-<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Two_Customer_Adapter_Examples.files/samplePhasorData.csv">
+<a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Two_Custom_Adapter_Examples.files/samplePhasorData.csv">
 samplePhasorData.csv</a><br>
 <br>
 Begin by creating the first adapter which will serve as the data simulator.
@@ -51,7 +51,7 @@ Grab the following files from this directory:
 <ul>
 <li>TimeSeriesFramework.dll </li><li>TVA.Core.dll </li><li>TVA.PhasorProtocols.dll</li></ul>
 <br>
-You should also grab the CSV reader library from here: <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Two_Customer_Adapter_Examples.files/ReadWriteCSV.dll">
+You should also grab the CSV reader library from here: <a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Developers_Two_Custom_Adapter_Examples.files/ReadWriteCSV.dll">
 ReadWriteCSV.dll</a> and add it as a reference to your project.<br>
 <br>
 These libraries will now appear in the <i>References</i> section <br>
