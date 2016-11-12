@@ -2,7 +2,7 @@
 
 |   |   |   |
 |---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[Documentation](openPDC_Documentation_Home.md)** |
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](openPDC_Home.md)** | 
 
 ##### Note on IPv4 vs IPv6 in the openPDC:
 
