@@ -109,7 +109,7 @@ dataView.RowFilter = "Name LIKE '[[]*'";                // values that starts wi
 The following method escapes a text value for usage in a LIKE clause.
 
 ```C#
-public static string **EscapeLikeValue**(string valueWithoutWildcards)
+public static string EscapeLikeValue(string valueWithoutWildcards)
 {
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < valueWithoutWildcards.Length; i++)
@@ -130,7 +130,7 @@ public static string **EscapeLikeValue**(string valueWithoutWildcards)
 // select all that starts with the value string (in this case with "*")
 string value = "*";
 // the dataView.RowFilter will be: "Name LIKE '[*]*'"
-dataView.RowFilter = String.Format("Name LIKE '{0}*'", **EscapeLikeValue**(value));
+dataView.RowFilter = String.Format("Name LIKE '{0}*'", EscapeLikeValue(value));
 ```
 
 ## Boolean operators
