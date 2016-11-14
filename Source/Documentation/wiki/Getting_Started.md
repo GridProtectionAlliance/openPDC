@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](https://raw.githubusercontent.com/GridProtectionAlliance/openPDC/master/Source/Documentation/wiki/openPDC_Logo.png)](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
 
 |   |   |   |   |
 |---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md)** | **[Documentation](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Documentation_Home.md)** |
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** |
 
 # Getting Started with openPDC
 
@@ -45,14 +45,14 @@ This guide is intended to aid in building the openPDC software and setting it up
 This section goes over how to setup the openPDC and related components using the installers. The first thing you will need to do is download and extract the installers. For this you have two options:
 
 1.  Install from the current release build:
-    1.  Go to the [openPDC Home Page](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md) and select The **Downloads** tab.
+    1.  Go to the [openPDC Home Page](openPDC_Home.md) and select The **Downloads** tab.
     2.  Under "Recommended Download", click on the link labeled "openPDCSetup.zip".
     3.  Click "I Agree".
     4.  Download and extract the installers to a directory of your choice.
 
-2.  An alternative is to install from the [Nightly Builds](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Nightly_Builds.md)
+2.  An alternative is to install from the [Nightly Builds](Nightly_Builds.md)
 
-    1.  Go to the [Nightly Builds](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Nightly_Builds.md) and click on the **Synchrophasor Installers** link.
+    1.  Go to the [Nightly Builds](Nightly_Builds.md) and click on the **Synchrophasor Installers** link.
     2.  If prompted, agree to the Terms and Conditions
     3.  Download and extract the installers to a directory of your choice.
 
@@ -63,7 +63,7 @@ Once you have extracted the downloaded file, you can install the following progr
 | openPDC | openPDCSetup.exe | The main application installed as a Windows service. |
 | openPDC Manager   | openPDCSetup.exe | Graphics application used to help configure openPDC |
 
-**[Nightly Builds](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Nightly_Builds.md) Installers** - These may vary with each build
+**[Nightly Builds](Nightly_Builds.md) Installers** - These may vary with each build
 
 | Program | Installer | Description |
 |---|---|---|
@@ -72,7 +72,7 @@ Once you have extracted the downloaded file, you can install the following progr
 | openPDC Manager (Web) | openPDCManagerWebSetup.msi | Web application used to help configure openPDC |
 | openPDC Manager Services (Web)    | openPDCManagerServicesSetup.msi     | Web services used to help configure openPDC |
 
-The web based openPDCManager is not included in openPDCSetup v1.2 and later releases.  For the web based openPDCManager installers refer to the previous openPDC v1.1 release in the Synchrophasors.zip download.  If you are installing the web based openPDC Manager, you will need to change the configuration file as described on the [Frequently Asked Questions](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/FAQ.md#openpdcmanager_installer) page.
+The web based openPDCManager is not included in openPDCSetup v1.2 and later releases.  For the web based openPDCManager installers refer to the previous openPDC v1.1 release in the Synchrophasors.zip download.  If you are installing the web based openPDC Manager, you will need to change the configuration file as described on the [Frequently Asked Questions](FAQ.md#openpdcmanager_installer) page.
 
 | Web Program | Installers | Description |
 |---|---|---|
@@ -84,51 +84,51 @@ If the database setup utility has successfully installed your database, you can 
 
 The following screen shots show how to perform a basic installation using the sample data available in the database:
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/1.png)
+![](Getting_Started.files/1.png)
 
 Select the installation option. In this case, we are installing openPDC v 1.42 SP2 for Windows 7 x64 bits.
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/2.png)
+![](Getting_Started.files/2.png)
 
 Select the options you want to install and click next. After the installation is completed, a new window for the configuration of the openPDC will pop-up.
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/3.png)
+![](Getting_Started.files/3.png)
 
 Click next in this initial configuration window.
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/4.png)
+![](Getting_Started.files/4.png)
 
 Select the option for a new configuration.
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/5.png)
+![](Getting_Started.files/5.png)
 
 We recommend to set up a configuration based on a database (MySQL, SQL Server, etc.)
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/11.png)
+![](Getting_Started.files/11.png)
 
 Select the database you want to use with the openPDC. In this example, we are using SQL Server. Also, select to run the data script (that will create the database) and run sample data script (that will create the sample data in the database for the openPDC to use). This last option is important if we just want to see the functionality of the openPDC with sample data. Click next.
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/6.png)
+![](Getting_Started.files/6.png)
 
 Check the Use integrated security box (in the case of SQL Server) and click on Test Connection button. The connection should be successful, otherwise, there is a problem with the configuration of the database and the openPDC will not properly work.
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/7.png)
+![](Getting_Started.files/7.png)
 
 Write down your windows authentication information (user name and password) and click next.
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/8.png)
+![](Getting_Started.files/8.png)
 
 Select the components to which you want to apply the configuration changes (by default, all checked). Click next.
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/9.png)
+![](Getting_Started.files/9.png)
 
 Select the primary historian. In this case, since we are using sample data, we do not need to save a history of any stream data. Therefore, we select virtual, which defines a testing output that does not save any measurements in the database. Click next two times and wait for the configuration to be completed.
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/10.png)
+![](Getting_Started.files/10.png)
 
 Click next after the configuration is completed and the PMU Connection Tester setup will pop-up immediately.
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/PMU-1.png)
+![](Getting_Started.files/PMU-1.png)
 
 Click next to install the PMU Connection Tester. Follow the directions and select the directory where to install this program.
 
@@ -211,7 +211,7 @@ You will need to modify the value property of the following settings using the v
 
 ### Fix the configuration settings
 
-If you installed the openPDC using [the openPDC installers](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#openpdc_installers), you may need to fix some configuration settings.
+If you installed the openPDC using [the openPDC installers](Getting_Started.md#openpdc_installers), you may need to fix some configuration settings.
 
 -  If you are using the built-in Access database, you may need to change the connection strings in the configuration file to <span class="codeInline">Provider=Microsoft.Jet.OLEDB.4.0; Data Source=C:\\Program Files\\openPDC\\openPDC.mdb </span>(changing Data Source to an absolute path).
 
@@ -220,8 +220,8 @@ If you installed the openPDC using [the openPDC installers](https://github.com/G
 You may have noticed that you stored your password directly in the configuration file. The openPDC allows you to encrypt configuration file settings using a tool called the ConfigCrypter which is located in the Framework solution. The following details the steps needed to encrypt configuration file settings.
 
 1.  Build the ConfigCrypter project which is located in the Framework solution.
-2.  Copy the ConfigCrypter executable (ConfigCrypter.exe) to the [openPDC installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory).
-3.  Run the ConfigCrypter executable in the [openPDC installation directory](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Getting_Started.md#install_directory).
+2.  Copy the ConfigCrypter executable (ConfigCrypter.exe) to the [openPDC installation directory](Getting_Started.md#install_directory).
+3.  Run the ConfigCrypter executable in the [openPDC installation directory](Getting_Started.md#install_directory).
 4.  Enter the connection string value into the text box labeled "Input".
 5.  Click the link labeled "Copy to Clipboard".
 6.  Open the configuration file and paste the ConfigCrypter output as the value of the ConnectionString setting.
@@ -250,9 +250,7 @@ If you installed the openPDC using [the openPDC installers](#install-openpdc-wit
 
 **Note**: Once the openPDC is installed, its service should be running. Therefore, this step can be skipped.
 
-1.  
-    If you built the project in Debug mode and want to run it using the debugger, follow these steps.
-
+1.  If you built the project in Debug mode and want to run it using the debugger, follow these steps.
     1.  Open Microsoft Visual Studio 2008.
     2.  In the toolbar, go to "File &gt; Open &gt; Project/Solution..."
     3.  Navigate to "SOURCEDIR\\Synchrophasor\\Current Version\\Source", select "Synchrophasor.sln", and select "Open" (SOURCEDIR is the directory where you extracted the openPDC source code files).
@@ -267,6 +265,7 @@ If you built the openPDC from source, you can run it as an application by naviga
 
 You can use the openPDC console to monitor the status of connections, configurations, errors, general statistics, and many other things.
 If you installed the openPDC using [the openPDC installers](#install-openpdc-with-the-installers), you can run the console using the executable found in your [installation directory](#installation-directory) (and there should also be a shortcut in your Start menu). If you built it from source, the console should appear as soon as you begin running the openPDC application. Once the openPDC is ready, you can begin issuing commands through the console.
+
 The openPDC console commands typically have three options and are entered as follows:
 
 | Command      | Description                                            |
@@ -285,8 +284,10 @@ The **help** command can be used to see a list of all commands that can be enter
 ### See the list of adapters (the list command)
 
 Used by itself, the **list** command will simply list the adapters in the specified adapter collection. Additionally, list can display detailed information about a specific adapter specified as an argument to the command. The argument can be either the name or the ID of the adapter. The following images show examples of this usage and its output.
-![list command input adapter](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/list_command_2.PNG)
-![list command output adapter](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/list_o_command.PNG)
+
+![list command input adapter](Getting_Started.files/list_command_2.PNG)
+
+![list command output adapter](Getting_Started.files/list_o_command.PNG)
 
 ### View performance details about the openPDC service (the health command)
 
@@ -299,7 +300,8 @@ The **status** command outputs a significant amount of low level data about each
 ### Connect and disconnect a PMU or PDC (the connect and disconnect commands)
 
 The **connect** and **disconnect** commands are somewhat self-explanatory. These commands are used to connect and disconnect a PMU or PDC which is available as seen in the output of the list command. The adapter can be specified by entering its name or ID as an argument to the command. The following image shows an example of the usage of these commands.
-![connect\_and\_disconnect\_commands.png](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/connect_disconnect_command.PNG "connect_and_disconnect_commands.png")
+
+![connect\_and\_disconnect\_commands.png](Getting_Started.files/connect_disconnect_command.PNG "connect_and_disconnect_commands.png")
 
 ---
 
@@ -308,6 +310,7 @@ The **connect** and **disconnect** commands are somewhat self-explanatory. These
 
 The PMU Connection Tester can be used to verify that the data stream from any known phasor measurement device is being received.
 If you are running the openPDC in Debug mode, you can run this application by right-clicking "PMU Connection Tester" in the Solution Explorer view and going to "Debug &gt; Start new instance". You may need to redisplay the Solution Explorer view by going to "View &gt; Solution Explorer" in the toolbar.
+
 If you built the system from source and do not wish to run the PMU Connection Tester in the Visual Studio debugger, the executable can be found in one of the following directories (depending on whether you built the openPDC in Release mode or Debug mode respectively).
 
 -   `SOURCEDIR\Synchrophasor\Current Version\Build\Output\Release\Tools\PMUConnectionTester`
@@ -329,8 +332,10 @@ The following subsections will instruct you on creating a data stream and verify
 9.  Still under the "Protocol" tab, click "Connect".
 
 The following images show the PMU Connection Tester windows populated with the correct settings and marked with numbers corresponding to those in the steps listed above.
-![pmu\_connection\_tester\_main\_window.png](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/pmu_connection_tester_main_window.png "pmu_connection_tester_main_window.png")
-![pmu\_connection\_tester\_command\_channel.png](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/pmu_connection_tester_command_channel.png "pmu_connection_tester_command_channel.png")
+
+![pmu\_connection\_tester\_main\_window.png](Getting_Started.files/pmu_connection_tester_main_window.png "pmu_connection_tester_main_window.png")
+
+![pmu\_connection\_tester\_command\_channel.png](Getting_Started.files/pmu_connection_tester_command_channel.png "pmu_connection_tester_command_channel.png")
 
 ### Creating and verifying a BPA PDCstream data stream
 
@@ -352,16 +357,19 @@ The following images show the PMU Connection Tester windows populated with the c
 13. Still under the "Protocol" tab, click "Connect".
 
 The following images show the PMU Connection Tester windows populated with the correct settings and marked with numbers corresponding to those in the steps listed above.
-![bpa\_pdcstream\_pmu\_connection\_tester\_main\_window.png](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/bpa_pdcstream_pmu_connection_tester_main_window.png "bpa_pdcstream_pmu_connection_tester_main_window.png")
-![bpa\_pdcstream\_extra\_parameters.png](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/bpa_pdcstream_extra_parameters.png "bpa_pdcstream_extra_parameters.png")
-![bpa\_pdcstream\_pmu\_connection\_tester\_command\_channel.png](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.files/bpa_pdcstream_pmu_connection_tester_command_channel.png "bpa_pdcstream_pmu_connection_tester_command_channel.png")
+
+![bpa\_pdcstream\_pmu\_connection\_tester\_main\_window.png](Getting_Started.files/bpa_pdcstream_pmu_connection_tester_main_window.png "bpa_pdcstream_pmu_connection_tester_main_window.png")
+
+![bpa\_pdcstream\_extra\_parameters.png](Getting_Started.files/bpa_pdcstream_extra_parameters.png "bpa_pdcstream_extra_parameters.png")
+
+![bpa\_pdcstream\_pmu\_connection\_tester\_command\_channel.png](Getting_Started.files/bpa_pdcstream_pmu_connection_tester_command_channel.png "bpa_pdcstream_pmu_connection_tester_command_channel.png")
 
 ---
 
 ## Configuring openPDC security
 ---
 
-In the latest version, security is enabled by default. See [Remote Console Security](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Remote_Console_Security.md) for more information.
+In the latest version, security is enabled by default. See [Remote Console Security](Remote_Console_Security.md) for more information.
 
 ---
 
@@ -369,26 +377,27 @@ In the latest version, security is enabled by default. See [Remote Console Secur
 ---
 
 The in-process historian adapter optionally allows for the metadata and the time-series data stored in the local archive to be accessed via REST web services. The openPDC by default has both the metadata and time-series web services enabled, and they can be accessed at `http://localhost:6151/historian` and `http://localhost:6152/historian` URLs respectively. See below for a brief description of the REST API for these web services:
+
 **Note**: The format in which data is returned by these web services depend on the format specified at the end of all the URLs below. The formats currently supported by these web services are XML and JSON.
 
 ### Metadata Web Service
 
-- http://localhost:6151/historian/metadata/read/\[xml|json\]
+- `http://localhost:6151/historian/metadata/read/[xml|json]`
 Returns metadata for all of the measurements defined in the archive.
-- http://localhost:6151/historian/metadata/read/&lt;one or more ID delimited by comma&gt;/\[xml|json\]
+- `http://localhost:6151/historian/metadata/read/<one or more ID delimited by comma>/[xml|json]`
 Returns metadata for the measurement IDs specified in the comma-delimited list.
-- http://localhost:6151/historian/metadata/read/&lt;starting ID in the range&gt;-&lt;ending ID in the range&gt;/\[xml|json\]
+- `http://localhost:6151/historian/metadata/read/<starting ID in the range>-<ending ID in the range>/[xml|json]`
 Returns metadata for all the measurement IDs specified in the range.
 
 ### Time-series Web Service
 
-- http://localhost:6152/historian/timeseriesdata/read/current/&lt;one or more ID delimited by comma&gt;/\[xml|json\]
+- `http://localhost:6152/historian/timeseriesdata/read/current/<one or more ID delimited by comma>/[xml|json]`
 Returns the latest time-series data for the measurement IDs specified in the comma-delimited list.
-- http://localhost:6152/historian/timeseriesdata/read/current/&lt;starting ID in the range&gt;-&lt;ending ID in the range&gt;/\[xml|json\]
+- `http://localhost:6152/historian/timeseriesdata/read/current/<starting ID in the range>-<ending ID in the range>/[xml|json]`
 Returns the latest time-series data for the measurement IDs specified in the range.
-- http://localhost:6152/historian/timeseriesdata/read/historic/&lt;one or more ID delimited by comma&gt;/&lt;start time&gt;/&lt;end time&gt;/\[xml|json\]
+- `http://localhost:6152/historian/timeseriesdata/read/historic/<one or more ID delimited by comma>/<start time>/<end time>/[xml|json]`
 Returns historic time series data for the measurement IDs specified in the comma-delimited list for the specified GMT time span. The time can be absolute time (Example: 09-21-09 23:00:01 for Sep 21, 09 11:00:01 pm) or relative to the current time (Example: \* for now or \*-1m for 1 minute ago where s = seconds, m = minutes, h = hours and d = days).
-- http://localhost:6152/historian/timeseriesdata/read/historic/&lt;starting ID in the range&gt;-&lt;ending ID in the range&gt;/&lt;start time&gt;/&lt;end time&gt;/\[xml|json\]
+- `http://localhost:6152/historian/timeseriesdata/read/historic/<starting ID in the range>-<ending ID in the range>/<start time>/<end time>/[xml|json]`
 Returns historic time series data for the measurement IDs specified in the range for the specified GMT time span (time format is same as above).
 
 ---
@@ -396,41 +405,55 @@ Returns historic time series data for the measurement IDs specified in the range
 ## Configuring a Connection String
 ---
 
-This section contains information about how to configure the connection string for the MultiProtocolFrameParser. The connection string can be found on lines 29-31 of the code snippet from the [Device to Data in 5 easy steps](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Device_to_Data.md) page and also in the Device table of the openPDC database. The first step to configuring your connection string is to determine which transport protocol you're using and change the value of the transportProtocol key accordingly. The following subsections detail the keys that are specific to each transport protocol. The possible values for the transportProtocol key are [file](#file), [tcp](#tcp), [udp](#udp), and [serial](#serial).
+This section contains information about how to configure the connection string for the MultiProtocolFrameParser. The connection string can be found on lines 29-31 of the code snippet from the [Device to Data in 5 easy steps](Developers_Device_to_Data.md) page and also in the Device table of the openPDC database. The first step to configuring your connection string is to determine which transport protocol you're using and change the value of the transportProtocol key accordingly. The following subsections detail the keys that are specific to each transport protocol. The possible values for the transportProtocol key are [file](#file), [tcp](#tcp), [udp](#udp), and [serial](#serial).
 
 ### File
 
-**Note**: The connection string is already configured for the file transport protocol in the [example code snippet](https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Developers_Device_to_Data.md#step3).
-The **file** key specifies the name of the file from which phasor measurements are read.
-The following is an example connection string using the file transport protocol:
-`phasorProtocol=Ieee1344; accessID=2; transportProtocol=file; file=Sample1344.PmuCapture`
+**Note**: The connection string is already configured for the file transport protocol in the [example code snippet](Developers_Device_to_Data.md#step3).
+
+The **file** key specifies the name of the file from which phasor measurements are read.  The following is an example connection string using the file transport protocol:
+
+- `phasorProtocol=Ieee1344; accessID=2; transportProtocol=file; file=Sample1344.PmuCapture`
 
 ### TCP
 
 The **server** key specifies the name or IP address of the device and the port on which it is listening (localhost:8888 or 127.0.0.1:8888 format).
-The *interface* key is optional and specifies the interface through which the TCP connection is being made.
-The following is an example connection string using the TCP transport protocol:
-`phasorProtocol=IeeeC37_118V1; accessID=5; transportProtocol=tcp; server=localhost:8888`
+
+The *interface* key is optional and specifies the interface through which the TCP connection is being made.  The following is an example connection string using the TCP transport protocol:
+
+- `phasorProtocol=IeeeC37_118V1; accessID=5; transportProtocol=tcp; server=localhost:8888`
 
 ### UDP
 
 The **port** key specifies which UDP port the device is broadcasting to.
+
 The *interface* key is optional and specifies the interface through which the UDP connection is being made.
+
 The *server* key is optional and is used to broadcast data over a UDP connection.
+
 The following is an example connection string using the UDP transport protocol:
-`phasorProtocol=BpaPdcStream; iniFileName=TestConfig.ini; transportProtocol=udp; port=8500`
+
+- `phasorProtocol=BpaPdcStream; iniFileName=TestConfig.ini; transportProtocol=udp; port=8500`
 
 ### Serial
 
 The **port** key can be entered as "COM1", "COM2", etc.
+
 The **baudrate** key is an integer.
+
 The **parity** key should be entered as one of the following: None, Odd, Even, Mark, Space.
+
 The **stopbits** key should be entered as one of the following: None, One, Two, OnePointFive.
+
 The **databits** key is an integer.
+
 The *dtrenable* key is is an optional boolean value that enables the Data Terminal Ready (DTR) signal.
+
 The *rtsenable* key is an optional boolean value that enables the Request to Send (RTS) signal.
+
 The following is an example connection string using the serial transport protocol:
-`phasorProtocol=SelFastMessage; transportProtocol=serial; port=COM1; baudrate=57600; parity=None; stopbits=One; databits=8`
+
+- `phasorProtocol=SelFastMessage; transportProtocol=serial; port=COM1; baudrate=57600; parity=None; stopbits=One; databits=8`
 
 ---
 
@@ -438,7 +461,9 @@ The following is an example connection string using the serial transport protoco
 ---
 
 If you installed the openPDC using [the openPDC installers](#install-openpdc-with-the-installers) the default installation directory can be found at the following location.
-`\Program Files\openPDC`
+
+- `\Program Files\openPDC`
+
 If you built the openPDC from source, the output directory is in one of two places (depending on whether you built the system in Release mode or Debug mode respectively).
 
 - `SOURCEDIR\Synchrophasor\Current Version\Build\Output\Release\Applications\openPDC`
