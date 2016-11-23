@@ -22,9 +22,9 @@ This document contains a list of settings that are saved in the configuration fi
     - [devarchiveTimeSeriesDataService](#restservice)
     - [errorLog](#logfile)
     - [errorLogger](#errorlogger)
-    - [exampleSettings](#servicehost-examplesettings)
+    - [exampleSettings](#examplesettings-category)
     - [healthExporter](#multipledestinationexporter)
-    - [systemSettings](#servicehost-systemsettings)
+    - [systemSettings](#systemsettings-category)
     - [serviceHelper](#servicehelper)
     - [processScheduler](#schedulemanager)
     - [remotingServer](#tcpserver)
@@ -39,7 +39,7 @@ This document contains a list of settings that are saved in the configuration fi
     - [statTimeSeriesDataService](#restservice)
     - [statusExporter](#multipledestinationexporter)
     - [statusLog](#logfile)
-    - [thresholdSettings](#servicehost-thresholdsettings)
+    - [thresholdSettings](#thresholdsettings-category)
     
 ##### Navigate by class
 
@@ -57,9 +57,9 @@ This document contains a list of settings that are saved in the configuration fi
 - [ServerBase](#serverbase)
 - [ServiceHelper](#servicehelper)
 - [ServiceHost](#servicehost)
-    - [exampleSettings category](#servicehost-examplesettings)
-    - [systemSettings category](#servicehost-systemsettings)
-    - [thresholdSettings category](#servicehost-thresholdsettings)
+    - [exampleSettings category](#examplesettings-category)
+    - [systemSettings category](#systemsettings-category)
+    - [thresholdSettings category](#thresholdsettings-category)
 - [TcpServer](#tcpserver)
 
 ##### Navigate by adapter
@@ -85,7 +85,7 @@ This document contains a list of settings that are saved in the configuration fi
 
 `AdoMetadataProvider`
 
-**Settings*
+**Settings**
 
 This section also includes settings from [MetadataProviderBase](#metadataproviderbase).
 
@@ -264,9 +264,10 @@ This section also includes settings from [MetadataProviderBase](#metadataprovide
 | ExportDestination1.FileName | filename.txt | Path and file name of data export (do not include drive letter or UNC share). Prefix with slash when using UNC paths (\path\filename.txt). |
 
 **Overridden values**
+
 | Source | Category | Name | Value |
 | ------ | -------- | ---- | ----- |
-| openPDC.ServiceHost | healthExporter, statusExporter | ExportDestination1 | drive letter of the [Installation directory](Getting_Started.md#installation-directory") |
+| openPDC.ServiceHost | healthExporter, statusExporter | ExportDestination1 | drive letter of the [Installation directory](Getting_Started.md#installation-directory) |
 | openPDC.ServiceHost | healthExporter, statusExporter | ExportDestination1.Domain |   |
 | openPDC.ServiceHost | healthExporter, statusExporter | ExportDestination1.UserName |   |
 | openPDC.ServiceHost | healthExporter, statusExporter |ExportDestination1.Password |   |
@@ -315,13 +316,13 @@ This section also includes settings from [MetadataProviderBase](#metadataprovide
 
 ## RestWebServiceMetadataProvider
 
-**Default category*
+**Default category**
 
 `RestWebServiceMetadataProvider`
 
 **Settings**
 
-This section also includes settings from [MetadataProviderBase](#MetadataProviderBase)
+This section also includes settings from [MetadataProviderBase](#metadataproviderbase)
 
 | Name | Default Value | Description |
 | ---- | ------------- | ----------- |
@@ -420,8 +421,8 @@ ServiceHost does not implement the IPersistSettings interface. It manipulates th
 | NodeID | Random GUID | Unique Node ID |
 | ConfigurationType | Database | Specifies type of configuration: Database, WebService or XmlFile |
 | ConnectionString | Provider = Microsoft.Jet.OLEDB.4.0; Data Source = openPDC.mdb | Configuration database connection string |
-| DataProviderString | AssemblyName = {System.Data, Version = 2.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089}; ConnectionType = System.Data.OleDb.OleDbConnection; AdapterType = System.Data.OleDb.OleDbDataAdapter | Configuration database ADO.NET data provider assembly type creation string. |
-| ConfigurationCachePath | [installation directory](Getting_Started.md#installation-directory)\ConfigurationCache\ | Defines the path used to cache serialized configurations |
+| DataProviderString | `AssemblyName = {System.Data, Version = 2.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089}; ConnectionType = System.Data.OleDb.OleDbConnection; AdapterType = System.Data.OleDb.OleDbDataAdapter` | Configuration database ADO.NET data provider assembly type creation string. |
+| ConfigurationCachePath | [`installation directory`](Getting_Started.md#installation-directory)`\ConfigurationCache\` | Defines the path used to cache serialized configurations |
 | CachedConfigurationFile | SystemConfiguration.xml | File name for the last known good system configuration ( only cached for a dAtabase or WebService connection) |
 | UniqueAdaptersIDs | True | Set to true if all runtime adapter ID's will be unique to allow for easier adapter specification |
 | ProcessPriority RealTime | Sets desired process priority: Normal, AboveNormal, High, RealTime |
@@ -438,18 +439,18 @@ ServiceHost does not implement the IPersistSettings interface. It manipulates th
 
 | Name | Default Value | Description |
 | ---- | ------------- | ----------- |
-| SqlServer.ConnectionString | Data Source = serverName; Initial Catalog = openPDC; User Id = userName; Password = password | Example SQL Server database connection string |
-| SqlServer.DataProviderString | AssemblyName = {System.Data, Version = 2.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089}; ConnectionType = System.Data.SqlClient.SqlConnection; AdapterType = System.Data.SqlClient.SqlDataAdapter | Example SQL Server database .NET provider string |
-| MySQL.ConnectionString | Server = serverName; Database = openPDC; Uid = root; Pwd = password | Example MySQL database connection string |
-| MySQL.DataProviderString | AssemblyName = {MySql.Data, Version = 5.2.7.0, Culture = neutral, PublicKeyToken = c5687fc88969c44d}; ConnectionType = MySql.Data.MySqlClient.MySqlConnection; AdapterType = MySql.Data.MySqlClient.MySqlDataAdapter | Example MySQL database .NET provider string |
-| Oracle.ConnectionString | Data Source = openPDC; User Id = username; Password = password; Integrated Security = no | Example Oracle database connection string |
-| Oracle.DataProviderString | AssemblyName = {System.Data.OracleClient, Version = 2.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089}; ConnectionType = System.Data.OracleClient.OracleConnection; AdapterType = System.Data.OracleClient.OracleDataAdapter | Example Oracle database .NET provider string |
-| OleDB.ConnectionString | Provider = Microsoft.Jet.OLEDB.4.0; Data Source = openPDC.mdb | Example Microsoft Access (via OleDb) database connection string |
-| OleDB.DataProviderString | AssemblyName = {System.Data, Version = 2.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089}; ConnectionType = System.Data.OleDb.OleDbConnection; AdapterType = System.Data.OleDb.OleDbDataAdapter | Example OleDb database .NET provider string |
-| Odbc.ConnectionString | Driver = {SQL Server Native Client 10.0}; Server = serverName; Database = openPDC; Uid = userName; Pwd = password | Example ODBC database connection string |
-| Odbc.DataProviderString | AssemblyName = {System.Data, Version = 2.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089}; ConnectionType = System.Data.Odbc.OdbcConnection; AdapterType = System.Data.Odbc.OdbcDataAdapter | Example ODBC database .NET provider string |
-| WebService.ConnectionString | https://naspi.tva.com/openPDC/LoadConfigurationData.aspx | Example web service connection string |
-| XmlFile.ConnectionString | SystemConfiguration.xml | Example XML configuration file connection string |
+| SqlServer.ConnectionString | `Data Source = serverName; Initial Catalog = openPDC; User Id = userName; Password = password` | Example SQL Server database connection string |
+| SqlServer.DataProviderString | `AssemblyName = {System.Data, Version = 2.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089}; ConnectionType = System.Data.SqlClient.SqlConnection; AdapterType = System.Data.SqlClient.SqlDataAdapter` | Example SQL Server database .NET provider string |
+| MySQL.ConnectionString | `Server = serverName; Database = openPDC; Uid = root; Pwd = password` | Example MySQL database connection string |
+| MySQL.DataProviderString | `AssemblyName = {MySql.Data, Version = 5.2.7.0, Culture = neutral, PublicKeyToken = c5687fc88969c44d}; ConnectionType = MySql.Data.MySqlClient.MySqlConnection; AdapterType = MySql.Data.MySqlClient.MySqlDataAdapter` | Example MySQL database .NET provider string |
+| Oracle.ConnectionString | `Data Source = openPDC; User Id = username; Password = password; Integrated Security = no` | Example Oracle database connection string |
+| Oracle.DataProviderString | `AssemblyName = {System.Data.OracleClient, Version = 2.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089}; ConnectionType = System.Data.OracleClient.OracleConnection; AdapterType = System.Data.OracleClient.OracleDataAdapter` | Example Oracle database .NET provider string |
+| OleDB.ConnectionString | `Provider = Microsoft.Jet.OLEDB.4.0; Data Source = openPDC.mdb` | Example Microsoft Access (via OleDb) database connection string |
+| OleDB.DataProviderString | `AssemblyName = {System.Data, Version = 2.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089}; ConnectionType = System.Data.OleDb.OleDbConnection; AdapterType = System.Data.OleDb.OleDbDataAdapter` | Example OleDb database .NET provider string |
+| Odbc.ConnectionString | `Driver = {SQL Server Native Client 10.0}; Server = serverName; Database = openPDC; Uid = userName; Pwd = password` | Example ODBC database connection string |
+| Odbc.DataProviderString | `AssemblyName = {System.Data, Version = 2.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089}; ConnectionType = System.Data.Odbc.OdbcConnection; AdapterType = System.Data.Odbc.OdbcDataAdapter` | Example ODBC database .NET provider string |
+| WebService.ConnectionString | `https://naspi.tva.com/openPDC/LoadConfigurationData.aspx` | Example web service connection string |
+| XmlFile.ConnectionString | `SystemConfiguration.xml` | Example XML configuration file connection string |
 
 ### thresholdSettings category
 
@@ -471,7 +472,7 @@ ServiceHost does not implement the IPersistSettings interface. It manipulates th
 
 **Settings**
 
-This section also includes settings from <a href="#ServerBase">ServerBase</a>.<br>
+This section also includes settings from [ServerBase](#serverbase).
 
 
 | Name | Default Value | Description |
