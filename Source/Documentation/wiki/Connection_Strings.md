@@ -12,39 +12,39 @@ This document goes over the options that can be specified using the connection s
 - [AdapterBase](#adapterbase)
 - [AdoInputAdapter](#adoinputadapter)
 - [AdoOutputAdapter](#adooutputadapter)
-- [BpaPdcStream.Concentrator](#bpapdcstream.concentrator)
+- [BpaPdcStream.Concentrator](#bpapdcstreamconcentrator)
 - [CalculatedMeasurementBase](#calculatedmeasurementbase)
-- [CsvAdapters.CsvInputAdapter](#csvadapters.csvinputadapter)
-- [CsvAdapters.CsvOutputAdapter](#csvadapters.csvoutputadapter)
-- [DataQualityMonitoring.FlatlineTest](#dataqualitymonitoring.flatlinetest)
-- [DataQualityMonitoring.RangeTest](#dataqualitymonitoring.rangetest)
-- [DataQualityMonitoring.TimestampTest](#dataqualitymonitoring.timestamptest)
+- [CsvAdapters.CsvInputAdapter](#csvadapterscsvinputadapter)
+- [CsvAdapters.CsvOutputAdapter](#csvadapterscsvoutputadapter)
+- [DataQualityMonitoring.FlatlineTest](#dataqualitymonitoringflatlinetest)
+- [DataQualityMonitoring.RangeTest](#dataqualitymonitoringrangetest)
+- [DataQualityMonitoring.TimestampTest](#dataqualitymonitoringtimestamptest)
 - [FacileActionAdapterBase](#facileactionadapterbase)
-- [HistorianAdapters.InputAdapter](#historianadapters.inputadapter)
-- [HistorianAdapters.LocalOutputAdapter](#historianadapters.localoutputadapter)
-- [HistorianAdapters.RemoteOutputAdapter](#historianadapters.remoteoutputadapter)
-- [ICCPExport.FileExporter](#iccpexport.fileexporter)
-- [IEEEC37_118.Concentrator](#ieeec37_118.concentrator)
+- [HistorianAdapters.InputAdapter](#historianadaptersinputadapter)
+- [HistorianAdapters.LocalOutputAdapter](#historianadapterslocaloutputadapter)
+- [HistorianAdapters.RemoteOutputAdapter](#historianadaptersremoteoutputadapter)
+- [ICCPExport.FileExporter](#iccpexportfileexporter)
+- [IEEEC37_118.Concentrator](#ieeec37_118concentrator)
 - [InputAdapterBase](#inputadapterbase)
-- [MySqlAdapters.MySqlInputAdapter](#mysqladapters.mysqlinputadapter)
-- [MySqlAdapters.MySqlOutputAdapter](#mysqladapters.mysqloutputadapter)
+- [MySqlAdapters.MySqlInputAdapter](#mysqladaptersmysqlinputadapter)
+- [MySqlAdapters.MySqlOutputAdapter](#mysqladaptersmysqloutputadapter)
 - [OutputAdapterBase](#outputadapterbase)
 - [PhasorDataConcentratorBase](#phasordataconcentratorbase)
 - [PhasorMeasurementMapper](#phasormeasurementmapper)
-- [PowerCalculations.AverageFrequency](#powercalculations.averagefrequency)
-- [PowerCalculations.EventDetection.FrequencyExcursion](#powercalculations.eventdetection.frequencyexcursion)
-- [PowerCalculations.EventDetection.LossOfField](#powercalculations.eventdetection.lossoffield)
-- [PowerCalculations.PowerStability](#powercalculations.powerstability)
-- [PowerCalculations.ReferenceAngle](#powercalculations.referenceangle)
-- [PowerCalculations.ReferenceMagnitude](#powercalculations.referencemagnitude)
-- [Syntax for inputMeasurementKeys and outputMeasurements](#input_and_output_syntax)
-- [Typical time zones](#time_zone_ids)
+- [PowerCalculations.AverageFrequency](#powercalculationsaveragefrequency)
+- [PowerCalculations.EventDetection.FrequencyExcursion](#powercalculationseventdetectionfrequencyexcursion)
+- [PowerCalculations.EventDetection.LossOfField](#powercalculationseventdetectionlossoffield)
+- [PowerCalculations.PowerStability](#powercalculationspowerstability)
+- [PowerCalculations.ReferenceAngle](#powercalculationsreferenceangle)
+- [PowerCalculations.ReferenceMagnitude](#powercalculationsreferencemagnitude)
+- [Syntax for inputMeasurementKeys and outputMeasurements](#syntax-for-inputmeasurementkeys-and-outputmeasurements)
+- [Typical time zones](#typical-time-zones)
 
 ## ActionAdapterBase
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
-| framesPerSecond | int |    | Determines how many frames are published by the action adapter each second. |
+| *framesPerSecond* | int |    | Determines how many frames are published by the action adapter each second. |
 | *[lagTime](Help_Me_Choose_Diagrams.md#lag-time)* | double |    | Defines the maximum time, in seconds, that the action adapter will wait for new measurements to arrive before publishing the frame. The value must be greater than zero, but it can be less than one for subsecond tolerances. |
 | *[leadTime](Help_Me_Choose_Diagrams.md#lead-time)* | double |    | Defines the maximum time, in seconds, that the action adapter will tolerate for measurements that arrive with a future timestamp as compared to "real-time" -- a relative term based on the value of *useLocalClockAsRealTime*. The *leadTime* value is also applied as the +/- tolerance of the local clock to estimate real-time when *useLocalClockAsRealTime* is false. The value must be greater than zero, but it can be less than one for subsecond tolerances. If the *leadTime* is set too short (relative to the accuracy of the local clock), measurements may be unnecessarily discarded. However, if the local clock is very accurate, and accordingly *useLocalClockAsRealTime* is set true, this number should be very small, e.g., 0.1. |
 | *[useLocalClockAsRealTime](Help_Me_Choose_Diagrams.md#use-local-clock-as-realtime)* | bool | false | Indicates whether to use the local clock as real-time or to instead use the timestamp of the latest received measurement. This should only be set to true if the local system clock time is derived by GPS or otherwise very accurately synchronized to real-time. The accuracy of the local clock time relative to GPS-time determines the needed value for the *leadTime* setting. There is less processing involved when *useLocalClockAsRealTime* is set true, so having the local system clock synchronized with GPS represents a system optimization. |
@@ -52,7 +52,7 @@ This document goes over the options that can be specified using the connection s
 | *[allowSortsByArrival](Help_Me_Choose_Diagrams.md#allow-sorts-by-arrival)* | bool | true | Indicates whether measurements with bad timestamps should instead be  sorted by their arrival time. If this property is true, any incoming measurement with a bad timestamp quality will be sorted according to its arrival time (i.e., real-time). Setting this property to false will cause all measurements with a bad timestamp quality to be discarded. This property will only be considered when *ignoreBadTimestamps* is false. |
 | *initializationTimeout* | int | 15000 | Defines the maximum time, in milliseconds, adapter will wait during start for initialization to complete. Set to -1 to wait indefinitely. |
 | *inputMeasurementKeys* | string | null | Defines the input measurements for the adapter. The adapter can then determine whether a given measurement was explicitly entered as an input measurement by using the `IsInputMeasurement(MeasurementKey)` method. If no input measurements are defined, `IsInputMeasurement(MeasurementKey)` will always return true. `IsInputMeasurement(MeasurementKey)` is used by the default `QueueMeasurementsForProcessing(IEnumerable<IMeasurement>)` method so that only input measurements will be processed by the action adapter. |
-| *outputMeasurements | string | null | Defines the output measurements for the adapter. The adapter can access these measurements using the `OutputMeasurements` property. Adapters that create new measurements should probably clone the output measurements using `Measurement.Clone(IMeasurement)` and send the clones into the system using `OnNewMeasurements(ICollection<IMeasurement>)`. |
+| *outputMeasurements* | string | null | Defines the output measurements for the adapter. The adapter can access these measurements using the `OutputMeasurements` property. Adapters that create new measurements should probably clone the output measurements using `Measurement.Clone(IMeasurement)` and send the clones into the system using `OnNewMeasurements(ICollection<IMeasurement>)`. |
 | *minimumMeasurementsToUse* | int | # of input measurements | Defines the number of measurements returned by the `TryGetMinimumNeededMeasurements()` method which can be called by the user-defined implementation. |
 | *[timeResolution](Help_Me_Choose_Diagrams.md#time-resolution)* | long | 10000 | Determines the resolution used when sorting the measurements into their respective frames. If frames are configured to have a higher resolution than the measurements, some measurements could end up in the wrong frame due to rounding errors - use this property to assign the maximum resolution of the system frames. The maximum value possible is 10000000. The minimum value possible is 0. See table below for typical resolution values. |
 | *[allowPreemptivePublishing](Help_Me_Choose_Diagrams.md#allow-preemptive-publishing)* | bool | true | Defines the flag that allows system to preemptively publish frames before the lag time expires assuming all expected data have arrived. |
@@ -63,26 +63,26 @@ This document goes over the options that can be specified using the connection s
 | *trackPublishedTimestamp* | bool | false | Defines flag that determines if system should track timestamp of publication for all frames and measurements. Setting this value to true will cause the concentrator to mark the timestamp of publication in each frame's and measurement's *PublishedTimestamp* property. Since this is extra processing time that may not be needed except in cases of calculating statistics for system performance, this is not enabled by default. |
 | *maximumPublicationTimeout* | int | milliseconds per frame + 2% | Defines the maximum frame publication timeout in milliseconds, set to -1 to wait indefinitely. The concentrator automatically defines a precision timer to provide the heatbeat for frame publication, however if the system gets busy the heartbeat signals can be missed. This property defines a maximum wait timeout before reception of the heartbeat signal to make sure frame publications continue to occur in a timely fashion even when a system is under stress. This property is automatically defined as 2% more than the number of milliseconds per frame when the *framesPerSecond* property is set. |
 
-See [Syntax for inputMeasurementKeys and outputMeasurements](#input-and-output-syntax) for help with the syntax of these parameters.
+See [Syntax for inputMeasurementKeys and outputMeasurements](#syntax-for-inputmeasurementkeys-and-outputmeasurements) for help with the syntax of these parameters.
 
 Time resolution value is typically a power of 10 based on the number of ticks per the desired resolution. The following are common resolutions and their respective
 *timeResolution* values.
 
 | Resolution | timeResolution |
 | ---------- | -------------- |
-| Seconds | 10000000 |
-| Milliseconds with slack\* | 330000 |
-| Milliseconds | 10000 |
-| Microseconds | 10 |
-| Ticks (100-nanoseconds) | 0 |
+| *Seconds* | 10000000 |
+| *Milliseconds* with slack\* | 330000 |
+| *Milliseconds* | 10000 |
+| *Microseconds* | 10 |
+| *Ticks* (100-nanoseconds) | 0 |
 
 \* Use this setting for BPA PDCstreams or other devices that may have more variation in calculated timestamps. Slack value will vary with incoming frame rate, for example: use 330,000 for 30 frames per second, 160,000 for 60 frames per second, 80,000 for 120  frames per second, etc. Actual slack value may need to be more or less depending on the size of the timestamp variation in the incoming device stream.
 
 | Downsample Method | Description |
 | ----------------- | ----------- |
-| LastReceived | Downsamples to the last measurement received. Use this option if no downsampling is needed or the selected value is not critical. This is the fastest option if the incoming and outgoing frame rates match. |
-| Closest | Downsamples to the measurement closest to frame time. This is the typical operation used when performing simple downsampling. This is the fastest option if the incoming frame rate is faster than the outgoing frame rate. |
-| Filtered | Downsamples by applying a user-defined value filter\* over all received measurements to anti-alias the results. This option will produce the best result but has a processing penalty.
+| *LastReceived* | Downsamples to the last measurement received. Use this option if no downsampling is needed or the selected value is not critical. This is the fastest option if the incoming and outgoing frame rates match. |
+| *Closest* | Downsamples to the measurement closest to frame time. This is the typical operation used when performing simple downsampling. This is the fastest option if the incoming frame rate is faster than the outgoing frame rate. |
+| *Filtered* | Downsamples by applying a user-defined value filter\* over all received measurements to anti-alias the results. This option will produce the best result but has a processing penalty.
 
 \* By default all analogs are downsampled using an average, phase angles are downsampled using a wrapping-angle average and digital values (including status flags) are downsampled by selecting the majority value.
 
@@ -103,7 +103,7 @@ This base class is inherited by both InputAdapterBase and OutputAdapterBase.
 
 Example: `inputMeasurementKeys={FILTER ActiveMeasurements WHERE SignalType = 'FREQ'}; outputMeasurements={MYSOURCE:15;MYSOURCE:16,-180,360}; measurementReportingInterval=5000`
 
-See [Syntax for inputMeasurementKeys and outputMeasurements](#input-and-output-syntax) for help with the syntax of these parameters.
+See [Syntax for inputMeasurementKeys and outputMeasurements](#syntax-for-inputmeasurementkeys-and-outputmeasurements) for help with the syntax of these parameters.
 
 ## AdoInputAdapter
 
@@ -146,7 +146,7 @@ Connection strings for this adapter also include all the parameters defined for 
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
-| *configurationSection* | string | [Acronym](Manual_Configuration.md#outputstream.acronym-column) | Allows the user to define the section under which adapter settings will be found in the configuration file. If an adapter has configuration file settings, it is up to the person implementing the calculated measurement to handle this. |
+| *configurationSection* | string | [Acronym](Manual_Configuration.md#the-acronym-column-2) | Allows the user to define the section under which adapter settings will be found in the configuration file. If an adapter has configuration file settings, it is up to the person implementing the calculated measurement to handle this. |
 
 ## CsvAdapters.CsvInputAdapter
 
@@ -239,11 +239,11 @@ Example: `protocol=Udp; server=openpdc; port=2004; initiateconnection=true`
 
 ## HistorianAdapters.LocalOutputAdapter
 
-This adapter is used by default when defining a [local historian](Manual_Configuration.md#historian.islocal-column) in the database. Connection strings for this  adapter also include all the parameters defined for [OutputAdapterBase](#outputadapterbase) and [AdapterBase](#adapterbase).
+This adapter is used by default when defining a [local historian](Manual_Configuration.md#the-islocal-column) in the database. Connection strings for this  adapter also include all the parameters defined for [OutputAdapterBase](#outputadapterbase) and [AdapterBase](#adapterbase).
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
-| *instancename* | string |    | Determines the name by which certain historian files will be prefixed. If you are using the Historian table in the database to define a local historian, this option is not required and will default to the value in the Historian.Acronym field. Otherwise, it is required. The value will be converted to lowercase before being used. |
+| *instancename* | string |    | Determines the name by which certain historian files will be prefixed. If you are using the Historian table in the database to define a local historian, this option is not required and will default to the value in the *Historian.Acronym* field. Otherwise, it is required. The value will be converted to lowercase before being used. |
 | *archivepath* | string | The openPDC [installation directory](Getting_Started.md#installion-directory). | Determines the location where the adapter will place the archive files. |
 | *refreshmetadata* | bool | true | Determines whether or not to refresh the metadata when the historian is attempting to connect. |
 
@@ -253,7 +253,7 @@ Example: `instancename=devarchive; archivepath=C:\My Archives; refreshmetadata=f
 
 ## HistorianAdapters.RemoteOutputAdapter
 
-This adapter is used by default when defining a [non-local historian](Manual_Configuration.md#historian.islocal-column) in the database. Connection strings for this adapter also include all the parameters defined for [OutputAdapterBase](#outputadapterbase) and [AdapterBase](#adapterbase).
+This adapter is used by default when defining a [non-local historian](Manual_Configuration.md#the-islocal-column) in the database. Connection strings for this adapter also include all the parameters defined for [OutputAdapterBase](#outputadapterbase) and [AdapterBase](#adapterbase).
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
@@ -269,7 +269,7 @@ Example: `server=localhost; port=1003; payloadAware=True; conserveBandwidth=True
 
 ## ICCPExport.FileExporter
 
-Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurement) and [ActionAdapterBase](#actionadapterbase).
+Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurementbase) and [ActionAdapterBase](#actionadapterbase).
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
@@ -282,7 +282,7 @@ Connection strings for this adapter also include all the parameters defined for 
 
 Example: `exportInterval=5; useReferenceAngle=True; referenceAngleMeasurement=DEVARCHIVE:6; companyTagPrefix=TVA; useNumericQuality=True; inputMeasurementKeys={FILTER ActiveMeasurements WHERE Device='SHELBY' AND SignalType='FREQ'}`
 
-See [Syntax for inputMeasurementKeys and outputMeasurements](#input-and-output-syntax) for help with the syntax of inputMeasurementKeys.
+See [Syntax for inputMeasurementKeys and outputMeasurements](#syntax-for-inputmeasurementkeys-and-outputmeasurements) for help with the syntax of inputMeasurementKeys.
 
 ## IEEEC37_118.Concentrator
 
@@ -466,7 +466,7 @@ Example: `transportProtocol=File; file=Sample1344.PmuCapture; definedFrameRate=6
 
 ## PowerCalculations.AverageFrequency
 
-Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurement) and [ActionAdapterBase](#actionadapterbase).
+Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurementbase) and [ActionAdapterBase](#actionadapterbase).
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
@@ -475,11 +475,11 @@ Connection strings for this adapter also include all the parameters defined for 
 
 Example: `inputMeasurementKeys={FILTER ActiveMeasurements WHERE SignalType = 'FREQ'}; outputMeasurements={AVERAGE:1; AVERAGE:2; AVERAGE:3}`
 
-See [Syntax for inputMeasurementKeys and outputMeasurements](#input-and-output-syntax) for help with the syntax of these parameters.
+See [Syntax for inputMeasurementKeys and outputMeasurements](#syntax-for-inputmeasurementkeys-and-outputmeasurements) for help with the syntax of these parameters.
 
 ## PowerCalculations.EventDetection.FrequencyExcursion
 
-Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurement) and [ActionAdapterBase](#actionadapterbase).
+Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurementbase) and [ActionAdapterBase](#actionadapterbase).
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
@@ -495,11 +495,11 @@ Connection strings for this adapter also include all the parameters defined for 
 
 Example: `inputMeasurementKeys={FILTER ActiveMeasurements WHERE SignalType = 'FREQ'}; outputMeasurements={EXCURSION:1; EXCURSION:2; EXCURSION:3; EXCURSION:4}; estimateTriggerThreshold=.0256; analysisWindowSize=150; analysisInterval=15; consecutiveDetections=3; minimumValidChannels=5; powerEstimateRatio=19530.0; minimumAlarmInterval=10`
 
-See [Syntax for inputMeasurementKeys and outputMeasurements](#input-and-output-syntax) for help with the syntax of these parameters.
+See [Syntax for inputMeasurementKeys and outputMeasurements](#syntax-for-inputmeasurementkeys-and-outputmeasurements) for help with the syntax of these parameters.
 
 ## PowerCalculations.EventDetection.LossOfField
 
-Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurement) and [ActionAdapterBase](#actionadapterbase).
+Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurementbase) and [ActionAdapterBase](#actionadapterbase).
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
@@ -513,11 +513,11 @@ Connection strings for this adapter also include all the parameters defined for 
 
 Example: `inputMeasurementKeys={DEVARCHIVE:5; DEVARCHIVE:6; DEVARCHIVE:9; DEVARCHIVE:10}; outputMeasurements={LOF:1; LOF:2; LOF:3; LOF:4}; pSet=-500; qSet=300; qAreaSet=600; voltageThreshold=475000; analysisInterval=15`
 
-See [Syntax for inputMeasurementKeys and outputMeasurements](#input-and-output-syntax) for help with the syntax of these parameters.
+See [Syntax for inputMeasurementKeys and outputMeasurements](#syntax-for-inputmeasurementkeys-and-outputmeasurements) for help with the syntax of these parameters.
 
 ## PowerCalculations.PowerStability
 
-Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurement) and [ActionAdapterBase](#actionadapterbase).
+Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurementbase) and [ActionAdapterBase](#actionadapterbase).
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
@@ -532,11 +532,11 @@ Example: `inputMeasurementKeys={DEVARCHIVE:6; DEVARCHIVE:5; DEVARCHIVE:8; DEVARC
 
 Example2: `inputMeasurementKeys={FILTER ActiveMeasurements WHERE SignalType LIKE '*PH*' AND Device = 'SHELBY' ORDER BY PhasorID}; outputMeasurements={POWER:1; POWER:2}; sampleSize=20; energizedThreshold=58000.0`
 
-See [Syntax for inputMeasurementKeys and outputMeasurements](#input-and-output-syntax) for help with the syntax of these parameters.
+See [Syntax for inputMeasurementKeys and outputMeasurements](#syntax-for-inputmeasurementkeys-and-outputmeasurements) for help with the syntax of these parameters.
 
 ## PowerCalculations.ReferenceAngle
 
-Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurement) and [ActionAdapterBase](#actionadapterbase).
+Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurementbase) and [ActionAdapterBase](#actionadapterbase).
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
@@ -545,11 +545,11 @@ Connection strings for this adapter also include all the parameters defined for 
 
 Example: `inputMeasurementKeys={FILTER ActiveMeasurements WHERE SignalType = 'IPHA'}; outputMeasurements={REF_IPHA:1}`
 
-See [Syntax for inputMeasurementKeys and outputMeasurements](#input-and-output-syntax) for help with the syntax of these parameters.
+See [Syntax for inputMeasurementKeys and outputMeasurements](#syntax-for-inputmeasurementkeys-and-outputmeasurements) for help with the syntax of these parameters.
 
 ## PowerCalculations.ReferenceMagnitude
 
-Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurement) and [ActionAdapterBase](#actionadapterbase).
+Connection strings for this adapter also include all the parameters defined for [CalculatedMeasurement](#calculatedmeasurementbase) and [ActionAdapterBase](#actionadapterbase).
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
@@ -558,7 +558,7 @@ Connection strings for this adapter also include all the parameters defined for 
 
 Example: `inputMeasurementKeys={FILTER ActiveMeasurements WHERE SignalType = 'IPHM'}; outputMeasurements={REF_IPHM:1}`
 
-See [Syntax for inputMeasurementKeys and outputMeasurements](#input-and-output-syntax) for help with the syntax of these parameters.
+See [Syntax for inputMeasurementKeys and outputMeasurements](#syntax-for-inputmeasurementkeys-and-outputmeasurements) for help with the syntax of these parameters.
 
 ## Syntax for inputMeasurementKeys and outputMeasurements
 
