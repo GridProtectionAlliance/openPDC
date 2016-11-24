@@ -244,7 +244,7 @@ This adapter is used by default when defining a [local historian](Manual_Configu
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
 | *instancename* | string |    | Determines the name by which certain historian files will be prefixed. If you are using the Historian table in the database to define a local historian, this option is not required and will default to the value in the *Historian.Acronym* field. Otherwise, it is required. The value will be converted to lowercase before being used. |
-| *archivepath* | string | The openPDC [installation directory](Getting_Started.md#installion-directory). | Determines the location where the adapter will place the archive files. |
+| *archivepath* | string | The openPDC [installation directory](Getting_Started.md#installation-directory). | Determines the location where the adapter will place the archive files. |
 | *refreshmetadata* | bool | true | Determines whether or not to refresh the metadata when the historian is attempting to connect. |
 
 Also note that the sourceids parameter is automatically defined when using the Historian table in the database. It will default to the value in the *Historian.Acronym* field.
@@ -401,7 +401,7 @@ PhasorMeasurementMapper is used by the Device table in the openPDC database. Whe
 | *phasorProtocol* | PhasorProtocol | IeeeC37_118V1 | Defines the phasor protocol used by the device. The value can be one of IeeeC37_118V1, IeeeC37_118D6, Ieee1344, BpaPdcStream, FNet, SelFastMessage, or Macrodyne. |
 | *transportProtocol* | TransportProtocol | Tcp | Defines the protocol used by the device to send its data. The value can be one of Tcp, Udp, Serial, or File. |
 | *commandChannel* | string | not defined | If defined, the value of this parameter is the connection string of the command channel. |
-| *timeZone* | string | UTC | ID of the time zone for time as reported by device used to offset time back to UTC. See [typical time zones](#time-zone-ids) for possible IDs. |
+| *timeZone* | string | UTC | ID of the time zone for time as reported by device used to offset time back to UTC. See [typical time zones](#typical-time-zones) for possible IDs. |
 | *timeAdjustmentTicks* | long | 0 | Allows for manual high-resolution +/- adjustment of the frame timestamps, in ticks, if necessary. One tick = 100 nanoseconds, one millisecond = 10000 ticks. |
 | *autoStartDataParsingSequence* | bool | true | Defines flag to automatically send the ConfigFrame2 and EnableRealTimeData command frames used to start a typical data parsing sequence. |
 | *skipDisableRealTimeData* | bool | false | Defines flag to skip automatic disabling of the real-time data stream on shutdown or startup. Useful when using UDP multicast with several subscribed clients. |
@@ -414,7 +414,7 @@ PhasorMeasurementMapper is used by the Device table in the openPDC database. Whe
 | *parsingExceptionWindow* | double | 5.0 | Defines time duration, in seconds, to monitor parsing exceptions. |
 | *delayedConnectionInterval* | double | 1.5 | Defines the delay, in seconds, before connecting or reconnecting to a device. Set to zero for minimum delay (1 millisecond). One to two second delay recommended for new device turn-up. |
 
-**commandChannel connection string parameters** (also includes [transport protocol specific parameters](Getting_Started.md#configure-connection-string))
+**commandChannel connection string parameters** (also includes [transport protocol specific parameters](Getting_Started.md#configuring-a-connection-string))
 
 | Key | Value | Default | Description |
 | --- | ----- | ------- | ----------- |
