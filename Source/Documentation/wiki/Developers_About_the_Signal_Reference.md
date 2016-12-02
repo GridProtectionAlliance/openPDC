@@ -54,7 +54,7 @@ Using this information you can map individual measurements to and from most any 
 ---
 
 Apr 12, 2013 at 5:55:03 PM Last edited by [ritchiecarroll](https://github.com/ritchiecarroll), version 7  
-Oct 5, 2015 Migrated from [CodePlex]http://openpdc.codeplex.com/wikipage?title=About%20the%20Signal%20Reference) by [aj](https://github.com/ajstadlin)
+Oct 5, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=About%20the%20Signal%20Reference) by [aj](https://github.com/ajstadlin)
 
 ---
 
