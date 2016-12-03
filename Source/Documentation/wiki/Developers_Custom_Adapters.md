@@ -689,7 +689,7 @@ public class QueueMeasurementsForProcessingExample : ActionAdapterBase
 
 ---
 
-Jun 22, 2012 at 1:23:27 PM< - Last edited by [alexfoglia](Contributors/alexfoglia.md), version 3  
+Jun 22, 2012 at 1:23:27 PM - Last edited by [alexfoglia](Contributors/alexfoglia.md), version 3  
 Oct 5, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Custom%20Adapter%20%28Developers%29) by [aj](https://github.com/ajstadlin)
 
 ---
