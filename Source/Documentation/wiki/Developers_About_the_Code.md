@@ -3484,8 +3484,9 @@ SEL Fast Message status word flags enumeration.
 [Click for larger image](Developers_About_the_Code.files/Phasor_Value_Relationships.jpg)
 
 ---  
-- Jun 22, 2012 13:52:42 Last edited by [alexfoglia](Contributors/alexfoglia.md), version 5  
-- Oct 5, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=About%20the%20Code%20%28Developers%29) by [aj](https://github.com/ajstadlin)
+
+Jun 22, 2012 13:52:42 - Last edited by [alexfoglia](Contributors/alexfoglia.md), version 5  
+Oct 5, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=About%20the%20Code%20%28Developers%29) by [aj](https://github.com/ajstadlin)
 
 ---  
 Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
