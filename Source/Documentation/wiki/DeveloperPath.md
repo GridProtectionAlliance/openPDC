@@ -75,10 +75,12 @@ If you have been granted developer access, please adhere to the following rules:
 
 Note that some of the rules could be enforced by TFS but the codeplex TFS is a shared system, so for now we are simply using the honor system.
 
----  
-Nov 25, 2016 22:00 Updated by [aj](https://github.com/ajstadlin), version 5  
-Oct 4, 2009 11:17 Edited by [ritchiecarroll](https://github.com/ritchiecarroll), version 4  
-Oct 4, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=DeveloperPath) by [aj](https://github.com/ajstadlin)
+---
 
----  
+Nov 25, 2016 22:00 - Updated by [aj](https://github.com/ajstadlin), version 5  
+Oct 4, 2009 11:17 - Edited by [ritchiecarroll](https://github.com/ritchiecarroll), version 4  
+Oct 4, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=DeveloperPath) by [aj](https://github.com/ajstadlin)
+
+---
+
 Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)

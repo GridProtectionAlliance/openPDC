@@ -67,10 +67,10 @@ In a semi-formal summary, the following is the format the openPDC uses for its a
 
 ---
 
-|     |
-| --- |
-| Aug 7, 2013 at 5:07 PM Last edited  by [ritchiecarroll](https://github.com/ritchiecarroll), version 6 |
-| Oct 5, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Automated%20Phasor%20Tag%20Naming%20Convention) by [aj](https://github.com/ajstadlin) |
-|     | 
-| Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org) |
+Aug 7, 2013 at 5:07 PM - Last edited  by [ritchiecarroll](https://github.com/ritchiecarroll), version 6  
+Oct 5, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Automated%20Phasor%20Tag%20Naming%20Convention) by [aj](https://github.com/ajstadlin)
+
+---
+
+Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org) |
 
