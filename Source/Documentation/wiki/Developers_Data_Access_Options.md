@@ -128,4 +128,4 @@ Oct 5, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?titl
 
 ---
 
-Copyright 2016 [Grid Protection Alliance]http://www.gridprotectionalliance.org)
+Copyright 2016 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
