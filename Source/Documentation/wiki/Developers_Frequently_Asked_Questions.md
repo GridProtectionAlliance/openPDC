@@ -50,7 +50,7 @@ To load the Visual Basic application, you will need to reinstall Visual Studio, 
 
 **OutputAdapters**: Typically queues all measurements (no sorting) for processing. Queued measurements are presented to the adapter for processing in the `void ProcessMeasurements(IMeasurement[] measurements)` method - if measurements continue to build up in memory and are not processed in a timely manner they will be removed from the queue as protective measure to prevent catastrophic out-of-memory failures. Since output adapters are used to archive data this is often the slowest part in the system (disks tend to be a bottleneck), outputs can optionally be set to filter based on a measurement's defined `Source` property - this allows multiple outputs to be targeted to several different distributed outputs which allows large systems to stay ahead of the incoming data stream. Interface: `IOutputAdapter`, base class: `OutputAdapterBase`
 
-You can read more about creating custom adapters on the [how-to page for custom adapters](Developers_Custom_Adapter.md)
+You can read more about creating custom adapters on the [how-to page for custom adapters](Developers_Custom_Adapters.md)
 
 ---
 
