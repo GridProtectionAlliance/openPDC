@@ -43,7 +43,7 @@ You can always change the destination of the data files by modifying the configu
 
 The default file format uses the ".d" file extension and has multiple configurable options in terms of file size.
 
-## Copy the data files into Hadoop the HDFS
+## Copy the data files into the Hadoop HDFS
 
 Hadoop's distributed file system (HDFS) has multiple ways to copy data into it. They include:
 
@@ -128,8 +128,8 @@ Archive v1.0.1 hdfs-over-ftp tar files can also be found [here](Developers_Using
 
 ---
 
-- Mar 6, 2015, 9:21:41 PM by [ritchiecarroll](https://github.com/ritchiecarroll)</a>, version 4
-- Oct 5, 2015  Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Using%20Hadoop%20%28Developers%29) by [aj](https://github.com/ajstadlin)
+Mar 6, 2015, 9:21:41 PM by [ritchiecarroll](https://github.com/ritchiecarroll), version 4  
+Oct 5, 2015  Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Using%20Hadoop%20%28Developers%29) by [aj](https://github.com/ajstadlin)
 
 ---
 
