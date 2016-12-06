@@ -12,7 +12,7 @@ The GEP Subscription Tester can be downloaded from [here](http://www.gridprotect
 This application is a simple graphical program that uses the [Grid Solutions Framework](https://github.com/GridProtectionAlliance/gsf)
  Unity subscription API to display trending lines for each subscribed measurement in the specified filter expression - trend lines are updated as values are received in real-time. Mouse controls (or finger gestures) will allow rotation and zoom, arrows keys will adjust X/Y location. Clicking on the "Subscription Controls" area at the bottom of the screen will pop-up a control window to allow you to change connection information (e.g., server/port to connect to), the filter expression and even replay data if a historian is enabled.
 
-![](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/GEP_Subscription_Tester.files/GEPSubscriptionTester.png "GEPSubscriptionTester.png")
+![](GEP_Subscription_Tester.files/GEPSubscriptionTester.png "GEPSubscriptionTester.png")
 
 The GEP Subscription Tester application is built using the [Unity 3D gaming engine](http://unity3d.com/) and can currently run on Windows, Mac, Linux and Android devices. Various other deployment options (e.g., iOS, Xbox, PSP, etc.) are possible.
 
