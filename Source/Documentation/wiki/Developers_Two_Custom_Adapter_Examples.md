@@ -95,6 +95,7 @@ namespace SampleDataSimulator
         {
             base.Initialize();
         }
+        
         protected override void PublishFrame(IFrame frame,  int index)
         {
             throw new NotImplementedException();
@@ -225,7 +226,6 @@ protected override void PublishFrame(IFrame frame, int index)
     
     /// Output the next measurement frame
     OnNewMeasurements(output);
-    }
 }
 ```
 
