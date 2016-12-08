@@ -8,19 +8,15 @@
 
 ---
 
-# openPDC Overview
+# [openPDC August 2010 Release](openPDC_v1.2_Release_Aug2010.md)
 
-Below is a one-page flyer (front and back) that we developed to provide an overview of the openPDC. Click [here](openPDC_Overview.files/Overview.pdf) to download the overview in PDF form.
-
-![Front Page](openPDC_Overview.files/Front.jpg "Front Page")
-
-![Back Page](openPDC_Overview.files/Back.jpg "Back Page")
+![](archives/openPDC_v1.2_Release_Aug2010.png "August 2010 Release")
 
 ---
 
-Oct 16, 2009 1:39 AM - Last edited by [ritchiecarroll](https://github.com/ritchiecarroll), version 7  
-Oct 4, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Overview) by [aj](https://github.com/ajstadlin)
+Sep 21, 2010 at 2:58 PM Last edited by [ritchiecarroll](https://github.com/ritchiecarroll), version 1  
+Oct 8, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=August 2010 version 1.2 Release Features) by [aj](https://github.com/ajstadlin)
 
 ---
 
-Copyright 2009-2017 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
+Copyright 2010-2017 [Grid Protection Alliance](http://www.gridprotectionalliance.org)

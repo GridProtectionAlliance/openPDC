@@ -1,25 +1,27 @@
 [![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
 
-|   |   |   |   |
-|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** |
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases)** |
 
-# August 2010 openPDC v1.2 Release
+***This is an archival document and its contents are no longer maintained or updated. Please see the latest version of the openPDC project at [https://github.com/GridProtectionAlliance/openPDC](https://github.com/GridProtectionAlliance/openPDC).***
+
+---
+
+# openPDC v1.2 August 2010 Release
 
 |   |   |
 |---|---|
-| Rating: No reviews yet | Downloads: 293 |
-| Change Set: [57499](http://openpdc.codeplex.com/SourceControl/changeset/view/57499) | Released: Sep 15, 2010 7:00:00 AM |
-| Updated: Sep 23, 2010 8:43:52 PM by [ritchiecarroll](https://github.com/ritchiecarroll) | Dev status: Stable |
-|   | Stable: This software is believed to be ready for use") |
-                    
+| Change Set: [57499 on CodePlex](http://openpdc.codeplex.com/SourceControl/changeset/view/57499) | Released: Sep 15, 2010 7:00:00 AM |
+| Dev status:  Stable | Uploaded: Sep 21, 2010 |
+
 ## Recommended Download
 
-[Download opdnPDCSetup.zip](http://openpdc.codeplex.com/downloads/get/151227 "Zip Archive, 18731K uploaded Sep 21, 2010 8:27:42 PM")
+[![](files/RuntimeBinary.gif) openPDCSetup.zip (18731K, uploaded Sep 21, 2010)](http://openpdc.codeplex.com/downloads/get/151227 "Zip Archive, 18731K uploaded Sep 21, 2010 8:27:42 PM")
 
 ### Release Notes
 
-This is the August 2010 release build of the openPDC, version 1.2.40
+[![](files/project_icon_lrg.gif)]() This is the August 2010 release build of the openPDC, version 1.2.40
 
 Note that this version of the openPDC has been upgraded to work with .NET 4.0. Make sure your system has .NET 4.0 before installation:
 
@@ -37,12 +39,13 @@ A multitude of performance and stability enhancements are included with this rel
 
 Simplicity was targeted at both ease-of-use in the user interface and easier installation. This version of the openPDC comes with a completely new, tightly integrated GUI based version of the openPDC manager. The GUI manager automatically installs along with the openPDC so no further setup or installation will be required to use the system. The web based openPDC manager is still available for web based deployments where desired, but this is now an optional component and the more complicated IIS installation can be turned over to IT staff.
 
-![](August_2010_version_1_2_release_Features.files/openPDCManager.png "openPDC Manager")
+![](archives/openPDCManager_v1.2_Release.png "openPDC Manager")
 
 ---
 
-Migrated from Oct 8, 2015 [CodePlex](http://openpdc.codeplex.com/releases/view/48468) by [aj](https://github.com/ajstadlin)
+Sep 23, 2010 8:43:52 PM - Updated by [ritchiecarroll](https://github.com/ritchiecarroll)  
+Oct 8, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/releases/view/48468) by [aj](https://github.com/ajstadlin)
 
 ---
 
-Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
+Copyright 2010-2017 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
