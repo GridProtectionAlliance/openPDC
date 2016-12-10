@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
 |   |   |   |   |   |
 |---|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases)** |
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 ***This is an archival document and its contents are no longer maintained or updated. Please see the latest version of the openPDC project at [https://github.com/GridProtectionAlliance/openPDC](https://github.com/GridProtectionAlliance/openPDC).***
 
@@ -63,4 +63,4 @@ Oct 8, 2015 - Migrated from [CodePlex] by [aj](https://github.com/ajstadlin)
 
 ---
 
-Copyright 2015-2017 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
+Copyright 2016 [Grid Protection Alliance](http://www.gridprotectionalliance.org)

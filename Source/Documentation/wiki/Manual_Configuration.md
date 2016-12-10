@@ -1,32 +1,15 @@
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta charset="utf-8" />
-</head>
-<body>
-<!--HtmlToGmd.Body-->
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
-<hr />
-<div id="NavigationMenu">
-<table style="width: 100%; border-collapse: collapse; border: 0px solid gray;">
-<tr>
-<td style="width: 25%; text-align:center;"><b><a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a></b></td>
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
-</tr>
-</table>
-</div>
-<hr />
-<!--/HtmlToGmd.Body-->
-<div class="WikiContent">
-<div class="wikidoc">
-<h1>How to Manually Configure the openPDC</h1>
-This guide is designed to assist you in configuring the openPDC to gather data from your devices and transmit that data to other devices or applications. The following sections will go over which tables you will need to edit and explain the relevant column
- values. Any columns that are not specified are not necessary for simple configurations and can be left with their default values.<br>
-<br>
-Before you begin your configuration, please note that this guide assumes you are using only the InitialDataSet in your database; not the SampleDataSet. In the case of SQLite, this means using the &quot;openPDC-InitialDataSet.db&quot; file instead of the &quot;openPDC-SampleDataSet.db&quot;
- file. In the case of SQL Server and MySQL, it means running only the &quot;openPDC.sql&quot; and &quot;InitialDataSet.sql&quot; files when you set up your database.<br>
-<br>
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
+
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
+
+# How to Manually Configure the openPDC
+
+This guide is designed to assist you in configuring the openPDC to gather data from your devices and transmit that data to other devices or applications. The following sections will go over which tables you will need to edit and explain the relevant column values. Any columns that are not specified are not necessary for simple configurations and can be left with their default values.
+
+Before you begin your configuration, please note that this guide assumes you are using only the InitialDataSet in your database; not the SampleDataSet. In the case of SQLite, this means using the &quot;openPDC-InitialDataSet.db&quot; file instead of the &quot;openPDC-SampleDataSet.db&quot; file. In the case of SQL Server and MySQL, it means running only the &quot;openPDC.sql&quot; and &quot;InitialDataSet.sql&quot; files when you set up your database.
+
 If you need to reset your database in order to do this, please read the <a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Manual_Configuration.md#reset_database">
 FAQ</a>. However, you are strongly encouraged to use the SampleDataSet as an example to help you understand how to configure your database.<br>
 <ul>
@@ -699,16 +682,13 @@ Everything else is fairly straightforward, but there is a lot of configuration i
  the configurations covered by this guide in which case you can take a look at the database documentation (coming soon) for a more detailed description of the tables and fields. Finally, if you think you may have found a bug, you are encouraged to create an
  item on the issue tracker in order to bring it to our attention.</div>
 </div>
-<div id="footer">
-<hr />
-Last edited <span class="smartDate" title="3/25/2015 9:01:10 PM" LocalTimeTicks="1427342470">Mar 25, 2015 at 9:01 PM</span> by <a id="wikiEditByLink" href="https://github.com/ritchiecarroll">ritchiecarroll</a>, version 12<br />
-Migrated from <a href="https://openpdc.codeplex.com/wikipage?title=Manual%20Configurations">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
-</div>
-<!--HtmlToGmd.Foot-->
-<div id="copyright">
-<hr />
-Copyright 2015 <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a>
-</div>
-<!--/HtmlToGmd.Foot-->
-</body>
-</html>
+
+---
+
+Mar 25, 2015 9:01 PM - Last edited by [ritchiecarroll](https://github.com/ritchiecarroll), version 12  
+Oct 4, 2015 - Migrated from [CodePlex](https://openpdc.codeplex.com/wikipage?title=Manual%20Configurations) by [aj](https://github.com/ajstadlin)  
+Dec 10, 2016 - Updated by [aj](https://github.com/ajstadlin), version 12.1
+
+---
+
+Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)

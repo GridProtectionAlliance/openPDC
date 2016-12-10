@@ -2,7 +2,7 @@
 
 |   |   |   |   |   |
 |---|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance - Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 # FAQ - Frequently Asked Questions
 
@@ -496,4 +496,4 @@ Oct 3, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=
 
 ---
 
-Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
+Copyright 2016 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
