@@ -1,47 +1,25 @@
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta charset="utf-8" />
-</head>
-<body>
-<!--HtmlToGmd.Body-->
-<h1><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md"><img src="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Logo.png" alt="The Open Source Phasor Data Concentrator" /></a></h1>
-<hr />
-<div id="NavigationMenu">
-<table style="width: 100%; border-collapse: collapse; border: 0px solid gray;">
-<tr>
-<td style="width: 25%; text-align:center;"><b><a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a></b></td>
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC">openPDC Project on GitHub</a></b></td>
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Home.md">openPDC Wiki Home</a></b></td>
-<td style="width: 25%; text-align:center;"><b><a href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/openPDC_Documentation_Home.md">Documentation</a></b></td>
-</tr>
-</table>
-</div>
-<hr />
-<!--/HtmlToGmd.Body-->
-<div class="WikiContent">
-<div class="wikidoc">
-<h1>openPDC Use and Configuration Guides</h1>
-<ul>
-<li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Use_and_Configuration_Guides.files/Alarming_in_openPDC_and_openPG.pdf">Alarming in openPDC and openPG.pdf</a>
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Use_and_Configuration_Guides.files/Command_Line_for_Improved_Diagnostics.pdf">Command Line for Improved Diagnostics.pdf</a>
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Use_and_Configuration_Guides.files/Connect_on_Demand.pdf">Connect on Demand.pdf</a>
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Use_and_Configuration_Guides.files/Dynamic_Calculations.pdf">Dynamic Calculations.pdf</a>
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Use_and_Configuration_Guides.files/Power_Calculations.pdf">Power Calculations.pdf</a>
-</li><li><a href="https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Use_and_Configuration_Guides.files/Archive_Sizing_Spreadsheet_473120.xlsx">Archive Sizing Spreadsheet.xlsx</a></li></ul>
-<br>
-<br>
-</div>
-</div>
-<div id="footer">
-<hr />
-Last edited <span class="smartDate" title="8/20/2012 8:43:01 PM" LocalTimeTicks="1345520581">Aug 20, 2012 at 8:43 PM</span> by <a id="wikiEditByLink" href="https://github.com/GridProtectionAlliance/openPDC/tree/master/Source/Documentation/wiki/Contributors/rrobertson.md">rrobertson</a>, version 7<br />
-Migrated from <a href="http://openpdc.codeplex.com/wikipage?title=Use%20and%20Configuration%20Guides">CodePlex</a> Oct 4, 2015 by <a href="https://github.com/ajstadlin">ajs</a>
-</div>
-<!--HtmlToGmd.Foot-->
-<div id="copyright">
-<hr />
-Copyright 2015 <a href="http://www.gridprotectionalliance.org">Grid Protection Alliance</a>
-</div>
-<!--/HtmlToGmd.Foot-->
-</body>
-</html>
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
+
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
+
+*This is an archival document referencing other archival documents.  See the [openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub") for possible updates.*
+
+# openPDC Use and Configuration Guides
+
+- [Alarming in openPDC and openPG.pdf](Use_and_Configuration_Guides.files/Alarming_in_openPDC_and_openPG.pdf)
+- [Command Line for Improved Diagnostics.pdf](Use_and_Configuration_Guides.files/Command_Line_for_Improved_Diagnostics.pdf)
+- [Connect on Demand.pdf](Use_and_Configuration_Guides.files/Connect_on_Demand.pdf)
+- [Dynamic Calculations.pdf](Use_and_Configuration_Guides.files/Dynamic_Calculations.pdf)
+- [Power Calculations.pdf](Use_and_Configuration_Guides.files/Power_Calculations.pdf)
+- [Archive Sizing Spreadsheet.xlsx](Use_and_Configuration_Guides.files/Archive_Sizing_Spreadsheet_473120.xlsx)
+
+---
+
+Aug 20, 2012 8:43 PM - Last edited by [rrobertson](Contributors/rrobertson.md), version 7  
+Oct 4, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Use%20and%20Configuration%20Guides) by [aj](https://github.com/ajstadlin)
+
+---
+
+Copyright 2016 [Grid Protection Alliance](http://www.gridprotectionalliance.org)

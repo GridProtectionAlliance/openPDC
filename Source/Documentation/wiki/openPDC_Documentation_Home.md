@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
-|   |   |   |
-|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](openPDC_Home.md)** | 
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page (this page)")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 ##### Note on IPv4 vs IPv6 in the openPDC:
 
@@ -70,9 +70,10 @@ The most recent system API help and documentation can be downloaded from the [Ni
 
 ---
 
-- Sep 12, 2016 HTML to Markdown by [chefsteph9](https://github.com/chefsteph9)
-- Oct 5, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/documentation) by [ajs](https://github.com/ajstadlin)
-- May 29, 2015 4:39 PM Last edited by [ritchiecarroll](https://github.com/ritchiecarroll), version 97
+
+Oct 5, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/documentation) by [ajs](https://github.com/ajstadlin)  
+May 29, 2015 4:39 PM - Last edited by [ritchiecarroll](https://github.com/ritchiecarroll), version 97  
+Sep 12, 2016 - HTML to Markdown by [chefsteph9](https://github.com/chefsteph9)
 
 ---
 
