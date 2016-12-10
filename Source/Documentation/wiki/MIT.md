@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
 |   |   |   |   |   |
 |---|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases)** |
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 # The MIT License (MIT)
 
@@ -20,4 +20,4 @@ Mar 6, 2015 - License for the openPDC Project
 
 ---
 
-Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
+Copyright 2016 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
