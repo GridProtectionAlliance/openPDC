@@ -496,4 +496,4 @@ Oct 3, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=
 
 ---
 
-Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
+Copyright 2017 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
