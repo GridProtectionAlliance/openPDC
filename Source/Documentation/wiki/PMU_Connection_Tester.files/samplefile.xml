@@ -1,0 +1,112 @@
+- <SOAP-ENV:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:clr="http://schemas.microsoft.com/soap/encoding/clr/1.0" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+- <SOAP-ENV:Body>
+- <a1:ConfigurationFrame id="ref-1" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors.Ieee1344/Tva.Phasors">
+  <idCode>2</idCode> 
+  <cells href="#ref-3" /> 
+  <ticks>632944679120000000</ticks> 
+  <frameRate>30</frameRate> 
+  <idCode64Bit>2</idCode64Bit> 
+  <sampleCount>16384</sampleCount> 
+  </a1:ConfigurationFrame>
+- <a1:ConfigurationCellCollection id="ref-3" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors.Ieee1344/Tva.Phasors">
+  <maximumCount>1</maximumCount> 
+  <count>1</count> 
+  <item0 href="#ref-4" /> 
+  </a1:ConfigurationCellCollection>
+- <a1:ConfigurationCell id="ref-4" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors.Ieee1344/Tva.Phasors">
+  <parent href="#ref-1" /> 
+  <id>2</id> 
+  <alignOnDWordBoundry>false</alignOnDWordBoundry> 
+  <stationName id="ref-5">Shelby</stationName> 
+  <idLabel xsi:type="xsd:anyType" xsi:null="1" /> 
+  <phasorDefinitions href="#ref-6" /> 
+  <frequencyDefinition href="#ref-7" /> 
+  <analogDefinitions href="#ref-8" /> 
+  <digitalDefinitions href="#ref-9" /> 
+  <nominalFrequency xsi:type="a3:LineFrequency" xmlns:a3="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors/Tva.Phasors">Hz60</nominalFrequency> 
+  <coordinateFormat xsi:type="a3:CoordinateFormat" xmlns:a3="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors/Tva.Phasors">Rectangular</coordinateFormat> 
+  <statusFlags>160</statusFlags> 
+  </a1:ConfigurationCell>
+- <a3:PhasorDefinitionCollection id="ref-6" xmlns:a3="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors/Tva.Phasors">
+  <maximumCount>503</maximumCount> 
+  <count>5</count> 
+  <item0 href="#ref-10" /> 
+  <item1 href="#ref-11" /> 
+  <item2 href="#ref-12" /> 
+  <item3 href="#ref-13" /> 
+  <item4 href="#ref-14" /> 
+  </a3:PhasorDefinitionCollection>
+- <a1:FrequencyDefinition id="ref-7" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors.Ieee1344/Tva.Phasors">
+  <parent href="#ref-4" /> 
+  <index>0</index> 
+  <label xsi:type="xsd:anyType" xsi:null="1" /> 
+  <scale>1000</scale> 
+  <offset>0</offset> 
+  <dfdtScale>100</dfdtScale> 
+  <dfdtOffset>0</dfdtOffset> 
+  <statusFlags>0</statusFlags> 
+  </a1:FrequencyDefinition>
+- <a3:AnalogDefinitionCollection id="ref-8" xmlns:a3="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors/Tva.Phasors">
+  <maximumCount>0</maximumCount> 
+  <count>0</count> 
+  </a3:AnalogDefinitionCollection>
+- <a3:DigitalDefinitionCollection id="ref-9" xmlns:a3="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors/Tva.Phasors">
+  <maximumCount>1013</maximumCount> 
+  <count>1</count> 
+  <item0 href="#ref-15" /> 
+  </a3:DigitalDefinitionCollection>
+- <a1:PhasorDefinition id="ref-10" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors.Ieee1344/Tva.Phasors">
+  <parent href="#ref-4" /> 
+  <index>0</index> 
+  <label id="ref-16">Bus 1</label> 
+  <scale>2466979</scale> 
+  <offset>0</offset> 
+  <type xsi:type="a3:PhasorType" xmlns:a3="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors/Tva.Phasors">Voltage</type> 
+  <voltageReference xsi:null="1" /> 
+  </a1:PhasorDefinition>
+- <a1:PhasorDefinition id="ref-11" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors.Ieee1344/Tva.Phasors">
+  <parent href="#ref-4" /> 
+  <index>1</index> 
+  <label id="ref-17">Bus 2</label> 
+  <scale>2466979</scale> 
+  <offset>0</offset> 
+  <type xsi:type="a3:PhasorType" xmlns:a3="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors/Tva.Phasors">Voltage</type> 
+  <voltageReference xsi:null="1" /> 
+  </a1:PhasorDefinition>
+- <a1:PhasorDefinition id="ref-12" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors.Ieee1344/Tva.Phasors">
+  <parent href="#ref-4" /> 
+  <index>2</index> 
+  <label id="ref-18">Cordova</label> 
+  <scale>36621</scale> 
+  <offset>0</offset> 
+  <type xsi:type="a3:PhasorType" xmlns:a3="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors/Tva.Phasors">Current</type> 
+  <voltageReference xsi:null="1" /> 
+  </a1:PhasorDefinition>
+- <a1:PhasorDefinition id="ref-13" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors.Ieee1344/Tva.Phasors">
+  <parent href="#ref-4" /> 
+  <index>3</index> 
+  <label id="ref-19">Dell</label> 
+  <scale>54931</scale> 
+  <offset>0</offset> 
+  <type xsi:type="a3:PhasorType" xmlns:a3="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors/Tva.Phasors">Current</type> 
+  <voltageReference xsi:null="1" /> 
+  </a1:PhasorDefinition>
+- <a1:PhasorDefinition id="ref-14" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors.Ieee1344/Tva.Phasors">
+  <parent href="#ref-4" /> 
+  <index>4</index> 
+  <label id="ref-20">Lagoon Creek</label> 
+  <scale>54931</scale> 
+  <offset>0</offset> 
+  <type xsi:type="a3:PhasorType" xmlns:a3="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors/Tva.Phasors">Current</type> 
+  <voltageReference xsi:null="1" /> 
+  </a1:PhasorDefinition>
+- <a1:DigitalDefinition id="ref-15" xmlns:a1="http://schemas.microsoft.com/clr/nsassem/Tva.Phasors.Ieee1344/Tva.Phasors">
+  <parent href="#ref-4" /> 
+  <index>0</index> 
+  <label id="ref-21">Digital1</label> 
+  <scale>0</scale> 
+  <offset>0</offset> 
+  <statusFlags>0</statusFlags> 
+  </a1:DigitalDefinition>
+  </SOAP-ENV:Body>
+  </SOAP-ENV:Envelope>
