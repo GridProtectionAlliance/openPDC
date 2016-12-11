@@ -21,7 +21,7 @@
     - [Protocol Specific Tab](#protocol-specific-tab)
     - [Settings Tab](#settings-tab)
     - [Header Frame](#header-frame)
-    - [Real-time Frame Detail](#realtime-frame-detail)
+    - [Real-time Frame Detail](#real-time-frame-detail)
 - [Operations](#operations)
     - [Capturing Sample Frames](#capturing-sample-frames)
     - [Connecting to Devices](#connecting-to-devices)
@@ -199,7 +199,7 @@ The Settings tab allows the user to configure various settings related to the PM
 - **AutoStartDataParsingSequence** [Range: **`True`**`/False`]: Set to `True` to automatically send commands for ConfigFrame2 and EnableRealTimeData.
 - **ExecuteParseOnSeparateThread** [Range: `True/`**`False`**]: Allows frame parsing to be executed on a separate thread (other than communications thread) - typically only needed when data frames are very large. This change will happen dynamically, even if a connection is active.
 - **MaximumConnectionAttempts** [Range: `1-n`]: Maximum number of times to attempt connection before giving up. Set the value to `-1` to continue connection attempt indefinitely.
-- **MaximumFrameDisplayBytes** [Range: `1-n`]: Maximum encoded bytes to display for frames in the [Real-time Frame Detail](#realtime-frame-detail).
+- **MaximumFrameDisplayBytes** [Range: `1-n`]: Maximum encoded bytes to display for frames in the [Real-time Frame Detail](#real-time-frame-detail).
 - **RestoreLastConnectionSettings** [Range: **`True`**`/False`]: Set to `True` to load previous connection settings at startup.
 
 #### Attribute Tree
