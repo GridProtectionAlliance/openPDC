@@ -130,7 +130,7 @@ The Connection Parameters screen section displays the details concerning the con
 
 #### Protocol and ID
 
-![](PMU_Connection_Tester.files/protocol.png" "protocol.png")
+![](PMU_Connection_Tester.files/protocol.png "protocol.png")
 
 - **Protocol**: Lists the available phasor data protocols.
 - **Device ID Code**: Specifies the identification code often needed to establish a connection.
