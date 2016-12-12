@@ -24,7 +24,7 @@ This guide is intended to aid in building the openPDC software and setting it up
     -   [View low level data (the status command)](#view-low-level-data-the-status-command)
     -   [Connect and disconnect a PMU or PDC (the connect and disconnect commands)](#connect-and-disconnect-a-pmu-or-pdc-the-connect-and-disconnect-commands)
 -   [Running the PMU Connection Tester](#running-the-pmu-connection-tester)
-    -   [Creating and verifying an IEEE C37.118-2005 data stream](#creating-and-verifying-an-ieee-c37-118-2005-data-stream)
+    -   [Creating and verifying an IEEE C37.118-2005 data stream](#creating-and-verifying-an-ieee-c37118-2005-data-stream)
     -   [Creating and verifying a BPA PDCstream data stream](#creating-and-verifying-a-bpa-pdcstream-data-stream)
 -   [Configuring openPDC security](#configuring-openpdc-security)
 -   [Using the in-process historian adapter](#using-the-in-process-historian-adapter)
