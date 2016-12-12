@@ -182,7 +182,7 @@ Enter a name by which you can identify the historian.
 
 #### The AssemblyName column
 
-Enter the name of the dll for the historian. The dll should be located in the openPDC output folder (`SOURCEDIR\Synchrophasor\Current Version\Build\Output\Debug\Applications\openPDC` where `SOURCEDIR` is the root directory of the openPDC source). The assembly name of the default local historian is "HistorianAdapters.dll".
+Enter the name of the dll for the historian. The dll should be located in the openPDC output folder `SOURCEDIR\Synchrophasor\Current Version\Build\Output\Debug\Applications\openPDC` where `SOURCEDIR` is the root directory of the openPDC source). The assembly name of the default local historian is "HistorianAdapters.dll".
 
 #### The TypeName column
 
