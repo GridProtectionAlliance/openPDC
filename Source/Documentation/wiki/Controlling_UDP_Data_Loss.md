@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
-|   |   |   |   |
-|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** |
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 # Controlling UDP Data Loss
 
@@ -39,7 +39,7 @@ If you are experiencing UDP data loss on GPA products where you can confirm that
 
 ---
 
-Apr 22, 2013 at 3:30:20 PM Last edited by [staphen](Contributors/staphen.md), version 4  
+Apr 22, 2013 at 3:30:20 PM Last edited by [staphen](http://www.codeplex.com/site/users/view/staphen), version 4  
 Oct 4, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Controlling%20UDP%20Data%20Loss) by [aj](https://github.com/ajstadlin)
 
 ---

@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
-|   |   |   |   |
-|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** |
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 # Connection Strings
 
@@ -681,7 +681,7 @@ Click [here](http://www.csharp-examples.net/dataview-rowfilter/) for more help o
 
 ---
 
-Jul 24, 2013 at 7:48:27 PM Last edited by [kevinjones](Contributors/kevinjones.md), version 112  
+Jul 24, 2013 at 7:48:27 PM Last edited by [kevinjones](http://www.codeplex.com/site/users/view/kevinjones), version 112  
 Oct 4, 2015 Migrated from [CodePlex](https://openpdc.codeplex.com/wikipage?title=Connection%20Strings) by [aj](https://github.com/ajstadlin)
 
 ---

@@ -108,7 +108,7 @@ Likewise, the following ruleset would restrict the system so that only Administr
 
 ---
 
-Mar 27, 2014 7:21 PM - Last edited by [staphen](Contributors/staphen.md), version 4  
+Mar 27, 2014 7:21 PM - Last edited by [staphen](http://www.codeplex.com/site/users/view/staphen), version 4  
 Oct 4, 2015 - Migrated from [CodePlex] (http://openpdc.codeplex.com/wikipage?title=Remote%20Console%20Security) by [aj](https://github.com/ajstadlin)
 
 ---

@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
-|   |   |   |   |
-|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](https://github.com/GridProtectionAlliance/openPDC/wiki)** | **[Documentation](openPDC_Documentation_Home.md)** |
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 # openPDC Commercial Extensions
 
@@ -16,7 +16,7 @@ The openPDC is being continually extended through [plug-in adapters](Developers_
 
 ---
 
-Feb 15, 2013 2:25:49 PM - Last edited by [felmendorf](Contributors/felmendorf), version 3  
+Feb 15, 2013 2:25:49 PM - Last edited by [felmendorf](https://github.com/flelmend), version 3  
 Oct 20, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Extensions) and Links updated to point to archived content. [aj](https://github.com/ajstadlin)
 
 ---

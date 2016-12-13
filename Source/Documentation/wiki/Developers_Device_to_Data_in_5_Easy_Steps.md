@@ -5,6 +5,7 @@
 | **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 # Device to Data in 5 Easy Steps
+
 This guide is intended to aid you in getting data from your device as quickly and easily as possible. The steps are as follows:
 
 1. [Create a project](#step-1-create-a-project)
@@ -150,7 +151,7 @@ If you followed all the other steps correctly, you should be able to run the pro
 
 ---
 
-Jun 22, 2012 9:17 AM - Edited by [alexfoglia](Contributors/alexfoglia.md), version 4  
+Jun 22, 2012 9:17 AM - Edited by [alexfoglia](http://www.codeplex.com/site/users/view/alexfoglia), version 4  
 Oct 5, 2015 - Migrated from [CodePlex]() by [aj](https://github.com/ajstadlin)  
 Dec 4, 2016 12:20 AM - Last edited by [aj](https://github.com/ajstadlin), version 5
 

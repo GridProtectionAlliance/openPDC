@@ -22,7 +22,7 @@ Your connection should now be established! It may take a few moments to complete
 
 ---
 
-Feb 15, 2012 6:02 PM - Last edited by [arkrohne](Contributors/arkrohne.md), version 3  
+Feb 15, 2012 6:02 PM - Last edited by [arkrohne](https://github.com/arkrohne), version 3  
 Oct 4, 2015 - Migrated from [CodePlex](https://openpdc.codeplex.com/wikipage?title=Using%20a%20%22Gateway%20Style%20Connection%22%20between%20openPDCs%20and%2for%20openPGs) by [aj](https://github.com/ajstadlin)
 
 ---

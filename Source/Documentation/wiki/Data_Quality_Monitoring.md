@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
-|   |   |   |   |
-|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** |
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 # Data Quality Monitoring Adapters
 
@@ -199,7 +199,7 @@ By default, the service can be accessed at the http://localhost:6102/timestampte
 
 ---
 
-Apr 29, 2010 4:11:27 PM Last Edit by [staphen](Contributors/staphen.md), version 13  
+Apr 29, 2010 4:11:27 PM Last Edit by [staphen](http://www.codeplex.com/site/users/view/staphen), version 13  
 Oct 4, 2015 Migrated from [CodePlex](https://openpdc.codeplex.com/wikipage?title=Data%20Quality%20Monitoring) by [aj](https://github.com/ajstadlin)
 
 ---
