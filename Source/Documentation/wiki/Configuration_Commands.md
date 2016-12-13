@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
-|   |   |   |   |
-|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** |
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 # openPDC Console Commands to Adjust Configuration Settings
 
@@ -17,13 +17,14 @@ A number of console commands have been added to the openPDC that allow the user 
     - [Service component settings](#service-component-settings)
     - [Adapter configuration file settings](#adapter-configuration-file-settings)
 
-***
+---
 
 ## Database configuration settings
 
 While the openPDC has no commands that will modify database settings from the console, it does have a number of commands that can be used to reload database configuration settings in order to recognize changes made to adapter configuration settings in the database.
 
 ### Add or remove adapters
+
 The `ReloadConfig` console command is the principle command used to recognize adapters that have been added or removed from the database configuration. This command will reload the database configuration, add adapters that were previously not present in the database configuration, and remove adapters that are no longer present in the database configuration without modifying or interrupting adapters that were previously defined and are still defined in the database. Unfortunately, this means changes made to existing adapters will not be recognized. Adapters that have been added to the configuration must be started manually using the `Connect` command.
 
 The `Initialize [-I|-A|-O]` command can be used to reinitialize a collection (input, action, output) of adapters. Doing so will also cause the system to add and remove adapters in the reinitialized collection. Changes made to existing adapters in that collection will be recognized, but the operation of unmodified adapters will also be interrupted when using this command. Adapters that have been reinitialized must also be started manually using the `Connect` command.
@@ -91,11 +92,11 @@ The `UpdateConfigFile` command is capable of adding, removing, or modifying any 
 - `UpdateConfigFile`
 - `ReloadConfig`
 
-***
+---
 
-Jun 3, 2010 08:48:55 PM Last edited by [staphen](Contributors/staphen.md), version 4  
+Jun 3, 2010 08:48:55 PM Last edited by [staphen](http://www.codeplex.com/site/users/view/staphen), version 4  
 Oct 4, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Configuration%20Commands) by [aj](https://github.com/ajstadlin)
 
-***
+---
 
 Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)

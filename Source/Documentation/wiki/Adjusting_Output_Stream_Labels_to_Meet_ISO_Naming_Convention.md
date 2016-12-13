@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
-|   |   |   |   |
-|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** |
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 # Adjusting Output Stream Labels to Meet ISO Naming Convention
 
@@ -25,4 +25,5 @@ Jul 6, 2012 at 6:54 PM Last edited by [ritchiecarroll](https://github.com/ritchi
 Oct 4, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Adjusting%20Output%20Stream%20Labels%20to%20Meet%20ISO%20Naming%20Convention) by [aj](https://github.com/ajstadlin)
 
 ---
+
 Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)

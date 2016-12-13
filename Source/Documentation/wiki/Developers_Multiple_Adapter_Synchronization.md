@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
-|   |   |   |   |
-|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** |
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 # Multiple Adapter Synchronization
 
@@ -92,17 +92,17 @@ Ritchie
 
 ---
 
-##### Comment C26695 - Feb 26, 2013 4:29 PM - [staphen](Contributors/staphen.md)
+##### Comment C26695 - Feb 26, 2013 4:29 PM - [staphen](http://www.codeplex.com/site/users/view/staphen)
 
 See this discussion for information on how adapter dependencies are normally handled "in the alarm system, for instance" without the need for synchronization. [Discussion 433859](Developers_Multiple_Adapter_Synchronization.files/Discussion_433859.md)
 
-##### Comment C24851 - Aug 30, 2012 at 4:00 PM - [patpentz](Contributors/patpentz.md)
+##### Comment C24851 - Aug 30, 2012 at 4:00 PM - [patpentz](http://www.codeplex.com/site/users/view/patpentz)
 
 I assume that multiple, dependent adapters would use this mechanism. How does the alarm system handle measurements created by multiple, dependent adapters?
 
 ---
 
-Apr 17, 2013 8:06 PM - Last edited by [staphen](Contributors/staphen.md), version 13<br />
+Apr 17, 2013 8:06 PM - Last edited by [staphen](http://www.codeplex.com/site/users/view/staphen), version 13<br />
 Oct 5, 2015 Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Adapter%20Synchronization%20%28Developers%29) by [aj](https://github.com/ajstadlin)
 
 ---

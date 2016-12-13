@@ -1,8 +1,8 @@
-[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md)
+[![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
-|   |   |   |   |
-|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org)** | **[openPDC Project on GitHub](https://github.com/GridProtectionAlliance/openPDC)** | **[openPDC Wiki Home](openPDC_Home.md)** | **[Documentation](openPDC_Documentation_Home.md)** |
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 # About the Code
 
@@ -3485,9 +3485,9 @@ SEL Fast Message status word flags enumeration.
 
 ---  
 
-Jun 22, 2012 13:52:42 - Last edited by [alexfoglia](Contributors/alexfoglia.md), version 5  
+Jun 22, 2012 13:52:42 - Last edited by [alexfoglia](http://www.codeplex.com/site/users/view/alexfoglia), version 5  
 Oct 5, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=About%20the%20Code%20%28Developers%29) by [aj](https://github.com/ajstadlin)
 
----  
-Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
+---
 
+Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)

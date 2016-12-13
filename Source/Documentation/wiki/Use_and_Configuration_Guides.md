@@ -17,7 +17,7 @@
 
 ---
 
-Aug 20, 2012 8:43 PM - Last edited by [rrobertson](Contributors/rrobertson.md), version 7  
+Aug 20, 2012 8:43 PM - Last edited by [rrobertson](https://github.com/RussellRobertson), version 7  
 Oct 4, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Use%20and%20Configuration%20Guides) by [aj](https://github.com/ajstadlin)
 
 ---

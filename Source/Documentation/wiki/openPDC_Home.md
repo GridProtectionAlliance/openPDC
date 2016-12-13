@@ -4,9 +4,7 @@
 |---|---|---|---|---|
 | **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
-***Please see the latest version of the openPDC project at [https://github.com/GridProtectionAlliance/openPDC](https://github.com/GridProtectionAlliance/openPDC).***
-
----
+# The Open Source Phasor Data Concentrator - openPDC
 
 ![](files/Service64_thumb.png) 
 
@@ -88,7 +86,7 @@ Also released today was a BETA version of the [openPDC v2.0](openPDC_v2.0_Releas
 
 **March 11, 2011** - We are excited to announce that a new version of the openPDC, [release v1.4](openPDC_v1.4_Release_Mar2011.md), is now available. This production release build includes integrated system user authentication along with detailed configuration change logging as well as many performance, stability and usability enhancements (see the [change log](http://openpdc.codeplex.com/SourceControl/list/changesets) for details). This version represents a major development effort; much work went into trying to make this the best, most secure openPDC version ever released - we hope you will agree. We look forward to your feedback as we continue to make the openPDC the best Phasor Data Concentrator available.
 
-**January 21, 2011** - One of our common openPDC open source contributors, [Arnold Stadlin](Contributors/ajstadlin.md), has created a new related project called the **[Open Source PMU](https://github.com/ajstadlin/GridTrak/)**. The Open Source PMUs are Phasor Measurement Unit (PMU) sensors used to measure SynchroPhasors. The Open Source PMU project's goal is to provide open source resources to enable anyone to build their own PMU sensors that can be used for research, development, and experimentation. The Open Source PMU sensors are designed to work with the openPDC project.
+**January 21, 2011** - One of our common openPDC open source contributors, [Arnold Stadlin](https://github.com/ajstadlin), has created a new related project called the **[Open Source PMU](https://github.com/ajstadlin/GridTrak/)**. The Open Source PMUs are Phasor Measurement Unit (PMU) sensors used to measure SynchroPhasors. The Open Source PMU project's goal is to provide open source resources to enable anyone to build their own PMU sensors that can be used for research, development, and experimentation. The Open Source PMU sensors are designed to work with the openPDC project.
 
 **October 1, 2010** - We have added so many new features in the past few weeks that we have released an update to the August 2010 release of the openPDC, the *October Maintenance Release*, version 1.3.11. There have been many substantial improvements (see the [change log](http://openpdc.codeplex.com/SourceControl/list/changesets) for details), but here a few highlights:
 
