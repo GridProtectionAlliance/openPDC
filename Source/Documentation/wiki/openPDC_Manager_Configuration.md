@@ -965,7 +965,7 @@ For more information about the commands you can send to the openPDC, see the [Ge
 
 ---
 
-Jun 20, 2012 3:00 PM - Last edited by [alexfoglia](Contributors/alexfoglia.md), version 71  
+Jun 20, 2012 3:00 PM - Last edited by [alexfoglia](http://www.codeplex.com/site/users/view/alexfoglia), version 71  
 Oct 4, 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Manager%20Configuration) by [aj](https://github.com/ajstadlin)  
 Dec 9, 2016 - Updated by [aj](https://github.com/ajstadlin), version 71.1
 

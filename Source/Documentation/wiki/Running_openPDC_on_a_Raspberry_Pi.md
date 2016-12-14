@@ -15,7 +15,7 @@ Unzip the downloaded image file on a computer with an SD card reader. Note that 
 
 - [Windows](http://www.raspberrypi.org/documentation/installation/installing-images/windows.md)
 - [Mac OS](http://www.raspberrypi.org/documentation/installation/installing-images/mac.md)
-- [Linux](http://www.raspberrypi.org/documentation/installation/installing-images/linux.md">Linux)
+- [Linux](http://www.raspberrypi.org/documentation/installation/installing-images/linux.md)
 
 For the initial boot it is recommended to start the Raspberry Pi up with a connected monitor and keyboard. When the Raspberry Pi is first powered on with the openPDC image on the SD card, the system will request a username and password - these are the defaults for a Raspbian OS image, specifically:
  

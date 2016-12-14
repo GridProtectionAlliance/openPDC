@@ -4,6 +4,8 @@
 |---|---|---|---|---|
 | **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page (this page)")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
+# openPDC Documentation
+
 ##### Note on IPv4 vs IPv6 in the openPDC:
 
 The default IP stack for most new Windows systems is IPv6, this means all connections will default to IPv6 unless otherwise specified. If you want the openPDC to use IPv4, the server and client connections can be configured to use the IPv4 stack by specifying “;interface=0.0.0.0” in the relevant configuration settings and connection strings. The interface setting is used to specify the IP address of the network interface controller (NIC) to use for the connection – an IP of zero means that the default NIC should be used for the connection; the format of the interface IP setting determines the IP stack version, i.e., IPv4 or IPv6, to use for the connection, for example, to force use of IPv6 you would use “;interface=::0”.

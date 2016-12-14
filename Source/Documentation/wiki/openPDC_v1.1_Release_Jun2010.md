@@ -63,7 +63,7 @@
 
 ---
 
-Jul 6, 2010 - Updated by [staphen](Contributors/staphen.md)  
+Jul 6, 2010 - Updated by [staphen](http://www.codeplex.com/site/users/view/staphen)  
 Oct 2015 - Migrated from [CodePlex](http://openpdc.codeplex.com/releases/view/48110) by [aj](https://github.com/ajstadlin)
 
 ---
