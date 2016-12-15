@@ -1,4 +1,3 @@
-
 [![The Open Source Phasor Data Concentrator](../openPDC_Logo.png)](../openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
 |   |   |   |   |   |
@@ -11,7 +10,7 @@
 
 ### Document by Katie Fehrenbacher Nov 10, 2009 on [GIGAOM](https://gigaom.com/)
 
-> Can an open source data management system do for the smart grid what Google's open mobile operating system Android is doing for cell phones - spawn innovation and low cost development? Execs at the Tennessee Valley Authority (TVA), the largest public power provider in the U.S., seem to think so. TVA analyst Josh...
+> Can an open source data management system do for the smart grid what Google’s open mobile operating system (s GOOG) Android is doing for cell phones — spawn innovation and low cost development? Execs at the Tennessee Valley Authority (TVA), the largest public power provider in the U.S., seem to think so. TVA analyst Josh Patterson says Google’s Android is a good analogy for openPDC, an open source version of a platform that aggregates and processes data about the health of the power grid, and which TVA has helped create. Like Android has done for the mobile industry, openPDC will enable utilities and the power industry to develop their own versions of data management services with more flexibility and at a lower cost than proprietary systems, Patterson points out.
 
 ---
 
