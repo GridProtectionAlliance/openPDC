@@ -53,7 +53,7 @@ Hadoop's distributed file system (HDFS) has multiple ways to copy data into it. 
 
 If you are moving files from a win32-based machine, its recommended that you setup the FTP interface (see: [Appendix A](#appendix-a-setting-up-ftp-access-for-hdfs)) available at:
 
-[http://www.hadoop.iponweb.net/Home/hdfs-over-ftp](https://web.archive.org/web/20120422084854/http://www.hadoop.iponweb.net/Home/hdfs-over-ftp)
+[https://sites.google.com/a/iponweb.net/hadoop/Home/hdfs-over-ftp](https://sites.google.com/a/iponweb.net/hadoop/Home/hdfs-over-ftp)
 
 If you are moving files from a linux based machine, you can simply use the Hadoop bash scripts included. An example command would take the form:
 
@@ -130,7 +130,8 @@ Archive v1.0.1 hdfs-over-ftp tar files can also be found [here](Developers_Using
 
 Mar 6, 2015, 9:21:41 PM by [ritchiecarroll](https://github.com/ritchiecarroll), version 4  
 Oct 5, 2015  Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Using%20Hadoop%20%28Developers%29) by [aj](https://github.com/ajstadlin)
+Dec 15, 2016  [HDFS Over FTP](https://sites.google.com/a/iponweb.net/hadoop/Home/hdfs-over-ftp) link updated by [aj](https://github.com/ajstadlin)
 
 ---
 
-Copyright 2015 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
+Copyright 2016 [Grid Protection Alliance](http://www.gridprotectionalliance.org)
