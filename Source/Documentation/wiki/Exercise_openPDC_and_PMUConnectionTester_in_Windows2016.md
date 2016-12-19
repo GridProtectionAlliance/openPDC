@@ -17,9 +17,9 @@ This is *not a production deployment configuration*.  Production deployments nee
 - [Platform](#platform)
     - [Platform Description](#platform-description)
     - [Platform Configuration](#platform-configuration)
-        - [GPA-HOST = Platform Host Server](#gpa-host-platform-host-server)
-        - [OPDC-01 = openPDC Server virtual machine](#opdc-01-openpdc-server-virtual-machine)
-        - [PMU-TESTER = PMU Connection Tester Workstation virtual machine](#pmu-tester-pmu-connection-tester-workstation-virtual-machine)
+        - [GPA-HOST = Platform Host Server](#gpa-host--platform-host-server)
+        - [OPDC-01 = openPDC Server virtual machine](#opdc-01--openpdc-server-virtual-machine)
+        - [PMU-TESTER = PMU Connection Tester Workstation virtual machine](#pmu-tester--pmu-connection-tester-workstation-virtual-machine)
     - [Host Server Setup](#host-server-setup)
         - [DNS Configuration](#dns-configuration)
         - [Hyper-V Virtual Machines Setup](#hyper-v-virtual-machines-setup)
@@ -111,9 +111,9 @@ In Production Deployments, complex passwords are desireable.  However, in these 
 
 ### OPDC-01 Server, Initial Setup
 
-- 1. Download the `windows_server_2016.iso` file to the `GPA-HOST` server
-- 2. On the `GPA-HOST` server: create the [`OPDC-01`](#opdc-01-openpdc-server-virtual-machine) openPDC Server virtual machine.
-    - Configure [`OPDC-01's`](#opdc-01-openpdc-server-virtual-machine) Hyper-V *Settings* as described in the earlier [Platform Configuration](#platform-configuration) section and assign the `windows_server_2016.iso` image file to its DVD drive.
+- 1. Download the `windows_server_2016.iso` file to the [`GPA-HOST`](#gpa-host--platform-host-server) server
+- 2. On the [`GPA-HOST`](#gpa-host--platform-host-server) server: create the [`OPDC-01`](#opdc-01--openpdc-server-virtual-machine) openPDC Server virtual machine.
+    - Configure [`OPDC-01's`](#opdc-01--openpdc-server-virtual-machine) Hyper-V *Settings* as described in the earlier [Platform Configuration](#platform-configuration) section and assign the `windows_server_2016.iso` image file to its DVD drive.
 - 3. Start the `OPDC-01` virtual machine and run the Windows installation.  In the *Windows Setup* dialog's "Select the operating system..." screen, select "Windows Server 2016 Standard (Desktop Experience)"
 - 4. During setup, you will be prompted to enter an appropriate password for the *Administrator* account. The *Administrator* account will only be used for software installation and configuration changes requiring elevated privileges.
 - 5. Configure the static IP address
@@ -166,9 +166,9 @@ C:\Users\Administrator> ping time.nist.gov
 
 ### PMU-TESTER Workstation, Initial Setup
 
-- 1. Download the `windows_10_enterprise_2016_ltsb.iso` file to the `GPA-HOST` server
-- 2. On the `GPA-HOST` server: create the `[PMU-TESTER`](#pmu-tester-pmu-connection-tester-workstation-virtual-machine) openPDC Server virtual machine.
-    - Configure [`PMU-TESTER's`](#pmu-tester-pmu-connection-tester-workstation-virtual-machine) Hyper-V *Settings* as described in the earlier [Platform Configuration](#platform-configuration) section and assign the `windows_10_enterprise_2016_ltsb.iso` image file to its DVD drive.
+- 1. Download the `windows_10_enterprise_2016_ltsb.iso` file to the [`GPA-HOST`](#gpa-host--platform-host-server) server
+- 2. On the [`GPA-HOST`](#gpa-host--platform-host-server) server: create the `[PMU-TESTER`](#pmu-tester--pmu-connection-tester-workstation-virtual-machine) openPDC Server virtual machine.
+    - Configure [`PMU-TESTER's`](#pmu-tester--pmu-connection-tester-workstation-virtual-machine) Hyper-V *Settings* as described in the earlier [Platform Configuration](#platform-configuration) section and assign the `windows_10_enterprise_2016_ltsb.iso` image file to its DVD drive.
 - 3. Start the `PMU-TESTER` virtual machine and run the Windows installation.  
     - In the *Get going fast* screen, press the "Customize" button.
     - In the 3 *Customize settings* screens, turn All of the options to **Off**.  Optionally leave the "Browser, protection, and update / Use SmartScreen..." turned **On**
