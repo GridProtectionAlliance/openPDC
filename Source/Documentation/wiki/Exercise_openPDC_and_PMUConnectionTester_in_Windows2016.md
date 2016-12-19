@@ -167,7 +167,7 @@ C:\Users\Administrator> ping time.nist.gov
 ### PMU-TESTER Workstation, Initial Setup
 
 - 1. Download the `windows_10_enterprise_2016_ltsb.iso` file to the [`GPA-HOST`](#gpa-host--platform-host-server) server
-- 2. On the [`GPA-HOST`](#gpa-host--platform-host-server) server: create the `[PMU-TESTER`](#pmu-tester--pmu-connection-tester-workstation-virtual-machine) openPDC Server virtual machine.
+- 2. On the [`GPA-HOST`](#gpa-host--platform-host-server) server: create the [`PMU-TESTER`](#pmu-tester--pmu-connection-tester-workstation-virtual-machine) openPDC Server virtual machine.
     - Configure [`PMU-TESTER's`](#pmu-tester--pmu-connection-tester-workstation-virtual-machine) Hyper-V *Settings* as described in the earlier [Platform Configuration](#platform-configuration) section and assign the `windows_10_enterprise_2016_ltsb.iso` image file to its DVD drive.
 - 3. Start the `PMU-TESTER` virtual machine and run the Windows installation.  
     - In the *Get going fast* screen, press the "Customize" button.
