@@ -18,4 +18,10 @@
 ::*******************************************************************************************************
 
 @ECHO OFF
-"C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" Synchrophasor.buildproj /p:SkipHelpFiles=true /l:FileLogger,Microsoft.Build.Engine;logfile=Synchrophasor.output
+
+SetLocal
+
+IF NOT "%1" == "" SET logflag=/l:FileLogger,Microsoft.Build.Engine;logfile=%1
+
+ECHO BuildNightly: "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" Synchrophasor.buildproj /p:ForceBuild=false %logflag%
+"C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" Synchrophasor.buildproj /p:ForceBuild=false %logflag%
