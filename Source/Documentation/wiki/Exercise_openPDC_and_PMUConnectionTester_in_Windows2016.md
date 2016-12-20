@@ -375,8 +375,12 @@ C:\Users\Administrator> ping time.nist.gov
 
 1. Run the **openPDC Manager** application
 2. Click the *Outputs* menu and select *Concentrator Output Streams* and review the `TESTSTREAM` properties
-    - Set the *TCP Channel* text to "Port=8900;Interface=0.0.0.0" (this will force openPDC to use IPv4)
-    - Clear the *UDP Channel* text
+    - Set the *TCP Channel* text to "`Port=8900; maxSendQueueSize=-1; interface=0.0.0.0`" (this will force openPDC to use IPv4)
+        - Alternatively you can click the *Build Command Channel String* icon button (to the right of the *TCP Channel textbox)
+            - [![](Development_Exercises.files/openPDC_Manager_ManageOutputStreams_TCP_Channel_ConnectionStringBuilder.png)]()
+    - Set the *UDP Channel* text to "`port=-1; clients=localhost:8800,pmu-tester.gpa.net:8801; interface=0.0.0.0`"
+        - Alternatively you can click the *Build Command Channel String* icon button (to the right of the *UDP Channel textbox)
+            - [![](Development_Exercises.files/openPDC_Manager_ManageOutputStreams_UDP_Channel_ConnectionStringBuilder.png)]()
     - Click the *Save* button
     - Click the *Initialize* button
     - [![](Development_Exercises.files/openPDC_Manager_ManageOutputStreams_01.png "openPDC_Manager, ManageOutputStreams")]()
@@ -391,15 +395,21 @@ C:\Users\Administrator> ping time.nist.gov
     - Select the *Settings* tab (in the lower middle of the screen). In the *Applications Settings* section, set the following parameters:
         - Set the *ForceIPv4* value to `True`
         - Set the *MaximumFrameDisplayBytes* value to `512` (the IEEE C37-118 Configuration Frame Size)
-    - Select the *TCP* tab in the *Connection Parameters*
-        - Set the *Host IP* value to `192.168.1.110` (the `OPDC-01` Server's IPv4 Address)
-        - Set the *Port* value to `8900` (to match the openPDC Output Stream's *TCP Channel* Port#)
+    - Select the *UDP* tab in the *Connection Parameters*
+        - Set the *Local Port* value to `8800` (to match the openPDC Output Stream's *UDP Channel* Port#)
+        - Click the *Receive From* link and set *Use Specific Source IP* value to `192.168.1.110` (the `OPDC-01` Server's IPv4 Address)
+            - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_01A.png)]()
     - In the *Protocol* tab
         - Select the `IEEE C37.118.2005` protocol
+        - Click the *Configure Alternate Command Channel* link 
+            - Set the *Tcp Host IP* value to `192.168.1.110`
+            - Set the *Port* value to `8900`
+            - Clear the *Not defined* checkbox
+            - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_02A.png)]()
     - Click the *Connect* button
     - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStreamTest_01.png "PMU Connection Tester, openPDC TestStream Test 1")]()
 
-### Configure the Windows Firewall on the `OPDC-01` Server for the Output Stream TCP Port 8900
+### Configure the Windows Firewall on the `OPDC-01` Server for the Output Stream TCP Port 8900 and UDP Ports 8800 to 8809
 
 **Do the following tasks in the `OPDC-01` Server:**
 
@@ -412,9 +422,17 @@ C:\Users\Administrator> ping time.nist.gov
     - *Protocol and Ports* = **TCP** and *Specific local ports* = **`8900`**
     - *Action* = **Allow the Connection**
     - *Profile* = Check all profiles.  Note: this exercise needs only the **Private** profile checked
-    - *Name* = **openPDC Output Steam TCP 8900**.  Note: this can be any name you want
-6. Make sure the new **openPDC Output Steam TCP 8900** *Inbound Rule* is *Enabled* and open it up to review its properties
-    - [![](Development_Exercises.files/Firewall_Inbound_Rule_TCP8900.png "openPDC Output Steam TCP 8900")]()
+    - *Name* = **openPDC Output Stream TCP 8900**.  Note: this can be any name you want
+6. Make sure the new **openPDC Output Stream TCP 8900* *Inbound Rule* is *Enabled* and open it up to review its properties
+    - [![](Development_Exercises.files/Firewall_Inbound_Rule_TCP8900.png "openPDC Output Stream TCP 8900")]()
+7. Create a new Inbound Rule using the *New Inbound Rule Wizard*
+    - *Rule Type* = **Port**
+    - *Protocol and Ports* = **UDP** and *Specific local ports* = **`8800-8809`** = a range of 10 ports starting at port# 8800
+    - *Action* = **Allow the Connection**
+    - *Profile* = Check all profiles.  Note: this exercise needs only the **Private** profile checked
+    - *Name* = **openPDC Output Stream UDP 8800**.  Note: this can be any name you want
+8. Make sure the new **openPDC Output Stream UDP 8800* *Inbound Rule* is *Enabled* and open it up to review its properties
+    - [![](Development_Exercises.files/Firewall_Inbound_Rule_UDP8800.png "openPDC Output Stream UDP 8800")]()
 
 ### Test the Output Stream over the Network with PMU Connection Tester
 
@@ -426,11 +444,17 @@ C:\Users\Administrator> ping time.nist.gov
     - Select the *Settings* tab (in the lower middle of the screen). In the *Applications Settings* section, set the following parameters:
         - Set the *ForceIPv4* value to `True`
         - Set the *MaximumFrameDisplayBytes* value to `512` (the IEEE C37-118 Configuration Frame Size)
-    - Select the *TCP* tab in the *Connection Parameters*
-        - Set the *Host IP* value to `192.168.1.110` (the `OPDC-01` Server's IPv4 Address)
-        - Set the *Port* value to `8900` (to match the openPDC Output Stream's *TCP Channel* Port#)
+    - Select the *UDP* tab in the *Connection Parameters*
+        - Set the *Local Port* value to `8801` (to match the openPDC Output Stream's *UDP Channel* Port#)
+        - Click the *Receive From* link and set *Use Specific Source IP* value to `192.168.1.110` (the `OPDC-01` Server's IPv4 Address)
+            - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_01B.png)]()
     - In the *Protocol* tab
         - Select the `IEEE C37.118.2005` protocol
+        - Click the *Configure Alternate Command Channel* link 
+            - Set the *Tcp Host IP* value to `192.168.1.110`
+            - Set the *Port* value to `8900`
+            - Clear the *Not defined* checkbox
+            - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_02B.png)]()
     - Click the *Connect* button
     - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStreamTest_02.png "PMU Connection Tester, openPDC TestStream Test 2")]()
 2. If you get an error trying to connect and stream data, check the `OPDC-01` Server and make sure PMU Connection Tester is not still connected to the Output Stream.  If it is, then click *Disconnect* and try this step again.
@@ -443,7 +467,7 @@ C:\Users\Administrator> ping time.nist.gov
 
 ---
 
-Dec 18, 2016 - Created by [aj](https://github.com/ajstadlin)
+Dec 19, 2016 - Created by [aj](https://github.com/ajstadlin)
 
 ---
 
