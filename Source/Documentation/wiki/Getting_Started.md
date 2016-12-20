@@ -269,9 +269,9 @@ The **help** command can be used to see a list of all commands that can be enter
 
 Used by itself, the **list** command will simply list the adapters in the specified adapter collection. Additionally, list can display detailed information about a specific adapter specified as an argument to the command. The argument can be either the name or the ID of the adapter. The following images show examples of this usage and its output.
 
-![list command input adapter](Getting_Started.files/list_command_2.PNG)
+![list command input adapter](Getting_Started.files/list_command_2.png)
 
-![list command output adapter](Getting_Started.files/list_o_command.PNG)
+![list command output adapter](Getting_Started.files/list_o_command.png)
 
 ### View performance details about the openPDC service (the health command)
 
@@ -285,7 +285,7 @@ The **status** command outputs a significant amount of low level data about each
 
 The **connect** and **disconnect** commands are somewhat self-explanatory. These commands are used to connect and disconnect a PMU or PDC which is available as seen in the output of the list command. The adapter can be specified by entering its name or ID as an argument to the command. The following image shows an example of the usage of these commands.
 
-![](Getting_Started.files/connect_disconnect_command.PNG "connect_and_disconnect_commands.png")
+![](Getting_Started.files/connect_disconnect_command.png "connect_and_disconnect_commands.png")
 
 ---
 
@@ -303,7 +303,7 @@ The PMU Connection Tester can be used to verify that the data stream from any kn
 2. Extract the `PMUConnectionTesterSetup.zip` contents to a new `PMUConnectionTesterSetup` folder and open the folder.
 3. Run the setup wizard *PMUConnectionTesterSetup64.msi* for 64bit Windows or *PMUConnectionTesterSetup.msi* for 32bit Windows
 6. Run the **PMU Connection Tester** application with its first time defaults and click the *Connect* button.  
-    - [![](Development_Exercises.files/PMUConnectionTester_FirstRunTest.png "PMU Connection Tester, First Run Test")]()
+[![](Getting_Started.files/pmuconneuctiontester_firstrun.png "PMU Connection Tester, First Run Test")]()
 
 ### Creating and verifying an IEEE C37.118-2005 data stream
 
