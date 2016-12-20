@@ -376,10 +376,10 @@ C:\Users\Administrator> ping time.nist.gov
 1. Run the **openPDC Manager** application
 2. Click the *Outputs* menu and select *Concentrator Output Streams* and review the `TESTSTREAM` properties
     - Set the *TCP Channel* text to "`Port=8900; maxSendQueueSize=-1; interface=0.0.0.0`" (this will force openPDC to use IPv4)
-        - Alternatively you can click the *Build Command Channel String* icon button (to the right of the *TCP Channel textbox)
+        - Alternatively you can click the *Build Command Channel String* icon button (to the right of the *TCP Channel* textbox)
             - [![](Development_Exercises.files/openPDC_Manager_ManageOutputStreams_TCP_Channel_ConnectionStringBuilder.png)]()
     - Set the *UDP Channel* text to "`port=-1; clients=localhost:8800,pmu-tester.gpa.net:8801; interface=0.0.0.0`"
-        - Alternatively you can click the *Build Command Channel String* icon button (to the right of the *UDP Channel textbox)
+        - Alternatively you can click the *Build Command Channel String* icon button (to the right of the *UDP Channel* textbox)
             - [![](Development_Exercises.files/openPDC_Manager_ManageOutputStreams_UDP_Channel_ConnectionStringBuilder.png)]()
     - Click the *Save* button
     - Click the *Initialize* button
