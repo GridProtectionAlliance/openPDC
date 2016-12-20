@@ -37,24 +37,20 @@ This guide is intended to aid in building the openPDC software and setting it up
     -   [Serial](#serial)
 -   [Installation directory](#installation-directory)
 
-------------------------------------------------------------------------
+---
 
 ## Install openPDC with the installers
----------------------------------------
 
 This section goes over how to setup the openPDC and related components using the installers. The first thing you will need to do is download and extract the installers. For this you have two options:
 
 1.  Install from the current release build:
-    1.  Go to the [openPDC Home Page](openPDC_Home.md) and select The **Downloads** tab.
-    2.  Under "Recommended Download", click on the link labeled "openPDCSetup.zip".
-    3.  Click "I Agree".
-    4.  Download and extract the installers to a directory of your choice.
+    1.  Go to the [openPDC Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases) and scroll to the  **Downloads** section.
+    2.  Click on the [Synchrophasor.Installs.zip](https://github.com/GridProtectionAlliance/openPDC/releases/download/v2.3/Synchrophasor.Installs.zip) to download and extract the installers to a directory of your choice.
 
 2.  An alternative is to install from the [Nightly Builds](Nightly_Builds.md)
 
-    1.  Go to the [Nightly Builds](Nightly_Builds.md) and click on the **Synchrophasor Installers** link.
-    2.  If prompted, agree to the Terms and Conditions
-    3.  Download and extract the installers to a directory of your choice.
+    1.  Go to the [Nightly Builds](Nightly_Builds.md) and click on the [**Synchrophasor Installers**](https://www.gridprotectionalliance.org/NightlyBuilds/openPDC/Beta-VS2012/Synchrophasor.Installs.zip) link.
+    2.  Download and extract the installers to a directory of your choice.
 
 Once you have extracted the downloaded file, you can install the following programs by running openPDCSetup.exe.
 
@@ -68,9 +64,6 @@ Once you have extracted the downloaded file, you can install the following progr
 | Program | Installer | Description |
 |---|---|---|
 | openPDC  | openPDCSetup.msi / openPDCSetup64.msi | The main application installed as a Windows service.    |
-| PMU Connection TesterSetup | PMUConnectionTesterSetup.msi / PMUConnectionTesterSetup64.msi | PMU Connection Tester Application |
-| openPDC Manager (Web) | openPDCManagerWebSetup.msi | Web application used to help configure openPDC |
-| openPDC Manager Services (Web)    | openPDCManagerServicesSetup.msi     | Web services used to help configure openPDC |
 
 The web based openPDCManager is not included in openPDCSetup v1.2 and later releases.  For the web based openPDCManager installers refer to the previous openPDC v1.1 release in the Synchrophasors.zip download.  If you are installing the web based openPDC Manager, you will need to change the configuration file as described on the [Frequently Asked Questions](FAQ.md#openpdcmanager_installer) page.
 
@@ -126,24 +119,17 @@ Select the primary historian. In this case, since we are using sample data, we d
 
 ![](Getting_Started.files/10.png)
 
-Click next after the configuration is completed and the PMU Connection Tester setup will pop-up immediately.
-
-![](Getting_Started.files/PMU-1.png)
-
-Click next to install the PMU Connection Tester. Follow the directions and select the directory where to install this program.
-
-**Note:** The installation of the PMU Connection Tester is optional and the openPDC can perfectly run independently if this program is installed or not.
-
-------------------------------------------------------------------------
+---
 
 ## Manually set up the database
---------------------------------
 
 The following subsections will instruct you on setting up [Access](#setting-up-an-access-database), [SQL Server](#setting-up-a-sql-server-database), and [MySQL](#setting-up-a-mysql-database) databases. You only need to set up one of these in order to run the openPDC.
 
 ### Setting up an Access database
+
 **Note**: Access is not recommended for use in production, but is considered to be a good option for development purposes.
-1.  If you used the installers, navigate to the [installation directory](#installation-directory) and go to "Database Scripts\\Access". Otherwise, navigate to "SOURCEDIR\\Synchrophasor\\Current Version\\Source\\Data\\Access" (SOURCEDIR is the directory where you extracted the openPDC source code files).
+
+1.  If you used the installers, navigate to the [installation directory](#installation-directory) and go to "`Database Scripts\Access`". Otherwise, navigate to "`SOURCEDIR\Synchrophasor\Current Version\Source\Data\Access`" (SOURCEDIR is the directory where you extracted the openPDC source code files).
 2.  Copy the file "openPDC-SampleDataSet.mdb" to your [installation directory](#installation-directory).
 3.  Rename the copy to "openPDC.mdb".
 
@@ -213,7 +199,7 @@ You will need to modify the value property of the following settings using the v
 
 If you installed the openPDC using [the openPDC installers](Getting_Started.md#openpdc_installers), you may need to fix some configuration settings.
 
--  If you are using the built-in Access database, you may need to change the connection strings in the configuration file to <span class="codeInline">Provider=Microsoft.Jet.OLEDB.4.0; Data Source=C:\\Program Files\\openPDC\\openPDC.mdb </span>(changing Data Source to an absolute path).
+-  If you are using the built-in Access database, you may need to change the connection strings in the configuration file to`Provider=Microsoft.Jet.OLEDB.4.0; Data Source=C:\Program Files\openPDC\openPDC.mdb` (changing Data Source to an absolute path).
 
 ### Encrypt the configuration settings
 
@@ -240,7 +226,6 @@ You may have noticed that you stored your password directly in the configuration
 ---
 
 ## Running the openPDC
----
 
 If you installed the openPDC using [the openPDC installers](#install-openpdc-with-the-installers), follow these steps.
 
@@ -253,15 +238,14 @@ If you installed the openPDC using [the openPDC installers](#install-openpdc-wit
 1.  If you built the project in Debug mode and want to run it using the debugger, follow these steps.
     1.  Open Microsoft Visual Studio 2008.
     2.  In the toolbar, go to "File &gt; Open &gt; Project/Solution..."
-    3.  Navigate to "SOURCEDIR\\Synchrophasor\\Current Version\\Source", select "Synchrophasor.sln", and select "Open" (SOURCEDIR is the directory where you extracted the openPDC source code files).
+    3.  Navigate to "`SOURCEDIR\Synchrophasor\Current Version\Source`", select "Synchrophasor.sln", and select "Open" (SOURCEDIR is the directory where you extracted the openPDC source code files).
     4.  In the toolbar, go to "Debug &gt; Start Debugging".
 
 If you built the openPDC from source, you can run it as an application by navigating to your [installation directory](#installation-directory) and double-clicking "openPDC.exe".
 
-------------------------------------------------------------------------
+---
 
 ## Using the openPDC console
------------------------------
 
 You can use the openPDC console to monitor the status of connections, configurations, errors, general statistics, and many other things.
 If you installed the openPDC using [the openPDC installers](#install-openpdc-with-the-installers), you can run the console using the executable found in your [installation directory](#installation-directory) (and there should also be a shortcut in your Start menu). If you built it from source, the console should appear as soon as you begin running the openPDC application. Once the openPDC is ready, you can begin issuing commands through the console.
@@ -301,23 +285,25 @@ The **status** command outputs a significant amount of low level data about each
 
 The **connect** and **disconnect** commands are somewhat self-explanatory. These commands are used to connect and disconnect a PMU or PDC which is available as seen in the output of the list command. The adapter can be specified by entering its name or ID as an argument to the command. The following image shows an example of the usage of these commands.
 
-![connect\_and\_disconnect\_commands.png](Getting_Started.files/connect_disconnect_command.PNG "connect_and_disconnect_commands.png")
+![](Getting_Started.files/connect_disconnect_command.PNG "connect_and_disconnect_commands.png")
 
 ---
 
 ## Running the PMU Connection Tester
----
 
-The PMU Connection Tester can be used to verify that the data stream from any known phasor measurement device is being received.
-If you are running the openPDC in Debug mode, you can run this application by right-clicking "PMU Connection Tester" in the Solution Explorer view and going to "Debug &gt; Start new instance". You may need to redisplay the Solution Explorer view by going to "View &gt; Solution Explorer" in the toolbar.
+The PMU Connection Tester can be used to verify that the data stream from any known phasor measurement device is being received. 
 
-If you built the system from source and do not wish to run the PMU Connection Tester in the Visual Studio debugger, the executable can be found in one of the following directories (depending on whether you built the openPDC in Release mode or Debug mode respectively).
+### Install the PMU Connection Tester Software
 
--   `SOURCEDIR\Synchrophasor\Current Version\Build\Output\Release\Tools\PMUConnectionTester`
--   `SOURCEDIR\Synchrophasor\Current Version\Build\Output\Debug\Tools\PMUConnectionTester`
-
-Where SOURCEDIR is the directory where you extracted the openPDC source code.
-The following subsections will instruct you on creating a data stream and verifying that it is being received.
+1. Web browse to the PMU Connection Tester Release page: [PMU Connection Tester](https://github.com/GridProtectionAlliance/PMUConnectionTester/releases)
+2. Scroll down to the *Downloads* section and click on the [PMUConnectionTesterSetup.zip](https://github.com/GridProtectionAlliance/PMUConnectionTester/releases/download/v4.5.6/PMUConnectionTesterSetup.zip) link to start the download.
+    - When prompted, drop down the *Save* button menu and click *Save as*
+    - In the *Save As* dialog, browse a desired downloads folder , then click the *Save* button.
+3. Open the *Windows System / File Explorer* and navigate to the downloads folder.
+2. Extract the `PMUConnectionTesterSetup.zip` contents to a new `PMUConnectionTesterSetup` folder and open the folder.
+3. Run the setup wizard *PMUConnectionTesterSetup64.msi* for 64bit Windows or *PMUConnectionTesterSetup.msi* for 32bit Windows
+6. Run the **PMU Connection Tester** application with its first time defaults and click the *Connect* button.  
+    - [![](Development_Exercises.files/PMUConnectionTester_FirstRunTest.png "PMU Connection Tester, First Run Test")]()
 
 ### Creating and verifying an IEEE C37.118-2005 data stream
 
@@ -333,9 +319,9 @@ The following subsections will instruct you on creating a data stream and verify
 
 The following images show the PMU Connection Tester windows populated with the correct settings and marked with numbers corresponding to those in the steps listed above.
 
-![pmu\_connection\_tester\_main\_window.png](Getting_Started.files/pmu_connection_tester_main_window.png "pmu_connection_tester_main_window.png")
+![pmu_connection_tester_main_window.png](Getting_Started.files/pmu_connection_tester_main_window.png "pmu_connection_tester_main_window.png")
 
-![pmu\_connection\_tester\_command\_channel.png](Getting_Started.files/pmu_connection_tester_command_channel.png "pmu_connection_tester_command_channel.png")
+![pmu_connection_tester_command_channel.png](Getting_Started.files/pmu_connection_tester_command_channel.png "pmu_connection_tester_command_channel.png")
 
 ### Creating and verifying a BPA PDCstream data stream
 
@@ -349,7 +335,7 @@ The following images show the PMU Connection Tester windows populated with the c
 5.  In the drop-down list under the "Protocol" tab, select "BPA PDCstream".
 6.  Select the "Extra Parameters" tab.
 7.  Select the "ConfigurationFileName" property and click "..."
-8.  Navigate to `SOURCEDIR\\openPDC\\Synchrophasor\\Current Version\\Build\\Output\\Debug\\Applications\\openPDC`, select TESTSTREAM.ini, and select "Open" (SOURCEDIR is the directory where you extracted the openPDC source code files).
+8.  Navigate to `SOURCEDIR\openPDC\Synchrophasor\Current Version\Build\Output\Debug\Applications\openPDC`, select TESTSTREAM.ini, and select "Open" (SOURCEDIR is the directory where you extracted the openPDC source code files).
 9.  Select the "Protocol" tab.
 10. Click on "Configure alternate command channel".
 11. Ensure that the check box labeled "Not defined" is selected.
@@ -358,23 +344,21 @@ The following images show the PMU Connection Tester windows populated with the c
 
 The following images show the PMU Connection Tester windows populated with the correct settings and marked with numbers corresponding to those in the steps listed above.
 
-![bpa\_pdcstream\_pmu\_connection\_tester\_main\_window.png](Getting_Started.files/bpa_pdcstream_pmu_connection_tester_main_window.png "bpa_pdcstream_pmu_connection_tester_main_window.png")
+![bpa_pdcstream_pmu_connection_tester_main_window.png](Getting_Started.files/bpa_pdcstream_pmu_connection_tester_main_window.png "bpa_pdcstream_pmu_connection_tester_main_window.png")
 
-![bpa\_pdcstream\_extra\_parameters.png](Getting_Started.files/bpa_pdcstream_extra_parameters.png "bpa_pdcstream_extra_parameters.png")
+![bpa_pdcstream_extra_parameters.png](Getting_Started.files/bpa_pdcstream_extra_parameters.png "bpa_pdcstream_extra_parameters.png")
 
-![bpa\_pdcstream\_pmu\_connection\_tester\_command\_channel.png](Getting_Started.files/bpa_pdcstream_pmu_connection_tester_command_channel.png "bpa_pdcstream_pmu_connection_tester_command_channel.png")
+![bpa_pdcstream_pmu_connection_tester_command_channel.png](Getting_Started.files/bpa_pdcstream_pmu_connection_tester_command_channel.png "bpa_pdcstream_pmu_connection_tester_command_channel.png")
 
 ---
 
 ## Configuring openPDC security
----
 
 In the latest version, security is enabled by default. See [Remote Console Security](Remote_Console_Security.md) for more information.
 
 ---
 
 ## Using the in-process historian adapter
----
 
 The in-process historian adapter optionally allows for the metadata and the time-series data stored in the local archive to be accessed via REST web services. The openPDC by default has both the metadata and time-series web services enabled, and they can be accessed at `http://localhost:6151/historian` and `http://localhost:6152/historian` URLs respectively. See below for a brief description of the REST API for these web services:
 
@@ -403,7 +387,6 @@ Returns historic time series data for the measurement IDs specified in the range
 ---
 
 ## Configuring a Connection String
----
 
 This section contains information about how to configure the connection string for the MultiProtocolFrameParser. The connection string can be found on lines 29-31 of the code snippet from the [Device to Data in 5 easy steps](Developers_Device_to_Data.md) page and also in the Device table of the openPDC database. The first step to configuring your connection string is to determine which transport protocol you're using and change the value of the transportProtocol key accordingly. The following subsections detail the keys that are specific to each transport protocol. The possible values for the transportProtocol key are [file](#file), [tcp](#tcp), [udp](#udp), and [serial](#serial).
 
@@ -458,7 +441,6 @@ The following is an example connection string using the serial transport protoco
 ---
 
 ## Installation directory
----
 
 If you installed the openPDC using [the openPDC installers](#install-openpdc-with-the-installers) the default installation directory can be found at the following location.
 
@@ -470,6 +452,10 @@ If you built the openPDC from source, the output directory is in one of two plac
 - `SOURCEDIR\Synchrophasor\Current Version\Build\Output\Debug\Applications\openPDC`
 
 Where SOURCEDIR is the directory where you extracted the openPDC source code.
+
+---
+
+Dec 20, 2016 - Updated
 
 ---
 
