@@ -27,54 +27,65 @@
 
 SETLOCAL
 
-SET pwd="%CD%"
-SET gwd="%LOCALAPPDATA%\Temp\openPDC"
-SET git="%PROGRAMFILES(X86)%\Git\cmd\git.exe"
-SET replace="\\GPAWEB\NightlyBuilds\Tools\ReplaceInFiles\ReplaceInFiles.exe"
+SET pwd=%CD%
+IF "%git%" == "" SET git=%PROGRAMFILES(X86)%\Git\cmd\git.exe
+IF "%replace%" == "" SET replace=\\GPAWEB\NightlyBuilds\Tools\ReplaceInFiles\ReplaceInFiles.exe
 
-SET remote="git@github.com:GridProtectionAlliance/openPDC.git"
-SET source="\\GPAWEB\NightlyBuilds\GridSolutionsFramework\Beta\Libraries\*.*"
-SET target="Source\Dependencies\GSF"
-SET sourcemasterbuild="\\GPAWEB\NightlyBuilds\GridSolutionsFramework\Beta\Build Scripts\MasterBuild.buildproj"
-SET targetmasterbuild="Build\Scripts"
-SET sourceschema=Source\Dependencies\GSF\Data
-SET targetschema=Source\Data
-SET sourcetools=\\GPAWEB\NightlyBuilds\GridSolutionsFramework\Beta\Tools\
-SET targettools=Source\Applications\openPDC\openPDCSetup\
+SET defaulttarget=%LOCALAPPDATA%\Temp\openPDC
+IF "%remote%" == "" SET remote=git@github.com:GridProtectionAlliance/openPDC.git
+IF "%source%" == "" SET source=\\GPAWEB\NightlyBuilds\GridSolutionsFramework\Beta
+IF "%target%" == "" SET target=%defaulttarget%
+
+SET libraries=%source%\Libraries\*.*
+SET dependencies=%target%\Source\Dependencies\GSF
+SET sourcemasterbuild=%source%\Build Scripts\MasterBuild.buildproj
+SET targetmasterbuild=%target%\Build\Scripts
+SET sourceschema=%target%\Source\Dependencies\GSF\Data
+SET targetschema=%target%\Source\Data
+SET sourcetools=%source%\Tools
+SET targettools=%target%\Source\Applications\openPDC\openPDCSetup
 
 ECHO.
 ECHO Entering working directory...
-IF EXIST %gwd% IF NOT EXIST %gwd%\.git RMDIR /S /Q %gwd%
-IF NOT EXIST %gwd% MKDIR %gwd%
-CD /D %gwd%
+IF EXIST "%target%" IF NOT EXIST "%target%"\.git RMDIR /S /Q "%target%"
+IF NOT EXIST "%target%" MKDIR "%target%"
+CD /D %target%
 
-IF EXIST .git GOTO UpdateRepository
+IF NOT EXIST .git GOTO CloneRepository
+IF NOT "%target%" == "%defaulttarget%" GOTO UpdateDependencies
+GOTO UpdateRepository
 
+:CloneRepository
 ECHO.
 ECHO Cloning remote repository...
-%git% clone %remote% .
+"%git%" clone "%remote%" .
+GOTO UpdateDependencies
 
 :UpdateRepository
 ECHO.
 ECHO Updating to latest version...
-%git% fetch
-%git% reset --hard origin/master
-%git% clean -f -d -x
+"%git%" gc
+"%git%" fetch
+"%git%" reset --hard origin/master
+"%git%" clean -f -d -x
+GOTO UpdateDependencies
 
+:UpdateDependencies
 ECHO.
 ECHO Updating dependencies...
-XCOPY %source% %target% /Y /E
-XCOPY %sourcemasterbuild% %targetmasterbuild% /Y
-XCOPY "%sourcetools%ConfigCrypter\ConfigCrypter.exe" "%targettools%ConfigCrypter.exe" /Y
-XCOPY "%sourcetools%ConfigEditor\ConfigEditor.exe" "%targettools%ConfigurationEditor.exe" /Y
-XCOPY "%sourcetools%DataMigrationUtility\DataMigrationUtility.exe" "%targettools%DataMigrationUtility.exe" /Y
-XCOPY "%sourcetools%HistorianPlaybackUtility\HistorianPlaybackUtility.exe" "%targettools%HistorianPlaybackUtility.exe" /Y
-XCOPY "%sourcetools%HistorianView\HistorianView.exe" "%targettools%HistorianView.exe" /Y
-XCOPY "%sourcetools%StatHistorianReportGenerator\StatHistorianReportGenerator.exe" "%targettools%StatHistorianReportGenerator.exe" /Y
-XCOPY "%sourcetools%NoInetFixUtil\NoInetFixUtil.exe" "%targettools%NoInetFixUtil.exe" /Y
-XCOPY "%sourcetools%DNP3ConfigGenerator\DNP3ConfigGenerator.exe" "%targettools%DNP3ConfigGenerator.exe" /Y
-XCOPY "%sourcetools%LogFileViewer\LogFileViewer.exe" "%targettools%LogFileViewer.exe" /Y
+XCOPY "%libraries%" "%dependencies%\" /Y /E
+XCOPY "%sourcemasterbuild%" "%targetmasterbuild%\" /Y
+COPY /Y "%sourcetools%\ConfigCrypter\ConfigCrypter.exe" "%targettools%\ConfigCrypter.exe"
+COPY /Y "%sourcetools%\ConfigEditor\ConfigEditor.exe" "%targettools%\ConfigurationEditor.exe"
+COPY /Y "%sourcetools%\DataMigrationUtility\DataMigrationUtility.exe" "%targettools%\DataMigrationUtility.exe"
+COPY /Y "%sourcetools%\HistorianPlaybackUtility\HistorianPlaybackUtility.exe" "%targettools%\HistorianPlaybackUtility.exe"
+COPY /Y "%sourcetools%\HistorianView\HistorianView.exe" "%targettools%\HistorianView.exe"
+COPY /Y "%sourcetools%\StatHistorianReportGenerator\StatHistorianReportGenerator.exe" "%targettools%\StatHistorianReportGenerator.exe"
+COPY /Y "%sourcetools%\NoInetFixUtil\NoInetFixUtil.exe" "%targettools%\NoInetFixUtil.exe"
+COPY /Y "%sourcetools%\DNP3ConfigGenerator\DNP3ConfigGenerator.exe" "%targettools%\DNP3ConfigGenerator.exe"
+COPY /Y "%sourcetools%\LogFileViewer\LogFileViewer.exe" "%targettools%\LogFileViewer.exe"
 
+:UpdateDbScripts
 ECHO.
 ECHO Updating database schema defintions...
 FOR /R "%sourceschema%" %%x IN (*.db) DO DEL "%%x"
@@ -87,27 +98,31 @@ MOVE /Y "%sourceschema%\Oracle\*.*" "%targetschema%\Oracle\"
 MOVE /Y "%sourceschema%\PostgreSQL\*.*" "%targetschema%\PostgreSQL\"
 MOVE /Y "%sourceschema%\SQL Server\*.*" "%targetschema%\SQL Server\"
 MOVE /Y "%sourceschema%\SQLite\*.*" "%targetschema%\SQLite\"
-%replace% /r /v "%targetschema%\*.sql" GSFSchema openPDC
-%replace% /r /v "%targetschema%\*.sql" "--*" ""
-%replace% /r /v "%targetschema%\*SampleDataSet.sql" TestingAdapters HistorianAdapters
-%replace% /r /v "%targetschema%\*SampleDataSet.sql" VirtualOutputAdapter LocalOutputAdapter
-%replace% /r /v "%targetschema%\*SampleDataSet.sql" TESTDEVICE SHELBY
-%replace% /r /v "%targetschema%\*SampleDataSet.sql" "Test Device" Shelby
-%replace% /r /v "%targetschema%\*SampleDataSet.sql" "'TEST'" "'SHEL'"
-%replace% /r /v "%targetschema%\*db-update.bat" GSFSchema openPDC
+"%replace%" /r /v "%targetschema%\*.sql" GSFSchema openPDC
+"%replace%" /r /v "%targetschema%\*.sql" "--*" ""
+"%replace%" /r /v "%targetschema%\*SampleDataSet.sql" TestingAdapters HistorianAdapters
+"%replace%" /r /v "%targetschema%\*SampleDataSet.sql" VirtualOutputAdapter LocalOutputAdapter
+"%replace%" /r /v "%targetschema%\*SampleDataSet.sql" TESTDEVICE SHELBY
+"%replace%" /r /v "%targetschema%\*SampleDataSet.sql" "Test Device" Shelby
+"%replace%" /r /v "%targetschema%\*SampleDataSet.sql" "'TEST'" "'SHEL'"
+"%replace%" /r /v "%targetschema%\*db-update.bat" GSFSchema openPDC
 CD %targetschema%\SQLite
 CALL db-update.bat
-CD %gwd%
+CD %target%
 
+:CommitChanges
 ECHO.
 ECHO Committing updates to local repository...
-%git% add .
-%git% commit -m "Updated GSF dependencies."
+"%git%" add .
+"%git%" commit -m "Updated GSF dependencies."
+IF NOT "%donotpush%" == "" GOTO Finish
 
+:PushChanges
 ECHO.
 ECHO Pushing changes to remote repository...
-%git% push
+"%git%" push
 CD /D %pwd%
 
+:Finish
 ECHO.
 ECHO Update complete
