@@ -302,8 +302,9 @@ The PMU Connection Tester can be used to verify that the data stream from any kn
 3. Open the *Windows System / File Explorer* and navigate to the downloads folder.
 2. Extract the `PMUConnectionTesterSetup.zip` contents to a new `PMUConnectionTesterSetup` folder and open the folder.
 3. Run the setup wizard *PMUConnectionTesterSetup64.msi* for 64bit Windows or *PMUConnectionTesterSetup.msi* for 32bit Windows
-6. Run the **PMU Connection Tester** application with its first time defaults and click the *Connect* button.  
-[![](Getting_Started.files/pmuconneuctiontester_firstrun.png "PMU Connection Tester, First Run Test")]()
+6. Run the **PMU Connection Tester** application with its first time defaults and click the *Connect* button.
+
+![pmuconneuctiontester_firstrun.png](Getting_Started.files/pmuconnectiontester_firstrun.png "PMU Connection Tester, First Run")
 
 ### Creating and verifying an IEEE C37.118-2005 data stream
 
