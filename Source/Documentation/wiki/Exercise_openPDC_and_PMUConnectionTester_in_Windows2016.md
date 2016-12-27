@@ -1,8 +1,8 @@
 [![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
-|   |   |   |   |   |   |
-|---|---|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Exercises](Development_Exercises.md)** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
+|   |   |   |   |   |
+|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Exercises](Developer_Exercises.md)** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 ***This document is an exercise procedure for setting up and testing concepts.***
 
@@ -278,7 +278,7 @@ C:\Users\Administrator> ping time.nist.gov
 3. Run the *openPDCSetup.msi* setup wizard
     - Accept the terms in the MIT License Agreement
 4. In the Custom Setup screen, click the *Browse...* button and change the *Location* value to `C:\GPA\openPDC\`
-    - [![](Development_Exercises.files/openPDC_Install_Custom_Setup.png "openPDC Install, Custom Setup")]()
+    - [![](Developer_Exercises.files/openPDC_Install_Custom_Setup.png "openPDC Install, Custom Setup")]()
 5. Continue with the remaining openPDC Setup by accepting the default values until you see the **Completed the openPDC Setup Wizard** screen.
 6. Make sure the *Launch Configuration Setup Utility* option is checked then click the *Finish* button
 
@@ -289,15 +289,15 @@ C:\Users\Administrator> ping time.nist.gov
 *Unless otherwise noted, accept the default configuration options and continue to the Next screen.*
 
 1. In the *Set up a database* screen, select the ***SQLite*** radio option and check the *Run sample data script* option, then click the *Next* button.
-    - [![](Development_Exercises.files/openPDC_Configuration_Setup_Utility_Setup_a_database.png "openPDC Configuration Setup Utility, Setup a database")]()
+    - [![](Developer_Exercises.files/openPDC_Configuration_Setup_Utility_Setup_a_database.png "openPDC Configuration Setup Utility, Setup a database")]()
 2. In the *Set up an SQLite database* screen, change the "*Please select the location in which to save the new database file.*" value to `C:\GPA\openPDC\data\openPDC.db`
-    - [![](Development_Exercises.files/openPDC_Configuration_Setup_Utility_Setup_an_SQLite_database.png "openPDC Configuration Setup Utility, Setup an SQLite database")]()
+    - [![](Developer_Exercises.files/openPDC_Configuration_Setup_Utility_Setup_an_SQLite_database.png "openPDC Configuration Setup Utility, Setup an SQLite database")]()
 3. In the *Define User Account Credentials* verify the user account is correct and that *Allow pass-through authentication for openPDC Manager* is checked
-    - [![](Development_Exercises.files/openPDC_Configuration_Setup_Utility_Define_User_Account_Credentials.png "openPDC Configuration Setup Utility, Define User Account Credentials")]()
+    - [![](Developer_Exercises.files/openPDC_Configuration_Setup_Utility_Define_User_Account_Credentials.png "openPDC Configuration Setup Utility, Define User Account Credentials")]()
 4. Continue and accept defaults for the remaining configuration screens. If all goes well, the configuration will complete and display a screen like this:
-    - [![](Development_Exercises.files/openPDC_Configuration_Setup_Utility_Progress_Success.png "openPDC Configuration Setup Utility, Progress=Success!")]()
+    - [![](Developer_Exercises.files/openPDC_Configuration_Setup_Utility_Progress_Success.png "openPDC Configuration Setup Utility, Progress=Success!")]()
 5. Run the openPDC service and openPDC Manager
-    - [![](Development_Exercises.files/openPDC_Manager_01.png "openPDC Manager")]()
+    - [![](Developer_Exercises.files/openPDC_Manager_01.png "openPDC Manager")]()
 
 ### Download the PMU Connection Tester Software and Save it to the `GPA.shared` Folder
 
@@ -317,10 +317,10 @@ C:\Users\Administrator> ping time.nist.gov
 3. Extract the `PMUConnectionTesterSetup.zip` contents to a new `C:\GPA\GPA.shared\PMUConnectionTesterSetup` folder and open the folder.
 4. Run the *PMUConnectionTesterSetup64.msi* setup wizard
 5. In the *Select Installation Folder* screen, change the *Folder* value to `C:\GPA\PMU Connection Tester\`
-    - [![](Development_Exercises.files/PMUConnectionTester_Setup_Installation_Folder.png "PMU Connection Tester, Select Installation Folder")]()
+    - [![](Developer_Exercises.files/PMUConnectionTester_Setup_Installation_Folder.png "PMU Connection Tester, Select Installation Folder")]()
 6. Continue with the remaining PMU Connection Tester Setup by accepting the default values until it has completed.
 7. Run the PMU Connection Tester application with its first time defaults and click the *Connect* button.  
-    - [![](Development_Exercises.files/PMUConnectionTester_FirstRunTest.png "PMU Connection Tester, First Run Test")]()
+    - [![](Developer_Exercises.files/PMUConnectionTester_FirstRunTest.png "PMU Connection Tester, First Run Test")]()
 
 ---
 
@@ -355,10 +355,10 @@ C:\Users\Administrator> ping time.nist.gov
 2. Extract the `PMUConnectionTesterSetup.zip` contents to a new `C:\GPA\GPA.shared\PMUConnectionTesterSetup` folder and open the folder.
 3. Run the *PMUConnectionTesterSetup64.msi* setup wizard
 4. In the *Select Installation Folder* screen, change the *Folder* value to `C:\GPA\PMU Connection Tester\`
-    - [![](Development_Exercises.files/PMUConnectionTester_Setup_Installation_Folder.png "PMU Connection Tester, Select Installation Folder")]()
+    - [![](Developer_Exercises.files/PMUConnectionTester_Setup_Installation_Folder.png "PMU Connection Tester, Select Installation Folder")]()
 5. Continue with the remaining PMU Connection Tester Setup by accepting the default values until it has completed.
 6. Run the **PMU Connection Tester** application with its first time defaults and click the *Connect* button.  
-    - [![](Development_Exercises.files/PMUConnectionTester_FirstRunTest.png "PMU Connection Tester, First Run Test")]()
+    - [![](Developer_Exercises.files/PMUConnectionTester_FirstRunTest.png "PMU Connection Tester, First Run Test")]()
 
 ---
 
@@ -377,15 +377,15 @@ C:\Users\Administrator> ping time.nist.gov
 2. Click the *Outputs* menu and select *Concentrator Output Streams* and review the `TESTSTREAM` properties
     - Set the *TCP Channel* text to "`Port=8900; maxSendQueueSize=-1; interface=0.0.0.0`" (this will force openPDC to use IPv4)
         - Alternatively you can click the *Build Command Channel String* icon button (to the right of the *TCP Channel* textbox)
-            - [![](Development_Exercises.files/openPDC_Manager_ManageOutputStreams_TCP_Channel_ConnectionStringBuilder.png)]()
+            - [![](Developer_Exercises.files/openPDC_Manager_ManageOutputStreams_TCP_Channel_ConnectionStringBuilder.png)]()
     - Set the *UDP Channel* text to "`port=-1; clients=localhost:8800,pmu-tester.gpa.net:8801; interface=0.0.0.0`"
         - Alternatively you can click the *Build Command Channel String* icon button (to the right of the *UDP Channel* textbox)
-            - [![](Development_Exercises.files/openPDC_Manager_ManageOutputStreams_UDP_Channel_ConnectionStringBuilder.png)]()
+            - [![](Developer_Exercises.files/openPDC_Manager_ManageOutputStreams_UDP_Channel_ConnectionStringBuilder.png)]()
     - Click the *Save* button
     - Click the *Initialize* button
-    - [![](Development_Exercises.files/openPDC_Manager_ManageOutputStreams_01.png "openPDC_Manager, ManageOutputStreams")]()
+    - [![](Developer_Exercises.files/openPDC_Manager_ManageOutputStreams_01.png "openPDC_Manager, ManageOutputStreams")]()
     - Click the *Advanced Properties* and scroll down to review them
-    - [![](Development_Exercises.files/openPDC_Manager_ManageOutputStreams_02.png "openPDC_Manager, ManageOutputStreams, Advanced Properties")]()
+    - [![](Developer_Exercises.files/openPDC_Manager_ManageOutputStreams_02.png "openPDC_Manager, ManageOutputStreams, Advanced Properties")]()
 
 ### Test the Output Stream with PMU Connection Tester on the `OPDC-01` Server
 
@@ -398,16 +398,16 @@ C:\Users\Administrator> ping time.nist.gov
     - Select the *UDP* tab in the *Connection Parameters*
         - Set the *Local Port* value to `8800` (to match the openPDC Output Stream's *UDP Channel* Port#)
         - Click the *Receive From* link and set *Use Specific Source IP* value to `192.168.1.110` (the `OPDC-01` Server's IPv4 Address)
-            - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_01A.png)]()
+            - [![](Developer_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_01A.png)]()
     - In the *Protocol* tab
         - Select the `IEEE C37.118.2005` protocol
         - Click the *Configure Alternate Command Channel* link 
             - Set the *Tcp Host IP* value to `192.168.1.110`
             - Set the *Port* value to `8900`
             - Clear the *Not defined* checkbox
-            - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_02A.png)]()
+            - [![](Developer_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_02A.png)]()
     - Click the *Connect* button
-    - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStreamTest_01.png "PMU Connection Tester, openPDC TestStream Test 1")]()
+    - [![](Developer_Exercises.files/PMUConnectionTester_openPDC_TestStreamTest_01.png "PMU Connection Tester, openPDC TestStream Test 1")]()
 
 ### Configure the Windows Firewall on the `OPDC-01` Server for the Output Stream TCP Port 8900 and UDP Ports 8800 to 8809
 
@@ -424,7 +424,7 @@ C:\Users\Administrator> ping time.nist.gov
     - *Profile* = Check all profiles.  Note: this exercise needs only the **Private** profile checked
     - *Name* = **openPDC Output Stream TCP 8900**.  Note: this can be any name you want
 6. Make sure the new **openPDC Output Stream TCP 8900* *Inbound Rule* is *Enabled* and open it up to review its properties
-    - [![](Development_Exercises.files/Firewall_Inbound_Rule_TCP8900.png "openPDC Output Stream TCP 8900")]()
+    - [![](Developer_Exercises.files/Firewall_Inbound_Rule_TCP8900.png "openPDC Output Stream TCP 8900")]()
 7. Create a new Inbound Rule using the *New Inbound Rule Wizard*
     - *Rule Type* = **Port**
     - *Protocol and Ports* = **UDP** and *Specific local ports* = **`8800-8809`** = a range of 10 ports starting at port# 8800
@@ -432,7 +432,7 @@ C:\Users\Administrator> ping time.nist.gov
     - *Profile* = Check all profiles.  Note: this exercise needs only the **Private** profile checked
     - *Name* = **openPDC Output Stream UDP 8800**.  Note: this can be any name you want
 8. Make sure the new **openPDC Output Stream UDP 8800* *Inbound Rule* is *Enabled* and open it up to review its properties
-    - [![](Development_Exercises.files/Firewall_Inbound_Rule_UDP8800.png "openPDC Output Stream UDP 8800")]()
+    - [![](Developer_Exercises.files/Firewall_Inbound_Rule_UDP8800.png "openPDC Output Stream UDP 8800")]()
 
 ### Test the Output Stream over the Network with PMU Connection Tester
 
@@ -447,23 +447,23 @@ C:\Users\Administrator> ping time.nist.gov
     - Select the *UDP* tab in the *Connection Parameters*
         - Set the *Local Port* value to `8801` (to match the openPDC Output Stream's *UDP Channel* Port#)
         - Click the *Receive From* link and set *Use Specific Source IP* value to `192.168.1.110` (the `OPDC-01` Server's IPv4 Address)
-            - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_01B.png)]()
+            - [![](Developer_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_01B.png)]()
     - In the *Protocol* tab
         - Select the `IEEE C37.118.2005` protocol
         - Click the *Configure Alternate Command Channel* link 
             - Set the *Tcp Host IP* value to `192.168.1.110`
             - Set the *Port* value to `8900`
             - Clear the *Not defined* checkbox
-            - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_02B.png)]()
+            - [![](Developer_Exercises.files/PMUConnectionTester_openPDC_TestStream_Config_02B.png)]()
     - Click the *Connect* button
-    - [![](Development_Exercises.files/PMUConnectionTester_openPDC_TestStreamTest_02.png "PMU Connection Tester, openPDC TestStream Test 2")]()
+    - [![](Developer_Exercises.files/PMUConnectionTester_openPDC_TestStreamTest_02.png "PMU Connection Tester, openPDC TestStream Test 2")]()
 2. If you get an error trying to connect and stream data, check the `OPDC-01` Server and make sure PMU Connection Tester is not still connected to the Output Stream.  If it is, then click *Disconnect* and try this step again.
 
 ---
 
 ## Exercise Conclusion
 
- - [![](Development_Exercises.files/openPDCManager_PMUConnectionTester_SideBySide.png "openPDC and PMU Connection Tester, side by side TESTSTREAM, 150 points")]()
+ - [![](Developer_Exercises.files/openPDCManager_PMUConnectionTester_SideBySide.png "openPDC and PMU Connection Tester, side by side TESTSTREAM, 150 points")]()
 
 ---
 
