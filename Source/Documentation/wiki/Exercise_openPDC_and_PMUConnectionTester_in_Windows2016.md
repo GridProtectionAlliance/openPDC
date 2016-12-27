@@ -1,8 +1,8 @@
 [![The Open Source Phasor Data Concentrator](openPDC_Logo.png)](openPDC_Home.md "The Open Source Phasor Data Concentrator")
 
-|   |   |   |   |   |
-|---|---|---|---|---|
-| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
+|   |   |   |   |   |   |
+|---|---|---|---|---|---|
+| **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Exercises](Development_Exercises.md)** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
 ***This document is an exercise procedure for setting up and testing concepts.***
 
@@ -17,24 +17,24 @@ This is *not a production deployment configuration*.  Production deployments nee
 - [Platform](#platform)
     - [Platform Description](#platform-description)
     - [Platform Configuration](#platform-configuration)
-        - [GPA-HOST = Platform Host Server](#gpa-host--platform-host-server)
-        - [OPDC-01 = openPDC Server virtual machine](#opdc-01--openpdc-server-virtual-machine)
-        - [PMU-TESTER = PMU Connection Tester Workstation virtual machine](#pmu-tester--pmu-connection-tester-workstation-virtual-machine)
+        - [`GPA-HOST` Platform Host Server](#gpa-host-platform-host-server)
+        - [`OPDC-01` openPDC Server virtual machine](#opdc-01-openpdc-server-virtual-machine)
+        - [`PMU-TESTER` PMU Connection Tester Workstation virtual machine](#pmu-tester-pmu-connection-tester-workstation-virtual-machine)
     - [Host Server Setup](#host-server-setup)
         - [DNS Configuration](#dns-configuration)
         - [Hyper-V Virtual Machines Setup](#hyper-v-virtual-machines-setup)
             - [IMPORTANT: PASSWORDS](#important-passwords)
-    - [OPDC-01 Server, Initial Setup](#opdc-01-server-initial-setup)
-    - [PMU-TESTER Workstation, Initial Setup](#pmu-tester-workstation-initial-setup)
-- [OPDC-01 Server, GPA Software Installation](#opdc-01-server-gpa-software-installation)
-    - [Create a Shared Folder on the OPDC-01 Server for Receiving Software and Files](#create-a-shared-folder-on-the-opdc-01-server-for-receiving-software-and-files)
+    - [`OPDC-01` Server, Initial Setup](#opdc-01-server-initial-setup)
+    - [`PMU-TESTER` Workstation, Initial Setup](#pmu-tester-workstation-initial-setup)
+- [`OPDC-01` Server, GPA Software Installation](#opdc-01-server-gpa-software-installation)
+    - [Create a Shared Folder on the `OPDC-01` Server for Receiving Software and Files](#create-a-shared-folder-on-the-opdc-01-server-for-receiving-software-and-files)
     - [Connect the `PMU-TESTER` Workstation to the `OPDC-01` and Map a Drive to the `\\OPDC-01\GPA.shared` Folder](#connect-the-pmu-tester-workstation-to-the-opdc-01-and-map-a-drive-to-the-opdc-01gpashared-folder)
     - [Download the openPDC Software and Save it to the `GPA.shared` Shared Folder on `OPDC-01`](#download-the-openpdc-software-and-save-it-to-the-gpashared-shared-folder-on-opdc-01)
     - [Install the openPDC Software on the `OPDC-01` Server](#install-the-openpdc-software-on-the-opdc-01-server)
     - [Configuration Setup Utility](#configuration-setup-utility)
     - [Download the PMU Connection Tester Software and Save it to the `GPA.shared` Folder](#download-the-pmu-connection-tester-software-and-save-it-to-the-gpashared-folder)
     - [Install the PMU Connection Tester Software on the `OPDC-01` Server](#install-the-pmu-connection-tester-software-on-the-opdc-01-server)
-- [PMU-TESTER Workstation, GPA Software Installation](#pmu-tester-workstation-gpa-software-installation)
+- [`PMU-TESTER` Workstation, GPA Software Installation](#pmu-tester-workstation-gpa-software-installation)
     - [Create a Folder on the PMU-TESTER Workstation for Receiving Software and Files](#create-a-folder-on-the-pmu-tester-workstation-for-receiving-software-and-files)
     - [Download the PMU Connection Tester Software and Save it to the `GPA.shared` Folder](#download-the-pmu-connection-tester-software-and-save-it-to-the-gpashared-folder)
     - [Install the PMU Connection Tester Software on the `PMU-TESTER` Workstation](#install-the-pmu-connection-tester-software-on-the-pmu-tester-workstation)
@@ -57,21 +57,21 @@ The virtual machines will be created with a clean operating system and software 
 
 ### Platform Configuration
 
-#### **GPA-HOST** = Platform Host Server
+#### **`GPA-HOST`** Platform Host Server
     - Windows Server 2012 R2 Standard with Hyper-V for hosting virtual machines
     - DNS Server
     - CPU = AMD Phenom X4, 3.2GHz
     - RAM = 16GB, 1600 MHz, non-ECC
     - Ethernet with Internet access
 
-#### **OPDC-01** = openPDC Server virtual machine
+#### **`OPDC-01`** openPDC Server virtual machine
     - OS = Windows Server 2016 Standard
     - Software = **GPA Software**
     - CPU = 2 virtual cores
     - RAM = 4096MB standard (not dynamic)
     - VHD = 127GB virtual hard drive
 
-#### **PMU-TESTER** = PMU Connection Tester Workstation virtual machine
+#### **`PMU-TESTER`** PMU Connection Tester Workstation virtual machine
     - OS = Windows 10 Enterprise 2016 LTSB
     - Software = **GPA Software**
     - Environment for developing, debugging, and documenting GPA Software
@@ -109,7 +109,7 @@ In Production Deployments, complex passwords are desireable.  However, in these 
 
 ---
 
-### OPDC-01 Server, Initial Setup
+### `OPDC-01` Server, Initial Setup
 
 - 1. Download the `windows_server_2016.iso` file to the [`GPA-HOST`](#gpa-host--platform-host-server) server
 - 2. On the [`GPA-HOST`](#gpa-host--platform-host-server) server: create the [`OPDC-01`](#opdc-01--openpdc-server-virtual-machine) openPDC Server virtual machine.
@@ -164,10 +164,10 @@ C:\Users\Administrator> ping time.nist.gov
 
 ---
 
-### PMU-TESTER Workstation, Initial Setup
+### `PMU-TESTER` Workstation, Initial Setup
 
 - 1. Download the `windows_10_enterprise_2016_ltsb.iso` file to the [`GPA-HOST`](#gpa-host--platform-host-server) server
-- 2. On the [`GPA-HOST`](#gpa-host--platform-host-server) server: create the [`PMU-TESTER`](#pmu-tester--pmu-connection-tester-workstation-virtual-machine) openPDC Server virtual machine.
+- 2. On the [`GPA-HOST`](#gpa-host--platform-host-server) server: create the [`PMU-TESTER`](#pmu-tester--pmu-connection-tester-workstation-virtual-machine) Workstation virtual machine.
     - Configure [`PMU-TESTER's`](#pmu-tester--pmu-connection-tester-workstation-virtual-machine) Hyper-V *Settings* as described in the earlier [Platform Configuration](#platform-configuration) section and assign the `windows_10_enterprise_2016_ltsb.iso` image file to its DVD drive.
 - 3. Start the `PMU-TESTER` virtual machine and run the Windows installation.  
     - In the *Get going fast* screen, press the "Customize" button.
@@ -224,14 +224,14 @@ C:\Users\Administrator> ping time.nist.gov
 
 ---
 
-## OPDC-01 Server, GPA Software Installation
+## `OPDC-01` Server, GPA Software Installation
 
 1.  Start the `OPDC-01` Server if it is not already running
     - Sign in with the `Administrator` account
 2.  Start the `PMU-TESTER` Workstation if it is not already running
     - Sign in with the `tangent` account
 
-### Create a Shared Folder on the OPDC-01 Server for Receiving Software and Files
+### Create a Shared Folder on the `OPDC-01` Server for Receiving Software and Files
 
 **Do the following tasks in the `OPDC-01` Server:**
 
@@ -324,12 +324,12 @@ C:\Users\Administrator> ping time.nist.gov
 
 ---
 
-## PMU-TESTER Workstation, GPA Software Installation
+## `PMU-TESTER` Workstation, GPA Software Installation
 
 1.  Start the `PMU-TESTER` Workstation if it is not already running
     - Sign in with the `tangent` account
 
-### Create a Folder on the PMU-TESTER Workstation for Receiving Software and Files
+### Create a Folder on the `PMU-TESTER` Workstation for Receiving Software and Files
 
 **Do the following tasks in the `PMU-TESTER` Workstation:**
 
@@ -467,7 +467,8 @@ C:\Users\Administrator> ping time.nist.gov
 
 ---
 
-Dec 19, 2016 - Created by [aj](https://github.com/ajstadlin)
+Dec 19, 2016 - Created by [aj](https://github.com/ajstadlin), version 1.0
+Dec 21, 2016 - Updated by [aj](https://github.com/ajstadlin), version 1.1
 
 ---
 
