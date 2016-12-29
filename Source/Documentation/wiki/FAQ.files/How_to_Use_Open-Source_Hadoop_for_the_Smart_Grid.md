@@ -6,9 +6,11 @@
 
 ***This is an archival document and its contents are no longer maintained or updated.***
 
-# [How to Use Open-Source Hadoop for the Smart Grid](https://gigaom.com/2009/06/02/how-to-use-open-source-hadoop-for-the-smart-grid/ "https://gigaom.com/2009/06/02/how-to-use-open-source-hadoop-for-the-smart-grid/")
+# How to Use Open-Source Hadoop for the Smart Grid
 
 ### Document by Katie Fehrenbacher Jun 2, 2009 - 9:00 PM CST on [GIGAOM](https://gigaom.com/)
+
+[How to Use Open-Source Hadoop for the Smart Grid](https://gigaom.com/2009/06/02/how-to-use-open-source-hadoop-for-the-smart-grid/ "https://gigaom.com/2009/06/02/how-to-use-open-source-hadoop-for-the-smart-grid/")
 
 ---
 
