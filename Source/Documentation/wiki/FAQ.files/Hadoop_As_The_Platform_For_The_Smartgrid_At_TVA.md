@@ -8,9 +8,11 @@
 
 
 
-# [Cloudera Hadoop as the Platform for the Smartgrid at TVA](http://www.slideshare.net/cloudera/hadoop-as-the-platform-for-the-smartgrid-at-tva "http://www.slideshare.net/cloudera/hadoop-as-the-platform-for-the-smartgrid-at-tva")
+# Cloudera Hadoop as the Platform for the Smartgrid at TVA
 
 ### Cloudera's Josh Paterson presented how Hadoop is used as the platform for smartgrid technologies at the Tennessee Valley Authority.
+
+[Cloudera Hadoop as the Platform for the Smartgrid at TVA](http://www.slideshare.net/cloudera/hadoop-as-the-platform-for-the-smartgrid-at-tva "http://www.slideshare.net/cloudera/hadoop-as-the-platform-for-the-smartgrid-at-tva")
 
 ---
 
