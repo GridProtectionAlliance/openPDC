@@ -6,7 +6,9 @@
 
 ***This is an archival document and its contents are no longer maintained or updated.***
 
-# [OSCON Data 2011 - Lumberyard](http://www.slideshare.net/jpatanooga/oscon-data-2011-lumberyard)
+# OSCON Data 2011 - Lumberyard
+
+[OSCON Data 2011 - Lumberyard](http://www.slideshare.net/jpatanooga/oscon-data-2011-lumberyard)
 
 ### Document by JPatterson, Sep 29, 2011
 
