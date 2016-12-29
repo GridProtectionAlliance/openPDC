@@ -6,7 +6,9 @@
 
 ***This is an archival document and its contents are no longer maintained or updated.***
 
-# [The Smartgrid Goes Open Source](http://web.archive.org/web/20101220030539/http://jpatterson.floe.tv/index.php/2009/10/29/the-smartgrid-goes-open-source "Internet Archive WayBack Machine")
+# The Smartgrid Goes Open Source
+
+[The Smartgrid Goes Open Source](http://web.archive.org/web/20101220030539/http://jpatterson.floe.tv/index.php/2009/10/29/the-smartgrid-goes-open-source "Internet Archive WayBack Machine")
 
 ### Document by JPatterson, Oct 29, 2009
 
