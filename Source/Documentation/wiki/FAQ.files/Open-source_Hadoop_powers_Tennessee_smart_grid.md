@@ -8,7 +8,9 @@
 
 ---
 
-# [Open-source Hadoop powers Tennessee smart grid](https://www.cnet.com/news/open-source-hadoop-powers-tennessee-smart-grid/)
+# Open-source Hadoop powers Tennessee smart grid
+
+[Open-source Hadoop powers Tennessee smart grid](https://www.cnet.com/news/open-source-hadoop-powers-tennessee-smart-grid/)
 
 ##### Open-source data processing software is monitoring and managing massive amounts of data for the Tennessee Valley Authority.
 
