@@ -109,7 +109,7 @@
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Log Viewer.exe" />
+    <Content Include="LogFileViewer.exe" />
     <Content Include="NoInetFixUtil.exe" />
     <Content Include="openPDCSetupBanner.bmp" />
     <Content Include="openPDCSetupDialog.bmp" />
