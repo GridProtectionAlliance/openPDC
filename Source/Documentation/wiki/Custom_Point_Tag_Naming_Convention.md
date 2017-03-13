@@ -10,7 +10,7 @@ As of version 2.0.166, the openPDC now supports custom point tag naming conventi
 
 As an example, here is a possible tag naming convention expression:
 
-`{CompanyAcronym}_{DeviceAcronym}[?{SignalType.Source}=Phasor[-{SignalType.Suffix}{SignalIndex}]]:[?{Phase}=A[PhaseA_]][?{Phase}=B[PhaseB_]][?{Phase}=C[PhaseC_]][?{Phase}=&#43;[PosSeq_]][?{Phase}=-[NegSeq_]][?{Phase}=0[ZeroSeq_]]{SignalType.LongAcronym}[?{SignalType.Source}!=Phasor[?{SignalIndex}!=-1[{SignalIndex}]]]`
+`{CompanyAcronym}_{DeviceAcronym}[?{SignalType.Source}=Phasor[-{SignalType.Suffix}{SignalIndex}]]:[?{Phase}=A[PhaseA_]][?{Phase}=B[PhaseB_]][?{Phase}=C[PhaseC_]][?{Phase}=+;[PosSeq_]][?{Phase}=-[NegSeq_]][?{Phase}=0[ZeroSeq_]]{SignalType.LongAcronym}[?{SignalType.Source}!=Phasor[?{SignalIndex}!=-1[{SignalIndex}]]]`
 
 Here are examples that would come from the expression above assuming a device name of SHELBY:
 
