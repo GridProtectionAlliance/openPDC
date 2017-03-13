@@ -36,7 +36,7 @@ namespace ConfigurationSetupUtility.Screens
         #region [ Members ]
 
         // Fields
-        private IScreen m_nextScreen;
+        private readonly IScreen m_nextScreen;
         private Dictionary<string, object> m_state;
 
         #endregion

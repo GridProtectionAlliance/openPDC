@@ -24,6 +24,7 @@
 //******************************************************************************************************
 
 using System;
+using System.ComponentModel;
 using System.Windows;
 using ConfigurationSetupUtility.Screens;
 
@@ -37,7 +38,7 @@ namespace ConfigurationSetupUtility
         #region [ Members ]
 
         // Fields
-        private ScreenManager m_screenManager;
+        private readonly ScreenManager m_screenManager;
 
         #endregion
 
@@ -100,7 +101,7 @@ namespace ConfigurationSetupUtility
         }
 
         // Occurs when an attempt is made to close the window.
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
             if (m_screenManager.CurrentScreen.NextScreen != null)
             {

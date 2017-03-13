@@ -40,7 +40,7 @@ namespace ConfigurationSetupUtility.Screens
 
         // Fields
 
-        private IScreen m_nextPage;
+        private readonly IScreen m_nextPage;
         private Dictionary<string, object> m_state;
 
         #endregion
