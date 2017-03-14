@@ -25,8 +25,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -117,7 +119,7 @@ namespace ConfigurationSetupUtility.Screens
 
         #region [ Methods ]
 
-        private void hyperlinkHelp_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void hyperlinkHelp_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("http://openpdc.codeplex.com/documentation/");
         }

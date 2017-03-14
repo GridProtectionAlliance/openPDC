@@ -29,6 +29,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -49,7 +50,7 @@ namespace ConfigurationSetupUtility.Screens
         #region [ Members ]
 
         // Fields
-        private SqlServerSetup m_sqlServerSetup;
+        private readonly SqlServerSetup m_sqlServerSetup;
         private Dictionary<string, object> m_state;
         private Button m_advancedButton;
 
@@ -326,10 +327,10 @@ namespace ConfigurationSetupUtility.Screens
                 m_databaseNameTextBox.Text = migrate ? "openPDC" + App.DatabaseVersionSuffix : "openPDC";
 
                 // When using an existing database as-is, read existing connection settings out of the configuration file
-                string configFile = FilePath.GetAbsolutePath("openPDC.exe.config");
+                string configFile = FilePath.GetAbsolutePath(App.ApplicationConfig);//"openPDC.exe.config"
 
                 if (!File.Exists(configFile))
-                    configFile = FilePath.GetAbsolutePath("openPDCManager.exe.config");
+                    configFile = FilePath.GetAbsolutePath(App.ManagerConfig);//"openPDCManager.exe.config"
 
                 if (existing && !migrate && File.Exists(configFile))
                 {

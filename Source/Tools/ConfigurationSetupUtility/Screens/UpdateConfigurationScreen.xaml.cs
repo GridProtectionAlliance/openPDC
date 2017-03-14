@@ -39,7 +39,7 @@ namespace ConfigurationSetupUtility.Screens
 
         // Fields
 
-        private DataMigrationScreen m_dataMigrationScreen;
+        private readonly DataMigrationScreen m_dataMigrationScreen;
         private Dictionary<string, object> m_state;
 
         #endregion

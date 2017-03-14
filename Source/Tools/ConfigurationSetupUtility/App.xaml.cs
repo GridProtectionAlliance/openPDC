@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Security.Principal;
+using System.Windows;
 using GSF.IO;
 using GSF.Security.Cryptography;
 using GSF.Windows.ErrorManagement;
@@ -37,13 +38,23 @@ namespace ConfigurationSetupUtility
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App
+    public partial class App : Application
     {
         #region [ Members ]
 
         // Constants
         public const CipherStrength CryptoStrength = CipherStrength.Aes256;
         public const string CipherLookupKey = "0679d9ae-aca5-4702-a3f5-604415096987";
+
+        public const string ApplicationExe = "openPDC.exe";
+        public const string ApplicationConfig = "openPDC.exe.config";
+        public const string Manager = "openPDCManager";
+        public const string ManagerExe = "openPDCManager.exe";
+        public const string ManagerConfig = "openPDCManager.exe.config";
+        public const string BaseSqliteConfig = "openPDC.db";
+        public readonly static string SqliteConfigv2 = "openPDC" + DatabaseVersionSuffix + ".db";
+        public const string SqliteSampleData = "openPDC-SampleDataSet.db";
+        public const string SqliteInitialData = "openPDC-InitialDataSet.db";
 
         private readonly ErrorLogger m_errorLogger;
         private readonly Func<string> m_defaultErrorText;

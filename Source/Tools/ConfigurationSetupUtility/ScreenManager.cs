@@ -36,10 +36,10 @@ namespace ConfigurationSetupUtility
         #region [ Members ]
 
         // Fields
-        private Window m_mainWindow;
+        private readonly Window m_mainWindow;
         private IScreen m_currentScreen;
-        private Stack<IScreen> m_history;
-        private Dictionary<string, object> m_state;
+        private readonly Stack<IScreen> m_history;
+        private readonly Dictionary<string, object> m_state;
 
         #endregion
 
