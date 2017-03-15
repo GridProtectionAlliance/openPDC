@@ -493,6 +493,9 @@ namespace ConfigurationSetupUtility.Screens
         // Occurs when the user chooses to not use pass-through authentication.
         private void UseIntegratedSecurity_Unchecked(object sender, RoutedEventArgs e)
         {
+            if (m_state != null)
+                m_state["useSqlServerIntegratedSecurity"] = false;
+
             m_userNameLabel.IsEnabled = true;
             m_passwordLabel.IsEnabled = true;
             m_adminUserNameTextBox.IsEnabled = true;
