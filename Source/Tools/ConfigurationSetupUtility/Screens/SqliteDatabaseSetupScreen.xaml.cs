@@ -263,11 +263,11 @@ namespace ConfigurationSetupUtility.Screens
                 if (!Directory.Exists(sqliteDatabaseFilePath))
                     Directory.CreateDirectory(sqliteDatabaseFilePath);
 
-                m_sqliteDatabaseFilePathTextBox.Text = Path.Combine(sqliteDatabaseFilePath, migrate ? App.SqliteConfigv2 : App.BaseSqliteConfig); //"openPDC" + App.DatabaseVersionSuffix + ".db" : "openPDC.db");
+                m_sqliteDatabaseFilePathTextBox.Text = Path.Combine(sqliteDatabaseFilePath, migrate ? App.SqliteConfig : App.BaseSqliteConfig); //"openPDC" + App.DatabaseVersionSuffix + ".db" : "openPDC.db");
             }
             catch
             {
-                m_sqliteDatabaseFilePathTextBox.Text = migrate ? App.SqliteConfigv2 : App.BaseSqliteConfig; //"openPDC" + App.DatabaseVersionSuffix + ".db" : "openPDC.db";
+                m_sqliteDatabaseFilePathTextBox.Text = migrate ? App.SqliteConfig : App.BaseSqliteConfig; //"openPDC" + App.DatabaseVersionSuffix + ".db" : "openPDC.db";
             }
 
             if (!m_state.ContainsKey("sqliteDatabaseFilePath"))

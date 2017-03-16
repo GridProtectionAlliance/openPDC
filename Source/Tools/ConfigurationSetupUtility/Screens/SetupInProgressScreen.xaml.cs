@@ -1745,12 +1745,12 @@ namespace ConfigurationSetupUtility.Screens
 
             AppendStatusMessage("Attempting to modify configuration files...");
 
-            configFile = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
+            configFile = Directory.GetCurrentDirectory() + "\\" + App.ApplicationConfig; //openPDC.exe.config");
 
             if (applyChangesToService && File.Exists(configFile))
                 ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted, true);
 
-            configFile = Directory.GetCurrentDirectory() + "\\openPDCManager.exe.config";
+            configFile = Directory.GetCurrentDirectory() + "\\" + App.ManagerConfig; //openPDCManager.exe.config";
 
             if (applyChangesToLocalManager && File.Exists(configFile))
                 ModifyConfigFile(configFile, connectionString, dataProviderString, encrypted, false);

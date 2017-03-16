@@ -28,12 +28,15 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using GSF.Data;
+using Microsoft.Win32;
 using GSF;
+using GSF.IO;
 
 namespace ConfigurationSetupUtility
 {

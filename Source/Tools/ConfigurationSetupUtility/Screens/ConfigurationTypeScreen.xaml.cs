@@ -63,7 +63,7 @@ namespace ConfigurationSetupUtility.Screens
                 // Determine if the openPDC is installed in this folder (could be stand-alone debug application or service), we check exe
                 // instead of config file since config file can remain between installations. Since only the openPDC can be setup with a
                 // XML or web service configuration, we disable these radio buttons for openPDC Manager only installations.
-                string exeFileName = Directory.GetCurrentDirectory() + "\\openPDC.exe";
+                string exeFileName = Directory.GetCurrentDirectory() + "\\" + App.ApplicationExe; //openPDC.exe";
 
                 if (!File.Exists(exeFileName))
                 {

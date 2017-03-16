@@ -52,7 +52,7 @@ namespace ConfigurationSetupUtility
         public const string ManagerExe = "openPDCManager.exe";
         public const string ManagerConfig = "openPDCManager.exe.config";
         public const string BaseSqliteConfig = "openPDC.db";
-        public readonly static string SqliteConfigv2 = "openPDC" + DatabaseVersionSuffix + ".db";
+        public readonly static string SqliteConfig = "openPDC" + DatabaseVersionSuffix + ".db";
         public const string SqliteSampleData = "openPDC-SampleDataSet.db";
         public const string SqliteInitialData = "openPDC-InitialDataSet.db";
 

@@ -240,7 +240,7 @@ namespace ConfigurationSetupUtility.Screens
                         // Remove old configuration file settings
                         try
                         {
-                            ConfigurationFile openPDCConfig = ConfigurationFile.Open("openPDC.exe.config");
+                            ConfigurationFile openPDCConfig = ConfigurationFile.Open(App.ApplicationConfig); //"openPDC.exe.config");
 
                             // Some of the crypto settings elements were renamed for consistency, remove the old ones
                             CategorizedSettingsElementCollection cryptoSection = openPDCConfig.Settings["cryptographyServices"];
@@ -355,7 +355,7 @@ namespace ConfigurationSetupUtility.Screens
 
         private void ValidateGrafanaBindings()
         {
-            string configFileName = Path.Combine(Directory.GetCurrentDirectory(), "openPDC.exe.config");
+            string configFileName = Path.Combine(Directory.GetCurrentDirectory(), App.ApplicationConfig); //"openPDC.exe.config");
 
             if (!File.Exists(configFileName))
                 return;
@@ -462,7 +462,7 @@ namespace ConfigurationSetupUtility.Screens
 
         private void ValidateInternalDataPublisher()
         {
-            string configFile = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
+            string configFile = Directory.GetCurrentDirectory() + "\\" + App.ApplicationConfig; //openPDC.exe.config");
             string configText = File.ReadAllText(configFile);
             string replacedConfigText = configText.Replace("<datapublisher>", "<internaldatapublisher>").Replace("</datapublisher>", "</internaldatapublisher>");
             File.WriteAllText(configFile, replacedConfigText);

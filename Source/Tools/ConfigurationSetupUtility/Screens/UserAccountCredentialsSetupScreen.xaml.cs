@@ -170,12 +170,12 @@ namespace ConfigurationSetupUtility.Screens
                         string configFile, passwordRequirementsRegex = null, passwordRequirementsError = null;
 
                         // Attempt to use the openPDC config file first
-                        configFile = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
+                        configFile = Directory.GetCurrentDirectory() + "\\" + App.ApplicationConfig; //"openPDC.exe.config");
 
                         if (!File.Exists(configFile) || !TryLoadPasswordRequirements(configFile, out passwordRequirementsRegex, out passwordRequirementsError))
                         {
                             // Attempt to use the openPDC Manager config file second
-                            configFile = Directory.GetCurrentDirectory() + "\\openPDCManager.exe.config";
+                            configFile = Directory.GetCurrentDirectory() + "\\" + App.ManagerConfig; //openPDCManager.exe.config";
 
                             if (File.Exists(configFile))
                                 TryLoadPasswordRequirements(configFile, out passwordRequirementsRegex, out passwordRequirementsError);

@@ -227,9 +227,9 @@ namespace ConfigurationSetupUtility.Screens
             }
 
             if (applyChangesToService)
-                nodeId = GetNodeIdFromConfigFile("openPDC.exe.config");
+                nodeId = GetNodeIdFromConfigFile(App.ApplicationConfig); //"openPDC.exe.config");
             else if (applyChangesToLocalManager)
-                nodeId = GetNodeIdFromConfigFile("openPDCManager.exe.config");
+                nodeId = GetNodeIdFromConfigFile(App.ManagerConfig); //"openPDCManager.exe.config");
             else
                 nodeId = Guid.Empty;
 
@@ -241,10 +241,10 @@ namespace ConfigurationSetupUtility.Screens
             // If the configuration file node is not already in the list,
             // add it as a possible selection in case the user does not wish to change it.
             if (applyChangesToService)
-                TryAddNodeInfo("openPDC.exe.config");
+                TryAddNodeInfo(App.ApplicationConfig); //"openPDC.exe.config");
 
             if (applyChangesToLocalManager)
-                TryAddNodeInfo("openPDCManager.exe.config");
+                TryAddNodeInfo(App.ManagerConfig); //"openPDCManager.exe.config");
 
             if (m_nodeList.Count == 1)
             {
@@ -374,7 +374,7 @@ namespace ConfigurationSetupUtility.Screens
         private IDbConnection GetConnectionFromConfigFile()
         {
             IDbConnection connection = null;
-            string configFileName = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
+            string configFileName = Directory.GetCurrentDirectory() + "\\" + App.ApplicationConfig; //openPDC.exe.config";
             XmlDocument doc = new XmlDocument();
             IEnumerable<XmlNode> systemSettings;
             XmlNode connectionNode, dataProviderNode;
@@ -501,7 +501,7 @@ namespace ConfigurationSetupUtility.Screens
         // Gets the company acronym that is currently stored in the config file.
         private string GetCompanyNameFromConfigFile()
         {
-            return GetValueOfSystemSetting("openPDC.exe.config", "CompanyName");
+            return GetValueOfSystemSetting(App.ApplicationConfig, "CompanyName"); //"openPDC.exe.config", "CompanyName");
         }
 
         // Gets the value of the config file system setting with the given name.

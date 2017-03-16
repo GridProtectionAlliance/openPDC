@@ -24,8 +24,6 @@
 //
 //******************************************************************************************************
 
-using GSF;
-using GSF.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -34,6 +32,8 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using GSF;
+using GSF.Data;
 
 namespace ConfigurationSetupUtility
 {

@@ -218,7 +218,7 @@ namespace ConfigurationSetupUtility.Screens
                     m_oldDataProviderString = null;
 
                     // Attempt to use the openPDC config file first
-                    configFile = Directory.GetCurrentDirectory() + "\\openPDC.exe.config";
+                    configFile = Directory.GetCurrentDirectory() + "\\" + App.ApplicationConfig;//"\\openPDC.exe.config";
 
                     if (File.Exists(configFile))
                     {
@@ -227,7 +227,7 @@ namespace ConfigurationSetupUtility.Screens
                     else
                     {
                         // Attempt to use the openPDC Manager config file second
-                        configFile = Directory.GetCurrentDirectory() + "\\openPDCManager.exe.config";
+                        configFile = Directory.GetCurrentDirectory() + "\\" + App.ManagerConfig;//"\\openPDCManager.exe.config";
 
                         if (File.Exists(configFile))
                         {
