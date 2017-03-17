@@ -31,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security;
+using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
@@ -44,7 +45,7 @@ namespace ConfigurationSetupUtility.Screens
     /// <summary>
     /// Interaction logic for UserAccountCredentialsSetupScreen.xaml
     /// </summary>
-    public partial class UserAccountCredentialsSetupScreen : IScreen
+    public partial class UserAccountCredentialsSetupScreen : UserControl, IScreen
     {
         #region [ Members ]
 
@@ -215,7 +216,7 @@ namespace ConfigurationSetupUtility.Screens
 
                         if (password != confirmPassword)
                         {
-                            MessageBox.Show("Password does not match the cofirm password", "Database Authentication User Setup Error");
+                            MessageBox.Show("Password does not match the confirm password", "Database Authentication User Setup Error");
                             DbUserConfirmPasswordTextBox.Focus();
                             return false;
                         }
@@ -356,7 +357,7 @@ namespace ConfigurationSetupUtility.Screens
                 {
                     loginID = ToLoginID(userName);
 
-                    if (string.Compare(Thread.CurrentPrincipal.Identity.Name, loginID, true) == 0 && Thread.CurrentPrincipal.Identity.IsAuthenticated)
+                    if (string.Compare(Thread.CurrentPrincipal.Identity.Name, loginID, StringComparison.OrdinalIgnoreCase) == 0 && Thread.CurrentPrincipal.Identity.IsAuthenticated)
                         return true;
                 }
 

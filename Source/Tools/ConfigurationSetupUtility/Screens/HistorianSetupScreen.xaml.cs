@@ -147,10 +147,7 @@ namespace ConfigurationSetupUtility.Screens
             }
             catch (Exception ex)
             {
-                LogFile logger = new LogFile();
-                logger.FileName = FilePath.GetAbsolutePath("ErrorLog.txt");
-                logger.WriteTimestampedLine(ErrorLogger.GetExceptionInfo(ex, false));
-                logger.Dispose();
+                ((App)Application.Current).ErrorLogger.Log(ex);
             }
 
             if (m_historianAdapters.Count > 0)
