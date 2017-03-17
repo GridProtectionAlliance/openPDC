@@ -91,7 +91,7 @@
   <ItemGroup>
     <ProjectReference Include="..\openPDC\openPDC.csproj">
       <Project>{0bf2447e-252d-4712-b154-e350af463081}</Project>
-      <Name>openPDC %28Applications\openPDC\openPDC%29</Name>
+      <Name>openPDC</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
