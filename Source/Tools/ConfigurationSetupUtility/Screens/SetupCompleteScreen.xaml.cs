@@ -234,8 +234,11 @@ namespace ConfigurationSetupUtility.Screens
                         // Always make sure that all three needed roles are available for each defined node(s) in the database
                         ValidateSecurityRoles();
 
-                        // Convert node table to new format (i.e., columns to connection settings string), if nedded
-                        ConvertNodeTableFormat();
+                        if (migrate)
+                        {
+                            // Convert node table to new format (i.e., columns to connection settings string), if nedded
+                            ConvertNodeTableFormat();
+                        }
 
                         // Remove old configuration file settings
                         try
