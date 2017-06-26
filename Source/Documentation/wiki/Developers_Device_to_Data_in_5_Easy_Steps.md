@@ -34,7 +34,7 @@ The first thing you need to do is create a console application in Microsoft Visu
 
 In order to get the code to run, you will need to add references to the openPDC assemblies. The following are detailed steps to guide you through the process.
 
-**Note**: In order to complete this step, you will need to [download the latest openPDC binaries](http://www.gridprotectionalliance.org/NightlyBuilds/openPDC/Beta-VS2012/Synchrophasor.Binaries.zip).
+**Note**: In order to complete this step, you will need to [download the latest openPDC binaries](http://www.gridprotectionalliance.org/NightlyBuilds/openPDC/Beta/Synchrophasor.Binaries.zip).
 
 1. In your project's Solution Explorer on the right, right-click "References", select "Add Reference...", then click the Browse button
 2. Navigate to "`BINARIESDIR\Applications\openPDC`" (`BINARIESDIR` is the directory where you extracted the openPDC binaries)
