@@ -31,17 +31,9 @@ namespace openPDCShell
     {
         static void Main(string[] args)
         {
-            try
-            {
-                ConsoleHost shellHost = new ConsoleHost(new ServiceHost());
-                shellHost.Run();
-                Environment.Exit(0);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Shell hosted service exception: {0}", ex.Message);
-                Environment.Exit(1);
-            }
+            ConsoleHost shellHost = new ConsoleHost(new ServiceHost());
+            shellHost.Run();
+            Environment.Exit(0);
         }
     }
 }
