@@ -22,12 +22,10 @@
 //******************************************************************************************************
 
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.ServiceProcess;
 using System.Windows.Forms;
 using GSF.Console;
-using GSF.IO;
+using GSF.TimeSeries;
 
 namespace openPDC
 {
@@ -81,45 +79,9 @@ namespace openPDC
             }
             else
             {
-                string shellHostedServiceName = host.ServiceName + "Shell.exe";
-                string shellHostedServiceFileName = FilePath.GetAbsolutePath(shellHostedServiceName);
-                string shellHostedServiceConfigFileName = FilePath.GetAbsolutePath(shellHostedServiceName + ".config");
-                string serviceConfigFileName = FilePath.GetAbsolutePath(host.ServiceName + ".exe.config");
-
-                try
-                {
-                    File.Copy(serviceConfigFileName, shellHostedServiceConfigFileName, true);
-#if MONO
-                    Process hostedServiceSession = Process.Start("mono", shellHostedServiceFileName);
-#else
-                    Process hostedServiceSession = Process.Start(shellHostedServiceFileName);
-#endif
-                    if ((object)hostedServiceSession != null)
-                    {
-                        hostedServiceSession.WaitForExit();
-
-                        try
-                        {
-                            File.Copy(shellHostedServiceConfigFileName, serviceConfigFileName, true);
-                        }
-                        catch
-                        {
-                            // Do not report exception if config file could not be updated
-                        }
-
-                        Environment.Exit(hostedServiceSession.ExitCode);
-                    }
-                    else
-                    {
-                        MessageBox.Show(string.Format("Failed to start \"{0}\" as a shell hosted service.", host.ServiceName));
-                        Environment.Exit(1);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(string.Format("Failed to start \"{0}\" as a shell hosted service: {1}", host.ServiceName, ex.Message));
-                    Environment.Exit(1);
-                }
+                ConsoleHost consoleHost = new ConsoleHost(host);
+                consoleHost.Run();
+                Environment.Exit(0);
             }
         }
     }
