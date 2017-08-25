@@ -27,7 +27,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -82,11 +81,9 @@ namespace openPDCManager
             Title = ((App)Application.Current).Title;
             TextBoxTitle.Text = AssemblyInfo.EntryAssembly.Title;
 
-            CommonFunctions.CurrentUser = Thread.CurrentPrincipal.Identity.Name;
-            CommonFunctions.CurrentPrincipal = Thread.CurrentPrincipal as SecurityPrincipal;
-
-            if (!string.IsNullOrEmpty(CommonFunctions.CurrentUser))
-                Title += " - " + SecurityProviderCache.CurrentProvider.UserData.LoginID;
+            CommonFunctions.CurrentUser = SecurityPrincipal.Identity.Name;
+            CommonFunctions.CurrentPrincipal = SecurityPrincipal;
+            Title += " - " + SecurityPrincipal.Identity.Provider.UserData.LoginID;
 
             ConfigurationFile configFile = ConfigurationFile.Current;
             CategorizedSettingsElementCollection configSettings = configFile.Settings["systemSettings"];
