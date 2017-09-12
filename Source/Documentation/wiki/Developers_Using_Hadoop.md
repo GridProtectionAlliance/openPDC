@@ -82,7 +82,10 @@ TestRecordReader.Reduce
 The MapClass has a single function called `map( &hellip; )` defined as:
 
 ```cs
+#(Hadoop 1.0)
 public void map(LongWritable key, StandardPointFile value, OutputCollector<IntWritable, StandardPointFile> output, Reporter reporter)
+#(Hadoop 2.0)
+public void map(LongWritable key, StandardPointFile value, Context context)
 ```
 
 This function defines the K1, V1 key-value pair that is fed to the map class as well as defines the K2, V2 key-value pair that is output as an intermediate value. These K2, V2 key-value pairs are then grouped by key to be fed to a reduce task.
@@ -105,9 +108,15 @@ In review, for time series data, we suggest that the user *maps* the data into a
 
 ## Execute the Map Reduce Job on the Hadoop cluster
 
-In order to execute a basic Hadoop job, the user needs access to a linux machine that is configured to launch Hadoop jobs. Once you have compiled your Map Reduce job into a jar file, move the jar file to the same directory that contains `hadoop-0.X.0-core.jar` (or other location with access to proper files). With the job jar file in the directory, execute the job with the command:
+In order to execute a basic Hadoop job, the user needs access to a linux machine that is configured to launch Hadoop jobs. Once you have compiled your Map Reduce job into a jar file, move the jar file to the same directory that contains `hadoop-0.X.0-core.jar` (hadoop-core-{version}.jar became hadoop-common-{version}.jar starting with Hadoop 2+. There is no hadoop-core.jar for version 2+. You have to download and install both Hadoop Common and MapReduce Client Core jars). With the job jar file in the directory, execute the job with the command:
 
 `bin/hadoop jar {jar_filename} {java_class_name_with_namespace} {data_input_dir} {data_output_dir}`
+
+note: if third-party libraries are used in your program, the correct command to execute the job is:
+
+`export LIBJARS={path to third-party libraries}`
+
+`bin/hadoop jar {jar_filename} {java_class_name_with_namespace} -libjar ${LIBJARS} {data_input_dir} {data_output_dir}`
 
 ## Appendix A: Setting up FTP Access for HDFS
 
