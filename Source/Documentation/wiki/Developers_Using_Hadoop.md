@@ -136,7 +136,7 @@ Archive v1.0.1 hdfs-over-ftp tar files can also be found [here](Developers_Using
 ![](Developers_Using_Hadoop.files/HadoopFTPusers.png "HadoopFTPusers.png")
 
 ---
-Sep 12, 2017 Updated by [hinfsynz](https://github.com/hinfsynz)
+Sep 12, 2017 Updated by [hinfsynz](https://github.com/hinfsynz)  
 Mar 6, 2015, 9:21:41 PM by [ritchiecarroll](https://github.com/ritchiecarroll), version 4  
 Oct 5, 2015  Migrated from [CodePlex](http://openpdc.codeplex.com/wikipage?title=Using%20Hadoop%20%28Developers%29) by [aj](https://github.com/ajstadlin)
 Dec 15, 2016  [HDFS Over FTP](https://sites.google.com/a/iponweb.net/hadoop/Home/hdfs-over-ftp) link updated by [aj](https://github.com/ajstadlin)
