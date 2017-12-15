@@ -270,6 +270,11 @@
             Defines the root target expression, without any referenced series functions.
             </summary>
         </member>
+        <member name="F:GrafanaAdapters.DataSourceValueGroup.SourceTarget">
+            <summary>
+            Defines a reference to the original target that was the source of these results.
+            </summary>
+        </member>
         <member name="F:GrafanaAdapters.DataSourceValueGroup.Source">
             <summary>
             Data source values enumerable.
@@ -1017,11 +1022,6 @@
             Maximum data points to return.
             </summary>
         </member>
-        <member name="P:GrafanaAdapters.QueryRequest.options">
-            <summary>
-            Defines options current in play for data source that may affect query.
-            </summary>
-        </member>
         <member name="T:GrafanaAdapters.Range">
             <summary>
             Defines a Grafana query range.
@@ -1085,6 +1085,16 @@
         <member name="P:GrafanaAdapters.Target.target">
             <summary>
             Target point/tag name.
+            </summary>
+        </member>
+        <member name="P:GrafanaAdapters.Target.excludedFlags">
+            <summary>
+            Exclude data that have the specified flags set.
+            </summary>
+        </member>
+        <member name="P:GrafanaAdapters.Target.excludeNormalFlags">
+            <summary>
+            Exclude data that has normal flag set.
             </summary>
         </member>
         <member name="T:GrafanaAdapters.TargetCaches">
