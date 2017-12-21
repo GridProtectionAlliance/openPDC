@@ -203,7 +203,7 @@ namespace MacrodyneController
 
         private void ButtonSend_Click(object sender, EventArgs e)
         {
-            if (m_serialClient != null & m_bytesToSend.Length > 0)
+            if (m_serialClient != null && m_bytesToSend.Length > 0)
             {
                 m_serialClient.SendAsync(m_bytesToSend.ToArray());
                 UpdateStatus(m_bytesToSend.Length + " bytes sent.");
