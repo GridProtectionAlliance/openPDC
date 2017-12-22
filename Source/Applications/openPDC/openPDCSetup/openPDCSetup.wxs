@@ -271,6 +271,9 @@
       <Component Id="openPDCConfig" Permanent="yes">
         <File Id="openPDC.exe.config" Name="$(var.openPDC.TargetFileName).config" Source="$(var.openPDC.TargetPath).config" />
       </Component>
+      <Component Id="AssemblyBindings">
+        <File Id="AssembyBindings.xml" Name="AssemblyBindings.xml" Source="$(var.openPDC.ProjectDir)AssemblyBindings.xml" />
+      </Component>
       <Component Id="DataMigrationUtility">
         <File Id="DataMigrationUtility.exe" Name="DataMigrationUtility.exe" Source="$(var.ProjectDir)\DataMigrationUtility.exe" />
         <Shortcut Id="DataMigrationUtilityStartMenuShortcut" Name="Data Migration Utility" Icon="DataMigrationUtility.ico.exe" Description="Tool used to migrate data from an old configuration database to the latest version." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
