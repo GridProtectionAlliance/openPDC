@@ -303,7 +303,9 @@
     <None Include="wwwroot\Vendors.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AssemblyBindings.xml" />
+    <Content Include="AssemblyBindings.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="wwwroot\Content\bootstrap-datepicker3.css" />
     <Content Include="wwwroot\Content\bootstrap-datepicker3.min.css" />
     <Content Include="wwwroot\Content\bootstrap-datetimepicker.css" />
