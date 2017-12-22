@@ -23,6 +23,7 @@
     <OutputPath>..\..\..\..\Build\Output\Release\Setup\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <SuppressIces>ICE57;ICE03;ICE43;ICE60</SuppressIces>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CustomExitDialog.wxs" />
@@ -119,6 +120,9 @@
     </Content>
     <Content Include="StatHistorianReportGenerator.exe" />
     <Content Include="StatHistorianReportGenerator.exe.config" />
+    <Content Include="WebFeatures.wxi" />
+    <Content Include="WebFiles.wxi" />
+    <Content Include="WebFolders.wxi" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <Target Name="AfterBuild">

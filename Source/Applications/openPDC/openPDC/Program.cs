@@ -32,11 +32,15 @@ namespace openPDC
     static class Program
     {
         /// <summary>
+        /// The service host instance for the application.
+        /// </summary>
+        public static readonly ServiceHost Host = new ServiceHost();
+
+        /// <summary>
         /// The main entry point for the application.
         /// </summary>
         static void Main()
         {
-            ServiceHost host = new ServiceHost();
 
             bool runAsService;
             bool runAsApplication;
@@ -68,18 +72,18 @@ namespace openPDC
             if (runAsService)
             {
                 // Run as Windows Service.
-                ServiceBase.Run(new ServiceBase[] { host });
+                ServiceBase.Run(new ServiceBase[] { Host });
             }
             else if (runAsApplication)
             {
                 // Run as Windows Application.
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new DebugHost(host));
+                Application.Run(new DebugHost(Host));
             }
             else
             {
-                ConsoleHost consoleHost = new ConsoleHost(host);
+                ConsoleHost consoleHost = new ConsoleHost(Host);
                 consoleHost.Run();
                 Environment.Exit(0);
             }

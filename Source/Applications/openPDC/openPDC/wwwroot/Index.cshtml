@@ -1,0 +1,342 @@
+﻿@*******************************************************************************************************
+//  Index.cshtml - Gbtc
+//
+//  Copyright © 2016, Grid Protection Alliance.  All Rights Reserved.
+//
+//  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
+//  the NOTICE file distributed with this work for additional information regarding copyright ownership.
+//  The GPA licenses this file to you under the MIT License (MIT), the "License"; you may not use this
+//  file except in compliance with the License. You may obtain a copy of the License at:
+//
+//      http://opensource.org/licenses/MIT
+//
+//  Unless agreed to in writing, the subject software distributed under the License is distributed on an
+//  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
+//  License for the specific language governing permissions and limitations.
+//
+//  Code Modification History:
+//  ----------------------------------------------------------------------------------------------------
+//  01/15/2016 - J. Ritchie Carroll
+//       Generated original version of source code.
+//
+//*****************************************************************************************************@
+@using System
+@using System.Globalization
+@using System.Threading
+@using GSF
+@using GSF.Data
+@using GSF.Identity
+@using GSF.IO
+@using GSF.Security
+@using GSF.Security.Cryptography
+@using GSF.Web.Model
+@using openPDC.Model
+@using AssemblyInfo = GSF.Reflection.AssemblyInfo
+@inherits ExtendedTemplateBase<AppModel>
+@{
+    Layout = "Layout.cshtml";
+    ViewBag.Title = "Home";
+
+    Version assemblyVersionInfo = AssemblyInfo.EntryAssembly.Version;
+    string applicationVersion = assemblyVersionInfo.Major + "." + assemblyVersionInfo.Minor + "." + assemblyVersionInfo.Build;
+    string databaseType;
+    string databaseName;
+    string localTimeFormat = Model.Global.DateFormat + " hh:mm:ss.fff";
+
+    try
+    {
+        using (AdoDataConnection database = new AdoDataConnection("systemSettings"))
+        {
+            databaseType = database.DatabaseType.ToString();
+
+            try
+            {
+                if (database.IsSqlite || database.IsJetEngine)
+                {
+                    // Extract database file name from connection string for file centric databases
+                    databaseName = FilePath.GetFileName(database.Connection.ConnectionString.ParseKeyValuePairs()["Data Source"]);
+                }
+                else if (database.IsOracle)
+                {
+                    // Extract user name from connection string for Oracle databases
+                    databaseName = database.Connection.ConnectionString.ParseKeyValuePairs()["User Id"];
+                }
+                else
+                {
+                    databaseName = database.Connection.Database;
+                }
+            }
+            catch
+            {
+                // Fall back on database name if file anything fails
+                databaseName = database.Connection.Database;
+            }
+        }
+    }
+    catch
+    {
+        databaseType = "Not Available";
+        databaseName = "Not Available";
+    }
+}
+@section StyleSheets {
+    <style>
+        /* Auto font resize CSS for system health window - targeting fixed 80 char width without wrap and
+           allowing for responsive screen rearrangement when window is col-**-8 and on the right */
+        @@media screen {
+            .performance-statistics {
+                font-size: 5.25px;
+            }
+        }
+        
+        @@media screen and (min-width: 430px) {
+            .performance-statistics {
+                font-size: 7px;
+            }
+        }
+
+        @@media screen and (min-width: 470px) {
+            .performance-statistics {
+                font-size: 8px;
+            }
+        }
+
+        @@media screen and (min-width: 515px) {
+            .performance-statistics {
+                font-size: 9px;
+            }
+        }
+
+        @@media screen and (min-width: 550px) {
+            .performance-statistics {
+                font-size: 10px;
+            }
+        }
+
+        @@media screen and (min-width: 600px) {
+            .performance-statistics {
+                font-size: 11px;
+            }
+        }
+
+        @@media screen and (min-width: 635px) {
+            .performance-statistics {
+                font-size: 12px;
+            }
+        }
+
+        @@media screen and (min-width: 685px) {
+            .performance-statistics {
+                font-size: 13px;
+            }
+        }
+
+        @@media screen and (min-width: 725px) {
+            .performance-statistics {
+                font-size: 14px;
+            }
+        }
+
+        @@media screen and (min-width: 768px) {
+            .performance-statistics {
+                font-size: 8px;
+            }
+        }
+
+        @@media screen and (min-width: 992px) {
+            .performance-statistics {
+                font-size: 12px;
+            }
+        }
+
+        @@media screen and (min-width: 1200px) {
+            .performance-statistics {
+                font-size: 14px;
+            }
+        }
+
+        .badge-fixed {
+            display:inline-block;
+            width: 150px;
+        }
+
+        #userInfoButton {
+            height: 0px;
+            margin-top: -22px;
+            color: inherit;
+            text-decoration: underline;
+            outline-style: none;
+        }
+    </style>
+}
+@section Scripts {
+    <script>
+        const LocalTimeFormat = DateFormat + " hh:mm:ss.fff";
+
+        function updateTimestamps() {
+            const date = new Date();
+
+            $("#meridiem").html(date.getHours() < 12 ? "AM" : "PM");
+            $('#localTimeUTC').html(date.formatDate());
+            $('#localTime').html(date.formatDate(LocalTimeFormat, false));
+
+            if (hubIsConnected) {
+                serviceHub.getServerTime().done(function (serverTime) {
+                    $('#serverTimeUTC').html(serverTime.formatDate());
+                    $('#serverTime').html(serverTime.formatDate(LocalTimeFormat, false));
+                });
+            }
+        }
+
+        function updatePerformanceStatistics() {
+            if (hubIsConnected)
+                serviceHub.getPerformanceStatistics().done(function (statistics) {
+                    $("#performanceStatistics").html(statistics);
+                });
+        }
+
+        $(window).on("hubConnected", function (event) {
+            updatePerformanceStatistics();
+            setInterval(updatePerformanceStatistics, 5000);
+        });
+
+        $("#restartButton").click(function () {
+            if (hubIsConnected && confirm("Are you sure you want to restart service?"))
+                serviceHub.sendCommand("restart");
+        });
+
+        $(function () {
+            updateTimestamps();
+            setInterval(updateTimestamps, 1000);
+        });
+
+        //$(window).resize(function () {
+        //    $("#fontSizeLabel").html("Font Size: " + $("#performanceStatistics").css("font-size") + ", Window Size: " + $(window).width().toString());
+        //});
+    </script>
+}
+@functions {
+    public string GetCurrentUserID()
+    {
+        if (Thread.CurrentPrincipal.Identity == null)
+            return UserInfo.CurrentUserID;
+
+        return Thread.CurrentPrincipal.Identity.Name;
+    }
+
+    public bool UserIsAdmin()
+    {
+        SecurityPrincipal securityPrincipal = ViewBag.SecurityPrincipal as SecurityPrincipal;
+
+        if ((object)securityPrincipal == null)
+            return false;
+
+        return securityPrincipal.IsInRole("Administrator");
+    }
+}
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-5">
+        <div class="panel panel-default">
+            <div class="panel-heading">Quick Links</div>
+            <div class="panel-body">
+                <div class="btn-group-vertical btn-block">
+                    <a href="Devices.cshtml" role="button" class="btn btn-primary">Devices</a>
+                    <a href="GraphMeasurements.cshtml" role="button" class="btn btn-default">Real-time Measurements</a>
+                    @if (UserIsAdmin()) {
+                        <button type="button" class="btn btn-default" id="restartButton" hub-dependent>Restart Service</button>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="list-group">
+            <div class="list-group-item">
+                <h5 class="list-group-item-heading" style="text-align: right"><strong>UTC Time</strong></h5>
+                <p class="list-group-item-text">
+                    <hr class="quarter-break" />
+                    <span class="badge badge-fixed" id="serverTimeUTC">@DateTime.UtcNow.ToString(Model.Global.DateTimeFormat)</span>Server&nbsp;Time
+                    <hr class="quarter-break" />
+                    <span class="badge badge-fixed" id="localTimeUTC">@DateTime.UtcNow.ToString(Model.Global.DateTimeFormat)</span>Client&nbsp;Time
+                </p>
+            </div>
+            <div class="list-group-item">
+                <h5 class="list-group-item-heading" style="text-align: right"><strong>Local Time (<span id="meridiem">@DateTime.Now.ToString("tt", CultureInfo.InvariantCulture)</span>)</strong></h5>
+                <p class="list-group-item-text">
+                    <hr class="quarter-break" />
+                    <span class="badge badge-fixed" id="serverTime">@DateTime.Now.ToString(localTimeFormat)</span>Server&nbsp;Time
+                    <hr class="quarter-break" />
+                    <span class="badge badge-fixed" id="localTime">@DateTime.Now.ToString(localTimeFormat)</span>Client&nbsp;Time
+                </p>
+            </div>
+            <div class="list-group-item">
+                <p class="list-group-item-text">
+                    <hr class="quarter-break" />
+                    <span class="badge badge-fixed" id="currentUser"><button type="button" class="btn btn-link" id="userInfoButton">@GetCurrentUserID()</button></span> Current User
+                    <hr class="quarter-break" />
+                    <span class="badge badge-fixed" id="applicationVersion">@applicationVersion</span>App&nbsp;Version
+                    <hr class="quarter-break" />
+                    <span class="badge badge-fixed" id="databaseType">DB: @databaseType</span>Config&nbsp;Type
+                    <hr class="quarter-break" />
+                    <span class="badge badge-fixed" id="databaseName">@databaseName</span>Config&nbsp;Name
+                </p>
+            </div>
+        </div>
+        <div class="text-info text-center small"style="margin-top: -15px;">
+            Using @(Cipher.SystemAllowsManagedEncryption ? "managed" : "FIPS compliant") security algorithms<br />
+            Compiled in @(AssemblyInfo.EntryAssembly.Debuggable ? "debug" : "release") mode<br />
+            @ViewBag.Request.RequestUri.ToString()
+        </div>
+        <!-- label class="small" id="fontSizeLabel"></label -->
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">System Health</div>
+            <div class="panel-body">
+                <pre class="performance-statistics" id="performanceStatistics">Loading&nbsp;&nbsp;<span class="glyphicon glyphicon-refresh glyphicon-spin"></span></pre>
+            </div>
+        </div>
+    </div>
+</div>
+<script>   
+    // Pop-up window code derived from "JK Pop up image viewer script" - by JavaScriptKit.com
+    //     Visit JavaScript Kit (http://javascriptkit.com)
+    //     for free JavaScript tutorials and scripts
+    //     This notice must stay intact for use
+    function detectExistence(obj){
+        return (typeof obj !="undefined");
+    }
+
+    var popupWindow;
+
+    function ShowPopupWindow(popupUrl, width, height) {
+        var leftPosition, topPosition;
+
+        function getPosition() {
+            leftPosition = (detectExistence(window.screenLeft)) ? screenLeft + document.body.clientWidth / 2 - width / 2 : detectExistence(window.screenX) ? screenX + innerWidth / 2 - width / 2 : 0;
+            topPosition = (detectExistence(window.screenTop)) ? screenTop + document.body.clientHeight / 2 - height / 2 : detectExistence(window.screenY)? screenY + innerHeight / 2 - height / 2 : 0;
+            
+            if (window.opera) {
+                leftPosition -= screenLeft;
+                topPosition -= screenTop;
+            }
+        }
+        
+        getPosition();
+
+        const windowAttributes = "width=" + width + ",height=" + height + ",left=" + leftPosition + ",top=" + topPosition + ",directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no";
+
+        if (typeof popupWindow == "undefined" || popupWindow.closed) {
+            popupWindow = window.open(popupUrl, "", windowAttributes);
+        }
+        else {
+            getPosition();
+            popupWindow.moveTo(leftPosition, topPosition);
+            popupWindow.resizeTo(width, height + 30);
+        }
+
+        popupWindow.focus();
+    }
+
+    $("#userInfoButton").click(function() {
+        ShowPopupWindow("/UserInfo.cshtml", 600, 275);
+    });
+</script>

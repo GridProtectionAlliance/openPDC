@@ -1,0 +1,263 @@
+﻿@*******************************************************************************************************
+//  Layout.cshtml - Gbtc
+//
+//  Copyright © 2016, Grid Protection Alliance.  All Rights Reserved.
+//
+//  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
+//  the NOTICE file distributed with this work for additional information regarding copyright ownership.
+//  The GPA licenses this file to you under the MIT License (MIT), the "License"; you may not use this
+//  file except in compliance with the License. You may obtain a copy of the License at:
+//
+//      http://opensource.org/licenses/MIT
+//
+//  Unless agreed to in writing, the subject software distributed under the License is distributed on an
+//  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
+//  License for the specific language governing permissions and limitations.
+//
+//  Code Modification History:
+//  ----------------------------------------------------------------------------------------------------
+//  01/15/2016 - J. Ritchie Carroll
+//       Generated original version of source code.
+//
+//*****************************************************************************************************@
+@using System.Net.Http
+@using System.Text
+@using System.Threading
+@using GSF.Security
+@using GSF.Identity
+@using GSF.Web
+@using GSF.Web.Model
+@using GSF.Web.Security
+@using GSF.Web.Shared
+@using openPDC.Model
+@inherits ExtendedTemplateBase<AppModel>
+@{
+    if (ViewBag.PageControlScripts == null) {
+        ViewBag.PageControlScripts = new StringBuilder();
+    }
+
+    // Define ViewBag.CustomTitle in page code for custom page titles
+    string pageTitle = ViewBag.CustomTitle ?? ViewBag.Title;
+    bool pageHasSidebar = ViewBag.PageHasSidebar ?? false;
+    bool setFullWidth = ViewBag.SetFullWidth ?? pageHasSidebar;
+    bool hidePageTitle = false;
+    bool showMenu = true;
+
+    if (ViewBag.HidePageTitle != null) {
+        hidePageTitle = ViewBag.HidePageTitle;
+    }
+
+    if (ViewBag.ShowMenu != null) {
+        showMenu = ViewBag.ShowMenu;
+    }
+
+    HttpRequestMessage request = ViewBag.Request;
+
+    ReadonlyAuthenticationOptions options = ViewBag.AuthenticationOptions;
+    string sessionToken = SessionHandler.DefaultSessionToken;
+    string loginPage = AuthenticationOptions.DefaultLoginPage;
+
+    if ((object)options != null)
+    {
+        sessionToken = options.SessionToken;
+
+        if (!string.IsNullOrWhiteSpace(options.LoginPage)) {
+            loginPage = options.LoginPage;
+        }
+    }
+}
+@functions {
+    public string GetCurrentUserID()
+    {
+        if (Thread.CurrentPrincipal.Identity == null)
+            return UserInfo.CurrentUserID;
+
+        return Thread.CurrentPrincipal.Identity.Name;
+    }
+
+    public bool UserIsAdmin()
+    {
+        SecurityPrincipal securityPrincipal = ViewBag.SecurityPrincipal as SecurityPrincipal;
+
+        if ((object)securityPrincipal == null)
+            return false;
+
+        return securityPrincipal.IsInRole("Administrator");
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @* The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags *@
+    <title>@Model.Global.ApplicationName - @pageTitle</title>
+    <meta name="application-name" content="@Model.Global.ApplicationName" />
+    <meta name="description" content="@Model.Global.ApplicationDescription" />
+    <meta name="keywords" content="@Model.Global.ApplicationKeywords" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <link href="@Resources.Root/Shared/Content/bootstrap.css" rel="stylesheet">
+    <link href="@Model.Global.BootstrapTheme" rel="stylesheet">
+    <link href="Content/Site.css" rel="stylesheet">
+    @Raw(Resources.HeaderIcons)
+    @RenderSection("StyleSheets", false)
+    <style>
+        @@media (max-width: 995px) {
+            .navbar-header {
+                float: none;
+            }
+            .navbar-left,.navbar-right {
+                float: none !important;
+            }
+            .navbar-toggle {
+                display: block;
+            }
+            .navbar-collapse {
+                border-top: 1px solid transparent;
+                box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+            }
+
+            .navbar-fixed-top {
+                top: 0;
+                border-width: 0 0 1px;
+            }
+            .navbar-collapse.collapse {
+                display: none!important;
+            }
+            .navbar-nav {
+                float: none!important;
+                margin-top: 7.5px;
+            }
+            .navbar-nav>li {
+                float: none;
+            }
+            .navbar-nav>li>a {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            .collapse.in{
+                display:block !important;
+            }
+        }
+    </style>
+    @if (!showMenu) {
+    <style>
+        body {
+            margin-top: -70px;
+            margin-right: 20px;
+            background-color: #105331;
+        }
+        h3 {
+            color: white;
+        }
+    </style>
+    }
+    <script src="@Resources.Root/Shared/Scripts/jquery.js"></script>
+    <script>
+        const DateFormat = "@Model.Global.DateFormat";
+        const TimeFormat = "@Model.Global.TimeFormat";
+        const DateTimeFormat = "@Model.Global.DateTimeFormat";
+    </script>
+</head>
+<body role="document">
+@if (ViewBag.ShowMenu ?? true) {
+    <div class="navbar navbar-inverse navbar-fixed-top" id="menuBar">
+        <div class="container">
+            <div class="navbar-header">
+                <img class="pull-left" style="padding: 10px" alt="@Model.Global.ApplicationName" src="Images/@(Model.Global.ApplicationName).png">
+                <a href="Index.cshtml" class="navbar-brand" style="font-size: larger; color: white" data-toggle="tooltip" data-placement="bottom" title="@Model.Global.ApplicationDescription">@Model.Global.ApplicationName</a>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li @Raw(pageTitle == "Home" ? "class=\"active\"" : "")><a href="Index.cshtml">Home</a></li>
+                    <li @Raw(pageTitle == "Devices" ? "class=\"active\"" : "")><a href="Devices.cshtml">Devices</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Monitoring <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="GraphMeasurements.cshtml">Real-time Measurements</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="RemoteConsole.cshtml">Remote Service Console</a></li>
+                        </ul>
+                    </li>
+                    @if (UserIsAdmin()) {
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="Users.cshtml">Users</a></li>
+                            <li><a href="Groups.cshtml">Groups</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="SelectTheme.cshtml">Select Theme</a></li>
+                        </ul>
+                    </li>
+                    }
+                    <li @Raw(pageTitle == "Help" ? "class=\"active\"" : "")><a href="Help.cshtml">Help</a></li>
+                </ul>
+                <p class="nav navbar-text navbar-right">
+                    <button id="logoutButton" type="button" class="btn btn-sm btn-info" style="display: none" title="Log out @GetCurrentUserID()" hub-dependent>Log Out</button>
+                    <a href="https://www.gridprotectionalliance.org/" target="_blank" style="padding-left: 10px">
+                        <img alt="Grid Protection Alliance" src="Images/gpa-smalllock.png">
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div><!--/.navbar -->
+}
+else {
+    <div id="menuBar"></div>
+}
+    <div class="container theme-showcase" @Raw(setFullWidth ? " style=\"width: 100%\"" : "")  role="main" id="bodyContainer">
+        <div class="page-header" id="pageHeader">
+            <span class="glyphicon glyphicon-refresh pre-cache"></span>
+            <span class="glyphicon glyphicon-info-sign pre-cache"></span>
+            <span class="glyphicon glyphicon-exclamation-sign pre-cache"></span>
+            <div class="alert alert-info fade in" role="alert" id="info-msg-block" style="display: none">
+                <a href="#" class="close" aria-label="close" id="dismissInfoMsg">&times;</a>
+                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>&nbsp;
+                <span class="sr-only">Info</span>
+                <span id="info-msg-text"></span>
+            </div>
+            <div class="alert alert-danger fade in" role="alert" id="error-msg-block" style="display: none">
+                <a href="#" class="close" aria-label="close" id="dismissErrorMsg">&times;</a>
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>&nbsp;
+                <span class="sr-only">Error</span>
+                <span id="error-msg-text"></span>
+            </div>
+            @if (!hidePageTitle) {
+            <h3>
+                @pageTitle <small class="pull-right" id="titleText" style="margin-top: 8px"></small>
+            </h3>
+            }
+        </div>
+        <!-- Page Body for @request.RequestUri.AbsolutePath -->
+        @RenderBody()
+
+    </div><!--/.container -->
+    <script src="@Resources.Root/Shared/Scripts/bootstrap.js"></script>
+    <script src="@Resources.Root/Shared/Scripts/jquery.signalR.js"></script>
+    <script src="@Resources.Root/Shared/Scripts/js.cookie.js"></script>
+    <script src="@Resources.Root/Shared/Scripts/gsf.web.client.js"></script>
+    <script src="signalr/hubs"></script>
+    <script src="Scripts/Site.js"></script>
+    @Raw(ViewBag.PageControlScripts.ToString())
+    @RenderSection("Scripts", false)
+    <script>
+        $("#logoutButton").click(function() {
+            if (!hubIsConnected)
+                return;
+
+            securityHub.logout(Cookies.get("@sessionToken")).done(function(success) {
+                window.location = "@loginPage.JavaScriptEncode()?logout&sessionCleared=" + success;
+            });
+        });
+
+        $("#logoutButton").show();
+    </script>
+</body>
+</html>

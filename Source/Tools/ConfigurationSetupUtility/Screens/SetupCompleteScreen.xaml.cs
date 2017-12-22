@@ -142,6 +142,9 @@ namespace ConfigurationSetupUtility.Screens
                         // Validate needed end-point bindings for Grafana interfaces
                         ValidateGrafanaBindings();
 
+                        // Make sure needed assembly bindings exist in config fie (needed for self-hosted web server)
+                        ValidateAssemblyBindings();
+
                         if (migrate)
                         {
                             const string SerializedSchemaPath = "SerializedSchema.bin";
@@ -439,6 +442,71 @@ namespace ConfigurationSetupUtility.Screens
             configFile.Save(configFileName);
         }
 
+        private void ValidateAssemblyBindings()
+        {
+            string configFileName = Path.Combine(Directory.GetCurrentDirectory(), App.ApplicationConfig);
+
+            if (!File.Exists(configFileName))
+                return;
+
+            XmlDocument configFile = new XmlDocument();
+            configFile.Load(configFileName);
+
+            XmlNode runTime = configFile.SelectSingleNode("configuration/runtime");
+
+            if ((object)runTime == null)
+            {
+                XmlNode config = configFile.SelectSingleNode("configuration");
+
+                // This is expected to already exist...
+                if ((object)config == null)
+                    return;
+
+                runTime = configFile.CreateElement("runtime");
+                config.AppendChild(runTime);
+
+                XmlElement gcServer = configFile.CreateElement("gcServer");
+                XmlAttribute enabled = configFile.CreateAttribute("enabled");
+                enabled.Value = "true";
+
+                gcServer.Attributes.Append(enabled);
+                runTime.AppendChild(gcServer);
+
+                XmlElement gcConcurrent = configFile.CreateElement("gcConcurrent");
+                enabled = configFile.CreateAttribute("enabled");
+                enabled.Value = "true";
+
+                gcConcurrent.Attributes.Append(enabled);
+                runTime.AppendChild(gcConcurrent);
+            }
+
+            string assemblyBindingsFileName = Path.Combine(Directory.GetCurrentDirectory(), "AssemblyBindings.xml");
+
+            if (File.Exists(assemblyBindingsFileName))
+            {
+                XmlNamespaceManager nsmgr = new XmlNamespaceManager(configFile.NameTable);
+                nsmgr.AddNamespace("s", "urn:schemas-microsoft-com:asm.v1");
+
+                XmlDocument assemblyBindingsXml = new XmlDocument();
+                assemblyBindingsXml.Load(assemblyBindingsFileName);
+
+                XmlDocumentFragment assemblyBindings = configFile.CreateDocumentFragment();
+                assemblyBindings.InnerXml = assemblyBindingsXml.InnerXml;
+
+                XmlNode oldAssemblyBindings = configFile.SelectSingleNode("configuration/runtime/s:assemblyBinding", nsmgr);
+
+                if ((object)oldAssemblyBindings != null)
+                {
+                    runTime.ReplaceChild(assemblyBindings, oldAssemblyBindings);
+                }
+                else
+                {
+                    runTime.AppendChild(assemblyBindings);
+                }
+            }
+
+            configFile.Save(configFileName);
+        }
 
         private void ValidateTimeSeriesStartupOperations()
         {
