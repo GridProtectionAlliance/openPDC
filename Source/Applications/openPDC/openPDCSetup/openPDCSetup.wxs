@@ -269,7 +269,7 @@
         <ServiceControl Id="openPDCServiceControl" Name="openPDC" Stop="both" Remove="uninstall" />
       </Component>
       <Component Id="openPDCConfig" Permanent="yes">
-        <File Id="openPDC.exe.config" Name="$(var.openPDC.TargetFileName).config" Source="$(var.openPDC.TargetPath).config" />
+        <File Id="openPDC.exe.config" Name="$(var.openPDC.TargetFileName).config" Source="$(var.openPDC.ProjectDir)App.config" />
       </Component>
       <Component Id="AssemblyBindings">
         <File Id="AssembyBindings.xml" Name="AssemblyBindings.xml" Source="$(var.openPDC.ProjectDir)AssemblyBindings.xml" />
