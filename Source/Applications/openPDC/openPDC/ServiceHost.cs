@@ -176,8 +176,6 @@ namespace openPDC
             Model.Global.PasswordRequirementsError = securityProvider["PasswordRequirementsError"].Value;
             Model.Global.BootstrapTheme = systemSettings["BootstrapTheme"].Value;
             Model.Global.WebRootPath = FilePath.GetAbsolutePath(systemSettings["WebRootPath"].Value);
-            //Model.Global.GrafanaServerPath = grafanaHosting["ServerPath"].Value;
-            //Model.Global.GrafanaServerInstalled = File.Exists(Model.Global.GrafanaServerPath);
 
             AuthenticationSchemes authenticationSchemes;
 
@@ -213,7 +211,6 @@ namespace openPDC
 
             ServiceHelper.UpdatedStatus += UpdatedStatusHandler;
             ServiceHelper.LoggedException += LoggedExceptionHandler;
-            //GrafanaAuthProxyController.StatusMessage += GrafanaAuthProxyController_StatusMessage;
 
             // Attach to default web server events
             WebServer webServer = WebServer.Default;
@@ -246,11 +243,9 @@ namespace openPDC
                         try
                         {
                             // Initiate pre-compile of base templates
-                            if (!AssemblyInfo.EntryAssembly.Debuggable)
-                            {
-                                RazorEngine<CSharp>.Default.PreCompile(LogException);
-                                RazorEngine<VisualBasic>.Default.PreCompile(LogException);
-                            }
+                            RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException);
+                            RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException, "GSF.Web.Security.Views.");
+                            RazorEngine<CSharp>.Default.PreCompile(LogException);
                         }
                         catch (Exception ex)
                         {
@@ -270,62 +265,6 @@ namespace openPDC
             .Start();
 
         }
-
-        /// <summary>Event handler for service started operation.</summary>
-        /// <param name="sender">Event source.</param>
-        /// <param name="e">Event arguments.</param>
-        /// <remarks>
-        /// Time-series framework uses this handler to handle initialization of system objects.
-        /// </remarks>
-        //protected override void ServiceStartedHandler(object sender, EventArgs e)
-        //{
-        //    base.ServiceStartedHandler(sender, e);
-
-        //    if (!Model.Global.GrafanaServerInstalled)
-        //        return;
-
-        //    // Kick off a thread to monitor for when Grafana server has been properly
-        //    // initialized so that initial user synchronization process can proceed
-        //    new Thread(() =>
-        //    {
-        //        try
-        //        {
-        //            //const int DefaultInitializationTimeout = GrafanaAuthProxyController.DefaultInitializationTimeout;
-
-        //            // Access settings from "systemSettings" category in configuration file
-        //            CategorizedSettingsElementCollection grafanaHosting = ConfigurationFile.Current.Settings["grafanaHosting"];
-
-        //            // Make sure needed settings exist
-        //            grafanaHosting.Add("InitializationTimeout", DefaultInitializationTimeout, "Defines the timeout, in seconds, for the Grafana system to initialize.");
-
-        //            // Get settings as currently defined in configuration file
-        //            int initializationTimeout = grafanaHosting["InitializationTimeout"].ValueAs(DefaultInitializationTimeout);
-        //            DateTime startTime = DateTime.UtcNow;
-
-        //            // Give initialization - which includes starting Grafana server process - a chance to start
-        //            while (!GrafanaAuthProxyController.ServerIsResponding())
-        //            {
-        //                // Stop attempts after timeout has expired
-        //                if ((DateTime.UtcNow - startTime).TotalSeconds >= initializationTimeout)
-        //                    break;
-
-        //                Thread.Sleep(500);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            LogException(new InvalidOperationException($"Failed while checking for Grafana server initialization: {ex.Message}", ex));
-        //        }
-        //        finally
-        //        {
-        //            GrafanaAuthProxyController.InitializationComplete();
-        //        }
-        //    })
-        //    {
-        //        IsBackground = true
-        //    }
-        //    .Start();
-        //}
 
         private bool TryStartWebHosting(string webHostURL)
         {
@@ -476,86 +415,6 @@ namespace openPDC
                     break;
             }
         }
-
-        //private void SetupGrafanaHostingAdapter()
-        //{
-        //    try
-        //    {
-        //        const string GrafanaProcessAdapterName = "GRAFANA!PROCESS";
-        //        const string DefaultGrafanaServerPath = GrafanaAuthProxyController.DefaultServerPath;
-
-        //        const string GrafanaAdminRoleName = GrafanaAuthProxyController.GrafanaAdminRoleName;
-        //        const string GrafanaAdminRoleDescription = "Grafana Administrator Role";
-
-        //        // Access needed settings from specified categories in configuration file
-        //        CategorizedSettingsElementCollection systemSettings = ConfigurationFile.Current.Settings["systemSettings"];
-        //        CategorizedSettingsElementCollection grafanaHosting = ConfigurationFile.Current.Settings["grafanaHosting"];
-        //        string newNodeID = Guid.NewGuid().ToString();
-
-        //        // Make sure needed settings exist
-        //        systemSettings.Add("NodeID", newNodeID, "Unique Node ID");
-        //        grafanaHosting.Add("ServerPath", DefaultGrafanaServerPath, "Defines the path to the Grafana server to host - set to empty string to disable hosting.");
-
-        //        // Get settings as currently defined in configuration file
-        //        Guid nodeID = Guid.Parse(systemSettings["NodeID"].ValueAs(newNodeID));
-        //        string grafanaServerPath = grafanaHosting["ServerPath"].ValueAs(DefaultGrafanaServerPath);
-
-        //        // Only enable adapter if file path to configured Grafana server executable is accessible
-        //        bool enabled = File.Exists(FilePath.GetAbsolutePath(grafanaServerPath));
-
-        //        // Open database connection as defined in configuration file "systemSettings" category
-        //        using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
-        //        {
-        //            // Make sure Grafana process adapter exists
-        //            TableOperations<CustomActionAdapter> actionAdapterTable = new TableOperations<CustomActionAdapter>(connection);
-        //            CustomActionAdapter actionAdapter = actionAdapterTable.QueryRecordWhere("AdapterName = {0}", GrafanaProcessAdapterName) ?? actionAdapterTable.NewRecord();
-
-        //            // Update record fields
-        //            actionAdapter.NodeID = nodeID;
-        //            actionAdapter.AdapterName = GrafanaProcessAdapterName;
-        //            actionAdapter.AssemblyName = "FileAdapters.dll";
-        //            actionAdapter.TypeName = "FileAdapters.ProcessLauncher";
-        //            actionAdapter.Enabled = enabled;
-
-        //            // Define default adapter connection string if none is defined
-        //            if (string.IsNullOrWhiteSpace(actionAdapter.ConnectionString))
-        //                actionAdapter.ConnectionString =
-        //                    $"FileName = {DefaultGrafanaServerPath}; " +
-        //                    "ForceKillOnDispose=True; " +
-        //                    "ProcessOutputAsLogMessages=True; " +
-        //                    "LogMessageTextExpression={(?<=.*msg\\s*\\=\\s*\\\")[^\\\"]*(?=\\\")|(?<=.*file\\s*\\=\\s*\\\")[^\\\"]*(?=\\\")|(?<=.*file\\s*\\=\\s*)[^\\s]*(?=s|$)|(?<=.*path\\s*\\=\\s*\\\")[^\\\"]*(?=\\\")|(?<=.*path\\s*\\=\\s*)[^\\s]*(?=s|$)|(?<=.*error\\s*\\=\\s*\\\")[^\\\"]*(?=\\\")|(?<=.*reason\\s*\\=\\s*\\\")[^\\\"]*(?=\\\")|(?<=.*id\\s*\\=\\s*\\\")[^\\\"]*(?=\\\")|(?<=.*version\\s*\\=\\s*)[^\\s]*(?=\\s|$)|(?<=.*dbtype\\s*\\=\\s*)[^\\s]*(?=\\s|$)|(?<=.*)commit\\s*\\=\\s*[^\\s]*(?=\\s|$)|(?<=.*)compiled\\s*\\=\\s*[^\\s]*(?=\\s|$)|(?<=.*)address\\s*\\=\\s*[^\\s]*(?=\\s|$)|(?<=.*)protocol\\s*\\=\\s*[^\\s]*(?=\\s|$)|(?<=.*)subUrl\\s*\\=\\s*[^\\s]*(?=\\s|$)|(?<=.*)code\\s*\\=\\s*[^\\s]*(?=\\s|$)|(?<=.*name\\s*\\=\\s*)[^\\s]*(?=\\s|$)}; " +
-        //                    "LogMessageLevelExpression={(?<=.*lvl\\s*\\=\\s*)[^\\s]*(?=\\s|$)}; " +
-        //                    "LogMessageLevelMappings={info=Info; warn=Waning; error=Error; critical=Critical; debug=Debug}";
-
-        //            // Preserve connection string on existing records except for Grafana server executable path that comes from configuration file
-        //            Dictionary<string, string> settings = actionAdapter.ConnectionString.ParseKeyValuePairs();
-        //            settings["FileName"] = grafanaServerPath;
-        //            actionAdapter.ConnectionString = settings.JoinKeyValuePairs();
-
-        //            // Save record updates
-        //            actionAdapterTable.AddNewOrUpdateRecord(actionAdapter);
-
-        //            // Make sure Grafana admin role exists
-        //            TableOperations<ApplicationRole> applicationRoleTable = new TableOperations<ApplicationRole>(connection);
-        //            ApplicationRole applicationRole = applicationRoleTable.QueryRecordWhere("Name = {0} AND NodeID = {1}", GrafanaAdminRoleName, nodeID);
-
-        //            if ((object)applicationRole == null)
-        //            {
-        //                applicationRole = applicationRoleTable.NewRecord();
-        //                applicationRole.NodeID = nodeID;
-        //                applicationRole.Name = GrafanaAdminRoleName;
-        //                applicationRole.Description = GrafanaAdminRoleDescription;
-        //                applicationRoleTable.AddNewRecord(applicationRole);
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        LogPublisher log = Logger.CreatePublisher(typeof(ServiceHost), MessageClass.Application);
-        //        log.Publish(MessageLevel.Error, "Error Message", "Failed to setup Grafana hosting adapter", null, ex);
-        //    }
-        //}
-
 
     }
 }
