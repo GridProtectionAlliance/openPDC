@@ -614,15 +614,6 @@ namespace openPDC
             DataContext.Connection.ExecuteNonQuery("UPDATE AlarmDevice SET StateID = (SELECT ID FROM AlarmState WHERE State = 'Good'), TimeStamp = {0}, DisplayData = 'Good' WHERE ID = {1}", DateTime.UtcNow, id);
         }
 
-        public string GetStatString(string device) {
-            DataTable table = DataContext.Connection.RetrieveData(
-            @" 
-                SELECT ID FROM ActiveMeasurement
-                WHERE Device = {0} AND SignalType = 'stat' 
-             ", device);
-            return string.Join(";", table.Select().Select(s => s.Field<string>("ID")).ToArray()) + ";";
-        }
-
         #endregion
 
         #region [ Miscellaneous Functions ]
