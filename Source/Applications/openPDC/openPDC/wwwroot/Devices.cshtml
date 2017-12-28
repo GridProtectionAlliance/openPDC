@@ -56,6 +56,7 @@
     <td width="35%" class="text-left table-cell-hard-wrap"><div data-bind="text: notNull(ConnectionString).truncate(30), attr: { title: notNull(ConnectionString) }"></div></td>
     <td width="5%" class="text-center valign-middle"><input type="checkbox" data-bind="checked: Enabled, click: enabledStateChanged.bind($data)" /></td>
     <td width="5%" class="text-center valign-middle" nowrap>
+        <button type="button" class="btn btn-xs" data-bind="click: openDeviceStatus(ID), enable: $parent.dataHubIsConnected, visible: showStatusBtn(ParentID)"><span class="glyphicon glyphicon-scale"></span></button>
         <button type="button" class="btn btn-xs" data-bind="click: $parent.editPageRecord, enable: $parent.dataHubIsConnected"><span class="glyphicon glyphicon-pencil"></span></button>
         <button type="button" class="btn btn-xs" data-bind="click: $parent.removePageRecord, enable: $parent.dataHubIsConnected"><span class="glyphicon glyphicon-remove"></span></button>
     </td>
@@ -110,6 +111,15 @@
                 });
             }
         }
+
+        function openDeviceStatus(id) {
+            window.open('/DeviceStatus.cshtml?ID=' + id);
+        }
+
+        function showStatusBtn(id) {
+            return id == null;
+        }
+
 
         $(viewModel).on("recordSaved", function(event, record, isNew) {
             refreshEnabledState(record);

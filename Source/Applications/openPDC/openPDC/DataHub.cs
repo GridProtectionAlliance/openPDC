@@ -38,6 +38,7 @@ using GSF.Web.Hubs;
 using GSF.Web.Model.HubOperations;
 using GSF.Web.Security;
 using openPDC.Model;
+using System.Data;
 
 namespace openPDC
 {
@@ -602,7 +603,7 @@ namespace openPDC
 
         #endregion
 
-        #region [ GrafanaDeviceStatus Operations ]
+        #region [ DeviceStatus Operations ]
         public void SetOutOfService(int id)
         {
             DataContext.Connection.ExecuteNonQuery("UPDATE AlarmDevice SET StateID = (SELECT ID FROM AlarmState WHERE State = 'Out of Service'), TimeStamp = {0}, DisplayData = 'OoS' WHERE ID = {1}", DateTime.UtcNow, id);
@@ -611,6 +612,15 @@ namespace openPDC
         public void SetInService(int id)
         {
             DataContext.Connection.ExecuteNonQuery("UPDATE AlarmDevice SET StateID = (SELECT ID FROM AlarmState WHERE State = 'Good'), TimeStamp = {0}, DisplayData = 'Good' WHERE ID = {1}", DateTime.UtcNow, id);
+        }
+
+        public string GetStatString(string device) {
+            DataTable table = DataContext.Connection.RetrieveData(
+            @" 
+                SELECT ID FROM ActiveMeasurement
+                WHERE Device = {0} AND SignalType = 'stat' 
+             ", device);
+            return string.Join(";", table.Select().Select(s => s.Field<string>("ID")).ToArray()) + ";";
         }
 
         #endregion

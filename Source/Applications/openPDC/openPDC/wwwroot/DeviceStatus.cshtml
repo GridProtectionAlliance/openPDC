@@ -1,0 +1,303 @@
+﻿@*******************************************************************************************************
+//  GrafanaDeviceStatus.cshtml - Gbtc
+//
+//  Copyright © 2016, Grid Protection Alliance.  All Rights Reserved.
+//
+//  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
+//  the NOTICE file distributed with this work for additional information regarding copyright ownership.
+//  The GPA licenses this file to you under the MIT License (MIT), the "License"; you may not use this
+//  file except in compliance with the License. You may obtain a copy of the License at:
+//
+//      http://opensource.org/licenses/MIT
+//
+//  Unless agreed to in writing, the subject software distributed under the License is distributed on an
+//  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
+//  License for the specific language governing permissions and limitations.
+//
+//  Code Modification History:
+//  ----------------------------------------------------------------------------------------------------
+//  12/19/2017 - William Ernest
+//       Generated original version of source code.
+//
+//*****************************************************************************************************@
+@using GSF.Web.Model
+@using System.Net.Http
+@using GSF.Web
+@using GSF.Web.Hosting
+@using GSF.Web.Shared
+@using openPDC.Model
+@using System.Data
+@using System.Linq
+@inherits ExtendedTemplateBase<AppModel>
+@{
+    Layout = "Layout.cshtml";
+
+    DataContext dataContext = ViewBag.DataContext;
+
+    HttpRequestMessage request = ViewBag.Request;
+    Dictionary<string, string> parameters = request.QueryParameters();
+    string id;
+    parameters.TryGetValue("ID", out id);
+
+    if (string.IsNullOrEmpty(id))
+    {
+        id = "0";
+    }
+
+    Device device = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", id);
+    VendorDevice vendorDevice = dataContext.Table<VendorDevice>().QueryRecordWhere("ID = {0}", device.VendorDeviceID);
+    Vendor vendor = dataContext.Table<Vendor>().QueryRecordWhere("ID = {0}", vendorDevice.VendorID);
+    ActiveMeasurement activeMeasurement = dataContext.Table<ActiveMeasurement>().QueryRecordWhere("Device = {0} AND SignalType = 'FREQ'", device.Acronym);
+
+    ViewBag.Title = "";
+
+}
+
+@section StyleSheets {
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    .btn-group {
+        text-align: center;
+    }
+
+        .btn-group button {
+            background-color: #4CAF50; /* Green background */
+            border: 1px solid green; /* Green border */
+            color: white; /* White text */
+            padding: 10px 24px; /* Some padding */
+            cursor: pointer; /* Pointer/hand icon */
+            float: none; /* Float the buttons side by side */
+            margin: 5px;
+            height: 62px;
+        }
+
+        /* Clear floats (clearfix hack) */
+        .btn-group:after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .btn-group button:not(:last-child) {
+            border-right: none; /* Prevent double borders */
+        }
+
+        /* Add a background color on hover */
+        .btn-group button:hover {
+            background-color: #3e8e41;
+        }
+        /* Add a background color on hover */
+        .btn-group button:disabled {
+            background-color: grey;
+        }
+
+    .banner-well {
+        width: 100%;
+        height: 75px;
+        border: 1px solid darkgrey;
+        float: none;
+        margin: 0px 0px 0px 0px;
+        text-align: center;
+        font-size: xx-large;
+        color: white;
+    }
+
+    .largeul {
+        font-size: x-large;
+        list-style-type: none;
+    }
+</style>
+
+}
+
+
+
+<div class="banner-well" style="background-color: green">
+    @device.Name - Ok 
+</div>
+<div class="col-md-6" style="height:90%">
+    <div style="height: 48%; overflow-y: scroll">
+        <h2>Device Stats</h2>
+        <ul class="largeul">
+            <li>Device Name: @device.Name</li>
+            <li>Make: @vendor.Name</li>
+            <li>Model: @vendorDevice.Name</li>
+            <li>Substation: S1234 Davidson</li>
+            <li>Lat: @device.Latitude</li>
+            <li>Long: @device.Longitude</li>
+            <li>Area: North</li>
+            <li>TSC: Murfreesboro</li>
+            <li>Contact: Reggie White</li>
+            <li>Analog channels: 16</li>
+            <li>Digital channels: 8</li>
+            <li>
+                Connection String:
+                <ul>
+                    @foreach (string x in device.ConnectionString.Split(';'))
+                    {
+                        <li>@x</li>
+                    }
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div style="height:48%; overflow-y: scroll">
+        <table id="statTable" class="table" style="font-size: x-small;">
+            <thead>Run-time Statistics:<thead />
+            <tr><th>ID</th><th>Description</th><th>Value</th><th>Time (UTC)</th></tr>
+        </table>
+    </div>
+</div>
+<div class="col-md-6" style="text-align:center; height: 90%">
+    <div style="height: 50%; width: 100%" id="graphwrapper">
+    </div>
+    <div class="btn-group" style="width:100%">
+        <button style="width:33.3%" onclick="SetInService()" disabled>Reset to Normal (Clear)</button>
+        <button style="width:33.3%" onclick="SetOutOfService()" disabled>Set to Out-of-Service</button>
+        <button style="width:33.3%" onclick="Reconnect()" disabled>Reconnect</button>
+        <button style="width:33.3%" onclick="SetInService()" disabled>Clear Out-of-Service</button>
+    </div>
+
+</div>
+
+@section Scripts {
+<script src="Scripts/flot/jquery.flot.js"></script>
+<script src="Scripts/flot/jquery.flot.crosshair.js"></script>
+<script src="Scripts/flot/jquery.flot.navigate.js"></script>
+<script src="Scripts/flot/jquery.flot.resize.js"></script>
+<script src="Scripts/flot/jquery.flot.selection.js"></script>
+<script src="Scripts/flot/jquery.flot.time.js"></script>
+<script src="Scripts/flot/jquery.flot.axislabels.js"></script>
+<script src="Scripts/moment.js"></script>
+<script>
+    var id = @device.ID;
+    var measDetails;
+
+    $(function () {
+        setHeights();
+
+        $(window).on('resize', setHeights());
+
+        $(window).on("hubConnected", function (event) {
+            dataHub.initializeSubscriptions();
+            $('button').removeAttr('disabled')
+
+        });
+
+        $(window).unload(function () {
+            if (!hubIsConnected)
+                return;
+
+            dataHub.terminateSubscriptions();
+        });
+
+        // Client function called from the dataHub when meta data gets recieved
+        dataHubClient.metaDataReceived = function () {
+            $(window).trigger('metaDataReceived');
+            //buildModal("Subscription");
+        }
+
+
+    });
+
+    $(window).on('metaDataReceived', function () {
+        dataHub.getMeasurementDetails().done(function(md){
+            measDetails = md.filter( x => x.DeviceAcronym == '@device.Acronym' && x.SignalAcronym == 'STAT').sort(function(a,b){
+                return parseInt(a.ID.split(':')[1]) - parseInt(b.ID.split(':')[1]);
+            });
+
+            dataHub.statSubscribe(measDetails.map(x => x.ID).join(';') + ';');
+
+            $.each(measDetails, function(i,d){
+                $('#statTable').append('<tr><td>' + d.ID.split(':')[1] +'</td><td>' + d.Description + '</td><td><span id="'+d.SignalID+'Val"></span></td><td><span id="'+d.SignalID+'Time"></span></td></tr>');
+            });
+            updateStats();
+        });
+        dataHub.updateFilters('@activeMeasurement.ID;').done(function(){
+            update();
+
+        });
+
+    });
+    function SetInService() {
+        dataHub.setInService(id).done(function () {
+            location.reload()
+        });
+    }
+
+    function SetOutOfService() {
+        dataHub.setOutOfService(id).done(function () {
+            location.reload()
+        });
+    }
+
+    function Reconnect(){
+        serviceHub.sendCommand("initialize @device.Acronym").done(function () {
+            location.reload()
+        });
+    }
+
+    // sets heights of various objects
+    function setHeights() {
+        const height = $(window).innerHeight();
+        $('#bodyContainer').css('height', calculateRemainingBodyHeight);
+    }
+
+    function buildPlot(data) {
+        var plotData = [[]];
+        $.each(data, function (i, d) {
+                plotData[0].push([d.Timestamp, d.Value]);
+        });
+
+        $('#graphwrapper').children().remove();
+        $.plot("#graphwrapper", plotData, {
+            yaxis: {
+                show: true,
+                position: "right",
+                axisLabel: "Frequency"
+            },
+            xaxis: {
+                ticks: 5,
+                tickFormatter: function(val, axis){
+                    return moment(val).utc().format('HH:mm:ss.SSSS');
+                },
+                axisLabel: "Time (UTC)"
+
+            }
+        });
+
+    }
+
+    function update(){
+        dataHub.getMeasurements().done(function(data){
+            buildPlot(data);
+        }).fail(function (error) {
+            showErrorMessage(error);
+        });
+        setTimeout(update, 500)
+
+    }
+
+    function updateStats(){
+        dataHub.getStats().done(function (data) {
+            $.each(data, function(i,d){
+                var val = d.Value.toFixed(3);
+
+                if(measDetails.find(x => x.SignalID == d.ID).Description.indexOf('Boolean') >= 0) val = (val == 1)
+                $('#' + d.ID + 'Val').text(val)
+                $('#' + d.ID + 'Time').text(moment(d.Timestamp).utc().format('HH:mm:ss.SSSS'))
+
+            });
+        }).fail(function (error) {
+            showErrorMessage(error);
+        });
+        setTimeout(updateStats, 10000)
+
+    }
+
+</script>
+
+}
