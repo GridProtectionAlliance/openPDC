@@ -283,8 +283,6 @@
     <None Include="wwwroot\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="wwwroot\DeviceStatus.cshtml" />
     <None Include="wwwroot\GraphMeasurements.cshtml" />
-    <None Include="wwwroot\GraphMeasurementsOld.cshtml" />
-    <None Include="wwwroot\GraphMeasurementsPopup.cshtml" />
     <None Include="wwwroot\Groups.cshtml" />
     <None Include="wwwroot\Help.cshtml" />
     <None Include="wwwroot\Index.cshtml" />
