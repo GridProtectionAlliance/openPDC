@@ -245,6 +245,7 @@ namespace openPDC
                             // Initiate pre-compile of base templates
                             RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException);
                             RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException, "GSF.Web.Security.Views.");
+                            RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException, "GSF.Web.Shared.Views.");
                             RazorEngine<CSharp>.Default.PreCompile(LogException);
                         }
                         catch (Exception ex)
