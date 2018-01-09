@@ -21,34 +21,29 @@
 //
 //******************************************************************************************************
 
-using GSF.TimeSeries;
-using GSF;
-using GSF.Configuration;
-using GSF.IO;
 using System;
-using GSF.Diagnostics;
-using openPDC.Model;
-using GSF.Web.Security;
-using System.IO;
 using System.Net;
-using System.Security;
-using GSF.ComponentModel;
-using GSF.Web.Hosting;
-using GSF.Security.Model;
-using GSF.Web.Model.Handlers;
-using System.Threading;
-using GSF.Reflection;
-using GSF.Web.Model;
 using System.Reflection;
-using Microsoft.Owin.Hosting;
-using GSF.ServiceProcess;
+using System.Security;
 using System.Security.Principal;
+using System.Threading;
+using GSF;
+using GSF.ComponentModel;
+using GSF.Configuration;
+using GSF.Diagnostics;
+using GSF.IO;
 using GSF.Security;
-using GSF.Data;
-using GSF.Data.Model;
-using System.Collections.Generic;
+using GSF.Security.Model;
+using GSF.ServiceProcess;
+using GSF.TimeSeries;
+using GSF.Web.Hosting;
+using GSF.Web.Model;
+using GSF.Web.Model.Handlers;
+using GSF.Web.Security;
 using GSF.Web.Shared;
 using GSF.Web.Shared.Model;
+using Microsoft.Owin.Hosting;
+using openPDC.Model;
 
 namespace openPDC
 {
