@@ -11,8 +11,6 @@
       <Directory Id="IMAGESSTATUSLIGHTSSMALLFOLDER" Name="Small" />
     </Directory>
   </Directory>
-  <Directory Id="SCRIPTSFOLDER" Name="Scripts">
-    <Directory Id="SCRIPTSFLOTFOLDER" Name="flot" />
-  </Directory>
+  <Directory Id="SCRIPTSFOLDER" Name="Scripts" />
 </Directory>
 </Include>

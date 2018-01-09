@@ -6,17 +6,11 @@
   <Component Id="Devices_cshtml">
     <File Id="Devices.cshtml" Name="Devices.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Devices.cshtml" />
   </Component>
-  <Component Id="GrafanaDeviceStatus_cshtml">
-    <File Id="GrafanaDeviceStatus.cshtml" Name="GrafanaDeviceStatus.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\GrafanaDeviceStatus.cshtml" />
+  <Component Id="DeviceStatus_cshtml">
+    <File Id="DeviceStatus.cshtml" Name="DeviceStatus.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\DeviceStatus.cshtml" />
   </Component>
   <Component Id="GraphMeasurements_cshtml">
     <File Id="GraphMeasurements.cshtml" Name="GraphMeasurements.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\GraphMeasurements.cshtml" />
-  </Component>
-  <Component Id="GraphMeasurementsOld_cshtml">
-    <File Id="GraphMeasurementsOld.cshtml" Name="GraphMeasurementsOld.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\GraphMeasurementsOld.cshtml" />
-  </Component>
-  <Component Id="GraphMeasurementsPopup_cshtml">
-    <File Id="GraphMeasurementsPopup.cshtml" Name="GraphMeasurementsPopup.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\GraphMeasurementsPopup.cshtml" />
   </Component>
   <Component Id="Groups_cshtml">
     <File Id="Groups.cshtml" Name="Groups.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Groups.cshtml" />
@@ -399,9 +393,6 @@
   </Component>
 </ComponentGroup>
 <ComponentGroup Id="wwwroot_Scripts_Components" Directory="SCRIPTSFOLDER">
-  <Component Id="Scripts_angular_js">
-    <File Id="Scripts_angular.js" Name="angular.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\angular.js" />
-  </Component>
   <Component Id="Scripts_bootstrap_datepicker_js">
     <File Id="Scripts_bootstrap_datepicker.js" Name="bootstrap-datepicker.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\bootstrap-datepicker.js" />
   </Component>
@@ -548,137 +539,6 @@
   </Component>
   <Component Id="Scripts_Site_js">
     <File Id="Scripts_Site.js" Name="Site.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\Site.js" />
-  </Component>
-</ComponentGroup>
-<ComponentGroup Id="wwwroot_Scripts_flot_Components" Directory="SCRIPTSFLOTFOLDER">
-  <Component Id="Scripts_flot_API_md">
-    <File Id="Scripts_flot_API.md" Name="API.md" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\API.md" />
-  </Component>
-  <Component Id="Scripts_flot_CONTRIBUTING_md">
-    <File Id="Scripts_flot_CONTRIBUTING.md" Name="CONTRIBUTING.md" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\CONTRIBUTING.md" />
-  </Component>
-  <Component Id="Scripts_flot_excanvas_js">
-    <File Id="Scripts_flot_excanvas.js" Name="excanvas.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\excanvas.js" />
-  </Component>
-  <Component Id="Scripts_flot_excanvas_min_js">
-    <File Id="Scripts_flot_excanvas.min.js" Name="excanvas.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\excanvas.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_FAQ_md">
-    <File Id="Scripts_flot_FAQ.md" Name="FAQ.md" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\FAQ.md" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_colorhelpers_js">
-    <File Id="Scripts_flot_jquery.colorhelpers.js" Name="jquery.colorhelpers.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.colorhelpers.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_colorhelpers_min_js">
-    <File Id="Scripts_flot_jquery.colorhelpers.min.js" Name="jquery.colorhelpers.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.colorhelpers.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_axislabels_js">
-    <File Id="Scripts_flot_jquery.flot.axislabels.js" Name="jquery.flot.axislabels.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.axislabels.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_canvas_js">
-    <File Id="Scripts_flot_jquery.flot.canvas.js" Name="jquery.flot.canvas.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.canvas.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_canvas_min_js">
-    <File Id="Scripts_flot_jquery.flot.canvas.min.js" Name="jquery.flot.canvas.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.canvas.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_categories_js">
-    <File Id="Scripts_flot_jquery.flot.categories.js" Name="jquery.flot.categories.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.categories.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_categories_min_js">
-    <File Id="Scripts_flot_jquery.flot.categories.min.js" Name="jquery.flot.categories.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.categories.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_crosshair_js">
-    <File Id="Scripts_flot_jquery.flot.crosshair.js" Name="jquery.flot.crosshair.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.crosshair.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_crosshair_min_js">
-    <File Id="Scripts_flot_jquery.flot.crosshair.min.js" Name="jquery.flot.crosshair.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.crosshair.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_errorbars_js">
-    <File Id="Scripts_flot_jquery.flot.errorbars.js" Name="jquery.flot.errorbars.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.errorbars.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_errorbars_min_js">
-    <File Id="Scripts_flot_jquery.flot.errorbars.min.js" Name="jquery.flot.errorbars.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.errorbars.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_fillbetween_js">
-    <File Id="Scripts_flot_jquery.flot.fillbetween.js" Name="jquery.flot.fillbetween.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.fillbetween.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_fillbetween_min_js">
-    <File Id="Scripts_flot_jquery.flot.fillbetween.min.js" Name="jquery.flot.fillbetween.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.fillbetween.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_image_js">
-    <File Id="Scripts_flot_jquery.flot.image.js" Name="jquery.flot.image.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.image.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_image_min_js">
-    <File Id="Scripts_flot_jquery.flot.image.min.js" Name="jquery.flot.image.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.image.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_js">
-    <File Id="Scripts_flot_jquery.flot.js" Name="jquery.flot.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_min_js">
-    <File Id="Scripts_flot_jquery.flot.min.js" Name="jquery.flot.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_navigate_js">
-    <File Id="Scripts_flot_jquery.flot.navigate.js" Name="jquery.flot.navigate.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.navigate.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_navigate_min_js">
-    <File Id="Scripts_flot_jquery.flot.navigate.min.js" Name="jquery.flot.navigate.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.navigate.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_pie_js">
-    <File Id="Scripts_flot_jquery.flot.pie.js" Name="jquery.flot.pie.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.pie.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_pie_min_js">
-    <File Id="Scripts_flot_jquery.flot.pie.min.js" Name="jquery.flot.pie.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.pie.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_resize_js">
-    <File Id="Scripts_flot_jquery.flot.resize.js" Name="jquery.flot.resize.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.resize.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_resize_min_js">
-    <File Id="Scripts_flot_jquery.flot.resize.min.js" Name="jquery.flot.resize.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.resize.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_selection_js">
-    <File Id="Scripts_flot_jquery.flot.selection.js" Name="jquery.flot.selection.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.selection.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_selection_min_js">
-    <File Id="Scripts_flot_jquery.flot.selection.min.js" Name="jquery.flot.selection.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.selection.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_stack_js">
-    <File Id="Scripts_flot_jquery.flot.stack.js" Name="jquery.flot.stack.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.stack.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_stack_min_js">
-    <File Id="Scripts_flot_jquery.flot.stack.min.js" Name="jquery.flot.stack.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.stack.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_symbol_js">
-    <File Id="Scripts_flot_jquery.flot.symbol.js" Name="jquery.flot.symbol.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.symbol.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_symbol_min_js">
-    <File Id="Scripts_flot_jquery.flot.symbol.min.js" Name="jquery.flot.symbol.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.symbol.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_threshold_js">
-    <File Id="Scripts_flot_jquery.flot.threshold.js" Name="jquery.flot.threshold.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.threshold.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_threshold_min_js">
-    <File Id="Scripts_flot_jquery.flot.threshold.min.js" Name="jquery.flot.threshold.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.threshold.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_time_js">
-    <File Id="Scripts_flot_jquery.flot.time.js" Name="jquery.flot.time.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.time.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_flot_time_min_js">
-    <File Id="Scripts_flot_jquery.flot.time.min.js" Name="jquery.flot.time.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.flot.time.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_js">
-    <File Id="Scripts_flot_jquery.js" Name="jquery.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.js" />
-  </Component>
-  <Component Id="Scripts_flot_jquery_min_js">
-    <File Id="Scripts_flot_jquery.min.js" Name="jquery.min.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\jquery.min.js" />
-  </Component>
-  <Component Id="Scripts_flot_LICENSE_txt">
-    <File Id="Scripts_flot_LICENSE.txt" Name="LICENSE.txt" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\LICENSE.txt" />
-  </Component>
-  <Component Id="Scripts_flot_Makefile">
-    <File Id="Scripts_flot_Makefile" Name="Makefile" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\Makefile" />
-  </Component>
-  <Component Id="Scripts_flot_NEWS_md">
-    <File Id="Scripts_flot_NEWS.md" Name="NEWS.md" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\flot\NEWS.md" />
   </Component>
 </ComponentGroup>
 </Include>
