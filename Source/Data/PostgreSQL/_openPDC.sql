@@ -12,16 +12,6 @@ CREATE TABLE DataAvailability(
 	TotalAvailableData DOUBLE PRECISION NOT NULL,
 );
 
-CREATE TABLE AlarmDevice(
-	ID SERIAL NOT NULL PRIMARY KEY,
-	DeviceID INTEGER NULL FOREIGN KEY REFERENCES Device(ID),
-	StateID INTEGER NULL FOREIGN KEY REFERENCES AlarmState(ID),
-	TimeStamp TIMESTAMP NULL,
-	DisplayData varchar(10) NULL,
-	CONSTRAINT FK_AlarmDevice_Device FOREIGN KEY(DeviceID) REFERENCES Device (ID) ON DELETE CASCADE,
-    CONSTRAINT FK_AlarmDevice_AlarmState FOREIGN KEY(StateID) REFERENCES AlarmState (ID) ON DELETE CASCADE
-
-);
 
 CREATE TABLE AlarmState(
 	ID SERIAL NOT NULL PRIMARY KEY,
@@ -35,3 +25,14 @@ INSERT INTO AlarmState (State, Color) VALUES ('Not Available', 'orange')
 INSERT INTO AlarmState (State, Color) VALUES ('Bad Data', 'blue');
 INSERT INTO AlarmState (State, Color) VALUES ('Bad Time', 'purple');
 INSERT INTO AlarmState (State, Color) VALUES ('Out of Service', 'grey');
+
+CREATE TABLE AlarmDevice(
+	ID SERIAL NOT NULL PRIMARY KEY,
+	DeviceID INTEGER NULL FOREIGN KEY REFERENCES Device(ID),
+	StateID INTEGER NULL FOREIGN KEY REFERENCES AlarmState(ID),
+	TimeStamp TIMESTAMP NULL,
+	DisplayData varchar(10) NULL,
+	CONSTRAINT FK_AlarmDevice_Device FOREIGN KEY(DeviceID) REFERENCES Device (ID) ON DELETE CASCADE,
+    CONSTRAINT FK_AlarmDevice_AlarmState FOREIGN KEY(StateID) REFERENCES AlarmState (ID) ON DELETE CASCADE
+
+);

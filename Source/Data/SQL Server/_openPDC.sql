@@ -14,16 +14,6 @@ CREATE TABLE DataAvailability(
 
 GO
 
-
-CREATE TABLE AlarmDevice(
-	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	DeviceID int NULL FOREIGN KEY REFERENCES Device(ID),
-	StateID int NULL FOREIGN KEY REFERENCES AlarmState(ID),
-	TimeStamp datetime NULL,
-	DisplayData varchar(10) NULL
-)
-GO
-
 CREATE TABLE AlarmState(
 	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	State varchar(50) NULL,
@@ -43,4 +33,13 @@ GO
 INSERT AlarmState (State, Color) VALUES ('Bad Time', 'purple')
 GO
 INSERT AlarmState (State, Color) VALUES ('Out of Service', 'grey')
+GO
+
+CREATE TABLE AlarmDevice(
+	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	DeviceID int NULL FOREIGN KEY REFERENCES Device(ID),
+	StateID int NULL FOREIGN KEY REFERENCES AlarmState(ID),
+	TimeStamp datetime NULL,
+	DisplayData varchar(10) NULL
+)
 GO
