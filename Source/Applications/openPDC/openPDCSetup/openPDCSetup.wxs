@@ -293,6 +293,13 @@
       <Component Id="SerializedSchema">
         <File Id="SerializedSchema.bin" Name="SerializedSchema.bin" Source="$(var.SolutionDir)\Data\SerializedSchema.bin" />
       </Component>
+
+      <Component Id="openPDC.Adapters">
+        <File Id="openPDC.Adapters.dll" Name="$(var.openPDC.Adapters.TargetFileName)" Source="$(var.openPDC.Adapters.TargetPath)" />
+      </Component>
+      <Component Id="openPDC.Model">
+        <File Id="openPDC.Model.dll" Name="$(var.openPDC.Model.TargetFileName)" Source="$(var.openPDC.Model.TargetPath)" />
+      </Component>
     </ComponentGroup>
 
     <!-- openPDC Manager -->
