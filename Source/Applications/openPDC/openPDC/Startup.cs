@@ -34,6 +34,7 @@ using Microsoft.Owin.Cors;
 using Newtonsoft.Json;
 using Owin;
 using openPDC.Model;
+using openPDC.Adapters;
 
 namespace openPDC
 {
@@ -67,6 +68,16 @@ namespace openPDC
                 Program.Host.LogException(new SecurityException($"Failed to load Security Hub, validate database connection string in configuration file: {ex.Message}", ex));
             }
 
+            // Load security hub into application domain before establishing SignalR hub configuration
+            try
+            {
+                using (new GrafanaController()) { }
+            }
+            catch (Exception ex)
+            {
+                Program.Host.LogException(new SecurityException($"Failed to load Security Hub, validate database connection string in configuration file: {ex.Message}", ex));
+            }
+
             // Configure Windows Authentication for self-hosted web service
             HubConfiguration hubConfig = new HubConfiguration();
             HttpConfiguration httpConfig = new HttpConfiguration();
@@ -92,20 +103,6 @@ namespace openPDC
             // Load ServiceHub SignalR class
             app.MapSignalR(hubConfig);
 
-            // Map specific historian instance API controllers
-            try
-            {
-                httpConfig.Routes.MapHttpRoute(
-                    name: "InstanceAPIs",
-                    routeTemplate: "instance/{instanceName}/{controller}/{action}/{id}",
-                    defaults: new { action = "Index", id = RouteParameter.Optional }
-                );
-            }
-            catch (Exception ex)
-            {
-                Program.Host.LogException(new InvalidOperationException($"Failed to initialize instance API controllers: {ex.Message}", ex));
-            }
-
             // Map custom API controllers
             try
             {
@@ -119,20 +116,6 @@ namespace openPDC
             {
                 Program.Host.LogException(new InvalidOperationException($"Failed to initialize custom API controllers: {ex.Message}", ex));
             }
-
-            // Map Grafana authenticated proxy controller
-            try
-            {
-                httpConfig.Routes.MapHttpRoute(
-                    name: "GrafanaAuthProxy",
-                    routeTemplate: "grafana/{*url}",
-                    defaults: new { controller = "GrafanaAuthProxy", url = RouteParameter.Optional });
-            }
-            catch (Exception ex)
-            {
-                Program.Host.LogException(new InvalidOperationException($"Failed to initialize Grafana authenticated proxy controller: {ex.Message}", ex));
-            }
-
             // Set configuration to use reflection to setup routes
             httpConfig.MapHttpAttributeRoutes();
 
@@ -149,37 +132,5 @@ namespace openPDC
         /// Gets the authentication options used for the hosted web server.
         /// </summary>
         public static AuthenticationOptions AuthenticationOptions { get; } = new AuthenticationOptions();
-
-        #region [ Old Code ]
-
-        //Dictionary<string, string> replacements = new Dictionary<string, string>() { { "{Namespace}", "openPDC" } };
-
-        //// Extract and update local Modbus configuration screens
-        //string webRootPath = FilePath.GetAbsolutePath(FilePath.AddPathSuffix(Program.Host.Model.Global.WebRootPath));
-        //            ExtractTextResource("ModbusAdapters.ModbusConfig.cshtml", $"{webRootPath}ModbusConfig.cshtml", replacements);
-        //            ExtractTextResource("ModbusAdapters.Status.cshtml", $"{webRootPath}Status.cshtml", replacements);
-
-        //private static void ExtractTextResource(string resourceName, string fileName, IEnumerable<KeyValuePair<string, string>> replacements)
-        //{
-        //    Stream stream = WebExtensions.OpenEmbeddedResourceStream(resourceName);
-
-        //    if ((object)stream != null)
-        //    {
-        //        using (StreamReader reader = new StreamReader(stream))
-        //        {
-        //            string resourceData = reader.ReadToEnd();
-
-        //            using (StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8))
-        //            {
-        //                foreach (KeyValuePair<string, string> replacement in replacements)
-        //                    resourceData = resourceData.Replace(replacement.Key, replacement.Value);
-
-        //                writer.Write(resourceData);
-        //            }
-        //        }
-        //    }
-        //}
-
-        #endregion
     }
 }

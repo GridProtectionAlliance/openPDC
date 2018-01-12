@@ -265,19 +265,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GlobalSettings.cs" />
-    <Compile Include="Model\ActiveMeasurement.cs" />
-    <Compile Include="Model\AlarmDeviceStateView.cs" />
     <Compile Include="Model\AppModel.cs" />
-    <Compile Include="Model\CustomActionAdapter.cs" />
-    <Compile Include="Model\Device.cs" />
-    <Compile Include="Model\DeviceDetail.cs" />
-    <Compile Include="Model\Historian.cs" />
-    <Compile Include="Model\Measurement.cs" />
-    <Compile Include="Model\MeasurementDetail.cs" />
-    <Compile Include="Model\MeasurementValue.cs" />
-    <Compile Include="Model\PhasorDetail.cs" />
-    <Compile Include="Model\SchemaVersion.cs" />
-    <Compile Include="Model\StatusLight.cs" />
     <Compile Include="ServiceConnectionHubClient.cs" />
     <Compile Include="ServiceConnectionOperations.cs" />
     <Compile Include="ServiceHub.cs" />
@@ -524,7 +512,16 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Libraries\openPDC.Adapters\openPDC.Adapters.csproj">
+      <Project>{e0c41ca8-fc63-4f46-b9b6-65d24db42193}</Project>
+      <Name>openPDC.Adapters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Libraries\openPDC.Model\openPDC.Model.csproj">
+      <Project>{3309d666-8bd5-4703-8158-1a586a3bde70}</Project>
+      <Name>openPDC.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)Database Scripts" "$(SolutionDir)Data\*.*"
