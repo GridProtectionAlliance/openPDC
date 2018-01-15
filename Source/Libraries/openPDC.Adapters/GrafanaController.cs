@@ -31,12 +31,14 @@ using CancellationToken = System.Threading.CancellationToken;
 using GSF.Data;
 using GSF.Data.Model;
 using openPDC.Model;
+using System.Web.Http.Cors;
 
 namespace openPDC.Adapters
 {
     /// <summary>
     /// Represents a REST based API for a simple JSON based Grafana data source.
     /// </summary>
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class GrafanaController : ApiController
     {
         /// <summary>
