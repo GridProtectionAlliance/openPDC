@@ -26,12 +26,12 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using GrafanaAdapters;
-using CancellationToken = System.Threading.CancellationToken;
 using GSF.Data;
 using GSF.Data.Model;
 using openPDC.Model;
-using System.Web.Http.Cors;
+using CancellationToken = System.Threading.CancellationToken;
 
 namespace openPDC.Adapters
 {
@@ -63,7 +63,7 @@ namespace openPDC.Adapters
                     return new TableOperations<AlarmDeviceStateView>(connection).QueryRecords();
                 }
             },
-                cancellationToken);
+            cancellationToken);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace openPDC.Adapters
                     return new TableOperations<DataAvailability>(connection).QueryRecords();
                 }
             },
-                cancellationToken);
+            cancellationToken);
         }
     }
 }

@@ -44,10 +44,11 @@ namespace WiXFolderGen
             Generation = 1;
             GenWWWRootIncludes.Execute();
 
-            // Generate WiX setup include files for "Grafana" folder
-            ExistingIdentifiers.UnionWith(NewIdentifiers);
-            NewIdentifiers.Clear();
-            Generation = 2;
+            //// Generate WiX setup include files for "other" folder
+            //ExistingIdentifiers.UnionWith(NewIdentifiers);
+            //NewIdentifiers.Clear();
+            //Generation = 2;
+            //GenOtherIncludes.Execute();
         }
 
         public static string GetCleanID(string path, string prefix, string suffix, int limit,
