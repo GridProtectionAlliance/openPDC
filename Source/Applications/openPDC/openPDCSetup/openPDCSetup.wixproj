@@ -23,6 +23,7 @@
     <OutputPath>..\..\..\..\Build\Output\Release\Setup\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <SuppressIces>ICE57;ICE03;ICE43;ICE60</SuppressIces>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CustomExitDialog.wxs" />
@@ -44,6 +45,22 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Libraries\openPDC.Adapters\openPDC.Adapters.csproj">
+      <Name>openPDC.Adapters</Name>
+      <Project>{e0c41ca8-fc63-4f46-b9b6-65d24db42193}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Libraries\openPDC.Model\openPDC.Model.csproj">
+      <Name>openPDC.Model</Name>
+      <Project>{3309d666-8bd5-4703-8158-1a586a3bde70}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Tools\ConfigurationSetupUtility\ConfigurationSetupUtility.csproj">
       <Name>ConfigurationSetupUtility</Name>
       <Project>{2a74eacf-8291-47c7-a2ed-0d58771f24e2}</Project>
@@ -119,6 +136,9 @@
     </Content>
     <Content Include="StatHistorianReportGenerator.exe" />
     <Content Include="StatHistorianReportGenerator.exe.config" />
+    <Content Include="WebFeatures.wxi" />
+    <Content Include="WebFiles.wxi" />
+    <Content Include="WebFolders.wxi" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <Target Name="AfterBuild">

@@ -116,7 +116,7 @@ GO
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW [dbo].[SchemaVersion] AS
-SELECT 7 AS VersionNumber
+SELECT 8 AS VersionNumber
 GO
 
 SET ANSI_NULLS ON
@@ -766,6 +766,13 @@ CREATE TABLE [dbo].[Phasor](
 ) ON [PRIMARY]
 
 GO
+
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Phasor_DeviceID_SourceIndex] ON [dbo].[Phasor] 
+(
+    [DeviceID] ASC, [SourceIndex] ASC
+)WITH (IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+GO
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -3082,4 +3089,49 @@ GO
 --    RETURN @measurements
 --END
 
---GO
+--GO 
+-- *******************************************************************************************
+-- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
+-- *******************************************************************************************
+CREATE VIEW [dbo].[LocalSchemaVersion] AS
+SELECT 1 AS VersionNumber
+GO
+
+CREATE TABLE DataAvailability(
+	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	GoodAvailableData float NOT NULL,
+	BadAvailableData float NOT NULL,
+	TotalAvailableData float NOT NULL,
+)
+
+GO
+
+CREATE TABLE AlarmState(
+	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	State varchar(50) NULL,
+	Color varchar(50) NULL,
+)
+
+GO
+
+INSERT AlarmState (State, Color) VALUES ('Good', 'green')
+GO
+INSERT AlarmState (State, Color) VALUES ('Alarm', 'red')
+GO
+INSERT AlarmState (State, Color) VALUES ('Not Available', 'orange')
+GO
+INSERT AlarmState (State, Color) VALUES ('Bad Data', 'blue')
+GO
+INSERT AlarmState (State, Color) VALUES ('Bad Time', 'purple')
+GO
+INSERT AlarmState (State, Color) VALUES ('Out of Service', 'grey')
+GO
+
+CREATE TABLE AlarmDevice(
+	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	DeviceID int NULL FOREIGN KEY REFERENCES Device(ID),
+	StateID int NULL FOREIGN KEY REFERENCES AlarmState(ID),
+	TimeStamp datetime NULL,
+	DisplayData varchar(10) NULL
+)
+GO

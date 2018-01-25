@@ -1,0 +1,126 @@
+<Include>
+<ComponentGroup Id="wwwroot_Components" Directory="WWWROOTFOLDER">
+  <Component Id="Companies_cshtml">
+    <File Id="Companies.cshtml" Name="Companies.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Companies.cshtml" />
+  </Component>
+  <Component Id="Devices_cshtml">
+    <File Id="Devices.cshtml" Name="Devices.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Devices.cshtml" />
+  </Component>
+  <Component Id="DeviceStatus_cshtml">
+    <File Id="DeviceStatus.cshtml" Name="DeviceStatus.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\DeviceStatus.cshtml" />
+  </Component>
+  <Component Id="GraphMeasurements_cshtml">
+    <File Id="GraphMeasurements.cshtml" Name="GraphMeasurements.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\GraphMeasurements.cshtml" />
+  </Component>
+  <Component Id="Groups_cshtml">
+    <File Id="Groups.cshtml" Name="Groups.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Groups.cshtml" />
+  </Component>
+  <Component Id="Help_cshtml">
+    <File Id="Help.cshtml" Name="Help.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Help.cshtml" />
+  </Component>
+  <Component Id="Index_cshtml">
+    <File Id="Index.cshtml" Name="Index.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Index.cshtml" />
+  </Component>
+  <Component Id="Layout_cshtml">
+    <File Id="Layout.cshtml" Name="Layout.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Layout.cshtml" />
+  </Component>
+  <Component Id="Logout_cshtml">
+    <File Id="Logout.cshtml" Name="Logout.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Logout.cshtml" />
+  </Component>
+  <Component Id="RemoteConsole_cshtml">
+    <File Id="RemoteConsole.cshtml" Name="RemoteConsole.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\RemoteConsole.cshtml" />
+  </Component>
+  <Component Id="SelectTheme_cshtml">
+    <File Id="SelectTheme.cshtml" Name="SelectTheme.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\SelectTheme.cshtml" />
+  </Component>
+  <Component Id="SelectTimeRange_cshtml">
+    <File Id="SelectTimeRange.cshtml" Name="SelectTimeRange.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\SelectTimeRange.cshtml" />
+  </Component>
+  <Component Id="UserInfo_cshtml">
+    <File Id="UserInfo.cshtml" Name="UserInfo.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\UserInfo.cshtml" />
+  </Component>
+  <Component Id="Users_cshtml">
+    <File Id="Users.cshtml" Name="Users.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Users.cshtml" />
+  </Component>
+  <Component Id="VendorDevices_cshtml">
+    <File Id="VendorDevices.cshtml" Name="VendorDevices.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\VendorDevices.cshtml" />
+  </Component>
+  <Component Id="Vendors_cshtml">
+    <File Id="Vendors.cshtml" Name="Vendors.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Vendors.cshtml" />
+  </Component>
+</ComponentGroup>
+<ComponentGroup Id="wwwroot_Content_Components" Directory="CONTENTFOLDER">
+  <Component Id="Content_bootstrap_sidebar_css">
+    <File Id="Content_bootstrap_sidebar.css" Name="bootstrap-sidebar.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-sidebar.css" />
+  </Component>
+  <Component Id="Content_bootstrap_theme_cerulean_css">
+    <File Id="Content_bootstrap_theme_cerulean.css" Name="bootstrap-theme-cerulean.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme-cerulean.css" />
+  </Component>
+  <Component Id="Content_bootstrap_theme_cosmo_css">
+    <File Id="Content_bootstrap_theme_cosmo.css" Name="bootstrap-theme-cosmo.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme-cosmo.css" />
+  </Component>
+  <Component Id="Content_bootstrap_theme_cyborg_css">
+    <File Id="Content_bootstrap_theme_cyborg.css" Name="bootstrap-theme-cyborg.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme-cyborg.css" />
+  </Component>
+  <Component Id="Content_bootstrap_theme_readable_css">
+    <File Id="Content_bootstrap_theme_readable.css" Name="bootstrap-theme-readable.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme-readable.css" />
+  </Component>
+  <Component Id="Content_bootstrap_theme_sandstone_css">
+    <File Id="Content_bootstrap_theme_sandstone.css" Name="bootstrap-theme-sandstone.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme-sandstone.css" />
+  </Component>
+  <Component Id="Content_bootstrap_theme_slate_css">
+    <File Id="Content_bootstrap_theme_slate.css" Name="bootstrap-theme-slate.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme-slate.css" />
+  </Component>
+  <Component Id="Content_bootstrap_theme_united_css">
+    <File Id="Content_bootstrap_theme_united.css" Name="bootstrap-theme-united.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme-united.css" />
+  </Component>
+  <Component Id="Content_bootstrap_theme_css">
+    <File Id="Content_bootstrap_theme.css" Name="bootstrap-theme.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme.css" />
+  </Component>
+  <Component Id="Content_bootstrap_theme_css_map">
+    <File Id="Content_bootstrap_theme.css.map" Name="bootstrap-theme.css.map" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme.css.map" />
+  </Component>
+  <Component Id="Content_bootstrap_theme_min_css">
+    <File Id="Content_bootstrap_theme.min.css" Name="bootstrap-theme.min.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme.min.css" />
+  </Component>
+  <Component Id="Content_bootstrap_theme_min_css_map">
+    <File Id="Content_bootstrap_theme.min.css.map" Name="bootstrap-theme.min.css.map" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme.min.css.map" />
+  </Component>
+  <Component Id="Content_Popup_css">
+    <File Id="Content_Popup.css" Name="Popup.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\Popup.css" />
+  </Component>
+  <Component Id="Content_Site_css">
+    <File Id="Content_Site.css" Name="Site.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\Site.css" />
+  </Component>
+</ComponentGroup>
+<ComponentGroup Id="wwwroot_Images_Components" Directory="IMAGESFOLDER">
+  <Component Id="Images_COMTRADEImporter_png">
+    <File Id="Images_COMTRADEImporter.png" Name="COMTRADEImporter.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\COMTRADEImporter.png" />
+  </Component>
+  <Component Id="Images_gpa_lock_png">
+    <File Id="Images_gpa_lock.png" Name="gpa-lock.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\gpa-lock.png" />
+  </Component>
+  <Component Id="Images_gpa_smalllock_png">
+    <File Id="Images_gpa_smalllock.png" Name="gpa-smalllock.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\gpa-smalllock.png" />
+  </Component>
+  <Component Id="Images_ModbusConfigEditor_png">
+    <File Id="Images_ModbusConfigEditor.png" Name="ModbusConfigEditor.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\ModbusConfigEditor.png" />
+  </Component>
+  <Component Id="Images_openPDC_png">
+    <File Id="Images_openPDC.png" Name="openPDC.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\openPDC.png" />
+  </Component>
+</ComponentGroup>
+<ComponentGroup Id="wwwroot_Images_Icons_Components" Directory="IMAGESICONSFOLDER">
+  <Component Id="Images_Icons_openPDC_png">
+    <File Id="Images_Icons_openPDC.png" Name="openPDC.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\Icons\openPDC.png" />
+  </Component>
+  <Component Id="Images_Icons_openPDCWebManager_ico">
+    <File Id="Images_Icons_openPDCWebManager.ico" Name="openPDCWebManager.ico" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\Icons\openPDCWebManager.ico" />
+  </Component>
+</ComponentGroup>
+<ComponentGroup Id="wwwroot_Scripts_Components" Directory="SCRIPTSFOLDER">
+  <Component Id="Scripts_Site_js">
+    <File Id="Scripts_Site.js" Name="Site.js" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Scripts\Site.js" />
+  </Component>
+</ComponentGroup>
+</Include>

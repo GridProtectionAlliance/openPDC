@@ -25,6 +25,10 @@
         <ComponentGroupRef Id="SQLiteScriptComponents" />
         <ComponentRef Id="makecert"/>
         <ComponentRef Id="Sample1344"/>
+
+        <!-- Web Files -->
+        <?include WebFeatures.wxi ?>
+
       </Feature>
 
       <!-- openPDC Manager -->
@@ -106,7 +110,7 @@
 
     <Property Id="SERVICENAME" Value="$(var.openPDC.TargetName)" />
     <Property Id="SERVICEPASSWORD" Hidden="yes" />
-    <Property Id="HTTPSERVICEPORTS" Value="6051,6052,6151,6152,6352,6452,5018" />
+    <Property Id="HTTPSERVICEPORTS" Value="6051,6052,6151,6152,6352,6452,5018,8280" />
     <Property Id="COMPANYNAME" Value="Grid Protection Alliance" />
     <Property Id="COMPANYACRONYM" Value="GPA" />
     <SetProperty Id="SERVICEACCOUNT" Value="NT SERVICE\[SERVICENAME]" After="LaunchConditions" Sequence="first" />
@@ -161,7 +165,11 @@
             <Directory Id="POSTGRESSCRIPTSFOLDER" Name="PostgreSQL" />
             <Directory Id="SQLSERVERSCRIPTSFOLDER" Name="SQL Server" />
             <Directory Id="SQLITESCRIPTSFOLDER" Name="SQLite" />
+
+
           </Directory>
+          <?include WebFolders.wxi ?>
+
         </Directory>
       </Directory>
       <?else ?>
@@ -180,6 +188,9 @@
             <Directory Id="POSTGRESSCRIPTSFOLDER" Name="PostgreSQL" />
             <Directory Id="SQLSERVERSCRIPTSFOLDER" Name="SQL Server" />
             <Directory Id="SQLITESCRIPTSFOLDER" Name="SQLite" />
+
+            <?include WebFolders.wxi ?>
+
           </Directory>
         </Directory>
       </Directory>
@@ -189,6 +200,10 @@
         <Directory Id="ApplicationProgramsFolder" Name="openPDC" />
       </Directory>
     </Directory>
+  </Fragment>
+
+  <Fragment>
+    <?include WebFiles.wxi ?>
   </Fragment>
 
   <Fragment>
@@ -254,7 +269,10 @@
         <ServiceControl Id="openPDCServiceControl" Name="openPDC" Stop="both" Remove="uninstall" />
       </Component>
       <Component Id="openPDCConfig" Permanent="yes">
-        <File Id="openPDC.exe.config" Name="$(var.openPDC.TargetFileName).config" Source="$(var.openPDC.TargetPath).config" />
+        <File Id="openPDC.exe.config" Name="$(var.openPDC.TargetFileName).config" Source="$(var.openPDC.ProjectDir)App.config" />
+      </Component>
+      <Component Id="AssemblyBindings">
+        <File Id="AssembyBindings.xml" Name="AssemblyBindings.xml" Source="$(var.openPDC.ProjectDir)AssemblyBindings.xml" />
       </Component>
       <Component Id="DataMigrationUtility">
         <File Id="DataMigrationUtility.exe" Name="DataMigrationUtility.exe" Source="$(var.ProjectDir)\DataMigrationUtility.exe" />
@@ -274,6 +292,13 @@
       </Component>
       <Component Id="SerializedSchema">
         <File Id="SerializedSchema.bin" Name="SerializedSchema.bin" Source="$(var.SolutionDir)\Data\SerializedSchema.bin" />
+      </Component>
+
+      <Component Id="openPDC.Adapters">
+        <File Id="openPDC.Adapters.dll" Name="$(var.openPDC.Adapters.TargetFileName)" Source="$(var.openPDC.Adapters.TargetPath)" />
+      </Component>
+      <Component Id="openPDC.Model">
+        <File Id="openPDC.Model.dll" Name="$(var.openPDC.Model.TargetFileName)" Source="$(var.openPDC.Model.TargetPath)" />
       </Component>
     </ComponentGroup>
 
@@ -523,6 +548,9 @@
 
     <!-- GSF Dependencies -->
     <ComponentGroup Id="GSFDependencyComponents" Directory="INSTALLFOLDER">
+      <Component Id="AjaxMin">
+        <File Id="AjaxMin.dll" Name="AjaxMin.dll" Source="$(var.SolutionDir)\Dependencies\GSF\AjaxMin.dll" />
+      </Component>
       <Component Id="Antlr3.Runtime">
         <File Id="Antlr3.Runtime.dll" Name="Antlr3.Runtime.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Antlr3.Runtime.dll" />
       </Component>
@@ -601,9 +629,6 @@
       <Component Id="System.Data.SQLite">
         <File Id="System.Data.SQLite.dll" Name="System.Data.SQLite.dll" Source="$(var.SolutionDir)\Dependencies\GSF\System.Data.SQLite.dll" />
       </Component>
-      <Component Id="Newtonsoft.Json">
-        <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.SolutionDir)Dependencies\GSF\Newtonsoft.Json.dll" />
-      </Component>
     </ComponentGroup>
     
     <!-- Microsoft Dependencies -->
@@ -623,8 +648,66 @@
       <Component Id="WPFToolkit">
         <File Id="WPFToolkit.dll" Name="WPFToolkit.dll" Source="$(var.SolutionDir)\Dependencies\Microsoft\WPF\WPFToolkit.dll" />
       </Component>
+
+      <!-- Self Hosting SignalR, WebAPI and Razor Engine Components (from NuGet) -->
+      <Component Id="Microsoft.AspNet.Razor">
+        <File Id="Microsoft.AspNet.Razor.dll" Name="Microsoft.AspNet.Razor.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll" />
+      </Component>
+      <Component Id="Microsoft.AspNet.SignalR.Core">
+        <File Id="Microsoft.AspNet.SignalR.Core.dll" Name="Microsoft.AspNet.SignalR.Core.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.SignalR.Core.2.2.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll" />
+      </Component>
+      <Component Id="System.Net.Http.Formatting">
+        <File Id="System.Net.Http.Formatting.dll" Name="System.Net.Http.Formatting.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll" />
+      </Component>
+      <Component Id="System.Web.Mvc">
+        <File Id="System.Web.Mvc.dll" Name="System.Web.Mvc.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll" />
+      </Component>
+      <Component Id="System.Web.Http">
+        <File Id="System.Web.Http.dll" Name="System.Web.Http.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll" />
+      </Component>
+      <Component Id="System.Web.Http.Owin">
+        <File Id="System.Web.Http.Owin.dll" Name="System.Web.Http.Owin.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll" />
+      </Component>
+      <Component Id="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
+        <File Id="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll" Name="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll" />
+      </Component>
+      <Component Id="Microsoft.Owin">
+        <File Id="Microsoft.Owin.dll" Name="Microsoft.Owin.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll" />
+      </Component>
+      <Component Id="Microsoft.Owin.Cors">
+        <File Id="Microsoft.Owin.Cors.dll" Name="Microsoft.Owin.Cors.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.Owin.Cors.3.1.0\lib\net45\Microsoft.Owin.Cors.dll" />
+      </Component>
+      <Component Id="Microsoft.Owin.Diagnostics">
+        <File Id="Microsoft.Owin.Diagnostics.dll" Name="Microsoft.Owin.Diagnostics.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.Owin.Diagnostics.3.1.0\lib\net45\Microsoft.Owin.Diagnostics.dll" />
+      </Component>
+      <Component Id="Microsoft.Owin.Host.HttpListener">
+        <File Id="Microsoft.Owin.Host.HttpListener.dll" Name="Microsoft.Owin.Host.HttpListener.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.Owin.Host.HttpListener.3.1.0\lib\net45\Microsoft.Owin.Host.HttpListener.dll" />
+      </Component>
+      <Component Id="Microsoft.Owin.Hosting">
+        <File Id="Microsoft.Owin.Hosting.dll" Name="Microsoft.Owin.Hosting.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.Owin.Hosting.3.1.0\lib\net45\Microsoft.Owin.Hosting.dll" />
+      </Component>
+      <Component Id="Microsoft.Owin.Security">
+        <File Id="Microsoft.Owin.Security.dll" Name="Microsoft.Owin.Security.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.Owin.Security.3.1.0\lib\net45\Microsoft.Owin.Security.dll" />
+      </Component>
+      <Component Id="Newtonsoft.Json">
+        <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll" />
+      </Component>
+      <Component Id="Owin">
+        <File Id="Owin.dll" Name="Owin.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Owin.1.0\lib\net40\Owin.dll" />
+      </Component>
+      <Component Id="RazorEngine">
+        <File Id="RazorEngine.dll" Name="RazorEngine.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\RazorEngine.3.7.7\lib\net45\RazorEngine.dll" />
+      </Component>
+      <Component Id="System.Web.Razor">
+        <File Id="System.Web.Razor.dll" Name="System.Web.Razor.dll" Source="$(var.SolutionDir)Dependencies\Microsoft\System.Web.Razor.dll" />
+      </Component>
+      <Component Id="System.Web.Cors">
+        <File Id="System.Web.Cors.dll" Name="System.Web.Cors.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll" />
+      </Component>
+
     </ComponentGroup>
 
+    
     <!-- MySQL Scripts -->
     <ComponentGroup Id="MySQLScriptComponents" Directory="MYSQLSCRIPTSFOLDER">
       <Component Id="MySQLAuditLog">

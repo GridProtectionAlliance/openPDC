@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{BD933E0E-B3FD-470B-B53B-56DA8BC27467}"
 EndProject
@@ -26,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{E7006E3E-A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", "{9A59B9E0-A36F-4C52-8568-CB004B20885B}"
 	ProjectSection(SolutionItems) = preProject
+		Data\SQL Server\_openPDC.sql = Data\SQL Server\_openPDC.sql
 		Data\SQL Server\AuditLog.sql = Data\SQL Server\AuditLog.sql
 		Data\SQL Server\InitialDataSet.sql = Data\SQL Server\InitialDataSet.sql
 		Data\SQL Server\openPDC.sql = Data\SQL Server\openPDC.sql
@@ -34,6 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B1AC9848-2909-4A7B-9541-8EA4E89E72F1}"
 	ProjectSection(SolutionItems) = preProject
+		Data\MySQL\_openPDC.sql = Data\MySQL\_openPDC.sql
 		Data\MySQL\AuditLog.sql = Data\MySQL\AuditLog.sql
 		Data\MySQL\InitialDataSet.sql = Data\MySQL\InitialDataSet.sql
 		Data\MySQL\openPDC.sql = Data\MySQL\openPDC.sql
@@ -67,16 +69,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D3", "D3", "{83A90AB9-3DC7-4FB6-9AF3-79AB2F6EB0C6}"
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\Microsoft\D3\DynamicDataDisplay.dll = Dependencies\Microsoft\D3\DynamicDataDisplay.dll
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight", "Silverlight", "{9597F7EC-CCCD-4CC5-A5B4-440C4204752B}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.Common.dll = Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.Common.dll
-		Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.dll = Dependencies\Microsoft\Silverlight\Microsoft.Maps.MapControl.dll
-		Dependencies\Microsoft\Silverlight\Microsoft.VirtualEarth.MapControl.dll = Dependencies\Microsoft\Silverlight\Microsoft.VirtualEarth.MapControl.dll
-		Dependencies\Microsoft\Silverlight\System.Windows.Controls.DataVisualization.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.DataVisualization.Toolkit.dll
-		Dependencies\Microsoft\Silverlight\System.Windows.Controls.Layout.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.Layout.Toolkit.dll
-		Dependencies\Microsoft\Silverlight\System.Windows.Controls.Toolkit.dll = Dependencies\Microsoft\Silverlight\System.Windows.Controls.Toolkit.dll
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MacrodyneController", "MacrodyneController", "{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C}"
@@ -116,6 +108,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Help Me Choose Diagrams", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{53255BB7-2046-4606-BF76-7B5C13F49819}"
 	ProjectSection(SolutionItems) = preProject
+		Data\SQLite\_openPDC.sql = Data\SQLite\_openPDC.sql
 		Data\SQLite\InitialDataSet.sql = Data\SQLite\InitialDataSet.sql
 		Data\SQLite\openPDC-InitialDataSet.db = Data\SQLite\openPDC-InitialDataSet.db
 		Data\SQLite\openPDC-SampleDataSet.db = Data\SQLite\openPDC-SampleDataSet.db
@@ -126,6 +119,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{53255B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Oracle", "Oracle", "{051BD028-6567-442A-B7C5-A5DD9F70B357}"
 	ProjectSection(SolutionItems) = preProject
+		Data\Oracle\_openPDC.sql = Data\Oracle\_openPDC.sql
 		Data\Oracle\AuditLog.sql = Data\Oracle\AuditLog.sql
 		Data\Oracle\InitialDataSet.sql = Data\Oracle\InitialDataSet.sql
 		Data\Oracle\openPDC.sql = Data\Oracle\openPDC.sql
@@ -279,10 +273,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WiX", "WiX", "{6CFC0EB9-861
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", "{73515839-30AD-40E6-809F-A891F2C95599}"
 	ProjectSection(SolutionItems) = preProject
+		Data\PostgreSQL\_openPDC.sql = Data\PostgreSQL\_openPDC.sql
 		Data\PostgreSQL\InitialDataSet.sql = Data\PostgreSQL\InitialDataSet.sql
 		Data\PostgreSQL\openPDC.sql = Data\PostgreSQL\openPDC.sql
 		Data\PostgreSQL\SampleDataSet.sql = Data\PostgreSQL\SampleDataSet.sql
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{67A6D68C-ACAE-4BA5-A8A2-2AA96D0DB322}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WixFolderGen", "Applications\openPDC\WixFolderGen\WixFolderGen.csproj", "{674F09A7-4477-4CED-90F6-B7512886BC74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.Adapters", "Libraries\openPDC.Adapters\openPDC.Adapters.csproj", "{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "openPDC.Model", "Libraries\openPDC.Model\openPDC.Model.csproj", "{3309D666-8BD5-4703-8158-1A586A3BDE70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -458,6 +461,78 @@ Global
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Release|x64.ActiveCfg = Release|x64
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Release|x64.Build.0 = Release|x64
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2}.Release|x86.ActiveCfg = Release|x64
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Debug|x64.Build.0 = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Debug|x86.Build.0 = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Deploy|x64.ActiveCfg = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Deploy|x64.Build.0 = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Deploy|x86.ActiveCfg = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Deploy|x86.Build.0 = Debug|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Mono|Any CPU.ActiveCfg = Release|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Mono|Any CPU.Build.0 = Release|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Mono|x64.ActiveCfg = Release|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Mono|x64.Build.0 = Release|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Mono|x86.ActiveCfg = Release|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Mono|x86.Build.0 = Release|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Release|x64.ActiveCfg = Release|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Release|x64.Build.0 = Release|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Release|x86.ActiveCfg = Release|Any CPU
+		{674F09A7-4477-4CED-90F6-B7512886BC74}.Release|x86.Build.0 = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Debug|x64.Build.0 = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Debug|x86.Build.0 = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Deploy|x64.ActiveCfg = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Deploy|x64.Build.0 = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Deploy|x86.ActiveCfg = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Deploy|x86.Build.0 = Debug|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Mono|Any CPU.ActiveCfg = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Mono|Any CPU.Build.0 = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Mono|x64.ActiveCfg = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Mono|x64.Build.0 = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Mono|x86.ActiveCfg = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Mono|x86.Build.0 = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Release|x64.ActiveCfg = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Release|x64.Build.0 = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Release|x86.ActiveCfg = Release|Any CPU
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193}.Release|x86.Build.0 = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Debug|x64.Build.0 = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Debug|x86.Build.0 = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Deploy|x64.ActiveCfg = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Deploy|x64.Build.0 = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Deploy|x86.ActiveCfg = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Deploy|x86.Build.0 = Debug|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Mono|Any CPU.ActiveCfg = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Mono|Any CPU.Build.0 = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Mono|x64.ActiveCfg = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Mono|x64.Build.0 = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Mono|x86.ActiveCfg = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Mono|x86.Build.0 = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Release|x64.ActiveCfg = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Release|x64.Build.0 = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Release|x86.ActiveCfg = Release|Any CPU
+		{3309D666-8BD5-4703-8158-1A586A3BDE70}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -470,7 +545,6 @@ Global
 		{F7821DF0-BD48-481E-9DF9-D64AEFD24F57} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{29821B31-3A0D-469E-B8BA-AD006159BC3D} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
 		{83A90AB9-3DC7-4FB6-9AF3-79AB2F6EB0C6} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
-		{9597F7EC-CCCD-4CC5-A5B4-440C4204752B} = {89F8C302-E1C2-4C61-9CFB-CB4879B04B38}
 		{C4B7F8ED-DC60-46EC-B78B-D541C1FA864C} = {9EEDE95F-8333-4957-B270-02D3CD4629B5}
 		{B1E85C83-F93D-4C3C-BB90-905B93D7C8AD} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
 		{060A349D-E92D-4F13-A857-01609631D3BE} = {E0BCE54D-F114-4ECD-B688-3C79BD0BE97A}
@@ -486,6 +560,12 @@ Global
 		{6858B393-77B4-4F28-A4B1-14B484C10FB2} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{6CFC0EB9-8610-4200-806B-E2B62B63F8B3} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{73515839-30AD-40E6-809F-A891F2C95599} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
+		{674F09A7-4477-4CED-90F6-B7512886BC74} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
+		{E0C41CA8-FC63-4F46-B9B6-65D24DB42193} = {67A6D68C-ACAE-4BA5-A8A2-2AA96D0DB322}
+		{3309D666-8BD5-4703-8158-1A586A3BDE70} = {67A6D68C-ACAE-4BA5-A8A2-2AA96D0DB322}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B6F62940-D22D-4D90-B5D6-99F8AEE74543}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Synchrophasor2.vsmdi
