@@ -10,11 +10,9 @@ This guide is intended to aid in building the openPDC software and setting it up
 
 -  [Install openPDC with the installers](#install-openpdc-with-the-installers)
 -  [Manually set up the database](#manually-set-up-the-database)
-    -   [Setting up an Access database](#setting-up-an-access-database)
     -   [Setting up a SQL Server database](#setting-up-a-sql-server-database)
     -   [Setting up a MySQL database](#setting-up-a-mysql-database)
     -   [Modifying the configuration file](#modifying-the-configuration-file)
-    -   [Fix the configuration settings](#fix-the-configuration-settings)
     -   [Encrypt the configuration settings](#encrypt-the-configuration-settings)
 -   [Running the openPDC](#running-the-openpdc)
 -   [Using the openPDC console](#using-the-openpdc-console)
@@ -71,7 +69,7 @@ The web based openPDCManager is not included in openPDCSetup v1.2 and later rele
 |---|---|---|
 | openPDC Manager    | openPDCManagerWebSetup.msi / openPDCManagerServicesSetup.msi     | Silverlight application used to help configure openPDC. Needs IIS 4.0 or later to be installed. |
 
-The openPDC installer will automatically launch the database setup utility during the installation. Please note that the Access database will only work on 32-bit installations. If the database setup utility fails to install your database, your openPDC installation will not fail. You can run the database setup utility again once your installation has finished.
+The openPDC installer will automatically launch the database setup utility during the installation. If the database setup utility fails to install your database, your openPDC installation will not fail. You can run the database setup utility again once your installation has finished.
 
 If the database setup utility has successfully installed your database, you can skip ahead to [Running the openPDC](#running-the-openpdc). Otherwise, you will need to run the database setup utility again or go to [Manually set up the database](#manually-set-up-the-database).
 
@@ -123,17 +121,7 @@ Select the primary historian. In this case, since we are using sample data, we d
 
 ## Manually set up the database
 
-The following subsections will instruct you on setting up [Access](#setting-up-an-access-database), [SQL Server](#setting-up-a-sql-server-database), and [MySQL](#setting-up-a-mysql-database) databases. You only need to set up one of these in order to run the openPDC.
-
-### Setting up an Access database
-
-**Note**: Access is not recommended for use in production, but is considered to be a good option for development purposes.
-
-1.  If you used the installers, navigate to the [installation directory](#installation-directory) and go to "`Database Scripts\Access`". Otherwise, navigate to "`SOURCEDIR\Synchrophasor\Current Version\Source\Data\Access`" (SOURCEDIR is the directory where you extracted the openPDC source code files).
-2.  Copy the file "openPDC-SampleDataSet.mdb" to your [installation directory](#installation-directory).
-3.  Rename the copy to "openPDC.mdb".
-
-If you haven't configured the openPDC to use another type of database since you built it, you can skip ahead to [Run openPDC](#running-the-openpdc). Otherwise, you will need to skip ahead to [modify the configuration file](#modifying-the-configuration-file).
+The following subsections will instruct you on setting up [SQL Server](#setting-up-a-sql-server-database) and [MySQL](#setting-up-a-mysql-database) databases. You only need to set up one of these in order to run the openPDC.
 
 ### Setting up a SQL Server database
 
@@ -167,12 +155,11 @@ You will need to install MySQL 5.1 which is available at <http://dev.mysql.com/d
 ### Modifying the configuration file
 
 The configuration file, "openPDC.exe.config" or "openPDC.config" (found in your [installation directory](#installation-directory)), is written in XML and can be opened with any text editor or with Microsoft Visual Studio 2008.
-**Note**: The configuration file is set up to work with Access out-of-the-box, so you can [skip this part](#running-the-openpdc) if you are using Access and haven't modified it since you built the openPDC. Also, you may skip this part since the latest version of the openPDC provides with a database connection auto-configuration that occurs during the installation process.
+
 This table contains the values for the settings in the configuration file that you need to modify. Refer to the code block below to find the settings that you need to modify.
 
 | Database | \[ConnectionString\] | \[DataProviderString\] | Notes |
 |----------|----------------------|------------------------|-------|
-| Access | Provider=Microsoft.Jet.OLEDB.4.0; Data Source=openPDC.mdb | AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.OleDb.OleDbConnection; AdapterType=System.Data.OleDb.OleDbDataAdapter | none |
 | SQL Server | Data Source=*serverName*; Initial Catalog=openPDC; User Id=*username*; Password=*password* | AssemblyName={System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter | Replace *serverName* with the name of your database server, *username* with your username, and *password* with your password. |
 | MySQL | Server=*serverName*; Database=openPDC; Uid=*username*; Pwd=*password* | AssemblyName={MySql.Data, Version=6.2.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d}; ConnectionType=MySql.Data.MySqlClient.MySqlConnection; AdapterType=MySql.Data.MySqlClient.MySqlDataAdapter | Replace *serverName* with the name of your database server, *username* with your username, and *password* with your password. Additionally, [install MySQL Connector Net](http://dev.mysql.com/downloads/connector/net/6.2.html) if you haven't already. You may also need to modify the Version key in the data provider string depending on your version of MySQL Connector Net. |
 
@@ -194,12 +181,6 @@ You will need to modify the value property of the following settings using the v
 ```
 
 *Note: "historian" in historianAdoMetadataProvider above will be replaced by the acronym of your local historian. If that section is not present in your configuration file, these settings will be copied from the systemSettings section the first time you run the openPDC.*
-
-### Fix the configuration settings
-
-If you installed the openPDC using [the openPDC installers](Getting_Started.md#openpdc_installers), you may need to fix some configuration settings.
-
--  If you are using the built-in Access database, you may need to change the connection strings in the configuration file to`Provider=Microsoft.Jet.OLEDB.4.0; Data Source=C:\Program Files\openPDC\openPDC.mdb` (changing Data Source to an absolute path).
 
 ### Encrypt the configuration settings
 
