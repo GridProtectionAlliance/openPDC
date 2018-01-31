@@ -186,6 +186,7 @@ $(function () {
     serviceHub = $.connection.serviceHub.server;
     serviceHubClient = $.connection.serviceHub.client;
 
+    $(window).trigger('beforeHubConnected');
     $.connection.hub.reconnecting(function () {
         hubIsConnecting = true;
         showInfoMessage("Attempting to reconnect to service&nbsp;&nbsp;<span class='glyphicon glyphicon-refresh glyphicon-spin'></span>", -1);
