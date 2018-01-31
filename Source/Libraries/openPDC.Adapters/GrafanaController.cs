@@ -26,19 +26,20 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Cors;
 using GrafanaAdapters;
 using GSF.Data;
 using GSF.Data.Model;
 using openPDC.Model;
 using CancellationToken = System.Threading.CancellationToken;
+using System.Web.Mvc;
+using HttpGet = System.Web.Http.HttpGetAttribute;
+using HttpPost = System.Web.Http.HttpPostAttribute;
 
 namespace openPDC.Adapters
 {
     /// <summary>
     /// Represents a REST based API for a simple JSON based Grafana data source.
     /// </summary>
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class GrafanaController : ApiController
     {
         /// <summary>
@@ -54,6 +55,7 @@ namespace openPDC.Adapters
         /// Queries current alarm device state.
         /// </summary>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public Task<IEnumerable<AlarmDeviceStateView>> GetAlarmState(QueryRequest request, CancellationToken cancellationToken)
         {
             return Task.Factory.StartNew(() =>
@@ -70,6 +72,7 @@ namespace openPDC.Adapters
         /// Queries current data availability.
         /// </summary>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public Task<IEnumerable<DataAvailability>> GetDataAvailability(QueryRequest request, CancellationToken cancellationToken)
         {
             return Task.Factory.StartNew(() =>

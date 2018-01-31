@@ -654,7 +654,7 @@
         <File Id="Microsoft.AspNet.Razor.dll" Name="Microsoft.AspNet.Razor.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll" />
       </Component>
       <Component Id="Microsoft.AspNet.SignalR.Core">
-        <File Id="Microsoft.AspNet.SignalR.Core.dll" Name="Microsoft.AspNet.SignalR.Core.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.SignalR.Core.2.2.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll" />
+        <File Id="Microsoft.AspNet.SignalR.Core.dll" Name="Microsoft.AspNet.SignalR.Core.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.SignalR.Core.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll" />
       </Component>
       <Component Id="System.Net.Http.Formatting">
         <File Id="System.Net.Http.Formatting.dll" Name="System.Net.Http.Formatting.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll" />
@@ -702,7 +702,13 @@
         <File Id="System.Web.Razor.dll" Name="System.Web.Razor.dll" Source="$(var.SolutionDir)Dependencies\Microsoft\System.Web.Razor.dll" />
       </Component>
       <Component Id="System.Web.Cors">
-        <File Id="System.Web.Cors.dll" Name="System.Web.Cors.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll" />
+        <File Id="System.Web.Cors.dll" Name="System.Web.Cors.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Microsoft.AspNet.Cors.5.0.0\lib\net45\System.Web.Cors.dll" />
+      </Component>
+      <Component Id="System.Web.WebPages">
+        <File Id="System.Web.WebPages.dll" Name="System.Web.WebPages.dll" Source="$(var.SolutionDir)Dependencies\GSF\System.Web.WebPages.dll" />
+      </Component>
+      <Component Id="System.Web.WebPages.Razor">
+        <File Id="System.Web.WebPages.Razor.dll" Name="System.Web.WebPages.Razor.dll" Source="$(var.SolutionDir)Dependencies\GSF\System.Web.WebPages.Razor.dll" />
       </Component>
 
     </ComponentGroup>
