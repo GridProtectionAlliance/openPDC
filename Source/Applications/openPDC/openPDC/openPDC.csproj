@@ -120,9 +120,6 @@
     <Reference Include="GSF.Communication">
       <HintPath>..\..\..\Dependencies\GSF\GSF.Communication.dll</HintPath>
     </Reference>
-    <Reference Include="GSF.COMTRADE">
-      <HintPath>..\..\..\Dependencies\GSF\GSF.COMTRADE.dll</HintPath>
-    </Reference>
     <Reference Include="GSF.Core">
       <HintPath>..\..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
     </Reference>
@@ -281,7 +278,8 @@
     <None Include="wwwroot\GraphMeasurements.cshtml" />
     <None Include="wwwroot\Groups.cshtml" />
     <None Include="wwwroot\Help.cshtml" />
-    <Content Include="wwwroot\ImportCOMTRADE.cshtml" />
+    <Content Include="Readme.txt" />
+    <Content Include="wwwroot\Images\openPDCBanner.png" />
     <None Include="wwwroot\Index.cshtml" />
     <None Include="wwwroot\Layout.cshtml" />
     <None Include="wwwroot\Logout.cshtml" />
@@ -290,7 +288,6 @@
     <None Include="wwwroot\SelectTheme.cshtml" />
     <None Include="wwwroot\SelectTimeRange.cshtml" />
     <Content Include="wwwroot\Status.cshtml" />
-    <None Include="wwwroot\UserInfo.cshtml" />
     <None Include="wwwroot\Users.cshtml" />
     <None Include="wwwroot\VendorDevices.cshtml" />
     <None Include="wwwroot\Vendors.cshtml" />
@@ -312,9 +309,6 @@
     <Content Include="wwwroot\Content\bootstrap-theme.min.css" />
     <Content Include="wwwroot\Content\Popup.css" />
     <Content Include="wwwroot\Content\Site.css" />
-    <Content Include="wwwroot\Images\COMTRADEImporter.png" />
-    <Content Include="wwwroot\Images\gpa-lock.png" />
-    <Content Include="wwwroot\Images\gpa-smalllock.png" />
     <Content Include="wwwroot\Images\Icons\openPDC.png" />
     <Content Include="wwwroot\Images\Icons\openPDCWebManager.ico" />
     <Content Include="wwwroot\Images\ModbusConfigEditor.png" />
@@ -369,15 +363,15 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-      CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)Database Scripts" "$(SolutionDir)Data\*.*"
-      CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)" "$(SolutionDir)Dependencies\GSF\*.*"
-      CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)" "$(SolutionDir)Dependencies\Microsoft\WPF\*.dll"
-      CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)" "$(SolutionDir)Applications\openPDC\openPDCSetup\*.exe*"
-      CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)" "$(ProjectDir)Sample1344.PmuCapture"
-      CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)wwwroot" "$(SolutionDir)Applications\openPDC\openPDC\wwwroot\*.*"
-      XCOPY "$(SolutionDir)Data\SerializedSchema.bin" "$(TargetDir)" /Y
-    </PostBuildEvent>
+    <PostBuildEvent>CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)Database Scripts" "$(SolutionDir)Data\*.*"
+CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)" "$(SolutionDir)Dependencies\GSF\*.*"
+CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)" "$(SolutionDir)Dependencies\Microsoft\System.Web.Razor.dll"
+CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)" "$(SolutionDir)Dependencies\SQLite\*.*"
+CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)" "$(SolutionDir)Applications\openPDC\openPDCSetup\*.exe*"
+CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)" "$(ProjectDir)Sample1344.PmuCapture"
+CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)wwwroot" "$(SolutionDir)Applications\openPDC\openPDC\wwwroot\*.*"
+CALL "$(ProjectDir)PostBuildSetup.bat" "$(ProjectDir)bin" "$(TargetDir)*.dll"
+XCOPY "$(SolutionDir)Data\SerializedSchema.bin" "$(TargetDir)" /Y</PostBuildEvent>
   </PropertyGroup>
   <Target Name="AfterBuild">
     <CallTarget Targets="SignBuild" />

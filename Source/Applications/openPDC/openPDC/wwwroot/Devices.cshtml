@@ -144,7 +144,6 @@
             return id == null;
         }
 
-
         $(viewModel).on("recordSaved", function(event, record, isNew) {
             refreshEnabledState(record);
         });
@@ -153,6 +152,5 @@
             if (hubIsConnected)
                 serviceHub.sendCommand("reloadconfig");
         });
-
     </script>
 }

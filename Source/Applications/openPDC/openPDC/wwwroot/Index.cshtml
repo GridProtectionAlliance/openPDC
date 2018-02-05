@@ -31,7 +31,7 @@
 @using GSF.Security.Cryptography
 @using GSF.Web.Model
 @using GSF.Web.Shared
-@using openHistorian.Model
+@using openPDC.Model
 @using AssemblyInfo = GSF.Reflection.AssemblyInfo
 @inherits ExtendedTemplateBase<AppModel>
 @{
@@ -239,7 +239,6 @@
                 <div class="btn-group-vertical btn-block">
                     <a href="Devices.cshtml" role="button" class="btn btn-primary">Devices</a>
                     <a href="ModbusConfig.cshtml" role="button" class="btn btn-default">Add Modbus Mapping</a>
-                    <a href="ImportCOMTRADE.cshtml" role="button" class="btn btn-default">Import COMTRADE Data</a>
                     <a href="GraphMeasurements.cshtml" role="button" class="btn btn-default">Real-time Measurements</a>
                     @if (UserIsAdmin()) {
                         <button type="button" class="btn btn-default" id="restartButton" hub-dependent>Restart Service</button>

@@ -54,11 +54,13 @@
     <Compile Include="Device.cs" />
     <Compile Include="DeviceDetail.cs" />
     <Compile Include="Historian.cs" />
+    <Compile Include="Interconnection.cs" />
     <Compile Include="Measurement.cs" />
     <Compile Include="MeasurementDetail.cs" />
     <Compile Include="MeasurementValue.cs" />
     <Compile Include="PhasorDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol.cs" />
     <Compile Include="SchemaVersion.cs" />
     <Compile Include="StatusLight.cs" />
   </ItemGroup>

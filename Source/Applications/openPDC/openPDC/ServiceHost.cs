@@ -30,7 +30,6 @@ using System.Threading;
 using GSF;
 using GSF.ComponentModel;
 using GSF.Configuration;
-using GSF.Diagnostics;
 using GSF.IO;
 using GSF.Security;
 using GSF.Security.Model;
@@ -69,7 +68,6 @@ namespace openPDC
         // Fields
         private IDisposable m_webAppHost;
         private bool m_serviceStopping;
-        private readonly LogSubscriber m_logSubscriber;
         private bool m_disposed;
 
         #endregion
@@ -82,18 +80,9 @@ namespace openPDC
         public ServiceHost()
         {
             ServiceName = "openPDC";
-
-            m_logSubscriber = Logger.CreateSubscriber();
-            m_logSubscriber.SubscribeToAssembly(typeof(Number).Assembly, VerboseLevel.High);
-            m_logSubscriber.SubscribeToAssembly(typeof(HistorianKey).Assembly, VerboseLevel.High);
-            m_logSubscriber.NewLogMessage += m_logSubscriber_Log;
-
-            // This function needs to be called before establishing time-series IaonSession
-            //SetupGrafanaHostingAdapter();
         }
 
         #endregion
-
 
         #region [ Properties ]
 
@@ -137,7 +126,6 @@ namespace openPDC
                     if (disposing)
                     {
                         m_webAppHost?.Dispose();
-                        m_logSubscriber?.Dispose();
                     }
                 }
                 finally
@@ -415,27 +403,6 @@ namespace openPDC
         {
             if ((object)LoggedException != null)
                 LoggedException(sender, new EventArgs<Exception>(e.Argument));
-        }
-
-        private void m_logSubscriber_Log(LogMessage logMessage)
-        {
-            switch (logMessage.Level)
-            {
-                case MessageLevel.Critical:
-                case MessageLevel.Error:
-                    ServiceHelper?.ErrorLogger?.Log(logMessage.Exception ?? new InvalidOperationException(logMessage.GetMessage()));
-                    break;
-                case MessageLevel.Warning:
-                    if (!string.IsNullOrWhiteSpace(logMessage.Message))
-                        DisplayStatusMessage($"[SNAPENGINE] WARNING: {logMessage.Message}", UpdateType.Warning, false);
-                    break;
-                case MessageLevel.Debug:
-                    break;
-                default:
-                    if (!string.IsNullOrWhiteSpace(logMessage.Message))
-                        DisplayStatusMessage($"[SNAPENGINE] {logMessage.Message}", UpdateType.Information, false);
-                    break;
-            }
         }
 
         #endregion

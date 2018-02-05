@@ -27,6 +27,9 @@
   <Component Id="Logout_cshtml">
     <File Id="Logout.cshtml" Name="Logout.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Logout.cshtml" />
   </Component>
+  <Component Id="ModbusConfig_cshtml">
+    <File Id="ModbusConfig.cshtml" Name="ModbusConfig.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\ModbusConfig.cshtml" />
+  </Component>
   <Component Id="RemoteConsole_cshtml">
     <File Id="RemoteConsole.cshtml" Name="RemoteConsole.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\RemoteConsole.cshtml" />
   </Component>
@@ -36,8 +39,8 @@
   <Component Id="SelectTimeRange_cshtml">
     <File Id="SelectTimeRange.cshtml" Name="SelectTimeRange.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\SelectTimeRange.cshtml" />
   </Component>
-  <Component Id="UserInfo_cshtml">
-    <File Id="UserInfo.cshtml" Name="UserInfo.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\UserInfo.cshtml" />
+  <Component Id="Status_cshtml">
+    <File Id="Status.cshtml" Name="Status.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Status.cshtml" />
   </Component>
   <Component Id="Users_cshtml">
     <File Id="Users.cshtml" Name="Users.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Users.cshtml" />
@@ -77,14 +80,8 @@
   <Component Id="Content_bootstrap_theme_css">
     <File Id="Content_bootstrap_theme.css" Name="bootstrap-theme.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme.css" />
   </Component>
-  <Component Id="Content_bootstrap_theme_css_map">
-    <File Id="Content_bootstrap_theme.css.map" Name="bootstrap-theme.css.map" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme.css.map" />
-  </Component>
   <Component Id="Content_bootstrap_theme_min_css">
     <File Id="Content_bootstrap_theme.min.css" Name="bootstrap-theme.min.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme.min.css" />
-  </Component>
-  <Component Id="Content_bootstrap_theme_min_css_map">
-    <File Id="Content_bootstrap_theme.min.css.map" Name="bootstrap-theme.min.css.map" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\bootstrap-theme.min.css.map" />
   </Component>
   <Component Id="Content_Popup_css">
     <File Id="Content_Popup.css" Name="Popup.css" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Content\Popup.css" />
@@ -94,20 +91,14 @@
   </Component>
 </ComponentGroup>
 <ComponentGroup Id="wwwroot_Images_Components" Directory="IMAGESFOLDER">
-  <Component Id="Images_COMTRADEImporter_png">
-    <File Id="Images_COMTRADEImporter.png" Name="COMTRADEImporter.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\COMTRADEImporter.png" />
-  </Component>
-  <Component Id="Images_gpa_lock_png">
-    <File Id="Images_gpa_lock.png" Name="gpa-lock.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\gpa-lock.png" />
-  </Component>
-  <Component Id="Images_gpa_smalllock_png">
-    <File Id="Images_gpa_smalllock.png" Name="gpa-smalllock.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\gpa-smalllock.png" />
-  </Component>
   <Component Id="Images_ModbusConfigEditor_png">
     <File Id="Images_ModbusConfigEditor.png" Name="ModbusConfigEditor.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\ModbusConfigEditor.png" />
   </Component>
   <Component Id="Images_openPDC_png">
     <File Id="Images_openPDC.png" Name="openPDC.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\openPDC.png" />
+  </Component>
+  <Component Id="Images_openPDCBanner_png">
+    <File Id="Images_openPDCBanner.png" Name="openPDCBanner.png" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\openPDCBanner.png" />
   </Component>
 </ComponentGroup>
 <ComponentGroup Id="wwwroot_Images_Icons_Components" Directory="IMAGESICONSFOLDER">

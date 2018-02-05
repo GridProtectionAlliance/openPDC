@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -32,7 +31,6 @@ using Microsoft.AspNet.SignalR;
 using GSF;
 using GSF.Data.Model;
 using GSF.Configuration;
-using GSF.COMTRADE;
 using GSF.Identity;
 using GSF.IO;
 using GSF.Web.Hubs;
@@ -96,7 +94,6 @@ namespace openPDC
 
         // Static Fields
         private static int s_modbusProtocolID;
-        private static int s_comtradeProtocolID;
         private static string s_configurationCachePath;
 
         // Static Constructor
@@ -161,19 +158,12 @@ namespace openPDC
 
         private int ModbusProtocolID => s_modbusProtocolID != 0 ? s_modbusProtocolID : (s_modbusProtocolID = DataContext.Connection.ExecuteScalar<int>("SELECT ID FROM Protocol WHERE Acronym='Modbus'"));
 
-        private int ComtradeProtocolID => s_comtradeProtocolID != 0 ? s_comtradeProtocolID : (s_comtradeProtocolID = DataContext.Connection.ExecuteScalar<int>("SELECT ID FROM Protocol WHERE Acronym='COMTRADE'"));
-
         /// <summary>
         /// Gets protocol ID for "ModbusPoller" protocol.
         /// </summary>
         public int GetModbusProtocolID() => ModbusProtocolID;
-
-        /// <summary>
-        /// Gets protocol ID for "COMTRADE" protocol.
-        /// </summary>
-        public int GetComtradeProtocolID() => ComtradeProtocolID;
-
         [RecordOperation(typeof(Device), RecordOperation.QueryRecordCount)]
+
         public int QueryDeviceCount(string filterText)
         {
             return DataContext.Table<Device>().QueryRecordCount(filterText);
@@ -642,68 +632,6 @@ namespace openPDC
         public ulong DeriveUInt64(ushort b3, ushort b2, ushort b1, ushort b0)
         {
             return m_modbusOperations.DeriveUInt64(b3, b2, b1, b0);
-        }
-
-        #endregion
-
-        #region [ COMTRADE Operations ]
-
-        public Schema LoadCOMTRADEConfiguration(string configFile)
-        {
-            return new Schema(configFile);
-        }
-
-        public uint BeginCOMTRADEDataLoad(string instanceName, string configFile, int deviceID, bool inferTimeFromSampleRates)
-        {
-            Schema schema = new Schema(configFile);
-            Dictionary<int, int> indexToPointID = new Dictionary<int, int>();
-
-            // Establish channel index to point ID mapping
-            foreach (Measurement measurement in QueryDeviceMeasurements(deviceID))
-            {
-                string alternateTag = measurement.AlternateTag;
-                int index;
-
-                if (string.IsNullOrWhiteSpace(alternateTag))
-                    continue;
-
-                if (alternateTag.Length > 7 && alternateTag.StartsWith("ANALOG:") && int.TryParse(alternateTag.Substring(7), out index))
-                    indexToPointID[index - 1] = measurement.PointID;
-                else if (alternateTag.Length > 8 && alternateTag.StartsWith("DIGITAL:") && int.TryParse(alternateTag.Substring(8), out index))
-                    indexToPointID[schema.TotalAnalogChannels + index - 1] = measurement.PointID;
-            }
-
-            return BeginHistorianWrite(instanceName, ReadCOMTRADEValues(schema, indexToPointID, inferTimeFromSampleRates), schema.TotalSamples * indexToPointID.Count, TimestampType.Ticks);
-        }
-
-        private IEnumerable<TrendValue> ReadCOMTRADEValues(Schema schema, Dictionary<int, int> indexToPointID, bool inferTimeFromSampleRates)
-        {
-            using (Parser parser = new Parser
-            {
-                Schema = schema,
-                InferTimeFromSampleRates = inferTimeFromSampleRates
-            })
-            {
-                parser.OpenFiles();
-
-                while (parser.ReadNext())
-                {
-                    double timestamp = parser.Timestamp.Ticks;
-
-                    for (int i = 0; i < schema.TotalChannels; i++)
-                    {
-                        int pointID;
-
-                        if (indexToPointID.TryGetValue(i, out pointID))
-                            yield return new TrendValue
-                            {
-                                ID = pointID,
-                                Timestamp = timestamp,
-                                Value = parser.Values[i]
-                            };
-                    }
-                }
-            }
         }
 
         #endregion
