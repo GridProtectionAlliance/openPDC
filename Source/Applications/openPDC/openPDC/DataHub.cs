@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -31,24 +32,26 @@ using Microsoft.AspNet.SignalR;
 using GSF;
 using GSF.Data.Model;
 using GSF.Configuration;
-//using GSF.COMTRADE;
+using GSF.COMTRADE;
 using GSF.Identity;
 using GSF.IO;
 using GSF.Web.Hubs;
 using GSF.Web.Model.HubOperations;
 using GSF.Web.Security;
+using ModbusAdapters;
+using ModbusAdapters.Model;
 using openPDC.Model;
-using System.Data;
 
 namespace openPDC
 {
     [AuthorizeHubRole]
-    public class DataHub : RecordOperationsHub<DataHub>, IDataSubscriptionOperations, IDirectoryBrowserOperations
+    public class DataHub : RecordOperationsHub<DataHub>, IDataSubscriptionOperations, IDirectoryBrowserOperations, IModbusOperations
     {
         #region [ Members ]
 
         // Fields
         private readonly DataSubscriptionOperations m_dataSubscriptionOperations;
+        private readonly ModbusOperations m_modbusOperations;
 
         #endregion
 
@@ -60,6 +63,7 @@ namespace openPDC
             Action<Exception> logException = ex => LogException(ex);
 
             m_dataSubscriptionOperations = new DataSubscriptionOperations(this, logStatusMessage, logException);
+            m_modbusOperations = new ModbusOperations(this, logStatusMessage, logException);
         }
 
         #endregion
@@ -78,6 +82,7 @@ namespace openPDC
             {
                 // Dispose any associated hub operations associated with current SignalR client
                 m_dataSubscriptionOperations?.EndSession();
+                m_modbusOperations?.EndSession();
 
                 LogStatusMessage($"DataHub disconnect by {Context.User?.Identity?.Name ?? "Undefined User"} [{Context.ConnectionId}] - count = {ConnectionCount}", UpdateType.Information, false);
             }
@@ -94,6 +99,36 @@ namespace openPDC
         private static int s_comtradeProtocolID;
         private static string s_configurationCachePath;
 
+        // Static Constructor
+        static DataHub()
+        {
+            ModbusPoller.ProgressUpdated += (sender, args) => ProgressUpdated(sender, new EventArgs<string, List<ProgressUpdate>>(null, new List<ProgressUpdate>() { args.Argument }));
+        }
+
+        private static void ProgressUpdated(object sender, EventArgs<string, List<ProgressUpdate>> e)
+        {
+            string deviceName = null;
+
+            ModbusPoller modbusPoller = sender as ModbusPoller;
+
+            if ((object)modbusPoller != null)
+                deviceName = modbusPoller.Name;
+
+            if ((object)deviceName == null)
+                return;
+
+            string clientID = e.Argument1;
+
+            List<object> updates = e.Argument2
+                .Select(update => update.AsExpandoObject())
+                .ToList();
+
+            if ((object)clientID != null)
+                GlobalHost.ConnectionManager.GetHubContext<DataHub>().Clients.Client(clientID).deviceProgressUpdate(deviceName, updates);
+            else
+                GlobalHost.ConnectionManager.GetHubContext<DataHub>().Clients.All.deviceProgressUpdate(deviceName, updates);
+        }
+
         #endregion
 
         // Client-side script functionality
@@ -104,7 +139,6 @@ namespace openPDC
         public int QueryActiveMeasurementCount(string filterText)
         {
             TableOperations<ActiveMeasurement> tableOperations = DataContext.Table<ActiveMeasurement>();
-            //tableOperations.RootQueryRestriction[0] = $"{GetSelectedInstanceName()}:%";
             return tableOperations.QueryRecordCount(filterText);
         }
 
@@ -112,7 +146,6 @@ namespace openPDC
         public IEnumerable<ActiveMeasurement> QueryActiveMeasurements(string sortField, bool ascending, int page, int pageSize, string filterText)
         {
             TableOperations<ActiveMeasurement> tableOperations = DataContext.Table<ActiveMeasurement>();
-            //tableOperations.RootQueryRestriction[0] = $"{GetSelectedInstanceName()}:%";
             return tableOperations.QueryRecords(sortField, ascending, page, pageSize, filterText);
         }
 
@@ -475,6 +508,7 @@ namespace openPDC
         #endregion
 
         #region [ DeviceStatus Operations ]
+		
         public void SetOutOfService(int id)
         {
             DataContext.Connection.ExecuteNonQuery("UPDATE AlarmDevice SET StateID = (SELECT ID FROM AlarmState WHERE State = 'Out of Service'), TimeStamp = {0}, DisplayData = 'OoS' WHERE ID = {1}", DateTime.UtcNow, id);
@@ -483,6 +517,193 @@ namespace openPDC
         public void SetInService(int id)
         {
             DataContext.Connection.ExecuteNonQuery("UPDATE AlarmDevice SET StateID = (SELECT ID FROM AlarmState WHERE State = 'Good'), TimeStamp = {0}, DisplayData = 'Good' WHERE ID = {1}", DateTime.UtcNow, id);
+        }
+
+        #endregion
+		
+        #region [ Modbus Operations ]
+
+        public Task<bool> ModbusConnect(string connectionString)
+        {
+            return m_modbusOperations.ModbusConnect(connectionString);
+        }
+
+        public void ModbusDisconnect()
+        {
+            m_modbusOperations.ModbusDisconnect();
+        }
+
+        public async Task<bool[]> ReadDiscreteInputs(ushort startAddress, ushort pointCount)
+        {
+            try
+            {
+                return await m_modbusOperations.ReadDiscreteInputs(startAddress, pointCount);
+            }
+            catch (Exception ex)
+            {
+                LogException(new InvalidOperationException($"Exception while reading discrete inputs starting @ {startAddress}: {ex.Message}", ex));
+                return new bool[0];
+            }
+        }
+
+        public async Task<bool[]> ReadCoils(ushort startAddress, ushort pointCount)
+        {
+            try
+            {
+                return await m_modbusOperations.ReadCoils(startAddress, pointCount);
+            }
+            catch (Exception ex)
+            {
+                LogException(new InvalidOperationException($"Exception while reading coil values starting @ {startAddress}: {ex.Message}", ex));
+                return new bool[0];
+            }
+        }
+
+        public async Task<ushort[]> ReadInputRegisters(ushort startAddress, ushort pointCount)
+        {
+            try
+            {
+                return await m_modbusOperations.ReadInputRegisters(startAddress, pointCount);
+            }
+            catch (Exception ex)
+            {
+                LogException(new InvalidOperationException($"Exception while reading input registers starting @ {startAddress}: {ex.Message}", ex));
+                return new ushort[0];
+            }
+        }
+
+        public async Task<ushort[]> ReadHoldingRegisters(ushort startAddress, ushort pointCount)
+        {
+            try
+            {
+                return await m_modbusOperations.ReadHoldingRegisters(startAddress, pointCount);
+            }
+            catch (Exception ex)
+            {
+                LogException(new InvalidOperationException($"Exception while reading holding registers starting @ {startAddress}: {ex.Message}", ex));
+                return new ushort[0];
+            }
+        }
+
+        public async Task WriteCoils(ushort startAddress, bool[] data)
+        {
+            try
+            {
+                await m_modbusOperations.WriteCoils(startAddress, data);
+            }
+            catch (Exception ex)
+            {
+                LogException(new InvalidOperationException($"Exception while writing coil values starting @ {startAddress}: {ex.Message}", ex));
+            }
+        }
+
+        public async Task WriteHoldingRegisters(ushort startAddress, ushort[] data)
+        {
+            try
+            {
+                await m_modbusOperations.WriteHoldingRegisters(startAddress, data);
+            }
+            catch (Exception ex)
+            {
+                LogException(new InvalidOperationException($"Exception while writing holding registers starting @ {startAddress}: {ex.Message}", ex));
+            }
+        }
+
+        public string DeriveString(ushort[] values)
+        {
+            return m_modbusOperations.DeriveString(values);
+        }
+
+        public float DeriveSingle(ushort highValue, ushort lowValue)
+        {
+            return m_modbusOperations.DeriveSingle(highValue, lowValue);
+        }
+
+        public double DeriveDouble(ushort b3, ushort b2, ushort b1, ushort b0)
+        {
+            return m_modbusOperations.DeriveDouble(b3, b2, b1, b0);
+        }
+
+        public int DeriveInt32(ushort highValue, ushort lowValue)
+        {
+            return m_modbusOperations.DeriveInt32(highValue, lowValue);
+        }
+
+        public uint DeriveUInt32(ushort highValue, ushort lowValue)
+        {
+            return m_modbusOperations.DeriveUInt32(highValue, lowValue);
+        }
+
+        public long DeriveInt64(ushort b3, ushort b2, ushort b1, ushort b0)
+        {
+            return m_modbusOperations.DeriveInt64(b3, b2, b1, b0);
+        }
+
+        public ulong DeriveUInt64(ushort b3, ushort b2, ushort b1, ushort b0)
+        {
+            return m_modbusOperations.DeriveUInt64(b3, b2, b1, b0);
+        }
+
+        #endregion
+
+        #region [ COMTRADE Operations ]
+
+        public Schema LoadCOMTRADEConfiguration(string configFile)
+        {
+            return new Schema(configFile);
+        }
+
+        public uint BeginCOMTRADEDataLoad(string instanceName, string configFile, int deviceID, bool inferTimeFromSampleRates)
+        {
+            Schema schema = new Schema(configFile);
+            Dictionary<int, int> indexToPointID = new Dictionary<int, int>();
+
+            // Establish channel index to point ID mapping
+            foreach (Measurement measurement in QueryDeviceMeasurements(deviceID))
+            {
+                string alternateTag = measurement.AlternateTag;
+                int index;
+
+                if (string.IsNullOrWhiteSpace(alternateTag))
+                    continue;
+
+                if (alternateTag.Length > 7 && alternateTag.StartsWith("ANALOG:") && int.TryParse(alternateTag.Substring(7), out index))
+                    indexToPointID[index - 1] = measurement.PointID;
+                else if (alternateTag.Length > 8 && alternateTag.StartsWith("DIGITAL:") && int.TryParse(alternateTag.Substring(8), out index))
+                    indexToPointID[schema.TotalAnalogChannels + index - 1] = measurement.PointID;
+            }
+
+            return BeginHistorianWrite(instanceName, ReadCOMTRADEValues(schema, indexToPointID, inferTimeFromSampleRates), schema.TotalSamples * indexToPointID.Count, TimestampType.Ticks);
+        }
+
+        private IEnumerable<TrendValue> ReadCOMTRADEValues(Schema schema, Dictionary<int, int> indexToPointID, bool inferTimeFromSampleRates)
+        {
+            using (Parser parser = new Parser
+            {
+                Schema = schema,
+                InferTimeFromSampleRates = inferTimeFromSampleRates
+            })
+            {
+                parser.OpenFiles();
+
+                while (parser.ReadNext())
+                {
+                    double timestamp = parser.Timestamp.Ticks;
+
+                    for (int i = 0; i < schema.TotalChannels; i++)
+                    {
+                        int pointID;
+
+                        if (indexToPointID.TryGetValue(i, out pointID))
+                            yield return new TrendValue
+                            {
+                                ID = pointID,
+                                Timestamp = timestamp,
+                                Value = parser.Values[i]
+                            };
+                    }
+                }
+            }
         }
 
         #endregion

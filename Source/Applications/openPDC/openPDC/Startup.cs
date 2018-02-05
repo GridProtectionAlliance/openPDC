@@ -31,6 +31,7 @@ using GSF.Web.Security;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Json;
 using Microsoft.Owin.Cors;
+using ModbusAdapters;
 using Newtonsoft.Json;
 using Owin;
 using openPDC.Model;
@@ -68,14 +69,16 @@ namespace openPDC
                 Program.Host.LogException(new SecurityException($"Failed to load Security Hub, validate database connection string in configuration file: {ex.Message}", ex));
             }
 
-            // Load security hub into application domain before establishing SignalR hub configuration
+            // Load Modbus assembly
             try
             {
-                using (new GrafanaController()) { }
+                // Make embedded resources of Modbus poller available to web server
+                using (ModbusPoller poller = new ModbusPoller())
+                    WebExtensions.AddEmbeddedResourceAssembly(poller.GetType().Assembly);
             }
             catch (Exception ex)
             {
-                Program.Host.LogException(new SecurityException($"Failed to load Security Hub, validate database connection string in configuration file: {ex.Message}", ex));
+                Program.Host.LogException(new InvalidOperationException($"Failed to load Modbus assembly: {ex.Message}", ex));
             }
 
             // Configure Windows Authentication for self-hosted web service

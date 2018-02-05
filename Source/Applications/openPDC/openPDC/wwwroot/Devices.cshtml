@@ -52,13 +52,13 @@
 }
 @helper BodyRows()
 {
-    <td width="25%" class="text-left valign-middle"><button type="button" class="btn btn-link" data-bind="text: Acronym, click: $parent.editPageRecord"></button></td>
+    <td width="25%" class="text-left valign-middle"><button type="button" class="btn btn-link" data-bind="text: Acronym, click: showEditScreen.bind($data, true)"></button></td>
     <td width="30%" class="text-left valign-middle" data-bind="text: Name"></td>
     <td width="35%" class="text-left table-cell-hard-wrap"><div data-bind="text: notNull(ConnectionString).truncate(30), attr: { title: notNull(ConnectionString) }"></div></td>
     <td width="5%" class="text-center valign-middle"><input type="checkbox" data-bind="checked: Enabled, click: enabledStateChanged.bind($data)" /></td>
     <td width="5%" class="text-center valign-middle" nowrap>
         <button type="button" class="btn btn-xs" data-bind="click: openDeviceStatus(ID), enable: $parent.dataHubIsConnected, visible: showStatusBtn(ParentID)"><span class="glyphicon glyphicon-scale"></span></button>
-        <button type="button" class="btn btn-xs" data-bind="click: $parent.editPageRecord, enable: $parent.dataHubIsConnected"><span class="glyphicon glyphicon-pencil"></span></button>
+        <button type="button" class="btn btn-xs" data-bind="click: showEditScreen.bind($data, false), enable: $parent.dataHubIsConnected"><span class="glyphicon glyphicon-pencil"></span></button>
         <button type="button" class="btn btn-xs" data-bind="click: $parent.removePageRecord, enable: $parent.dataHubIsConnected"><span class="glyphicon glyphicon-remove"></span></button>
     </td>
 }
@@ -68,6 +68,7 @@
         @Raw(dataContext.AddInputField<Device>("ID", customDataBinding: "disable: true", groupDataBinding: "visible: $root.recordMode() !== RecordMode.AddNew"))
         @Raw(dataContext.AddInputField<Device>("UniqueID", customDataBinding: "disable: true", groupDataBinding: "visible: $root.recordMode() !== RecordMode.AddNew"))
         @Raw(dataContext.AddInputField<Device>("Acronym", initialFocus: true))
+        @Raw(dataContext.AddSelectField<Device, Protocol>("ProtocolID", "ID", "Acronym", allowUnset: true))
         @Raw(dataContext.AddSelectField<Device, Historian>("HistorianID", "ID", "Acronym", allowUnset: true, addEmptyRow: true))
         @Raw(dataContext.AddInputField<Device>("AccessID"))
         @Raw(dataContext.AddInputField<Device>("FramesPerSecond"))
@@ -77,6 +78,7 @@
         @Raw(dataContext.AddTextAreaField<Device>("ConnectionString", 4))
         @Raw(dataContext.AddInputField<Device>("Longitude"))
         @Raw(dataContext.AddInputField<Device>("Latitude"))
+        @Raw(dataContext.AddSelectField<Device, Interconnection>("InterconnectionID", "ID", "Acronym"))
         @Raw(dataContext.AddSelectField<Device, Company>("CompanyID", "ID", "Acronym"))
         @Raw(dataContext.AddInputField<Device>("ContactList"))
         <div class="form-inline pull-right">
@@ -91,6 +93,27 @@
     <script>
         @Raw(dataContext.RenderViewModelConfiguration<Device, DataHub>(ViewBag, "Acronym"))
         
+        var modbusProtocolID = 0;
+        
+        $(window).on("hubConnected", function() {
+            if (modbusProtocolID === 0) {
+                dataHub.getModbusProtocolID().done(function(protocolID) {
+                    modbusProtocolID = protocolID;
+                });
+            }
+        });
+
+        function showEditScreen(readOnly, record) {
+            if (record.ProtocolID === modbusProtocolID) {
+                window.location.href = "/ModbusConfig.cshtml?DeviceID=" + record.ID;
+            }
+            else {
+                if (readOnly)
+                    viewModel.viewPageRecord(record);
+                else
+                    viewModel.editPageRecord(record);
+            }
+        }
 
         function refreshEnabledState(record) {
             if (!hubIsConnected)
@@ -114,7 +137,7 @@
         }
 
         function openDeviceStatus(id) {
-            window.open('/DeviceStatus.cshtml?ID=' + id);
+            window.open("/DeviceStatus.cshtml?ID=" + id);
         }
 
         function showStatusBtn(id) {

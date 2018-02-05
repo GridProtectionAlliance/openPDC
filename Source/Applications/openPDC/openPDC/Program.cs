@@ -23,8 +23,10 @@
 
 using System;
 using System.ServiceProcess;
+using System.Threading;
 using System.Windows.Forms;
 using GSF.Console;
+using GSF.Threading;
 using GSF.TimeSeries;
 
 namespace openPDC
@@ -36,11 +38,20 @@ namespace openPDC
         /// </summary>
         public static readonly ServiceHost Host = new ServiceHost();
 
+        private static readonly Mutex s_singleInstanceMutex;
+
+        static Program()
+        {
+            s_singleInstanceMutex = InterprocessLock.GetNamedMutex(false);
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         static void Main()
         {
+            if (!s_singleInstanceMutex.WaitOne(0, true))
+                Environment.Exit(1);
 
             bool runAsService;
             bool runAsApplication;

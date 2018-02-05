@@ -44,7 +44,7 @@ namespace WiXFolderGen
             Generation = 1;
             GenWWWRootIncludes.Execute();
 
-            //// Generate WiX setup include files for "other" folder
+            // Generate WiX setup include files for "other" folder
             //ExistingIdentifiers.UnionWith(NewIdentifiers);
             //NewIdentifiers.Clear();
             //Generation = 2;

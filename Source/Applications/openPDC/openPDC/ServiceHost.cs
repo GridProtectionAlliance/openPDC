@@ -69,7 +69,7 @@ namespace openPDC
         // Fields
         private IDisposable m_webAppHost;
         private bool m_serviceStopping;
-        //private readonly LogSubscriber m_logSubscriber;
+        private readonly LogSubscriber m_logSubscriber;
         private bool m_disposed;
 
         #endregion
@@ -83,10 +83,10 @@ namespace openPDC
         {
             ServiceName = "openPDC";
 
-            //m_logSubscriber = Logger.CreateSubscriber();
-            //m_logSubscriber.SubscribeToAssembly(typeof(Number).Assembly, VerboseLevel.High);
-            //m_logSubscriber.SubscribeToAssembly(typeof(HistorianKey).Assembly, VerboseLevel.High);
-            //m_logSubscriber.NewLogMessage += m_logSubscriber_Log;
+            m_logSubscriber = Logger.CreateSubscriber();
+            m_logSubscriber.SubscribeToAssembly(typeof(Number).Assembly, VerboseLevel.High);
+            m_logSubscriber.SubscribeToAssembly(typeof(HistorianKey).Assembly, VerboseLevel.High);
+            m_logSubscriber.NewLogMessage += m_logSubscriber_Log;
 
             // This function needs to be called before establishing time-series IaonSession
             //SetupGrafanaHostingAdapter();
@@ -122,6 +122,37 @@ namespace openPDC
 
         #endregion
 
+        #region [ Methods ]
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="ServiceHost"/> object and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                try
+                {
+                    if (disposing)
+                    {
+                        m_webAppHost?.Dispose();
+                        m_logSubscriber?.Dispose();
+                    }
+                }
+                finally
+                {
+                    m_disposed = true;          // Prevent duplicate dispose.
+                    base.Dispose(disposing);    // Call base class Dispose().
+                }
+            }
+        }
+
+        /// <summary>
+        /// Event handler for service starting operations.
+        /// </summary>
+        /// <param name="sender">Event source.</param>
+        /// <param name="e">Event arguments containing command line arguments passed into service at startup.</param>
         protected override void ServiceStartingHandler(object sender, EventArgs<string[]> e)
         {
             // Handle base class service starting procedures
@@ -130,8 +161,6 @@ namespace openPDC
             // Make sure openPDC specific default service settings exist
             CategorizedSettingsElementCollection systemSettings = ConfigurationFile.Current.Settings["systemSettings"];
             CategorizedSettingsElementCollection securityProvider = ConfigurationFile.Current.Settings["securityProvider"];
-            //CategorizedSettingsElementCollection grafanaHosting = ConfigurationFile.Current.Settings["grafanaHosting"];
-
 
             // Define set of default anonymous web resources for this site
             const string DefaultAnonymousResourceExpression = "^/@|^/Scripts/|^/Content/|^/Images/|^/fonts/|^/favicon.ico$";
@@ -217,8 +246,8 @@ namespace openPDC
             // Define types for Razor pages - self-hosted web service does not use view controllers so
             // we must define configuration types for all paged view model based Razor views here:
             webServer.PagedViewModelTypes.TryAdd("TrendMeasurements.cshtml", new Tuple<Type, Type>(typeof(ActiveMeasurement), typeof(DataHub)));
-            webServer.PagedViewModelTypes.TryAdd("Companies.cshtml", new Tuple<Type, Type>(typeof(Company), typeof(SharedHub)));
             webServer.PagedViewModelTypes.TryAdd("Devices.cshtml", new Tuple<Type, Type>(typeof(Device), typeof(DataHub)));
+            webServer.PagedViewModelTypes.TryAdd("Companies.cshtml", new Tuple<Type, Type>(typeof(Company), typeof(SharedHub)));
             webServer.PagedViewModelTypes.TryAdd("Vendors.cshtml", new Tuple<Type, Type>(typeof(Vendor), typeof(SharedHub)));
             webServer.PagedViewModelTypes.TryAdd("VendorDevices.cshtml", new Tuple<Type, Type>(typeof(VendorDevice), typeof(SharedHub)));
             webServer.PagedViewModelTypes.TryAdd("Users.cshtml", new Tuple<Type, Type>(typeof(UserAccount), typeof(SecurityHub)));
@@ -261,8 +290,8 @@ namespace openPDC
                 IsBackground = true
             }
             .Start();
-
         }
+
 
         private bool TryStartWebHosting(string webHostURL)
         {
@@ -305,11 +334,6 @@ namespace openPDC
                 helper.LoggedException -= LoggedExceptionHandler;
             }
         }
-
-        //private void GrafanaAuthProxyController_StatusMessage(object sender, EventArgs<string> e)
-        //{
-        //    LogStatusMessage($"[GRAFANA!AUTHPROXY] {e.Argument}");
-        //}
 
         private void WebServer_StatusMessage(object sender, EventArgs<string> e)
         {
@@ -414,5 +438,6 @@ namespace openPDC
             }
         }
 
+        #endregion
     }
 }

@@ -30,8 +30,8 @@ using GrafanaAdapters;
 using GSF.Data;
 using GSF.Data.Model;
 using openPDC.Model;
-using CancellationToken = System.Threading.CancellationToken;
 using System.Web.Mvc;
+using CancellationToken = System.Threading.CancellationToken;
 using HttpGet = System.Web.Http.HttpGetAttribute;
 using HttpPost = System.Web.Http.HttpPostAttribute;
 
