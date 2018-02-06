@@ -696,7 +696,7 @@
         <File Id="Owin.dll" Name="Owin.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\Owin.1.0\lib\net40\Owin.dll" />
       </Component>
       <Component Id="RazorEngine">
-        <File Id="RazorEngine.dll" Name="RazorEngine.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\RazorEngine.3.7.7\lib\net45\RazorEngine.dll" />
+        <File Id="RazorEngine.dll" Name="RazorEngine.dll" Source="$(var.SolutionDir)Dependencies\NuGet Packages\RazorEngine.3.10.0\lib\net45\RazorEngine.dll" />
       </Component>
       <Component Id="System.Web.Razor">
         <File Id="System.Web.Razor.dll" Name="System.Web.Razor.dll" Source="$(var.SolutionDir)Dependencies\Microsoft\System.Web.Razor.dll" />
