@@ -72,7 +72,7 @@ With version 2.1 or later, the openPDC can be deployed in [POSIX environments](h
 # Contributing
 If you would like to contribute please:
 
-1. Read our [styleguide.](https://www.gridprotectionalliance.org/docs/GPA_Coding_Guidelines_2011_03.pdf)
+* Read our [styleguide.](https://www.gridprotectionalliance.org/docs/GPA_Coding_Guidelines_2011_03.pdf)
 * Fork the repository.
 * Code like a boss.
 * Create a pull request.
