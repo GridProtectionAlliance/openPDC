@@ -269,7 +269,7 @@
         <ServiceControl Id="openPDCServiceControl" Name="openPDC" Stop="both" Remove="uninstall" />
       </Component>
       <Component Id="openPDCConfig" Permanent="yes">
-        <File Id="openPDC.exe.config" Name="$(var.openPDC.TargetFileName).config" Source="$(var.openPDC.ProjectDir)App.config" />
+        <File Id="openPDC.exe.config" Name="$(var.openPDC.TargetFileName).config" Source="$(var.openPDC.TargetPath).config" />
       </Component>
       <Component Id="DataMigrationUtility">
         <File Id="DataMigrationUtility.exe" Name="DataMigrationUtility.exe" Source="$(var.ProjectDir)\DataMigrationUtility.exe" />
