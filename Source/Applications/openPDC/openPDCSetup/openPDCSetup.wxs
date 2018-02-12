@@ -541,6 +541,10 @@
       <Component Id="EzDNAServApiNet64">
         <File Id="EzDNAServApiNet64.dll" Name="EzDNAServApiNet64.dll" Source="$(var.SolutionDir)\Dependencies\GSF\EzDNAServApiNet64.dll" />
       </Component>
+      <Component Id="NModbus4">
+        <!-- Dependency for Modbus connectivity -->
+        <File Id="NModbus4.dll" Name="NModbus4.dll" Source="$(var.SolutionDir)\Dependencies\GSF\NModbus4.dll" />
+      </Component>
     </ComponentGroup>
 
     <!-- GSF Dependencies -->

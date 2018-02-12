@@ -172,6 +172,10 @@ namespace openPDC
             systemSettings.Add("LoginPage", AuthenticationOptions.DefaultLoginPage, "Defines the login page used for redirects on authentication failure. Expects forward slash prefix.");
             systemSettings.Add("AuthTestPage", AuthenticationOptions.DefaultAuthTestPage, "Defines the page name for the web server to test if a user is authenticated. Expects forward slash prefix.");
             systemSettings.Add("Realm", "", "Case-sensitive identifier that defines the protection space for the web based authentication and is used to indicate a scope of protection.");
+            systemSettings.Add("DefaultCorsOrigins", "", "Comma-separated list of allowed origins (including http:// prefix) that define the default CORS policy. Use '*' to allow all or empty string to disable CORS.");
+            systemSettings.Add("DefaultCorsHeaders", "*", "Comma-separated list of supported headers that define the default CORS policy. Use '*' to allow all or empty string to allow none.");
+            systemSettings.Add("DefaultCorsMethods", "*", "Comma-separated list of supported methods that define the default CORS policy. Use '*' to allow all or empty string to allow none.");
+            systemSettings.Add("DefaultCorsSupportsCredentials", "true", "Boolean flag for the default CORS policy indicating whether the resource supports user credentials in the request .");
 
             DefaultWebPage = systemSettings["DefaultWebPage"].Value;
 
@@ -190,6 +194,10 @@ namespace openPDC
             Model.Global.PasswordRequirementsError = securityProvider["PasswordRequirementsError"].Value;
             Model.Global.BootstrapTheme = systemSettings["BootstrapTheme"].Value;
             Model.Global.WebRootPath = FilePath.GetAbsolutePath(systemSettings["WebRootPath"].Value);
+            Model.Global.DefaultCorsOrigins = systemSettings["DefaultCorsOrigins"].Value;
+            Model.Global.DefaultCorsHeaders = systemSettings["DefaultCorsHeaders"].Value;
+            Model.Global.DefaultCorsMethods = systemSettings["DefaultCorsMethods"].Value;
+            Model.Global.DefaultCorsSupportsCredentials = systemSettings["DefaultCorsSupportsCredentials"].ValueAsBoolean(true);
 
             AuthenticationSchemes authenticationSchemes;
 

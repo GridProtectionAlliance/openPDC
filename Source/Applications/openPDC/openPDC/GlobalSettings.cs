@@ -112,13 +112,25 @@ namespace openPDC
             set;
         }
 
-        public bool GrafanaServerInstalled
+        public string DefaultCorsOrigins
         {
             get;
             set;
         }
 
-        public string GrafanaServerPath
+        public string DefaultCorsHeaders
+        {
+            get;
+            set;
+        }
+
+        public string DefaultCorsMethods
+        {
+            get;
+            set;
+        }
+
+        public bool DefaultCorsSupportsCredentials
         {
             get;
             set;
