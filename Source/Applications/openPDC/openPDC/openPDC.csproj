@@ -237,6 +237,7 @@
     </None>
     <None Include="openPDC.ico" />
     <None Include="PostBuildSetup.bat" />
+    <Content Include="Web.config" />
     <None Include="wwwroot\Companies.cshtml" />
     <None Include="wwwroot\Devices.cshtml" />
     <None Include="wwwroot\DeviceStatus.cshtml" />
@@ -332,6 +333,7 @@ CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)" "$(SolutionDir)Application
 CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)" "$(ProjectDir)Sample1344.PmuCapture"
 CALL "$(ProjectDir)PostBuildSetup.bat" "$(TargetDir)wwwroot" "$(SolutionDir)Applications\openPDC\openPDC\wwwroot\*.*"
 CALL "$(ProjectDir)PostBuildSetup.bat" "$(ProjectDir)bin" "$(TargetDir)*.dll"
+CALL "$(ProjectDir)PostBuildSetup.bat" "$(ProjectDir)bin" "%25SystemRoot%25\Microsoft.NET\assembly\GAC_MSIL\System.Core\v4.0_4.0.0.0__b77a5c561934e089\System.Core.dll"
 XCOPY "$(SolutionDir)Data\SerializedSchema.bin" "$(TargetDir)" /Y
 "$(SolutionDir)Dependencies\GSF\ValidateAssemblyBindings.exe" "$(TargetPath).config"</PostBuildEvent>
   </PropertyGroup>
