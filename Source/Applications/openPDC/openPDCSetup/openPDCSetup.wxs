@@ -487,6 +487,9 @@
       <Component Id="Misakai.Kafka"> <!-- Dependency for KafkaAdapters -->
         <File Id="Misakai.Kafka.dll" Name="Misakai.Kafka.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Misakai.Kafka.dll" />
       </Component>
+      <Component Id="ModbusAdapters">
+        <File Id="ModbusAdapters.dll" Name="ModbusAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\ModbusAdapters.dll" />
+      </Component>
       <Component Id="MongoAdapters">
         <File Id="MongoAdapters.dll" Name="MongoAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\MongoAdapters.dll" />
       </Component>
