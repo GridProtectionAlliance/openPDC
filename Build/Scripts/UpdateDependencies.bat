@@ -118,6 +118,10 @@ TYPE "%targetschema%\SQLite\_openPDC.sql" >> "%targetschema%\SQLite\openPDC.sql"
 "%replace%" /r /v "%targetschema%\*db-update.bat" GSFSchema openPDC
 CD %targetschema%\SQLite
 CALL db-update.bat
+CD %targetschemaa%\SQL Server
+CALL db-refresh.bat
+IF NOT "%SQLCONNECTIONSTRING%" == "" "%targettools%\DataMigrationUtility.exe" "%SQLCONNECTIONSTRING%; Initial Catalog=openPDC"
+IF EXIST "%targettools%\SerializedSchema.bin" MOVE /Y "%targettools%\SerializedSchema.bin" "%target%"
 CD %target%
 
 :CommitChanges
