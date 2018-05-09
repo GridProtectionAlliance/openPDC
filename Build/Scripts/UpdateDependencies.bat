@@ -120,7 +120,13 @@ CD %targetschema%\SQLite
 CALL db-update.bat
 CD %targetschemaa%\SQL Server
 CALL db-refresh.bat
-IF NOT "%SQLCONNECTIONSTRING%" == "" "%targettools%\DataMigrationUtility.exe" "%SQLCONNECTIONSTRING%; Initial Catalog=openPDC"
+IF NOT "%SQLCONNECTIONSTRING%" == ""(
+    MKDIR "%TEMP%\DataMigrationUtility"
+    COPY /Y "%targettools%\DataMigrationUtility.exe" "%TEMP%\DataMigrationUtility"
+    XCOPY "%dependencies%" "%TEMP%\DataMigrationUtility\" /Y /E
+    "%TEMP%\DataMigrationUtility\DataMigrationUtility.exe" "%SQLCONNECTIONSTRING%; Initial Catalog=openPDC"
+    RMDIR /S /Q "%TEMP%\DataMigrationUtility"
+)
 IF EXIST "%targettools%\SerializedSchema.bin" MOVE /Y "%targettools%\SerializedSchema.bin" "%target%"
 CD %target%
 
