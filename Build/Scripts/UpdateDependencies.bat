@@ -121,7 +121,7 @@ CD %targetschema%\SQLite
 CALL db-update.bat
 CD %targetschema%\SQL Server
 CALL db-refresh.bat
-IF NOT "%SQLCONNECTIONSTRING%" == ""(
+IF NOT "%SQLCONNECTIONSTRING%" == "" (
     MKDIR "%TEMP%\DataMigrationUtility"
     COPY /Y "%targettools%\DataMigrationUtility.exe" "%TEMP%\DataMigrationUtility"
     XCOPY "%dependencies%" "%TEMP%\DataMigrationUtility\" /Y /E
