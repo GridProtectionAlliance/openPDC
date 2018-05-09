@@ -35,13 +35,6 @@ CREATE TRIGGER AI_AlarmState BEFORE INSERT ON AlarmState
     FOR EACH ROW BEGIN SELECT SEQ_AlarmState.nextval INTO :NEW.ID FROM dual;
 END;
 
-INSERT INTO AlarmState (State, Color) VALUES ('Good', 'green');
-INSERT INTO AlarmState (State, Color) VALUES ('Alarm', 'red');
-INSERT INTO AlarmState (State, Color) VALUES ('Not Available', 'orange');
-INSERT INTO AlarmState (State, Color) VALUES ('Bad Data', 'blue');
-INSERT INTO AlarmState (State, Color) VALUES ('Bad Time', 'purple');
-INSERT INTO AlarmState (State, Color) VALUES ('Out of Service', 'grey');
-
 CREATE TABLE AlarmDevice(
 	ID NUMBER IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	DeviceID NUMBER NULL,

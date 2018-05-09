@@ -108,6 +108,11 @@ TYPE "%targetschema%\Oracle\_openPDC.sql" >> "%targetschema%\Oracle\openPDC.sql"
 TYPE "%targetschema%\PostgreSQL\_openPDC.sql" >> "%targetschema%\PostgreSQL\openPDC.sql"
 TYPE "%targetschema%\SQL Server\_openPDC.sql" >> "%targetschema%\SQL Server\openPDC.sql"
 TYPE "%targetschema%\SQLite\_openPDC.sql" >> "%targetschema%\SQLite\openPDC.sql"
+TYPE "%targetschema%\MySQL\_InitialDataSet.sql" >> "%targetschema%\MySQL\InitialDataSet.sql"
+TYPE "%targetschema%\Oracle\_InitialDataSet.sql" >> "%targetschema%\Oracle\InitialDataSet.sql"
+TYPE "%targetschema%\PostgreSQL\_InitialDataSet.sql" >> "%targetschema%\PostgreSQL\InitialDataSet.sql"
+TYPE "%targetschema%\SQL Server\_InitialDataSet.sql" >> "%targetschema%\SQL Server\InitialDataSet.sql"
+TYPE "%targetschema%\SQLite\_InitialDataSet.sql" >> "%targetschema%\SQLite\InitialDataSet.sql"
 "%replace%" /r /v "%targetschema%\*.sql" GSFSchema openPDC
 "%replace%" /r /v "%targetschema%\*.sql" "--*" ""
 "%replace%" /r /v "%targetschema%\*SampleDataSet.sql" TestingAdapters HistorianAdapters
