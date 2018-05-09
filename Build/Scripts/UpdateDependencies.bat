@@ -116,6 +116,7 @@ TYPE "%targetschema%\SQLite\_openPDC.sql" >> "%targetschema%\SQLite\openPDC.sql"
 "%replace%" /r /v "%targetschema%\*SampleDataSet.sql" "Test Device" Shelby
 "%replace%" /r /v "%targetschema%\*SampleDataSet.sql" "'TEST'" "'SHEL'"
 "%replace%" /r /v "%targetschema%\*db-update.bat" GSFSchema openPDC
+"%replace%" /r /v "%targetschema%\*db-refresh.bat" GSFSchema openPDC
 CD %targetschema%\SQLite
 CALL db-update.bat
 CD %targetschema%\SQL Server
