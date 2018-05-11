@@ -52,22 +52,19 @@
 
   <Target Name="BeforePrepareSettings">
     <PropertyGroup>
-      <!-- Must-override setting(s). -->
+      <!-- Must-override settings. -->
       <ProjectName>Synchrophasor</ProjectName>
-      <GitServer>git@github.com:GridProtectionAlliance/openPDC.git</GitServer>
+      <ProjectSolution>$(LocalFolder)\Source\$(ProjectName).sln</ProjectSolution>
       
       <VersionMajorChange>None</VersionMajorChange>
       <VersionMinorChange>None</VersionMinorChange>
       <VersionBuildChange>Increment</VersionBuildChange>
       <VersionRevisionChange>Reset</VersionRevisionChange>
-    </PropertyGroup>
-  </Target>
 
-  <Target Name="AfterPrepareSettings">
-    <PropertyGroup>
-      <!-- Project specific settings. -->
-      <ProjectSolution>$(LocalFolder)\Source\$(ProjectName).sln</ProjectSolution>
-      <BuildDeployFolder Condition="'$(BuildDeployFolder)' == ''">\\GPAWEB\NightlyBuilds\openPDC\Beta-VS2012\</BuildDeployFolder>
+      <!-- Override default settings. -->
+      <GitServer Condition="'$(GitServer)' == ''">git@github.com:GridProtectionAlliance/openPDC.git</GitServer>
+      <BuildFlavor Condition="'$(BuildFlavor)' == ''">Deploy</BuildFlavor>
+      <BuildOutputFolder Condition="'$(BuildOutputFolder)' == ''">$(LocalFolder)\Build\Output\Release</BuildOutputFolder>
     </PropertyGroup>
   </Target>
 
@@ -90,8 +87,6 @@
       <!-- List of projects to build. -->
       <ProjectsToBuild Include="$(ProjectSolution)"/>
       <!--<ProjectsToBuild Include="$(LocalFolder)\Build\Scripts\$(ProjectName).shfbproj" Condition="'$(SkipHelpFiles)' == ''"/>-->
-      <!-- List of installs to build. -->
-      <InstallsToBuild Include="$(LocalFolder)\Source\**\*.wixproj" />
     </ItemGroup>
   </Target>
 
