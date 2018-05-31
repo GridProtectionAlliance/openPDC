@@ -157,7 +157,7 @@ namespace openPDC
             systemSettings.Add("CompanyAcronym", "GPA", "The acronym representing the company who owns this instance of the openPDC.");
             systemSettings.Add("DiagnosticLogPath", FilePath.GetAbsolutePath(""), "Path for diagnostic logs.");
             systemSettings.Add("MaximumDiagnosticLogSize", DefaultMaximumDiagnosticLogSize, "The combined maximum size for the diagnostic logs in whole Megabytes; curtailment happens hourly. Set to zero for no limit.");
-            systemSettings.Add("WebHostURL", "http://+:8180", "The web hosting URL for remote system management.");
+            systemSettings.Add("WebHostURL", "http://+:8280", "The web hosting URL for remote system management.");
             systemSettings.Add("WebRootPath", "wwwroot", "The root path for the hosted web server files. Location will be relative to install folder if full path is not specified.");
             systemSettings.Add("DefaultWebPage", "Index.cshtml", "The default web page for the hosted web server.");
             systemSettings.Add("DateFormat", "MM/dd/yyyy", "The default date format to use when rendering timestamps.");

@@ -571,7 +571,7 @@ namespace ConfigurationSetupUtility.Screens
 
             Dictionary<string, string> remoteStatusServerSettings;
             string remoteStatusServerConnectionString;
-            string alarmServiceUrl;
+            string alarmServiceUrl, webHostURL;
 
             try
             {
@@ -601,6 +601,10 @@ namespace ConfigurationSetupUtility.Screens
                     // If the AlarmServiceUrl does not exist in node settings, add it and then update the database record
                     if (!nodeSettings.TryGetValue("AlarmServiceUrl", out alarmServiceUrl))
                         nodeSettings.Add("AlarmServiceUrl", "http://localhost:5018/alarmservices");
+
+                    // If the WebHostURL setting does not exist, add it
+                    if (!nodeSettings.TryGetValue("WebHostURL", out webHostURL))
+                        nodeSettings.Add("WebHostURL", "http://localhost:8280/");
 
                     // Execute query to update node settings
                     if (connection.GetType().Name == "OracleConnection")
