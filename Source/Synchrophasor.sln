@@ -47,9 +47,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B697ECD-E3BE-485B-BE90-BAAA12F3A68D}"
 	ProjectSection(SolutionItems) = preProject
 		buildmono.sh = buildmono.sh
+		..\LICENSE = ..\LICENSE
 		LICENSE.txt = LICENSE.txt
 		NOTICE.txt = NOTICE.txt
 		openPDC.snk = openPDC.snk
+		..\README.md = ..\README.md
 		Synchrophasor.testrunconfig = Synchrophasor.testrunconfig
 		..\Build\Scripts\Synchrophasor.version = ..\Build\Scripts\Synchrophasor.version
 		Synchrophasor.vsmdi = Synchrophasor.vsmdi
