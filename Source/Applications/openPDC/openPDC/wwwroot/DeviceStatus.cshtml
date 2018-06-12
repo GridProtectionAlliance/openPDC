@@ -177,6 +177,15 @@
     var id = @device.ID;
     var measDetails;
 
+    // Client function called from the dataHub when meta data gets recieved
+    $(window).on("beforeHubConnected", function () {
+        dataHubClient.metaDataReceived = function () {
+            $(window).trigger('metaDataReceived');
+            //buildModal("Subscription");
+        }
+
+    });
+
     $(function () {
         $('#bodyContainer').removeClass('container')
         setHeights();
@@ -196,11 +205,6 @@
             dataHub.terminateSubscriptions();
         });
 
-        // Client function called from the dataHub when meta data gets recieved
-        dataHubClient.metaDataReceived = function () {
-            $(window).trigger('metaDataReceived');
-            //buildModal("Subscription");
-        }
 
 
     });
