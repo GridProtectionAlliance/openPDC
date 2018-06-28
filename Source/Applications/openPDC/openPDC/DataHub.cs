@@ -211,9 +211,6 @@ namespace openPDC
             if ((device.ProtocolID ?? 0) == 0)
                 device.ProtocolID = ModbusProtocolID;
 
-            if (string.IsNullOrWhiteSpace(device.OriginalSource))
-                device.OriginalSource = device.Acronym;
-
             DataContext.Table<Device>().AddNewRecord(device);
         }
 
@@ -223,9 +220,6 @@ namespace openPDC
         {
             if ((device.ProtocolID ?? 0) == 0)
                 device.ProtocolID = ModbusProtocolID;
-
-            if (string.IsNullOrWhiteSpace(device.OriginalSource))
-                device.OriginalSource = device.Acronym;
 
             DataContext.Table<Device>().UpdateRecord(device);
         }
