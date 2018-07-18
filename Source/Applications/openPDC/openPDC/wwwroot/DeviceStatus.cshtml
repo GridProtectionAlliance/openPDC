@@ -123,23 +123,20 @@
     <div style="height: 48%; overflow-y: scroll">
         <h2>Device Stats</h2>
         <ul class="largeul">
+            <li>Device Acronym: @device.Acronym</li>
             <li>Device Name: @device.Name</li>
             <li>Make: @vendor.Name</li>
             <li>Model: @vendorDevice.Name</li>
-            <li>Substation: S1234 Davidson</li>
-            <li>Lat: @device.Latitude</li>
-            <li>Long: @device.Longitude</li>
-            <li>Area: North</li>
-            <li>TSC: Murfreesboro</li>
-            <li>Contact: Reggie White</li>
-            <li>Analog channels: 16</li>
-            <li>Digital channels: 8</li>
+            <li>Latitude: @device.Latitude</li>
+            <li>Longitude: @device.Longitude</li>
+            <li>Frames per Second: @device.FramesPerSecond</li>
+            <li>Contacts: @device.ContactList</li>
             <li>
                 Connection String:
                 <ul>
-                    @foreach (string x in device.ConnectionString.Split(';'))
+                    @foreach (string value in device.ConnectionString.Split(';'))
                     {
-                        <li>@x</li>
+                        <li>@value</li>
                     }
                 </ul>
             </li>
