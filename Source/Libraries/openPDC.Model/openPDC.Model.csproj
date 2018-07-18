@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveMeasurement.cs" />
+    <Compile Include="AlarmState.cs" />
+    <Compile Include="AlarmDevice.cs" />
     <Compile Include="AlarmDeviceStateView.cs" />
     <Compile Include="CustomActionAdapter.cs" />
     <Compile Include="DataAvailability.cs" />
