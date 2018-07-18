@@ -2,7 +2,7 @@
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW [dbo].[LocalSchemaVersion] AS
-SELECT 1 AS VersionNumber
+SELECT 2 AS VersionNumber
 GO
 
 CREATE TABLE DataAvailability(
@@ -20,6 +20,24 @@ CREATE TABLE AlarmState(
 )
 GO
 
+INSERT INTO AlarmState(State, Color) VALUES('Good', 'green')
+GO
+
+INSERT INTO AlarmState(State, Color) VALUES('Alarm', 'red')
+GO
+
+INSERT INTO AlarmState(State, Color) VALUES('Not Available', 'orange')
+GO
+
+INSERT INTO AlarmState(State, Color) VALUES('Bad Data', 'blue')
+GO
+
+INSERT INTO AlarmState(State, Color) VALUES('Bad Time', 'purple')
+GO
+
+INSERT INTO AlarmState(State, Color) VALUES('Out of Service', 'grey')
+GO
+
 CREATE TABLE AlarmDevice(
 	ID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	DeviceID int NULL FOREIGN KEY REFERENCES Device(ID),
@@ -27,4 +45,11 @@ CREATE TABLE AlarmDevice(
 	TimeStamp datetime NULL,
 	DisplayData varchar(10) NULL
 )
+GO
+
+CREATE VIEW AlarmDeviceStateView AS
+SELECT AlarmDevice.ID, Device.Name, AlarmState.State, AlarmState.Color, AlarmDevice.DisplayData
+FROM AlarmDevice
+    INNER JOIN AlarmState ON AlarmDevice.StateID = AlarmState.ID
+    INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID
 GO

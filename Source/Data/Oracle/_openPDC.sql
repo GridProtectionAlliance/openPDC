@@ -2,7 +2,7 @@
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW LocalSchemaVersion AS
-SELECT 1 AS VersionNumber
+SELECT 2 AS VersionNumber
 FROM dual;
 
 
@@ -26,6 +26,13 @@ CREATE TABLE AlarmState(
 	State varchar(50) NULL,
 	Color varchar(50) NULL,
 );
+
+INSERT INTO AlarmState(State, Color) VALUES('Good', 'green');
+INSERT INTO AlarmState(State, Color) VALUES('Alarm', 'red');
+INSERT INTO AlarmState(State, Color) VALUES('Not Available', 'orange');
+INSERT INTO AlarmState(State, Color) VALUES('Bad Data', 'blue');
+INSERT INTO AlarmState(State, Color) VALUES('Bad Time', 'purple');
+INSERT INTO AlarmState(State, Color) VALUES('Out of Service', 'grey');
 
 ALTER TABLE AlarmState ADD CONSTRAINT PK_AlarmState PRIMARY KEY (ID);
 
@@ -52,3 +59,9 @@ CREATE SEQUENCE SEQ_AlarmDevice START WITH 1 INCREMENT BY 1;
 CREATE TRIGGER AI_AlarmDevice BEFORE INSERT ON AlarmDevice
     FOR EACH ROW BEGIN SELECT SEQ_AlarmDevice.nextval INTO :NEW.ID FROM dual;
 END;
+
+CREATE VIEW AlarmDeviceStateView AS
+SELECT AlarmDevice.ID, Device.Name, AlarmState.State, AlarmState.Color, AlarmDevice.DisplayData
+FROM AlarmDevice
+    INNER JOIN AlarmState ON AlarmDevice.StateID = AlarmState.ID
+    INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID;

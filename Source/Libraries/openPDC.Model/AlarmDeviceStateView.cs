@@ -13,7 +13,5 @@ namespace openPDC.Model
         public string State { get; set; }
         public string Color { get; set; }
         public string DisplayData { get; set; }
-
-
     }
 }
