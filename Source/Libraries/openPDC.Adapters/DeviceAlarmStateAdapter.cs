@@ -110,7 +110,7 @@ namespace openPDC.Adapters
         /// </summary>
         [ConnectionStringParameter]
         [Description("Defines the time, in minutes, for which to change the device state to alarm when no data is received.")]
-        [DefaultValue(DefaultMonitoringRate)]
+        [DefaultValue(DefaultAlarmTime)]
         public double AlarmMinutes
         {
             get => m_alarmTime.ToMinutes();
