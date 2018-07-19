@@ -35,6 +35,7 @@ using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Json;
 using ModbusAdapters;
 using Newtonsoft.Json;
+using openPDC.Adapters;
 using Owin;
 using openPDC.Model;
 
@@ -139,6 +140,8 @@ namespace openPDC
             // Map custom API controllers
             try
             {
+                using (new GrafanaController()) { }
+
                 httpConfig.Routes.MapHttpRoute(
                     name: "CustomAPIs",
                     routeTemplate: "api/{controller}/{action}/{id}",
