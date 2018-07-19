@@ -301,7 +301,7 @@ namespace openPDC.Adapters
 
                 // Load any newly defined devices into the alarm device table
                 TableOperations<AlarmDevice> alarmDeviceTable = new TableOperations<AlarmDevice>(connection);
-                DataRow[] newDevices = connection.RetrieveData("SELECT ID FROM Device WHERE NOT ID IN (SELECT DeviceID FROM AlarmDevice)").Select();
+                DataRow[] newDevices = connection.RetrieveData("SELECT * FROM Device WHERE IsConcentrator = 0 AND  NOT ID IN (SELECT DeviceID FROM AlarmDevice)").Select();
 
                 foreach (DataRow newDevice in newDevices)
                 {
@@ -309,7 +309,10 @@ namespace openPDC.Adapters
 
                     alarmDevice.DeviceID = newDevice.Field<int>("ID");
                     alarmDevice.StateID = newDevice.Field<bool>("Enabled") ? m_alarmStates[AlarmState.NotAvailable].ID : m_alarmStates[AlarmState.OutOfService].ID;
-                    alarmDevice.DisplayData = GetRootDeviceName(newDevice.Field<string>("Acronym")).Substring(0, 10);
+                    alarmDevice.DisplayData = GetRootDeviceName(newDevice.Field<string>("Acronym"));
+
+                    if (alarmDevice.DisplayData.Length > 10)
+                        alarmDevice.DisplayData = alarmDevice.DisplayData.Substring(0, 10);
 
                     alarmDeviceTable.AddNewRecord(alarmDevice);
 
@@ -321,14 +324,18 @@ namespace openPDC.Adapters
                 // Load measurement signal ID to alarm device map
                 foreach (AlarmDevice alarmDevice in alarmDeviceTable.QueryRecords())
                 {
-                    MeasurementKey[] keys = ParseInputMeasurementKeys(DataSource, false, $"FILTER ActiveMeasurements WHERE DeviceID = {alarmDevice.DeviceID} AND SignalType = 'FREQ'");
+                    MeasurementKey[] keys = null;
+                    DataRow metadata = connection.RetrieveRow("SELECT * FROM Device WHERE ID = {0}", alarmDevice.DeviceID);
 
-                    if (keys.Length > 0)
+                    if ((object)metadata != null)
+                        keys = ParseInputMeasurementKeys(DataSource, false, $"FILTER ActiveMeasurements WHERE Device = '{metadata.Field<string>("Acronym")}' AND SignalType = 'FREQ'");
+
+                    if (keys?.Length > 0)
                     {
                         MeasurementKey key = keys[0];
                         inputMeasurementKeys.Add(key);
                         m_deviceMeasurementKeys[alarmDevice.DeviceID] = key;
-                        m_deviceMetadata[alarmDevice.DeviceID] = connection.RetrieveRow("SELECT * FROM Device WHERE ID = {0}", alarmDevice.DeviceID);
+                        m_deviceMetadata[alarmDevice.DeviceID] = metadata;
                         m_lastDeviceDataUpdates[key.SignalID] = DateTime.UtcNow.Ticks;
                     }
                     else
