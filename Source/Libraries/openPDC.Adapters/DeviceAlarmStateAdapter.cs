@@ -21,13 +21,6 @@
 //
 //******************************************************************************************************
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Timers;
 using GSF;
 using GSF.Data;
 using GSF.Data.Model;
@@ -36,6 +29,13 @@ using GSF.Threading;
 using GSF.TimeSeries;
 using GSF.TimeSeries.Adapters;
 using openPDC.Model;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Timers;
 using AlarmStateRecord = openPDC.Model.AlarmState;
 using ConnectionStringParser = GSF.Configuration.ConnectionStringParser<GSF.TimeSeries.Adapters.ConnectionStringParameterAttribute>;
 
@@ -51,12 +51,12 @@ namespace openPDC.Adapters
 
         private enum AlarmState
         {
-            Good,
-            Alarm,
-            NotAvailable,
-            BadData,
-            BadTime,
-            OutOfService
+            Good,           // Everything is kosher
+            Alarm,          // Not available for longer than configured alarm time
+            NotAvailable,   // Data is missing or timestamp is outside lead/lag time range
+            BadData,        // Quality flags report bad data
+            BadTime,        // Quality flags report bad time
+            OutOfService    // Source device is disabled
         }
 
         // Constants
@@ -241,6 +241,8 @@ namespace openPDC.Adapters
                     alarmDevice.DisplayData = GetRootDeviceName(newDevice.Field<string>("Acronym")).Substring(0, 10);
 
                     alarmDeviceTable.AddNewRecord(alarmDevice);
+
+                    // Foreign key relationship with Device table with delete cascade should ensure automatic removals
                 }
 
                 List<MeasurementKey> inputMeasurementKeys = new List<MeasurementKey>();
@@ -270,17 +272,18 @@ namespace openPDC.Adapters
                 TrackLatestMeasurements = true;
             }
 
-            // Define synchronized polling operation
+            // Define synchronized monitoring operation
             m_monitoringOperation = new ShortSynchronizedOperation(MonitoringOperation, exception => OnProcessException(MessageLevel.Warning, exception));
 
-            // Define polling timer
+            // Define monitoring timer
             m_monitoringTimer = new Timer(MonitoringRate);
             m_monitoringTimer.AutoReset = true;
             m_monitoringTimer.Elapsed += m_monitoringTimer_Elapsed;
+            m_monitoringTimer.Enabled = true;
         }
 
         /// <summary>
-        /// monitoring operation to update alarm state for immediate execution.
+        /// Queues monitoring operation to update alarm state for immediate execution.
         /// </summary>
         [AdapterCommand("Queues monitoring operation to update alarm state for immediate execution.", "Administrator", "Editor")]
         public void QueueStateUpdate()
@@ -296,7 +299,7 @@ namespace openPDC.Adapters
         public override string GetShortStatus(int maxLength)
         {
             if (MonitoringEnabled)
-                return $"Monitoring enabled for every {MonitoringRate:N0}ms".CenterText(maxLength);
+                return $"Monitoring enabled for every {Ticks.FromMilliseconds(MonitoringRate).ToElapsedTimeString()}".CenterText(maxLength);
 
             return "Monitoring is disabled...".CenterText(maxLength);            
         }
@@ -311,12 +314,34 @@ namespace openPDC.Adapters
 
                 foreach (AlarmDevice alarmDevice in alarmDeviceTable.QueryRecords())
                 {
-                    if (m_deviceMeasurementKeys.TryGetValue(alarmDevice.DeviceID, out MeasurementKey key))
+                    if (m_deviceMeasurementKeys.TryGetValue(alarmDevice.DeviceID, out MeasurementKey key) && m_lastDeviceDataUpdates.TryGetValue(key.SignalID, out Ticks lastUpdateTime))
                     {
                         TemporalMeasurement measurement = measurements.Measurement(key);
+                        Ticks currentTime = DateTime.UtcNow.Ticks;
+                        AlarmState state = AlarmState.Good;
 
                         // Determine and update state
+                        if (double.IsNaN(measurement.AdjustedValue))
+                        {
+                            // Value is missing for longer than defined adapter lead / lag time tolerances,
+                            // state is unavailable or in alarm if unavailable beyond configured alarm time
+                            state = currentTime - lastUpdateTime > m_alarmTime ? AlarmState.Alarm : AlarmState.NotAvailable;
+                        }
+                        else
+                        {
+                            // Have a value, update last device data time
+                            m_lastDeviceDataUpdates[key.SignalID] = currentTime;
 
+                            if (!measurement.ValueQualityIsGood())
+                                state = AlarmState.BadData;
+                            else if (!measurement.TimestampQualityIsGood())
+                                state = AlarmState.BadTime;
+                        }
+
+                        // Set alarm device state
+                        alarmDevice.StateID = m_alarmStates[state].ID;
+
+                        // Update alarm table record
                         alarmDeviceTable.UpdateRecord(alarmDevice);
                     }
                 }
