@@ -25,6 +25,7 @@ using GSF;
 using GSF.Data;
 using GSF.Data.Model;
 using GSF.Diagnostics;
+using GSF.Parsing;
 using GSF.Threading;
 using GSF.TimeSeries;
 using GSF.TimeSeries.Adapters;
@@ -68,8 +69,12 @@ namespace openPDC.Adapters
         private ShortSynchronizedOperation m_monitoringOperation;
         private Dictionary<AlarmState, AlarmStateRecord> m_alarmStates;
         private Dictionary<int, MeasurementKey> m_deviceMeasurementKeys;
+        private Dictionary<int, DataRow> m_deviceMetadata;
         private Dictionary<Guid, Ticks> m_lastDeviceDataUpdates;
+        private Dictionary<AlarmState, string> m_mappedAlarmStates;
         private Ticks m_alarmTime;
+        private long m_alarmStateUpdates;
+        private long m_externalDatabaseUpdates;
         private bool m_disposed;
 
         #endregion
@@ -91,9 +96,9 @@ namespace openPDC.Adapters
         /// <summary>
         /// Gets or sets monitoring rate, in milliseconds, for devices.
         /// </summary>
-        [ConnectionStringParameter,
-         Description("Defines overall monitoring rate, in milliseconds, for devices."),
-         DefaultValue(DefaultMonitoringRate)]
+        [ConnectionStringParameter]
+        [Description("Defines overall monitoring rate, in milliseconds, for devices.")]
+        [DefaultValue(DefaultMonitoringRate)]
         public int MonitoringRate
         {
             get;
@@ -103,13 +108,73 @@ namespace openPDC.Adapters
         /// <summary>
         /// Gets or sets the time, in minutes, for which to change the device state to alarm when no data is received.
         /// </summary>
-        [ConnectionStringParameter,
-         Description("Defines the time, in minutes, for which to change the device state to alarm when no data is received."),
-         DefaultValue(DefaultMonitoringRate)]
+        [ConnectionStringParameter]
+        [Description("Defines the time, in minutes, for which to change the device state to alarm when no data is received.")]
+        [DefaultValue(DefaultMonitoringRate)]
         public double AlarmMinutes
         {
             get => m_alarmTime.ToMinutes();
             set => m_alarmTime = TimeSpan.FromMinutes(value).Ticks;
+        }
+
+        /// <summary>
+        /// Gets or sets the external database connection string used for synchronization of alarm states.
+        /// </summary>
+        [ConnectionStringParameter]
+        [Description("Defines the external database connection string used for synchronization of alarm states.")]
+        [DefaultValue("")]
+        public string ExternalDatabaseConnnectionString
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the external database provider string used for synchronization of alarm states.
+        /// </summary>
+        [ConnectionStringParameter]
+        [Description("Defines the external database provider string used for synchronization of alarm states.")]
+        [DefaultValue("AssemblyName={System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089}; ConnectionType=System.Data.SqlClient.SqlConnection; AdapterType=System.Data.SqlClient.SqlDataAdapter")]
+        public string ExternalDatabaseProviderString
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the external database command used for synchronization of alarm states.
+        /// </summary>
+        [ConnectionStringParameter]
+        [Description("Defines the external database command used for synchronization of alarm states.")]
+        [DefaultValue("sp_LogSsamEvent")]
+        public string ExternalDatabaseCommand
+        {
+            get;
+            set;
+        }
+        
+        /// <summary>
+        /// Gets or sets the external database command parameters with value substitutions used for synchronization of alarm states.
+        /// </summary>
+        [ConnectionStringParameter]
+        [Description("Defines the external database command parameters with value substitutions used for synchronization of alarm states.")]
+        [DefaultValue("{MappedAlarmState},1,'PDC_DEVICE_{Acronym}','','openPDC device {Acronym} state = {AlarmState}',''")]
+        public string ExternalDatabaseCommandParameters
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the external database mapped alarm states defining the {MappedAlarmState} command parameter substitution parameter used for synchronization of alarm states.
+        /// </summary>
+        [ConnectionStringParameter]
+        [Description("Defines the external database mapped alarm states defining the {MappedAlarmState} command parameter substitution parameter used for synchronization of alarm states.")]
+        [DefaultValue("Good=1,Alarm=3,NotAvailable=2,BadData=4,BadTime=4,OutOfService=5")]
+        public string ExternalDatabaseMappedAlarmStates
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -154,6 +219,10 @@ namespace openPDC.Adapters
                 status.AppendFormat("    Monitored Device Count: {0:N0}", InputMeasurementKeys?.Length ?? 0);
                 status.AppendLine();
                 status.AppendFormat("     No Data Alarm Timeout: {0}", m_alarmTime.ToElapsedTimeString(2));
+                status.AppendLine();
+                status.AppendFormat("       Alarm State Updates: {0}", m_alarmStateUpdates);
+                status.AppendLine();
+                status.AppendFormat(" External Database Updates: {0}", m_externalDatabaseUpdates);
                 status.AppendLine();
 
                 return status.ToString();
@@ -206,7 +275,9 @@ namespace openPDC.Adapters
 
             m_alarmStates = new Dictionary<AlarmState, AlarmStateRecord>();
             m_deviceMeasurementKeys = new Dictionary<int, MeasurementKey>();
+            m_deviceMetadata = new Dictionary<int, DataRow>();
             m_lastDeviceDataUpdates = new Dictionary<Guid, Ticks>();
+            m_mappedAlarmStates = new Dictionary<AlarmState, string>();
 
             using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
             {
@@ -257,6 +328,7 @@ namespace openPDC.Adapters
                         MeasurementKey key = keys[0];
                         inputMeasurementKeys.Add(key);
                         m_deviceMeasurementKeys[alarmDevice.DeviceID] = key;
+                        m_deviceMetadata[alarmDevice.DeviceID] = connection.RetrieveRow("SELECT * FROM Device WHERE ID = {0}", alarmDevice.DeviceID);
                         m_lastDeviceDataUpdates[key.SignalID] = DateTime.UtcNow.Ticks;
                     }
                     else
@@ -270,6 +342,20 @@ namespace openPDC.Adapters
                 // Load desired input measurements
                 InputMeasurementKeys = inputMeasurementKeys.ToArray();
                 TrackLatestMeasurements = true;
+            }
+
+            // Parse external database mapped alarm states, if defined
+            if (!string.IsNullOrEmpty(ExternalDatabaseMappedAlarmStates))
+            {
+                string[] mappings = ExternalDatabaseMappedAlarmStates.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string mapping in mappings)
+                {
+                    string[] parts = mapping.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (parts.Length == 2 && Enum.TryParse(parts[0].Trim(), out AlarmState state))
+                        m_mappedAlarmStates[state] = parts[1].Trim();
+                }
             }
 
             // Define synchronized monitoring operation
@@ -307,6 +393,9 @@ namespace openPDC.Adapters
         private void MonitoringOperation()
         {
             ImmediateMeasurements measurements = LatestMeasurements;
+            List<AlarmDevice> alarmDeviceUpdates = new List<AlarmDevice>();
+
+            OnStatusMessage(MessageLevel.Info, "Updating device alarm states");
 
             using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
             {
@@ -343,8 +432,80 @@ namespace openPDC.Adapters
 
                         // Update alarm table record
                         alarmDeviceTable.UpdateRecord(alarmDevice);
+                        alarmDeviceUpdates.Add(alarmDevice);
                     }
                 }
+
+                m_alarmStateUpdates++;
+            }
+
+            if (!string.IsNullOrEmpty(ExternalDatabaseConnnectionString))
+            {
+                TemplatedExpressionParser parameterTemplate = new TemplatedExpressionParser
+                {
+                    TemplatedExpression = ExternalDatabaseCommandParameters
+                };
+
+                using (AdoDataConnection connection = new AdoDataConnection(ExternalDatabaseConnnectionString, ExternalDatabaseProviderString))
+                {
+                    foreach (AlarmDevice alarmDevice in alarmDeviceUpdates)
+                    {
+                        if (m_deviceMetadata.TryGetValue(alarmDevice.DeviceID, out DataRow metadata))
+                        {
+                            AlarmState state = m_alarmStates.First(record => record.Value.ID == alarmDevice.StateID).Key;
+                            Dictionary<string, string> substitutions = new Dictionary<string, string>();
+
+                            substitutions["AlarmState"] = state.ToString();
+                            substitutions["AlarmStateValue"] = ((int)state).ToString();
+
+                            if (m_mappedAlarmStates.TryGetValue(state, out string mappedValue))
+                                substitutions["MappedAlarmState"] = mappedValue;
+                            else
+                                substitutions["MappedAlarmState"] = "0";
+
+                            // Use device metadata columns as possible substitution parameters
+                            foreach (DataColumn column in metadata.Table.Columns)
+                                substitutions[column.ColumnName] = metadata[column.ColumnName].ToString();
+
+                            List<object> parameters = new List<object>();
+                            string commandParameters = parameterTemplate.Execute(substitutions);
+                            string[] splitParameters = commandParameters.Split(',');
+
+                            for (int i = 0; i < splitParameters.Length; i++)
+                            {
+                                string parameter = splitParameters[i].Trim();
+
+                                if (parameter.StartsWith("'") && parameter.EndsWith("'"))
+                                {
+                                    if (parameter.Length > 2)
+                                        parameters.Add(parameter.Substring(1, parameter.Length - 2));
+                                    else
+                                        parameters.Add("");
+                                }
+                                else if (int.TryParse(parameter, out int ival))
+                                {
+                                    parameters.Add(ival);
+                                }
+                                else if (double.TryParse(parameter, out double dval))
+                                {
+                                    parameters.Add(dval);
+                                }
+                                else if (bool.TryParse(parameter, out bool bval))
+                                {
+                                    parameters.Add(bval);
+                                }
+                                else
+                                {
+                                    parameters.Add(parameter);
+                                }
+                            }
+
+                            connection.ExecuteScalar(ExternalDatabaseCommand, parameters);
+                        }
+                    }
+                }
+
+                m_externalDatabaseUpdates++;
             }
         }
 
