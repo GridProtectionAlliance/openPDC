@@ -26,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{E7006E3E-A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", "{9A59B9E0-A36F-4C52-8568-CB004B20885B}"
 	ProjectSection(SolutionItems) = preProject
+		Data\SQL Server\_InitialDataSet.sql = Data\SQL Server\_InitialDataSet.sql
 		Data\SQL Server\_openPDC.sql = Data\SQL Server\_openPDC.sql
 		Data\SQL Server\AuditLog.sql = Data\SQL Server\AuditLog.sql
 		Data\SQL Server\InitialDataSet.sql = Data\SQL Server\InitialDataSet.sql
@@ -35,6 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B1AC9848-2909-4A7B-9541-8EA4E89E72F1}"
 	ProjectSection(SolutionItems) = preProject
+		Data\MySQL\_InitialDataSet.sql = Data\MySQL\_InitialDataSet.sql
 		Data\MySQL\_openPDC.sql = Data\MySQL\_openPDC.sql
 		Data\MySQL\AuditLog.sql = Data\MySQL\AuditLog.sql
 		Data\MySQL\InitialDataSet.sql = Data\MySQL\InitialDataSet.sql
@@ -106,6 +108,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Help Me Choose Diagrams", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{53255BB7-2046-4606-BF76-7B5C13F49819}"
 	ProjectSection(SolutionItems) = preProject
+		Data\SQLite\_InitialDataSet.sql = Data\SQLite\_InitialDataSet.sql
 		Data\SQLite\_openPDC.sql = Data\SQLite\_openPDC.sql
 		Data\SQLite\InitialDataSet.sql = Data\SQLite\InitialDataSet.sql
 		Data\SQLite\openPDC-InitialDataSet.db = Data\SQLite\openPDC-InitialDataSet.db
@@ -117,6 +120,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{53255B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Oracle", "Oracle", "{051BD028-6567-442A-B7C5-A5DD9F70B357}"
 	ProjectSection(SolutionItems) = preProject
+		Data\Oracle\_InitialDataSet.sql = Data\Oracle\_InitialDataSet.sql
 		Data\Oracle\_openPDC.sql = Data\Oracle\_openPDC.sql
 		Data\Oracle\AuditLog.sql = Data\Oracle\AuditLog.sql
 		Data\Oracle\InitialDataSet.sql = Data\Oracle\InitialDataSet.sql
@@ -246,6 +250,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WiX", "WiX", "{6CFC0EB9-861
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", "{73515839-30AD-40E6-809F-A891F2C95599}"
 	ProjectSection(SolutionItems) = preProject
+		Data\PostgreSQL\_InitialDataSet.sql = Data\PostgreSQL\_InitialDataSet.sql
 		Data\PostgreSQL\_openPDC.sql = Data\PostgreSQL\_openPDC.sql
 		Data\PostgreSQL\InitialDataSet.sql = Data\PostgreSQL\InitialDataSet.sql
 		Data\PostgreSQL\openPDC.sql = Data\PostgreSQL\openPDC.sql
