@@ -21,15 +21,16 @@
 //
 //******************************************************************************************************
 
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web.Http;
 using GrafanaAdapters;
 using GSF.Data;
 using GSF.Data.Model;
 using openPDC.Model;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web.Http;
 using CancellationToken = System.Threading.CancellationToken;
 using ValidateAntiForgeryTokenAttribute = System.Web.Mvc.ValidateAntiForgeryTokenAttribute;
 
@@ -82,5 +83,19 @@ namespace openPDC.Adapters
             },
             cancellationToken);
         }
+
+
+        /// <summary>
+        /// Handled query function requests - returns empty results.
+        /// </summary>
+        /// <param name="request">Query request.</param>
+        /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+        [HttpPost]
+        [SuppressMessage("Security", "SG0016", Justification = "Current operation dictated by Grafana. CSRF exposure limited to data access.")]
+        public virtual Task<List<TimeSeriesValues>> Query(QueryRequest request, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new List<TimeSeriesValues>());
+        }
+
     }
 }
