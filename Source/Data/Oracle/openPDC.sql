@@ -2782,13 +2782,6 @@ CREATE TABLE AlarmState(
 	Color varchar(50) NULL,
 );
 
-INSERT INTO AlarmState(State, Color) VALUES('Good', 'green');
-INSERT INTO AlarmState(State, Color) VALUES('Alarm', 'red');
-INSERT INTO AlarmState(State, Color) VALUES('Not Available', 'orange');
-INSERT INTO AlarmState(State, Color) VALUES('Bad Data', 'blue');
-INSERT INTO AlarmState(State, Color) VALUES('Bad Time', 'purple');
-INSERT INTO AlarmState(State, Color) VALUES('Out of Service', 'grey');
-
 ALTER TABLE AlarmState ADD CONSTRAINT PK_AlarmState PRIMARY KEY (ID);
 
 CREATE SEQUENCE SEQ_AlarmState START WITH 1 INCREMENT BY 1;
