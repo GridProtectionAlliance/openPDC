@@ -71,6 +71,7 @@ namespace openPDC.Adapters
         private Dictionary<int, MeasurementKey> m_deviceMeasurementKeys;
         private Dictionary<int, DataRow> m_deviceMetadata;
         private Dictionary<Guid, Ticks> m_lastDeviceDataUpdates;
+        private Dictionary<Guid, Ticks> m_lastDeviceStateChange;
         private Dictionary<AlarmState, string> m_mappedAlarmStates;
         private Ticks m_alarmTime;
         private long m_alarmStateUpdates;
@@ -277,6 +278,7 @@ namespace openPDC.Adapters
             m_deviceMeasurementKeys = new Dictionary<int, MeasurementKey>();
             m_deviceMetadata = new Dictionary<int, DataRow>();
             m_lastDeviceDataUpdates = new Dictionary<Guid, Ticks>();
+            m_lastDeviceStateChange = new Dictionary<Guid, Ticks>();
             m_mappedAlarmStates = new Dictionary<AlarmState, string>();
 
             using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
@@ -307,12 +309,11 @@ namespace openPDC.Adapters
                 {
                     AlarmDevice alarmDevice = alarmDeviceTable.NewRecord();
 
-                    alarmDevice.DeviceID = newDevice.Field<int>("ID");
-                    alarmDevice.StateID = newDevice.Field<bool>("Enabled") ? m_alarmStates[AlarmState.NotAvailable].ID : m_alarmStates[AlarmState.OutOfService].ID;
-                    alarmDevice.DisplayData = GetRootDeviceName(newDevice.Field<string>("Acronym"));
+                    bool enabled = newDevice.Field<bool>("Enabled");
 
-                    if (alarmDevice.DisplayData.Length > 10)
-                        alarmDevice.DisplayData = alarmDevice.DisplayData.Substring(0, 10);
+                    alarmDevice.DeviceID = newDevice.Field<int>("ID");
+                    alarmDevice.StateID = enabled ? m_alarmStates[AlarmState.NotAvailable].ID : m_alarmStates[AlarmState.OutOfService].ID;
+                    alarmDevice.DisplayData = enabled ? "0" : GetOutOfServiceTime(newDevice);
 
                     alarmDeviceTable.AddNewRecord(alarmDevice);
 
@@ -332,16 +333,19 @@ namespace openPDC.Adapters
 
                     if (keys?.Length > 0)
                     {
+                        // Only one frequency is expected
                         MeasurementKey key = keys[0];
                         inputMeasurementKeys.Add(key);
                         m_deviceMeasurementKeys[alarmDevice.DeviceID] = key;
                         m_deviceMetadata[alarmDevice.DeviceID] = metadata;
                         m_lastDeviceDataUpdates[key.SignalID] = DateTime.UtcNow.Ticks;
+                        m_lastDeviceStateChange[key.SignalID] = DateTime.UtcNow.Ticks;
                     }
                     else
                     {
                         // Mark alarm record as unavailable if no frequency measurement is available for device
                         alarmDevice.StateID = m_alarmStates[AlarmState.NotAvailable].ID;
+                        alarmDevice.DisplayData = GetOutOfServiceTime(metadata);
                         alarmDeviceTable.UpdateRecord(alarmDevice);
                     }
                 }
@@ -435,7 +439,16 @@ namespace openPDC.Adapters
                         }
 
                         // Set alarm device state
-                        alarmDevice.StateID = m_alarmStates[state].ID;
+                        int stateID = m_alarmStates[state].ID;
+
+                        if (stateID != alarmDevice.StateID)
+                        {
+                            m_lastDeviceStateChange[key.SignalID] = currentTime;
+                            alarmDevice.StateID = stateID;
+                        }
+
+                        // Update display text to show time since last alarm state change
+                        alarmDevice.DisplayData = state == AlarmState.Good ? "0" : GetShortElapsedTimeString(currentTime - m_lastDeviceStateChange[key.SignalID]);
 
                         // Update alarm table record
                         alarmDeviceTable.UpdateRecord(alarmDevice);
@@ -521,17 +534,50 @@ namespace openPDC.Adapters
             m_monitoringOperation?.RunOnce();
         }
 
-        private static string GetRootDeviceName(string deviceName)
+        #endregion
+
+        #region [ Static ]
+
+        private static readonly string[] s_shortTimeNames = { " yr", " yr", " d", " d", " hr", " hr", " m", " m", " s", " s", "< " };
+
+        private static string GetOutOfServiceTime(DataRow deviceRow)
         {
-            if (string.IsNullOrWhiteSpace(deviceName))
-                return "UNDEFINED";
+            if ((object)deviceRow == null)
+                return "U/A";
 
-            int prefixIndex = deviceName.LastIndexOf('!');
+            try
+            {
+                return GetShortElapsedTimeString(DateTime.UtcNow.Ticks - deviceRow.Field<DateTime>("UpdatedOn").Ticks);
+            }
+            catch
+            {
+                return "U/A";
+            }
+        }
 
-            if (prefixIndex > -1 && prefixIndex + 1 < deviceName.Length)
-                deviceName = deviceName.Substring(prefixIndex + 1);
+        private static string GetShortElapsedTimeString(Ticks span)
+        {
+            double days = span.ToDays();
 
-            return deviceName.Trim();
+            if (days > 365.25D)
+                span = span.BaselinedTimestamp(BaselineTimeInterval.Year);
+            else if (days > 1.0D)
+                span = span.BaselinedTimestamp(BaselineTimeInterval.Day);
+            else if (span.ToHours() > 1.0D)
+                span = span.BaselinedTimestamp(BaselineTimeInterval.Hour);
+            else if (span.ToMinutes() > 1.0D)
+                span = span.BaselinedTimestamp(BaselineTimeInterval.Minute);
+            else if (span.ToSeconds() > 1.0D)
+                span = span.BaselinedTimestamp(BaselineTimeInterval.Second);
+            else
+                return "0";
+
+            string elapsedTimeString = span.ToElapsedTimeString(0, s_shortTimeNames);
+
+            if (elapsedTimeString.Length > 10)
+                elapsedTimeString = elapsedTimeString.Substring(0, 10);
+
+            return elapsedTimeString;
         }
 
         #endregion
