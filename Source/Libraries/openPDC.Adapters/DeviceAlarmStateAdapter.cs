@@ -309,7 +309,7 @@ namespace openPDC.Adapters
                 {
                     AlarmDevice alarmDevice = alarmDeviceTable.NewRecord();
 
-                    bool enabled = newDevice.Field<bool>("Enabled");
+                    bool enabled = newDevice["Enabled"].ToString().ParseBoolean();
 
                     alarmDevice.DeviceID = newDevice.Field<int>("ID");
                     alarmDevice.StateID = enabled ? m_alarmStates[AlarmState.NotAvailable].ID : m_alarmStates[AlarmState.OutOfService].ID;
@@ -547,7 +547,7 @@ namespace openPDC.Adapters
 
             try
             {
-                return GetShortElapsedTimeString(DateTime.UtcNow.Ticks - deviceRow.Field<DateTime>("UpdatedOn").Ticks);
+                return GetShortElapsedTimeString(DateTime.UtcNow.Ticks - Convert.ToDateTime(deviceRow["UpdatedOn"]).Ticks);
             }
             catch
             {
