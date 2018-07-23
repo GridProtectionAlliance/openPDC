@@ -20,6 +20,7 @@
 //       Generated original version of source code.
 //
 //*****************************************************************************************************@
+@using GSF
 @using GSF.Web.Model
 @using System.Net.Http
 @using GSF.Web
@@ -29,31 +30,213 @@
 @using openPDC.Model
 @using System.Data
 @using System.Linq
+@using GSF.Data.Model
+@using openPDC.Adapters
 @inherits ExtendedTemplateBase<AppModel>
 @{
     Layout = "Layout.cshtml";
 
     DataContext dataContext = ViewBag.DataContext;
-
     HttpRequestMessage request = ViewBag.Request;
     Dictionary<string, string> parameters = request.QueryParameters();
     string id;
+
     parameters.TryGetValue("ID", out id);
 
-    if (string.IsNullOrEmpty(id))
-    {
+    if (string.IsNullOrWhiteSpace(id)) {
         id = "0";
     }
 
+    string deviceAcronym = null, deviceName = null, vendorName = null, deviceType = null,
+           contactList = null, connectionString = null, activeMeasurementID = null,
+           displayData = null, stateName = null, stateColor = null, parentAcronym = null,
+           adapterAcronym = null, extraMessage = "";
+
+    decimal longitude = 0.0M, latitude = 0.0M;
+    int framesPerSecond = 30, refreshInterval = DeviceAlarmStateAdapter.DefaultMonitoringRate / 1000;
+    bool reinitializeAlarmStateAdapter = false;
+
+    DataRow alarmStateAdapter = dataContext.Connection.RetrieveRow("SELECT * FROM CustomActionAdapter WHERE TypeName='openPDC.Adapters.DeviceAlarmStateAdapter'");
+
+    if ((object)alarmStateAdapter != null) {
+        adapterAcronym = alarmStateAdapter["AdapterName"].ToString();
+        string adapterSettings = alarmStateAdapter["ConnectionString"].ToString();
+
+        if (!string.IsNullOrWhiteSpace(adapterSettings)) {
+            Dictionary<string, string> settings = adapterSettings.ParseKeyValuePairs();
+            string setting;
+            int monitoringRate;
+
+            if (settings.TryGetValue("MonitoringRate", out setting) && int.TryParse(setting, out monitoringRate)) {
+                refreshInterval = monitoringRate / 1000;
+            }
+        }
+    }
+
     Device device = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", id);
-    VendorDevice vendorDevice = dataContext.Table<VendorDevice>().QueryRecordWhere("ID = {0}", device.VendorDeviceID);
-    Vendor vendor = dataContext.Table<Vendor>().QueryRecordWhere("ID = {0}", vendorDevice.VendorID);
-    ActiveMeasurement activeMeasurement = dataContext.Table<ActiveMeasurement>().QueryRecordWhere("Device = {0} AND SignalType = 'FREQ'", device.Acronym);
+
+    if ((object)device != null) {
+        AlarmDevice alarmDevice;
+
+        if (ViewBag.IsPost) {
+            PostData postData = request.GetPostData();
+            device.Enabled = postData.FormData["deviceInService"].ParseBoolean();
+            dataContext.Table<Device>().UpdateRecord(device);
+
+            alarmDevice = dataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", device.ID);
+
+            if ((object)alarmDevice != null) {
+                TableOperations<AlarmState> alarmStateTable = dataContext.Table<AlarmState>();
+                AlarmState[] alarmStateRecords = alarmStateTable.QueryRecords().ToArray();
+                AlarmState newState;
+
+                if (device.Enabled) {
+                    newState = alarmStateRecords.FirstOrDefault(alarmState => alarmState.State == "Not Available");
+                    alarmDevice.DisplayData = "0";
+                    extraMessage = "-- State Reset";
+                }
+                else {
+                    newState = alarmStateRecords.FirstOrDefault(alarmState => alarmState.State == "Out of Service");
+                    alarmDevice.DisplayData = GetOutOfServiceTime(device);
+                }
+
+                if ((object)newState != null) {
+                    alarmDevice.StateID = newState.ID;
+                }
+
+                dataContext.Table<AlarmDevice>().UpdateRecord(alarmDevice);
+                reinitializeAlarmStateAdapter = true;
+            }
+        }
+
+        deviceAcronym = device.Acronym;
+        deviceName = device.Name;
+        contactList = device.ContactList;
+        connectionString = device.ConnectionString;
+
+        if (device.Longitude.HasValue) {
+            longitude = device.Longitude.Value;
+        }
+
+        if (device.Latitude.HasValue) {
+            latitude = device.Latitude.Value;
+        }
+
+        if (device.FramesPerSecond.HasValue) {
+            framesPerSecond = device.FramesPerSecond.Value;
+        }
+
+        if (device.ParentID.HasValue) {
+            // If this is a concentrator child, get connection string of parent
+            Device parentDevice = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", device.ParentID.Value);
+
+            if ((object)parentDevice != null) {
+                parentAcronym = parentDevice.Acronym;
+
+                string childConnectionString = connectionString;
+
+                // Settings in child connection string are not common
+                if (string.IsNullOrWhiteSpace(childConnectionString)) {
+                    childConnectionString = "";
+                }
+                else {
+                    childConnectionString = string.Format("; childDevice={0}; {1}", deviceAcronym, childConnectionString);
+                }
+
+                connectionString = string.Format("parentDevice={0}; {1}{2}", parentDevice.Acronym, parentDevice.ConnectionString, childConnectionString);
+            }
+        }
+
+        VendorDevice vendorDevice = dataContext.Table<VendorDevice>().QueryRecordWhere("ID = {0}", device.VendorDeviceID);
+
+        if ((object)vendorDevice != null) {
+            deviceType = vendorDevice.Name;
+
+            Vendor vendor = dataContext.Table<Vendor>().QueryRecordWhere("ID = {0}", vendorDevice.VendorID);
+
+            if ((object)vendor != null) {
+                vendorName = vendor.Name;
+            }
+        }
+
+        ActiveMeasurement activeMeasurement = dataContext.Table<ActiveMeasurement>().QueryRecordWhere("Device = {0} AND SignalType = 'FREQ'", device.Acronym);
+
+        if ((object)activeMeasurement != null) {
+            activeMeasurementID = activeMeasurement.ID;
+        }
+
+        alarmDevice = dataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", device.ID);
+
+        if ((object)alarmDevice != null) {
+            displayData = alarmDevice.DisplayData;
+
+            AlarmState alarmState = dataContext.Table<AlarmState>().QueryRecordWhere("ID = {0}", alarmDevice.StateID);
+
+            if ((object)alarmState != null) {
+                stateName = alarmState.State;
+                stateColor = alarmState.Color;
+            }
+        }
+    }
+
+    if (string.IsNullOrWhiteSpace(deviceName)) {
+        deviceName = "UNDEFINED";
+    }
+
+    if (string.IsNullOrWhiteSpace(vendorName)) {
+        vendorName = "Unspecified";
+    }
+
+    if (string.IsNullOrWhiteSpace(deviceType)) {
+        deviceType = "Unspecified";
+    }
+
+    if (string.IsNullOrWhiteSpace(contactList)) {
+        contactList = "None Defined";
+    }
+
+    if (string.IsNullOrWhiteSpace(connectionString)) {
+        connectionString = "settings=none";
+    }
+
+    if (string.IsNullOrWhiteSpace(displayData)) {
+        displayData = "0";
+    }
+
+    if (string.IsNullOrWhiteSpace(stateName)) {
+        stateName = "Unknown State";
+    }
+
+    if (string.IsNullOrWhiteSpace(stateColor)) {
+        stateColor = "yellow";
+    }
+
+    if (string.IsNullOrEmpty(parentAcronym)) {
+        parentAcronym = "";
+    }
+
+    if (string.IsNullOrWhiteSpace(activeMeasurementID)) {
+        activeMeasurementID = string.Format("__:{0}", ulong.MaxValue);
+    }
 
     ViewBag.Title = "";
-
 }
+@functions {
+    public static string GetOutOfServiceTime(Device device)
+    {
+        if ((object)device == null)
+            return "U/A";
 
+        try
+        {
+            return DeviceAlarmStateAdapter.GetShortElapsedTimeString(DateTime.UtcNow.Ticks - device.UpdatedOn.Ticks);
+        }
+        catch
+        {
+            return "U/A";
+        }
+    }
+}
 @section StyleSheets {
 <style>
     html, body {
@@ -64,40 +247,40 @@
         text-align: center;
     }
 
-        .btn-group button {
-            background-color: #4CAF50; /* Green background */
-            border: 1px solid green; /* Green border */
-            color: white; /* White text */
-            padding: 10px 24px; /* Some padding */
-            cursor: pointer; /* Pointer/hand icon */
-            float: none; /* Float the buttons side by side */
-            margin: 5px;
-            height: 62px;
-        }
+    .btn-group button {
+        background-color: #4CAF50; /* Green background */
+        border: 1px solid green; /* Green border */
+        color: white; /* White text */
+        cursor: pointer; /* Pointer/hand icon */
+        float: none; /* Float the buttons side by side */
+        margin: 5px;
+        height: 62px;
+    }
 
-        /* Clear floats (clearfix hack) */
-        .btn-group:after {
-            content: "";
-            clear: both;
-            display: table;
-        }
+    /* Clear floats (clearfix hack) */
+    .btn-group:after {
+        content: "";
+        clear: both;
+        display: table;
+    }
 
-        .btn-group button:not(:last-child) {
-            border-right: none; /* Prevent double borders */
-        }
+    .btn-group button:not(:last-child) {
+        border-right: none; /* Prevent double borders */
+    }
 
-        /* Add a background color on hover */
-        .btn-group button:hover {
-            background-color: #3e8e41;
-        }
-        /* Add a background color on hover */
-        .btn-group button:disabled {
-            background-color: grey;
-        }
+    /* Add a background color on hover */
+    .btn-group button:hover {
+        background-color: #3e8e41;
+    }
+
+    /* Add a background color on hover */
+    .btn-group button:disabled {
+        background-color: grey;
+    }
 
     .banner-well {
         width: 100%;
-        height: 75px;
+        height: 95px;
         border: 1px solid darkgrey;
         float: none;
         margin: 0px 0px 0px 0px;
@@ -111,30 +294,28 @@
         list-style-type: none;
     }
 </style>
-
 }
 
-
-
-<div class="banner-well" style="background-color: green">
-    @device.Name - Ok 
+<div id="titleBar" class="banner-well" style="background-color: @stateColor">
+    @deviceName - @stateName [@displayData] @extraMessage<br/>
+    <span style="font-size: 65%">Refreshing in <span id="refreshCount">@refreshInterval</span> seconds...</span>
 </div>
 <div class="col-md-6" style="height:90%">
     <div style="height: 48%; overflow-y: scroll">
         <h2>Device Stats</h2>
         <ul class="largeul">
-            <li>Device Acronym: @device.Acronym</li>
-            <li>Device Name: @device.Name</li>
-            <li>Make: @vendor.Name</li>
-            <li>Model: @vendorDevice.Name</li>
-            <li>Latitude: @device.Latitude</li>
-            <li>Longitude: @device.Longitude</li>
-            <li>Frames per Second: @device.FramesPerSecond</li>
-            <li>Contacts: @device.ContactList</li>
+            <li>Device Acronym: @deviceAcronym</li>
+            <li>Device Name: @deviceName</li>
+            <li>Make: @vendorName</li>
+            <li>Model: @deviceType</li>
+            <li>Latitude: @latitude</li>
+            <li>Longitude: @longitude</li>
+            <li>Frames per Second: @framesPerSecond</li>
+            <li>Contacts: @contactList</li>
             <li>
                 Connection String:
                 <ul>
-                    @foreach (string value in device.ConnectionString.Split(';'))
+                    @foreach (string value in connectionString.Split(';'))
                     {
                         <li>@value</li>
                     }
@@ -154,16 +335,18 @@
 <div class="col-md-6" style="text-align:center; height: 90%">
     <div style="height: 50%; width: 100%" id="graphwrapper">
     </div>
-    <div class="btn-group" style="width:100%">
-        <button style="width:33.3%" onclick="SetInService()" disabled>Reset to Normal (Clear)</button>
-        <button style="width:33.3%" onclick="SetOutOfService()" disabled>Set to Out-of-Service</button>
-        <button style="width:33.3%" onclick="Reconnect()" disabled>Reconnect</button>
-        <button style="width:33.3%" onclick="SetInService()" disabled>Clear Out-of-Service</button>
-    </div>
-
+    <form role="form" method="post">
+        <div class="btn-group" style="width: 100%">
+            <button type="submit" name="deviceInService" style="width: 30%" value="true">Reset to In-Service</button>
+            <button type="submit" name="deviceInService" style="width: 30%" value="false">Set to Out-of-Service</button>
+            <button type="button" style="width: 30%" onclick="Reconnect()">Reconnect Device</button>
+            @Html.RequestVerificationToken()
+        </div>
+    </form>
 </div>
 
 @section Scripts {
+<script src="@Resources.Root/Shared/Scripts/jquery.subscriber.js"></script>
 <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.min.js"></script>
 <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.crosshair.min.js"></script>
 <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.navigate.min.js"></script>
@@ -173,44 +356,67 @@
 <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.axislabels.min.js"></script>
 <script src="@Resources.Root/Shared/Scripts/moment.js"></script>
 <script>
-    var id = @device.ID;
+    var id = @id;
+    var refreshInterval = @refreshInterval;
     var measDetails;
 
-    // Client function called from the dataHub when meta data gets recieved
-    $(window).on("beforeHubConnected", function () {
-        dataHubClient.metaDataReceived = function () {
+    $(window).on("beforeHubConnected", function() {
+        dataHubClient.metaDataReceived = function() {
             $(window).trigger('metaDataReceived');
-            //buildModal("Subscription");
         }
-
     });
+@{
+    if (reinitializeAlarmStateAdapter) {
+    <text>
+    $(window).on("hubConnected", function () {
+        serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function () {
+            serviceHub.sendCommand("initialize @adapterAcronym").done(function () {
+                refreshInterval = @refreshInterval + 10;
+            });
+        });
+    });
+    </text>
+    }
+}
+    function refreshCountdown() {
+        refreshInterval--;
+
+        if (refreshInterval < 1) {
+            window.location = window.location.href;
+        }
+        else {
+            $('#refreshCount').text(refreshInterval);
+            setTimeout(refreshCountdown, 1000);
+        }
+    }
 
     $(function () {
-        $('#bodyContainer').removeClass('container')
+        $('#bodyContainer').removeClass('container');
         setHeights();
 
         $(window).on('resize', setHeights());
 
-        $(window).on("hubConnected", function (event) {
+        $(window).on("hubConnected", function() {
             dataHub.initializeSubscriptions();
-            $('button').removeAttr('disabled')
-
+            $('button').removeAttr('disabled');
         });
 
-        $(window).on("beforeunload", function () {
+        $(window).on("beforeunload", function() {
             if (!hubIsConnected)
                 return;
 
             dataHub.terminateSubscriptions();
         });
 
+        // Set inverse forground color for readability
+        $('#titleBar').css('color', invertColor('@stateColor'));
 
-
+        setTimeout(refreshCountdown, 1000);
     });
 
-    $(window).on('metaDataReceived', function () {
+    $(window).on('metaDataReceived', function() {
         dataHub.getMeasurementDetails().done(function(md){
-            measDetails = md.filter(function (x) { return x.DeviceAcronym == '@device.Acronym' && x.SignalAcronym == 'STAT' }).sort(function(a,b){
+            measDetails = md.filter(function (row) { return (row.DeviceAcronym === '@deviceAcronym' || row.DeviceAcronym === '@parentAcronym') && row.SignalAcronym === 'STAT' }).sort(function(a, b) {
                 return parseInt(a.ID.split(':')[1]) - parseInt(b.ID.split(':')[1]);
             });
 
@@ -219,45 +425,50 @@
             $.each(measDetails, function(i,d){
                 $('#statTable').append('<tr><td>' + d.ID.split(':')[1] +'</td><td>' + d.Description + '</td><td><span id="'+d.SignalID+'Val"></span></td><td><span id="'+d.SignalID+'Time"></span></td></tr>');
             });
+
             updateStats();
         });
-        dataHub.updateFilters('@activeMeasurement.ID;').done(function(){
+
+        dataHub.updateFilters('@activeMeasurementID;').done(function() {
             update();
-
         });
-
     });
-    function SetInService() {
-        dataHub.setInService(id).done(function () {
-            location.reload()
-        });
-    }
 
-    function SetOutOfService() {
-        dataHub.setOutOfService(id).done(function () {
-            location.reload()
+    function Reconnect() {
+    @{
+        if (!string.IsNullOrWhiteSpace(adapterAcronym)) {
+        <text>
+        serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function () {
+            serviceHub.sendCommand("initialize @adapterAcronym").done(function () {
+                window.location = window.location.href;
+            });
         });
+        </text>
+        }
+        else {
+        <text>
+        serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function() {
+            window.location = window.location.href;
+        });
+        </text>
+        }
     }
-
-    function Reconnect(){
-        serviceHub.sendCommand("initialize @device.Acronym").done(function () {
-            location.reload()
-        });
     }
 
     // sets heights of various objects
     function setHeights() {
-        const height = $(window).innerHeight();
         $('#bodyContainer').css('height', calculateRemainingBodyHeight);
     }
 
     function buildPlot(data) {
         var plotData = [[]];
+
         $.each(data, function (i, d) {
-                plotData[0].push([d.Timestamp, d.Value]);
+            plotData[0].push([d.Timestamp, d.Value]);
         });
 
         $('#graphwrapper').children().remove();
+
         $.plot("#graphwrapper", plotData, {
             yaxis: {
                 show: true,
@@ -270,66 +481,65 @@
                     return moment(val).utc().format('HH:mm:ss.SSSS');
                 },
                 axisLabel: "Time (UTC)"
-
             }
         });
-
     }
 
     function update(){
-        dataHub.getMeasurements().done(function(data){
+        dataHub.getMeasurements().done(function(data) {
             buildPlot(data);
         }).fail(function (error) {
             showErrorMessage(error);
         });
-        setTimeout(update, 500)
 
+        setTimeout(update, 500);
     }
 
     function updateStats(){
-        dataHub.getStats().done(function (data) {
+        dataHub.getStats().done(function(data) {
             $.each(data, function(i,d){
                 var val = d.Value.toFixed(3);
 
-                if (measDetails.find(function (x) { return x.SignalID == d.ID }).Description.indexOf('Boolean') >= 0) val = (val == 1)
-                $('#' + d.ID + 'Val').text(val)
-                $('#' + d.ID + 'Time').text(moment(d.Timestamp).utc().format('HH:mm:ss.SSSS'))
+                if (measDetails.find(function(x) { return x.SignalID === d.ID }).Description.indexOf('Boolean') >= 0)
+                    val = (val === 1);
 
+                $('#' + d.ID + 'Val').text(val);
+                $('#' + d.ID + 'Time').text(moment(d.Timestamp).utc().format('HH:mm:ss.SSSS'));
             });
         }).fail(function (error) {
             showErrorMessage(error);
         });
-        setTimeout(updateStats, 10000)
 
+        setTimeout(updateStats, 5000);
     }
 
     // https://tc39.github.io/ecma262/#sec-array.prototype.find
     if (!Array.prototype.find) {
         Object.defineProperty(Array.prototype, 'find', {
             value: function (predicate) {
-                // 1. Let O be ? ToObject(this value).
-                if (this == null) {
-                    throw new TypeError('"this" is null or not defined');
-                }
+        // 1. Let O be ? ToObject(this value).
+        if (this == null) {
+            throw new TypeError('"this" is null or not defined');
+        }
 
-                var o = Object(this);
+        var o = Object(this);
 
-                // 2. Let len be ? ToLength(? Get(O, "length")).
-                var len = o.length >>> 0;
+        // 2. Let len be ? ToLength(? Get(O, "length")).
+        var len = o.length >>> 0;
 
-                // 3. If IsCallable(predicate) is false, throw a TypeError exception.
-                if (typeof predicate !== 'function') {
-                    throw new TypeError('predicate must be a function');
-                }
+        // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+        if (typeof predicate !== 'function') {
+            throw new TypeError('predicate must be a function');
+        }
 
-                // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
-                var thisArg = arguments[1];
+        // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+        var thisArg = arguments[1];
 
-                // 5. Let k be 0.
-                var k = 0;
+        // 5. Let k be 0.
+        var k = 0;
 
-                // 6. Repeat, while k < len
-                while (k < len) {
+        // 6. Repeat, while k < len
+        while (k < len) {
                     // a. Let Pk be ! ToString(k).
                     // b. Let kValue be ? Get(O, Pk).
                     // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
@@ -350,6 +560,82 @@
         });
     }
 
-</script>
+    // https://bl.ocks.org/njvack/02ad8efcb0d552b0230d
+    color_convert = function () {
+      var pub = {}, canvas, context;
+      canvas = document.createElement('canvas');
+      canvas.height = 1;
+      canvas.width = 1;
+      context = canvas.getContext('2d');
 
+      function byte_to_hex(byte) {
+        // Turns a number (0-255) into a 2-character hex number (00-ff)
+        return ('0'+byte.toString(16)).slice(-2);
+      }
+
+      pub.to_rgba_array = function(color) {
+        /**
+         * Turns any valid canvas fillStyle into a 4-element Uint8ClampedArray with bytes
+         * for R, G, B, and A. Invalid styles will return [0, 0, 0, 0]. Examples:
+         * color_convert.to_rgb_array('red')  # [255, 0, 0, 255]
+         * color_convert.to_rgb_array('#ff0000')  # [255, 0, 0, 255]
+         * color_convert.to_rgb_array('garbagey')  # [0, 0, 0, 0]
+         */
+        // Setting an invalid fillStyle leaves this unchanged
+        context.fillStyle = 'rgba(0, 0, 0, 0)';
+        // We're reusing the canvas, so fill it with something predictable
+        context.clearRect(0, 0, 1, 1);
+        context.fillStyle = color;
+        context.fillRect(0, 0, 1, 1);
+        return context.getImageData(0, 0, 1, 1).data;
+      }
+
+      pub.to_rgba = function(color) {
+        /**
+         * Turns any valid canvas fill style into an rgba() string. Returns
+         * 'rgba(0,0,0,0)' for invalid colors. Examples:
+         * color_convert.to_rgba('red')  # 'rgba(255,0,0,1)'
+         * color_convert.to_rgba('#f00')  # 'rgba(255,0,0,1)'
+         * color_convert.to_rgba('garbagey')  # 'rgba(0,0,0,0)'
+         * color_convert.to_rgba(some_pattern)  # Depends on the pattern
+         *
+         * @@param color  A string, pattern, or gradient
+         * @@return  A valid rgba CSS color string
+         */
+        var a = pub.to_rgba_array(color);
+        return 'rgba('+a[0]+','+a[1]+','+a[2]+','+(a[3]/255)+')';
+      }
+
+      pub.to_hex = function(color) {
+        /**
+         * Turns any valid canvas fill style into a hex triple. Returns
+         * '#000000' for invalid colors. Examples:
+         * color_convert.to_hex('red')  # '#ff0000'
+         * color_convert.to_hex('rgba(255,0,0,1)')  # '#ff0000'
+         * color_convert.to_hex('garbagey')  # '#000000'
+         * color_convert.to_hex(some_pattern)  # Depends on the pattern
+         *
+         * @@param color  A string, pattern, or gradient
+         * @@return  A valid rgba CSS color string
+         */
+        var a = pub.to_rgba_array(color);
+        // Sigh, you can't map() typed arrays
+        var hex = [0,1,2].map(function(i) { return byte_to_hex(a[i]) }).join('');
+        return '#'+hex;
+      }
+
+      return pub;
+    }();
+
+    function invertColor(color) {
+        color = color_convert.to_hex(color);
+
+        // if only first half of color is defined, repeat it
+        if(color.length < 5) {
+            color += color.slice(1);
+        }
+
+        return (color.replace('#', '0x')) > (0xffffff / 2) ? '#333' : '#fff';
+    }
+</script>
 }

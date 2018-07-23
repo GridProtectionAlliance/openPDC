@@ -61,8 +61,16 @@ namespace openPDC.Adapters
         }
 
         // Constants
-        private const int DefaultMonitoringRate = 30000;
-        private const double DefaultAlarmTime = 10.0D;
+
+        /// <summary>
+        /// Defines the default value for the <see cref="MonitoringRate"/>.
+        /// </summary>
+        public const int DefaultMonitoringRate = 30000;
+
+        /// <summary>
+        /// Defines the default value for the <see cref="AlarmMinutes"/>.
+        /// </summary>
+        public const double DefaultAlarmMinutes = 10.0D;
 
         // Fields
         private Timer m_monitoringTimer;
@@ -87,7 +95,7 @@ namespace openPDC.Adapters
         /// </summary>
         public DeviceAlarmStateAdapter()
         {
-            m_alarmTime = TimeSpan.FromMinutes(DefaultAlarmTime).Ticks;
+            m_alarmTime = TimeSpan.FromMinutes(DefaultAlarmMinutes).Ticks;
         }
 
         #endregion
@@ -111,7 +119,7 @@ namespace openPDC.Adapters
         /// </summary>
         [ConnectionStringParameter]
         [Description("Defines the time, in minutes, for which to change the device state to alarm when no data is received.")]
-        [DefaultValue(DefaultAlarmTime)]
+        [DefaultValue(DefaultAlarmMinutes)]
         public double AlarmMinutes
         {
             get => m_alarmTime.ToMinutes();
@@ -329,7 +337,13 @@ namespace openPDC.Adapters
                     DataRow metadata = connection.RetrieveRow("SELECT * FROM Device WHERE ID = {0}", alarmDevice.DeviceID);
 
                     if ((object)metadata != null)
-                        keys = ParseInputMeasurementKeys(DataSource, false, $"FILTER ActiveMeasurements WHERE Device = '{metadata.Field<string>("Acronym")}' AND SignalType = 'FREQ'");
+                    {
+                        // Querying from MeasurementDetail because we also want to include disabled device measurements
+                        DataTable table = connection.RetrieveData("SELECT SignalID, ID FROM MeasurementDetail WHERE DeviceAcronym = {0} AND SignalAcronym = 'FREQ'", metadata.Field<string>("Acronym"));
+                        
+                        // ReSharper disable once AccessToDisposedClosure
+                        keys = table.AsEnumerable().Select(row => MeasurementKey.LookUpOrCreate(connection.Guid(row, "SignalID"), row["ID"].ToString())).ToArray();
+                    }
 
                     if (keys?.Length > 0)
                     {
@@ -414,28 +428,35 @@ namespace openPDC.Adapters
 
                 foreach (AlarmDevice alarmDevice in alarmDeviceTable.QueryRecords())
                 {
-                    if (m_deviceMeasurementKeys.TryGetValue(alarmDevice.DeviceID, out MeasurementKey key) && m_lastDeviceDataUpdates.TryGetValue(key.SignalID, out Ticks lastUpdateTime))
+                    if (m_deviceMeasurementKeys.TryGetValue(alarmDevice.DeviceID, out MeasurementKey key) && m_lastDeviceDataUpdates.TryGetValue(key.SignalID, out Ticks lastUpdateTime) && m_deviceMetadata.TryGetValue(alarmDevice.DeviceID, out DataRow metadata))
                     {
                         TemporalMeasurement measurement = measurements.Measurement(key);
                         Ticks currentTime = DateTime.UtcNow.Ticks;
                         AlarmState state = AlarmState.Good;
 
                         // Determine and update state
-                        if (double.IsNaN(measurement.AdjustedValue))
+                        if (metadata["Enabled"].ToString().ParseBoolean())
                         {
-                            // Value is missing for longer than defined adapter lead / lag time tolerances,
-                            // state is unavailable or in alarm if unavailable beyond configured alarm time
-                            state = currentTime - lastUpdateTime > m_alarmTime ? AlarmState.Alarm : AlarmState.NotAvailable;
+                            if (double.IsNaN(measurement.AdjustedValue) || measurement.AdjustedValue == 0.0D)
+                            {
+                                // Value is missing for longer than defined adapter lead / lag time tolerances,
+                                // state is unavailable or in alarm if unavailable beyond configured alarm time
+                                state = currentTime - lastUpdateTime > m_alarmTime ? AlarmState.Alarm : AlarmState.NotAvailable;
+                            }
+                            else
+                            {
+                                // Have a value, update last device data time
+                                m_lastDeviceDataUpdates[key.SignalID] = currentTime;
+
+                                if (!measurement.ValueQualityIsGood())
+                                    state = AlarmState.BadData;
+                                else if (!measurement.TimestampQualityIsGood())
+                                    state = AlarmState.BadTime;
+                            }
                         }
                         else
                         {
-                            // Have a value, update last device data time
-                            m_lastDeviceDataUpdates[key.SignalID] = currentTime;
-
-                            if (!measurement.ValueQualityIsGood())
-                                state = AlarmState.BadData;
-                            else if (!measurement.TimestampQualityIsGood())
-                                state = AlarmState.BadTime;
+                            state = AlarmState.OutOfService;
                         }
 
                         // Set alarm device state
@@ -448,7 +469,18 @@ namespace openPDC.Adapters
                         }
 
                         // Update display text to show time since last alarm state change
-                        alarmDevice.DisplayData = state == AlarmState.Good ? "0" : GetShortElapsedTimeString(currentTime - m_lastDeviceStateChange[key.SignalID]);
+                        switch (state)
+                        {
+                            case AlarmState.Good:
+                                alarmDevice.DisplayData = "0";
+                                break;
+                            case AlarmState.OutOfService:
+                                alarmDevice.DisplayData = GetOutOfServiceTime(metadata);
+                                break;
+                            default:
+                                alarmDevice.DisplayData = GetShortElapsedTimeString(currentTime - m_lastDeviceStateChange[key.SignalID]);
+                                break;
+                        }
 
                         // Update alarm table record
                         alarmDeviceTable.UpdateRecord(alarmDevice);
@@ -555,7 +587,7 @@ namespace openPDC.Adapters
             }
         }
 
-        private static string GetShortElapsedTimeString(Ticks span)
+        public static string GetShortElapsedTimeString(Ticks span)
         {
             double days = span.ToDays();
 
