@@ -39,18 +39,35 @@
     DataContext dataContext = ViewBag.DataContext;
     HttpRequestMessage request = ViewBag.Request;
     Dictionary<string, string> parameters = request.QueryParameters();
-    string id;
+    AlarmDevice alarmDevice = null;
+    int alarmDeviceID, deviceID = 0;
+    string idValue;
 
-    parameters.TryGetValue("ID", out id);
+    // Passing in "ID" or "AlarmDeviceID" assumes initial lookup of AlarmDevice record
+    if (!parameters.TryGetValue("ID", out idValue)) {
+        parameters.TryGetValue("AlarmDeviceID", out idValue);
+    }
 
-    if (string.IsNullOrWhiteSpace(id)) {
-        id = "0";
+    if (string.IsNullOrWhiteSpace(idValue)) {
+        // Passing in "DeviceID" or "AlarmDeviceID" assumes initial lookup of Device record
+        if (parameters.TryGetValue("DeviceID", out idValue)) {
+            int.TryParse(idValue, out deviceID);
+        }
+    }
+    else {
+        if (int.TryParse(idValue, out alarmDeviceID)) {
+            alarmDevice = dataContext.Table<AlarmDevice>().QueryRecordWhere("ID = {0}", alarmDeviceID);
+        }
+
+        if ((object)alarmDevice != null) {
+            deviceID = alarmDevice.DeviceID;
+        }
     }
 
     string deviceAcronym = null, deviceName = null, vendorName = null, deviceType = null,
-           contactList = null, connectionString = null, activeMeasurementID = null,
-           displayData = null, stateName = null, stateColor = null, parentAcronym = null,
-           adapterAcronym = null, extraMessage = "";
+    contactList = null, connectionString = null, activeMeasurementID = null,
+    displayData = null, stateName = null, stateColor = null, parentAcronym = null,
+    adapterAcronym = null, extraMessage = "";
 
     decimal longitude = 0.0M, latitude = 0.0M;
     int framesPerSecond = 30, refreshInterval = DeviceAlarmStateAdapter.DefaultMonitoringRate / 1000;
@@ -73,17 +90,17 @@
         }
     }
 
-    Device device = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", id);
+    Device device = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", deviceID);
 
     if ((object)device != null) {
-        AlarmDevice alarmDevice;
-
         if (ViewBag.IsPost) {
             PostData postData = request.GetPostData();
             device.Enabled = postData.FormData["deviceInService"].ParseBoolean();
             dataContext.Table<Device>().UpdateRecord(device);
 
-            alarmDevice = dataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", device.ID);
+            if ((object)alarmDevice == null) {
+                alarmDevice = dataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", deviceID);
+            }
 
             if ((object)alarmDevice != null) {
                 TableOperations<AlarmState> alarmStateTable = dataContext.Table<AlarmState>();
@@ -356,7 +373,6 @@
 <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.axislabels.min.js"></script>
 <script src="@Resources.Root/Shared/Scripts/moment.js"></script>
 <script>
-    var id = @id;
     var refreshInterval = @refreshInterval;
     var measDetails;
 

@@ -137,7 +137,7 @@
         }
 
         function openDeviceStatus(row, event, id) {
-            window.open("/DeviceStatus.cshtml?ID=" + row.ID);
+            window.open("/DeviceStatus.cshtml?DeviceID=" + row.ID);
         }
 
         $(viewModel).on("recordSaved", function(event, record, isNew) {
