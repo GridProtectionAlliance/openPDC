@@ -49,7 +49,7 @@
     }
 
     if (string.IsNullOrWhiteSpace(idValue)) {
-        // Passing in "DeviceID" or "AlarmDeviceID" assumes initial lookup of Device record
+        // Passing in "DeviceID" assumes initial lookup of Device record
         if (parameters.TryGetValue("DeviceID", out idValue)) {
             int.TryParse(idValue, out deviceID);
         }
