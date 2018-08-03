@@ -40,6 +40,8 @@ using System.Timers;
 using AlarmStateRecord = openPDC.Model.AlarmState;
 using ConnectionStringParser = GSF.Configuration.ConnectionStringParser<GSF.TimeSeries.Adapters.ConnectionStringParameterAttribute>;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable InheritdocConsiderUsage
 namespace openPDC.Adapters
 {
     /// <summary>
@@ -81,6 +83,8 @@ namespace openPDC.Adapters
         private Dictionary<Guid, Ticks> m_lastDeviceDataUpdates;
         private Dictionary<Guid, Ticks> m_lastDeviceStateChange;
         private Dictionary<AlarmState, string> m_mappedAlarmStates;
+        private Dictionary<AlarmState, int> m_stateCounts;
+        private object m_stateCountLock;
         private Ticks m_alarmTime;
         private long m_alarmStateUpdates;
         private long m_externalDatabaseUpdates;
@@ -187,6 +191,18 @@ namespace openPDC.Adapters
         }
 
         /// <summary>
+        /// Gets or sets the flag that determines if external database should report a single composite state or a state for each device.
+        /// </summary>
+        [ConnectionStringParameter]
+        [Description("Defines the flag that determines if external database should report a single composite state or a state for each device.")]
+        [DefaultValue(false)]
+        public bool ExternalDatabaseReportSingleCompositeState
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets primary keys of input measurements the adapter expects, if any.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)] // Automatically controlled
@@ -234,6 +250,22 @@ namespace openPDC.Adapters
                 status.AppendFormat(" External Database Updates: {0}", m_externalDatabaseUpdates);
                 status.AppendLine();
 
+                lock (m_stateCountLock)
+                {
+                    status.AppendFormat("              Good Devices: {0:N0}", m_stateCounts[AlarmState.Good]);
+                    status.AppendLine();
+                    status.AppendFormat("           Alarmed Devices: {0:N0}", m_stateCounts[AlarmState.Alarm]);
+                    status.AppendLine();
+                    status.AppendFormat("       Unavailable Devices: {0:N0}", m_stateCounts[AlarmState.NotAvailable]);
+                    status.AppendLine();
+                    status.AppendFormat("Devices Reporting Bad Data: {0:N0}", m_stateCounts[AlarmState.BadData]);
+                    status.AppendLine();
+                    status.AppendFormat("Devices Reporting Bad Time: {0:N0}", m_stateCounts[AlarmState.BadTime]);
+                    status.AppendLine();
+                    status.AppendFormat("    Out of Service Devices: {0:N0}", m_stateCounts[AlarmState.OutOfService]);
+                    status.AppendLine();
+                }
+
                 return status.ToString();
             }
         }
@@ -259,7 +291,7 @@ namespace openPDC.Adapters
                         if ((object)m_monitoringTimer != null)
                         {
                             m_monitoringTimer.Enabled = false;
-                            m_monitoringTimer.Elapsed -= m_monitoringTimer_Elapsed;
+                            m_monitoringTimer.Elapsed -= MonitoringTimer_Elapsed;
                             m_monitoringTimer.Dispose();
                         }
                     }
@@ -288,6 +320,8 @@ namespace openPDC.Adapters
             m_lastDeviceDataUpdates = new Dictionary<Guid, Ticks>();
             m_lastDeviceStateChange = new Dictionary<Guid, Ticks>();
             m_mappedAlarmStates = new Dictionary<AlarmState, string>();
+            m_stateCounts = CreateNewStateCountsMap();
+            m_stateCountLock = new object();
 
             using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
             {
@@ -387,9 +421,12 @@ namespace openPDC.Adapters
             m_monitoringOperation = new ShortSynchronizedOperation(MonitoringOperation, exception => OnProcessException(MessageLevel.Warning, exception));
 
             // Define monitoring timer
-            m_monitoringTimer = new Timer(MonitoringRate);
-            m_monitoringTimer.AutoReset = true;
-            m_monitoringTimer.Elapsed += m_monitoringTimer_Elapsed;
+            m_monitoringTimer = new Timer(MonitoringRate)
+            {
+                AutoReset = true
+            };
+
+            m_monitoringTimer.Elapsed += MonitoringTimer_Elapsed;
             m_monitoringTimer.Enabled = true;
         }
 
@@ -397,10 +434,7 @@ namespace openPDC.Adapters
         /// Queues monitoring operation to update alarm state for immediate execution.
         /// </summary>
         [AdapterCommand("Queues monitoring operation to update alarm state for immediate execution.", "Administrator", "Editor")]
-        public void QueueStateUpdate()
-        {
-            m_monitoringOperation?.RunOnceAsync();
-        }
+        public void QueueStateUpdate() => m_monitoringOperation?.RunOnceAsync();
 
         /// <summary>
         /// Gets a short one-line status of this adapter.
@@ -419,6 +453,7 @@ namespace openPDC.Adapters
         {
             ImmediateMeasurements measurements = LatestMeasurements;
             List<AlarmDevice> alarmDeviceUpdates = new List<AlarmDevice>();
+            Dictionary<AlarmState, int> stateCounts = CreateNewStateCountsMap();
 
             OnStatusMessage(MessageLevel.Info, "Updating device alarm states");
 
@@ -428,67 +463,75 @@ namespace openPDC.Adapters
 
                 foreach (AlarmDevice alarmDevice in alarmDeviceTable.QueryRecords())
                 {
-                    if (m_deviceMeasurementKeys.TryGetValue(alarmDevice.DeviceID, out MeasurementKey key) && m_lastDeviceDataUpdates.TryGetValue(key.SignalID, out Ticks lastUpdateTime) && m_deviceMetadata.TryGetValue(alarmDevice.DeviceID, out DataRow metadata))
+                    if (!m_deviceMeasurementKeys.TryGetValue(alarmDevice.DeviceID, out MeasurementKey key) || 
+                        !m_lastDeviceDataUpdates.TryGetValue(key.SignalID, out Ticks lastUpdateTime) || 
+                        !m_deviceMetadata.TryGetValue(alarmDevice.DeviceID, out DataRow metadata))
+                            continue;
+
+                    TemporalMeasurement measurement = measurements.Measurement(key);
+                    Ticks currentTime = DateTime.UtcNow.Ticks;
+                    AlarmState state = AlarmState.Good;
+
+                    // Determine and update state
+                    if (metadata["Enabled"].ToString().ParseBoolean())
                     {
-                        TemporalMeasurement measurement = measurements.Measurement(key);
-                        Ticks currentTime = DateTime.UtcNow.Ticks;
-                        AlarmState state = AlarmState.Good;
-
-                        // Determine and update state
-                        if (metadata["Enabled"].ToString().ParseBoolean())
+                        if (double.IsNaN(measurement.AdjustedValue) || measurement.AdjustedValue == 0.0D)
                         {
-                            if (double.IsNaN(measurement.AdjustedValue) || measurement.AdjustedValue == 0.0D)
-                            {
-                                // Value is missing for longer than defined adapter lead / lag time tolerances,
-                                // state is unavailable or in alarm if unavailable beyond configured alarm time
-                                state = currentTime - lastUpdateTime > m_alarmTime ? AlarmState.Alarm : AlarmState.NotAvailable;
-                            }
-                            else
-                            {
-                                // Have a value, update last device data time
-                                m_lastDeviceDataUpdates[key.SignalID] = currentTime;
-
-                                if (!measurement.ValueQualityIsGood())
-                                    state = AlarmState.BadData;
-                                else if (!measurement.TimestampQualityIsGood())
-                                    state = AlarmState.BadTime;
-                            }
+                            // Value is missing for longer than defined adapter lead / lag time tolerances,
+                            // state is unavailable or in alarm if unavailable beyond configured alarm time
+                            state = currentTime - lastUpdateTime > m_alarmTime ? AlarmState.Alarm : AlarmState.NotAvailable;
                         }
                         else
                         {
-                            state = AlarmState.OutOfService;
+                            // Have a value, update last device data time
+                            m_lastDeviceDataUpdates[key.SignalID] = currentTime;
+
+                            if (!measurement.ValueQualityIsGood())
+                                state = AlarmState.BadData;
+                            else if (!measurement.TimestampQualityIsGood())
+                                state = AlarmState.BadTime;
                         }
-
-                        // Set alarm device state
-                        int stateID = m_alarmStates[state].ID;
-
-                        if (stateID != alarmDevice.StateID)
-                        {
-                            m_lastDeviceStateChange[key.SignalID] = currentTime;
-                            alarmDevice.StateID = stateID;
-                        }
-
-                        // Update display text to show time since last alarm state change
-                        switch (state)
-                        {
-                            case AlarmState.Good:
-                                alarmDevice.DisplayData = "0";
-                                break;
-                            case AlarmState.OutOfService:
-                                alarmDevice.DisplayData = GetOutOfServiceTime(metadata);
-                                break;
-                            default:
-                                alarmDevice.DisplayData = GetShortElapsedTimeString(currentTime - m_lastDeviceStateChange[key.SignalID]);
-                                break;
-                        }
-
-                        // Update alarm table record
-                        alarmDeviceTable.UpdateRecord(alarmDevice);
-                        alarmDeviceUpdates.Add(alarmDevice);
                     }
+                    else
+                    {
+                        state = AlarmState.OutOfService;
+                    }
+
+                    // Track current state counts
+                    stateCounts[state]++;
+
+                    // Set alarm device state
+                    int stateID = m_alarmStates[state].ID;
+
+                    if (stateID != alarmDevice.StateID)
+                    {
+                        m_lastDeviceStateChange[key.SignalID] = currentTime;
+                        alarmDevice.StateID = stateID;
+                    }
+
+                    // Update display text to show time since last alarm state change
+                    switch (state)
+                    {
+                        case AlarmState.Good:
+                            alarmDevice.DisplayData = "0";
+                            break;
+                        case AlarmState.OutOfService:
+                            alarmDevice.DisplayData = GetOutOfServiceTime(metadata);
+                            break;
+                        default:
+                            alarmDevice.DisplayData = GetShortElapsedTimeString(currentTime - m_lastDeviceStateChange[key.SignalID]);
+                            break;
+                    }
+
+                    // Update alarm table record
+                    alarmDeviceTable.UpdateRecord(alarmDevice);
+                    alarmDeviceUpdates.Add(alarmDevice);
                 }
 
                 m_alarmStateUpdates++;
+
+                lock (m_stateCountLock)
+                    m_stateCounts = stateCounts;
             }
 
             if (!string.IsNullOrEmpty(ExternalDatabaseConnnectionString))
@@ -498,62 +541,48 @@ namespace openPDC.Adapters
                     TemplatedExpression = ExternalDatabaseCommandParameters
                 };
 
+                AlarmState compositeState = AlarmState.OutOfService;
+                DataRow alarmedDeviceMetadata = null;
+                Dictionary<string, string> substitutions = new Dictionary<string, string>();
+
+                // Provide state counts as available substitution parameters
+                foreach (KeyValuePair<AlarmState, int> stateCount in stateCounts)
+                    substitutions[$"{stateCount.Key}StateCount"] = stateCount.Value.ToString();
+
                 using (AdoDataConnection connection = new AdoDataConnection(ExternalDatabaseConnnectionString, ExternalDatabaseProviderString))
                 {
                     foreach (AlarmDevice alarmDevice in alarmDeviceUpdates)
                     {
-                        if (m_deviceMetadata.TryGetValue(alarmDevice.DeviceID, out DataRow metadata))
+                        if (!m_deviceMetadata.TryGetValue(alarmDevice.DeviceID, out DataRow metadata))
+                            continue;
+
+                        AlarmState state = m_alarmStates.First(record => record.Value.ID == alarmDevice.StateID).Key;
+
+                        if (ExternalDatabaseReportSingleCompositeState)
                         {
-                            AlarmState state = m_alarmStates.First(record => record.Value.ID == alarmDevice.StateID).Key;
-                            Dictionary<string, string> substitutions = new Dictionary<string, string>();
-
-                            substitutions["AlarmState"] = state.ToString();
-                            substitutions["AlarmStateValue"] = ((int)state).ToString();
-
-                            if (m_mappedAlarmStates.TryGetValue(state, out string mappedValue))
-                                substitutions["MappedAlarmState"] = mappedValue;
-                            else
-                                substitutions["MappedAlarmState"] = "0";
-
-                            // Use device metadata columns as possible substitution parameters
-                            foreach (DataColumn column in metadata.Table.Columns)
-                                substitutions[column.ColumnName] = metadata[column.ColumnName].ToString();
-
-                            List<object> parameters = new List<object>();
-                            string commandParameters = parameterTemplate.Execute(substitutions);
-                            string[] splitParameters = commandParameters.Split(',');
-
-                            for (int i = 0; i < splitParameters.Length; i++)
+                            if (state != AlarmState.Good)
                             {
-                                string parameter = splitParameters[i].Trim();
-
-                                if (parameter.StartsWith("'") && parameter.EndsWith("'"))
+                                // First encountered alarmed device with highest alarm state will be reported as composite state
+                                if (compositeState < state)
                                 {
-                                    if (parameter.Length > 2)
-                                        parameters.Add(parameter.Substring(1, parameter.Length - 2));
-                                    else
-                                        parameters.Add("");
-                                }
-                                else if (int.TryParse(parameter, out int ival))
-                                {
-                                    parameters.Add(ival);
-                                }
-                                else if (double.TryParse(parameter, out double dval))
-                                {
-                                    parameters.Add(dval);
-                                }
-                                else if (bool.TryParse(parameter, out bool bval))
-                                {
-                                    parameters.Add(bval);
-                                }
-                                else
-                                {
-                                    parameters.Add(parameter);
+                                    compositeState = state;
+                                    alarmedDeviceMetadata = metadata;
                                 }
                             }
-
-                            connection.ExecuteScalar(ExternalDatabaseCommand, parameters);
                         }
+                        else
+                        {
+                            // When ExternalDatabaseReportSingleCompositeState is false, reporting state per device
+                            ExternalDatabaseReportState(parameterTemplate, connection, state, metadata, substitutions);
+                        }
+                    }
+
+                    if (ExternalDatabaseReportSingleCompositeState)
+                    {
+                        if (compositeState == AlarmState.OutOfService)
+                            compositeState = AlarmState.Good;
+
+                        ExternalDatabaseReportState(parameterTemplate, connection, compositeState, alarmedDeviceMetadata, substitutions);
                     }
                 }
 
@@ -561,16 +590,64 @@ namespace openPDC.Adapters
             }
         }
 
-        private void m_monitoringTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void ExternalDatabaseReportState(TemplatedExpressionParser parameterTemplate, AdoDataConnection connection, AlarmState state, DataRow metadata, Dictionary<string, string> initialSubstitutions)
         {
-            m_monitoringOperation?.RunOnce();
+            Dictionary<string, string> substitutions = new Dictionary<string, string>(initialSubstitutions)
+            {
+                ["AlarmState"] = state.ToString(),
+                ["AlarmStateValue"] = ((int)state).ToString()
+            };
+
+            if (m_mappedAlarmStates.TryGetValue(state, out string mappedValue))
+                substitutions["MappedAlarmState"] = mappedValue;
+            else
+                substitutions["MappedAlarmState"] = "0";
+
+            // Use device metadata columns as possible substitution parameters
+            foreach (DataColumn column in metadata.Table.Columns)
+                substitutions[column.ColumnName] = metadata[column.ColumnName].ToString();
+
+            List<object> parameters = new List<object>();
+            string commandParameters = parameterTemplate.Execute(substitutions);
+            string[] splitParameters = commandParameters.Split(',');
+
+            // Do some basic typing on command parameters
+            foreach (string splitParameter in splitParameters)
+            {
+                string parameter = splitParameter.Trim();
+
+                if (parameter.StartsWith("'") && parameter.EndsWith("'"))
+                    parameters.Add(parameter.Length > 2 ? parameter.Substring(1, parameter.Length - 2) : "");
+                else if (int.TryParse(parameter, out int ival))
+                    parameters.Add(ival);
+                else if (double.TryParse(parameter, out double dval))
+                    parameters.Add(dval);
+                else if (bool.TryParse(parameter, out bool bval))
+                    parameters.Add(bval);
+                else
+                    parameters.Add(parameter);
+            }
+
+            connection.ExecuteScalar(ExternalDatabaseCommand, parameters);
         }
+
+        private void MonitoringTimer_Elapsed(object sender, ElapsedEventArgs e) => m_monitoringOperation?.RunOnce();
 
         #endregion
 
         #region [ Static ]
 
         private static readonly string[] s_shortTimeNames = { " yr", " yr", " d", " d", " hr", " hr", " m", " m", " s", " s", "< " };
+
+        private static Dictionary<AlarmState, int> CreateNewStateCountsMap() => new Dictionary<AlarmState, int>
+        {
+            [AlarmState.Good] = 0,
+            [AlarmState.Alarm] = 0,
+            [AlarmState.NotAvailable] = 0,
+            [AlarmState.BadData] = 0,
+            [AlarmState.BadTime] = 0,
+            [AlarmState.OutOfService] = 0
+        };
 
         private static string GetOutOfServiceTime(DataRow deviceRow)
         {
