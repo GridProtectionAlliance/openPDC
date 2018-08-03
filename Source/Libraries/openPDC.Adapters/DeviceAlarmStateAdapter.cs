@@ -245,9 +245,9 @@ namespace openPDC.Adapters
                 status.AppendLine();
                 status.AppendFormat("     No Data Alarm Timeout: {0}", m_alarmTime.ToElapsedTimeString(2));
                 status.AppendLine();
-                status.AppendFormat("       Alarm State Updates: {0}", m_alarmStateUpdates);
+                status.AppendFormat("       Alarm State Updates: {0:N0}", m_alarmStateUpdates);
                 status.AppendLine();
-                status.AppendFormat(" External Database Updates: {0}", m_externalDatabaseUpdates);
+                status.AppendFormat(" External Database Updates: {0:N0}", m_externalDatabaseUpdates);
                 status.AppendLine();
 
                 lock (m_stateCountLock)
