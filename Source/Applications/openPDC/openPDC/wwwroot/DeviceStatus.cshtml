@@ -143,6 +143,8 @@
             framesPerSecond = device.FramesPerSecond.Value;
         }
 
+        int? vendorDeviceID = device.VendorDeviceID;
+
         if (device.ParentID.HasValue) {
             // If this is a concentrator child, get connection string of parent
             Device parentDevice = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", device.ParentID.Value);
@@ -161,10 +163,11 @@
                 }
 
                 connectionString = string.Format("parentDevice={0}; {1}{2}", parentDevice.Acronym, parentDevice.ConnectionString, childConnectionString);
+                vendorDeviceID = device.VendorDeviceID ?? parentDevice.VendorDeviceID;
             }
         }
 
-        VendorDevice vendorDevice = dataContext.Table<VendorDevice>().QueryRecordWhere("ID = {0}", device.VendorDeviceID);
+        VendorDevice vendorDevice = dataContext.Table<VendorDevice>().QueryRecordWhere("ID = {0}", vendorDeviceID);
 
         if ((object)vendorDevice != null) {
             deviceType = vendorDevice.Name;
