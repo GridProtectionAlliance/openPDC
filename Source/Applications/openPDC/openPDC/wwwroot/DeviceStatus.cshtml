@@ -498,7 +498,7 @@
                             measurement.HasBooleanValue = (measurement.Description.indexOf("Boolean") >= 0);
                         });
 
-                        statSubscriber.subscribe({ FilterExpression: "FILTER ActiveMeasurements WHERE Device = '" + deviceAcronym + "' AND SignalType = 'STAT'" });
+                        statSubscriber.subscribe({ FilterExpression: "FILTER ActiveMeasurements WHERE Device IN ('" + deviceAcronym + "', '" + parentAcronym + "') AND SignalType = 'STAT'" });
                     });
             };
 
