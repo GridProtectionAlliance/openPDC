@@ -317,7 +317,7 @@
 }
 
 <div id="titleBar" class="banner-well" style="background-color: @stateColor">
-    @deviceName - @stateName [@displayData] @extraMessage<br/>
+    @deviceName - <span id="stateName">@stateName</span> <span id="displayData">[@displayData]</span> @extraMessage<br/>
     <span style="font-size: 65%">Refreshing in <span id="refreshCount">@refreshInterval</span> seconds...</span>
 </div>
 <div class="col-md-6" style="height:90%">
@@ -377,6 +377,8 @@
 <script src="@Resources.Root/Shared/Scripts/moment.js"></script>
 <script>
     var refreshInterval = @refreshInterval;
+    var refreshCountdown = refreshInterval;
+    var deviceID = @deviceID;
 @{
     if (reinitializeAlarmStateAdapter) {
     <text>
@@ -390,15 +392,32 @@
     </text>
     }
 }
-    function refreshCountdown() {
-        refreshInterval--;
+    function updateCountdown() {
+        refreshCountdown--;
 
-        if (refreshInterval < 1) {
-            window.location = window.location.href;
+        if (refreshCountdown === 0) {
+            dataHub.getAlarmState(deviceID)
+                .fail(showErrorMessage)
+                .done(function (alarmState) {
+                    var defaults = {
+                        displayData: "0",
+                        stateName: "Unknown State",
+                        stateColor: "yellow"
+                    };
+
+                    alarmState = $.extend(defaults, alarmState);
+                    $("#displayData").text(alarmState.displayData);
+                    $("#stateName").text(alarmState.stateName);
+                    $("#titleBar").css("background-color", alarmState.stateColor);
+
+                    refreshCountdown = refreshInterval;
+                    $('#refreshCount').text(refreshCountdown);
+                    setTimeout(updateCountdown, 1000);
+                });
         }
         else {
-            $('#refreshCount').text(refreshInterval);
-            setTimeout(refreshCountdown, 1000);
+            $('#refreshCount').text(refreshCountdown);
+            setTimeout(updateCountdown, 1000);
         }
     }
 
@@ -536,7 +555,7 @@
         // Set inverse forground color for readability
         $('#titleBar').css('color', invertColor('@stateColor'));
 
-        setTimeout(refreshCountdown, 1000);
+        setTimeout(updateCountdown, 1000);
     });
 
     function Reconnect() {

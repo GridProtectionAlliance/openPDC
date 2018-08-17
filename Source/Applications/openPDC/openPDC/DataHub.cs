@@ -37,6 +37,7 @@ using GSF.Web.Security;
 using ModbusAdapters;
 using ModbusAdapters.Model;
 using openPDC.Model;
+using Newtonsoft.Json.Linq;
 
 namespace openPDC
 {
@@ -372,6 +373,26 @@ namespace openPDC
         #endregion
 
         #region [ DeviceStatus Operations ]
+
+        public object GetAlarmState(int id)
+        {
+            dynamic jAlarmState = new JObject();
+            AlarmDevice alarmDevice = DataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", id);
+
+            if ((object)alarmDevice != null)
+            {
+                AlarmState alarmState = DataContext.Table<AlarmState>().QueryRecordWhere("ID = {0}", alarmDevice.StateID);
+
+                if ((object)alarmState != null)
+                {
+                    jAlarmState.displayData = alarmDevice.DisplayData;
+                    jAlarmState.stateName = alarmState.State;
+                    jAlarmState.stateColor = alarmState.Color;
+                }
+            }
+
+            return jAlarmState;
+        }
 		
         public void SetOutOfService(int id)
         {
