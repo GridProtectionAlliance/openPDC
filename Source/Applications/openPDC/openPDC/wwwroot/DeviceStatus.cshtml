@@ -313,6 +313,14 @@
         font-size: x-large;
         list-style-type: none;
     }
+
+    .center-with-padding {
+        text-align: center;
+        vertical-align: top;
+        white-space: nowrap;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
 </style>
 }
 
@@ -344,10 +352,10 @@
         </ul>
     </div>
     <div style="height:48%; overflow-y: scroll">
-        <table id="statTable" class="table" style="font-size: x-small;">
+        <table id="statTable" class="table table-striped table-condensed table-hover" style="font-size: x-small;">
             <thead>
                 <tr><th style="text-align: left">Run-time Statistics:</th></tr>
-                <tr><th>ID</th><th>Description</th><th>Value</th><th>Time (UTC)</th></tr>
+                <tr><th>ID</th><th>Description</th><th class="center-with-padding">Value</th><th>Time (UTC)</th></tr>
             </thead>
         </table>
     </div>
@@ -410,6 +418,9 @@
                     $("#stateName").text(alarmState.stateName);
                     $("#titleBar").css("background-color", alarmState.stateColor);
 
+                    // Set inverse forground color for readability
+                    $('#titleBar').css('color', invertColor(alarmState.stateColor));
+
                     refreshCountdown = refreshInterval;
                     $('#refreshCount').text(refreshCountdown);
                     setTimeout(updateCountdown, 1000);
@@ -469,8 +480,6 @@
                 statSubscriber.sendCommand("MetaDataRefresh");
             };
 
-            var metadataLookup = {};
-
             statSubscriber.metadataReceived = function () {
                 statSubscriber.getMetadata("MeasurementDetail", "DeviceAcronym IN ('" + deviceAcronym + "', '" + parentAcronym + "') AND SignalAcronym = 'STAT'")
                     .fail(showErrorMessage)
@@ -512,12 +521,13 @@
                         });
 
                         $.each(metadata, function (_, measurement) {
-                            $('#statTable').append('<tr><td>' + category(measurement) + "-ST" + signalIndex(measurement) + '</td><td>' + measurement.Description + '</td><td><span id="' + measurement.SignalID + 'Val"></span></td><td><span id="' + measurement.SignalID + 'Time"></span></td></tr>');
-                        });
+                            $('#statTable').append('<tr><td>' + category(measurement) + "-ST" + signalIndex(measurement) + '</td><td>' + measurement.Description + '</td><td class="center-with-padding" id="' + measurement.SignalID + 'Val"></td><td id="' + measurement.SignalID + 'Time"></td></tr>');
 
-                        $.each(metadata, function (_, measurement) {
-                            metadataLookup[measurement.SignalID] = measurement;
-                            measurement.HasBooleanValue = (measurement.Description.indexOf("Boolean") >= 0);
+                            sharedHub.getStatistic(measurement)
+                                .fail(showErrorMessage)
+                                .done(function (statistic) {
+                                    statSubscriber.setMeasurementFormat(measurement.SignalID, statistic.DisplayFormat, statistic.DataType);
+                                });
                         });
 
                         statSubscriber.subscribe({ FilterExpression: "FILTER ActiveMeasurements WHERE Device IN ('" + deviceAcronym + "', '" + parentAcronym + "') AND SignalType = 'STAT'" });
@@ -526,14 +536,8 @@
 
             statSubscriber.newMeasurements = function (measurements) {
                 $.each(measurements, function (_, measurement) {
-                    var val = measurement.value.toFixed(3);
-                    var time = moment(measurement.timestamp).utc().format('HH:mm:ss.SSSS');
-                    var metadata = metadataLookup[measurement.signalID];
-
-                    if (metadata !== undefined && metadata.HasBooleanValue)
-                        val = (val !== 0);
-
-                    $('#' + measurement.signalID + 'Val').text(val);
+                    const time = moment(measurement.timestamp).utc().format("HH:mm:ss.SSS");
+                    $('#' + measurement.signalID + 'Val').text(measurement.value);
                     $('#' + measurement.signalID + 'Time').text(time);
                 });
             };
@@ -609,53 +613,6 @@
                 },
                 axisLabel: "Time (UTC)"
             }
-        });
-    }
-
-    // https://tc39.github.io/ecma262/#sec-array.prototype.find
-    if (!Array.prototype.find) {
-        Object.defineProperty(Array.prototype, 'find', {
-            value: function (predicate) {
-        // 1. Let O be ? ToObject(this value).
-        if (this == null) {
-            throw new TypeError('"this" is null or not defined');
-        }
-
-        var o = Object(this);
-
-        // 2. Let len be ? ToLength(? Get(O, "length")).
-        var len = o.length >>> 0;
-
-        // 3. If IsCallable(predicate) is false, throw a TypeError exception.
-        if (typeof predicate !== 'function') {
-            throw new TypeError('predicate must be a function');
-        }
-
-        // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
-        var thisArg = arguments[1];
-
-        // 5. Let k be 0.
-        var k = 0;
-
-        // 6. Repeat, while k < len
-        while (k < len) {
-                    // a. Let Pk be ! ToString(k).
-                    // b. Let kValue be ? Get(O, Pk).
-                    // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
-                    // d. If testResult is true, return kValue.
-                    var kValue = o[k];
-                    if (predicate.call(thisArg, kValue, k, o)) {
-                        return kValue;
-                    }
-                    // e. Increase k by 1.
-                    k++;
-                }
-
-                // 7. Return undefined.
-                return undefined;
-            },
-            configurable: true,
-            writable: true
         });
     }
 
