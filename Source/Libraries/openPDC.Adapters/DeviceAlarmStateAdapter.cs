@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Timers;
@@ -624,7 +625,9 @@ namespace openPDC.Adapters
                     parameters.Add(dval);
                 else if (bool.TryParse(parameter, out bool bval))
                     parameters.Add(bval);
-                else if (DateTime.TryParse(parameter, out DateTime dtval))
+                else if (DateTime.TryParseExact(parameter, TimeTagBase.DefaultFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime dtval))
+                    parameters.Add(dtval);
+                else if (DateTime.TryParse(parameter, out dtval))
                     parameters.Add(dtval);
                 else
                     parameters.Add(parameter);
