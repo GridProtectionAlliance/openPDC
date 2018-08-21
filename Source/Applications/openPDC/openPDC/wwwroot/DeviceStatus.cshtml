@@ -325,7 +325,7 @@
 }
 
 <div id="titleBar" class="banner-well" style="background-color: @stateColor">
-    @deviceName - <span id="stateName">@stateName</span> [<span id="displayData">@displayData</span>] @extraMessage<br/>
+    @deviceName - <span id="stateName">@stateName</span> [<span id="displayData">@displayData</span>] <span id="extraMessage">@extraMessage</span><br/>
     <span style="font-size: 65%">Refreshing in <span id="refreshCount">@refreshInterval</span> seconds...</span>
 </div>
 <div class="col-md-6" style="height:90%">
@@ -393,7 +393,7 @@
     $(window).on("hubConnected", function () {
         serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function () {
             serviceHub.sendCommand("initialize @adapterAcronym").done(function () {
-                refreshInterval = @refreshInterval + 10;
+                refreshCountdown = @refreshInterval + 10;
             });
         });
     });
@@ -416,9 +416,8 @@
                     alarmState = $.extend(defaults, alarmState);
                     $("#displayData").text(alarmState.displayData);
                     $("#stateName").text(alarmState.stateName);
+                    $("#extraMessage").text("");
                     $("#titleBar").css("background-color", alarmState.stateColor);
-
-                    // Set inverse forground color for readability
                     $('#titleBar').css('color', invertColor(alarmState.stateColor));
 
                     refreshCountdown = refreshInterval;
@@ -522,15 +521,13 @@
 
                         $.each(metadata, function (_, measurement) {
                             $('#statTable').append('<tr><td>' + category(measurement) + "-ST" + signalIndex(measurement) + '</td><td>' + measurement.Description + '</td><td class="center-with-padding" id="' + measurement.SignalID + 'Val"></td><td id="' + measurement.SignalID + 'Time"></td></tr>');
-
-                            sharedHub.getStatistic(measurement)
-                                .fail(showErrorMessage)
-                                .done(function (statistic) {
-                                    statSubscriber.setMeasurementFormat(measurement.SignalID, statistic.DisplayFormat, statistic.DataType);
-                                });
                         });
 
-                        statSubscriber.subscribe({ FilterExpression: "FILTER ActiveMeasurements WHERE Device IN ('" + deviceAcronym + "', '" + parentAcronym + "') AND SignalType = 'STAT'" });
+                        sharedHub.getStatisticFormatRecords(metadata)
+                            .fail(showErrorMessage)
+                            .done(function (formatRecords) {
+                                statSubscriber.subscribe({ FilterExpression: "FILTER ActiveMeasurements WHERE Device IN ('" + deviceAcronym + "', '" + parentAcronym + "') AND SignalType = 'STAT'", FormatRecords: formatRecords });
+                            });                   
                     });
             };
 
