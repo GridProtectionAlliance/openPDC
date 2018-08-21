@@ -594,18 +594,18 @@ namespace openPDC.Adapters
         {
             Dictionary<string, string> substitutions = new Dictionary<string, string>(initialSubstitutions)
             {
-                ["AlarmState"] = state.ToString(),
-                ["AlarmStateValue"] = ((int)state).ToString()
+                ["{AlarmState}"] = state.ToString(),
+                ["{AlarmStateValue}"] = ((int)state).ToString()
             };
 
             if (m_mappedAlarmStates.TryGetValue(state, out string mappedValue))
-                substitutions["MappedAlarmState"] = mappedValue;
+                substitutions["{MappedAlarmState}"] = mappedValue;
             else
-                substitutions["MappedAlarmState"] = "0";
+                substitutions["{MappedAlarmState}"] = "0";
 
             // Use device metadata columns as possible substitution parameters
             foreach (DataColumn column in metadata.Table.Columns)
-                substitutions[column.ColumnName] = metadata[column.ColumnName].ToString();
+                substitutions[$"{column.ColumnName}"] = metadata[column.ColumnName].ToString();
 
             List<object> parameters = new List<object>();
             string commandParameters = parameterTemplate.Execute(substitutions);
@@ -624,11 +624,13 @@ namespace openPDC.Adapters
                     parameters.Add(dval);
                 else if (bool.TryParse(parameter, out bool bval))
                     parameters.Add(bval);
+                else if (DateTime.TryParse(parameter, out DateTime dtval))
+                    parameters.Add(dtval);
                 else
                     parameters.Add(parameter);
             }
 
-            connection.ExecuteScalar(ExternalDatabaseCommand, parameters);
+            connection.ExecuteScalar(ExternalDatabaseCommand, parameters.ToArray());
         }
 
         private void MonitoringTimer_Elapsed(object sender, ElapsedEventArgs e) => m_monitoringOperation?.RunOnce();
