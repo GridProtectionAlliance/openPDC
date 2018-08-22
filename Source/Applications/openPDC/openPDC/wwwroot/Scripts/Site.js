@@ -128,8 +128,17 @@ function startHubConnection() {
         if (!err || !err.context)
             return;
 
-        if (err.context.status === 401)
-            window.location.reload();
+        if (err.context.status === 401) {
+            if (isIE) {
+                // Attempt to clear any credentials cached by browser
+                clearCachedCredentials(null, function (success) {
+                    window.location.reload();
+                });
+            }
+            else {
+                window.location.reload();
+            }
+        }            
     });
 }
 
