@@ -89,6 +89,7 @@ namespace openPDC.Adapters
         private Ticks m_alarmTime;
         private long m_alarmStateUpdates;
         private long m_externalDatabaseUpdates;
+        private object m_lastExternalDatabaseResult;
         private bool m_disposed;
 
         #endregion
@@ -249,6 +250,8 @@ namespace openPDC.Adapters
                 status.AppendFormat("       Alarm State Updates: {0:N0}", m_alarmStateUpdates);
                 status.AppendLine();
                 status.AppendFormat(" External Database Updates: {0:N0}", m_externalDatabaseUpdates);
+                status.AppendLine();
+                status.AppendFormat("   Last External DB Result: {0}", m_lastExternalDatabaseResult?.ToString() ?? "null");
                 status.AppendLine();
 
                 lock (m_stateCountLock)
@@ -633,7 +636,7 @@ namespace openPDC.Adapters
                     parameters.Add(parameter);
             }
 
-            connection.ExecuteScalar(ExternalDatabaseCommand, parameters.ToArray());
+            m_lastExternalDatabaseResult = connection.ExecuteScalar(ExternalDatabaseCommand, parameters.ToArray());
         }
 
         private void MonitoringTimer_Elapsed(object sender, ElapsedEventArgs e) => m_monitoringOperation?.RunOnce();
