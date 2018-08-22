@@ -21,8 +21,8 @@
 //
 //*****************************************************************************************************@
 @using GSF
+@using GSF.Data.Model
 @using GSF.Web.Model
-@using System.Net.Http
 @using GSF.Web
 @using GSF.Web.Hosting
 @using GSF.Web.Shared
@@ -30,8 +30,9 @@
 @using openPDC.Model
 @using System.Data
 @using System.Linq
-@using GSF.Data.Model
+@using System.Net.Http
 @using openPDC.Adapters
+@using Random = GSF.Security.Cryptography.Random
 @inherits ExtendedTemplateBase<AppModel>
 @{
     Layout = "Layout.cshtml";
@@ -42,24 +43,32 @@
     AlarmDevice alarmDevice = null;
     int alarmDeviceID, deviceID = 0;
     string idValue;
+    string postError = null;
+    ulong salt = Random.UInt64;
 
     // Passing in "ID" or "AlarmDeviceID" assumes initial lookup of AlarmDevice record
-    if (!parameters.TryGetValue("ID", out idValue)) {
+    if (!parameters.TryGetValue("ID", out idValue))
+    {
         parameters.TryGetValue("AlarmDeviceID", out idValue);
     }
 
-    if (string.IsNullOrWhiteSpace(idValue)) {
+    if (string.IsNullOrWhiteSpace(idValue))
+    {
         // Passing in "DeviceID" assumes initial lookup of Device record
-        if (parameters.TryGetValue("DeviceID", out idValue)) {
+        if (parameters.TryGetValue("DeviceID", out idValue))
+        {
             int.TryParse(idValue, out deviceID);
         }
     }
-    else {
-        if (int.TryParse(idValue, out alarmDeviceID)) {
+    else
+    {
+        if (int.TryParse(idValue, out alarmDeviceID))
+        {
             alarmDevice = dataContext.Table<AlarmDevice>().QueryRecordWhere("ID = {0}", alarmDeviceID);
         }
 
-        if ((object)alarmDevice != null) {
+        if ((object)alarmDevice != null)
+        {
             deviceID = alarmDevice.DeviceID;
         }
     }
@@ -75,16 +84,19 @@
 
     DataRow alarmStateAdapter = dataContext.Connection.RetrieveRow("SELECT * FROM CustomActionAdapter WHERE TypeName='openPDC.Adapters.DeviceAlarmStateAdapter'");
 
-    if ((object)alarmStateAdapter != null) {
+    if ((object)alarmStateAdapter != null)
+    {
         adapterAcronym = alarmStateAdapter["AdapterName"].ToString();
         string adapterSettings = alarmStateAdapter["ConnectionString"].ToString();
 
-        if (!string.IsNullOrWhiteSpace(adapterSettings)) {
+        if (!string.IsNullOrWhiteSpace(adapterSettings))
+        {
             Dictionary<string, string> settings = adapterSettings.ParseKeyValuePairs();
             string setting;
             int monitoringRate;
 
-            if (settings.TryGetValue("MonitoringRate", out setting) && int.TryParse(setting, out monitoringRate)) {
+            if (settings.TryGetValue("MonitoringRate", out setting) && int.TryParse(setting, out monitoringRate))
+            {
                 refreshInterval = monitoringRate / 1000;
             }
         }
@@ -92,37 +104,51 @@
 
     Device device = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", deviceID);
 
-    if ((object)device != null) {
-        if (ViewBag.IsPost) {
-            PostData postData = request.GetPostData();
-            device.Enabled = postData.FormData["deviceInService"].ParseBoolean();
-            dataContext.Table<Device>().UpdateRecord(device);
+    if ((object)device != null)
+    {
+        if (ViewBag.IsPost)
+        {
+            try
+            {
+                PostData postData = request.GetPostData();
+                device.Enabled = postData.FormData["deviceInService"].ParseBoolean();
+                dataContext.Table<Device>().UpdateRecord(device);
 
-            if ((object)alarmDevice == null) {
-                alarmDevice = dataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", deviceID);
+                if ((object)alarmDevice == null)
+                {
+                    alarmDevice = dataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", deviceID);
+                }
+
+                if ((object)alarmDevice != null)
+                {
+                    TableOperations<AlarmState> alarmStateTable = dataContext.Table<AlarmState>();
+                    AlarmState[] alarmStateRecords = alarmStateTable.QueryRecords().ToArray();
+                    AlarmState newState;
+
+                    if (device.Enabled)
+                    {
+                        newState = alarmStateRecords.FirstOrDefault(alarmState => alarmState.State == "Not Available");
+                        alarmDevice.DisplayData = "0";
+                        extraMessage = "-- State Reset";
+                    }
+                    else
+                    {
+                        newState = alarmStateRecords.FirstOrDefault(alarmState => alarmState.State == "Out of Service");
+                        alarmDevice.DisplayData = GetOutOfServiceTime(device);
+                    }
+
+                    if ((object)newState != null)
+                    {
+                        alarmDevice.StateID = newState.ID;
+                    }
+
+                    dataContext.Table<AlarmDevice>().UpdateRecord(alarmDevice);
+                    reinitializeAlarmStateAdapter = true;
+                }
             }
-
-            if ((object)alarmDevice != null) {
-                TableOperations<AlarmState> alarmStateTable = dataContext.Table<AlarmState>();
-                AlarmState[] alarmStateRecords = alarmStateTable.QueryRecords().ToArray();
-                AlarmState newState;
-
-                if (device.Enabled) {
-                    newState = alarmStateRecords.FirstOrDefault(alarmState => alarmState.State == "Not Available");
-                    alarmDevice.DisplayData = "0";
-                    extraMessage = "-- State Reset";
-                }
-                else {
-                    newState = alarmStateRecords.FirstOrDefault(alarmState => alarmState.State == "Out of Service");
-                    alarmDevice.DisplayData = GetOutOfServiceTime(device);
-                }
-
-                if ((object)newState != null) {
-                    alarmDevice.StateID = newState.ID;
-                }
-
-                dataContext.Table<AlarmDevice>().UpdateRecord(alarmDevice);
-                reinitializeAlarmStateAdapter = true;
+            catch (Exception ex)
+            {
+                postError = ex.Message;
             }
         }
 
@@ -131,34 +157,41 @@
         contactList = device.ContactList;
         connectionString = device.ConnectionString;
 
-        if (device.Longitude.HasValue) {
+        if (device.Longitude.HasValue)
+        {
             longitude = device.Longitude.Value;
         }
 
-        if (device.Latitude.HasValue) {
+        if (device.Latitude.HasValue)
+        {
             latitude = device.Latitude.Value;
         }
 
-        if (device.FramesPerSecond.HasValue) {
+        if (device.FramesPerSecond.HasValue)
+        {
             framesPerSecond = device.FramesPerSecond.Value;
         }
 
         int? vendorDeviceID = device.VendorDeviceID;
 
-        if (device.ParentID.HasValue) {
+        if (device.ParentID.HasValue)
+        {
             // If this is a concentrator child, get connection string of parent
             Device parentDevice = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", device.ParentID.Value);
 
-            if ((object)parentDevice != null) {
+            if ((object)parentDevice != null)
+            {
                 parentAcronym = parentDevice.Acronym;
 
                 string childConnectionString = connectionString;
 
                 // Settings in child connection string are not common
-                if (string.IsNullOrWhiteSpace(childConnectionString)) {
+                if (string.IsNullOrWhiteSpace(childConnectionString))
+                {
                     childConnectionString = "";
                 }
-                else {
+                else
+                {
                     childConnectionString = string.Format("; childDevice={0}; {1}", deviceAcronym, childConnectionString);
                 }
 
@@ -169,78 +202,93 @@
 
         VendorDevice vendorDevice = dataContext.Table<VendorDevice>().QueryRecordWhere("ID = {0}", vendorDeviceID);
 
-        if ((object)vendorDevice != null) {
+        if ((object)vendorDevice != null)
+        {
             deviceType = vendorDevice.Name;
 
             Vendor vendor = dataContext.Table<Vendor>().QueryRecordWhere("ID = {0}", vendorDevice.VendorID);
 
-            if ((object)vendor != null) {
+            if ((object)vendor != null)
+            {
                 vendorName = vendor.Name;
             }
         }
 
         ActiveMeasurement activeMeasurement = dataContext.Table<ActiveMeasurement>().QueryRecordWhere("Device = {0} AND SignalType = 'FREQ'", device.Acronym);
 
-        if ((object)activeMeasurement != null) {
+        if ((object)activeMeasurement != null)
+        {
             activeMeasurementID = activeMeasurement.ID;
         }
 
         alarmDevice = dataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", device.ID);
 
-        if ((object)alarmDevice != null) {
+        if ((object)alarmDevice != null)
+        {
             displayData = alarmDevice.DisplayData;
 
             AlarmState alarmState = dataContext.Table<AlarmState>().QueryRecordWhere("ID = {0}", alarmDevice.StateID);
 
-            if ((object)alarmState != null) {
+            if ((object)alarmState != null)
+            {
                 stateName = alarmState.State;
                 stateColor = alarmState.Color;
             }
         }
     }
 
-    if (string.IsNullOrWhiteSpace(deviceName)) {
+    if (string.IsNullOrWhiteSpace(deviceName))
+    {
         deviceName = "UNDEFINED";
     }
 
-    if (string.IsNullOrWhiteSpace(vendorName)) {
+    if (string.IsNullOrWhiteSpace(vendorName))
+    {
         vendorName = "Unspecified";
     }
 
-    if (string.IsNullOrWhiteSpace(deviceType)) {
+    if (string.IsNullOrWhiteSpace(deviceType))
+    {
         deviceType = "Unspecified";
     }
 
-    if (string.IsNullOrWhiteSpace(contactList)) {
+    if (string.IsNullOrWhiteSpace(contactList))
+    {
         contactList = "None Defined";
     }
 
-    if (string.IsNullOrWhiteSpace(connectionString)) {
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
         connectionString = "settings=none";
     }
 
-    if (string.IsNullOrWhiteSpace(displayData)) {
+    if (string.IsNullOrWhiteSpace(displayData))
+    {
         displayData = "0";
     }
 
-    if (string.IsNullOrWhiteSpace(stateName)) {
+    if (string.IsNullOrWhiteSpace(stateName))
+    {
         stateName = "Unknown State";
     }
 
-    if (string.IsNullOrWhiteSpace(stateColor)) {
+    if (string.IsNullOrWhiteSpace(stateColor))
+    {
         stateColor = "yellow";
     }
 
-    if (string.IsNullOrEmpty(parentAcronym)) {
+    if (string.IsNullOrEmpty(parentAcronym))
+    {
         parentAcronym = "";
     }
 
-    if (string.IsNullOrWhiteSpace(activeMeasurementID)) {
+    if (string.IsNullOrWhiteSpace(activeMeasurementID))
+    {
         activeMeasurementID = string.Format("__:{0}", ulong.MaxValue);
     }
 
-    ViewBag.Title = "";
-    ViewBag.CustomTitle = deviceAcronym + " Device Status";
+    ViewBag.Title = deviceAcronym + " Device Status";
+    ViewBag.HidePageTitle = true;
 }
 @functions {
     public static string GetOutOfServiceTime(Device device)
@@ -259,81 +307,80 @@
     }
 }
 @section StyleSheets {
-<style>
-    html, body {
-        height: 100%;
-    }
+    <style>
+        html, body {
+            height: 100%;
+        }
 
-    .btn-group {
-        text-align: center;
-    }
+        .btn-group {
+            text-align: center;
+        }
 
-    .btn-group button {
-        background-color: #4CAF50; /* Green background */
-        border: 1px solid green; /* Green border */
-        color: white; /* White text */
-        cursor: pointer; /* Pointer/hand icon */
-        float: none; /* Float the buttons side by side */
-        margin: 5px;
-        height: 62px;
-    }
+            .btn-group button {
+                background-color: #4CAF50; /* Green background */
+                border: 1px solid green; /* Green border */
+                color: white; /* White text */
+                cursor: pointer; /* Pointer/hand icon */
+                float: none; /* Float the buttons side by side */
+                margin: 5px;
+                height: 62px;
+            }
 
-    /* Clear floats (clearfix hack) */
-    .btn-group:after {
-        content: "";
-        clear: both;
-        display: table;
-    }
+            /* Clear floats (clearfix hack) */
+            .btn-group:after {
+                content: "";
+                clear: both;
+                display: table;
+            }
 
-    .btn-group button:not(:last-child) {
-        border-right: none; /* Prevent double borders */
-    }
+            .btn-group button:not(:last-child) {
+                border-right: none; /* Prevent double borders */
+            }
 
-    /* Add a background color on hover */
-    .btn-group button:hover {
-        background-color: #3e8e41;
-    }
+            /* Add a background color on hover */
+            .btn-group button:hover {
+                background-color: #3e8e41;
+            }
 
-    /* Add a background color on hover */
-    .btn-group button:disabled {
-        background-color: grey;
-    }
+            /* Add a background color on hover */
+            .btn-group button:disabled {
+                background-color: grey;
+            }
 
-    .banner-well {
-        width: 100%;
-        height: 95px;
-        border: 1px solid darkgrey;
-        float: none;
-        margin: 0px 0px 0px 0px;
-        text-align: center;
-        font-size: xx-large;
-        color: white;
-    }
+        .banner-well {
+            width: 100%;
+            height: 95px;
+            border: 1px solid darkgrey;
+            float: none;
+            margin: 0px 0px 0px 0px;
+            text-align: center;
+            font-size: xx-large;
+            color: white;
+        }
 
-    .largeul {
-        font-size: large;
-        list-style-type: none;
-    }
+        .largeul {
+            font-size: large;
+            list-style-type: none;
+        }
 
-    .center-with-padding {
-        text-align: center;
-        vertical-align: top;
-        white-space: nowrap;
-        padding-left: 5px;
-        padding-right: 5px;
-    }
+        .center-with-padding {
+            text-align: center;
+            vertical-align: top;
+            white-space: nowrap;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
 
-    .center-with-padding-right {
-        text-align: center;
-        vertical-align: top;
-        white-space: nowrap;
-        padding-right: 5px;
-    }
-</style>
+        .center-with-padding-right {
+            text-align: center;
+            vertical-align: top;
+            white-space: nowrap;
+            padding-right: 5px;
+        }
+    </style>
 }
-
 <div id="titleBar" class="banner-well" style="background-color: @stateColor">
-    @deviceName - <span id="stateName">@stateName</span> [<span id="displayData">@displayData</span>] <span id="extraMessage">@extraMessage</span><br/>
+    @deviceName - <span id="stateName">@stateName</span> [<span id="displayData">@displayData</span>] <span id="extraMessage">@extraMessage</span><br />
     <span style="font-size: 65%">Refreshing in <span id="refreshCount">@refreshInterval</span> seconds...</span>
 </div>
 <div class="col-md-6" style="height:90%">
@@ -366,7 +413,7 @@
                 <tr><th class="center-with-padding-right">ID</th><th>Description</th><th class="center-with-padding">Value</th><th>Time (UTC)</th></tr>
             </thead>
             <tbody>
-                <tr style="visibility: hidden" id="recordRow">
+                <tr style="visibility: hidden">
                     <td colspan="3"></td> @* Needed so that boot-strap applies table properties *@
                 </tr>
             </tbody>
@@ -377,12 +424,12 @@
     </div>
 </div>
 <div class="col-md-6" style="text-align:center; height: 90%">
-    <div style="height: 50%; width: 100%" id="graphwrapper">        
+    <div style="height: 50%; width: 100%" id="graphwrapper">
         <div style="height: 100%; width: 100%; display: table">
             <div style="vertical-align: middle; display: table-cell">Attempting connection&nbsp;&nbsp;<span class='glyphicon glyphicon-refresh glyphicon-spin'></span></div>
-        </div>        
+        </div>
     </div>
-    <form role="form" method="post">
+    <form role="form" method="post" action="@request.RequestUri.AbsolutePath?DeviceID=@deviceID&Salt=@salt" enctype="multipart/form-data">
         <div class="btn-group" style="width: 100%">
             <button type="submit" name="deviceInService" style="width: 30%" value="true">Reset to In-Service</button>
             <button type="submit" name="deviceInService" style="width: 30%" value="false">Set to Out-of-Service</button>
@@ -391,23 +438,21 @@
         </div>
     </form>
 </div>
-
 @section Scripts {
-<script src="@Resources.Root/Shared/Scripts/jquery.subscriber.js"></script>
-<script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.min.js"></script>
-<script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.crosshair.min.js"></script>
-<script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.navigate.min.js"></script>
-<script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.resize.min.js"></script>
-<script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.selection.min.js"></script>
-<script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.time.min.js"></script>
-<script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.axislabels.min.js"></script>
-<script src="@Resources.Root/Shared/Scripts/moment.js"></script>
-<script>
+    <script src="@Resources.Root/Shared/Scripts/jquery.subscriber.js"></script>
+    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.min.js"></script>
+    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.crosshair.min.js"></script>
+    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.navigate.min.js"></script>
+    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.resize.min.js"></script>
+    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.selection.min.js"></script>
+    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.time.min.js"></script>
+    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.axislabels.min.js"></script>
+    <script src="@Resources.Root/Shared/Scripts/moment.js"></script>
+    <script>
     var refreshInterval = @refreshInterval;
     var refreshCountdown = refreshInterval;
     var deviceID = @deviceID;
-@{
-    if (reinitializeAlarmStateAdapter) {
+@{if (reinitializeAlarmStateAdapter) {
     <text>
     $(window).on("hubConnected", function () {
         serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function () {
@@ -417,8 +462,7 @@
         });
     });
     </text>
-    }
-}
+}}
     function updateCountdown() {
         refreshCountdown--;
 
@@ -453,6 +497,10 @@
     $(function () {
         var deviceAcronym = "@deviceAcronym";
         var parentAcronym = "@(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)";
+        var postError = "@postError";
+
+        if (!isEmpty(postError))
+            showErrorMessage(postError);
 
         // Logs messages to an array so they can be
         // observed on demand in the JavaScript console
@@ -538,8 +586,10 @@
                             return 0;
                         });
 
+                        $("#statTable tbody > tr").remove();
+
                         $.each(metadata, function (_, measurement) {
-                            $('#statTable').append('<tr><td class="center-with-padding-right">' + category(measurement) + "-ST" + signalIndex(measurement) + '</td><td>' + measurement.Description + '</td><td class="center-with-padding" id="' + measurement.SignalID + 'Val"></td><td id="' + measurement.SignalID + 'Time"></td></tr>');
+                            $("#statTable").append("<tr><td class=\"center-with-padding-right\">" + category(measurement) + "-ST" + signalIndex(measurement) + "</td><td>" + measurement.Description + "</td><td class=\"center-with-padding\" id=\"" + measurement.SignalID + "Val\"></td><td id=\"" + measurement.SignalID + "Time\"></td></tr>");
                         });
 
                         sharedHub.getStatisticFormatRecords(metadata)
@@ -549,7 +599,6 @@
                             });
 
                         $("#loadingDataLabel").hide();
-                        $("#recordRow").remove();
                     });
             };
 
@@ -712,5 +761,5 @@
 
         return (color.replace('#', '0x')) > (0xffffff / 2) ? '#333' : '#fff';
     }
-</script>
+    </script>
 }
