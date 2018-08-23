@@ -133,10 +133,22 @@ namespace openPDC.Adapters
         }
 
         /// <summary>
-        /// Gets or sets the external database connection string used for synchronization of alarm states.
+        /// Gets or sets the flag that determines if an external database connection should be enabled for synchronization of alarm states.
         /// </summary>
         [ConnectionStringParameter]
-        [Description("Defines the external database connection string used for synchronization of alarm states.")]
+        [Description("Defines the flag that determines if an external database connection should be enabled for synchronization of alarm states.")]
+        [DefaultValue(false)]
+        public bool EnableExternalDatabaseSynchronization
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the external database connection string used for synchronization of alarm states. Leave blank to use local configuration database defined in "systemSettings".
+        /// </summary>
+        [ConnectionStringParameter]
+        [Description("Defines the external database connection string used for synchronization of alarm states. Leave blank to use local configuration database defined in \"systemSettings\".")]
         [DefaultValue("")]
         public string ExternalDatabaseConnnectionString
         {
@@ -538,7 +550,7 @@ namespace openPDC.Adapters
                     m_stateCounts = stateCounts;
             }
 
-            if (!string.IsNullOrEmpty(ExternalDatabaseConnnectionString))
+            if (EnableExternalDatabaseSynchronization)
             {
                 TemplatedExpressionParser parameterTemplate = new TemplatedExpressionParser
                 {
@@ -551,9 +563,9 @@ namespace openPDC.Adapters
 
                 // Provide state counts as available substitution parameters
                 foreach (KeyValuePair<AlarmState, int> stateCount in stateCounts)
-                    substitutions[$"{stateCount.Key}StateCount"] = stateCount.Value.ToString();
+                    substitutions[$"{{{stateCount.Key}StateCount}}"] = stateCount.Value.ToString();
 
-                using (AdoDataConnection connection = new AdoDataConnection(ExternalDatabaseConnnectionString, ExternalDatabaseProviderString))
+                using (AdoDataConnection connection = string.IsNullOrWhiteSpace(ExternalDatabaseConnnectionString) ? new AdoDataConnection("systemSettings") : new AdoDataConnection(ExternalDatabaseConnnectionString, ExternalDatabaseProviderString))
                 {
                     foreach (AlarmDevice alarmDevice in alarmDeviceUpdates)
                     {
@@ -609,7 +621,7 @@ namespace openPDC.Adapters
 
             // Use device metadata columns as possible substitution parameters
             foreach (DataColumn column in metadata.Table.Columns)
-                substitutions[$"{column.ColumnName}"] = metadata[column.ColumnName].ToString();
+                substitutions[$"{{{column.ColumnName}}}"] = metadata[column.ColumnName].ToString();
 
             List<object> parameters = new List<object>();
             string commandParameters = parameterTemplate.Execute(substitutions);
