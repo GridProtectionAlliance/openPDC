@@ -526,7 +526,12 @@
             var statSubscriber = $.subscriber();
 
             dataSubscriber.connectionEstablished = function () {
-                dataSubscriber.subscribe({ FilterExpression: "FILTER ActiveMeasurements WHERE Device = '" + deviceAcronym + "' AND SignalType = 'FREQ'" });
+                const filterExpression = "FILTER ActiveMeasurements WHERE Device = '" + deviceAcronym + "' AND SignalType = 'FREQ'";
+
+                if (isIE)
+                    dataSubscriber.subscribe({ FilterExpression: filterExpression, Throttled: true, PublishInterval: 0.25 });
+                else
+                    dataSubscriber.subscribe({ FilterExpression: filterExpression });
             };
 
             dataSubscriber.newMeasurements = function (measurements) {
