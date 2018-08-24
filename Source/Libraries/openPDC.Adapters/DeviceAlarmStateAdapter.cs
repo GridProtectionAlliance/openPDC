@@ -574,14 +574,16 @@ namespace openPDC.Adapters
                             continue;
 
                         AlarmState state = m_alarmStates.First(record => record.Value.ID == alarmDevice.StateID).Key;
-                        alarmedDeviceMetadata = metadata;
+
+                        if ((object)alarmedDeviceMetadata == null)
+                            alarmedDeviceMetadata = metadata;
 
                         if (ExternalDatabaseReportSingleCompositeState)
                         {
                             if (state != AlarmState.Good)
                             {
                                 // First encountered alarmed device with highest alarm state will be reported as composite state
-                                if (compositeState < state)
+                                if (state < compositeState)
                                 {
                                     compositeState = state;
                                     alarmedDeviceMetadata = metadata;
@@ -624,7 +626,7 @@ namespace openPDC.Adapters
             // Use device metadata columns as possible substitution parameters
             if ((object)metadata != null)
                 foreach (DataColumn column in metadata.Table.Columns)
-                    substitutions[$"{{{column.ColumnName}}}"] = metadata[column.ColumnName].ToString();
+                    substitutions[$"{{Device.{column.ColumnName}}}"] = metadata[column.ColumnName].ToString();
 
             List<object> parameters = new List<object>();
             string commandParameters = parameterTemplate.Execute(substitutions);
