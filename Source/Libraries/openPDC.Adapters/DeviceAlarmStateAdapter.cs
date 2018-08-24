@@ -29,6 +29,7 @@ using GSF.Parsing;
 using GSF.Threading;
 using GSF.TimeSeries;
 using GSF.TimeSeries.Adapters;
+using GSF.Units;
 using openPDC.Model;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Timers;
-using GSF.Units;
 using AlarmStateRecord = openPDC.Model.AlarmState;
 using ConnectionStringParser = GSF.Configuration.ConnectionStringParser<GSF.TimeSeries.Adapters.ConnectionStringParameterAttribute>;
 
@@ -574,6 +574,7 @@ namespace openPDC.Adapters
                             continue;
 
                         AlarmState state = m_alarmStates.First(record => record.Value.ID == alarmDevice.StateID).Key;
+                        alarmedDeviceMetadata = metadata;
 
                         if (ExternalDatabaseReportSingleCompositeState)
                         {
@@ -621,8 +622,9 @@ namespace openPDC.Adapters
                 substitutions["{MappedAlarmState}"] = "0";
 
             // Use device metadata columns as possible substitution parameters
-            foreach (DataColumn column in metadata.Table.Columns)
-                substitutions[$"{{{column.ColumnName}}}"] = metadata[column.ColumnName].ToString();
+            if ((object)metadata != null)
+                foreach (DataColumn column in metadata.Table.Columns)
+                    substitutions[$"{{{column.ColumnName}}}"] = metadata[column.ColumnName].ToString();
 
             List<object> parameters = new List<object>();
             string commandParameters = parameterTemplate.Execute(substitutions);
