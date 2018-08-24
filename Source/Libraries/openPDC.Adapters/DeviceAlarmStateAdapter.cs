@@ -38,6 +38,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Timers;
+using GSF.Units;
 using AlarmStateRecord = openPDC.Model.AlarmState;
 using ConnectionStringParser = GSF.Configuration.ConnectionStringParser<GSF.TimeSeries.Adapters.ConnectionStringParameterAttribute>;
 
@@ -658,6 +659,7 @@ namespace openPDC.Adapters
         #region [ Static ]
 
         private static readonly string[] s_shortTimeNames = { " yr", " yr", " d", " d", " hr", " hr", " m", " m", " s", " s", "< " };
+        private static readonly double s_daysPerYear = new Time(Time.SecondsPerYear(DateTime.UtcNow.Year)).ToDays();
 
         private static Dictionary<AlarmState, int> CreateNewStateCountsMap() => new Dictionary<AlarmState, int>
         {
@@ -688,9 +690,10 @@ namespace openPDC.Adapters
         {
             double days = span.ToDays();
 
-            if (days > 365.25D)
-                span = span.BaselinedTimestamp(BaselineTimeInterval.Year);
-            else if (days > 1.0D)
+            if (days > s_daysPerYear)
+                return $"{days / s_daysPerYear:N2} yr";
+
+            if (days > 1.0D)
                 span = span.BaselinedTimestamp(BaselineTimeInterval.Day);
             else if (span.ToHours() > 1.0D)
                 span = span.BaselinedTimestamp(BaselineTimeInterval.Hour);
