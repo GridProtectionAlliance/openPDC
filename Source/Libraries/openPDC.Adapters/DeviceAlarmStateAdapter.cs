@@ -180,13 +180,22 @@ namespace openPDC.Adapters
             get;
             set;
         }
-        
+
         /// <summary>
         /// Gets or sets the external database command parameters with value substitutions used for synchronization of alarm states.
         /// </summary>
+        /// <remarks>
+        /// Examples for composite state reporting:
+        /// <code>
+        /// 'openPDC Overall Device Status = {AlarmState}[?{AlarmState}!=Good[ -- for \[{Device.Acronym}\]]]'
+        /// </code>
+        /// <code>
+        /// 'Good = {GoodStateCount} / Alarmed = {AlarmStateCount} / Unavailable = {NotAvailableStateCount} / Bad Data = {BadDataStateCount} / Bad Time = {BadTimeStateCount} / Out of Service = {OutOfServiceStateCount}[?{AlarmState}!=Good[ -- \&lt;a href=\"http://localhost:8280/DeviceStatus.cshtml?DeviceID={Device.ID}\"\&gt;\[{Device.Acronym}\] Device Status\&lt;/a\&gt;]]'
+        /// </code>
+        /// </remarks>
         [ConnectionStringParameter]
         [Description("Defines the external database command parameters with value substitutions used for synchronization of alarm states.")]
-        [DefaultValue("{MappedAlarmState},1,'PDC_DEVICE_{Acronym}','','openPDC device {Acronym} state = {AlarmState}',''")]
+        [DefaultValue("{MappedAlarmState},1,'PDC_DEVICE_{Device.Acronym}','','openPDC Device Status = {AlarmState} for \\[{Device.Acronym}\\]','\\<a href=\"http://localhost:8280/DeviceStatus.cshtml?DeviceID={Device.ID}\"\\>\\[{Device.Acronym}\\] Device Status\\</a\\>'")]
         public string ExternalDatabaseCommandParameters
         {
             get;
