@@ -248,6 +248,7 @@
     <None Include="wwwroot\Layout.cshtml" />
     <None Include="wwwroot\Logout.cshtml" />
     <Content Include="wwwroot\ModbusConfig.cshtml" />
+    <Content Include="wwwroot\openHistorianGrafanaPlugins.zip" />
     <None Include="wwwroot\RemoteConsole.cshtml" />
     <None Include="wwwroot\SelectTheme.cshtml" />
     <None Include="wwwroot\SelectTimeRange.cshtml" />
