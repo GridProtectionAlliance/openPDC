@@ -30,8 +30,8 @@
   <Component Id="ModbusConfig_cshtml">
     <File Id="ModbusConfig.cshtml" Name="ModbusConfig.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\ModbusConfig.cshtml" />
   </Component>
-  <Component Id="openHistorianGrafanaPlugins_zip">
-    <File Id="openHistorianGrafanaPlugins.zip" Name="openHistorianGrafanaPlugins.zip" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\openHistorianGrafanaPlugins.zip" />
+  <Component Id="ParentStatus_cshtml">
+    <File Id="ParentStatus.cshtml" Name="ParentStatus.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\ParentStatus.cshtml" />
   </Component>
   <Component Id="RemoteConsole_cshtml">
     <File Id="RemoteConsole.cshtml" Name="RemoteConsole.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\RemoteConsole.cshtml" />
