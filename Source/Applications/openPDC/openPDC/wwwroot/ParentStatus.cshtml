@@ -1,5 +1,5 @@
 ﻿@*******************************************************************************************************
-//  GrafanaDeviceStatus.cshtml - Gbtc
+//  ParentStatus.cshtml - Gbtc
 //
 //  Copyright © 2016, Grid Protection Alliance.  All Rights Reserved.
 //
@@ -103,6 +103,15 @@
     }
 
     Device device = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", deviceID);
+    IEnumerable<Device> children = dataContext.Table<Device>().QueryRecordsWhere("ParentID = {0}", deviceID);
+
+
+    TableOperations<AlarmState> alarmStateTable = dataContext.Table<AlarmState>();
+    AlarmState[] alarmStateRecords = alarmStateTable.QueryRecords().ToArray();
+    Dictionary<int, AlarmState> alarmStateRecordsDictionary = alarmStateTable.QueryRecords().ToDictionary(x => x.ID, x => x);
+    alarmStateRecordsDictionary.Add(0, new AlarmState() { ID=0, Color="yellow", State="Unkwown"});
+
+    Dictionary<Device, AlarmDevice> childrenState = new Dictionary<Device, AlarmDevice>();
 
     if ((object)device != null)
     {
@@ -121,8 +130,6 @@
 
                 if ((object)alarmDevice != null)
                 {
-                    TableOperations<AlarmState> alarmStateTable = dataContext.Table<AlarmState>();
-                    AlarmState[] alarmStateRecords = alarmStateTable.QueryRecords().ToArray();
                     AlarmState newState;
 
                     if (device.Enabled)
@@ -150,6 +157,45 @@
             {
                 postError = ex.Message;
             }
+        }
+
+        foreach(Device child in children)
+        {
+            AlarmDevice childAlarm = dataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", child.ID);
+            AlarmState newState;
+            string message;
+            if ((object)childAlarm != null)
+            {
+                if (child.Enabled)
+                {
+                    newState = alarmStateRecords.FirstOrDefault(alarmState => alarmState.State == "Not Available");
+                    childAlarm.DisplayData = "0";
+                    message = "-- State Reset";
+                }
+                else
+                {
+                    newState = alarmStateRecords.FirstOrDefault(alarmState => alarmState.State == "Out of Service");
+                    childAlarm.DisplayData = GetOutOfServiceTime(device);
+                }
+
+                if ((object)newState != null)
+                {
+                    childAlarm.StateID = newState.ID;
+                }
+
+                dataContext.Table<AlarmDevice>().UpdateRecord(childAlarm);
+            }
+            else
+            {
+                childAlarm = new AlarmDevice() {
+                    DeviceID = child.ID,
+                    StateID = 0,
+                    DisplayData = "0",
+                    TimeStamp = DateTime.Now
+                };
+            }
+            childrenState.Add(child, childAlarm);
+
         }
 
         deviceAcronym = device.Acronym;
@@ -377,7 +423,17 @@
             white-space: nowrap;
             padding-right: 5px;
         }
+
+        #childTable tbody tr{
+            cursor: pointer;
+        }
     </style>
+    <script>
+    @if (!children.Any())
+    {
+        <text>window.location.href = '/DeviceStatus.cshtml?DeviceID=@deviceID'</text>;
+    }
+    </script>
 }
 <div id="titleBar" class="banner-well" style="background-color: @stateColor">
     @deviceName - <span id="stateName">@stateName</span> [<span id="displayData">@displayData</span>] <span id="extraMessage">@extraMessage</span><br />
@@ -423,35 +479,34 @@
         </div>
     </div>
 </div>
-<div class="col-md-6" style="text-align:center; height: 90%">
-    <div style="height: 50%; width: 100%" id="graphwrapper">
-        <div style="height: 100%; width: 100%; display: table">
-            <div style="vertical-align: middle; display: table-cell">Attempting connection&nbsp;&nbsp;<span class='glyphicon glyphicon-refresh glyphicon-spin'></span></div>
-        </div>
+<div class="col-md-6" style="height: 98%">
+    <div style="height: 50%; width: 100%; overflow-y: scroll " id="" >
+        <table id="childTable" class="table table-condensed table-hover table-striped">
+            <thead>
+                <tr><th colspan="3" style="text-align: left; text-wrap: none">Children</th></tr>
+                <tr><th>ID</th><th>Name</th><th class="center-with-padding">State</th></tr>
+            </thead>
+            <tbody style="font-size: medium;">
+            @foreach (KeyValuePair<Device,AlarmDevice> child in childrenState)
+            {
+                <tr onclick="goToDeviceStatus(@child.Key.ID)"><td>@child.Key.ID</td><td >@child.Key.Name</td><td class="center-with-padding" style="background-color: @alarmStateRecordsDictionary[child.Value.StateID].Color" id="state@(child.Key.ID)">@alarmStateRecordsDictionary[child.Value.StateID].State [@child.Value.DisplayData]</td></tr>
+            }
+            </tbody>
+        </table>
+
     </div>
     <form role="form" method="post" action="@request.RequestUri.AbsolutePath?DeviceID=@deviceID&Salt=@salt" enctype="multipart/form-data">
         <div class="btn-group" style="width: 100%">
             <button type="submit" name="deviceInService" style="width: 30%" value="true">Reset to In-Service</button>
             <button type="submit" name="deviceInService" style="width: 30%" value="false">Set to Out-of-Service</button>
             <button type="button" style="width: 30%" onclick="Reconnect()">Reconnect Device</button>
-            @if(device.ParentID == null)
-            {
-                <button type="button" style="width: 30%" onclick="PingDevice('@deviceAcronym')">Ping</button>
-            }
-
+            <button type="button" style="width: 30%" onclick="PingDevice('@deviceAcronym')">Ping</button>
             @Html.RequestVerificationToken()
         </div>
     </form>
 </div>
 @section Scripts {
     <script src="@Resources.Root/Shared/Scripts/jquery.subscriber.js"></script>
-    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.min.js"></script>
-    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.crosshair.min.js"></script>
-    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.navigate.min.js"></script>
-    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.resize.min.js"></script>
-    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.selection.min.js"></script>
-    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.time.min.js"></script>
-    <script src="@Resources.Root/Shared/Scripts/flot/jquery.flot.axislabels.min.js"></script>
     <script src="@Resources.Root/Shared/Scripts/moment.js"></script>
     <script>
     var refreshInterval = @refreshInterval;
@@ -472,26 +527,10 @@
         refreshCountdown--;
 
         if (refreshCountdown === 0) {
-            dataHub.getAlarmState(deviceID)
-                .fail(showErrorMessage)
-                .done(function (alarmState) {
-                    var defaults = {
-                        displayData: "0",
-                        stateName: "Unknown State",
-                        stateColor: "yellow"
-                    };
-
-                    alarmState = $.extend(defaults, alarmState);
-                    $("#displayData").text(alarmState.displayData);
-                    $("#stateName").text(alarmState.stateName);
-                    $("#extraMessage").text("");
-                    $("#titleBar").css("background-color", alarmState.stateColor);
-                    $('#titleBar').css('color', invertColor(alarmState.stateColor));
-
-                    refreshCountdown = refreshInterval;
-                    $('#refreshCount').text(refreshCountdown);
-                    setTimeout(updateCountdown, 1000);
-                });
+            UpdateParentState();
+            @foreach (Device child in children) {
+                <text>UpdateChildState(@child.ID)</text>
+            }
         }
         else {
             $('#refreshCount').text(refreshCountdown);
@@ -507,50 +546,14 @@
         if (!isEmpty(postError))
             showErrorMessage(postError);
 
-        // Logs messages to an array so they can be
-        // observed on demand in the JavaScript console
-        function log(obj) {
-            const max = 500;
-
-            if (window.log === undefined)
-                window.log = [];
-
-            window.log.push(obj);
-
-            if (window.log.length > max)
-                window.log.splice(0, window.log.length - max);
-        }
-
         $('#bodyContainer').removeClass('container');
         setHeights();
 
         $(window).on('resize', setHeights());
 
         $(window).on("hubConnected", function () {
-            var dataSubscriber = $.subscriber();
+
             var statSubscriber = $.subscriber();
-
-            dataSubscriber.connectionEstablished = function () {
-                const filterExpression = "FILTER ActiveMeasurements WHERE Device = '" + deviceAcronym + "' AND SignalType = 'FREQ'";
-
-                if (isIE)
-                    dataSubscriber.subscribe({ FilterExpression: filterExpression, Throttled: true, PublishInterval: 0.25 });
-                else
-                    dataSubscriber.subscribe({ FilterExpression: filterExpression });
-            };
-
-            dataSubscriber.newMeasurements = function (measurements) {
-                buildPlot(measurements);
-            };
-
-            dataSubscriber.statusmessage = function (message) {
-                log("Data subscription: " + message);
-            };
-
-            dataSubscriber.processException = function (exception) {
-                log(exception);
-                showErrorMessage("Data subscription: " + exception.Message);
-            };
 
             statSubscriber.connectionEstablished = function () {
                 statSubscriber.sendCommand("MetaDataRefresh");
@@ -629,7 +632,6 @@
                 showErrorMessage("Stat subscription: " + exception.Message);
             };
 
-            dataSubscriber.connect();
             statSubscriber.connect();
             $('button').removeAttr('disabled');
         });
@@ -639,6 +641,46 @@
 
         setTimeout(updateCountdown, 1000);
     });
+
+    function UpdateParentState(){
+        dataHub.getAlarmState(deviceID)
+        .fail(showErrorMessage)
+        .done(function (alarmState) {
+            var defaults = {
+                displayData: "0",
+                stateName: "Unknown State",
+                stateColor: "yellow"
+            };
+
+            alarmState = $.extend(defaults, alarmState);
+            $("#displayData").text(alarmState.displayData);
+            $("#stateName").text(alarmState.stateName);
+            $("#extraMessage").text("");
+            $("#titleBar").css("background-color", alarmState.stateColor);
+            $('#titleBar').css('color', invertColor(alarmState.stateColor));
+
+            refreshCountdown = refreshInterval;
+            $('#refreshCount').text(refreshCountdown);
+            setTimeout(updateCountdown, 1000);
+        });
+    }
+
+    function UpdateChildState(deviceID){
+        dataHub.getAlarmState(deviceID)
+        .fail(showErrorMessage)
+        .done(function (alarmState) {
+            var defaults = {
+                displayData: "0",
+                stateName: "Unknown State",
+                stateColor: "yellow"
+            };
+
+            alarmState = $.extend(defaults, alarmState);
+            $("#state" + deviceID).text(alarmState.stateName + ' [' + alarmState.displayData + ']');
+            $("#state" + deviceID).css("background-color", alarmState.stateColor);
+            $("#state" + deviceID).css('color', invertColor(alarmState.stateColor));
+        });
+    }
 
     function Reconnect() {
     @{
@@ -661,39 +703,20 @@
     }
     }
 
+    
+
     // sets heights of various objects
     function setHeights() {
         $('#bodyContainer').css('height', calculateRemainingBodyHeight);
     }
 
-    var plotData = [[]];
-
-    function buildPlot(data) {
-
-        $.each(data, function (_, d) {
-            plotData[0].push([d.timestamp, d.value]);
-        });
-
-        plotData[0].splice(0, plotData[0].length - 30);
-
-        $('#graphwrapper').children().remove();
-
-        $.plot("#graphwrapper", plotData, {
-            yaxis: {
-                show: true,
-                position: "right",
-                axisLabel: "Frequency"
-            },
-            xaxis: {
-                ticks: 5,
-                tickFormatter: function(val, axis){
-                    return moment(val).utc().format('HH:mm:ss.SSSS');
-                },
-                axisLabel: "Time (UTC)"
-            }
-        });
+    function goToDeviceStatus(deviceID){
+        window.open('/DeviceStatus.cshtml?DeviceID=' + deviceID);
     }
 
+    function PingDevice(deviceID) {
+        window.open('/RemoteConsole.cshtml?Filter=Filter+-Exclude+Regex+""&Command=Ping+' + deviceID);
+    }
     // https://bl.ocks.org/njvack/02ad8efcb0d552b0230d
     color_convert = function () {
       var pub = {}, canvas, context;
@@ -771,10 +794,5 @@
 
         return (color.replace('#', '0x')) > (0xffffff / 2) ? '#333' : '#fff';
     }
-
-    function PingDevice(deviceID) {
-        window.open('/RemoteConsole.cshtml?Filter=Filter+-Exclude+Regex+""&Command=Ping+' + deviceID);
-    }
-
     </script>
 }
