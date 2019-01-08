@@ -61,7 +61,8 @@ namespace openPDC.Adapters
             NotAvailable,   // Data is missing or timestamp is outside lead/lag time range
             BadData,        // Quality flags report bad data
             BadTime,        // Quality flags report bad time
-            OutOfService    // Source device is disabled
+            OutOfService,   // Source device is disabled
+            Acknowledged    // Any issues are considered acknowledged, do not report issues
         }
 
         // Constants
@@ -80,6 +81,7 @@ namespace openPDC.Adapters
         private Timer m_monitoringTimer;
         private ShortSynchronizedOperation m_monitoringOperation;
         private Dictionary<AlarmState, AlarmStateRecord> m_alarmStates;
+        private Dictionary<int, AlarmState> m_alarmStateIDs;
         private Dictionary<int, MeasurementKey> m_deviceMeasurementKeys;
         private Dictionary<int, DataRow> m_deviceMetadata;
         private Dictionary<Guid, Ticks> m_lastDeviceDataUpdates;
@@ -290,6 +292,8 @@ namespace openPDC.Adapters
                     status.AppendLine();
                     status.AppendFormat("    Out of Service Devices: {0:N0}", m_stateCounts[AlarmState.OutOfService]);
                     status.AppendLine();
+                    status.AppendFormat("      Acknowledged Devices: {0:N0}", m_stateCounts[AlarmState.Acknowledged]);
+                    status.AppendLine();
                 }
 
                 return status.ToString();
@@ -341,6 +345,7 @@ namespace openPDC.Adapters
             parser.ParseConnectionString(ConnectionString, this);
 
             m_alarmStates = new Dictionary<AlarmState, AlarmStateRecord>();
+            m_alarmStateIDs = new Dictionary<int, AlarmState>();
             m_deviceMeasurementKeys = new Dictionary<int, MeasurementKey>();
             m_deviceMetadata = new Dictionary<int, DataRow>();
             m_lastDeviceDataUpdates = new Dictionary<Guid, Ticks>();
@@ -367,11 +372,12 @@ namespace openPDC.Adapters
                     }
 
                     m_alarmStates[alarmState] = alarmStateRecord;
+                    m_alarmStateIDs[alarmStateRecord.ID] = alarmState;
                 }
 
                 // Load any newly defined devices into the alarm device table
                 TableOperations<AlarmDevice> alarmDeviceTable = new TableOperations<AlarmDevice>(connection);
-                DataRow[] newDevices = connection.RetrieveData("SELECT * FROM Device WHERE IsConcentrator = 0 AND  NOT ID IN (SELECT DeviceID FROM AlarmDevice)").Select();
+                DataRow[] newDevices = connection.RetrieveData("SELECT * FROM Device WHERE IsConcentrator = 0 AND NOT ID IN (SELECT DeviceID FROM AlarmDevice)").Select();
 
                 foreach (DataRow newDevice in newDevices)
                 {
@@ -496,7 +502,10 @@ namespace openPDC.Adapters
 
                     TemporalMeasurement measurement = measurements.Measurement(key);
                     Ticks currentTime = DateTime.UtcNow.Ticks;
-                    AlarmState state = AlarmState.Good;
+                    AlarmState newState = AlarmState.Good;
+
+                    if (!m_alarmStateIDs.TryGetValue(alarmDevice.StateID, out AlarmState currentState))
+                        currentState = AlarmState.NotAvailable;
 
                     // Determine and update state
                     if (metadata["Enabled"].ToString().ParseBoolean())
@@ -505,7 +514,7 @@ namespace openPDC.Adapters
                         {
                             // Value is missing for longer than defined adapter lead / lag time tolerances,
                             // state is unavailable or in alarm if unavailable beyond configured alarm time
-                            state = currentTime - lastUpdateTime > m_alarmTime ? AlarmState.Alarm : AlarmState.NotAvailable;
+                            newState = currentTime - lastUpdateTime > m_alarmTime ? AlarmState.Alarm : AlarmState.NotAvailable;
                         }
                         else
                         {
@@ -513,21 +522,25 @@ namespace openPDC.Adapters
                             m_lastDeviceDataUpdates[key.SignalID] = currentTime;
 
                             if (!measurement.ValueQualityIsGood())
-                                state = AlarmState.BadData;
+                                newState = AlarmState.BadData;
                             else if (!measurement.TimestampQualityIsGood())
-                                state = AlarmState.BadTime;
+                                newState = AlarmState.BadTime;
                         }
                     }
                     else
                     {
-                        state = AlarmState.OutOfService;
+                        newState = AlarmState.OutOfService;
                     }
 
-                    // Track current state counts
-                    stateCounts[state]++;
+                    // Maintain any acknowledged state unless state changes to good
+                    if (currentState == AlarmState.Acknowledged && newState != AlarmState.Good)
+                        newState = AlarmState.Acknowledged;
 
-                    // Set alarm device state
-                    int stateID = m_alarmStates[state].ID;
+                    // Track current state counts
+                    stateCounts[newState]++;
+
+                    // Update alarm device state if it has changed
+                    int stateID = m_alarmStates[newState].ID;
 
                     if (stateID != alarmDevice.StateID)
                     {
@@ -536,7 +549,7 @@ namespace openPDC.Adapters
                     }
 
                     // Update display text to show time since last alarm state change
-                    switch (state)
+                    switch (newState)
                     {
                         case AlarmState.Good:
                             alarmDevice.DisplayData = "0";
@@ -582,7 +595,8 @@ namespace openPDC.Adapters
                         if (!m_deviceMetadata.TryGetValue(alarmDevice.DeviceID, out DataRow metadata))
                             continue;
 
-                        AlarmState state = m_alarmStates.First(record => record.Value.ID == alarmDevice.StateID).Key;
+                        if (!m_alarmStateIDs.TryGetValue(alarmDevice.StateID, out AlarmState state))
+                            state = AlarmState.NotAvailable;
 
                         if ((object)alarmedDeviceMetadata == null)
                             alarmedDeviceMetadata = metadata;
@@ -592,6 +606,7 @@ namespace openPDC.Adapters
                             if (state != AlarmState.Good)
                             {
                                 // First encountered alarmed device with highest alarm state will be reported as composite state
+                                // because AlarmState values after Good are order by highest to lowest before OutOfService
                                 if (state < compositeState)
                                 {
                                     compositeState = state;
@@ -602,7 +617,8 @@ namespace openPDC.Adapters
                         else
                         {
                             // When ExternalDatabaseReportSingleCompositeState is false, reporting state per device
-                            ExternalDatabaseReportState(parameterTemplate, connection, state, metadata, substitutions);
+                            if (state != AlarmState.Acknowledged)
+                                ExternalDatabaseReportState(parameterTemplate, connection, state, metadata, substitutions);
                         }
                     }
 
@@ -681,7 +697,8 @@ namespace openPDC.Adapters
             [AlarmState.NotAvailable] = 0,
             [AlarmState.BadData] = 0,
             [AlarmState.BadTime] = 0,
-            [AlarmState.OutOfService] = 0
+            [AlarmState.OutOfService] = 0,
+            [AlarmState.Acknowledged] = 0
         };
 
         private static string GetOutOfServiceTime(DataRow deviceRow)
@@ -704,7 +721,7 @@ namespace openPDC.Adapters
             double days = span.ToDays();
 
             if (days > s_daysPerYear)
-                return $"{days / s_daysPerYear:N2} yr";
+                return $"{days / s_daysPerYear:N2} yrs";
 
             if (days > 1.0D)
                 span = span.BaselinedTimestamp(BaselineTimeInterval.Day);
