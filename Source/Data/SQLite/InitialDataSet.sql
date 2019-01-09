@@ -250,3 +250,4 @@ INSERT INTO AlarmState (State, Color) VALUES ('Not Available', 'orange');
 INSERT INTO AlarmState (State, Color) VALUES ('Bad Data', 'blue');
 INSERT INTO AlarmState (State, Color) VALUES ('Bad Time', 'purple');
 INSERT INTO AlarmState (State, Color) VALUES ('Out of Service', 'grey');
+INSERT INTO AlarmState (State, Color) VALUES ('Acknowledged', 'rosybrown');
