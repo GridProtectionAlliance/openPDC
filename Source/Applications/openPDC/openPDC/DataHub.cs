@@ -393,19 +393,51 @@ namespace openPDC
 
             return jAlarmState;
         }
-		
-        public void SetOutOfService(int id)
+
+        [AuthorizeHubRole("Administrator, Editor")]
+        public void SetAcknowledge(string acronym)
         {
-            DataContext.Connection.ExecuteNonQuery("UPDATE AlarmDevice SET StateID = (SELECT ID FROM AlarmState WHERE State = 'Out of Service'), TimeStamp = {0}, DisplayData = 'OoS' WHERE ID = {1}", DateTime.UtcNow, id);
+            Device device = QueryDevice(acronym);
+            AlarmState alarmState = DataContext.Table<AlarmState>().QueryRecordWhere("State = {0}", "Acknowledged");
+
+            if (device.ID > 0 && alarmState.ID > 0)
+            {
+                TableOperations<AlarmDevice> alarmDeviceTable = DataContext.Table<AlarmDevice>();
+                AlarmDevice alarmDevice = alarmDeviceTable.QueryRecordWhere("DeviceID = {0}", device.ID);
+
+                if (alarmDevice.ID > 0)
+                {
+                    alarmDevice.StateID = alarmState.ID;
+                    //                         1234567890
+                    alarmDevice.DisplayData = "Alarm ACK";
+                    alarmDeviceTable.UpdateRecord(alarmDevice);
+                }
+            }
         }
 
-        public void SetInService(int id)
+        [AuthorizeHubRole("Administrator, Editor")]
+        public void ResetAcknowledge(string acronym)
         {
-            DataContext.Connection.ExecuteNonQuery("UPDATE AlarmDevice SET StateID = (SELECT ID FROM AlarmState WHERE State = 'Good'), TimeStamp = {0}, DisplayData = 'Good' WHERE ID = {1}", DateTime.UtcNow, id);
+            Device device = QueryDevice(acronym);
+            AlarmState alarmState = DataContext.Table<AlarmState>().QueryRecordWhere("State = {0}", "Not Available");
+
+            if (device.ID > 0 && alarmState.ID > 0)
+            {
+                TableOperations<AlarmDevice> alarmDeviceTable = DataContext.Table<AlarmDevice>();
+                AlarmDevice alarmDevice = alarmDeviceTable.QueryRecordWhere("DeviceID = {0}", device.ID);
+
+                if (alarmDevice.ID > 0)
+                {
+                    alarmDevice.StateID = alarmState.ID;
+                    //                         1234567890
+                    alarmDevice.DisplayData = "ACK Reset";
+                    alarmDeviceTable.UpdateRecord(alarmDevice);
+                }
+            }
         }
 
         #endregion
-		
+
         #region [ Modbus Operations ]
 
         public Task<bool> ModbusConnect(string connectionString)

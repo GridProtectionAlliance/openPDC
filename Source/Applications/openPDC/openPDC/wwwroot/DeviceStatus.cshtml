@@ -342,9 +342,11 @@
                 background-color: #3e8e41;
             }
 
-            /* Add a background color on hover */
+            /* Add a background color on disabled */
             .btn-group button:disabled {
                 background-color: grey;
+                cursor: not-allowed;
+                pointer-events: all !important;
             }
 
         .banner-well {
@@ -437,6 +439,8 @@
             @if(device.ParentID == null)
             {
                 <button type="button" style="width: 30%" onclick="PingDevice('@deviceAcronym')">Ping</button>
+                <button id="setAcknowledge" type="button" style="width: 30%" onclick="SetAcknowledge('@deviceAcronym')" disabled">Acknowledge</button>
+                <button id="resetAcknowledge" type="button" style="width: 30%" onclick="ResetAcknowledge('@deviceAcronym')" disabled>Reset Acknowledge</button>
             }
 
             @Html.RequestVerificationToken()
@@ -487,6 +491,9 @@
                     $("#extraMessage").text("");
                     $("#titleBar").css("background-color", alarmState.stateColor);
                     $('#titleBar').css('color', invertColor(alarmState.stateColor));
+
+                    $('#setAcknowledge').prop("disabled", (alarmState.stateName === 'Good' || alarmState.stateName === 'Acknowledged'));
+                    $('#resetAcknowledge').prop("disabled", (alarmState.stateName !== 'Acknowledged'));
 
                     refreshCountdown = refreshInterval;
                     $('#refreshCount').text(refreshCountdown);
@@ -631,7 +638,15 @@
 
             dataSubscriber.connect();
             statSubscriber.connect();
+
             $('button').removeAttr('disabled');
+            $('#setAcknowledge').prop("disabled", true);
+            $('#resetAcknowledge').prop("disabled", true);
+
+            dataHub.getAlarmState(deviceID).done(function (alarmState) {
+                $('#setAcknowledge').prop("disabled", (alarmState.stateName === 'Good' || alarmState.stateName === 'Acknowledged'));
+                $('#resetAcknowledge').prop("disabled", (alarmState.stateName !== 'Acknowledged'));
+            });
         });
 
         // Set inverse forground color for readability
@@ -772,8 +787,20 @@
         return (color.replace('#', '0x')) > (0xffffff / 2) ? '#333' : '#fff';
     }
 
-    function PingDevice(deviceID) {
-        window.open('/RemoteConsole.cshtml?Filter=Filter+-Exclude+Regex+""&Command=Ping+' + deviceID);
+    function PingDevice(deviceAcronym) {
+        window.open('/RemoteConsole.cshtml?Filter=Filter+-Exclude+Regex+""&Command=Ping+' + deviceAcronym);
+    }
+
+    function SetAcknowledge(deviceAcronym) {
+        dataHub.setAcknowledge(deviceAcronym).done(function () {
+            location.reload(true);
+        });
+    }
+
+    function ResetAcknowledge(deviceAcronym) {
+        dataHub.resetAcknowledge(deviceAcronym).done(function () {
+            location.reload(true);
+        });
     }
 
     </script>

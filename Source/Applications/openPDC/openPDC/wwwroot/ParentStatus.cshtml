@@ -388,9 +388,11 @@
                 background-color: #3e8e41;
             }
 
-            /* Add a background color on hover */
+            /* Add a background color on disabled */
             .btn-group button:disabled {
                 background-color: grey;
+                cursor: not-allowed;
+                pointer-events: all !important;
             }
 
         .banner-well {
@@ -501,6 +503,8 @@
             <button type="submit" name="deviceInService" style="width: 30%" value="false">Set to Out-of-Service</button>
             <button type="button" style="width: 30%" onclick="Reconnect()">Reconnect Device</button>
             <button type="button" style="width: 30%" onclick="PingDevice('@deviceAcronym')">Ping</button>
+            <button id="setAcknowledge" type="button" style="width: 30%" onclick="SetAcknowledge('@deviceAcronym')" disabled>Acknowledge</button>
+            <button id="resetAcknowledge" type="button" style="width: 30%" onclick="ResetAcknowledge('@deviceAcronym')" disabled>Reset Acknowledge</button>
             @Html.RequestVerificationToken()
         </div>
     </form>
@@ -634,9 +638,16 @@
 
             statSubscriber.connect();
             $('button').removeAttr('disabled');
+            $('#setAcknowledge').prop("disabled", true);
+            $('#resetAcknowledge').prop("disabled", true);
+
+            dataHub.getAlarmState(deviceID).done(function (alarmState) {
+                $('#setAcknowledge').prop("disabled", (alarmState.stateName === 'Good' || alarmState.stateName === 'Acknowledged'));
+                $('#resetAcknowledge').prop("disabled", (alarmState.stateName !== 'Acknowledged'));
+            });
         });
 
-        // Set inverse forground color for readability
+        // Set inverse foreground color for readability
         $('#titleBar').css('color', invertColor('@stateColor'));
 
         setTimeout(updateCountdown, 1000);
@@ -658,6 +669,9 @@
             $("#extraMessage").text("");
             $("#titleBar").css("background-color", alarmState.stateColor);
             $('#titleBar').css('color', invertColor(alarmState.stateColor));
+
+            $('#setAcknowledge').prop("disabled", (alarmState.stateName === 'Good' || alarmState.stateName === 'Acknowledged'));
+            $('#resetAcknowledge').prop("disabled", (alarmState.stateName !== 'Acknowledged'));
 
             refreshCountdown = refreshInterval;
             $('#refreshCount').text(refreshCountdown);
@@ -703,8 +717,6 @@
     }
     }
 
-    
-
     // sets heights of various objects
     function setHeights() {
         $('#bodyContainer').css('height', calculateRemainingBodyHeight);
@@ -714,9 +726,22 @@
         window.open('/DeviceStatus.cshtml?DeviceID=' + deviceID);
     }
 
-    function PingDevice(deviceID) {
-        window.open('/RemoteConsole.cshtml?Filter=Filter+-Exclude+Regex+""&Command=Ping+' + deviceID);
+    function PingDevice(deviceAcronym) {
+        window.open('/RemoteConsole.cshtml?Filter=Filter+-Exclude+Regex+""&Command=Ping+' + deviceAcronym);
     }
+
+    function SetAcknowledge(deviceAcronym) {
+        dataHub.setAcknowledge(deviceAcronym).done(function () {
+            location.reload(true);
+        });
+    }
+
+    function ResetAcknowledge(deviceAcronym) {
+        dataHub.resetAcknowledge(deviceAcronym).done(function () {
+            location.reload(true);
+        });
+    }
+
     // https://bl.ocks.org/njvack/02ad8efcb0d552b0230d
     color_convert = function () {
       var pub = {}, canvas, context;
