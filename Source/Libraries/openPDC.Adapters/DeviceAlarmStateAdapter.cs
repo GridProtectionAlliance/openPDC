@@ -136,6 +136,17 @@ namespace openPDC.Adapters
         }
 
         /// <summary>
+        /// Gets or sets the flag that determines if alarm states should only target parent devices, i.e., PDCs and direct connect PMUs, or all devices.
+        /// </summary>
+        [ConnectionStringParameter]
+        [Description("Defines the flag that determines if alarm states should only target parent devices, i.e., PDCs and direct connect PMUs, or all devices.")]
+        public bool TargetParentDevices
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets the flag that determines if an external database connection should be enabled for synchronization of alarm states.
         /// </summary>
         [ConnectionStringParameter]
@@ -267,6 +278,8 @@ namespace openPDC.Adapters
                 status.AppendLine();
                 status.AppendFormat("        Monitoring Enabled: {0}", MonitoringEnabled);
                 status.AppendLine();
+                status.AppendFormat("  Targeting Parent Devices: {0}", TargetParentDevices);
+                status.AppendLine();
                 status.AppendFormat("    Monitored Device Count: {0:N0}", InputMeasurementKeys?.Length ?? 0);
                 status.AppendLine();
                 status.AppendFormat("     No Data Alarm Timeout: {0}", m_alarmTime.ToElapsedTimeString(2));
@@ -375,9 +388,14 @@ namespace openPDC.Adapters
                     m_alarmStateIDs[alarmStateRecord.ID] = alarmState;
                 }
 
+                // Define SQL expression for direct connect and parent devices or all direct connect and child devices
+                string deviceSQL = TargetParentDevices ? 
+                    "SELECT * FROM Device WHERE (IsConcentrator != 0 OR ParentID IS NULL) AND ID NOT IN (SELECT DeviceID FROM AlarmDevice)" : 
+                    "SELECT * FROM Device WHERE IsConcentrator = 0 AND ID NOT IN (SELECT DeviceID FROM AlarmDevice)";
+
                 // Load any newly defined devices into the alarm device table
                 TableOperations<AlarmDevice> alarmDeviceTable = new TableOperations<AlarmDevice>(connection);
-                DataRow[] newDevices = connection.RetrieveData("SELECT * FROM Device WHERE IsConcentrator = 0 AND NOT ID IN (SELECT DeviceID FROM AlarmDevice)").Select();
+                DataRow[] newDevices = connection.RetrieveData(deviceSQL).Select();
 
                 foreach (DataRow newDevice in newDevices)
                 {
