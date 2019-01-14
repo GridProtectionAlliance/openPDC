@@ -76,6 +76,7 @@
     </div>
     <div class="col-md-6">
         @Raw(dataContext.AddTextAreaField<Device>("ConnectionString", 4))
+        @Raw(dataContext.AddInputField<Device>("Name"))
         @Raw(dataContext.AddInputField<Device>("Longitude"))
         @Raw(dataContext.AddInputField<Device>("Latitude"))
         @Raw(dataContext.AddSelectField<Device, Interconnection>("InterconnectionID", "ID", "Acronym"))
