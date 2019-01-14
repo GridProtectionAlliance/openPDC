@@ -22,6 +22,7 @@
 //******************************************************************************************************
 
 using GSF;
+using GSF.Collections;
 using GSF.Data;
 using GSF.Data.Model;
 using GSF.Diagnostics;
@@ -39,6 +40,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Timers;
+
 using AlarmStateRecord = openPDC.Model.AlarmState;
 using ConnectionStringParser = GSF.Configuration.ConnectionStringParser<GSF.TimeSeries.Adapters.ConnectionStringParameterAttribute>;
 
@@ -82,10 +84,10 @@ namespace openPDC.Adapters
         private ShortSynchronizedOperation m_monitoringOperation;
         private Dictionary<AlarmState, AlarmStateRecord> m_alarmStates;
         private Dictionary<int, AlarmState> m_alarmStateIDs;
-        private Dictionary<int, MeasurementKey> m_deviceMeasurementKeys;
+        private Dictionary<int, MeasurementKey[]> m_deviceMeasurementKeys;
         private Dictionary<int, DataRow> m_deviceMetadata;
-        private Dictionary<Guid, Ticks> m_lastDeviceDataUpdates;
-        private Dictionary<Guid, Ticks> m_lastDeviceStateChange;
+        private Dictionary<MeasurementKey, Ticks> m_lastDeviceDataUpdates;
+        private Dictionary<int, Ticks> m_lastDeviceStateChange;
         private Dictionary<AlarmState, string> m_mappedAlarmStates;
         private Dictionary<AlarmState, int> m_stateCounts;
         private object m_stateCountLock;
@@ -359,10 +361,10 @@ namespace openPDC.Adapters
 
             m_alarmStates = new Dictionary<AlarmState, AlarmStateRecord>();
             m_alarmStateIDs = new Dictionary<int, AlarmState>();
-            m_deviceMeasurementKeys = new Dictionary<int, MeasurementKey>();
+            m_deviceMeasurementKeys = new Dictionary<int, MeasurementKey[]>();
             m_deviceMetadata = new Dictionary<int, DataRow>();
-            m_lastDeviceDataUpdates = new Dictionary<Guid, Ticks>();
-            m_lastDeviceStateChange = new Dictionary<Guid, Ticks>();
+            m_lastDeviceDataUpdates = new Dictionary<MeasurementKey, Ticks>();
+            m_lastDeviceStateChange = new Dictionary<int, Ticks>();
             m_mappedAlarmStates = new Dictionary<AlarmState, string>();
             m_stateCounts = CreateNewStateCountsMap();
             m_stateCountLock = new object();
@@ -389,8 +391,8 @@ namespace openPDC.Adapters
                 }
 
                 // Define SQL expression for direct connect and parent devices or all direct connect and child devices
-                string deviceSQL = TargetParentDevices ? 
-                    "SELECT * FROM Device WHERE (IsConcentrator != 0 OR ParentID IS NULL) AND ID NOT IN (SELECT DeviceID FROM AlarmDevice)" : 
+                string deviceSQL = TargetParentDevices ?
+                    "SELECT * FROM Device WHERE (IsConcentrator != 0 OR ParentID IS NULL) AND ID NOT IN (SELECT DeviceID FROM AlarmDevice)" :
                     "SELECT * FROM Device WHERE IsConcentrator = 0 AND ID NOT IN (SELECT DeviceID FROM AlarmDevice)";
 
                 // Load any newly defined devices into the alarm device table
@@ -423,21 +425,25 @@ namespace openPDC.Adapters
                     if ((object)metadata != null)
                     {
                         // Querying from MeasurementDetail because we also want to include disabled device measurements
-                        DataTable table = connection.RetrieveData("SELECT SignalID, ID FROM MeasurementDetail WHERE DeviceAcronym = {0} AND SignalAcronym = 'FREQ'", metadata.Field<string>("Acronym"));
-                        
+                        string measurementSQL = TargetParentDevices ?
+                            "SELECT MeasurementDetail.SignalID AS SignalID, MeasurementDetail.ID AS ID FROM MeasurementDetail INNER JOIN DeviceDetail ON MeasurementDetail.DeviceID = DeviceDetail.ID WHERE (DeviceDetail.Acronym = {0} OR DeviceDetail.ParentAcronym = {0}) AND MeasurementDetail.SignalAcronym = 'FREQ'" :
+                            "SELECT SignalID, ID FROM MeasurementDetail WHERE DeviceAcronym = {0} AND SignalAcronym = 'FREQ'";
+
+                        DataTable table = connection.RetrieveData(measurementSQL, metadata.Field<string>("Acronym"));
+
                         // ReSharper disable once AccessToDisposedClosure
                         keys = table.AsEnumerable().Select(row => MeasurementKey.LookUpOrCreate(connection.Guid(row, "SignalID"), row["ID"].ToString())).ToArray();
                     }
 
                     if (keys?.Length > 0)
                     {
-                        // Only one frequency is expected
-                        MeasurementKey key = keys[0];
-                        inputMeasurementKeys.Add(key);
-                        m_deviceMeasurementKeys[alarmDevice.DeviceID] = key;
+                        inputMeasurementKeys.AddRange(keys);
+                        m_deviceMeasurementKeys[alarmDevice.DeviceID] = keys;
                         m_deviceMetadata[alarmDevice.DeviceID] = metadata;
-                        m_lastDeviceDataUpdates[key.SignalID] = DateTime.UtcNow.Ticks;
-                        m_lastDeviceStateChange[key.SignalID] = DateTime.UtcNow.Ticks;
+                        m_lastDeviceStateChange[alarmDevice.DeviceID] = DateTime.UtcNow.Ticks;
+
+                        foreach (MeasurementKey key in keys)
+                            m_lastDeviceDataUpdates[key] = DateTime.UtcNow.Ticks;
                     }
                     else
                     {
@@ -496,7 +502,7 @@ namespace openPDC.Adapters
             if (MonitoringEnabled)
                 return $"Monitoring enabled for every {Ticks.FromMilliseconds(MonitoringRate).ToElapsedTimeString()}".CenterText(maxLength);
 
-            return "Monitoring is disabled...".CenterText(maxLength);            
+            return "Monitoring is disabled...".CenterText(maxLength);
         }
 
         private void MonitoringOperation()
@@ -513,37 +519,52 @@ namespace openPDC.Adapters
 
                 foreach (AlarmDevice alarmDevice in alarmDeviceTable.QueryRecords())
                 {
-                    if (!m_deviceMeasurementKeys.TryGetValue(alarmDevice.DeviceID, out MeasurementKey key) || 
-                        !m_lastDeviceDataUpdates.TryGetValue(key.SignalID, out Ticks lastUpdateTime) || 
+                    if (!m_deviceMeasurementKeys.TryGetValue(alarmDevice.DeviceID, out MeasurementKey[] keys) ||
                         !m_deviceMetadata.TryGetValue(alarmDevice.DeviceID, out DataRow metadata))
-                            continue;
-
-                    TemporalMeasurement measurement = measurements.Measurement(key);
-                    Ticks currentTime = DateTime.UtcNow.Ticks;
-                    AlarmState newState = AlarmState.Good;
+                        continue;
 
                     if (!m_alarmStateIDs.TryGetValue(alarmDevice.StateID, out AlarmState currentState))
                         currentState = AlarmState.NotAvailable;
 
+                    AlarmState newState = AlarmState.Good;
+                    Ticks currentTime = DateTime.UtcNow.Ticks;
+
                     // Determine and update state
                     if (metadata["Enabled"].ToString().ParseBoolean())
                     {
-                        if (double.IsNaN(measurement.AdjustedValue) || measurement.AdjustedValue == 0.0D)
-                        {
-                            // Value is missing for longer than defined adapter lead / lag time tolerances,
-                            // state is unavailable or in alarm if unavailable beyond configured alarm time
-                            newState = currentTime - lastUpdateTime > m_alarmTime ? AlarmState.Alarm : AlarmState.NotAvailable;
-                        }
-                        else
-                        {
-                            // Have a value, update last device data time
-                            m_lastDeviceDataUpdates[key.SignalID] = currentTime;
+                        AlarmState compositeState = AlarmState.OutOfService;
 
-                            if (!measurement.ValueQualityIsGood())
-                                newState = AlarmState.BadData;
-                            else if (!measurement.TimestampQualityIsGood())
-                                newState = AlarmState.BadTime;
+                        foreach (MeasurementKey key in keys)
+                        {
+                            Ticks lastUpdateTime = m_lastDeviceDataUpdates.GetOrAdd(key, currentTime);
+                            TemporalMeasurement measurement = measurements.Measurement(key);
+                            AlarmState deviceState = AlarmState.Good;
+
+                            // Check quality of device frequency measurement
+                            if (double.IsNaN(measurement.AdjustedValue) || measurement.AdjustedValue == 0.0D)
+                            {
+                                // Value is missing for longer than defined adapter lead / lag time tolerances,
+                                // state is unavailable or in alarm if unavailable beyond configured alarm time
+                                deviceState = currentTime - lastUpdateTime > m_alarmTime ? AlarmState.Alarm : AlarmState.NotAvailable;
+                            }
+                            else
+                            {
+                                // Have a value, update last device data time
+                                m_lastDeviceDataUpdates[key] = currentTime;
+
+                                if (!measurement.ValueQualityIsGood())
+                                    deviceState = AlarmState.BadData;
+                                else if (!measurement.TimestampQualityIsGood())
+                                    deviceState = AlarmState.BadTime;
+                            }
+
+                            // Reporting device with worst state
+                            if (deviceState != AlarmState.Good && deviceState < compositeState)
+                                compositeState = deviceState;
                         }
+
+                        if (compositeState < AlarmState.OutOfService)
+                            newState = compositeState;
                     }
                     else
                     {
@@ -562,7 +583,7 @@ namespace openPDC.Adapters
 
                     if (stateID != alarmDevice.StateID)
                     {
-                        m_lastDeviceStateChange[key.SignalID] = currentTime;
+                        m_lastDeviceStateChange[alarmDevice.DeviceID] = currentTime;
                         alarmDevice.StateID = stateID;
                     }
 
@@ -576,7 +597,7 @@ namespace openPDC.Adapters
                             alarmDevice.DisplayData = GetOutOfServiceTime(metadata);
                             break;
                         default:
-                            alarmDevice.DisplayData = GetShortElapsedTimeString(currentTime - m_lastDeviceStateChange[key.SignalID]);
+                            alarmDevice.DisplayData = GetShortElapsedTimeString(currentTime - m_lastDeviceStateChange[alarmDevice.DeviceID]);
                             break;
                     }
 
