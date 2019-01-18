@@ -109,7 +109,7 @@
     TableOperations<AlarmState> alarmStateTable = dataContext.Table<AlarmState>();
     AlarmState[] alarmStateRecords = alarmStateTable.QueryRecords().ToArray();
     Dictionary<int, AlarmState> alarmStateRecordsDictionary = alarmStateTable.QueryRecords().ToDictionary(x => x.ID, x => x);
-    alarmStateRecordsDictionary.Add(0, new AlarmState() { ID=0, Color="yellow", State="Unkwown"});
+    alarmStateRecordsDictionary.Add(0, new AlarmState() { ID=0, Color="yellow", State="Unknown"});
 
     Dictionary<Device, AlarmDevice> childrenState = new Dictionary<Device, AlarmDevice>();
 
