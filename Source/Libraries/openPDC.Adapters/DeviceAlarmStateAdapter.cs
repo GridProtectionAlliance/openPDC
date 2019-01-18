@@ -405,7 +405,7 @@ namespace openPDC.Adapters
 
                     bool enabled = newDevice["Enabled"].ToString().ParseBoolean();
 
-                    alarmDevice.DeviceID = newDevice.Field<int>("ID");
+                    alarmDevice.DeviceID = newDevice.ConvertField<int>("ID");
                     alarmDevice.StateID = enabled ? m_alarmStates[AlarmState.NotAvailable].ID : m_alarmStates[AlarmState.OutOfService].ID;
                     alarmDevice.DisplayData = enabled ? "0" : GetOutOfServiceTime(newDevice);
 
@@ -429,7 +429,7 @@ namespace openPDC.Adapters
                             "SELECT MeasurementDetail.SignalID AS SignalID, MeasurementDetail.ID AS ID FROM MeasurementDetail INNER JOIN DeviceDetail ON MeasurementDetail.DeviceID = DeviceDetail.ID WHERE (DeviceDetail.Acronym = {0} OR DeviceDetail.ParentAcronym = {0}) AND MeasurementDetail.SignalAcronym = 'FREQ'" :
                             "SELECT SignalID, ID FROM MeasurementDetail WHERE DeviceAcronym = {0} AND SignalAcronym = 'FREQ'";
 
-                        DataTable table = connection.RetrieveData(measurementSQL, metadata.Field<string>("Acronym"));
+                        DataTable table = connection.RetrieveData(measurementSQL, metadata.ConvertField<string>("Acronym"));
 
                         // ReSharper disable once AccessToDisposedClosure
                         keys = table.AsEnumerable().Select(row => MeasurementKey.LookUpOrCreate(connection.Guid(row, "SignalID"), row["ID"].ToString())).ToArray();
