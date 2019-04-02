@@ -222,7 +222,7 @@ namespace openPDC.Adapters
         /// </summary>
         [ConnectionStringParameter]
         [Description("Defines the external database mapped alarm states defining the {MappedAlarmState} command parameter substitution parameter used for synchronization of alarm states.")]
-        [DefaultValue("Good=1,Alarm=3,NotAvailable=2,BadData=4,BadTime=4,OutOfService=5")]
+        [DefaultValue("Good=1,Alarm=3,NotAvailable=2,BadData=3,BadTime=3,OutOfService=5")]
         public string ExternalDatabaseMappedAlarmStates
         {
             get;
