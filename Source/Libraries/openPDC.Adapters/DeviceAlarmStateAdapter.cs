@@ -571,6 +571,8 @@ namespace openPDC.Adapters
                         newState = AlarmState.OutOfService;
                     }
 
+                    // TODO: Don't immediately change back to good - instead wait for a configurable period because state could be transient and cause havoc
+
                     // Maintain any acknowledged state unless state changes to good
                     if (currentState == AlarmState.Acknowledged && newState != AlarmState.Good)
                         newState = AlarmState.Acknowledged;
