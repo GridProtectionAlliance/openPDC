@@ -13,5 +13,9 @@ namespace openPDC.Model
 
         [StringLength(50)]
         public string Color { get; set; }
+        
+        [StringLength(50)]
+        public string Priority { get; set; }
+
     }
 }
