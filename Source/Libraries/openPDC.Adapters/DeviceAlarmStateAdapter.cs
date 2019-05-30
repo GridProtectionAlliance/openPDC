@@ -80,6 +80,11 @@ namespace openPDC.Adapters
         public const double DefaultAlarmMinutes = 10.0D;
 
         /// <summary>
+        /// Defines the default value for the <see cref="AcknowledgedTransitionHysteresisDelay"/>.
+        /// </summary>
+        public const double DefaultAcknowledgedTransitionHysteresisDelay = 30.0D;
+
+        /// <summary>
         /// Defines the default value for the <see cref="DefaultExternalDatabaseHysteresisDelay"/>.
         /// </summary>
         public const double DefaultExternalDatabaseHysteresisDelay = 5.0D;
@@ -93,6 +98,7 @@ namespace openPDC.Adapters
         private Dictionary<int, DataRow> m_deviceMetadata;
         private Dictionary<MeasurementKey, Ticks> m_lastDeviceDataUpdates;
         private Dictionary<int, Ticks> m_lastDeviceStateChange;
+        private Dictionary<int, Ticks> m_lastAcknowledgedTransition;
         private AlarmState m_lastExternalDatabaseState;
         private Ticks m_lastExternalDatabaseStateChange;
         private Dictionary<AlarmState, string> m_mappedAlarmStates;
@@ -150,6 +156,18 @@ namespace openPDC.Adapters
         [ConnectionStringParameter]
         [Description("Defines the flag that determines if alarm states should only target parent devices, i.e., PDCs and direct connect PMUs, or all devices.")]
         public bool TargetParentDevices
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets delay time, in minutes, before transitioning the Acknowledged state back to Good.
+        /// </summary>
+        [ConnectionStringParameter]
+        [Description("Defines the delay time, in minutes, before transitioning the Acknowledged state back to Good.")]
+        [DefaultValue(DefaultAcknowledgedTransitionHysteresisDelay)]
+        public double AcknowledgedTransitionHysteresisDelay
         {
             get;
             set;
@@ -396,6 +414,7 @@ namespace openPDC.Adapters
             m_deviceMetadata = new Dictionary<int, DataRow>();
             m_lastDeviceDataUpdates = new Dictionary<MeasurementKey, Ticks>();
             m_lastDeviceStateChange = new Dictionary<int, Ticks>();
+            m_lastAcknowledgedTransition = new Dictionary<int, Ticks>();
             m_lastExternalDatabaseState = AlarmState.Good;
             m_lastExternalDatabaseStateChange = Ticks.MinValue;
             m_mappedAlarmStates = new Dictionary<AlarmState, string>();
@@ -604,9 +623,30 @@ namespace openPDC.Adapters
                         newState = AlarmState.OutOfService;
                     }
 
+                    //m_lastAcknowledgedTransition
+
                     // Maintain any acknowledged state unless state changes to good
-                    if (currentState == AlarmState.Acknowledged && newState != AlarmState.Good)
-                        newState = AlarmState.Acknowledged;
+                    if (currentState == AlarmState.Acknowledged)
+                    {
+                        if (newState == AlarmState.Good)
+                        {
+                            Ticks lastTransitionTime = m_lastAcknowledgedTransition.GetOrAdd(alarmDevice.DeviceID, currentTime);
+
+                            if (lastTransitionTime == Ticks.MinValue)
+                            {
+                                lastTransitionTime = currentTime;
+                                m_lastAcknowledgedTransition[alarmDevice.DeviceID] = lastTransitionTime;
+                            }
+
+                            if ((DateTime.UtcNow.Ticks - lastTransitionTime).ToMinutes() <= AcknowledgedTransitionHysteresisDelay)
+                                newState = AlarmState.Acknowledged;
+                        }
+                        else
+                        {
+                            newState = AlarmState.Acknowledged;
+                            m_lastAcknowledgedTransition[alarmDevice.DeviceID] = Ticks.MinValue;
+                        }
+                    }
 
                     // Track current state counts
                     stateCounts[newState]++;
