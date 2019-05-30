@@ -79,6 +79,11 @@ namespace openPDC.Adapters
         /// </summary>
         public const double DefaultAlarmMinutes = 10.0D;
 
+        /// <summary>
+        /// Defines the default value for the <see cref="DefaultExternalDatabaseHysteresisDelay"/>.
+        /// </summary>
+        public const double DefaultExternalDatabaseHysteresisDelay = 5.0D;
+
         // Fields
         private Timer m_monitoringTimer;
         private ShortSynchronizedOperation m_monitoringOperation;
@@ -88,6 +93,8 @@ namespace openPDC.Adapters
         private Dictionary<int, DataRow> m_deviceMetadata;
         private Dictionary<MeasurementKey, Ticks> m_lastDeviceDataUpdates;
         private Dictionary<int, Ticks> m_lastDeviceStateChange;
+        private AlarmState m_lastExternalDatabaseState;
+        private Ticks m_lastExternalDatabaseStateChange;
         private Dictionary<AlarmState, string> m_mappedAlarmStates;
         private Dictionary<AlarmState, int> m_stateCounts;
         private object m_stateCountLock;
@@ -147,6 +154,30 @@ namespace openPDC.Adapters
             get;
             set;
         }
+
+        /// <summary>
+        /// Gets or sets the delay time, in minutes, before reporting the external database state.
+        /// </summary>
+        [ConnectionStringParameter]
+        [Description("Defines the delay time, in minutes, before reporting the external database state.")]
+        [DefaultValue(DefaultExternalDatabaseHysteresisDelay)]
+        public double ExternalDatabaseHysteresisDelay
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the delay time, in minutes, before reporting the external database state.
+        /// </summary>
+        [ConnectionStringParameter]
+        [Description("Defines the minimum state for application of \"ExternalDatabaseHysteresisDelay\". Defaults to setting Good and Alarm states immediately and applying delay to all other states.")]
+        [DefaultValue(1)]
+        public int ExternalDatabaseHysteresisMinimumState
+        {
+            get;
+            set;
+        } = 1;
 
         /// <summary>
         /// Gets or sets the flag that determines if an external database connection should be enabled for synchronization of alarm states.
@@ -365,6 +396,8 @@ namespace openPDC.Adapters
             m_deviceMetadata = new Dictionary<int, DataRow>();
             m_lastDeviceDataUpdates = new Dictionary<MeasurementKey, Ticks>();
             m_lastDeviceStateChange = new Dictionary<int, Ticks>();
+            m_lastExternalDatabaseState = AlarmState.Good;
+            m_lastExternalDatabaseStateChange = Ticks.MinValue;
             m_mappedAlarmStates = new Dictionary<AlarmState, string>();
             m_stateCounts = CreateNewStateCountsMap();
             m_stateCountLock = new object();
@@ -571,8 +604,6 @@ namespace openPDC.Adapters
                         newState = AlarmState.OutOfService;
                     }
 
-                    // TODO: Don't immediately change back to good - instead wait for a configurable period because state could be transient and cause havoc
-
                     // Maintain any acknowledged state unless state changes to good
                     if (currentState == AlarmState.Acknowledged && newState != AlarmState.Good)
                         newState = AlarmState.Acknowledged;
@@ -668,7 +699,17 @@ namespace openPDC.Adapters
                         if (compositeState == AlarmState.OutOfService)
                             compositeState = AlarmState.Good;
 
-                        ExternalDatabaseReportState(parameterTemplate, connection, compositeState, alarmedDeviceMetadata, substitutions);
+                        if (compositeState <= (AlarmState)ExternalDatabaseHysteresisMinimumState)
+                        {
+                            ExternalDatabaseReportState(parameterTemplate, connection, compositeState, alarmedDeviceMetadata, substitutions);
+                        }
+                        else
+                        {
+                            if (m_lastExternalDatabaseState == compositeState && (DateTime.UtcNow.Ticks - m_lastExternalDatabaseStateChange).ToMinutes() > ExternalDatabaseHysteresisDelay)
+                                ExternalDatabaseReportState(parameterTemplate, connection, compositeState, alarmedDeviceMetadata, substitutions);
+                            else
+                                m_lastExternalDatabaseState = compositeState;
+                        }                            
                     }
                 }
 
@@ -720,6 +761,8 @@ namespace openPDC.Adapters
             }
 
             m_lastExternalDatabaseResult = connection.ExecuteScalar(ExternalDatabaseCommand, parameters.ToArray());
+            m_lastExternalDatabaseState = state;
+            m_lastExternalDatabaseStateChange = DateTime.UtcNow.Ticks;
         }
 
         private void MonitoringTimer_Elapsed(object sender, ElapsedEventArgs e) => m_monitoringOperation?.RunOnce();
