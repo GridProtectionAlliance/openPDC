@@ -554,7 +554,7 @@ namespace openPDC.Adapters
 
                                 if (!measurement.ValueQualityIsGood())
                                     deviceState = AlarmState.BadData;
-                                else if (!measurement.TimestampQualityIsGood())
+                                else if (!measurement.TimestampQualityIsGood() || !measurement.Timestamp.UtcTimeIsValid(LagTime, LeadTime))
                                     deviceState = AlarmState.BadTime;
                             }
 
