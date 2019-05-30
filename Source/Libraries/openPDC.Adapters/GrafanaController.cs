@@ -61,7 +61,7 @@ namespace openPDC.Adapters
             {
                 using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
                 {
-                    return new TableOperations<AlarmDeviceStateView>(connection).QueryRecords();
+                    return new TableOperations<AlarmDeviceStateView>(connection).QueryRecords("Name");
                 }
             },
             cancellationToken);
