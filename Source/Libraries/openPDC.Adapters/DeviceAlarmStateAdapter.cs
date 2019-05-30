@@ -623,8 +623,6 @@ namespace openPDC.Adapters
                         newState = AlarmState.OutOfService;
                     }
 
-                    //m_lastAcknowledgedTransition
-
                     // Maintain any acknowledged state unless state changes to good
                     if (currentState == AlarmState.Acknowledged)
                     {
