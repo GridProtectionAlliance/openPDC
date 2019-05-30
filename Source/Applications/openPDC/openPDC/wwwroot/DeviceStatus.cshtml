@@ -76,7 +76,7 @@
     string deviceAcronym = null, deviceName = null, vendorName = null, deviceType = null,
     contactList = null, connectionString = null, activeMeasurementID = null,
     displayData = null, stateName = null, stateColor = null, parentAcronym = null,
-    adapterAcronym = null, extraMessage = "";
+    adapterAcronym = null, extraMessage = "", stateTimeStamp = "";
 
     decimal longitude = 0.0M, latitude = 0.0M;
     int framesPerSecond = 30, refreshInterval = DeviceAlarmStateAdapter.DefaultMonitoringRate / 1000;
@@ -226,6 +226,7 @@
         if ((object)alarmDevice != null)
         {
             displayData = alarmDevice.DisplayData;
+            stateTimeStamp = alarmDevice.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
             AlarmState alarmState = dataContext.Table<AlarmState>().QueryRecordWhere("ID = {0}", alarmDevice.StateID);
 
@@ -382,7 +383,7 @@
     </style>
 }
 <div id="titleBar" class="banner-well" style="background-color: @stateColor">
-    @deviceName - <span id="stateName">@stateName</span> [<span id="displayData">@displayData</span>] <span id="extraMessage">@extraMessage</span><br />
+    @deviceName - <span id="stateName">@stateName</span> [<span id="displayData">@displayData</span>] - @stateTimeStamp <span id="extraMessage">@extraMessage</span><br />
     <span style="font-size: 65%">Refreshing in <span id="refreshCount">@refreshInterval</span> seconds...</span>
 </div>
 <div class="col-md-6" style="height:90%">
