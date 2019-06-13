@@ -466,7 +466,7 @@
     <text>
     $(window).on("hubConnected", function () {
         serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function () {
-            serviceHub.sendCommand("initialize @adapterAcronym").done(function () {
+            serviceHub.sendCommand("invoke @adapterAcronym UpdateAlarmStates").done(function () {
                 refreshCountdown = @refreshInterval + 10;
             });
         });
