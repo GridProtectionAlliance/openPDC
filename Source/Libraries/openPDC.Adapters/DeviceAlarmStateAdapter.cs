@@ -525,13 +525,20 @@ namespace openPDC.Adapters
                         m_deviceMeasurementKeys[alarmDevice.DeviceID] = keys;
                         m_deviceMetadata[alarmDevice.DeviceID] = metadata;
 
-                        if (!reload)
-                        {
-                            if (!m_lastDeviceStateChange.ContainsKey(alarmDevice.DeviceID))
-                                m_lastDeviceStateChange.Add(alarmDevice.DeviceID, alarmDevice.TimeStamp.Ticks);
+                        if (!m_lastDeviceStateChange.ContainsKey(alarmDevice.DeviceID))
+                            m_lastDeviceStateChange.Add(alarmDevice.DeviceID, alarmDevice.TimeStamp.Ticks);
 
-                            foreach (MeasurementKey key in keys)
+                        foreach (MeasurementKey key in keys)
+                        {
+                            if (reload)
+                            {
+                                if (!m_lastDeviceDataUpdates.ContainsKey(key))
+                                    m_lastDeviceDataUpdates.Add(key, DateTime.UtcNow.Ticks);
+                            }
+                            else
+                            {
                                 m_lastDeviceDataUpdates[key] = DateTime.UtcNow.Ticks;
+                            }
                         }
                     }
                     else
