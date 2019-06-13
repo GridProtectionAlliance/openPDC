@@ -99,10 +99,10 @@ namespace openPDC.Adapters
         private Dictionary<MeasurementKey, Ticks> m_lastDeviceDataUpdates;
         private Dictionary<int, Ticks> m_lastDeviceStateChange;
         private Dictionary<int, Ticks> m_lastAcknowledgedTransition;
-        private AlarmState m_lastExternalDatabaseState;
         private Ticks m_lastExternalDatabaseStateChange;
         private Dictionary<AlarmState, string> m_mappedAlarmStates;
         private Dictionary<AlarmState, int> m_stateCounts;
+        private List<int> m_compositeStates;
         private object m_stateCountLock;
         private Ticks m_alarmTime;
         private long m_alarmStateUpdates;
@@ -186,7 +186,7 @@ namespace openPDC.Adapters
         }
 
         /// <summary>
-        /// Gets or sets the delay time, in minutes, before reporting the external database state.
+        /// Gets or sets the minimum state for application of <see cref="ExternalDatabaseHysteresisDelay"/>. Defaults to setting Good and Alarm states immediately and applying delay to all other states.
         /// </summary>
         [ConnectionStringParameter]
         [Description("Defines the minimum state for application of \"ExternalDatabaseHysteresisDelay\". Defaults to setting Good and Alarm states immediately and applying delay to all other states.")]
@@ -415,10 +415,10 @@ namespace openPDC.Adapters
             m_lastDeviceDataUpdates = new Dictionary<MeasurementKey, Ticks>();
             m_lastDeviceStateChange = new Dictionary<int, Ticks>();
             m_lastAcknowledgedTransition = new Dictionary<int, Ticks>();
-            m_lastExternalDatabaseState = AlarmState.Good;
-            m_lastExternalDatabaseStateChange = Ticks.MinValue;
+            m_lastExternalDatabaseStateChange = 0L;
             m_mappedAlarmStates = new Dictionary<AlarmState, string>();
             m_stateCounts = CreateNewStateCountsMap();
+            m_compositeStates = new List<int>();
             m_stateCountLock = new object();
 
             using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
@@ -734,24 +734,46 @@ namespace openPDC.Adapters
 
                     if (ExternalDatabaseReportSingleCompositeState)
                     {
+                        AlarmState minimumHysteresisState = (AlarmState)ExternalDatabaseHysteresisMinimumState;
+
                         if (compositeState == AlarmState.OutOfService)
                             compositeState = AlarmState.Good;
 
-                        if (compositeState <= (AlarmState)ExternalDatabaseHysteresisMinimumState)
+                        string lastUpdate = m_lastExternalDatabaseStateChange > 0L ? $", last update: {(DateTime.UtcNow.Ticks - m_lastExternalDatabaseStateChange).ToElapsedTimeString(2)}" : "";
+                        OnStatusMessage(MessageLevel.Info, $"Current composite reporting state: {compositeState}{lastUpdate}");
+
+                        if (compositeState <= minimumHysteresisState)
                         {
+                            // Report composite states less than specified minimum hysteresis state, typically Good and Alarm, immediately
                             ExternalDatabaseReportState(parameterTemplate, connection, compositeState, alarmedDeviceMetadata, substitutions);
+                            m_compositeStates.Clear();
+                            m_externalDatabaseUpdates++;
                         }
                         else
                         {
-                            if (m_lastExternalDatabaseState == compositeState && (DateTime.UtcNow.Ticks - m_lastExternalDatabaseStateChange).ToMinutes() > ExternalDatabaseHysteresisDelay)
+                            m_compositeStates.Add((int)compositeState);
+
+                            // Report other composite states only after specified hysteresis delay has passed
+                            if ((DateTime.UtcNow.Ticks - m_lastExternalDatabaseStateChange).ToMinutes() > ExternalDatabaseHysteresisDelay)
+                            {
+                                // Pick average composite state
+                                compositeState = (AlarmState)(int)Math.Round(m_compositeStates.Average());
+
+                                // Validate average composite state
+                                if (compositeState <= minimumHysteresisState || compositeState >= AlarmState.OutOfService)
+                                    compositeState = m_compositeStates.Select(state => (AlarmState)state).FirstOrDefault(state => state > minimumHysteresisState && state < AlarmState.OutOfService);
+
                                 ExternalDatabaseReportState(parameterTemplate, connection, compositeState, alarmedDeviceMetadata, substitutions);
-                            else
-                                m_lastExternalDatabaseState = compositeState;
+                                m_compositeStates.Clear();
+                                m_externalDatabaseUpdates++;
+                            }
                         }                            
                     }
+                    else
+                    {
+                        m_externalDatabaseUpdates++;
+                    }
                 }
-
-                m_externalDatabaseUpdates++;
             }
         }
 
@@ -799,7 +821,6 @@ namespace openPDC.Adapters
             }
 
             m_lastExternalDatabaseResult = connection.ExecuteScalar(ExternalDatabaseCommand, parameters.ToArray());
-            m_lastExternalDatabaseState = state;
             m_lastExternalDatabaseStateChange = DateTime.UtcNow.Ticks;
         }
 
