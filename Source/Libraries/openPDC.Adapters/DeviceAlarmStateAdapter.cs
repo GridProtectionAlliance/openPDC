@@ -26,6 +26,7 @@ using GSF.Collections;
 using GSF.Data;
 using GSF.Data.Model;
 using GSF.Diagnostics;
+using GSF.IO;
 using GSF.Parsing;
 using GSF.Threading;
 using GSF.TimeSeries;
@@ -97,7 +98,7 @@ namespace openPDC.Adapters
         private Dictionary<int, MeasurementKey[]> m_deviceMeasurementKeys;
         private Dictionary<int, DataRow> m_deviceMetadata;
         private Dictionary<MeasurementKey, Ticks> m_lastDeviceDataUpdates;
-        private Dictionary<int, Ticks> m_lastDeviceStateChange;
+        private FileBackedDictionary<int, long> m_lastDeviceStateChange;
         private Dictionary<int, Ticks> m_lastAcknowledgedTransition;
         private Ticks m_lastExternalDatabaseStateChange;
         private Dictionary<AlarmState, string> m_mappedAlarmStates;
@@ -413,7 +414,7 @@ namespace openPDC.Adapters
             m_deviceMeasurementKeys = new Dictionary<int, MeasurementKey[]>();
             m_deviceMetadata = new Dictionary<int, DataRow>();
             m_lastDeviceDataUpdates = new Dictionary<MeasurementKey, Ticks>();
-            m_lastDeviceStateChange = new Dictionary<int, Ticks>();
+            m_lastDeviceStateChange = new FileBackedDictionary<int, long>(FilePath.GetAbsolutePath($"{Name}_LastStateChangeCache.bin".RemoveInvalidFileNameCharacters()));
             m_lastAcknowledgedTransition = new Dictionary<int, Ticks>();
             m_lastExternalDatabaseStateChange = 0L;
             m_mappedAlarmStates = new Dictionary<AlarmState, string>();
@@ -450,7 +451,7 @@ namespace openPDC.Adapters
             m_monitoringTimer.Enabled = true;
         }
 
-        private void LoadAlarmStates()
+        private void LoadAlarmStates(bool reload = false)
         {
             using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
             {
@@ -523,10 +524,15 @@ namespace openPDC.Adapters
                         inputMeasurementKeys.AddRange(keys);
                         m_deviceMeasurementKeys[alarmDevice.DeviceID] = keys;
                         m_deviceMetadata[alarmDevice.DeviceID] = metadata;
-                        m_lastDeviceStateChange[alarmDevice.DeviceID] = DateTime.UtcNow.Ticks;
 
-                        foreach (MeasurementKey key in keys)
-                            m_lastDeviceDataUpdates[key] = DateTime.UtcNow.Ticks;
+                        if (!reload)
+                        {
+                            if (!m_lastDeviceStateChange.ContainsKey(alarmDevice.DeviceID))
+                                m_lastDeviceStateChange.Add(alarmDevice.DeviceID, alarmDevice.TimeStamp.Ticks);
+
+                            foreach (MeasurementKey key in keys)
+                                m_lastDeviceDataUpdates[key] = DateTime.UtcNow.Ticks;
+                        }
                     }
                     else
                     {
@@ -559,7 +565,7 @@ namespace openPDC.Adapters
                 return;
 
             lock (m_alarmStates)
-                LoadAlarmStates();
+                LoadAlarmStates(true);
         }
 
         /// <summary>
@@ -615,7 +621,7 @@ namespace openPDC.Adapters
                                 // Check quality of device frequency measurement
                                 if (double.IsNaN(measurement.AdjustedValue) || measurement.AdjustedValue == 0.0D)
                                 {
-                                    // Value is missing for longer than defined adapter lead / lag time tolerances,
+                                    // If value is missing for longer than defined adapter lead / lag time tolerances,
                                     // state is unavailable or in alarm if unavailable beyond configured alarm time
                                     deviceState = currentTime - lastUpdateTime > m_alarmTime ? AlarmState.Alarm : AlarmState.NotAvailable;
                                 }
