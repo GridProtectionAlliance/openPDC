@@ -389,6 +389,8 @@ namespace openPDC.Adapters
                             m_monitoringTimer.Elapsed -= MonitoringTimer_Elapsed;
                             m_monitoringTimer.Dispose();
                         }
+
+                        m_lastDeviceStateChange?.Dispose();
                     }
                 }
                 finally
