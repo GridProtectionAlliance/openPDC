@@ -157,8 +157,8 @@ namespace openPDC
         /// Gets protocol ID for "ModbusPoller" protocol.
         /// </summary>
         public int GetModbusProtocolID() => ModbusProtocolID;
-        [RecordOperation(typeof(Device), RecordOperation.QueryRecordCount)]
 
+        [RecordOperation(typeof(Device), RecordOperation.QueryRecordCount)]
         public int QueryDeviceCount(Guid nodeID, string filterText)
         {
             TableOperations<Device> deviceTable = DataContext.Table<Device>();
