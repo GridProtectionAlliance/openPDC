@@ -652,6 +652,8 @@ namespace openPDC.Adapters
 
                             if (compositeState < AlarmState.OutOfService)
                                 newState = compositeState;
+                            else if (TargetParentDevices)
+                                newState = AlarmState.Good;
                         }
                         else
                         {
