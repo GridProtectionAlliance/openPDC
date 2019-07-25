@@ -208,7 +208,9 @@ namespace openPDC
         [RecordOperation(typeof(Device), RecordOperation.DeleteRecord)]
         public void DeleteDevice(int id)
         {
-            DataContext.Table<Device>().DeleteRecord(id);
+            TableOperations<Device> deviceTable = DataContext.Table<Device>();            
+            deviceTable.DeleteRecordWhere("ParentID = {0}", id);
+            deviceTable.DeleteRecord(id);
         }
 
         [RecordOperation(typeof(Device), RecordOperation.CreateNewRecord)]
