@@ -81,6 +81,7 @@
     decimal longitude = 0.0M, latitude = 0.0M;
     int framesPerSecond = 30, refreshInterval = DeviceAlarmStateAdapter.DefaultMonitoringRate / 1000;
     bool reinitializeAlarmStateAdapter = false;
+    bool targetParentDevices = false;
 
     DataRow alarmStateAdapter = dataContext.Connection.RetrieveRow("SELECT * FROM CustomActionAdapter WHERE TypeName='openPDC.Adapters.DeviceAlarmStateAdapter'");
 
@@ -98,6 +99,11 @@
             if (settings.TryGetValue("MonitoringRate", out setting) && int.TryParse(setting, out monitoringRate))
             {
                 refreshInterval = monitoringRate / 1000;
+            }
+
+            if (settings.TryGetValue("TargetParentDevices", out setting))
+            {
+                targetParentDevices = setting.ParseBoolean();
             }
         }
     }
@@ -434,16 +440,18 @@
     </div>
     <form role="form" method="post" action="@request.RequestUri.AbsolutePath?DeviceID=@deviceID&Salt=@salt" enctype="multipart/form-data">
         <div class="btn-group" style="width: 100%">
-            <button type="submit" name="deviceInService" style="width: 30%" value="true">Reset to In-Service</button>
-            <button type="submit" name="deviceInService" style="width: 30%" value="false">Set to Out-of-Service</button>
-            <button type="button" style="width: 30%" onclick="Reconnect()">Reconnect Device</button>
-            @if(device.ParentID == null)
-            {
-                <button type="button" style="width: 30%" onclick="PingDevice('@deviceAcronym')">Ping</button>
+            @if(!targetParentDevices) {
+                <button type="submit" name="deviceInService" style="width: 30%" value="true">Reset to In-Service</button>
+                <button type="submit" name="deviceInService" style="width: 30%" value="false">Set to Out-of-Service</button>
+                <button type="button" style="width: 30%" onclick="Reconnect()">Reconnect Device</button>
+                <button type="button" style="width: 30%" onclick="PingDevice()">Ping</button>
                 <button id="setAcknowledge" type="button" style="width: 30%" onclick="SetAcknowledge('@deviceAcronym')" disabled">Acknowledge</button>
                 <button id="resetAcknowledge" type="button" style="width: 30%" onclick="ResetAcknowledge('@deviceAcronym')" disabled>Reset Acknowledge</button>
             }
-
+            else {
+                <button type="button" style="width: 30%" onclick="Reconnect()">Reconnect Device</button>
+                <button type="button" style="width: 30%" onclick="PingDevice()">Ping</button>
+            }
             @Html.RequestVerificationToken()
         </div>
     </form>
@@ -461,7 +469,9 @@
     <script>
     var refreshInterval = @refreshInterval;
     var refreshCountdown = refreshInterval;
-    var deviceID = @deviceID;
+    const deviceID = @deviceID;
+    const deviceAcronym = "@deviceAcronym";
+    const parentAcronym = "@(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)";
 @{if (reinitializeAlarmStateAdapter) {
     <text>
     $(window).on("hubConnected", function () {
@@ -480,7 +490,7 @@
             dataHub.getAlarmState(deviceID)
                 .fail(showErrorMessage)
                 .done(function (alarmState) {
-                    var defaults = {
+                    const defaults = {
                         displayData: "0",
                         stateName: "Unknown State",
                         stateColor: "yellow"
@@ -508,8 +518,6 @@
     }
 
     $(function () {
-        var deviceAcronym = "@deviceAcronym";
-        var parentAcronym = "@(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)";
         var postError = "@postError";
 
         if (!isEmpty(postError))
@@ -657,24 +665,22 @@
     });
 
     function Reconnect() {
-    @{
-        if (!string.IsNullOrWhiteSpace(adapterAcronym)) {
-        <text>
-        serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function () {
-            serviceHub.sendCommand("initialize @adapterAcronym").done(function () {
-                window.location = window.location.href;
-            });
-        });
-        </text>
+        @{if (!string.IsNullOrWhiteSpace(adapterAcronym)) {
+            <text>
+                serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function () {
+                    serviceHub.sendCommand("initialize @adapterAcronym").done(function () {
+                        window.location = window.location.href;
+                    });
+                });
+            </text>
         }
         else {
-        <text>
-        serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function() {
-            window.location = window.location.href;
-        });
-        </text>
-        }
-    }
+            <text>
+                serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function() {
+                    window.location = window.location.href;
+                });
+            </text>
+        }}
     }
 
     // sets heights of various objects
@@ -788,8 +794,8 @@
         return (color.replace('#', '0x')) > (0xffffff / 2) ? '#333' : '#fff';
     }
 
-    function PingDevice(deviceAcronym) {
-        window.open('/RemoteConsole.cshtml?Filter=Filter+-Exclude+Regex+""&Command=Ping+' + deviceAcronym);
+    function PingDevice() {
+        window.open('/RemoteConsole.cshtml?Filter=Filter+-Exclude+Regex+""&Command=Ping+' + parentAcronym);
     }
 
     function SetAcknowledge(deviceAcronym) {

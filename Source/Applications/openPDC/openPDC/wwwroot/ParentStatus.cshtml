@@ -34,7 +34,8 @@
 @using openPDC.Adapters
 @using Random = GSF.Security.Cryptography.Random
 @inherits ExtendedTemplateBase<AppModel>
-@{
+@{    
+    // ReSharper disable PossibleMultipleEnumeration
     Layout = "Layout.cshtml";
 
     DataContext dataContext = ViewBag.DataContext;
@@ -81,6 +82,7 @@
     decimal longitude = 0.0M, latitude = 0.0M;
     int framesPerSecond = 30, refreshInterval = DeviceAlarmStateAdapter.DefaultMonitoringRate / 1000;
     bool reinitializeAlarmStateAdapter = false;
+    bool targetParentDevices = false;
 
     DataRow alarmStateAdapter = dataContext.Connection.RetrieveRow("SELECT * FROM CustomActionAdapter WHERE TypeName='openPDC.Adapters.DeviceAlarmStateAdapter'");
 
@@ -99,6 +101,11 @@
             {
                 refreshInterval = monitoringRate / 1000;
             }
+
+            if (settings.TryGetValue("TargetParentDevices", out setting))
+            {
+                targetParentDevices = setting.ParseBoolean();
+            }
         }
     }
 
@@ -109,7 +116,7 @@
     TableOperations<AlarmState> alarmStateTable = dataContext.Table<AlarmState>();
     AlarmState[] alarmStateRecords = alarmStateTable.QueryRecords().ToArray();
     Dictionary<int, AlarmState> alarmStateRecordsDictionary = alarmStateTable.QueryRecords().ToDictionary(x => x.ID, x => x);
-    alarmStateRecordsDictionary.Add(0, new AlarmState() { ID=0, Color="white", State="Parent"});
+    alarmStateRecordsDictionary.Add(0, new AlarmState() { ID = 0, Color = "white", State = "Parent"});
 
     Dictionary<Device, AlarmDevice> childrenState = new Dictionary<Device, AlarmDevice>();
 
@@ -456,10 +463,9 @@
             <li>
                 Connection String:
                 <ul>
-                    @foreach (string value in connectionString.Split(';'))
-                    {
-                        <li>@value</li>
-                    }
+                @foreach (string value in connectionString.Split(';')) {
+                    <li>@value</li>
+                }
                 </ul>
             </li>
         </ul>
@@ -489,22 +495,36 @@
                 <tr><th>ID</th><th>Name</th><th class="center-with-padding">State</th></tr>
             </thead>
             <tbody style="font-size: medium;">
-            @foreach (KeyValuePair<Device,AlarmDevice> child in childrenState)
-            {
-                <tr onclick="goToDeviceStatus(@child.Key.ID)"><td>@child.Key.ID</td><td >@child.Key.Name</td><td class="center-with-padding" style="background-color: @alarmStateRecordsDictionary[child.Value.StateID].Color" id="state@(child.Key.ID)">@alarmStateRecordsDictionary[child.Value.StateID].State [@child.Value.DisplayData]</td></tr>
+            @foreach (KeyValuePair<Device,AlarmDevice> child in childrenState) {
+                if (targetParentDevices) {
+                    <text>
+                        <tr onclick="gotoDeviceStatus(@child.Key.ID)"><td>@child.Key.ID</td><td >@child.Key.Name</td><td class="center-with-padding" style="background-color: @stateColor" id="state@(child.Key.ID)"><span id="stateName">@stateName</span> [<span id="displayData">@displayData</span>]</td></tr>
+                    </text>
+                }
+                else {
+                <text>
+                    <tr onclick="gotoDeviceStatus(@child.Key.ID)"><td>@child.Key.ID</td><td >@child.Key.Name</td><td class="center-with-padding" style="background-color: @alarmStateRecordsDictionary[child.Value.StateID].Color" id="state@(child.Key.ID)">@alarmStateRecordsDictionary[child.Value.StateID].State [@child.Value.DisplayData]</td></tr>
+                </text>
+                }
             }
             </tbody>
         </table>
 
     </div>
     <form role="form" method="post" action="@request.RequestUri.AbsolutePath?DeviceID=@deviceID&Salt=@salt" enctype="multipart/form-data">
-        <div class="btn-group" style="width: 100%">
-            <button type="submit" name="deviceInService" style="width: 30%" value="true">Reset to In-Service</button>
-            <button type="submit" name="deviceInService" style="width: 30%" value="false">Set to Out-of-Service</button>
-            <button type="button" style="width: 30%" onclick="Reconnect()">Reconnect Device</button>
-            <button type="button" style="width: 30%" onclick="PingDevice('@deviceAcronym')">Ping</button>
-            <button id="setAcknowledge" type="button" style="width: 30%" onclick="SetAcknowledge('@deviceAcronym')" disabled>Acknowledge</button>
-            <button id="resetAcknowledge" type="button" style="width: 30%" onclick="ResetAcknowledge('@deviceAcronym')" disabled>Reset Acknowledge</button>
+        <div class="btn-group" style="width: 100%">            
+            @if (targetParentDevices) {
+                <button type="submit" name="deviceInService" style="width: 30%" value="true">Reset to In-Service</button>
+                <button type="submit" name="deviceInService" style="width: 30%" value="false">Set to Out-of-Service</button>
+                <button type="button" style="width: 30%" onclick="Reconnect()">Reconnect Device</button>
+                <button type="button" style="width: 30%" onclick="PingDevice()">Ping</button>
+                <button id="setAcknowledge" type="button" style="width: 30%" onclick="SetAcknowledge('@deviceAcronym')" disabled>Acknowledge</button>
+                <button id="resetAcknowledge" type="button" style="width: 30%" onclick="ResetAcknowledge('@deviceAcronym')" disabled>Reset Acknowledge</button>
+            }
+            else {
+                <button type="button" style="width: 30%" onclick="Reconnect()">Reconnect Device</button>
+                <button type="button" style="width: 30%" onclick="PingDevice()">Ping</button>
+            }
             @Html.RequestVerificationToken()
         </div>
     </form>
@@ -515,7 +535,9 @@
     <script>
     var refreshInterval = @refreshInterval;
     var refreshCountdown = refreshInterval;
-    var deviceID = @deviceID;
+    const deviceID = @deviceID;
+    const deviceAcronym = "@deviceAcronym";
+    const parentAcronym = "@(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)";
 @{if (reinitializeAlarmStateAdapter) {
     <text>
     $(window).on("hubConnected", function () {
@@ -532,6 +554,7 @@
 
         if (refreshCountdown === 0) {
             UpdateParentState();
+
             @foreach (Device child in children) {
                 <text>UpdateChildState(@child.ID)</text>
             }
@@ -543,8 +566,6 @@
     }
 
     $(function () {
-        var deviceAcronym = "@deviceAcronym";
-        var parentAcronym = "@(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)";
         var postError = "@postError";
 
         if (!isEmpty(postError))
@@ -650,6 +671,10 @@
         // Set inverse foreground color for readability
         $('#titleBar').css('color', invertColor('@stateColor'));
 
+        @foreach (Device child in children) {
+            <text>$("#state" + @child.ID).css("color", $("#titleBar").css("color"));</text>
+        }
+
         setTimeout(updateCountdown, 1000);
     });
 
@@ -668,53 +693,63 @@
             $("#stateName").text(alarmState.stateName);
             $("#extraMessage").text("");
             $("#titleBar").css("background-color", alarmState.stateColor);
-            $('#titleBar').css('color', invertColor(alarmState.stateColor));
+            $("#titleBar").css("color", invertColor(alarmState.stateColor));
 
-            $('#setAcknowledge').prop("disabled", (alarmState.stateName === 'Good' || alarmState.stateName === 'Acknowledged'));
-            $('#resetAcknowledge').prop("disabled", (alarmState.stateName !== 'Acknowledged'));
+            $("#setAcknowledge").prop("disabled", (alarmState.stateName === "Good" || alarmState.stateName === "Acknowledged"));
+            $("#resetAcknowledge").prop("disabled", (alarmState.stateName !== "Acknowledged"));
 
             refreshCountdown = refreshInterval;
-            $('#refreshCount').text(refreshCountdown);
+            $("#refreshCount").text(refreshCountdown);
             setTimeout(updateCountdown, 1000);
         });
     }
 
-    function UpdateChildState(deviceID){
-        dataHub.getAlarmState(deviceID)
-        .fail(showErrorMessage)
-        .done(function (alarmState) {
-            var defaults = {
-                displayData: "0",
-                stateName: "Unknown State",
-                stateColor: "yellow"
-            };
+    function UpdateChildState(deviceID) {
+        @{if (targetParentDevices) {
+            <text>
+                // Synchronize child states with parent when state is composite of children devices
+                $("#state" + deviceID).text($("#stateName").text() + " [" + $("#displayData").text() + "]");
+                $("#state" + deviceID).css("background-color",  $("#titleBar").css("background-color"));
+                $("#state" + deviceID).css("color", $("#titleBar").css("color"));
+            </text>
+        }
+        else {
+            <text>
+                dataHub.getAlarmState(deviceID)
+                    .fail(showErrorMessage)
+                    .done(function (alarmState) {
+                        const defaults = {
+                            displayData: "0",
+                            stateName: "Unknown State",
+                            stateColor: "yellow"
+                        };
 
-            alarmState = $.extend(defaults, alarmState);
-            $("#state" + deviceID).text(alarmState.stateName + ' [' + alarmState.displayData + ']');
-            $("#state" + deviceID).css("background-color", alarmState.stateColor);
-            $("#state" + deviceID).css('color', invertColor(alarmState.stateColor));
-        });
+                        alarmState = $.extend(defaults, alarmState);
+                        $("#state" + deviceID).text(alarmState.stateName + " [" + alarmState.displayData + "]");
+                        $("#state" + deviceID).css("background-color", alarmState.stateColor);
+                        $("#state" + deviceID).css("color", invertColor(alarmState.stateColor));
+                    });
+            </text>
+        }}
     }
 
     function Reconnect() {
-    @{
-        if (!string.IsNullOrWhiteSpace(adapterAcronym)) {
-        <text>
-        serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function () {
-            serviceHub.sendCommand("initialize @adapterAcronym").done(function () {
-                window.location = window.location.href;
-            });
-        });
-        </text>
+        @{if (!string.IsNullOrWhiteSpace(adapterAcronym)) {
+            <text>
+                serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function () {
+                    serviceHub.sendCommand("initialize @adapterAcronym").done(function () {
+                        window.location = window.location.href;
+                    });
+                });
+            </text>
         }
         else {
-        <text>
-        serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function() {
-            window.location = window.location.href;
-        });
-        </text>
-        }
-    }
+            <text>
+                serviceHub.sendCommand("initialize @(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)").done(function() {
+                    window.location = window.location.href;
+                });
+            </text>
+        }}
     }
 
     // sets heights of various objects
@@ -722,12 +757,12 @@
         $('#bodyContainer').css('height', calculateRemainingBodyHeight);
     }
 
-    function goToDeviceStatus(deviceID){
+    function gotoDeviceStatus(deviceID){
         window.open('/DeviceStatus.cshtml?DeviceID=' + deviceID);
     }
 
-    function PingDevice(deviceAcronym) {
-        window.open('/RemoteConsole.cshtml?Filter=Filter+-Exclude+Regex+""&Command=Ping+' + deviceAcronym);
+    function PingDevice() {
+        window.open('/RemoteConsole.cshtml?Filter=Filter+-Exclude+Regex+""&Command=Ping+' + parentAcronym);
     }
 
     function SetAcknowledge(deviceAcronym) {
