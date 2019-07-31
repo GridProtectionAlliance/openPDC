@@ -41,7 +41,7 @@
     HttpRequestMessage request = ViewBag.Request;
     Dictionary<string, string> parameters = request.QueryParameters();
     AlarmDevice alarmDevice = null;
-    int alarmDeviceID, deviceID = 0;
+    int alarmDeviceID, deviceID = 0, parentID = 0;
     string idValue;
     string postError = null;
     ulong salt = Random.UInt64;
@@ -76,7 +76,7 @@
     string deviceAcronym = null, deviceName = null, vendorName = null, deviceType = null,
     contactList = null, connectionString = null, activeMeasurementID = null,
     displayData = null, stateName = null, stateColor = null, parentAcronym = null,
-    adapterAcronym = null, extraMessage = "", stateTimeStamp = "";
+    adapterAcronym = null, extraMessage = "";
 
     decimal longitude = 0.0M, latitude = 0.0M;
     int framesPerSecond = 30, refreshInterval = DeviceAlarmStateAdapter.DefaultMonitoringRate / 1000;
@@ -182,8 +182,10 @@
 
         if (device.ParentID.HasValue)
         {
+            parentID = device.ParentID.Value;
+
             // If this is a concentrator child, get connection string of parent
-            Device parentDevice = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", device.ParentID.Value);
+                    Device parentDevice = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", parentID);
 
             if ((object)parentDevice != null)
             {
@@ -227,12 +229,11 @@
             activeMeasurementID = activeMeasurement.ID;
         }
 
-        alarmDevice = dataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", device.ID);
+        alarmDevice = dataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", targetParentDevices && parentID > 0 ? parentID : device.ID);
 
         if ((object)alarmDevice != null)
         {
             displayData = alarmDevice.DisplayData;
-            stateTimeStamp = alarmDevice.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
             AlarmState alarmState = dataContext.Table<AlarmState>().QueryRecordWhere("ID = {0}", alarmDevice.StateID);
 
@@ -389,7 +390,7 @@
     </style>
 }
 <div id="titleBar" class="banner-well" style="background-color: @stateColor">
-    @deviceName - <span id="stateName">@stateName</span> [<span id="displayData">@displayData</span>] - @stateTimeStamp <span id="extraMessage">@extraMessage</span><br />
+    @deviceName - <span id="stateName">@stateName</span> [<span id="displayData">@displayData</span>] <span id="extraMessage">@extraMessage</span><br />
     <span style="font-size: 65%">Refreshing in <span id="refreshCount">@refreshInterval</span> seconds...</span>
 </div>
 <div class="col-md-6" style="height:90%">
@@ -469,7 +470,7 @@
     <script>
     var refreshInterval = @refreshInterval;
     var refreshCountdown = refreshInterval;
-    const deviceID = @deviceID;
+    const deviceID = @(targetParentDevices && parentID > 0 ? parentID : deviceID);
     const deviceAcronym = "@deviceAcronym";
     const parentAcronym = "@(string.IsNullOrWhiteSpace(parentAcronym) ? deviceAcronym : parentAcronym)";
 @{if (reinitializeAlarmStateAdapter) {
