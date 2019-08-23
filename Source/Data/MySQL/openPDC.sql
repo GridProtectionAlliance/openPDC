@@ -1827,7 +1827,7 @@ DELIMITER ;
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW LocalSchemaVersion AS
-SELECT 2 AS VersionNumber;
+SELECT 3 AS VersionNumber;
 
 CREATE TABLE DataAvailability(
 	ID int AUTO_INCREMENT NOT NULL,
@@ -1850,10 +1850,20 @@ CREATE TABLE AlarmDevice(
 	StateID int NULL,
 	TimeStamp datetime NULL,
 	DisplayData varchar(10) NULL,
-	PRIMARY KEY(ID),
-	FOREIGN KEY (DeviceID) REFERENCES Device(ID),
-	FOREIGN KEY (StateID) REFERENCES AlarmState(ID)
+	PRIMARY KEY(ID)
 );
+
+ALTER TABLE AlarmDevice
+ADD CONSTRAINT FK_AlarmDevice_Device
+FOREIGN KEY(DeviceID) REFERENCES Device(ID)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+ALTER TABLE AlarmDevice
+ADD CONSTRAINT FK_AlarmDevice_AlarmState
+FOREIGN KEY(StateID) REFERENCES AlarmState(ID)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
 
 CREATE VIEW AlarmDeviceStateView AS
 SELECT AlarmDevice.ID, Device.Name, AlarmState.State, AlarmState.Color, AlarmDevice.DisplayData

@@ -1730,7 +1730,7 @@ BEGIN INSERT INTO TrackedChange(TableName, PrimaryKeyColumn, PrimaryKeyValue) SE
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW LocalSchemaVersion AS
-SELECT 2 AS VersionNumber;
+SELECT 3 AS VersionNumber;
 
 CREATE TABLE DataAvailability(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
