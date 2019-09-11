@@ -4,6 +4,11 @@
 |---|---|---|---|---|
 | **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
+```diff
++ .
+- ** THIS DOCUMENTATION IS DEPRECATED **
+```
+
 # Setting for Uniform CPU Utilization
 
 In the openPDC version 1.4 SP2 there is a new boolean config file setting called "GCGenZeroInterval" in the "systemSettings" category.
