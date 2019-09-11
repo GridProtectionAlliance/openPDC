@@ -32,11 +32,9 @@ With version 2.1 or later, the openPDC can be deployed in [POSIX environments](h
 
 
 # Documentation and Support
-* Documentation for openPDC can be found [here](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/openPDC_Documentation_Home.md).
+* Documentation for openPDC can be found [here](https://github.com/GridProtectionAlliance/openPDC/wiki/Documentation).
 * See: [Getting Started with the openPDC](https://github.com/GridProtectionAlliance/openPDC/blob/master/Source/Documentation/wiki/Getting_Started.md).
 * Get in contact with our development team on our new [discussion board](http://discussions.gridprotectionalliance.org/c/gpa-products/openpdc).
-* Check out our [old discussion board](https://archive.codeplex.com/?p=openpdc) to see if your question has already been answered.
-* Check out the [wiki](https://gridprotectionalliance.org/wiki/doku.php?id=openpdc:overview).
 
 # Deployment
 
