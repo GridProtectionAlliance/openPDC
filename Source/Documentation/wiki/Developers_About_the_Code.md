@@ -4,6 +4,13 @@
 |---|---|---|---|---|
 | **[Grid Protection Alliance](http://www.gridprotectionalliance.org "Grid Protection Alliance Home Page")** | **[openPDC Project](https://github.com/GridProtectionAlliance/openPDC "openPDC Project on GitHub")** | **[openPDC Wiki](openPDC_Home.md "openPDC Wiki Home Page")** | **[Documentation](openPDC_Documentation_Home.md "openPDC Documentation Home Page")** | **[Latest Release](https://github.com/GridProtectionAlliance/openPDC/releases "openPDC Releases Home Page")** |
 
+```diff
++ .
+- ** THIS DOCUMENTATION IS DEPRECATED **
+```
+
+See [Grid Solutions Framework](https://github.com/GridProtectionAlliance/gsf) for latest code base.
+
 # About the Code
 
 Below you will find a high level hierarchical overview of the code which provides a summary of solutions, namespaces and classes within the API portions of the openPDC. For more detail about the code you can download the [API help](http://www.gridsolutions.org/NightlyBuilds/openPDC/Help/) which includes standalone compiled help files (.chm) as well as help files that directly integrate within Visual Studio. We have also made our help system available online, here are the primary help links for each of the major solutions:
