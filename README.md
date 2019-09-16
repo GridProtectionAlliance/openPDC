@@ -57,9 +57,9 @@ With version 2.1 or later, the openPDC can be deployed in [POSIX environments](h
   * MySQL
   * Oracle
   * PostgreSQL
-  * SQLite\* (included, no extra install required)
-  
-\* Not recommended for large deployments.
+  * SQLite (included, no extra install required - not recommended for large deployments)
+
+[![Supported on Windows 10](https://gridprotectionalliance.org/images/products/SupportedOnWindows10.png)](https://developer.microsoft.com/en-us/windows/ready-for-windows/#/app/?NPId=b076c1940527f5e946e0b533fb29f223)
 
 ## Downloads
 
