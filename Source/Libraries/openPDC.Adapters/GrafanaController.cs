@@ -26,14 +26,16 @@ using GSF.Data;
 using GSF.Data.Model;
 using openPDC.Model;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using CancellationToken = System.Threading.CancellationToken;
 using ValidateAntiForgeryTokenAttribute = System.Web.Mvc.ValidateAntiForgeryTokenAttribute;
-
+using Newtonsoft.Json;
 namespace openPDC.Adapters
 {
     /// <summary>
@@ -85,17 +87,93 @@ namespace openPDC.Adapters
         }
 
 
-        /// <summary>
-        /// Handled query function requests - returns empty results.
-        /// </summary>
-        /// <param name="request">Query request.</param>
-        /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
-        [HttpPost]
+		/// <summary>
+		/// Queries openHistorian Location Data for Grafana.
+		/// </summary>
+		/// <param name="request"> Query request.</param>
+		/// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+		[HttpPost]
+		[SuppressMessage("Security", "SG0016", Justification = "Current operation dictated by Grafana. CSRF exposure limited to meta-data access.")]
+		public virtual Task<string> GetLocationData(List<Target> request, CancellationToken cancellationToken)
+		{
+
+			return Task.Factory.StartNew(() =>
+			{
+				DataTable table = new DataTable();
+
+				foreach (Target target in request)
+				{
+					DataTable tmptable = new DataTable();
+
+					if (string.IsNullOrWhiteSpace(target.target))
+						return string.Empty;
+
+					DataRow[] rows;
+					using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
+					{
+
+						TableOperations<ActiveMeasurement> tbl = new TableOperations<ActiveMeasurement>(connection);
+						rows = tbl.ToDataTable(tbl.QueryRecords()).Select($"PointTag = '{target.target}'") ?? new DataRow[0];
+					}
+
+					if (rows.Length > 0)
+					{
+						tmptable = rows.CopyToDataTable();
+						table.Merge(tmptable);
+					}
+				}
+
+				return JsonConvert.SerializeObject(table);
+			},
+		   cancellationToken);
+
+		}
+		
+
+		/// <summary>
+		/// Handled query function requests - returns empty results.
+		/// </summary>
+		/// <param name="request">Query request.</param>
+		/// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+			[HttpPost]
         [SuppressMessage("Security", "SG0016", Justification = "Current operation dictated by Grafana. CSRF exposure limited to data access.")]
         public virtual Task<List<TimeSeriesValues>> Query(QueryRequest request, CancellationToken cancellationToken)
         {
             return Task.FromResult(new List<TimeSeriesValues>());
         }
 
+		private DataTable ActiveMeasurmentTable()
+		{
+			DataTable result = new DataTable();
+
+			DataColumn PointTag = new DataColumn();
+			PointTag.DataType = System.Type.GetType("System.string");
+			PointTag.ColumnName = "PointTag";
+			result.Columns.Add(PointTag);
+
+			DataColumn Device = new DataColumn();
+			Device.DataType = System.Type.GetType("System.string");
+			Device.ColumnName = "Device";
+			result.Columns.Add(Device);
+
+			DataColumn DeviceID = new DataColumn();
+			DeviceID.DataType = System.Type.GetType("System.Int32");
+			DeviceID.ColumnName = "DeviceID";
+			result.Columns.Add(DeviceID);
+
+			DataColumn Longitude = new DataColumn();
+			Longitude.DataType = System.Type.GetType("System.Decimal");
+			Longitude.ColumnName = "Longitude";
+			Longitude.AutoIncrement = true;
+			result.Columns.Add(Longitude);
+
+			DataColumn Latitude = new DataColumn();
+			Latitude.DataType = System.Type.GetType("System.Decimal");
+			Latitude.ColumnName = "Latitude";
+			Latitude.AutoIncrement = true;
+			result.Columns.Add(Latitude);
+
+			return result;
+		}
     }
 }
