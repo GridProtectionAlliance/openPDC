@@ -11,24 +11,3 @@ CREATE TABLE DataAvailability(
 	TotalAvailableData DOUBLE PRECISION NOT NULL
 );
 
-CREATE TABLE AlarmState(
-	ID SERIAL NOT NULL PRIMARY KEY,
-	State varchar(50) NULL,
-	Color varchar(50) NULL
-);
-
-CREATE TABLE AlarmDevice(
-	ID SERIAL NOT NULL PRIMARY KEY,
-	DeviceID INTEGER NULL,
-	StateID INTEGER NULL,
-	TimeStamp TIMESTAMP NULL,
-	DisplayData varchar(10) NULL,
-	CONSTRAINT FK_AlarmDevice_Device FOREIGN KEY(DeviceID) REFERENCES Device (ID) ON DELETE CASCADE,
-    CONSTRAINT FK_AlarmDevice_AlarmState FOREIGN KEY(StateID) REFERENCES AlarmState (ID) ON DELETE CASCADE
-);
-
-CREATE VIEW AlarmDeviceStateView AS
-SELECT AlarmDevice.ID, Device.Name, AlarmState.State, AlarmState.Color, AlarmDevice.DisplayData
-FROM AlarmDevice
-    INNER JOIN AlarmState ON AlarmDevice.StateID = AlarmState.ID
-    INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID;
