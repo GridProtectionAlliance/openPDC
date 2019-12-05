@@ -21,6 +21,7 @@
 //
 //******************************************************************************************************
 
+using System;
 using GrafanaAdapters;
 using GSF.Data;
 using GSF.Data.Model;
@@ -43,6 +44,39 @@ namespace openPDC.Adapters
     /// </summary>
     public class GrafanaController : ApiController
     {
+        private class MetaDataSource : GrafanaDataSourceBase
+        {
+            protected override IEnumerable<DataSourceValue> QueryDataSourceValues(DateTime startTime, DateTime stopTime, string interval, bool decimate, Dictionary<ulong, string> targetMap)
+            {
+                yield break;
+            }
+        }
+
+        // Fields
+        private MetaDataSource m_dataSource;
+        private LocationData m_locationData;
+
+        private MetaDataSource DataSource
+        {
+            get
+            {
+                if (m_dataSource != null)
+                    return m_dataSource;
+
+                using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
+                {
+                    m_dataSource = new MetaDataSource
+                    {
+                        Metadata = connection.RetrieveDataSet("SELECT * FROM ActiveMeasurements")
+                    };
+                }
+
+                return m_dataSource;
+            }
+        }
+
+        private LocationData LocationData => m_locationData ?? (m_locationData = new LocationData { DataSource = DataSource });
+
         /// <summary>
         /// Validates that openHistorian Grafana data source is responding as expected.
         /// </summary>
@@ -98,7 +132,7 @@ namespace openPDC.Adapters
         [SuppressMessage("Security", "SG0016", Justification = "CSRF exposure limited to meta-data access.")]
         public virtual Task<string> GetLocationData([FromUri] double radius, [FromUri] double zoom, [FromBody] List<Target> request, CancellationToken cancellationToken)
         {
-
+            return LocationData.GetLocationData(radius, zoom, request, cancellationToken);
         }
 
         /// <summary>
@@ -111,6 +145,7 @@ namespace openPDC.Adapters
         [SuppressMessage("Security", "SG0016", Justification = "CSRF exposure limited to meta-data access.")]
         public virtual Task<string> GetLocationData(List<Target> request, CancellationToken cancellationToken)
         {
+            return LocationData.GetLocationData(request, cancellationToken);
 		}
 
         /// <summary>
