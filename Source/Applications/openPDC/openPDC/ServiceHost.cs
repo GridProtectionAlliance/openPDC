@@ -244,19 +244,26 @@ namespace openPDC
 
             Thread startWebServer = new Thread(() =>
             {
-                // Attach to default web server events
-                WebServer webServer = WebServer.Default;
-                webServer.StatusMessage += WebServer_StatusMessage;
-                webServer.ExecutionException += LoggedExceptionHandler;
+                try
+                {
+                    // Attach to default web server events
+                    WebServer webServer = WebServer.Default;
+                    webServer.StatusMessage += WebServer_StatusMessage;
+                    webServer.ExecutionException += LoggedExceptionHandler;
 
-                // Define types for Razor pages - self-hosted web service does not use view controllers so
-                // we must define configuration types for all paged view model based Razor views here:
-                webServer.PagedViewModelTypes.TryAdd("Devices.cshtml", new Tuple<Type, Type>(typeof(Device), typeof(DataHub)));
-                webServer.PagedViewModelTypes.TryAdd("Companies.cshtml", new Tuple<Type, Type>(typeof(Company), typeof(SharedHub)));
-                webServer.PagedViewModelTypes.TryAdd("Vendors.cshtml", new Tuple<Type, Type>(typeof(Vendor), typeof(SharedHub)));
-                webServer.PagedViewModelTypes.TryAdd("VendorDevices.cshtml", new Tuple<Type, Type>(typeof(VendorDevice), typeof(SharedHub)));
-                webServer.PagedViewModelTypes.TryAdd("Users.cshtml", new Tuple<Type, Type>(typeof(UserAccount), typeof(SecurityHub)));
-                webServer.PagedViewModelTypes.TryAdd("Groups.cshtml", new Tuple<Type, Type>(typeof(SecurityGroup), typeof(SecurityHub)));
+                    // Define types for Razor pages - self-hosted web service does not use view controllers so
+                    // we must define configuration types for all paged view model based Razor views here:
+                    webServer.PagedViewModelTypes.TryAdd("Devices.cshtml", new Tuple<Type, Type>(typeof(Device), typeof(DataHub)));
+                    webServer.PagedViewModelTypes.TryAdd("Companies.cshtml", new Tuple<Type, Type>(typeof(Company), typeof(SharedHub)));
+                    webServer.PagedViewModelTypes.TryAdd("Vendors.cshtml", new Tuple<Type, Type>(typeof(Vendor), typeof(SharedHub)));
+                    webServer.PagedViewModelTypes.TryAdd("VendorDevices.cshtml", new Tuple<Type, Type>(typeof(VendorDevice), typeof(SharedHub)));
+                    webServer.PagedViewModelTypes.TryAdd("Users.cshtml", new Tuple<Type, Type>(typeof(UserAccount), typeof(SecurityHub)));
+                    webServer.PagedViewModelTypes.TryAdd("Groups.cshtml", new Tuple<Type, Type>(typeof(SecurityGroup), typeof(SecurityHub)));
+                }
+                catch (Exception ex)
+                {
+                    LogException(new InvalidOperationException($"Failed during web-server initialization: {ex.Message}", ex));
+                }
             })
             {
                 IsBackground = true
