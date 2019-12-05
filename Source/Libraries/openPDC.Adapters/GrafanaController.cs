@@ -86,56 +86,39 @@ namespace openPDC.Adapters
             cancellationToken);
         }
 
+        /// <summary>
+        /// Queries openPDC location data for Grafana offsetting duplicate coordinates using a radial distribution.
+        /// </summary>
+        /// <param name="radius">Radius of overlapping coordinate distribution.</param>
+        /// <param name="zoom">Zoom level.</param>
+        /// <param name="request"> Query request.</param>
+        /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+        /// <returns>JSON serialized location metadata for specified targets.</returns>
+        [HttpPost]
+        [SuppressMessage("Security", "SG0016", Justification = "CSRF exposure limited to meta-data access.")]
+        public virtual Task<string> GetLocationData([FromUri] double radius, [FromUri] double zoom, [FromBody] List<Target> request, CancellationToken cancellationToken)
+        {
 
-		/// <summary>
-		/// Queries openHistorian Location Data for Grafana.
-		/// </summary>
-		/// <param name="request"> Query request.</param>
-		/// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
-		[HttpPost]
-		[SuppressMessage("Security", "SG0016", Justification = "Current operation dictated by Grafana. CSRF exposure limited to meta-data access.")]
-		public virtual Task<string> GetLocationData(List<Target> request, CancellationToken cancellationToken)
-		{
+        }
 
-			return Task.Factory.StartNew(() =>
-			{
-				DataTable table = new DataTable();
-
-				foreach (Target target in request)
-				{
-					DataTable tmptable = new DataTable();
-
-					if (string.IsNullOrWhiteSpace(target.target))
-						return string.Empty;
-
-					DataRow[] rows;
-					using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
-					{
-
-						TableOperations<ActiveMeasurement> tbl = new TableOperations<ActiveMeasurement>(connection);
-						rows = tbl.ToDataTable(tbl.QueryRecords()).Select($"PointTag = '{target.target}'") ?? new DataRow[0];
-					}
-
-					if (rows.Length > 0)
-					{
-						tmptable = rows.CopyToDataTable();
-						table.Merge(tmptable);
-					}
-				}
-
-				return JsonConvert.SerializeObject(table);
-			},
-		   cancellationToken);
-
+        /// <summary>
+        /// Queries openPDC location data for Grafana.
+        /// </summary>
+        /// <param name="request"> Query request.</param>
+        /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+        /// <returns>JSON serialized location metadata for specified targets.</returns>
+        [HttpPost]
+        [SuppressMessage("Security", "SG0016", Justification = "CSRF exposure limited to meta-data access.")]
+        public virtual Task<string> GetLocationData(List<Target> request, CancellationToken cancellationToken)
+        {
 		}
-		
 
-		/// <summary>
-		/// Handled query function requests - returns empty results.
-		/// </summary>
-		/// <param name="request">Query request.</param>
-		/// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
-			[HttpPost]
+        /// <summary>
+        /// Handled query function requests - returns empty results.
+        /// </summary>
+        /// <param name="request">Query request.</param>
+        /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+        [HttpPost]
         [SuppressMessage("Security", "SG0016", Justification = "Current operation dictated by Grafana. CSRF exposure limited to data access.")]
         public virtual Task<List<TimeSeriesValues>> Query(QueryRequest request, CancellationToken cancellationToken)
         {
