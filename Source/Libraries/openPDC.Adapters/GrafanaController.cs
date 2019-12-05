@@ -27,16 +27,14 @@ using GSF.Data;
 using GSF.Data.Model;
 using openPDC.Model;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using CancellationToken = System.Threading.CancellationToken;
 using ValidateAntiForgeryTokenAttribute = System.Web.Mvc.ValidateAntiForgeryTokenAttribute;
-using Newtonsoft.Json;
+
 namespace openPDC.Adapters
 {
     /// <summary>
@@ -159,39 +157,5 @@ namespace openPDC.Adapters
         {
             return Task.FromResult(new List<TimeSeriesValues>());
         }
-
-		private DataTable ActiveMeasurmentTable()
-		{
-			DataTable result = new DataTable();
-
-			DataColumn PointTag = new DataColumn();
-			PointTag.DataType = System.Type.GetType("System.string");
-			PointTag.ColumnName = "PointTag";
-			result.Columns.Add(PointTag);
-
-			DataColumn Device = new DataColumn();
-			Device.DataType = System.Type.GetType("System.string");
-			Device.ColumnName = "Device";
-			result.Columns.Add(Device);
-
-			DataColumn DeviceID = new DataColumn();
-			DeviceID.DataType = System.Type.GetType("System.Int32");
-			DeviceID.ColumnName = "DeviceID";
-			result.Columns.Add(DeviceID);
-
-			DataColumn Longitude = new DataColumn();
-			Longitude.DataType = System.Type.GetType("System.Decimal");
-			Longitude.ColumnName = "Longitude";
-			Longitude.AutoIncrement = true;
-			result.Columns.Add(Longitude);
-
-			DataColumn Latitude = new DataColumn();
-			Latitude.DataType = System.Type.GetType("System.Decimal");
-			Latitude.ColumnName = "Latitude";
-			Latitude.AutoIncrement = true;
-			result.Columns.Add(Latitude);
-
-			return result;
-		}
     }
 }
