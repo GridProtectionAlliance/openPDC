@@ -25,6 +25,7 @@
         <ComponentGroupRef Id="SQLiteScriptComponents" />
         <ComponentRef Id="makecert"/>
         <ComponentRef Id="Sample1344"/>
+        <ComponentRef Id="TagTemplates"/>
 
         <!-- Web Files -->
         <?include WebFeatures.wxi ?>
@@ -100,6 +101,7 @@
 
     <Icon Id="openPDC.ico.exe" SourceFile="$(var.openPDC.TargetPath)" />
     <Icon Id="openPDCManager.ico.exe" SourceFile="$(var.openPDCManager.TargetPath)" />
+    <Icon Id="openPDCWebManager.ico.exe" SourceFile="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Images\Icons\openPDCWebManager.ico" />
     <Icon Id="openPDCConsole.ico.exe" SourceFile="$(var.openPDCConsole.TargetPath)" />
     <Icon Id="ConfigurationSetupUtility.ico.exe" SourceFile="$(var.ConfigurationSetupUtility.TargetPath)" />
     <Icon Id="DataMigrationUtility.ico.exe" SourceFile="$(var.ProjectDir)\DataMigrationUtility.exe" />
@@ -119,6 +121,7 @@
     <Property Id="COMPANYACRONYM" Value="GPA" />
     <SetProperty Id="SERVICEACCOUNT" Value="NT SERVICE\[SERVICENAME]" After="LaunchConditions" Sequence="first" />
     <SetProperty Id="PROCESSSTARTINFO" Value="FileName={[#ConfigurationSetupUtility.exe]};Arguments=-install;UseShellExecute=True;Verb=runas" After="ExecuteAction" Sequence="ui" />
+    <SetProperty Id="WEBMANAGERURL" Value="http://localhost:8280/" Before="CreateShortcuts" Sequence="execute" />
     <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\openPDCSetupBanner.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\openPDCSetupDialog.bmp" />
     <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\INSTALL_LICENSE.rtf" />
@@ -239,7 +242,15 @@
       <Component Id="Sample1344">
         <File Id="Sample1344.PmuCapture" Name="Sample1344.PmuCapture" Source="$(var.openPDC.ProjectDir)\Sample1344.PmuCapture" />
       </Component>
-      
+
+
+      <!-- Included Tag Templates -->
+      <Component Id="TagTemplates" Guid="{EB8CD69A-E9F5-4183-805F-455D2E3AF654}">
+        <File Id="Full_Checkout_Calculations.TagTemplate" Name="Full Checkout Calculations.TagTemplate" Source="$(var.openPDC.ProjectDir)\Full Checkout Calculations.TagTemplate" />
+        <File Id="Single_Phase_Power_Calculations.TagTemplate" Name="Single Phase Power Calculations.TagTemplate" Source="$(var.openPDC.ProjectDir)\Single Phase Power Calculations.TagTemplate" />
+        <File Id="Three_Phase_Power_Calculations.TagTemplate" Name="Three Phase Power Calculations.TagTemplate" Source="$(var.openPDC.ProjectDir)\Three Phase Power Calculations.TagTemplate" />
+      </Component>
+
       <!-- Registry Settings -->
       <Component Id="Registry" Guid="{F74C123C-C923-4B04-813B-05E81397C764}">
         <RegistryKey Id="REG_GridProtectionAlliance" Root="HKLM" Key="SOFTWARE\Grid Protection Alliance" ForceCreateOnInstall="yes">
@@ -294,12 +305,15 @@
       <Component Id="SerializedSchema">
         <File Id="SerializedSchema.bin" Name="SerializedSchema.bin" Source="$(var.SolutionDir)\Data\SerializedSchema.bin" />
       </Component>
-
       <Component Id="openPDC.Adapters">
         <File Id="openPDC.Adapters.dll" Name="$(var.openPDC.Adapters.TargetFileName)" Source="$(var.openPDC.Adapters.TargetPath)" />
       </Component>
       <Component Id="openPDC.Model">
         <File Id="openPDC.Model.dll" Name="$(var.openPDC.Model.TargetFileName)" Source="$(var.openPDC.Model.TargetPath)" />
+      </Component>
+      <Component Id="WebManagerShortcutComponent" Guid="{7F74327F-2837-4E3C-A4FB-23D556DB56D8}">
+        <Shortcut Id="WebManagerStartMenuShortcut" Directory="ApplicationProgramsFolder" Name="openPDC Web Manager" Icon="openPDCWebManager.ico.exe" Description="URL to the openPDC Web Manager." Target="[WEBMANAGERURL]" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\GPA\openPDC" Name="WebManagerShortcut" Type="string" Value="" KeyPath="yes" />
       </Component>
     </ComponentGroup>
 
@@ -652,10 +666,13 @@
         <File Id="Npgsql.dll" Name="Npgsql.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Npgsql.dll" />
       </Component>
       <Component Id="System.Data.SQLite">
-        <File Id="System.Data.SQLite.dll" Name="System.Data.SQLite.dll" Source="$(var.SolutionDir)\Dependencies\GSF\System.Data.SQLite.dll" />
+        <File Id="System.Data.SQLite.dll" Name="System.Data.SQLite.dll" Source="$(var.SolutionDir)Dependencies\GSF\System.Data.SQLite.dll" />
       </Component>
       <Component Id="sttp.gsf">
         <File Id="sttp.gsf.dll" Name="sttp.gsf.dll" Source="$(var.SolutionDir)\Dependencies\GSF\sttp.gsf.dll" />
+      </Component>
+      <Component Id="PhasorWebUI">
+        <File Id="PhasorWebUI.dll" Name="PhasorWebUI.dll" Source="$(var.SolutionDir)\Dependencies\GSF\PhasorWebUI.dll" />
       </Component>
     </ComponentGroup>
     

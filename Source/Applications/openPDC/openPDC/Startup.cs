@@ -38,6 +38,7 @@ using Newtonsoft.Json;
 using openPDC.Adapters;
 using Owin;
 using openPDC.Model;
+using PhasorWebUI;
 
 namespace openPDC
 {
@@ -67,7 +68,7 @@ namespace openPDC
             {
                 using (new SecurityHub(
                     (message, updateType) => Program.Host.LogWebHostStatusMessage(message, updateType),
-                    ex => Program.Host.LogException(ex)
+                    Program.Host.LogException
                 )) { }
             }
             catch (Exception ex)
@@ -80,7 +81,7 @@ namespace openPDC
             {
                 using (new SharedHub(
                     (message, updateType) => Program.Host.LogWebHostStatusMessage(message, updateType),
-                    ex => Program.Host.LogException(ex)
+                    Program.Host.LogException
                 )) { }
             }
             catch (Exception ex)
@@ -88,19 +89,21 @@ namespace openPDC
                 Program.Host.LogException(new SecurityException($"Failed to load Shared Hub: {ex.Message}", ex));
             }
 
-            // Load Modbus assembly
+            // Load phasor hub into application domain, initializing default status and exception handlers
             try
             {
-                // Make embedded resources of Modbus poller available to web server
-                using (ModbusPoller poller = new ModbusPoller())
-                    WebExtensions.AddEmbeddedResourceAssembly(poller.GetType().Assembly);
-
-                ModbusPoller.RestoreConfigurations(FilePath.GetAbsolutePath("ModbusConfigs"));
+                using (new PhasorHub(
+                    (message, updateType) => Program.Host.LogWebHostStatusMessage(message, updateType),
+                    Program.Host.LogException
+                )) { }
             }
             catch (Exception ex)
             {
-                Program.Host.LogException(new InvalidOperationException($"Failed to load Modbus assembly: {ex.Message}", ex));
+                Program.Host.LogException(new SecurityException($"Failed to load Phasor Hub: {ex.Message}", ex));
             }
+			
+            Load_ModbusAssembly();
+
 
             // Configure Windows Authentication for self-hosted web service
             HubConfiguration hubConfig = new HubConfiguration();
@@ -162,8 +165,29 @@ namespace openPDC
             // Check for configuration issues before first request
             httpConfig.EnsureInitialized();
         }
+   
+		private void Load_ModbusAssembly()
+        {
+            try
+            {
+                // Wrap class reference in lambda function to force
+                // assembly load errors to occur within the try-catch
+                new Action(() =>
+                {
+                    // Make embedded resources of Modbus poller available to web server
+                    using (ModbusPoller poller = new ModbusPoller())
+                        WebExtensions.AddEmbeddedResourceAssembly(poller.GetType().Assembly);
 
-        // Static Properties
+                    ModbusPoller.RestoreConfigurations(FilePath.GetAbsolutePath("ModbusConfigs"));
+                })();
+            }
+            catch (Exception ex)
+            {
+                Program.Host.LogException(new InvalidOperationException($"Failed to load Modbus assembly: {ex.Message}", ex));
+            }
+        }
+        
+		// Static Properties
 
         /// <summary>
         /// Gets the authentication options used for the hosted web server.

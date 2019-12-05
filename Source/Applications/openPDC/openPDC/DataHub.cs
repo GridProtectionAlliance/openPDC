@@ -360,8 +360,17 @@ namespace openPDC
         {
             DataContext.Table<Historian>().UpdateRecord(historian);
         }
-
-        #endregion
+		
+        /// <summary>
+        /// Gets loaded historian adapter instance names.
+        /// </summary>
+        /// <returns>Historian adapter instance names.</returns>
+        public IEnumerable<string> GetInstanceNames()
+        {
+            return DataContext.Table<Historian>().QueryRecordsWhere("Enabled != 0").Select(historian => historian.Acronym);
+        }
+        
+		#endregion
 
         #region [ DirectoryBrowser Operations ]
 

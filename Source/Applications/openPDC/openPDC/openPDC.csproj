@@ -171,6 +171,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\GSF\Owin.dll</HintPath>
     </Reference>
+    <Reference Include="PhasorProtocolAdapters, Version=2.3.242.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\GSF\PhasorProtocolAdapters.dll</HintPath>
+    </Reference>
+    <Reference Include="PhasorWebUI, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\GSF\PhasorWebUI.dll</HintPath>
+    </Reference>
+    <Reference Include="PowerCalculations, Version=2.3.242.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\GSF\PowerCalculations.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Http">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\GSF\System.Web.Http.dll</HintPath>
@@ -235,9 +247,15 @@
     <None Include="AppDebug.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Full Checkout Calculations.TagTemplate" />
     <None Include="openPDC.ico" />
     <None Include="PostBuildSetup.bat" />
     <Content Include="Web.config" />
+    <Content Include="wwwroot\AddDevice.cshtml" />
+    <Content Include="wwwroot\AddSynchrophasorDevice.cshtml" />
+    <Content Include="wwwroot\AddSynchrophasorDeviceDev.cshtml" />
+    <Content Include="Single Phase Power Calculations.TagTemplate" />
+    <Content Include="Three Phase Power Calculations.TagTemplate" />
     <None Include="wwwroot\Companies.cshtml" />
     <None Include="wwwroot\Devices.cshtml" />
     <Content Include="wwwroot\ParentStatus.cshtml" />

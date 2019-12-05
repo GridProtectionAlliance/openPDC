@@ -65,6 +65,8 @@
             loginPage = options.LoginPage;
         }
     }
+
+    string requiresEditor = UserIsAdminOrEditor() ? "" : " disabled";
 }
 @functions {
     public string GetCurrentUserID()
@@ -83,6 +85,16 @@
             return false;
 
         return securityPrincipal.IsInRole("Administrator");
+    }
+
+    public bool UserIsAdminOrEditor()
+    {
+        SecurityPrincipal securityPrincipal = ViewBag.SecurityPrincipal as SecurityPrincipal;
+
+        if ((object)securityPrincipal == null)
+            return false;
+
+        return securityPrincipal.IsInRole("Administrator,Editor");
     }
 }
 <!DOCTYPE html>
@@ -177,7 +189,13 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li @Raw(pageTitle == "Home" ? "class=\"active\"" : "")><a href="Index.cshtml">Home</a></li>
-                    <li @Raw(pageTitle == "Devices" ? "class=\"active\"" : "")><a href="Devices.cshtml">Devices</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Devices <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="Devices.cshtml">Browse Devices</a></li>
+                            <li><a href="AddDevice.cshtml" class="@(requiresEditor)"@requiresEditor>Add Device / Import Data</a></li>
+                        </ul>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Monitoring <span class="caret"></span></a>
                         <ul class="dropdown-menu">
@@ -188,27 +206,22 @@
                             <li><a href="RemoteConsole.cshtml">Remote Service Console</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Configuration <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="ModbusConfig.cshtml">Modbus Configuration Builder</a></li>
-                        </ul>
-                    </li>
-                    @if (UserIsAdmin()) {
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="Users.cshtml">Users</a></li>
-                            <li><a href="Groups.cshtml">Groups</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="Companies.cshtml">Companies</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="Vendors.cshtml">Vendors</a></li>
-                            <li><a href="VendorDevices.cshtml">Vendor Devices</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="SelectTheme.cshtml">Select Theme</a></li>
-                        </ul>
-                    </li>
+                    @if (UserIsAdmin())
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="Users.cshtml">Users</a></li>
+                                <li><a href="Groups.cshtml">Groups</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="Companies.cshtml">Companies</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="Vendors.cshtml">Vendors</a></li>
+                                <li><a href="VendorDevices.cshtml">Vendor Devices</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="SelectTheme.cshtml">Select Theme</a></li>
+                            </ul>
+                        </li>
                     }
                     <li @Raw(pageTitle == "Help" ? "class=\"active\"" : "")><a href="Help.cshtml">Help</a></li>
                 </ul>
@@ -252,6 +265,8 @@ else {
         @RenderBody()
 
     </div><!--/.container -->
+    @* jquery-ui.js needs to precede boostrap.js *@
+    <script src="@Resources.Root/Shared/Scripts/jquery-ui.js"></script>
     <script src="@Resources.Root/Shared/Scripts/bootstrap.js"></script>
     <script src="@Resources.Root/Shared/Scripts/jquery.signalR.js"></script>
     <script src="@Resources.Root/Shared/Scripts/js.cookie.js"></script>

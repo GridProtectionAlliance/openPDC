@@ -177,6 +177,10 @@ namespace openPDC
             systemSettings.Add("DefaultCorsHeaders", "*", "Comma-separated list of supported headers that define the default CORS policy. Use '*' to allow all or empty string to allow none.");
             systemSettings.Add("DefaultCorsMethods", "*", "Comma-separated list of supported methods that define the default CORS policy. Use '*' to allow all or empty string to allow none.");
             systemSettings.Add("DefaultCorsSupportsCredentials", true, "Boolean flag for the default CORS policy indicating whether the resource supports user credentials in the request.");
+            systemSettings.Add("NominalFrequency", 60, "Defines the nominal system frequency for this instance of the openHistorian");
+            systemSettings.Add("DefaultCalculationLagTime", 6.0, "Defines the default lag-time value, in seconds, for template calculations");
+            systemSettings.Add("DefaultCalculationLeadTime", 3.0, "Defines the default lead-time value, in seconds, for template calculations");
+            systemSettings.Add("DefaultCalculationFramesPerSecond", 30, "Defines the default frames-per-second value for template calculations");
 
             DefaultWebPage = systemSettings["DefaultWebPage"].Value;
 
@@ -199,11 +203,16 @@ namespace openPDC
             Model.Global.DefaultCorsHeaders = systemSettings["DefaultCorsHeaders"].Value;
             Model.Global.DefaultCorsMethods = systemSettings["DefaultCorsMethods"].Value;
             Model.Global.DefaultCorsSupportsCredentials = systemSettings["DefaultCorsSupportsCredentials"].ValueAsBoolean(true);
+            Model.Global.NominalFrequency = systemSettings["NominalFrequency"].ValueAsInt32(60);
+            Model.Global.DefaultCalculationLagTime = systemSettings["DefaultCalculationLagTime"].ValueAsDouble(6.0);
+            Model.Global.DefaultCalculationLeadTime = systemSettings["DefaultCalculationLeadTime"].ValueAsDouble(3.0);
+            Model.Global.DefaultCalculationFramesPerSecond = systemSettings["DefaultCalculationFramesPerSecond"].ValueAsInt32(30);
 
-            AuthenticationSchemes authenticationSchemes;
+            // Register a symbolic reference to global settings for use by default value expressions
+            ValueExpressionParser.DefaultTypeRegistry.RegisterSymbol("Global", Model.Global);
 
             // Parse configured authentication schemes
-            if (!Enum.TryParse(systemSettings["AuthenticationSchemes"].ValueAs(AuthenticationOptions.DefaultAuthenticationSchemes.ToString()), true, out authenticationSchemes))
+            if (!Enum.TryParse(systemSettings["AuthenticationSchemes"].ValueAs(AuthenticationOptions.DefaultAuthenticationSchemes.ToString()), true, out AuthenticationSchemes authenticationSchemes))
                 authenticationSchemes = AuthenticationOptions.DefaultAuthenticationSchemes;
 
             // Initialize web startup configuration
@@ -216,7 +225,7 @@ namespace openPDC
             Startup.AuthenticationOptions.LoginPage = systemSettings["LoginPage"].ValueAs(AuthenticationOptions.DefaultLoginPage);
             Startup.AuthenticationOptions.AuthTestPage = systemSettings["AuthTestPage"].ValueAs(AuthenticationOptions.DefaultAuthTestPage);
             Startup.AuthenticationOptions.Realm = systemSettings["Realm"].ValueAs("");
-            Startup.AuthenticationOptions.LoginHeader = $"<h2><img src=\"/Images/{Model.Global.ApplicationName}.png\"/> {Model.Global.ApplicationName}</h2>";
+            Startup.AuthenticationOptions.LoginHeader = $"<h3><img src=\"/Images/{Model.Global.ApplicationName}.png\"/> {Model.Global.ApplicationName}</h3>";
 
             // Validate that configured authentication test page does not evaluate as an anonymous resource nor a authentication failure redirection resource
             string authTestPage = Startup.AuthenticationOptions.AuthTestPage;
@@ -230,26 +239,30 @@ namespace openPDC
             if (Startup.AuthenticationOptions.AuthenticationToken == Startup.AuthenticationOptions.SessionToken)
                 throw new InvalidOperationException("Authentication token must be different from session token in order to differentiate the cookie values in the HTTP headers.");
 
-            // Register a symbolic reference to global settings for use by default value expressions
-            ValueExpressionParser.DefaultTypeRegistry.RegisterSymbol("Global", Program.Host.Model.Global);
-
             ServiceHelper.UpdatedStatus += UpdatedStatusHandler;
             ServiceHelper.LoggedException += LoggedExceptionHandler;
 
-            // Attach to default web server events
-            WebServer webServer = WebServer.Default;
-            webServer.StatusMessage += WebServer_StatusMessage;
-            webServer.ExecutionException += LoggedExceptionHandler;
+            Thread startWebServer = new Thread(() =>
+            {
+                // Attach to default web server events
+                WebServer webServer = WebServer.Default;
+                webServer.StatusMessage += WebServer_StatusMessage;
+                webServer.ExecutionException += LoggedExceptionHandler;
 
-            // Define types for Razor pages - self-hosted web service does not use view controllers so
-            // we must define configuration types for all paged view model based Razor views here:
-            webServer.PagedViewModelTypes.TryAdd("TrendMeasurements.cshtml", new Tuple<Type, Type>(typeof(ActiveMeasurement), typeof(DataHub)));
-            webServer.PagedViewModelTypes.TryAdd("Devices.cshtml", new Tuple<Type, Type>(typeof(Device), typeof(DataHub)));
-            webServer.PagedViewModelTypes.TryAdd("Companies.cshtml", new Tuple<Type, Type>(typeof(Company), typeof(SharedHub)));
-            webServer.PagedViewModelTypes.TryAdd("Vendors.cshtml", new Tuple<Type, Type>(typeof(Vendor), typeof(SharedHub)));
-            webServer.PagedViewModelTypes.TryAdd("VendorDevices.cshtml", new Tuple<Type, Type>(typeof(VendorDevice), typeof(SharedHub)));
-            webServer.PagedViewModelTypes.TryAdd("Users.cshtml", new Tuple<Type, Type>(typeof(UserAccount), typeof(SecurityHub)));
-            webServer.PagedViewModelTypes.TryAdd("Groups.cshtml", new Tuple<Type, Type>(typeof(SecurityGroup), typeof(SecurityHub)));
+                // Define types for Razor pages - self-hosted web service does not use view controllers so
+                // we must define configuration types for all paged view model based Razor views here:
+                webServer.PagedViewModelTypes.TryAdd("Devices.cshtml", new Tuple<Type, Type>(typeof(Device), typeof(DataHub)));
+                webServer.PagedViewModelTypes.TryAdd("Companies.cshtml", new Tuple<Type, Type>(typeof(Company), typeof(SharedHub)));
+                webServer.PagedViewModelTypes.TryAdd("Vendors.cshtml", new Tuple<Type, Type>(typeof(Vendor), typeof(SharedHub)));
+                webServer.PagedViewModelTypes.TryAdd("VendorDevices.cshtml", new Tuple<Type, Type>(typeof(VendorDevice), typeof(SharedHub)));
+                webServer.PagedViewModelTypes.TryAdd("Users.cshtml", new Tuple<Type, Type>(typeof(UserAccount), typeof(SecurityHub)));
+                webServer.PagedViewModelTypes.TryAdd("Groups.cshtml", new Tuple<Type, Type>(typeof(SecurityGroup), typeof(SecurityHub)));
+            })
+            {
+                IsBackground = true
+            };
+
+            startWebServer.Start();
 
             // Define exception logger for CSV downloader
             CsvDownloadHandler.LogExceptionHandler = LogException;
@@ -259,6 +272,8 @@ namespace openPDC
                 const int RetryDelay = 1000;
                 const int SleepTime = 200;
                 const int LoopCount = RetryDelay / SleepTime;
+
+                startWebServer.Join(5000);
 
                 while (!m_serviceStopping)
                 {
@@ -289,7 +304,6 @@ namespace openPDC
             }
             .Start();
         }
-
 
         private bool TryStartWebHosting(string webHostURL)
         {
