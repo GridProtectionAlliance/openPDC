@@ -274,7 +274,7 @@ namespace openPDC
             // Define exception logger for CSV downloader
             CsvDownloadHandler.LogExceptionHandler = LogException;
 
-            new Thread(() =>
+            new Thread(async () =>
             {
                 const int RetryDelay = 1000;
                 const int SleepTime = 200;
@@ -289,10 +289,10 @@ namespace openPDC
                         try
                         {
                             // Initiate pre-compile of base templates
-                            RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException);
-                            RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException, "GSF.Web.Security.Views.");
-                            RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException, "GSF.Web.Shared.Views.");
-                            RazorEngine<CSharp>.Default.PreCompile(LogException);
+                            await RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException, "GSF.Web.Security.Views.");
+                            await RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException, "GSF.Web.Shared.Views.");
+                            await RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException);
+                            await RazorEngine<CSharp>.Default.PreCompile(LogException);
                         }
                         catch (Exception ex)
                         {
