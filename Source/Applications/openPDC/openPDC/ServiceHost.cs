@@ -267,6 +267,7 @@ namespace openPDC
                     catch (Exception ex)
                     {
                         LogException(new InvalidOperationException($"Failed during web-server initialization: {ex.Message}", ex));
+                        return;
                     }
 
                     const int RetryDelay = 1000;
