@@ -41,6 +41,7 @@ using GSF.Web.Model.Handlers;
 using GSF.Web.Security;
 using GSF.Web.Shared;
 using GSF.Web.Shared.Model;
+using Microsoft.Ajax.Utilities;
 using Microsoft.Owin.Hosting;
 using openPDC.Model;
 
@@ -181,6 +182,7 @@ namespace openPDC
             systemSettings.Add("DefaultCalculationLagTime", 6.0, "Defines the default lag-time value, in seconds, for template calculations");
             systemSettings.Add("DefaultCalculationLeadTime", 3.0, "Defines the default lead-time value, in seconds, for template calculations");
             systemSettings.Add("DefaultCalculationFramesPerSecond", 30, "Defines the default frames-per-second value for template calculations");
+            systemSettings.Add("WebHostingEnabled", true, "Flag that determines if the web hosting engine is enabled.");
 
             DefaultWebPage = systemSettings["DefaultWebPage"].Value;
 
@@ -242,74 +244,70 @@ namespace openPDC
             ServiceHelper.UpdatedStatus += UpdatedStatusHandler;
             ServiceHelper.LoggedException += LoggedExceptionHandler;
 
-            Thread startWebServer = new Thread(() =>
+            if (systemSettings["WebHostingEnabled"].ValueAs(true))
             {
-                try
+                Thread startWebServer = new Thread(() =>
                 {
-                    // Attach to default web server events
-                    WebServer webServer = WebServer.Default;
-                    webServer.StatusMessage += WebServer_StatusMessage;
-                    webServer.ExecutionException += LoggedExceptionHandler;
+                    try
+                    {
+                        // Attach to default web server events
+                        WebServer webServer = WebServer.Default;
+                        webServer.StatusMessage += WebServer_StatusMessage;
+                        webServer.ExecutionException += LoggedExceptionHandler;
 
-                    // Define types for Razor pages - self-hosted web service does not use view controllers so
-                    // we must define configuration types for all paged view model based Razor views here:
-                    webServer.PagedViewModelTypes.TryAdd("Devices.cshtml", new Tuple<Type, Type>(typeof(Device), typeof(DataHub)));
-                    webServer.PagedViewModelTypes.TryAdd("Companies.cshtml", new Tuple<Type, Type>(typeof(Company), typeof(SharedHub)));
-                    webServer.PagedViewModelTypes.TryAdd("Vendors.cshtml", new Tuple<Type, Type>(typeof(Vendor), typeof(SharedHub)));
-                    webServer.PagedViewModelTypes.TryAdd("VendorDevices.cshtml", new Tuple<Type, Type>(typeof(VendorDevice), typeof(SharedHub)));
-                    webServer.PagedViewModelTypes.TryAdd("Users.cshtml", new Tuple<Type, Type>(typeof(UserAccount), typeof(SecurityHub)));
-                    webServer.PagedViewModelTypes.TryAdd("Groups.cshtml", new Tuple<Type, Type>(typeof(SecurityGroup), typeof(SecurityHub)));
-                }
-                catch (Exception ex)
+                        // Define types for Razor pages - self-hosted web service does not use view controllers so
+                        // we must define configuration types for all paged view model based Razor views here:
+                        webServer.PagedViewModelTypes.TryAdd("Devices.cshtml", new Tuple<Type, Type>(typeof(Device), typeof(DataHub)));
+                        webServer.PagedViewModelTypes.TryAdd("Companies.cshtml", new Tuple<Type, Type>(typeof(Company), typeof(SharedHub)));
+                        webServer.PagedViewModelTypes.TryAdd("Vendors.cshtml", new Tuple<Type, Type>(typeof(Vendor), typeof(SharedHub)));
+                        webServer.PagedViewModelTypes.TryAdd("VendorDevices.cshtml", new Tuple<Type, Type>(typeof(VendorDevice), typeof(SharedHub)));
+                        webServer.PagedViewModelTypes.TryAdd("Users.cshtml", new Tuple<Type, Type>(typeof(UserAccount), typeof(SecurityHub)));
+                        webServer.PagedViewModelTypes.TryAdd("Groups.cshtml", new Tuple<Type, Type>(typeof(SecurityGroup), typeof(SecurityHub)));
+                    }
+                    catch (Exception ex)
+                    {
+                        LogException(new InvalidOperationException($"Failed during web-server initialization: {ex.Message}", ex));
+                    }
+
+                    const int RetryDelay = 1000;
+                    const int SleepTime = 200;
+                    const int LoopCount = RetryDelay / SleepTime;
+
+                    while (!m_serviceStopping)
+                    {
+                        if (TryStartWebHosting(systemSettings["WebHostURL"].Value))
+                        {
+                            try
+                            {
+                                Minifier _ = new Minifier();
+
+                                // Initiate pre-compile of base templates
+                                RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException, "GSF.Web.Security.Views.");
+                                RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException, "GSF.Web.Shared.Views.");
+                                RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException);
+                                RazorEngine<CSharp>.Default.PreCompile(LogException);
+                            }
+                            catch (Exception ex)
+                            {
+                                LogException(new InvalidOperationException($"Failed to initiate pre-compile of razor templates: {ex.Message}", ex));
+                            }
+                            
+                            break;
+                        }
+
+                        for (int i = 0; i < LoopCount && !m_serviceStopping; i++)
+                            Thread.Sleep(SleepTime);
+                    }
+                })
                 {
-                    LogException(new InvalidOperationException($"Failed during web-server initialization: {ex.Message}", ex));
-                }
-            })
-            {
-                IsBackground = true
-            };
+                    IsBackground = true
+                };
 
-            startWebServer.Start();
+                startWebServer.Start();
+            }
 
             // Define exception logger for CSV downloader
             CsvDownloadHandler.LogExceptionHandler = LogException;
-
-            new Thread(async () =>
-            {
-                const int RetryDelay = 1000;
-                const int SleepTime = 200;
-                const int LoopCount = RetryDelay / SleepTime;
-
-                startWebServer.Join(5000);
-
-                while (!m_serviceStopping)
-                {
-                    if (TryStartWebHosting(systemSettings["WebHostURL"].Value))
-                    {
-                        try
-                        {
-                            // Initiate pre-compile of base templates
-                            await RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException, "GSF.Web.Security.Views.");
-                            await RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException, "GSF.Web.Shared.Views.");
-                            await RazorEngine<CSharpEmbeddedResource>.Default.PreCompile(LogException);
-                            await RazorEngine<CSharp>.Default.PreCompile(LogException);
-                        }
-                        catch (Exception ex)
-                        {
-                            LogException(new InvalidOperationException($"Failed to initiate pre-compile of razor templates: {ex.Message}", ex));
-                        }
-
-                        break;
-                    }
-
-                    for (int i = 0; i < LoopCount && !m_serviceStopping; i++)
-                        Thread.Sleep(SleepTime);
-                }
-            })
-            {
-                IsBackground = true
-            }
-            .Start();
         }
 
         private bool TryStartWebHosting(string webHostURL)
