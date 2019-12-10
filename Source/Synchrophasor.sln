@@ -159,6 +159,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\FtpAdapters.dll = Dependencies\GSF\FtpAdapters.dll
 		Dependencies\GSF\FtpAdapters.xml = Dependencies\GSF\FtpAdapters.xml
 		Dependencies\GSF\Google.ProtocolBuffers.dll = Dependencies\GSF\Google.ProtocolBuffers.dll
+		Dependencies\GSF\GrafanaAdapters.dll = Dependencies\GSF\GrafanaAdapters.dll
 		Dependencies\GSF\GSF.ASN1.dll = Dependencies\GSF\GSF.ASN1.dll
 		Dependencies\GSF\GSF.ASN1.xml = Dependencies\GSF\GSF.ASN1.xml
 		Dependencies\GSF\GSF.Communication.dll = Dependencies\GSF\GSF.Communication.dll
