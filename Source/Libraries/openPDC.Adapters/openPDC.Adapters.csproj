@@ -62,7 +62,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeviceAlarmStateAdapter.cs" />
     <Compile Include="GrafanaController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -53,23 +53,6 @@ namespace openPDC.Adapters
         }
 
         /// <summary>
-        /// Queries current alarm device state.
-        /// </summary>
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public Task<IEnumerable<openPDC.Model.AlarmDeviceStateView>> GetAlarmState(QueryRequest request, CancellationToken cancellationToken)
-        //{
-        //    return Task.Factory.StartNew(() =>
-        //    {
-        //        using (AdoDataConnection connection = new AdoDataConnection("systemSettings"))
-        //        {
-        //            return new TableOperations<openPDC.Model.AlarmDeviceStateView>(connection).QueryRecords("Name");
-        //        }
-        //    },
-        //    cancellationToken);
-        //}
-
-        /// <summary>
         /// Queries current data availability.
         /// </summary>
         [HttpPost]
