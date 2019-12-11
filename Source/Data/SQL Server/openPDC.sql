@@ -116,7 +116,7 @@ GO
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW [dbo].[SchemaVersion] AS
-SELECT 10 AS VersionNumber
+SELECT 11 AS VersionNumber
 GO
 
 SET ANSI_NULLS ON
@@ -3102,21 +3102,12 @@ GO
 --    RETURN @measurements
 --END
 
---GO 
--- *******************************************************************************************
--- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
--- *******************************************************************************************
-CREATE VIEW [dbo].[LocalSchemaVersion] AS
-SELECT 3 AS VersionNumber
-GO
+--GO
 
-CREATE TABLE DataAvailability(
-	ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	GoodAvailableData FLOAT NOT NULL,
-	BadAvailableData FLOAT NOT NULL,
-	TotalAvailableData FLOAT NOT NULL,
-)
-GO
+
+-- **************************
+-- Alarm Panel Data
+-- **************************
 
 CREATE TABLE AlarmState(
 	ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -3154,3 +3145,19 @@ FROM AlarmDevice
     INNER JOIN AlarmState ON AlarmDevice.StateID = AlarmState.ID
     INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID
 GO
+ 
+-- *******************************************************************************************
+-- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
+-- *******************************************************************************************
+CREATE VIEW [dbo].[LocalSchemaVersion] AS
+SELECT 3 AS VersionNumber
+GO
+
+CREATE TABLE DataAvailability(
+	ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	GoodAvailableData FLOAT NOT NULL,
+	BadAvailableData FLOAT NOT NULL,
+	TotalAvailableData FLOAT NOT NULL,
+)
+GO
+

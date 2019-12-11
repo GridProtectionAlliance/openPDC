@@ -38,7 +38,7 @@
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW SchemaVersion AS
-SELECT 10 AS VersionNumber
+SELECT 11 AS VersionNumber
 FROM dual;
 
 CREATE TABLE ErrorLog(
@@ -2753,30 +2753,11 @@ CREATE PACKAGE BODY context AS
         RETURN current_user;
     END;
 END;
-/ 
--- *******************************************************************************************
--- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
--- *******************************************************************************************
-CREATE VIEW LocalSchemaVersion AS
-SELECT 3 AS VersionNumber
-FROM dual;
+/
 
-
-CREATE TABLE DataAvailability(
-	ID NUMBER NOT NULL,
-	GoodAvailableData NUMBER NOT NULL,
-	BadAvailableData NUMBER NOT NULL,
-	TotalAvailableData NUMBER NOT NULL,
-);
-ALTER TABLE DataAvailability ADD CONSTRAINT PK_DataAvailability PRIMARY KEY (ID);
-
-CREATE SEQUENCE SEQ_DataAvailability START WITH 1 INCREMENT BY 1;
-
-CREATE TRIGGER AI_DataAvailability BEFORE INSERT ON DataAvailability
-    FOR EACH ROW BEGIN SELECT SEQ_DataAvailability.nextval INTO :NEW.ID FROM dual;
-END;
-
-
+-- **************************
+-- Alarm Panel Data
+-- **************************
 CREATE TABLE AlarmState(
 	ID NUMBER NOT NULL,
 	State varchar(50) NULL,
@@ -2814,3 +2795,25 @@ SELECT AlarmDevice.ID, Device.Name, AlarmState.State, AlarmState.Color, AlarmDev
 FROM AlarmDevice
     INNER JOIN AlarmState ON AlarmDevice.StateID = AlarmState.ID
     INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID;
+ 
+-- *******************************************************************************************
+-- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
+-- *******************************************************************************************
+CREATE VIEW LocalSchemaVersion AS
+SELECT 3 AS VersionNumber
+FROM dual;
+
+
+CREATE TABLE DataAvailability(
+	ID NUMBER NOT NULL,
+	GoodAvailableData NUMBER NOT NULL,
+	BadAvailableData NUMBER NOT NULL,
+	TotalAvailableData NUMBER NOT NULL,
+);
+ALTER TABLE DataAvailability ADD CONSTRAINT PK_DataAvailability PRIMARY KEY (ID);
+
+CREATE SEQUENCE SEQ_DataAvailability START WITH 1 INCREMENT BY 1;
+
+CREATE TRIGGER AI_DataAvailability BEFORE INSERT ON DataAvailability
+    FOR EACH ROW BEGIN SELECT SEQ_DataAvailability.nextval INTO :NEW.ID FROM dual;
+END;

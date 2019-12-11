@@ -38,7 +38,7 @@ USE openPDC;
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW SchemaVersion AS
-SELECT 10 AS VersionNumber;
+SELECT 11 AS VersionNumber;
 
 CREATE TABLE ErrorLog(
     ID INT AUTO_INCREMENT NOT NULL,
@@ -1822,20 +1822,11 @@ DELIMITER ;
 --     RETURN measurements;
 -- END$$
 -- DELIMITER ;
- 
--- *******************************************************************************************
--- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
--- *******************************************************************************************
-CREATE VIEW LocalSchemaVersion AS
-SELECT 3 AS VersionNumber;
 
-CREATE TABLE DataAvailability(
-	ID int AUTO_INCREMENT NOT NULL,
-	GoodAvailableData float NOT NULL,
-	BadAvailableData float NOT NULL,
-	TotalAvailableData float NOT NULL,
-	PRIMARY KEY(ID)
-);
+-- **************************
+-- Alarm Panel Data
+-- **************************
+
 
 CREATE TABLE AlarmState(
 	ID int AUTO_INCREMENT NOT NULL,
@@ -1869,4 +1860,17 @@ CREATE VIEW AlarmDeviceStateView AS
 SELECT AlarmDevice.ID, Device.Name, AlarmState.State, AlarmState.Color, AlarmDevice.DisplayData
 FROM AlarmDevice
     INNER JOIN AlarmState ON AlarmDevice.StateID = AlarmState.ID
-    INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID;
+    INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID; 
+-- *******************************************************************************************
+-- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
+-- *******************************************************************************************
+CREATE VIEW LocalSchemaVersion AS
+SELECT 3 AS VersionNumber;
+
+CREATE TABLE DataAvailability(
+	ID int AUTO_INCREMENT NOT NULL,
+	GoodAvailableData float NOT NULL,
+	BadAvailableData float NOT NULL,
+	TotalAvailableData float NOT NULL,
+	PRIMARY KEY(ID)
+);

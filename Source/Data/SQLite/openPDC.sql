@@ -33,7 +33,7 @@ PRAGMA foreign_keys = ON;
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW SchemaVersion AS
-SELECT 10 AS VersionNumber;
+SELECT 11 AS VersionNumber;
 
 CREATE TABLE ErrorLog(
     ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -1725,19 +1725,10 @@ BEGIN INSERT INTO TrackedChange(TableName, PrimaryKeyColumn, PrimaryKeyValue) SE
 CREATE TRIGGER SignalType_UpdateTracker AFTER UPDATE ON SignalType FOR EACH ROW
 WHEN OLD.Acronym <> NEW.Acronym
 BEGIN INSERT INTO TrackedChange(TableName, PrimaryKeyColumn, PrimaryKeyValue) SELECT 'ActiveMeasurement', 'SignalID', SignalID FROM Measurement WHERE SignalTypeID = NEW.ID; END;
- 
--- *******************************************************************************************
--- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
--- *******************************************************************************************
-CREATE VIEW LocalSchemaVersion AS
-SELECT 3 AS VersionNumber;
 
-CREATE TABLE DataAvailability(
-	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	GoodAvailableData DOUBLE NOT NULL,
-	BadAvailableData DOUBLE NOT NULL,
-	TotalAvailableData DOUBLE NOT NULL
-);
+-- **************************
+-- Alarm Panel Data
+-- **************************
 
 CREATE TABLE AlarmState(
 	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -1760,3 +1751,17 @@ SELECT AlarmDevice.ID, Device.Name, AlarmState.State, AlarmState.Color, AlarmDev
 FROM AlarmDevice
     INNER JOIN AlarmState ON AlarmDevice.StateID = AlarmState.ID
     INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID;
+ 
+-- *******************************************************************************************
+-- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
+-- *******************************************************************************************
+CREATE VIEW LocalSchemaVersion AS
+SELECT 3 AS VersionNumber;
+
+CREATE TABLE DataAvailability(
+	ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	GoodAvailableData DOUBLE NOT NULL,
+	BadAvailableData DOUBLE NOT NULL,
+	TotalAvailableData DOUBLE NOT NULL
+);
+

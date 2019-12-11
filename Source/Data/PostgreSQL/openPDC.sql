@@ -36,7 +36,7 @@
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW SchemaVersion AS
-SELECT 10 AS VersionNumber;
+SELECT 11 AS VersionNumber;
 
 CREATE EXTENSION "uuid-ossp";
 
@@ -1867,20 +1867,10 @@ $SignalType_UpdateTrackerFn$ LANGUAGE plpgsql;
 CREATE TRIGGER SignalType_UpdateTracker AFTER UPDATE ON SignalType
 FOR EACH ROW WHEN (OLD.Acronym <> NEW.Acronym)
 EXECUTE PROCEDURE SignalType_UpdateTrackerFn();
- 
--- *******************************************************************************************
--- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
--- *******************************************************************************************
-CREATE VIEW LocalSchemaVersion AS
-SELECT 3 AS VersionNumber;
 
-CREATE TABLE DataAvailability(
-	ID SERIAL NOT NULL PRIMARY KEY,
-	GoodAvailableData DOUBLE PRECISION NOT NULL,
-	BadAvailableData DOUBLE PRECISION NOT NULL,
-	TotalAvailableData DOUBLE PRECISION NOT NULL
-);
-
+-- **************************
+-- Alarm Panel Data
+-- **************************
 CREATE TABLE AlarmState(
 	ID SERIAL NOT NULL PRIMARY KEY,
 	State varchar(50) NULL,
@@ -1901,4 +1891,17 @@ CREATE VIEW AlarmDeviceStateView AS
 SELECT AlarmDevice.ID, Device.Name, AlarmState.State, AlarmState.Color, AlarmDevice.DisplayData
 FROM AlarmDevice
     INNER JOIN AlarmState ON AlarmDevice.StateID = AlarmState.ID
-    INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID;
+    INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID; 
+-- *******************************************************************************************
+-- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
+-- *******************************************************************************************
+CREATE VIEW LocalSchemaVersion AS
+SELECT 3 AS VersionNumber;
+
+CREATE TABLE DataAvailability(
+	ID SERIAL NOT NULL PRIMARY KEY,
+	GoodAvailableData DOUBLE PRECISION NOT NULL,
+	BadAvailableData DOUBLE PRECISION NOT NULL,
+	TotalAvailableData DOUBLE PRECISION NOT NULL
+);
+
