@@ -39,7 +39,6 @@ using ModbusAdapters;
 using ModbusAdapters.Model;
 using openPDC.Model;
 using Newtonsoft.Json.Linq;
-using AlarmState = GrafanaAdapters.AlarmState;
 
 namespace openPDC
 {
