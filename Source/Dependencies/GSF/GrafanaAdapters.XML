@@ -472,6 +472,13 @@
             <param name="maxLength">Maximum number of available characters for display.</param>
             <returns>A short one-line summary of the current status of this adapter.</returns>
         </member>
+        <member name="M:GrafanaAdapters.DeviceAlarmStateAdapter.GetShortElapsedTimeString(GSF.Ticks)">
+            <summary>
+            Get short elapsed time string for specified <paramref name="span"/>.
+            </summary>
+            <param name="span"><see cref="T:GSF.Ticks"/> representing time span.</param>
+            <returns>Short elapsed time string.</returns>
+        </member>
         <member name="T:GrafanaAdapters.AlarmState">
             <summary>
             Represents the Alarm State of a connected Device.
