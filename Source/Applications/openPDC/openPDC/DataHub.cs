@@ -21,6 +21,12 @@
 //
 //******************************************************************************************************
 
+using GSF;
+using GSF.Data.Model;
+using GSF.Identity;
+using GSF.Web.Hubs;
+using GSF.Web.Model.HubOperations;
+using GSF.Web.Security;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,16 +34,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
-using GSF;
-using GSF.Data.Model;
-using GSF.Identity;
-using GSF.Web.Hubs;
-using GSF.Web.Model.HubOperations;
-using GSF.Web.Security;
+using GrafanaAdapters;
 using ModbusAdapters;
 using ModbusAdapters.Model;
 using openPDC.Model;
 using Newtonsoft.Json.Linq;
+using AlarmState = GrafanaAdapters.AlarmState;
 
 namespace openPDC
 {

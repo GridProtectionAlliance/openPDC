@@ -126,6 +126,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\GSF\ExpressionEvaluator.dll</HintPath>
     </Reference>
+    <Reference Include="GrafanaAdapters, Version=2.3.251.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\GSF\GrafanaAdapters.dll</HintPath>
+    </Reference>
     <Reference Include="GSF.Communication">
       <HintPath>..\..\..\Dependencies\GSF\GSF.Communication.dll</HintPath>
     </Reference>
