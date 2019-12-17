@@ -92,18 +92,20 @@ namespace openPDC
             // Load phasor hub into application domain, initializing default status and exception handlers
             try
             {
-                using (new PhasorHub(
+                using (PhasorHub hub = new PhasorHub(
                     (message, updateType) => Program.Host.LogWebHostStatusMessage(message, updateType),
                     Program.Host.LogException
-                )) { }
+                ))
+                {
+                    WebExtensions.AddEmbeddedResourceAssembly(hub.GetType().Assembly);                  
+                }
             }
             catch (Exception ex)
             {
                 Program.Host.LogException(new SecurityException($"Failed to load Phasor Hub: {ex.Message}", ex));
             }
-			
-            Load_ModbusAssembly();
 
+            Load_ModbusAssembly();
 
             // Configure Windows Authentication for self-hosted web service
             HubConfiguration hubConfig = new HubConfiguration();
@@ -165,8 +167,8 @@ namespace openPDC
             // Check for configuration issues before first request
             httpConfig.EnsureInitialized();
         }
-   
-		private void Load_ModbusAssembly()
+
+        private void Load_ModbusAssembly()
         {
             try
             {
@@ -187,7 +189,7 @@ namespace openPDC
             }
         }
         
-		// Static Properties
+        // Static Properties
 
         /// <summary>
         /// Gets the authentication options used for the hosted web server.
