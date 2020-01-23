@@ -729,8 +729,6 @@ GO
 
 INSERT INTO VendorDevice(VendorID, Name, Description, URL) VALUES(15, 'ePDC', 'ePDC & eSPDC', 'http://www.electricpowergroup.com/solutions/epdc/index.html')
 GO
-USE openPDC
-GO
 
 INSERT INTO AlarmState (State, Color) VALUES ('Good', 'green')
 GO
@@ -751,4 +749,5 @@ INSERT INTO AlarmState (State, Color) VALUES ('Out of Service', 'grey')
 GO
 
 INSERT INTO AlarmState (State, Color) VALUES ('Acknowledged', 'rosybrown')
+GOUSE openPDC
 GO
