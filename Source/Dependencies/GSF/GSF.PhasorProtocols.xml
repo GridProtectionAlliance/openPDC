@@ -13152,6 +13152,11 @@
             <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with populated with data.</param>
             <param name="context">The source <see cref="T:System.Runtime.Serialization.StreamingContext"/> for this deserialization.</param>
         </member>
+        <member name="P:GSF.PhasorProtocols.IEEEC37_118.ConfigurationFrame3.HeaderImage">
+            <summary>
+            Gets the binary header image of the <see cref="T:GSF.PhasorProtocols.IEEEC37_118.ConfigurationFrame3"/> object.
+            </summary>
+        </member>
         <member name="P:GSF.PhasorProtocols.IEEEC37_118.ConfigurationFrame3.TypeID">
             <summary>
             Gets the <see cref="T:GSF.PhasorProtocols.IEEEC37_118.FrameType"/> of this <see cref="T:GSF.PhasorProtocols.IEEEC37_118.ConfigurationFrame3"/>.
@@ -14017,6 +14022,17 @@
         <member name="T:GSF.PhasorProtocols.IEEEC37_118.ConfigurationFrame1">
             <summary>
             Represents the IEEE C37.118 implementation of a <see cref="T:GSF.PhasorProtocols.IConfigurationFrame"/>, type 1, that can be sent or received.
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.IEEEC37_118.ConfigurationFrame1.FixedHeaderLength">
+            <summary>
+            Represents the Length of the fixed part of this header
+            (total length - length of point definitions).
+            </summary>
+        </member>
+        <member name="F:GSF.PhasorProtocols.IEEEC37_118.ConfigurationFrame1.m_timebase">
+            <summary>
+            Represents the TimeBase of the configuration frame.
             </summary>
         </member>
         <member name="M:GSF.PhasorProtocols.IEEEC37_118.ConfigurationFrame1.#ctor">

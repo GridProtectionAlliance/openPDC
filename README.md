@@ -39,12 +39,12 @@ With version 2.1 or later, the openPDC can be deployed in [POSIX environments](h
 # Deployment
 
 * For Windows:
-  1. Make sure your system meets all the requirements below.
-  * Choose a [download](#downloads) below.
-  * Unzip if necessary.
-  * Run openPDCSetup.msi.
-  * Follow the wizard.
-  * Enjoy.
+  * Make sure your system meets all the requirements below:
+    * Choose a [download](#downloads) below.
+    * Unzip if necessary.
+    * Run openPDCSetup.msi.
+    * Follow the wizard.
+    * Enjoy.
 * For POSIX OS:
   * See [Deploying the openPDC on POSIX Platforms](https://gpags.sharepoint.com/TeamSite/_layouts/15/WopiFrame.aspx?guestaccesstoken=ADyQzHPxsfTh9qs4glPelL78SoBA1pTJV1%2fWy6b0ct4%3d&docid=08819043371f24a089e4924e86525dd69&action=view).
 
@@ -59,7 +59,10 @@ With version 2.1 or later, the openPDC can be deployed in [POSIX environments](h
   * PostgreSQL
   * SQLite (included, no extra install required - not recommended for large deployments)
 
+<!--
+Ready for Windows site is now retired:
 [![Supported on Windows 10](https://gridprotectionalliance.org/images/products/SupportedOnWindows10.png)](https://developer.microsoft.com/en-us/windows/ready-for-windows/#/app/?NPId=b076c1940527f5e946e0b533fb29f223)
+-->
 
 ## Downloads
 

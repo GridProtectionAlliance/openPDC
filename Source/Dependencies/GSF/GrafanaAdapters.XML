@@ -479,6 +479,27 @@
             <param name="span"><see cref="T:GSF.Ticks"/> representing time span.</param>
             <returns>Short elapsed time string.</returns>
         </member>
+        <member name="T:GrafanaAdapters.DeviceGroup">
+            <summary>
+            Represents a Group of Devices
+            Also modeled as a seperate virtual Device with connection string
+            </summary>
+        </member>
+        <member name="P:GrafanaAdapters.DeviceGroup.ID">
+            <summary>
+            Unique ID.
+            </summary>
+        </member>
+        <member name="P:GrafanaAdapters.DeviceGroup.Name">
+            <summary>
+            name of the Device.
+            </summary>
+        </member>
+        <member name="P:GrafanaAdapters.DeviceGroup.Devices">
+            <summary>
+            List of attached DeviceIds
+            </summary>
+        </member>
         <member name="T:GrafanaAdapters.AlarmState">
             <summary>
             Represents the Alarm State of a connected Device.
@@ -559,6 +580,11 @@
             Additional data to be displayed.
             </summary>
         </member>
+        <member name="P:GrafanaAdapters.AlarmDeviceStateView.DeviceID">
+            <summary>
+            Device ID of the Alarmed Device.
+            </summary>
+        </member>
         <member name="T:GrafanaAdapters.GrafanaDataService">
             <summary>
             Represents a REST based API for a simple JSON based Grafana data source for the openHistorian 1.0.
@@ -576,6 +602,24 @@
         <member name="M:GrafanaAdapters.GrafanaDataService.GetAlarmState(GrafanaAdapters.QueryRequest)">
             <summary>
             Queries openPDC Alarmstates as a Grafana data source.
+            </summary>
+            <param name="request">Query request.</param>
+        </member>
+        <member name="M:GrafanaAdapters.GrafanaDataService.GetDeviceAlarms(GrafanaAdapters.QueryRequest)">
+            <summary>
+            Queries openHistorian Device Alarmstates.
+            </summary>
+            <param name="request">Query request.</param>
+        </member>
+        <member name="M:GrafanaAdapters.GrafanaDataService.GetDeviceGroups(GrafanaAdapters.QueryRequest)">
+            <summary>
+            Queries openHistorian Device Groups.
+            </summary>
+            <param name="request">Query request.</param>
+        </member>
+        <member name="M:GrafanaAdapters.GrafanaDataService.GetAlarms(GrafanaAdapters.QueryRequest)">
+            <summary>
+            Queries openPDC Alarms as a Grafana alarm data source.
             </summary>
             <param name="request">Query request.</param>
         </member>
@@ -615,6 +659,13 @@
             </summary>
             <param name="request">Annotation request.</param>
         </member>
+        <member name="M:GrafanaAdapters.GrafanaDataService.GetLocationData(GrafanaAdapters.LocationRequest)">
+            <summary>
+            Queries openHistorian location data for Grafana offsetting duplicate coordinates using a radial distribution.
+            </summary>
+            <param name="request"> Query request.</param>
+            <returns>JSON serialized location metadata for specified targets.</returns>
+        </member>
         <member name="M:GrafanaAdapters.GrafanaDataService.#ctor">
             <summary>
             Creates a new instance of a <see cref="T:GrafanaAdapters.GrafanaDataService"/>.
@@ -628,6 +679,11 @@
         <member name="P:GrafanaAdapters.GrafanaDataService.Archive">
             <summary>
             Gets or sets the <see cref="T:GSF.Historian.IArchive"/> used by the web service for its data.
+            </summary>
+        </member>
+        <member name="P:GrafanaAdapters.GrafanaDataService.LocationData">
+            <summary>
+            Gets the <see cref="P:GrafanaAdapters.GrafanaDataService.LocationData"/> used by the web service to get geographic information for Phasors.
             </summary>
         </member>
         <member name="M:GrafanaAdapters.GrafanaDataService.Dispose(System.Boolean)">
@@ -1244,6 +1300,30 @@
             <param name="cancellationToken">Cancellation token.</param>
             <returns> Queried device alarm states.</returns>
         </member>
+        <member name="M:GrafanaAdapters.GrafanaDataSourceBase.GetDeviceAlarms(GrafanaAdapters.QueryRequest,System.Threading.CancellationToken)">
+            <summary>
+            Queries All Available Device Alarm states.
+            </summary>
+            <param name="request">Alarm request.</param>
+            <param name="cancellationToken">Cancellation token.</param>
+            <returns> Queried device alarm states.</returns>
+        </member>
+        <member name="M:GrafanaAdapters.GrafanaDataSourceBase.GetDeviceGroups(GrafanaAdapters.QueryRequest,System.Threading.CancellationToken)">
+            <summary>
+            Queries All Available Device Groups.
+            </summary>
+            <param name="request">request.</param>
+            <param name="cancellationToken">Cancellation token.</param>
+            <returns> List of Device Groups.</returns>
+        </member>
+        <member name="M:GrafanaAdapters.GrafanaDataSourceBase.GetAlarms(GrafanaAdapters.QueryRequest,System.Threading.CancellationToken)">
+            <summary>
+            Query Current Alarms Based on list of Points.
+            </summary>
+            <param name="request">Alarm request.</param>
+            <param name="cancellationToken">Cancellation token.</param>
+            <returns> Queried alarm states.</returns>
+        </member>
         <member name="M:GrafanaAdapters.GrafanaDataSourceBase.Query(GrafanaAdapters.QueryRequest,System.Threading.CancellationToken)">
             <summary>
             Queries data source returning data as Grafana time-series data set.
@@ -1351,12 +1431,22 @@
             <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
             <returns>JSON serialized location metadata for specified targets.</returns>
         </member>
+        <member name="T:GrafanaAdapters.GrafanaAlarm">
+            <summary>
+            Defines a Grafana Alarm. Similar to the GSF Alarm but without <see cref="T:GrafanaAdapters.AlarmState"/> location request.
+            </summary>
+        </member>
         <member name="T:GrafanaAdapters.QueryRequest">
             <summary>
             Defines a Grafana query request.
             </summary>
         </member>
         <member name="P:GrafanaAdapters.QueryRequest.panelId">
+            <summary>
+            Panel ID of request.
+            </summary>
+        </member>
+        <member name="P:GrafanaAdapters.QueryRequest.dashboardId">
             <summary>
             Panel ID of request.
             </summary>
@@ -1439,6 +1529,26 @@
         <member name="P:GrafanaAdapters.Table.type">
             <summary>
             Table type (typically set to "table").
+            </summary>
+        </member>
+        <member name="T:GrafanaAdapters.LocationRequest">
+            <summary>
+            Defines a Grafana query location request.
+            </summary>
+        </member>
+        <member name="P:GrafanaAdapters.LocationRequest.radius">
+            <summary>
+            Radius of overlapping coordinate distribution.
+            </summary>
+        </member>
+        <member name="P:GrafanaAdapters.LocationRequest.zoom">
+            <summary>
+            Zoom level.
+            </summary>
+        </member>
+        <member name="P:GrafanaAdapters.LocationRequest.request">
+            <summary>
+            Query request.
             </summary>
         </member>
         <member name="T:GrafanaAdapters.Target">

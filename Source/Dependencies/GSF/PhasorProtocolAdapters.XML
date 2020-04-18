@@ -143,6 +143,11 @@
             Cancels a configuration frame request
             </summary>
         </member>
+        <member name="M:PhasorProtocolAdapters.CommonPhasorServices.RenameAllPointTags">
+            <summary>
+            Initiates a full point-tag rename based on the currently configured \"PointTagNameExpression\" as defined in the &lt;systemSettings&gt; section of the local configuration file.
+            </summary>
+        </member>
         <member name="M:PhasorProtocolAdapters.CommonPhasorServices.SendCommand(GSF.PhasorProtocols.DeviceCommand)">
             <summary>
             Sends the specified <see cref="T:GSF.PhasorProtocols.DeviceCommand"/> to the current device connection.
@@ -702,6 +707,16 @@
             <returns>New <see cref="T:GSF.PhasorProtocols.IEEEC37_118.ConfigurationFrame1"/> frame based on source configuration.</returns>
             <remarks>
             This function allow an explicit downcast of a typical IEEE C37.118 configuration type 2 frame to a type 1 frame.
+            </remarks>
+        </member>
+        <member name="M:PhasorProtocolAdapters.IeeeC37_118.Concentrator.CastToConfigurationFrame3(GSF.PhasorProtocols.IEEEC37_118.ConfigurationFrame2)">
+            <summary>
+            Converts given IEEE C37.118 type 2 <paramref name="sourceFrame"/> into a type 3 configuration frame.
+            </summary>
+            <param name="sourceFrame">Source configuration frame.</param>
+            <returns>New <see cref="T:GSF.PhasorProtocols.IEEEC37_118.ConfigurationFrame3"/> frame based on source configuration.</returns>
+            <remarks>
+            This function allow an explicit downcast of a typical IEEE C37.118 configuration type 2 frame to a type 3 frame.
             </remarks>
         </member>
         <member name="T:PhasorProtocolAdapters.PhasorDataConcentratorBase">
