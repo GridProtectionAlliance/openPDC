@@ -334,7 +334,7 @@
       </Component>
       <Component Id="WebManagerShortcutComponent" Guid="{7F74327F-2837-4E3C-A4FB-23D556DB56D8}">
         <Shortcut Id="WebManagerStartMenuShortcut" Directory="ApplicationProgramsFolder" Name="openPDC Web Manager" Icon="openPDCWebManager.ico.exe" Description="URL to the openPDC Web Manager." Target="[WEBMANAGERURL]" />
-        <RegistryValue Root="HKLM" Key="SOFTWARE\GPA\openPDC" Name="WebManagerShortcut" Type="string" Value="" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Grid Protection Alliance\openPDC" Name="WebManagerShortcut" Type="string" Value="" KeyPath="yes" />
       </Component>
     </ComponentGroup>
 
