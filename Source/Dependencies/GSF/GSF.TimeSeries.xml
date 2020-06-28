@@ -537,12 +537,33 @@
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.SignalReferenceTemplate">
             <summary>
-            Gets or sets template for local signal reference measurement name for source historian point.
+            Gets or sets template for output measurement signal reference names.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.DescriptionTemplate">
+            <summary>
+            Gets or sets template for output measurement descriptions.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.ParentDeviceAcronymTemplate">
+            <summary>
+            Gets or sets template for the parent device acronym used to group associated output measurements.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.SignalType">
             <summary>
-            Gets or sets signal type for output measurements.
+            Gets or sets default signal type to use for all output measurements when <see cref="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.SignalTypes"/> array is not defined.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.SignalTypes">
+            <summary>
+            Gets per adapter signal type for output measurements, used when each output needs to be a different type.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.CustomAdapterSettings">
+            <summary>
+            Gets any custom adapter settings to be added to each adapter connection string. Can be used to add
+            settings that are custom per adapter.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.TargetHistorianAcronym">
@@ -606,6 +627,21 @@
         <member name="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.AdapterIDCounter">
             <summary>
             Gets or sets current adapter ID counter.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.CurrentAdapterIndex">
+            <summary>
+            Gets adapter index currently being processed.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.CurrentOutputIndex">
+            <summary>
+            Gets adapter output index currently being processed.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.CurrentDeviceID">
+            <summary>
+            Gets associated device ID for <see cref="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.CurrentAdapterIndex"/>, if any, for measurement generation.
             </summary>
         </member>
         <member name="M:GSF.TimeSeries.Adapters.IIndependentAdapterManager.ParseConnectionString">
@@ -711,7 +747,7 @@
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.OutputMeasurements">
             <summary>
-            Gets or sets output measurements that the <see cref="T:GSF.TimeSeries.Adapters.AdapterBase"/> will produce, if any.
+            Gets or sets output measurements that the <see cref="T:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1"/> will produce, if any.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.FramesPerSecond">
@@ -769,12 +805,33 @@
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.SignalReferenceTemplate">
             <summary>
-            Gets or sets template for local signal reference measurement name for source historian point.
+            Gets or sets template for output measurement signal reference names.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.DescriptionTemplate">
+            <summary>
+            Gets or sets template for output measurement descriptions.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.ParentDeviceAcronymTemplate">
+            <summary>
+            Gets or sets template for the parent device acronym used to group associated output measurements.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.SignalType">
             <summary>
-            Gets or sets signal type for output measurements.
+            Gets or sets default signal type to use for all output measurements when <see cref="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.SignalTypes"/> array is not defined.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.SignalTypes">
+            <summary>
+            Gets per adapter signal type for output measurements, used when each output needs to be a different type.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.CustomAdapterSettings">
+            <summary>
+            Gets any custom adapter settings to be added to each adapter connection string. Can be used to add
+            settings that are custom per adapter.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.TargetHistorianAcronym">
@@ -829,6 +886,22 @@
         <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.AdapterIDCounter">
             <summary>
             Gets or sets current adapter ID counter.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.CurrentAdapterIndex">
+            <summary>
+            Gets adapter index currently being processed.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.CurrentOutputIndex">
+            <summary>
+            Gets adapter output index currently being processed.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.CurrentDeviceID">
+            <summary>
+            Gets associated device ID for <see cref="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.CurrentAdapterIndex"/>, if any, for measurement generation. If overridden to provide custom
+            device ID, <see cref="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.ParentDeviceAcronymTemplate"/> should be set to <c>null</c> so no parent device is created.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentActionAdapterManagerBase`1.Status">
@@ -938,6 +1011,16 @@
             Defines the default value for the <see cref="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.SignalReferenceTemplate"/>.
             </summary>
         </member>
+        <member name="F:GSF.TimeSeries.Adapters.IndependentAdapterManagerExtensions.DefaultDescriptionTemplate">
+            <summary>
+            Defines the default value for the <see cref="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.DescriptionTemplate"/>.
+            </summary>
+        </member>
+        <member name="F:GSF.TimeSeries.Adapters.IndependentAdapterManagerExtensions.DefaultParentDeviceAcronymTemplate">
+            <summary>
+            Defines the default value for the <see cref="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.ParentDeviceAcronymTemplate"/>.
+            </summary>
+        </member>
         <member name="F:GSF.TimeSeries.Adapters.IndependentAdapterManagerExtensions.DefaultSignalType">
             <summary>
             Defines the default value for the <see cref="P:GSF.TimeSeries.Adapters.IIndependentAdapterManager.SignalType"/>.
@@ -979,13 +1062,15 @@
             <param name="measurementTable">Measurement table name used for meta-data lookup.</param>
             <returns><c>true</c>, if <paramref name="signalID"/> is found; otherwise, <c>false</c>.</returns>
         </member>
-        <member name="M:GSF.TimeSeries.Adapters.IndependentAdapterManagerExtensions.GetMeasurementRecord(GSF.TimeSeries.Adapters.IIndependentAdapterManager,System.String,System.String,GSF.Units.EE.SignalType,System.String)">
+        <member name="M:GSF.TimeSeries.Adapters.IndependentAdapterManagerExtensions.GetMeasurementRecord(GSF.TimeSeries.Adapters.IIndependentAdapterManager,System.Int32,System.String,System.String,System.String,GSF.Units.EE.SignalType,System.String)">
             <summary>
             Gets measurement record, creating it if needed.
             </summary>
             <param name="instance">Target <see cref="T:GSF.TimeSeries.Adapters.IIndependentAdapterManager"/> instance.</param>
+            <param name="currentDeviceID">Device ID associated with current adapter, or zero if none.</param>
             <param name="pointTag">Point tag of measurement.</param>
             <param name="signalReference">Signal reference of measurement.</param>
+            <param name="description">Description of measurement.</param>
             <param name="signalType">Signal type of measurement.</param>
             <param name="targetHistorianAcronym">Acronym of target historian for measurement.</param>
             <returns>Measurement record.</returns>
@@ -1132,12 +1217,33 @@
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.SignalReferenceTemplate">
             <summary>
-            Gets or sets template for local signal reference measurement name for source historian point.
+            Gets or sets template for output measurement signal reference names.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.DescriptionTemplate">
+            <summary>
+            Gets or sets template for output measurement descriptions.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.ParentDeviceAcronymTemplate">
+            <summary>
+            Gets or sets template for the parent device acronym used to group associated output measurements.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.SignalType">
             <summary>
-            Gets or sets signal type for output measurements.
+            Gets or sets default signal type to use for all output measurements when <see cref="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.SignalTypes"/> array is not defined.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.SignalTypes">
+            <summary>
+            Gets per adapter signal type for output measurements, used when each output needs to be a different type.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.CustomAdapterSettings">
+            <summary>
+            Gets any custom adapter settings to be added to each adapter connection string. Can be used to add
+            settings that are custom per adapter.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.TargetHistorianAcronym">
@@ -1172,6 +1278,22 @@
         <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.OutputMeasurementTypes">
             <summary>
             Gets output measurement <see cref="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.SignalType"/>'s for each of the <see cref="P:GSF.TimeSeries.Adapters.AdapterBase.OutputMeasurements"/>, if any.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.CurrentAdapterIndex">
+            <summary>
+            Gets adapter index currently being processed.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.CurrentOutputIndex">
+            <summary>
+            Gets adapter output index currently being processed.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.CurrentDeviceID">
+            <summary>
+            Gets associated device ID for <see cref="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.CurrentAdapterIndex"/>, if any, for measurement generation. If overridden to provide custom
+            device ID, <see cref="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.ParentDeviceAcronymTemplate"/> should be set to <c>null</c> so no parent device is created.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentInputAdapterManagerBase.Status">
@@ -1265,24 +1387,10 @@
             Gets or sets the provider string used for database operations. Defaults to a SQL Server provider string.
             </summary>
         </member>
-        <member name="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.PointTagTemplate">
+        <member name="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.CustomAdapterSettings">
             <summary>
-            Gets or sets template for output measurement point tag names.
-            </summary>
-        </member>
-        <member name="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.SignalReferenceTemplate">
-            <summary>
-            Gets or sets template for local signal reference measurement name for source historian point.
-            </summary>
-        </member>
-        <member name="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.SignalType">
-            <summary>
-            Gets or sets signal type for output measurements.
-            </summary>
-        </member>
-        <member name="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.TargetHistorianAcronym">
-            <summary>
-            Gets or sets the target historian acronym for output measurements.
+            Gets any custom adapter settings to be added to each adapter connection string. Can be used to add
+            settings that are custom per adapter.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.SourceMeasurementTable">
@@ -1316,7 +1424,22 @@
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.InputMeasurementKeyTypes">
             <summary>
-            Gets input measurement <see cref="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.SignalType"/>'s for each of the <see cref="P:GSF.TimeSeries.Adapters.AdapterBase.InputMeasurementKeys"/>, if any.
+            Gets input measurement <see cref="T:GSF.Units.EE.SignalType"/>'s for each of the <see cref="P:GSF.TimeSeries.Adapters.AdapterBase.InputMeasurementKeys"/>, if any.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.CurrentAdapterIndex">
+            <summary>
+            Get adapter index currently being processed.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.CurrentOutputIndex">
+            <summary>
+            Get adapter output index currently being processed.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.CurrentDeviceID">
+            <summary>
+            Gets associated device ID for <see cref="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.CurrentAdapterIndex"/>, if any, for measurement generation.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Adapters.IndependentOutputAdapterManagerBase.Status">
@@ -10615,6 +10738,11 @@
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.UseZeroMQChannel">
             <summary>
             Gets or sets flag that determines if ZeroMQ should be used for command channel communications.
+            </summary>
+        </member>
+        <member name="P:GSF.TimeSeries.Transport.DataSubscriber.UseSimpleTcpClient">
+            <summary>
+            Gets or sets flag that determines if a <see cref="T:GSF.Communication.TcpSimpleClient"/> should be used for connection.
             </summary>
         </member>
         <member name="P:GSF.TimeSeries.Transport.DataSubscriber.LoggingPath">
