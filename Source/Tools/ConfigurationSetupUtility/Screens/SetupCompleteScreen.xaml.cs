@@ -143,8 +143,9 @@ namespace ConfigurationSetupUtility.Screens
                         // Validate needed end-point bindings for Grafana interfaces
                         ValidateGrafanaBindings();
 
-                        // Make sure needed assembly bindings exist in config file (needed for self-hosted web server)
-                        WebExtensions.ValidateAssemblyBindings(Path.Combine(Directory.GetCurrentDirectory(), App.ApplicationConfig));
+                        // Make sure needed assembly bindings exist in config file (required for self-hosted web server)
+                        RunHiddenConsoleApp(FilePath.GetAbsolutePath("ValidateAssemblyBindings.exe"), FilePath.GetAbsolutePath(App.ApplicationConfig));
+                        RunHiddenConsoleApp(FilePath.GetAbsolutePath("ValidateAssemblyBindings.exe"), FilePath.GetAbsolutePath(App.ManagerConfig));
 
                         if (migrate)
                         {
@@ -1023,6 +1024,30 @@ namespace ConfigurationSetupUtility.Screens
             }
 
             return connection;
+        }
+
+        private void RunHiddenConsoleApp(string application, string arguments)
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = false,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true,
+                    FileName = application,
+                    Arguments = arguments
+                };
+
+                // Pre-start console process for quick update responses
+                Process process = new Process { StartInfo = startInfo };
+                process.Start();
+                process.WaitForExit(10000);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to execute \"{application} {arguments}\": {ex.Message}", "Execution Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         #endregion
