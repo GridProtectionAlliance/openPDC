@@ -75,7 +75,7 @@ namespace ConfigurationSetupUtility
             m_errorLogger.LogToEmail = false;
             m_errorLogger.LogToEventLog = true;
             m_errorLogger.LogToFile = true;
-            m_errorLogger.LogToScreenshot = true;
+            m_errorLogger.LogToScreenshot = false;
             m_errorLogger.LogToUI = true;
             m_errorLogger.Initialize();
 
@@ -103,6 +103,24 @@ namespace ConfigurationSetupUtility
             {
                 m_errorLogger.Log(new InvalidOperationException(string.Format("Warning: failed to create or validate the event log source for the openPDC Manager: {0}", ex.Message), ex), false);
             }
+
+            try
+            {
+                using (Process util = new Process())
+                {
+                    util.StartInfo.FileName = "NoInetFixUtil.exe";
+                    util.StartInfo.Arguments = " --checkall";
+                    util.StartInfo.UseShellExecute = true;
+                    util.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (!m_errorLogger.ErrorLog.IsOpen)
+                    m_errorLogger.ErrorLog.Open();
+
+                m_errorLogger.ErrorLog.WriteLine($"Warning: failed to run NoInetUtil: {ex.Message}");
+            }
         }
 
         #endregion
@@ -112,13 +130,7 @@ namespace ConfigurationSetupUtility
         /// <summary>
         /// Gets reference to global error logger.
         /// </summary>
-        public ErrorLogger ErrorLogger
-        {
-            get
-            {
-                return m_errorLogger;
-            }
-        }
+        public ErrorLogger ErrorLogger => m_errorLogger;
 
         #endregion
 
@@ -134,7 +146,7 @@ namespace ConfigurationSetupUtility
                 if (string.Compare(ex.Message, "UnhandledException", true) == 0 && ex.InnerException != null)
                     ex = ex.InnerException;
 
-                errorMessage = string.Format("{0}\r\n\r\nError details: {1}", errorMessage, ex.Message);
+                errorMessage = $"{errorMessage}\r\n\r\nError details: {ex.Message}";
             }
 
             return errorMessage;
@@ -159,7 +171,7 @@ namespace ConfigurationSetupUtility
                 try
                 {
                     Version version = Assembly.GetEntryAssembly().GetName().Version;
-                    s_currentVersionLabel = string.Format("v{0}{1}", version.Major, version.Minor);
+                    s_currentVersionLabel = $"v{version.Major}{version.Minor}";
                 }
                 catch
                 {

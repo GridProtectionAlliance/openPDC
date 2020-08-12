@@ -260,6 +260,8 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Full Checkout Calculations.TagTemplate" />
+    <Content Include="Installers\PMUConnectionTesterSetup.msi" />
+    <Content Include="Installers\StreamSplitterSetup.msi" />
     <None Include="openPDC.ico" />
     <None Include="PostBuildSetup.bat" />
     <Content Include="Web.config" />

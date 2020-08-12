@@ -7,14 +7,18 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+
 [assembly: AssemblyTitle("Configuration Setup Utility")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyDescription("Setup and Configuration Utility for openPDC")]
 [assembly: AssemblyCompany("Grid Protection Alliance")]
 [assembly: AssemblyProduct("openPDC")]
-[assembly: AssemblyCopyright("Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyCopyright("Copyright © 2020, Grid Protection Alliance.  All Rights Reserved.")]
+
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug Build")]
+#else
+[assembly: AssemblyConfiguration("Release Build")]
+#endif
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

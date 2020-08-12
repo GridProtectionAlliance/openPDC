@@ -22,13 +22,18 @@
 //******************************************************************************************************
 
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Security.Principal;
 using System.Windows;
-using GSF.TimeSeries;
-using GSF.TimeSeries.UI;
+using GSF;
+using GSF.Configuration;
 using GSF.Data;
 using GSF.Windows.ErrorManagement;
 using GSF.Reflection;
+using GSF.TimeSeries;
+using GSF.TimeSeries.UI;
+using openPDCManager.Properties;
 
 namespace openPDCManager
 {
@@ -41,9 +46,8 @@ namespace openPDCManager
 
         // Fields
         private Guid m_nodeID;
-        private ErrorLogger m_errorLogger;
-        private Func<string> m_defaultErrorText;
-        private string m_title;
+        private readonly ErrorLogger m_errorLogger;
+        private readonly Func<string> m_defaultErrorText;
 
         #endregion
 
@@ -56,19 +60,23 @@ namespace openPDCManager
         {
             AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
 
-            m_errorLogger = new ErrorLogger();
-            m_defaultErrorText = m_errorLogger.ErrorTextMethod;
-            m_errorLogger.ErrorTextMethod = ErrorText;
-            m_errorLogger.ExitOnUnhandledException = false;
-            m_errorLogger.HandleUnhandledException = true;
-            m_errorLogger.LogToEmail = false;
-            m_errorLogger.LogToEventLog = true;
-            m_errorLogger.LogToFile = true;
-            m_errorLogger.LogToScreenshot = true;
-            m_errorLogger.LogToUI = true;
+            m_errorLogger = new ErrorLogger
+            {
+                ErrorTextMethod = ErrorText, 
+                ExitOnUnhandledException = false, 
+                HandleUnhandledException = true, 
+                LogToEmail = false, 
+                LogToEventLog = true, 
+                LogToFile = true, 
+                LogToScreenshot = true, 
+                LogToUI = true
+            };
+
             m_errorLogger.Initialize();
 
-            m_title = AssemblyInfo.EntryAssembly.Title;
+            m_defaultErrorText = m_errorLogger.ErrorTextMethod;
+
+            Title = AssemblyInfo.EntryAssembly.Title;
 
             // Setup default cache for measurement keys and associated Guid based signal ID's
             AdoDataConnection database = null;
@@ -76,6 +84,30 @@ namespace openPDCManager
             try
             {
                 database = new AdoDataConnection(CommonFunctions.DefaultSettingsCategory);
+
+                if (!Environment.CommandLine.Contains("-elevated"))
+                {
+                    ConfigurationFile configurationFile = ConfigurationFile.Current;
+                    CategorizedSettingsElementCollection systemSettings = configurationFile.Settings["SystemSettings"];
+                    string elevateSetting = systemSettings["ElevateProcess"]?.Value;
+
+                    bool elevateProcess = !string.IsNullOrEmpty(elevateSetting) ? elevateSetting.ParseBoolean() : database.IsSqlite;
+
+                    if (elevateProcess)
+                    {
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = Environment.GetCommandLineArgs()[0],
+                            Arguments = string.Join(" ", Environment.GetCommandLineArgs().Skip(1)) + " -elevated",
+                            UseShellExecute = true,
+                            Verb = "runas"
+                        };
+
+                        using (Process.Start(startInfo)) { }
+                        Environment.Exit(0);
+                    }
+                }
+
                 MeasurementKey.EstablishDefaultCache(database.Connection, database.AdapterType);
             }
             catch (Exception ex)
@@ -85,12 +117,11 @@ namespace openPDCManager
                 MessageBox.Show(ex.Message);
 
                 // Log and display error, then exit application - manager must connect to database to continue
-                m_errorLogger.Log(new InvalidOperationException(string.Format("{0} cannot connect to database: {1}", m_title, ex.Message), ex), true);
+                m_errorLogger.Log(new InvalidOperationException($"{Title} cannot connect to database: {ex.Message}", ex), true);
             }
             finally
             {
-                if (database != null)
-                    database.Dispose();
+                database?.Dispose();
             }
 
             IsolatedStorageManager.WriteToIsolatedStorage("MirrorMode", false);
@@ -105,10 +136,7 @@ namespace openPDCManager
         /// </summary>
         public Guid NodeID
         {
-            get
-            {
-                return m_nodeID;
-            }
+            get => m_nodeID;
             set
             {
                 m_nodeID = value;
@@ -119,22 +147,13 @@ namespace openPDCManager
         /// <summary>
         /// Gets title of the application window.
         /// </summary>
-        public string Title
-        {
-            get
-            {
-                return m_title;
-            }
-        }
+        public string Title { get; }
 
         #endregion
 
         #region [ Methods ]
 
-        private void Application_SessionEnding(object sender, SessionEndingCancelEventArgs e)
-        {
-            global::openPDCManager.Properties.Settings.Default.Save();
-        }
+        private void Application_SessionEnding(object sender, SessionEndingCancelEventArgs e) => Settings.Default.Save();
 
         private string ErrorText()
         {
@@ -143,10 +162,10 @@ namespace openPDCManager
 
             if (ex != null)
             {
-                if (string.Compare(ex.Message, "UnhandledException", true) == 0 && ex.InnerException != null)
+                if (string.Compare(ex.Message, "UnhandledException", StringComparison.OrdinalIgnoreCase) == 0 && ex.InnerException != null)
                     ex = ex.InnerException;
 
-                errorMessage = string.Format("{0}\r\n\r\nError details: {1}", errorMessage, ex.Message);
+                errorMessage = $"{errorMessage}\r\n\r\nError details: {ex.Message}";
             }
 
             return errorMessage;

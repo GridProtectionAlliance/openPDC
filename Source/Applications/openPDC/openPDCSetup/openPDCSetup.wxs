@@ -74,8 +74,17 @@
         <Feature Id="DNP3ConfigGeneratorFeature" Title="DNP3 Configuration Generator">
           <ComponentRef Id="DNP3ConfigGenerator" />
         </Feature>
+        <Feature Id="CreateOutputStreamFeature" Title="Create Output Stream Tool">
+          <ComponentRef Id="CreateOutputStream"/>
+        </Feature>
         <Feature Id="MacrodyneControllerFeature" Title="Macrodyne Controller">
           <ComponentGroupRef Id="MacrodyneControllerComponents" />
+        </Feature>
+        <Feature Id="GEPDataExtractorFeature" Title="GEP Data Extractor">
+          <ComponentGroupRef Id="GEPDataExtractorComponents" />
+        </Feature>
+        <Feature Id="UpdateTagNamesFeature" Title="Update Tag Names Tool">
+          <ComponentGroupRef Id="UpdateTagNamesComponents" />
         </Feature>
         
         <ComponentGroupRef Id="GSFDependencyComponents" />
@@ -119,6 +128,7 @@
     <Property Id="HTTPSERVICEPORTS" Value="6051,6052,6151,6152,6352,6452,5018,8280" />
     <Property Id="COMPANYNAME" Value="Grid Protection Alliance" />
     <Property Id="COMPANYACRONYM" Value="GPA" />
+    <Property Id="SYSTEMNAME" Value=" " />
     <SetProperty Id="SERVICEACCOUNT" Value="NT SERVICE\[SERVICENAME]" After="LaunchConditions" Sequence="first" />
     <SetProperty Id="PROCESSSTARTINFO" Value="FileName={[#ConfigurationSetupUtility.exe]};Arguments=-install;UseShellExecute=True;Verb=runas" After="ExecuteAction" Sequence="ui" />
     <SetProperty Id="WEBMANAGERURL" Value="http://localhost:8280/" Before="CreateShortcuts" Sequence="execute" />
@@ -138,7 +148,7 @@
     <CustomAction Id="AuthenticateServiceAccountAction" BinaryKey="InstallerActions" DllEntry="AuthenticateServiceAccountAction" Execute="immediate" />
     <CustomAction Id="LoadExistingCompanyInfoAction" BinaryKey="InstallerActions" DllEntry="LoadExistingCompanyInfoAction" Execute="immediate" />
     <CustomAction Id="StartCSUProcessAction" BinaryKey="InstallerActions" DllEntry="StartProcessAction" Execute="immediate" />
-    <CustomAction Id="CompanyInfoAction.SetProperty" Property="CompanyInfoAction" Value="SERVICENAME=[SERVICENAME];INSTALLDIR=[INSTALLFOLDER];COMPANYNAME=[COMPANYNAME];COMPANYACRONYM=[COMPANYACRONYM]" />
+    <CustomAction Id="CompanyInfoAction.SetProperty" Property="CompanyInfoAction" Value="SERVICENAME=[SERVICENAME];INSTALLDIR=[INSTALLFOLDER];COMPANYNAME=[COMPANYNAME];COMPANYACRONYM=[COMPANYACRONYM];SYSTEMNAME=[SYSTEMNAME]" />
     <CustomAction Id="CompanyInfoAction" BinaryKey="InstallerActions" DllEntry="CompanyInfoAction" Execute="deferred" Impersonate="no" />
     <CustomAction Id="ConfigureServiceAction.SetProperty" Property="ConfigureServiceAction" Value="SERVICENAME=[SERVICENAME]" />
     <CustomAction Id="ConfigureServiceAction" BinaryKey="InstallerActions" DllEntry="ConfigureServiceAction" Execute="deferred" Impersonate="no" />
@@ -174,7 +184,7 @@
               <util:PermissionEx User="[SERVICENAME] Admins" CreateFile="yes" CreateChild="yes" GenericRead="yes" GenericWrite="yes" GenericExecute="yes" Delete="yes" DeleteChild="yes" />
             </CreateFolder>
           </Component>
-          
+
           <Directory Id="DATABASESCRIPTSFOLDER" Name="Database Scripts">
             <Directory Id="MYSQLSCRIPTSFOLDER" Name="MySQL" />
             <Directory Id="ORACLESCRIPTSFOLDER" Name="Oracle" />
@@ -186,6 +196,7 @@
           </Directory>
           <?include WebFolders.wxi ?>
 
+          <Directory Id="OPTIONALINSTALLSFOLDER" Name="Installers" />
         </Directory>
       </Directory>
       <?else ?>
@@ -204,16 +215,17 @@
             <Directory Id="POSTGRESSCRIPTSFOLDER" Name="PostgreSQL" />
             <Directory Id="SQLSERVERSCRIPTSFOLDER" Name="SQL Server" />
             <Directory Id="SQLITESCRIPTSFOLDER" Name="SQLite" />
+          </Directory>
 
             <?include WebFolders.wxi ?>
 
+            <Directory Id="OPTIONALINSTALLSFOLDER" Name="Installers" />
           </Directory>
         </Directory>
-      </Directory>
-      <?endif ?>
+        <?endif ?>
 
-      <Directory Id="ProgramMenuFolder">
-        <Directory Id="ApplicationProgramsFolder" Name="openPDC" />
+        <Directory Id="ProgramMenuFolder">
+          <Directory Id="ApplicationProgramsFolder" Name="openPDC" />
       </Directory>
     </Directory>
   </Fragment>
@@ -222,6 +234,17 @@
     <?include WebFiles.wxi ?>
   </Fragment>
 
+  <Fragment>
+    <ComponentGroup Id="OptionalInstallsFiles" Directory="OPTIONALINSTALLSFOLDER">
+      <Component Id="PMUConnectionTesterSetup">
+        <File Id="PMUConnectionTesterSetup" Name="PMUConnectionTesterSetup.msi" Source="$(var.SolutionDir)Applications\openPDC\openPDC\Installers\PMUConnectionTesterSetup.msi" />
+      </Component>
+      <Component Id="StreamSplitterSetup">
+        <File Id="StreamSplitterSetup" Name="StreamSplitterSetup.msi" Source="$(var.SolutionDir)Applications\openPDC\openPDC\Installers\StreamSplitterSetup.msi" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <!-- Applications -->
@@ -314,6 +337,14 @@
       <Component Id="StatHistorianReportGeneratorConfig">
         <File Id="StatHistorianReportGenerator.exe.config" Name="StatHistorianReportGenerator.exe.config" Source="$(var.ProjectDir)\StatHistorianReportGenerator.exe.config" />
       </Component>
+      <Component Id="BulkCalculationState">
+        <File Id="BulkCalculationState.exe" Name="BulkCalculationState.exe" Source="$(var.ProjectDir)\BulkCalculationState.exe">
+          <netfx:NativeImage Id="ngen_BulkCalculationState.exe" Platform="64bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+      <Component Id="BulkCalculationStateConfig">
+        <File Id="BulkCalculationState.exe.config" Name="BulkCalculationState.exe.config" Source="$(var.ProjectDir)\BulkCalculationState.exe.config" />
+      </Component>
       <Component Id="Reports">
         <File Id="Reports.dll" Name="Reports.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Reports.dll">
           <netfx:NativeImage Id="ngen_Reports.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
@@ -336,6 +367,7 @@
         <Shortcut Id="WebManagerStartMenuShortcut" Directory="ApplicationProgramsFolder" Name="openPDC Web Manager" Icon="openPDCWebManager.ico.exe" Description="URL to the openPDC Web Manager." Target="[WEBMANAGERURL]" />
         <RegistryValue Root="HKLM" Key="SOFTWARE\Grid Protection Alliance\openPDC" Name="WebManagerShortcut" Type="string" Value="" KeyPath="yes" />
       </Component>
+      <ComponentGroupRef Id="OptionalInstallsFiles" />
     </ComponentGroup>
 
     <!-- openPDC Manager -->
@@ -377,6 +409,8 @@
       <ComponentGroupRef Id="HistorianViewComponents" />
       <ComponentGroupRef Id="LogFileViewerComponents" />
       <ComponentGroupRef Id="MacrodyneControllerComponents" />
+      <ComponentGroupRef Id="GEPDataExtractorComponents" />
+      <ComponentGroupRef Id="UpdateTagNamesComponents" />
 
       <Component Id="NoInetFixUtil">
         <File Id="NoInetFixUtil.exe" Name="NoInetFixUtil.exe" Source="$(var.ProjectDir)\NoInetFixUtil.exe">
@@ -388,6 +422,12 @@
       <Component Id="DNP3ConfigGenerator">
         <File Id="DNP3ConfigGenerator.exe" Name="DNP3ConfigGenerator.exe" Source="$(var.ProjectDir)\DNP3ConfigGenerator.exe">
           <netfx:NativeImage Id="ngen_DNP3ConfigGenerator.exe" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+
+      <Component Id="CreateOutputStream">
+        <File Id="CreateOutputStream.exe" Name="CreateOutputStream.exe" Source="$(var.ProjectDir)\CreateOutputStream.exe">
+          <netfx:NativeImage Id="ngen_CreateOutputStream.exe" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>      
     </ComponentGroup>
@@ -488,6 +528,28 @@
       </Component>
     </ComponentGroup>
 
+    <ComponentGroup Id="GEPDataExtractorComponents" Directory="INSTALLFOLDER">
+      <Component Id="GEPDataExtractor">
+        <File Id="GEPDataExtractor.exe" Name="GEPDataExtractor.exe" Source="$(var.ProjectDir)\GEPDataExtractor.exe" >
+          <netfx:NativeImage Id="ngen_GEPDataExtractor.exe" Platform="64bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+      <Component Id="GEPDataExtractorConfig">
+        <File Id="GEPDataExtractor.exe.config" Name="GEPDataExtractor.exe.config" Source="$(var.ProjectDir)\GEPDataExtractor.exe.config" />
+      </Component>
+    </ComponentGroup>
+        
+    <ComponentGroup Id="UpdateTagNamesComponents" Directory="INSTALLFOLDER">
+      <Component Id="UpdateTagNames">
+        <File Id="UpdateTagNames.exe" Name="UpdateTagNames.exe" Source="$(var.ProjectDir)\UpdateTagNames.exe" >
+          <netfx:NativeImage Id="ngen_UpdateTagNames.exe" Platform="64bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+      <Component Id="UpdateTagNamesConfig">
+        <File Id="UpdateTagNames.exe.config" Name="UpdateTagNames.exe.config" Source="$(var.ProjectDir)\UpdateTagNames.exe.config" />
+      </Component>
+    </ComponentGroup>
+    
     <!-- Adapters -->
     <ComponentGroup Id="AdapterComponents" Directory="INSTALLFOLDER">
       <Component Id="AdoAdapters">
@@ -539,6 +601,11 @@
       <Component Id="DNP3CLRInterface">
         <File Id="DNP3CLRInterface.dll" Name="DNP3CLRInterface.dll" Source="$(var.SolutionDir)\Dependencies\GSF\DNP3CLRInterface.dll">
           <netfx:NativeImage Id="ngen_DNP3CLRInterface.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+      <Component Id="DeviceStatAdapters">
+        <File Id="DeviceStatAdapters.dll" Name="DeviceStatAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\DeviceStatAdapters.dll">
+          <netfx:NativeImage Id="ngen_DeviceStatAdapters.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
       <Component Id="DynamicCalculator">
@@ -730,11 +797,6 @@
       <Component Id="ExpressionEvaluator">
         <File Id="ExpressionEvaluator.dll" Name="ExpressionEvaluator.dll" Source="$(var.SolutionDir)\Dependencies\GSF\ExpressionEvaluator.dll">
           <netfx:NativeImage Id="ngen_ExpressionEvaluator.dll" Platform="64bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
-        </File>
-      </Component>
-      <Component Id="GSF.ASN1">
-        <File Id="GSF.ASN1.dll" Name="GSF.ASN1.dll" Source="$(var.SolutionDir)\Dependencies\GSF\GSF.ASN1.dll">
-          <netfx:NativeImage Id="ngen_GSF.ASN1.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
       <Component Id="GSF.Communication">
@@ -1176,6 +1238,8 @@
         <Control Id="CompanyNameEdit" Type="Edit" X="45" Y="85" Width="220" Height="18" Property="COMPANYNAME" Text="{80}" />
         <Control Id="CompanyAcronymLabel" Type="Text" X="45" Y="113" Width="100" Height="15" TabSkip="no" Text="Company &amp;Acronym:" />
         <Control Id="CompanyAcronymEdit" Type="Edit" X="45" Y="125" Width="220" Height="18" Property="COMPANYACRONYM" Text="{80}" />
+        <Control Id="SystemNameLabel" Type="Text" X="45" Y="153" Width="250" Height="15" TabSkip="no" Text="&amp;System Name: (e.g., a location name, dev or prod)" />
+        <Control Id="SystemNameEdit" Type="Edit" X="45" Y="165" Width="220" Height="18" Property="SYSTEMNAME" Text="{80}" />
         <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
           <Publish Event="NewDialog" Value="ServiceAccountDialog">1</Publish>

@@ -58,6 +58,8 @@ namespace ConfigurationSetupUtility.Screens
 
         private Dictionary<string, object> m_state;
         private ServiceController m_openPdcServiceController;
+        private readonly string m_updateTagNamesExecutable;
+        private bool m_runUpdateTagNamesPostMigration;
 
         #endregion
 
@@ -72,6 +74,14 @@ namespace ConfigurationSetupUtility.Screens
             InitializeOpenPdcServiceController();
             InitializeServiceCheckboxState();
             InitializeManagerCheckboxState();
+            m_updateTagNamesExecutable = FilePath.GetAbsolutePath("UpdateTagNames.exe");
+
+            if (File.Exists(m_updateTagNamesExecutable))
+                return;
+
+            m_updateTagNamesPrefix.Visibility = Visibility.Collapsed;
+            m_updateTagNames.Visibility = Visibility.Collapsed;
+            m_updateTagNamesSuffix.Visibility = Visibility.Hidden;
         }
 
         #endregion
@@ -81,49 +91,25 @@ namespace ConfigurationSetupUtility.Screens
         /// <summary>
         /// Gets the screen to be displayed when the user clicks the "Next" button.
         /// </summary>
-        public IScreen NextScreen
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public IScreen NextScreen => null;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can advance to
         /// the next screen from the current screen.
         /// </summary>
-        public bool CanGoForward
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanGoForward => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can return to
         /// the previous screen from the current screen.
         /// </summary>
-        public bool CanGoBack
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool CanGoBack => false;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can cancel the
         /// setup process from the current screen.
         /// </summary>
-        public bool CanCancel
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool CanCancel => false;
 
         /// <summary>
         /// Gets a boolean indicating whether the user input is valid on the current page.
@@ -239,6 +225,10 @@ namespace ConfigurationSetupUtility.Screens
                         // Always make sure that all three needed roles are available for each defined node(s) in the database
                         ValidateSecurityRoles();
 
+                        // If tag name updates was postponed till after migration, run the application now
+                        if (m_runUpdateTagNamesPostMigration)
+                            RunUpdateTagNames();
+
                         if (migrate)
                         {
                             // Convert node table to new format (i.e., columns to connection settings string), if nedded
@@ -344,11 +334,11 @@ namespace ConfigurationSetupUtility.Screens
         // Initializes the state of the openPDC service checkbox.
         private void InitializeServiceCheckboxState()
         {
-#if DEBUG
-            bool serviceInstalled = File.Exists("openPDC.exe");
-#else
+        #if DEBUG
+            bool serviceInstalled = File.Exists(App.ApplicationExe);
+        #else
             bool serviceInstalled = m_openPdcServiceController != null;
-#endif
+        #endif
             m_serviceStartCheckBox.IsChecked = serviceInstalled;
             m_serviceStartCheckBox.IsEnabled = serviceInstalled;
         }
@@ -356,7 +346,7 @@ namespace ConfigurationSetupUtility.Screens
         // Initializes the state of the openPDC Manager checkbox.
         private void InitializeManagerCheckboxState()
         {
-            bool managerInstalled = File.Exists("openPDCManager.exe");
+            bool managerInstalled = File.Exists(App.ManagerExe);
             m_managerStartCheckBox.IsChecked = managerInstalled;
             m_managerStartCheckBox.IsEnabled = managerInstalled;
         }
@@ -1024,6 +1014,40 @@ namespace ConfigurationSetupUtility.Screens
             }
 
             return connection;
+        }
+
+        private void m_updateTagNames_Click(object sender, RoutedEventArgs e)
+        {
+            bool existing = Convert.ToBoolean(m_state["existing"]);
+            bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
+
+            if (migrate)
+            {
+                m_runUpdateTagNamesPostMigration = true;
+                MessageBox.Show("Request received to update tag names. Since database is being migrated to new schema, the update tag names utility will run after database migration utility.", "Execution Order Notification", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                RunUpdateTagNames();
+            }
+        }
+
+        private void RunUpdateTagNames()
+        {
+            try
+            {
+                // Run the UpdateTagNames utility.
+                using (Process migrationProcess = new Process())
+                {
+                    migrationProcess.StartInfo.FileName = m_updateTagNamesExecutable;
+                    migrationProcess.Start();
+                    migrationProcess.WaitForExit();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to run update tag names utility - attempt to run the tool manually later: " + ex.Message, "Execution Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void RunHiddenConsoleApp(string application, string arguments)

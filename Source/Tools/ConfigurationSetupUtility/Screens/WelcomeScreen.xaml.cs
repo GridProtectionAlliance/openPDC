@@ -25,7 +25,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ConfigurationSetupUtility.Screens
@@ -35,7 +38,6 @@ namespace ConfigurationSetupUtility.Screens
     /// </summary>
     public partial class WelcomeScreen : UserControl, IScreen
     {
-
         #region [ Members ]
 
         // Fields
@@ -63,60 +65,30 @@ namespace ConfigurationSetupUtility.Screens
         /// <summary>
         /// Gets the screen to be displayed when the user clicks the "Next" button.
         /// </summary>
-        public IScreen NextScreen
-        {
-            get
-            {
-                return m_nextPage;
-            }
-        }
+        public IScreen NextScreen => m_nextPage;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can advance to
         /// the next screen from the current screen.
         /// </summary>
-        public bool CanGoForward
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanGoForward => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can return to
         /// the previous screen from the current screen.
         /// </summary>
-        public bool CanGoBack
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool CanGoBack => false;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can cancel the
         /// setup process from the current screen.
         /// </summary>
-        public bool CanCancel
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanCancel => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user input is valid on the current page.
         /// </summary>
-        public bool UserInputIsValid
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool UserInputIsValid => true;
 
         /// <summary>
         /// Collection shared among screens that represents the state of the setup.
@@ -152,21 +124,44 @@ namespace ConfigurationSetupUtility.Screens
 
             if (m_state != null)
                 m_state["64bit"] = args.Contains("-64bit", StringComparer.CurrentCultureIgnoreCase);
-    
+
             if (installFlag)
                 m_welcomeMessageTextBlock.Text = "You now need to set up the openPDC configuration.\r\n";
             else
                 m_welcomeMessageTextBlock.Text = "";
 
-            
             m_welcomeMessageTextBlock.Text += "\r\nThis wizard will walk you through the needed steps so you can easily set up your system configuration.";
 
             // The historian setup screen takes time to load because of DLL scanning, so we cache it at startup
             if (m_state != null)
                 m_state["historianSetupScreen"] = new HistorianSetupScreen();
+
+            m_installConnectionTester.IsEnabled = File.Exists("Installers\\PMUConnectionTesterSetup.msi");
+            m_installStreamSplitter.IsEnabled = File.Exists("Installers\\StreamSplitterSetup.msi");
+        }
+
+        private void m_installConnectionTester_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            using (Process installProcess = new Process())
+            {
+                installProcess.StartInfo.FileName = "msiexec.exe";
+                installProcess.StartInfo.Arguments = "-i Installers\\PMUConnectionTesterSetup.msi";
+                installProcess.Start();
+                installProcess.WaitForExit();
+            }
+        }
+
+        private void m_installStreamSplitter_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            using (Process installProcess = new Process())
+            {
+                installProcess.StartInfo.FileName = "msiexec.exe";
+                installProcess.StartInfo.Arguments = "-i Installers\\StreamSplitterSetup.msi";
+                installProcess.Start();
+                installProcess.WaitForExit();
+            }
         }
 
         #endregion
-
     }
 }

@@ -88,6 +88,10 @@ COPY /Y "%sourcetools%\StatHistorianReportGenerator\StatHistorianReportGenerator
 COPY /Y "%sourcetools%\NoInetFixUtil\NoInetFixUtil.exe" "%targettools%\NoInetFixUtil.exe"
 COPY /Y "%sourcetools%\DNP3ConfigGenerator\DNP3ConfigGenerator.exe" "%targettools%\DNP3ConfigGenerator.exe"
 COPY /Y "%sourcetools%\LogFileViewer\LogFileViewer.exe" "%targettools%\LogFileViewer.exe"
+COPY /Y "%sourcetools%\UpdateTagNames\UpdateTagNames.exe" "%targettools%\UpdateTagNames.exe"
+COPY /Y "%sourcetools%\GEPDataExtractor\GEPDataExtractor.exe" "%targettools%\GEPDataExtractor.exe"
+COPY /Y "%sourcetools%\CreateOutputStream\CreateOutputStream.exe" "%targettools%\CreateOutputStream.exe"
+COPY /Y "%sourcetools%\BulkCalculationState\BulkCalculationState.exe" "%targettools%\BulkCalculationState.exe"
 
 :UpdateDbScripts
 ECHO.
