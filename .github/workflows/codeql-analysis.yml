@@ -54,7 +54,11 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    - run: msbuild Source
+    - run: |
+       echo "Adding MSBuild to path"
+       $Env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
+       echo "Building openPDC..."
+       msbuild Source
     #   make bootstrap
     #   make release
 
