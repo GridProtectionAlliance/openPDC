@@ -381,7 +381,9 @@
     <!-- openPDC Manager -->
     <ComponentGroup Id="openPDCManagerComponents" Directory="INSTALLFOLDER">
       <Component Id="openPDCManager">
-        <File Id="openPDCManager.exe" Name="$(var.openPDCManager.TargetFileName)" Source="$(var.openPDCManager.TargetPath)" />
+        <File Id="openPDCManager.exe" Name="$(var.openPDCManager.TargetFileName)" Source="$(var.openPDCManager.TargetPath)" >
+          <netfx:NativeImage Id="ngen_openPDCManager.exe" Platform="64bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
         <Shortcut Id="openPDCManagerStartMenuShortcut" Name="openPDC Manager" Icon="openPDCManager.ico.exe" Description="Manager application for the openPDC service." WorkingDirectory="INSTALLFOLDER" Directory="ApplicationProgramsFolder" Advertise="yes" />
       </Component>
       <Component Id="openPDCManagerConfig">
