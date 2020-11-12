@@ -59,7 +59,7 @@ GOTO UpdateRepository
 
 :CloneRepository
 ECHO.
-ECHO Cloning remote repository...
+ECHO Getting latest version...
 "%git%" clone "%remote%" .
 GOTO UpdateDependencies
 
@@ -92,6 +92,7 @@ COPY /Y "%sourcetools%\UpdateTagNames\UpdateTagNames.exe" "%targettools%\UpdateT
 COPY /Y "%sourcetools%\GEPDataExtractor\GEPDataExtractor.exe" "%targettools%\GEPDataExtractor.exe"
 COPY /Y "%sourcetools%\CreateOutputStream\CreateOutputStream.exe" "%targettools%\CreateOutputStream.exe"
 COPY /Y "%sourcetools%\BulkCalculationState\BulkCalculationState.exe" "%targettools%\BulkCalculationState.exe"
+COPY /Y "%sourcetools%\AdapterExplorer\AdapterExplorer.exe" "%targettools%\AdapterExplorer.exe"
 
 :UpdateDbScripts
 ECHO.
@@ -117,6 +118,11 @@ TYPE "%targetschema%\Oracle\_openPDC.sql" >> "%targetschema%\Oracle\openPDC.sql"
 TYPE "%targetschema%\PostgreSQL\_openPDC.sql" >> "%targetschema%\PostgreSQL\openPDC.sql"
 TYPE "%targetschema%\SQL Server\_openPDC.sql" >> "%targetschema%\SQL Server\openPDC.sql"
 TYPE "%targetschema%\SQLite\_openPDC.sql" >> "%targetschema%\SQLite\openPDC.sql"
+ECHO. >> "%targetschema%\MySQL\InitialDataSet.sql"
+ECHO. >> "%targetschema%\Oracle\InitialDataSet.sql"
+ECHO. >> "%targetschema%\PostgreSQL\InitialDataSet.sql"
+ECHO. >> "%targetschema%\SQL Server\InitialDataSet.sql"
+ECHO. >> "%targetschema%\SQLite\InitialDataSet.sql"
 TYPE "%targetschema%\MySQL\_InitialDataSet.sql" >> "%targetschema%\MySQL\InitialDataSet.sql"
 TYPE "%targetschema%\Oracle\_InitialDataSet.sql" >> "%targetschema%\Oracle\InitialDataSet.sql"
 TYPE "%targetschema%\PostgreSQL\_InitialDataSet.sql" >> "%targetschema%\PostgreSQL\InitialDataSet.sql"
