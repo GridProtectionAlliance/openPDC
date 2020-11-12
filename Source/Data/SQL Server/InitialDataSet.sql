@@ -749,6 +749,7 @@ INSERT INTO AlarmState (State, Color) VALUES ('Out of Service', 'grey')
 GO
 
 INSERT INTO AlarmState (State, Color) VALUES ('Acknowledged', 'rosybrown')
-GO
+GO 
+
 USE openPDC
 GO
