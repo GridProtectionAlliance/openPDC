@@ -33,21 +33,21 @@ Examples below follow the prescribed format of: the PMU/device acronym, a dash a
 
 |     |     |
 | --- | --- |
-| SHELBY-PM1 | ß Magnitude associated with Phasor1 entry |
-| SHELBY-PA1 | ß Angle associated with Phasor1 entry |
-| SHELBY-PM2 | ß Magnitude associated with Phasor2 entry |
-| SHELBY-PA2 | ß Angle associated with Phasor2 entry |
-| SHELBY-PM3 | ß Magnitude associated with Phasor3 entry |
-| SHELBY-PA3 | ß Angle associated with Phasor3 entry |
-| SHELBY-PM4 | ß Magnitude associated with Phasor4 entry |
-| SHELBY-PA4 | ß Angle associated with Phasor4 entry |
-| SHELBY-PM5 | ß Magnitude associated with Phasor5 entry |
-| SHELBY-PA5 | ß Angle associated with Phasor5 entry |
-| SHELBY-FQ | ß Frequency value associated with Frequency entry |
-| SHELBY-DF | ß Rate of frequency change associated with Frequency entry |
-| SHELBY-DV1 | ß Digital Value 1 |
-| SHELBY-DV2 | ß Digital Value 2 |
-| SHELBY-SF | ß Status Flags |
+| SHELBY-PM1 | Magnitude associated with Phasor1 entry |
+| SHELBY-PA1 | Angle associated with Phasor1 entry |
+| SHELBY-PM2 | Magnitude associated with Phasor2 entry |
+| SHELBY-PA2 | Angle associated with Phasor2 entry |
+| SHELBY-PM3 | Magnitude associated with Phasor3 entry |
+| SHELBY-PA3 | Angle associated with Phasor3 entry |
+| SHELBY-PM4 | Magnitude associated with Phasor4 entry |
+| SHELBY-PA4 | Angle associated with Phasor4 entry |
+| SHELBY-PM5 | Magnitude associated with Phasor5 entry |
+| SHELBY-PA5 | Angle associated with Phasor5 entry |
+| SHELBY-FQ | Frequency value associated with Frequency entry |
+| SHELBY-DF | Rate of frequency change associated with Frequency entry |
+| SHELBY-DV1 | Digital Value 1 |
+| SHELBY-DV2 | Digital Value 2 |
+| SHELBY-SF | Status Flags |
 
 Using this information you can map individual measurements to and from most any synchrophasor protocol data frame.
 
