@@ -183,6 +183,7 @@ namespace openPDC
             systemSettings.Add("DefaultCalculationLagTime", 6.0, "Defines the default lag-time value, in seconds, for template calculations");
             systemSettings.Add("DefaultCalculationLeadTime", 3.0, "Defines the default lead-time value, in seconds, for template calculations");
             systemSettings.Add("DefaultCalculationFramesPerSecond", 30, "Defines the default frames-per-second value for template calculations");
+            systemSettings.Add("SystemName", "", "Name of system that will be prefixed to system level tags, when defined. Value should follow tag naming conventions, e.g., no spaces and all upper case.");
 
             DefaultWebPage = systemSettings["DefaultWebPage"].Value;
 
@@ -209,6 +210,7 @@ namespace openPDC
             Model.Global.DefaultCalculationLagTime = systemSettings["DefaultCalculationLagTime"].ValueAsDouble(6.0);
             Model.Global.DefaultCalculationLeadTime = systemSettings["DefaultCalculationLeadTime"].ValueAsDouble(3.0);
             Model.Global.DefaultCalculationFramesPerSecond = systemSettings["DefaultCalculationFramesPerSecond"].ValueAsInt32(30);
+            Model.Global.SystemName = systemSettings["SystemName"].Value;
 
             // Register a symbolic reference to global settings for use by default value expressions
             ValueExpressionParser.DefaultTypeRegistry.RegisterSymbol("Global", Model.Global);
@@ -393,7 +395,7 @@ namespace openPDC
         {
             ClientRequest request = ClientRequest.Parse(userInput);
 
-            if ((object)request == null)
+            if (request == null)
                 return;
 
             if (SecurityProviderUtility.IsResourceSecurable(request.Command) && !SecurityProviderUtility.IsResourceAccessible(request.Command, principal))
@@ -404,7 +406,7 @@ namespace openPDC
 
             ClientRequestHandler requestHandler = ServiceHelper.FindClientRequestHandler(request.Command);
 
-            if ((object)requestHandler == null)
+            if (requestHandler == null)
             {
                 ServiceHelper.UpdateStatus(clientID, UpdateType.Alarm, $"Command \"{request.Command}\" is not supported.\r\n\r\n");
                 return;
@@ -425,14 +427,12 @@ namespace openPDC
 
         private void UpdatedStatusHandler(object sender, EventArgs<Guid, string, UpdateType> e)
         {
-            if ((object)UpdatedStatus != null)
-                UpdatedStatus(sender, new EventArgs<Guid, string, UpdateType>(e.Argument1, e.Argument2, e.Argument3));
+            UpdatedStatus?.Invoke(sender, new EventArgs<Guid, string, UpdateType>(e.Argument1, e.Argument2, e.Argument3));
         }
 
         private void LoggedExceptionHandler(object sender, EventArgs<Exception> e)
         {
-            if ((object)LoggedException != null)
-                LoggedException(sender, new EventArgs<Exception>(e.Argument));
+            LoggedException?.Invoke(sender, new EventArgs<Exception>(e.Argument));
         }
 
         #endregion

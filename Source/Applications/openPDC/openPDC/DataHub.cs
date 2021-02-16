@@ -316,6 +316,33 @@ namespace openPDC
 
         #endregion
 
+        #region [ PhasorDetail Table Operations ]
+
+        [RecordOperation(typeof(PhasorDetail), RecordOperation.QueryRecordCount)]
+        public int QueryPhasorCount(int deviceID, string filterText)
+        {
+            TableOperations<PhasorDetail> phasorDetailTable = DataContext.Table<PhasorDetail>();
+
+            RecordRestriction restriction =
+                new RecordRestriction("DeviceID = {0}", deviceID) +
+                phasorDetailTable.GetSearchRestriction(filterText);
+
+            return phasorDetailTable.QueryRecordCount(restriction);
+        }
+
+        [RecordOperation(typeof(PhasorDetail), RecordOperation.QueryRecords)]
+        public IEnumerable<PhasorDetail> QueryPhasors(int deviceID, string sortField, bool ascending, int page, int pageSize, string filterText)
+        {
+            TableOperations<PhasorDetail> phasorDetailTable = DataContext.Table<PhasorDetail>();
+
+            RecordRestriction restriction =
+                new RecordRestriction("DeviceID = {0}", deviceID) +
+                phasorDetailTable.GetSearchRestriction(filterText);
+
+            return DataContext.Table<PhasorDetail>().QueryRecords(sortField, ascending, page, pageSize, restriction);
+        }
+
+        #endregion
         #region [ Historian Table Operations ]
 
         [RecordOperation(typeof(Historian), RecordOperation.QueryRecordCount)]

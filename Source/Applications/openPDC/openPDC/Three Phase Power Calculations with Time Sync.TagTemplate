@@ -1,4 +1,4 @@
-# Three Phase Power Calculations Template
+# Three Phase Power Calculations Template with Time Sync Flags
 #
 # File format is tab-delimited with the following columns:
 #     Tag Name->Inputs->Equation->Type->Description
@@ -41,3 +41,4 @@ MW_C	C		CalculatePower	Single Phase MW C
 MW_3	MW		SumPhase	3-Phase MW
 MVAR_3	MVAR		SumPhase	3-Phase MVAR
 MVA_3	MVA		SumPhase	3-Phase MVA
+TIME_SYNC	FLAGS	(cast(FLAGS, int) AND 48) = 0	DynamicCalculator	Valid Time Synchronization

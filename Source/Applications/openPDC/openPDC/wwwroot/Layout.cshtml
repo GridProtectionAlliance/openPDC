@@ -37,18 +37,28 @@
     }
 
     // Define ViewBag.CustomTitle in page code for custom page titles
-    string pageTitle = ViewBag.CustomTitle ?? ViewBag.Title;
+    string pageTitle = ViewBag.CustomTitle ?? ViewBag.Title ?? "";
+    string subTitle = ViewBag.SubTitle ?? "";
     bool pageHasSidebar = ViewBag.PageHasSidebar ?? false;
     bool setFullWidth = ViewBag.SetFullWidth ?? pageHasSidebar;
     bool hidePageTitle = false;
     bool showMenu = true;
+    bool backgroundUnset = false;
 
     if (ViewBag.HidePageTitle != null) {
         hidePageTitle = ViewBag.HidePageTitle;
     }
 
+    if (!string.IsNullOrWhiteSpace(subTitle) && !string.IsNullOrWhiteSpace(pageTitle)) {
+        pageTitle += "  ";
+    }
+
     if (ViewBag.ShowMenu != null) {
         showMenu = ViewBag.ShowMenu;
+    }
+
+    if (ViewBag.BackgroundUnset != null) {
+        backgroundUnset = ViewBag.BackgroundUnset;
     }
 
     HttpRequestMessage request = ViewBag.Request;
@@ -69,6 +79,12 @@
     string requiresEditor = UserIsAdminOrEditor() ? "" : " disabled";
 }
 @functions {
+    public string IsActivePage(string pageTitle, string pageName)
+    {
+        return pageTitle.Trim().Equals(pageName, StringComparison.OrdinalIgnoreCase) ?
+            "class=\"active\"" : "";
+    }
+
     public string GetCurrentUserID()
     {
         if (Thread.CurrentPrincipal.Identity == null)
@@ -104,7 +120,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @* The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags *@
-    <title>@Model.Global.ApplicationName - @pageTitle</title>
+    <title>@Model.Global.ApplicationName - @pageTitle.Trim()</title>
     <meta name="application-name" content="@Model.Global.ApplicationName" />
     <meta name="description" content="@Model.Global.ApplicationDescription" />
     <meta name="keywords" content="@Model.Global.ApplicationKeywords" />
@@ -119,12 +135,15 @@
             .navbar-header {
                 float: none;
             }
+
             .navbar-left,.navbar-right {
                 float: none !important;
             }
+
             .navbar-toggle {
                 display: block;
             }
+
             .navbar-collapse {
                 border-top: 1px solid transparent;
                 box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
@@ -134,37 +153,62 @@
                 top: 0;
                 border-width: 0 0 1px;
             }
+
             .navbar-collapse.collapse {
                 display: none!important;
             }
+
             .navbar-nav {
                 float: none!important;
                 margin-top: 7.5px;
             }
+
             .navbar-nav>li {
                 float: none;
             }
+
             .navbar-nav>li>a {
                 padding-top: 10px;
                 padding-bottom: 10px;
             }
-            .collapse.in{
+
+            .collapse.in {
                 display:block !important;
             }
         }
+
+        .sub-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 17px;
+            font-weight: 400;
+            line-height: 1.4;
+            color: #777777;
+        }
     </style>
-    @if (!showMenu) {
+@if (!showMenu) { if (backgroundUnset){
     <style>
         body {
             margin-top: -70px;
             margin-right: 20px;
-            background-color: #B3C8D6;
         }
+    </style>
+} else {
+    <style>
+        body {
+            margin-top: -70px;
+            margin-right: 20px;
+            background-color: #105331;
+        }
+
         h3 {
             color: white;
         }
     </style>
-    }
+}}
     <script src="@Resources.Root/Shared/Scripts/jquery.js"></script>
     <script>
         const DateFormat = "@Model.Global.DateFormat";
@@ -173,7 +217,7 @@
     </script>
 </head>
 <body role="document">
-@if (ViewBag.ShowMenu ?? true) {
+@if (showMenu) {
     <div class="navbar navbar-inverse navbar-fixed-top" id="menuBar">
         <div class="container">
             <div class="navbar-header">
@@ -188,7 +232,7 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li @Raw(pageTitle == "Home" ? "class=\"active\"" : "")><a href="Index.cshtml">Home</a></li>
+                    <li @Raw(IsActivePage(pageTitle, "Home"))><a href="Index.cshtml">Home</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Devices <span class="caret"></span></a>
                         <ul class="dropdown-menu">
@@ -223,7 +267,7 @@
                             </ul>
                         </li>
                     }
-                    <li @Raw(pageTitle == "Help" ? "class=\"active\"" : "")><a href="Help.cshtml">Help</a></li>
+                    <li @Raw(IsActivePage(pageTitle, "Help"))><a href="Help.cshtml">Help</a></li>
                 </ul>
                 <div class="nav navbar-text navbar-right" style="margin-top: 10px; margin-bottom: 5px">
                     <button id="logoutButton" type="button" class="btn btn-sm btn-info" style="display: none" title="Log out @GetCurrentUserID()" hub-dependent>Log Out</button>
@@ -256,8 +300,8 @@ else {
                 <span id="error-msg-text"></span>
             </div>
             @if (!hidePageTitle) {
-            <h3>
-                @pageTitle <small class="pull-right" id="titleText" style="margin-top: 8px"></small>
+            <h3 id="pageTitle">
+                @Raw(pageTitle.Replace(" ", "&nbsp;"))<div id="subTitle" class="sub-title">@Raw(subTitle)</div> <small class="pull-right" id="titleText" style="margin-top: 8px"></small>
             </h3>
             }
         </div>
@@ -287,6 +331,34 @@ else {
         });
 
         $("#logoutButton").show();
+
+    @if (!string.IsNullOrWhiteSpace(subTitle)) {
+    <text>
+        var pageTitleWidth;
+
+        function updateSubTitleProperties() {
+            const subTitle = $("#subTitle");
+
+            subTitle.width($("#pageHeader").width() - $("#titleText").width() - pageTitleWidth);
+            subTitle.prop("title", subTitle.text());
+            subTitle.show();
+        }
+
+        $(window).resize(updateSubTitleProperties);
+        
+        $(function() {
+            textMetrics.font = $("#pageTitle").css("font");
+
+            pageTitleWidth = textMetrics.measureText("@pageTitle.Replace("&nbsp;", " ")").width;
+
+            if (pageTitleWidth < 5)
+                pageTitleWidth = 100;
+
+            // Set initial sub-title width
+            updateSubTitleProperties();
+        });
+    </text>
+    }
     </script>
 </body>
 </html>
