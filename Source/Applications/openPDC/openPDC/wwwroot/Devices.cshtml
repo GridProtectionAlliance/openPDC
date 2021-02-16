@@ -20,6 +20,7 @@
 //       Generated original version of source code.
 //
 //*****************************************************************************************************@
+@using System.Text
 @using GSF.Security
 @using GSF.Web.Model
 @using GSF.Web.Shared.Model
@@ -34,7 +35,12 @@
     </style>
 }
 @{
+    if (ViewBag.PageControlScripts == null) {
+        ViewBag.PageControlScripts = new StringBuilder();
+    }
+
     DataContext dataContext = ViewBag.DataContext;
+    StringBuilder pageControlScripts = ViewBag.PageControlScripts;
 
     Layout = "Layout.cshtml";
     ViewBag.Title = "Devices";
@@ -51,6 +57,9 @@
     ViewBag.BodyRows = BodyRows().ToString();
     ViewBag.AddNewEditDialog = AddNewEditDialog(dataContext).ToString();
     ViewBag.ParentKeys = Model.Global.NodeID.ToString();
+
+    // Prepend view model validation extension scripts to occur before normal model initialization
+    pageControlScripts.Insert(0, ExtendModelValidation().ToString().TrimStart());
 }
 @functions {
     public bool UserIsAdminOrEditor()
@@ -71,7 +80,7 @@
     <td width="5%" class="text-center valign-middle"><input type="checkbox" data-bind="checked: Enabled, click: enabledStateChanged.bind($data)" /></td>
     <td width="5%" class="text-center valign-middle" nowrap>
         <button type="button" class="btn btn-xs" data-bind="click: openDeviceStatus, enable: $parent.dataHubIsConnected"><span class="glyphicon glyphicon-scale"></span></button>
-        <button type="button" class="btn btn-xs" data-bind="click: showEditScreen.bind($data, false), enable: $parent.dataHubIsConnected"><span class="glyphicon glyphicon-pencil"></span></button>
+        <button type="button" class="btn btn-xs" data-bind="click: showEditScreen.bind($data, @(UserIsAdminOrEditor().ToString().ToLower())), enable: $parent.dataHubIsConnected"><span class="glyphicon glyphicon-pencil"></span></button>
         <button type="button" class="btn btn-xs" data-bind="click: $parent.removePageRecord, enable: $parent.dataHubIsConnected"><span class="glyphicon glyphicon-remove"></span></button>
     </td>
 }
@@ -81,6 +90,7 @@
         @Raw(dataContext.AddInputField<Device>("ID", customDataBinding: "disable: true", groupDataBinding: "visible: $root.recordMode() !== RecordMode.AddNew"))
         @Raw(dataContext.AddInputField<Device>("UniqueID", customDataBinding: "disable: true", groupDataBinding: "visible: $root.recordMode() !== RecordMode.AddNew"))
         @Raw(dataContext.AddInputField<Device>("Acronym", initialFocus: true))
+        @Raw(dataContext.AddInputField<Device>("Name"))
         @Raw(dataContext.AddSelectField<Device, Protocol>("ProtocolID", "ID", "Acronym", allowUnset: true))
         @Raw(dataContext.AddSelectField<Device, Historian>("HistorianID", "ID", "Acronym", allowUnset: true, addEmptyRow: true))
         @Raw(dataContext.AddInputField<Device>("AccessID"))
@@ -89,7 +99,6 @@
     </div>
     <div class="col-md-6">
         @Raw(dataContext.AddTextAreaField<Device>("ConnectionString", 4))
-        @Raw(dataContext.AddInputField<Device>("Name"))
         @Raw(dataContext.AddInputField<Device>("Longitude"))
         @Raw(dataContext.AddInputField<Device>("Latitude"))
         @Raw(dataContext.AddSelectField<Device, Interconnection>("InterconnectionID", "ID", "Acronym"))
@@ -100,15 +109,106 @@
             @Raw(dataContext.AddCheckBoxField<Device>("IsConcentrator"))&nbsp;
             @Raw(dataContext.AddCheckBoxField<Device>("Enabled"))
         </div>
+        <div class="form-inline pull-right" style="width: 100%">
+            <br/>
+            <a role="button" class="btn btn-sm btn-default pull-right" id="exportPhasorCSVButton" data-bind="visible: $root.recordMode()!==RecordMode.AddNew, enable: $parent.dataHubIsConnected" hub-dependent>
+                <span class="glyphicon glyphicon-download"></span>&nbsp;&nbsp;Export&nbsp;Phasor&nbsp;CSV
+            </a>
+            <a id="exportPhasorCSVLink" download hidden></a> 
+        </div>
     </div>
+}
+@helper ExtendModelValidation()
+{
+    <script>
+        var phasorHub, phasorHubClient;
+
+        $(function () {
+            // Connect to phasor hub
+            phasorHub = $.connection.phasorHub.server;
+            phasorHubClient = $.connection.phasorHub.client;
+
+            // Create hub client functions for message control
+            function encodeInfoMessage(message, timeout) {
+                // Html encode message
+                const encodedMessage = $("<div />").text(message).html();
+                showInfoMessage(encodedMessage, timeout);
+            }
+
+            function encodeErrorMessage(message, timeout) {
+                // Html encode message
+                const encodedMessage = $("<div />").text(message).html();
+                showErrorMessage(encodedMessage, timeout);
+            }
+
+            // Register info and error message handlers for hub client
+            phasorHubClient.sendInfoMessage = encodeInfoMessage;
+            phasorHubClient.sendErrorMessage = encodeErrorMessage;
+        });
+
+        $(window).on("beforeApplyBindings", function () {
+            // Define local rule that will check that device group acronym is unique in the database
+            ko.validation.rules["deviceUniqueInDatabase"] = {
+                async: true,
+                validator: function (newVal, options, callback) {
+                    if (phasorHub) {
+                        // Lookup Device record by Acronym - this will return an empty record if not found
+                        phasorHub.queryDevice(newVal).done(function (device) {
+                                // Valid if device doesn't exist or is itself
+                                callback(device.ID === 0 || notNull(device.Acronym).toLowerCase() === notNull(options).toLowerCase());
+                            })
+                            .fail(function (error) {
+                                showErrorMessage(error);
+
+                                // Do not display validation failure message for connection issues
+                                callback(true);
+                            });
+                    }
+                    else {
+                        callback(true);
+                    }
+                },
+                message: "This device acronym already exists in the database. Acronyms must be unique."
+            };
+
+            ko.bindingHandlers.selectOnError = {
+                init: function (element, valueAccessor) {
+                    $(element).on("input", function(event) {
+                        setTimeout(function () {
+                            if (!valueAccessor().isValid())
+                                element.select();
+                        }, 1);
+                    });
+                }
+            }
+            
+            // Enable knockout validation
+            ko.validation.init({
+                registerExtenders: true,
+                messagesOnModified: true,
+                insertMessages: true,
+                parseInputAttributes: true,
+                allowHtmlMessages: true,
+                messageTemplate: null,
+                decorateElement: true,
+                errorElementClass: "has-error",
+                errorMessageClass: "help-block",
+                grouping: { deep: true, observable: true, live: true }
+            }, true);
+
+            // Enable deferred updates for better performance
+            ko.options.deferUpdates = true;
+        });
+    </script>
 }
 @Html.RenderResource("GSF.Web.Model.Views.PagedViewModel.cshtml")
 @section Scripts {
     <script>
-        @Raw(dataContext.RenderViewModelConfiguration<Device, DataHub>(ViewBag, "Acronym", null, Model.Global.NodeID))
-        
+        var modeledValidationParametersFunction;
         var modbusProtocolID = 0;
-        
+
+        @Raw(dataContext.RenderViewModelConfiguration<Device, DataHub>(ViewBag, "Acronym", null, Model.Global.NodeID))
+
         $(window).on("hubConnected", function() {
             if (modbusProtocolID === 0) {
                 dataHub.getModbusProtocolID().done(function(protocolID) {
@@ -116,16 +216,31 @@
                 });
             }
         });
-	
+
         function navigateToDeviceScreen(record) {
-            @if (UserIsAdminOrEditor()) 
+            @if (UserIsAdminOrEditor())
             {
             <text>
                 if (record.ProtocolID === modbusProtocolID) {
                     window.location.href = "ModbusConfig.cshtml?DeviceID=" + record.ID;
                 }
                 else {
-                    window.location.href = "AddSynchrophasorDevice.cshtml?DeviceID=" + record.ID;
+                    if (hubIsConnected) {
+                        dataHub.getProtocolCategory(record.ProtocolID).done(function(category) {
+                            category = notNull(category).toLowerCase().trim();
+
+                            if (category === "phasor" || category === "gateway")
+                                window.location.href = "AddSynchrophasorDevice.cshtml?DeviceID=" + record.ID;
+                            else
+                                viewModel.viewPageRecord(record);
+                        })
+                        .fail(function() {
+                            viewModel.viewPageRecord(record);
+                        });
+                    }
+                    else {
+                        viewModel.viewPageRecord(record);
+                    }
                 }
             </text>
             }
@@ -136,17 +251,50 @@
             </text>
             }
         }
-	
-        function showEditScreen(readOnly, record) {
-            if (record.ProtocolID === modbusProtocolID) {
-                window.location.href = "/ModbusConfig.cshtml?DeviceID=" + record.ID;
-            }
-            else {
-                if (readOnly)
-                    viewModel.viewPageRecord(record);
-                else
-                    viewModel.editPageRecord(record);
-            }
+
+        $(function() {
+            modeledValidationParametersFunction = viewModel.applyValidationParameters;
+
+            viewModel.setApplyValidationParameters(function () {
+                modeledValidationParametersFunction();
+
+                viewModel.currentRecord().Acronym.extend({
+                    required: true,
+                    deviceUniqueInDatabase: viewModel.currentRecord().Acronym()
+                });
+            });
+        });
+
+        $("#addNewEditDialog").on("shown.bs.modal", function () {
+            $("#exportPhasorCSVButton").click(function() {
+                if (!hubIsConnected)
+                    return;
+
+                dataHub.getConnectionID().done(function (connectionID) {
+                    const currentRecord = viewModel.currentRecord();
+
+                    $("#exportPhasorCSVLink").attr("href", "/@@GSF/Web/Model/Handlers/CsvDownloadHandler.ashx" +
+                        "?ModelName=" + encodeURIComponent("@typeof(PhasorDetail).FullName") +
+                        "&HubName=" + encodeURIComponent("@typeof(DataHub).FullName") +
+                        "&ConnectionID=" + encodeURIComponent(connectionID) +
+                        "&FilterText=&SortField=" + encodeURIComponent("SourceIndex") +
+                        "&SortAscending=true&ShowDeleted=false" +
+                        "&ExportName=" + encodeURIComponent(currentRecord.Acronym() + "-PhasorExport.csv") +
+                        "&ParentKeys=" + encodeURIComponent(currentRecord.ID()));
+
+                    $("#exportPhasorCSVLink")[0].click();
+                }).
+                fail(function(error) {
+                    showErrorMessage(error);
+                });
+            });
+        });
+
+        function showEditScreen(editable, record) {
+            if (editable)
+                viewModel.editPageRecord(record);
+            else
+                viewModel.viewPageRecord(record);
         }
 
         function refreshEnabledState(record) {
