@@ -323,8 +323,8 @@ namespace openPDC
         {
             TableOperations<PhasorDetail> phasorDetailTable = DataContext.Table<PhasorDetail>();
 
-            RecordRestriction restriction =
-                new RecordRestriction("DeviceID = {0}", deviceID) +
+            RecordRestriction restriction = (deviceID > 0 ?
+                new RecordRestriction("DeviceID = {0}", deviceID) : null) +
                 phasorDetailTable.GetSearchRestriction(filterText);
 
             return phasorDetailTable.QueryRecordCount(restriction);
@@ -335,8 +335,8 @@ namespace openPDC
         {
             TableOperations<PhasorDetail> phasorDetailTable = DataContext.Table<PhasorDetail>();
 
-            RecordRestriction restriction =
-                new RecordRestriction("DeviceID = {0}", deviceID) +
+            RecordRestriction restriction = (deviceID > 0 ?
+                new RecordRestriction("DeviceID = {0}", deviceID) : null) +
                 phasorDetailTable.GetSearchRestriction(filterText);
 
             return DataContext.Table<PhasorDetail>().QueryRecords(sortField, ascending, page, pageSize, restriction);
