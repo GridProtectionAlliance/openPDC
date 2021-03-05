@@ -266,7 +266,7 @@ namespace ConfigurationSetupUtility.Screens
 #if DEBUG
                                 Process.Start("openPDC.exe");
 #else
-                                m_openPdcServiceController.Start();
+                               new Thread(_ => m_openPdcServiceController.Start()) { IsBackground = false }.Start();
 #endif
                             }
                             catch
