@@ -3,13 +3,18 @@
   <Product Id="*" Name="openPDC" Language="1033" Version="!(bind.FileVersion.openPDC.exe)" Manufacturer="Grid Protection Alliance" UpgradeCode="{672ED075-C482-49A6-86D5-7B3FEB4AEAC8}">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
-    <MediaTemplate EmbedCab="yes" />    
+    <MediaTemplate EmbedCab="yes" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
     <PropertyRef Id="WIX_IS_NETFRAMEWORK_46_OR_LATER_INSTALLED"/>
     <Condition Message='This setup requires Microsoft .NET Framework 4.6 or greater - this will need to be installed before installation can continue.'>
       <![CDATA[Installed OR WIX_IS_NETFRAMEWORK_46_OR_LATER_INSTALLED]]>
     </Condition>
+
+    <!-- Restore last installation folder -->
+    <Property Id="INSTALLFOLDER">
+      <RegistrySearch Id="InstallFolderRegSearch" Root="HKLM" Key="SOFTWARE\Grid Protection Alliance\openPDC" Name="InstallPath" Type="raw" />
+    </Property>
 
     <Feature Id="AllProducts" Title="All Products" Level="1" Display="expand" ConfigurableDirectory="INSTALLFOLDER">
       <!-- openPDC -->
@@ -86,7 +91,7 @@
         <Feature Id="UpdateTagNamesFeature" Title="Update Tag Names Tool">
           <ComponentGroupRef Id="UpdateTagNamesComponents" />
         </Feature>
-        
+
         <ComponentGroupRef Id="GSFDependencyComponents" />
       </Feature>
 
@@ -135,7 +140,7 @@
     <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\openPDCSetupBanner.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\openPDCSetupDialog.bmp" />
     <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\INSTALL_LICENSE.rtf" />
-    
+
     <!-- Add/Remove Programs Icon -->
     <Property Id="ARPPRODUCTICON" Value="openPDC.ico.exe" />
 
@@ -158,7 +163,7 @@
     <UI>
       <ProgressText Action="ConfigureServiceAction">Configuring service failure recovery operations...</ProgressText>
       <ProgressText Action="ServiceAccountAction">Applying minimum needed permissions for service user...</ProgressText>
-      <ProgressText Action="NetFxExecuteNativeImageInstall">Generating optimized native images for installation...</ProgressText>
+      <ProgressText Action="NetFxExecuteNativeImageInstall">Generating optimized native images for installation, this will take some time...</ProgressText>
     </UI>
 
     <InstallExecuteSequence>
@@ -185,15 +190,16 @@
             </CreateFolder>
           </Component>
 
+          <Directory Id="UTILITIESFOLDER" Name="Utilities" />
+
           <Directory Id="DATABASESCRIPTSFOLDER" Name="Database Scripts">
             <Directory Id="MYSQLSCRIPTSFOLDER" Name="MySQL" />
             <Directory Id="ORACLESCRIPTSFOLDER" Name="Oracle" />
             <Directory Id="POSTGRESSCRIPTSFOLDER" Name="PostgreSQL" />
             <Directory Id="SQLSERVERSCRIPTSFOLDER" Name="SQL Server" />
             <Directory Id="SQLITESCRIPTSFOLDER" Name="SQLite" />
-
-
           </Directory>
+
           <?include WebFolders.wxi ?>
 
           <Directory Id="OPTIONALINSTALLSFOLDER" Name="Installers" />
@@ -209,6 +215,8 @@
             </CreateFolder>
           </Component>
 
+          <Directory Id="UTILITIESFOLDER" Name="Utilities" />
+
           <Directory Id="DATABASESCRIPTSFOLDER" Name="Database Scripts">
             <Directory Id="MYSQLSCRIPTSFOLDER" Name="MySQL" />
             <Directory Id="ORACLESCRIPTSFOLDER" Name="Oracle" />
@@ -217,15 +225,15 @@
             <Directory Id="SQLITESCRIPTSFOLDER" Name="SQLite" />
           </Directory>
 
-            <?include WebFolders.wxi ?>
+          <?include WebFolders.wxi ?>
 
-            <Directory Id="OPTIONALINSTALLSFOLDER" Name="Installers" />
-          </Directory>
+          <Directory Id="OPTIONALINSTALLSFOLDER" Name="Installers" />
         </Directory>
-        <?endif ?>
+      </Directory>
+      <?endif ?>
 
-        <Directory Id="ProgramMenuFolder">
-          <Directory Id="ApplicationProgramsFolder" Name="openPDC" />
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="openPDC" />
       </Directory>
     </Directory>
   </Fragment>
@@ -244,7 +252,7 @@
       </Component>
     </ComponentGroup>
   </Fragment>
-  
+
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <!-- Applications -->
@@ -264,12 +272,12 @@
       <ComponentGroupRef Id="PostgresScriptComponents" />
       <ComponentGroupRef Id="SQLServerScriptComponents" />
       <ComponentGroupRef Id="SQLiteScriptComponents" />
-      
+
       <!-- Makecert -->
       <Component Id="makecert">
         <File Id="makecert.exe" Name="makecert.exe" Source="$(var.ProjectDir)\makecert.exe" />
       </Component>
-      
+
       <!-- Sample Data -->
       <Component Id="Sample1344">
         <File Id="Sample1344.PmuCapture" Name="Sample1344.PmuCapture" Source="$(var.openPDC.ProjectDir)\Sample1344.PmuCapture" />
@@ -278,9 +286,10 @@
 
       <!-- Included Tag Templates -->
       <Component Id="TagTemplates" Guid="{EB8CD69A-E9F5-4183-805F-455D2E3AF654}">
-        <File Id="Full_Checkout_Calculations.TagTemplate" Name="Full Checkout Calculations.TagTemplate" Source="$(var.openPDC.ProjectDir)\Full Checkout Calculations.TagTemplate" />
+        <File Id="Full_Calculations.TagTemplate" Name="Full Calculations.TagTemplate" Source="$(var.openPDC.ProjectDir)\Full Calculations.TagTemplate" />
         <File Id="Single_Phase_Power_Calculations.TagTemplate" Name="Single Phase Power Calculations.TagTemplate" Source="$(var.openPDC.ProjectDir)\Single Phase Power Calculations.TagTemplate" />
         <File Id="Three_Phase_Power_Calculations.TagTemplate" Name="Three Phase Power Calculations.TagTemplate" Source="$(var.openPDC.ProjectDir)\Three Phase Power Calculations.TagTemplate" />
+        <File Id="Three_Phase_Power_Calculations_with_Time_Sync.TagTemplate" Name="Three Phase Power Calculations with Time Sync.TagTemplate" Source="$(var.openPDC.ProjectDir)\Three Phase Power Calculations with Time Sync.TagTemplate" />
       </Component>
 
       <!-- Registry Settings -->
@@ -303,12 +312,13 @@
         <RemoveFolder Id="RemoveSQLServerScriptsFolder" Directory="SQLSERVERSCRIPTSFOLDER" On="uninstall" />
         <RemoveFolder Id="RemoveSQLiteScriptsFolder" Directory="SQLITESCRIPTSFOLDER" On="uninstall" />
         <RemoveFolder Id="RemoveDatabaseScriptsFolder" Directory="DATABASESCRIPTSFOLDER" On="uninstall" />
+        <RemoveFolder Id="RemoveUtilitiesFolder" Directory="UTILITIESFOLDER" On="uninstall" />
         <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
         <RemoveFolder Id="RemoveInstallFolder" Directory="INSTALLFOLDER" On="uninstall" />
       </Component>
     </ComponentGroup>
 
-    <!-- openPDC -->    
+    <!-- openPDC -->
     <ComponentGroup Id="openPDCComponents" Directory="INSTALLFOLDER">
       <Component Id="openPDC">
         <File Id="openPDC.exe" Name="$(var.openPDC.TargetFileName)" Source="$(var.openPDC.TargetPath)">
@@ -433,15 +443,17 @@
         <File Id="DNP3ConfigGenerator.exe" Name="DNP3ConfigGenerator.exe" Source="$(var.ProjectDir)\DNP3ConfigGenerator.exe">
           <netfx:NativeImage Id="ngen_DNP3ConfigGenerator.exe" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
+        <Shortcut Id="DNP3ConfigGeneratorUtilitiesShortcut" Name="DNP3ConfigGenerator" Target="[#DNP3ConfigGenerator.exe]" Description="Used to create sample DNP3 config and extract openSSL dependencies." WorkingDirectory="INSTALLFOLDER" Directory="UTILITIESFOLDER" Advertise="no" />
       </Component>
 
       <Component Id="CreateOutputStream">
         <File Id="CreateOutputStream.exe" Name="CreateOutputStream.exe" Source="$(var.ProjectDir)\CreateOutputStream.exe">
           <netfx:NativeImage Id="ngen_CreateOutputStream.exe" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
-      </Component>      
+        <Shortcut Id="CreateOutputStreamUtilitiesShortcut" Name="CreateOutputStream" Target="[#CreateOutputStream.exe]" Description="Used to create an output stream from a CSV file." WorkingDirectory="INSTALLFOLDER" Directory="UTILITIESFOLDER" Advertise="no" />
+      </Component>
     </ComponentGroup>
-    
+
     <ComponentGroup Id="ConfigCrypterComponents" Directory="INSTALLFOLDER">
       <Component Id="ConfigCrypter">
         <File Id="ConfigCrypter.exe" Name="ConfigCrypter.exe" Source="$(var.ProjectDir)\ConfigCrypter.exe">
@@ -453,7 +465,7 @@
         <File Id="ConfigCrypter.exe.config" Name="ConfigCrypter.exe.config" Source="$(var.ProjectDir)\ConfigCrypter.exe.config" />
       </Component>
     </ComponentGroup>
-    
+
     <ComponentGroup Id="ConfigurationEditorComponents" Directory="INSTALLFOLDER">
       <Component Id="ConfigurationEditor">
         <File Id="ConfigurationEditor.exe" Name="ConfigurationEditor.exe" Source="$(var.ProjectDir)\ConfigurationEditor.exe">
@@ -548,7 +560,7 @@
         <File Id="GEPDataExtractor.exe.config" Name="GEPDataExtractor.exe.config" Source="$(var.ProjectDir)\GEPDataExtractor.exe.config" />
       </Component>
     </ComponentGroup>
-        
+
     <ComponentGroup Id="UpdateTagNamesComponents" Directory="INSTALLFOLDER">
       <Component Id="UpdateTagNames">
         <File Id="UpdateTagNames.exe" Name="UpdateTagNames.exe" Source="$(var.ProjectDir)\UpdateTagNames.exe" >
@@ -559,7 +571,7 @@
         <File Id="UpdateTagNames.exe.config" Name="UpdateTagNames.exe.config" Source="$(var.ProjectDir)\UpdateTagNames.exe.config" />
       </Component>
     </ComponentGroup>
-    
+
     <!-- Adapters -->
     <ComponentGroup Id="AdapterComponents" Directory="INSTALLFOLDER">
       <Component Id="AdoAdapters">
@@ -673,12 +685,14 @@
           <netfx:NativeImage Id="ngen_KafkaAdapters.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
-      <Component Id="NAudio"> <!-- Dependency for AudioAdapters -->
+      <Component Id="NAudio">
+        <!-- Dependency for AudioAdapters -->
         <File Id="NAudio.dll" Name="NAudio.dll" Source="$(var.SolutionDir)\Dependencies\GSF\NAudio.dll">
           <netfx:NativeImage Id="ngen_NAudio.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
-      <Component Id="Misakai.Kafka"> <!-- Dependency for KafkaAdapters -->
+      <Component Id="Misakai.Kafka">
+        <!-- Dependency for KafkaAdapters -->
         <File Id="Misakai.Kafka.dll" Name="Misakai.Kafka.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Misakai.Kafka.dll">
           <netfx:NativeImage Id="ngen_Misakai.Kafka.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
@@ -718,7 +732,8 @@
           <netfx:NativeImage Id="ngen_PhasorProtocolAdapters.dll" Platform="64bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
-      <Component Id="PIAdapters"> <!-- OSI-PI Historian Adapters -->
+      <Component Id="PIAdapters">
+        <!-- OSI-PI Historian Adapters -->
         <File Id="PIAdapters.dll" Name="PIAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\PIAdapters.dll">
           <netfx:NativeImage Id="ngen_PIAdapters.dll" Platform="64bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
@@ -748,7 +763,8 @@
           <netfx:NativeImage Id="ngen_WavInputAdapter.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
-      <Component Id="eDNAAdapters"> <!-- eDNA Historian Adapters -->
+      <Component Id="eDNAAdapters">
+        <!-- eDNA Historian Adapters -->
         <File Id="eDNAAdapters.dll" Name="eDNAAdapters.dll" Source="$(var.SolutionDir)\Dependencies\GSF\eDNAAdapters.dll">
           <netfx:NativeImage Id="ngen_eDNAAdapters.dll" Platform="64bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
@@ -945,7 +961,7 @@
         </File>
       </Component>
     </ComponentGroup>
-    
+
     <!-- Microsoft Dependencies -->
     <ComponentGroup Id="MicrosoftDependencyComponents" Directory="INSTALLFOLDER">
       <Component Id="DynamicDataDisplay">
@@ -1086,7 +1102,7 @@
         </File>
       </Component>
     </ComponentGroup>
-    
+
     <!-- MySQL Scripts -->
     <ComponentGroup Id="MySQLScriptComponents" Directory="MYSQLSCRIPTSFOLDER">
       <Component Id="MySQLAuditLog">
