@@ -3,7 +3,7 @@
 =========================================================================================================
 
 GPA openPDC (http://www.openPDC.com/)
-Copyright © 2010-2018, The Grid Protection Alliance
+Copyright © 2010-2021, The Grid Protection Alliance
 
 This product includes software developed at the
 Grid Protection Alliance (http://www.gridprotectionalliance.org/)
