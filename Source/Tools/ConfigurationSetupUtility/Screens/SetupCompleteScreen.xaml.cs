@@ -263,11 +263,32 @@ namespace ConfigurationSetupUtility.Screens
                         {
                             try
                             {
-#if DEBUG
+                            #if DEBUG
                                 Process.Start("openPDC.exe");
-#else
-                               new Thread(_ => m_openPdcServiceController.Start()) { IsBackground = false }.Start();
-#endif
+                            #else
+                                try
+                                {
+                                    DependencyObject parent = VisualTreeHelper.GetParent(this);
+                                    Window mainWindow;
+
+                                    while (parent != null && !(parent is Window))
+                                        parent = VisualTreeHelper.GetParent(parent);
+
+                                    mainWindow = parent as Window;
+
+                                    if (mainWindow != null)
+                                        mainWindow.WindowState = WindowState.Minimized;
+                                }
+                                catch
+                                {
+                                    // Nothing to do if we fail to minimize...
+                                }
+
+                                m_openPdcServiceController.Refresh();
+
+                                if (m_openPdcServiceController.Status != ServiceControllerStatus.Running)
+                                    m_openPdcServiceController.Start();
+                            #endif
                             }
                             catch
                             {
