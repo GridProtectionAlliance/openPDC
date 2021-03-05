@@ -120,20 +120,20 @@ namespace openPDC
         /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
-            if (!m_disposed)
+            if (m_disposed)
+                return;
+
+            try
             {
-                try
-                {
-                    if (disposing)
-                    {
-                        m_webAppHost?.Dispose();
-                    }
-                }
-                finally
-                {
-                    m_disposed = true;          // Prevent duplicate dispose.
-                    base.Dispose(disposing);    // Call base class Dispose().
-                }
+                if (!disposing)
+                    return;
+                
+                m_webAppHost?.Dispose();
+            }
+            finally
+            {
+                m_disposed = true;       // Prevent duplicate dispose.
+                base.Dispose(disposing); // Call base class Dispose().
             }
         }
 
@@ -348,7 +348,7 @@ namespace openPDC
                 LogException(new InvalidOperationException($"Service stopping handler exception: {ex.Message}", ex));
             }
 
-            if ((object)helper != null)
+            if (!(helper is null))
             {
                 helper.UpdatedStatus -= UpdatedStatusHandler;
                 helper.LoggedException -= LoggedExceptionHandler;
@@ -395,7 +395,7 @@ namespace openPDC
         {
             ClientRequest request = ClientRequest.Parse(userInput);
 
-            if (request == null)
+            if (request is null)
                 return;
 
             if (SecurityProviderUtility.IsResourceSecurable(request.Command) && !SecurityProviderUtility.IsResourceAccessible(request.Command, principal))
@@ -406,14 +406,13 @@ namespace openPDC
 
             ClientRequestHandler requestHandler = ServiceHelper.FindClientRequestHandler(request.Command);
 
-            if (requestHandler == null)
+            if (requestHandler is null)
             {
                 ServiceHelper.UpdateStatus(clientID, UpdateType.Alarm, $"Command \"{request.Command}\" is not supported.\r\n\r\n");
                 return;
             }
 
-            ClientInfo clientInfo = new ClientInfo();
-            clientInfo.ClientID = clientID;
+            ClientInfo clientInfo = new ClientInfo { ClientID = clientID };
             clientInfo.SetClientUser(principal);
 
             ClientRequestInfo requestInfo = new ClientRequestInfo(clientInfo, request);

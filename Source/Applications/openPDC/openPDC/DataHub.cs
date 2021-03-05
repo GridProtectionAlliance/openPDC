@@ -56,8 +56,8 @@ namespace openPDC
 
         public DataHub() : base(Program.Host.LogWebHostStatusMessage, Program.Host.LogException)
         {
-            Action<string, UpdateType> logStatusMessage = (message, updateType) => LogStatusMessage(message, updateType);
-            Action<Exception> logException = ex => LogException(ex);
+            void logStatusMessage(string message, UpdateType updateType) => LogStatusMessage(message, updateType);
+            void logException(Exception ex) => LogException(ex);
 
             m_modbusOperations = new ModbusOperations(this, logStatusMessage, logException);
         }
@@ -102,12 +102,10 @@ namespace openPDC
         {
             string deviceName = null;
 
-            ModbusPoller modbusPoller = sender as ModbusPoller;
-
-            if ((object)modbusPoller != null)
+            if (sender is ModbusPoller modbusPoller)
                 deviceName = modbusPoller.Name;
 
-            if ((object)deviceName == null)
+            if (deviceName is null)
                 return;
 
             string clientID = e.Argument1;
@@ -116,10 +114,10 @@ namespace openPDC
                 .Select(update => update.AsExpandoObject())
                 .ToList();
 
-            if ((object)clientID != null)
-                GlobalHost.ConnectionManager.GetHubContext<DataHub>().Clients.Client(clientID).deviceProgressUpdate(deviceName, updates);
-            else
+            if (clientID is null)
                 GlobalHost.ConnectionManager.GetHubContext<DataHub>().Clients.All.deviceProgressUpdate(deviceName, updates);
+            else
+                GlobalHost.ConnectionManager.GetHubContext<DataHub>().Clients.Client(clientID).deviceProgressUpdate(deviceName, updates);
         }
 
         #endregion
@@ -433,22 +431,22 @@ namespace openPDC
 
         public object GetAlarmState(int id)
         {
-            dynamic jAlarmState = new JObject();
+            dynamic state = new JObject();
             AlarmDevice alarmDevice = DataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", id);
 
-            if ((object)alarmDevice != null)
-            {
-                AlarmState alarmState = DataContext.Table<AlarmState>().QueryRecordWhere("ID = {0}", alarmDevice.StateID);
+            if (alarmDevice is null)
+                return state;
 
-                if ((object)alarmState != null)
-                {
-                    jAlarmState.displayData = alarmDevice.DisplayData;
-                    jAlarmState.stateName = alarmState.State;
-                    jAlarmState.stateColor = alarmState.Color;
-                }
+            AlarmState alarmState = DataContext.Table<AlarmState>().QueryRecordWhere("ID = {0}", alarmDevice.StateID);
+
+            if (!(alarmState is null))
+            {
+                state.displayData = alarmDevice.DisplayData;
+                state.stateName = alarmState.State;
+                state.stateColor = alarmState.Color;
             }
 
-            return jAlarmState;
+            return state;
         }
 
         [AuthorizeHubRole("Administrator, Editor")]
