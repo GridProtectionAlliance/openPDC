@@ -259,9 +259,9 @@
     <None Include="AppDebug.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Full Checkout Calculations.TagTemplate" />
     <Content Include="Installers\PMUConnectionTesterSetup.msi" />
     <Content Include="Installers\StreamSplitterSetup.msi" />
+    <Content Include="Full Calculations.TagTemplate" />
     <None Include="openPDC.ico" />
     <None Include="PostBuildSetup.bat" />
     <Content Include="Web.config" />
