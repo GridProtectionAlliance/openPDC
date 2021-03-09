@@ -43,6 +43,7 @@
     AlarmDevice alarmDevice = null;
     int alarmDeviceID, deviceID = 0, parentID = 0;
     string idValue;
+    string deviceGuid;
     string postError = null;
     ulong salt = Random.UInt64;
 
@@ -58,6 +59,10 @@
         if (parameters.TryGetValue("DeviceID", out idValue))
         {
             int.TryParse(idValue, out deviceID);
+        }
+        else if (parameters.TryGetValue("UniqueID", out deviceGuid))
+        {
+            int.TryParse(dataContext.Connection.ExecuteScalar<string>("SELECT ID FROM Device WHERE UniqueID = '" + deviceGuid+ "'"), out deviceID);
         }
     }
     else
@@ -185,7 +190,7 @@
             parentID = device.ParentID.Value;
 
             // If this is a concentrator child, get connection string of parent
-                    Device parentDevice = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", parentID);
+            Device parentDevice = dataContext.Table<Device>().QueryRecordWhere("ID = {0}", parentID);
 
             if ((object)parentDevice != null)
             {
