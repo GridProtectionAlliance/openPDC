@@ -26,7 +26,7 @@
   <MenuDataItem Icon="" MenuText="_Outputs" Description="Manage PDC Outputs" Roles="*" UserControlAssembly="" UserControlPath="">
     <SubMenuItems>
       <MenuDataItem Icon="" MenuText="_Concentrator Output Streams" Description="Manage Output Streams" Roles="*" UserControlAssembly="GSF.PhasorProtocols.UI.WPF.dll" UserControlPath="GSF.PhasorProtocols.UI.UserControls.OutputStreamUserControl" />
-      <MenuDataItem Icon="" MenuText="_Historians Instances" Description="Manage Historian Instances" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.HistorianUserControl" />
+      <MenuDataItem Icon="" MenuText="_Historian Instances" Description="Manage Historian Instances" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.HistorianUserControl" />
       <MenuDataItem Icon="" MenuText="" Description="" Roles="*" UserControlAssembly="" UserControlPath="" />
       <MenuDataItem Icon="" MenuText="Manage Custom _Outputs" Description="Manage Custom Output Adapters" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.CustomOutputAdapterUserControl" />
     </SubMenuItems>
@@ -67,14 +67,16 @@
       <MenuDataItem Icon="" MenuText="Monitor _Device Outputs" Description="Monitor Device Outputs" Roles="*" UserControlAssembly="GSF.PhasorProtocols.UI.WPF.dll" UserControlPath="GSF.PhasorProtocols.UI.UserControls.RealTimeMeasurementUserControl"/>
       <MenuDataItem Icon="" MenuText="_Stream Statistics" Description="Stream Statistics" Roles="*" UserControlAssembly="GSF.PhasorProtocols.UI.WPF.dll" UserControlPath="GSF.PhasorProtocols.UI.UserControls.RealTimeStatisticUserControl"/>
       <MenuDataItem Icon="" MenuText="" Description="" Roles="*" UserControlAssembly="" UserControlPath="" />
+      <MenuDataItem Icon="" MenuText="_Modbus Device Status" Description="Modbus Device Status" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.DeviceStatusUserControl"/>
+      <MenuDataItem Icon="" MenuText="" Description="" Roles="*" UserControlAssembly="" UserControlPath="" />
       <MenuDataItem Icon="" MenuText="_Remote System Console" Description="Remote System Console" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.MonitoringUserControl" />
       <MenuDataItem Icon="" MenuText="_Error Log" Description="Error Log" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.ErrorLogUserControl" />
     </SubMenuItems>
   </MenuDataItem>
   <MenuDataItem Icon="" MenuText="_Reporting" Description="Data Quality Reporting" Roles="*" UserControlAssembly="" UserControlPath="">
     <SubMenuItems>
-      <MenuDataItem Icon="" MenuText="Completeness Reports" Description="Configure Completeness Reports" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.CompletenessReportUserControl"/>
-      <MenuDataItem Icon="" MenuText="Correctness Reports" Description="Configure Correctness Reports" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.CorrectnessReportUserControl"/>
+      <MenuDataItem Icon="" MenuText="Completeness Report" Description="Configure Completeness Report" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.CompletenessReportUserControl"/>
+      <MenuDataItem Icon="" MenuText="Correctness Report" Description="Configure Correctness Report" Roles="*" UserControlAssembly="GSF.TimeSeries.UI.WPF.dll" UserControlPath="GSF.TimeSeries.UI.UserControls.CorrectnessReportUserControl"/>
     </SubMenuItems>
   </MenuDataItem>
   <MenuDataItem Icon="" MenuText="_System" Description="Manage System Settings" Roles="*" UserControlAssembly="" UserControlPath="">
