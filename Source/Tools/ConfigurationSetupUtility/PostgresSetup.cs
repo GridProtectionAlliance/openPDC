@@ -5,10 +5,10 @@
 //
 //  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
 //  the NOTICE file distributed with this work for additional information regarding copyright ownership.
-//  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+//  The GPA licenses this file to you under the MIT License (MIT), the "License"; you may
 //  not use this file except in compliance with the License. You may obtain a copy of the License at:
 //
-//      http://www.opensource.org/licenses/eclipse-1.0.php
+//      http://opensource.org/licenses/MIT
 //
 //  Unless agreed to in writing, the subject software distributed under the License is distributed on an
 //  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
@@ -45,7 +45,7 @@ namespace ConfigurationSetupUtility
         /// Data provider string used to load the assembly for making PostgreSQL DB connections.
         /// </summary>
         public const string DataProviderString =
-            "AssemblyName={Npgsql, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7}; " +
+            "AssemblyName={Npgsql, Version=4.0.11.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7}; " +
             "ConnectionType=Npgsql.NpgsqlConnection; AdapterType=Npgsql.NpgsqlDataAdapter";
 
         #endregion
@@ -115,7 +115,7 @@ namespace ConfigurationSetupUtility
                 if (!string.IsNullOrEmpty(RoleName))
                     settings["User Id"] = RoleName.ToLower();
 
-                if ((object)RolePassword != null && RolePassword.Length > 0)
+                if (RolePassword != null && RolePassword.Length > 0)
                     settings["Password"] = RolePassword.ToUnsecureString();
 
                 return settings.JoinKeyValuePairs();
@@ -124,28 +124,22 @@ namespace ConfigurationSetupUtility
             {
                 Dictionary<string, string> settings;
 
-                string hostName;
-                string port;
-                string databaseName;
-                string userName;
-                string password;
-
                 HostName = null;
                 Port = null;
                 RolePassword = null;
 
                 settings = value.ParseKeyValuePairs();
 
-                if (settings.TryGetValue("Server", out hostName))
+                if (settings.TryGetValue("Server", out string hostName))
                     HostName = hostName;
 
-                if (settings.TryGetValue("Port", out port))
+                if (settings.TryGetValue("Port", out string port))
                     Port = port;
 
-                if (settings.TryGetValue("User Id", out userName))
+                if (settings.TryGetValue("User Id", out string userName))
                     RoleName = userName;
 
-                if (settings.TryGetValue("Password", out password))
+                if (settings.TryGetValue("Password", out string password))
                     RolePassword = password.ToSecureString();
 
                 if (!settings.TryGetValue("User Id", out userName))
@@ -153,7 +147,7 @@ namespace ConfigurationSetupUtility
                 else if (!userName.Equals(RoleName, StringComparison.OrdinalIgnoreCase))
                     RoleName = userName;
 
-                if (!settings.TryGetValue("Database", out databaseName))
+                if (!settings.TryGetValue("Database", out string databaseName))
                     DatabaseName = null;
                 else if (!databaseName.Equals(DatabaseName, StringComparison.OrdinalIgnoreCase))
                     DatabaseName = databaseName;
@@ -182,7 +176,7 @@ namespace ConfigurationSetupUtility
                 if (!string.IsNullOrEmpty(AdminUserName))
                     settings["User Id"] = AdminUserName.ToLower();
 
-                if ((object)AdminPassword != null && AdminPassword.Length > 0)
+                if (AdminPassword != null && AdminPassword.Length > 0)
                     settings["Password"] = AdminPassword.ToUnsecureString();
 
                 return settings.JoinKeyValuePairs();
@@ -226,8 +220,7 @@ namespace ConfigurationSetupUtility
             }
             finally
             {
-                if ((object)connection != null)
-                    connection.Dispose();
+                connection?.Dispose();
             }
         }
 
@@ -260,8 +253,7 @@ namespace ConfigurationSetupUtility
             }
             finally
             {
-                if ((object)connection != null)
-                    connection.Dispose();
+                connection?.Dispose();
             }
         }
 
@@ -353,7 +345,7 @@ namespace ConfigurationSetupUtility
 
             assembly = Assembly.Load(new AssemblyName(assemblyName));
             connectionType = assembly.GetType(connectionTypeName);
-            adapterType = assembly.GetType(adapterTypeName);
+            _ = assembly.GetType(adapterTypeName);
 
             connection = (IDbConnection)Activator.CreateInstance(connectionType);
             connection.ConnectionString = connectionString;
