@@ -1,14 +1,14 @@
 ﻿//******************************************************************************************************
 //  SqlServerDatabaseSetupScreen.xaml.cs - Gbtc
 //
-//  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
+//  Copyright © 2011, Grid Protection Alliance.  All Rights Reserved.
 //
 //  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
 //  the NOTICE file distributed with this work for additional information regarding copyright ownership.
-//  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+//  The GPA licenses this file to you under the MIT License (MIT), the "License"; you may
 //  not use this file except in compliance with the License. You may obtain a copy of the License at:
 //
-//      http://www.opensource.org/licenses/eclipse-1.0.php
+//      http://opensource.org/licenses/MIT
 //
 //  Unless agreed to in writing, the subject software distributed under the License is distributed on an
 //  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
@@ -108,37 +108,19 @@ namespace ConfigurationSetupUtility.Screens
         /// Gets a boolean indicating whether the user can advance to
         /// the next screen from the current screen.
         /// </summary>
-        public bool CanGoForward
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanGoForward => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can return to
         /// the previous screen from the current screen.
         /// </summary>
-        public bool CanGoBack
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanGoBack => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can cancel the
         /// setup process from the current screen.
         /// </summary>
-        public bool CanCancel
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanCancel => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user input is valid on the current page.
@@ -196,8 +178,7 @@ namespace ConfigurationSetupUtility.Screens
                     }
                     finally
                     {
-                        if (connection != null)
-                            connection.Dispose();
+                        connection?.Dispose();
                     }
                 }
                 else
@@ -207,9 +188,9 @@ namespace ConfigurationSetupUtility.Screens
 
                     try
                     {
-                        hostIsLocal = (host == "." || host == "(local)" || Transport.IsLocalAddress(host));
+                        hostIsLocal = host == "." || host == "(local)" || Transport.IsLocalAddress(host);
                     }
-                    catch (Exception e)
+                    catch(Exception e)
                     {
                         MessageBox.Show(e.Message);
                         return false;
@@ -220,10 +201,10 @@ namespace ConfigurationSetupUtility.Screens
                         string serviceAccountName = GetServiceAccountName();
 
                         bool serviceAccountIsLocal = (object)serviceAccountName != null &&
-                            (serviceAccountName.Equals("LocalSystem", StringComparison.InvariantCultureIgnoreCase) ||
-                             serviceAccountName.StartsWith(@"NT AUTHORITY\", StringComparison.InvariantCultureIgnoreCase) ||
-                             serviceAccountName.StartsWith(@"NT SERVICE\", StringComparison.InvariantCultureIgnoreCase) ||
-                             serviceAccountName.StartsWith(Environment.MachineName + @"\", StringComparison.InvariantCultureIgnoreCase));
+                                                     (serviceAccountName.Equals("LocalSystem", StringComparison.InvariantCultureIgnoreCase) ||
+                                                      serviceAccountName.StartsWith(@"NT AUTHORITY\", StringComparison.InvariantCultureIgnoreCase) ||
+                                                      serviceAccountName.StartsWith(@"NT SERVICE\", StringComparison.InvariantCultureIgnoreCase) ||
+                                                      serviceAccountName.StartsWith(Environment.MachineName + @"\", StringComparison.InvariantCultureIgnoreCase));
 
                         if (serviceAccountIsLocal)
                         {
@@ -254,15 +235,16 @@ namespace ConfigurationSetupUtility.Screens
                         {
                             string query = "SELECT COUNT(*) FROM sys.syslogins WHERE name = {0}";
                             int count = connection.ExecuteScalar<int>(query, m_newUserNameTextBox.Text);
-                            userExists = (count > 0);
+                            userExists = count > 0;
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        string failMessage =
-                            "Database connection failed. " +
-                            "Please check your username and password. " +
-                            "Additionally, you may need to modify your connection under advanced settings.";
+                        string failMessage = "Database connection failed."
+                            + " Please check your username and password."
+                            + " Additionally, you may need to modify your connection under advanced settings."
+                            + Environment.NewLine + Environment.NewLine
+                            + "Error: " + ex.Message;
 
                         MessageBox.Show(failMessage);
                         return false;
@@ -309,10 +291,7 @@ namespace ConfigurationSetupUtility.Screens
         /// </summary>
         public Dictionary<string, object> State
         {
-            get
-            {
-                return m_state;
-            }
+            get => m_state;
             set
             {
                 m_state = value;
@@ -350,7 +329,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
-                Visibility newUserVisibility = (existing && !migrate) ? Visibility.Collapsed : Visibility.Visible;
+                Visibility newUserVisibility = existing && !migrate ? Visibility.Collapsed : Visibility.Visible;
                 string newDatabaseMessage = "Please enter the needed information about the\r\nSQL Server database you would like to create.";
                 string oldDatabaseMessage = "Please enter the needed information about\r\nyour existing SQL Server database.";
 
@@ -366,7 +345,7 @@ namespace ConfigurationSetupUtility.Screens
                 m_newUserPasswordLabel.Visibility = newUserVisibility;
                 m_newUserNameTextBox.Visibility = newUserVisibility;
                 m_newUserPasswordTextBox.Visibility = newUserVisibility;
-                m_sqlServerDatabaseInstructionTextBlock.Text = (!existing || migrate) ? newDatabaseMessage : oldDatabaseMessage;
+                m_sqlServerDatabaseInstructionTextBlock.Text = !existing || migrate ? newDatabaseMessage : oldDatabaseMessage;
                 m_checkBoxIntegratedSecurity.IsChecked = true;
 
                 // If connecting to existing database, user name and password need not be admin user:
@@ -399,10 +378,10 @@ namespace ConfigurationSetupUtility.Screens
                 m_databaseNameTextBox.Text = migrate ? "openPDC" + App.DatabaseVersionSuffix : "openPDC";
 
                 // When using an existing database as-is, read existing connection settings out of the configuration file
-                string configFile = FilePath.GetAbsolutePath(App.ApplicationConfig);//"openPDC.exe.config"
+                string configFile = FilePath.GetAbsolutePath(App.ApplicationConfig);
 
                 if (!File.Exists(configFile))
-                    configFile = FilePath.GetAbsolutePath(App.ManagerConfig);//"openPDCManager.exe.config"
+                    configFile = FilePath.GetAbsolutePath(App.ManagerConfig);
 
                 if (existing && !migrate && File.Exists(configFile))
                 {
@@ -417,7 +396,7 @@ namespace ConfigurationSetupUtility.Screens
                         m_databaseNameTextBox.Text = m_sqlServerSetup.DatabaseName;
                         m_adminUserNameTextBox.Text = m_sqlServerSetup.UserName;
                         m_adminPasswordTextBox.Password = m_sqlServerSetup.Password;
-                        m_checkBoxIntegratedSecurity.IsChecked = ((object)m_sqlServerSetup.IntegratedSecurity != null);
+                        m_checkBoxIntegratedSecurity.IsChecked = (object)m_sqlServerSetup.IntegratedSecurity != null;
                         m_state["encryptSqlServerConnectionStrings"] = serviceConfig.Settings["systemSettings"]["ConnectionString"].Encrypted;
                     }
                 }
@@ -427,7 +406,7 @@ namespace ConfigurationSetupUtility.Screens
         // Occurs when the screen is made visible or invisible.
         private void SqlServerDatabaseSetupScreen_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (m_advancedButton == null)
+            if (m_advancedButton is null)
             {
                 DependencyObject parent = VisualTreeHelper.GetParent(this);
                 Window mainWindow;
@@ -436,7 +415,7 @@ namespace ConfigurationSetupUtility.Screens
                     parent = VisualTreeHelper.GetParent(parent);
 
                 mainWindow = parent as Window;
-                m_advancedButton = (mainWindow == null) ? null : mainWindow.FindName("m_advancedButton") as Button;
+                m_advancedButton = mainWindow is null ? null : mainWindow.FindName("m_advancedButton") as Button;
             }
 
             if (m_advancedButton != null)
@@ -605,18 +584,18 @@ namespace ConfigurationSetupUtility.Screens
                 m_databaseNameTextBox.Text = m_sqlServerSetup.DatabaseName;
                 m_adminUserNameTextBox.Text = m_sqlServerSetup.UserName;
                 m_adminPasswordTextBox.Password = m_sqlServerSetup.Password;
-                m_checkBoxIntegratedSecurity.IsChecked = ((object)m_sqlServerSetup.IntegratedSecurity != null);
+                m_checkBoxIntegratedSecurity.IsChecked = (object)m_sqlServerSetup.IntegratedSecurity != null;
             }
         }
 
         private string GetServiceAccountName()
         {
-            SelectQuery selectQuery = new SelectQuery(string.Format("select name, startname from Win32_Service where name = '{0}'", "openPDC"));
+            SelectQuery selectQuery = new SelectQuery($"select name, startname from Win32_Service where name = '{"openPDC"}'");
 
             using (ManagementObjectSearcher managementObjectSearcher = new ManagementObjectSearcher(selectQuery))
             {
                 ManagementObject service = managementObjectSearcher.Get().Cast<ManagementObject>().FirstOrDefault();
-                return ((object)service != null) ? service["startname"].ToString() : null;
+                return service != null ? service["startname"].ToString() : null;
             }
         }
 

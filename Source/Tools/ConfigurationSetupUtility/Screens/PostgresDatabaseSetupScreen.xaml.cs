@@ -102,37 +102,19 @@ namespace ConfigurationSetupUtility.Screens
         /// Gets a boolean indicating whether the user can advance to
         /// the next screen from the current screen.
         /// </summary>
-        public bool CanGoForward
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanGoForward => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can return to
         /// the previous screen from the current screen.
         /// </summary>
-        public bool CanGoBack
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanGoBack => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can cancel the
         /// setup process from the current screen.
         /// </summary>
-        public bool CanCancel
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanCancel => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user input is valid on the current page.
@@ -231,10 +213,7 @@ namespace ConfigurationSetupUtility.Screens
         /// </summary>
         public Dictionary<string, object> State
         {
-            get
-            {
-                return m_state;
-            }
+            get => m_state;
             set
             {
                 m_state = value;
@@ -272,7 +251,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
-                Visibility newUserVisibility = (existing && !migrate) ? Visibility.Collapsed : Visibility.Visible;
+                Visibility newUserVisibility = existing && !migrate ? Visibility.Collapsed : Visibility.Visible;
                 string newDatabaseMessage = "Please enter the needed information about the\r\nOracle database you would like to create.";
                 string oldDatabaseMessage = "Please enter the needed information about\r\nyour existing Oracle database.";
 
@@ -291,7 +270,7 @@ namespace ConfigurationSetupUtility.Screens
                 m_rolePasswordLabel.Visibility = newUserVisibility;
                 m_roleNameTextBox.Visibility = newUserVisibility;
                 m_rolePasswordTextBox.Visibility = newUserVisibility;
-                m_postgresDatabaseInstructionTextBlock.Text = (!existing || migrate) ? newDatabaseMessage : oldDatabaseMessage;
+                m_postgresDatabaseInstructionTextBlock.Text = !existing || migrate ? newDatabaseMessage : oldDatabaseMessage;
 
                 // If connecting to existing database, user name and password need to be admin user:
                 if (existing && !migrate)
@@ -340,7 +319,7 @@ namespace ConfigurationSetupUtility.Screens
         // Occurs when the screen is made visible or invisible.
         private void PostgresDatabaseSetupScreen_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (m_advancedButton == null)
+            if (m_advancedButton is null)
             {
                 DependencyObject parent = VisualTreeHelper.GetParent(this);
                 Window mainWindow;
@@ -349,7 +328,7 @@ namespace ConfigurationSetupUtility.Screens
                     parent = VisualTreeHelper.GetParent(parent);
 
                 mainWindow = parent as Window;
-                m_advancedButton = (mainWindow == null) ? null : mainWindow.FindName("m_advancedButton") as Button;
+                m_advancedButton = mainWindow is null ? null : mainWindow.FindName("m_advancedButton") as Button;
             }
 
             if (m_advancedButton != null)
@@ -391,7 +370,7 @@ namespace ConfigurationSetupUtility.Screens
         // Occurs when the user changes the administrator user name.
         private void AdminUserNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if ((object)m_state != null)
+            if (m_state != null)
             {
                 string adminUserName = m_adminUserNameTextBox.Text;
                 bool existing = Convert.ToBoolean(m_state["existing"]);
@@ -429,11 +408,13 @@ namespace ConfigurationSetupUtility.Screens
 
                 MessageBox.Show("Database connection succeeded.");
             }
-            catch
+            catch (Exception ex)
             {
                 string failMessage = "Database connection failed."
                     + " Please check your username and password."
-                    + " Additionally, you may need to modify your connection under advanced settings.";
+                    + " Additionally, you may need to modify your connection under advanced settings."
+                    + Environment.NewLine + Environment.NewLine
+                    + "Error: " + ex.Message;
 
                 MessageBox.Show(failMessage);
             }
@@ -485,7 +466,7 @@ namespace ConfigurationSetupUtility.Screens
                 m_databaseTextBox.Text = m_postgresSetup.DatabaseName;
                 m_roleNameTextBox.Text = m_postgresSetup.RoleName;
 
-                if ((object)m_postgresSetup.RolePassword == null || m_postgresSetup.RolePassword.Length == 0)
+                if (m_postgresSetup.RolePassword is null || m_postgresSetup.RolePassword.Length == 0)
                     m_postgresSetup.RolePassword = password;
                 else
                     m_rolePasswordTextBox.Password = m_postgresSetup.RolePassword.ToUnsecureString();
