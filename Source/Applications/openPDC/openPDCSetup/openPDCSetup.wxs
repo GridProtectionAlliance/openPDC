@@ -457,7 +457,7 @@
         <Shortcut Id="CreateOutputStreamUtilitiesShortcut" Name="CreateOutputStream" Target="[#CreateOutputStream.exe]" Description="Used to create an output stream from a CSV file." WorkingDirectory="INSTALLFOLDER" Directory="UTILITIESFOLDER" Advertise="no" />
       </Component>
     </ComponentGroup>
-
+    
     <ComponentGroup Id="ConfigCrypterComponents" Directory="INSTALLFOLDER">
       <Component Id="ConfigCrypter">
         <File Id="ConfigCrypter.exe" Name="ConfigCrypter.exe" Source="$(var.ProjectDir)\ConfigCrypter.exe">
@@ -469,7 +469,7 @@
         <File Id="ConfigCrypter.exe.config" Name="ConfigCrypter.exe.config" Source="$(var.ProjectDir)\ConfigCrypter.exe.config" />
       </Component>
     </ComponentGroup>
-
+    
     <ComponentGroup Id="ConfigurationEditorComponents" Directory="INSTALLFOLDER">
       <Component Id="ConfigurationEditor">
         <File Id="ConfigurationEditor.exe" Name="ConfigurationEditor.exe" Source="$(var.ProjectDir)\ConfigurationEditor.exe">
@@ -942,6 +942,31 @@
       <Component Id="Npgsql">
         <File Id="Npgsql.dll" Name="Npgsql.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Npgsql.dll">
           <netfx:NativeImage Id="ngen_Npgsql.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+      <Component Id="System.Buffers">
+        <File Id="System.Buffers" Name="System.Buffers" Source="$(var.SolutionDir)\Dependencies\GSF\System.Buffers.dll">
+          <netfx:NativeImage Id="ngen_System.Buffers.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+      <Component Id="System.Memory">
+        <File Id="System.Memory" Name="System.Memory" Source="$(var.SolutionDir)\Dependencies\GSF\System.Memory.dll">
+          <netfx:NativeImage Id="ngen_System.Memory.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+      <Component Id="System.Runtime.CompilerServices.Unsafe">
+        <File Id="System.Runtime.CompilerServices.Unsafe" Name="System.Runtime.CompilerServices.Unsafe" Source="$(var.SolutionDir)\Dependencies\GSF\System.Runtime.CompilerServices.Unsafe.dll">
+          <netfx:NativeImage Id="ngen_System.Runtime.CompilerServices.Unsafe.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+      <Component Id="System.Threading.Tasks.Extensions">
+        <File Id="System.Threading.Tasks.Extensions" Name="System.Threading.Tasks.Extensions" Source="$(var.SolutionDir)\Dependencies\GSF\System.Threading.Tasks.Extensions.dll">
+          <netfx:NativeImage Id="ngen_System.Threading.Tasks.Extensions.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
+      <Component Id="System.ValueTuple">
+        <File Id="System.ValueTuple" Name="System.ValueTuple" Source="$(var.SolutionDir)\Dependencies\GSF\System.ValueTuple.dll">
+          <netfx:NativeImage Id="ngen_System.ValueTuple.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
       <Component Id="System.Data.SQLite">
