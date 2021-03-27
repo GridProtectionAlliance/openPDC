@@ -945,27 +945,27 @@
         </File>
       </Component>
       <Component Id="System.Buffers">
-        <File Id="System.Buffers" Name="System.Buffers" Source="$(var.SolutionDir)\Dependencies\GSF\System.Buffers.dll">
+        <File Id="System.Buffers.dll" Name="System.Buffers.dll" Source="$(var.SolutionDir)\Dependencies\GSF\System.Buffers.dll">
           <netfx:NativeImage Id="ngen_System.Buffers.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
       <Component Id="System.Memory">
-        <File Id="System.Memory" Name="System.Memory" Source="$(var.SolutionDir)\Dependencies\GSF\System.Memory.dll">
+        <File Id="System.Memory.dll" Name="System.Memory.dll" Source="$(var.SolutionDir)\Dependencies\GSF\System.Memory.dll">
           <netfx:NativeImage Id="ngen_System.Memory.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
       <Component Id="System.Runtime.CompilerServices.Unsafe">
-        <File Id="System.Runtime.CompilerServices.Unsafe" Name="System.Runtime.CompilerServices.Unsafe" Source="$(var.SolutionDir)\Dependencies\GSF\System.Runtime.CompilerServices.Unsafe.dll">
+        <File Id="System.Runtime.CompilerServices.Unsafe.dll" Name="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.SolutionDir)\Dependencies\GSF\System.Runtime.CompilerServices.Unsafe.dll">
           <netfx:NativeImage Id="ngen_System.Runtime.CompilerServices.Unsafe.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
       <Component Id="System.Threading.Tasks.Extensions">
-        <File Id="System.Threading.Tasks.Extensions" Name="System.Threading.Tasks.Extensions" Source="$(var.SolutionDir)\Dependencies\GSF\System.Threading.Tasks.Extensions.dll">
+        <File Id="System.Threading.Tasks.Extensions.dll" Name="System.Threading.Tasks.Extensions.dll" Source="$(var.SolutionDir)\Dependencies\GSF\System.Threading.Tasks.Extensions.dll">
           <netfx:NativeImage Id="ngen_System.Threading.Tasks.Extensions.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
       <Component Id="System.ValueTuple">
-        <File Id="System.ValueTuple" Name="System.ValueTuple" Source="$(var.SolutionDir)\Dependencies\GSF\System.ValueTuple.dll">
+        <File Id="System.ValueTuple.dll" Name="System.ValueTuple.dll" Source="$(var.SolutionDir)\Dependencies\GSF\System.ValueTuple.dll">
           <netfx:NativeImage Id="ngen_System.ValueTuple.dll" Platform="64bit" Priority="1" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
