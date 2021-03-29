@@ -5,10 +5,10 @@
 //
 //  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
 //  the NOTICE file distributed with this work for additional information regarding copyright ownership.
-//  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+//  The GPA licenses this file to you under the MIT License (MIT), the "License"; you may
 //  not use this file except in compliance with the License. You may obtain a copy of the License at:
 //
-//      http://www.opensource.org/licenses/eclipse-1.0.php
+//      http://opensource.org/licenses/MIT
 //
 //  Unless agreed to in writing, the subject software distributed under the License is distributed on an
 //  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
@@ -28,14 +28,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using GSF.TimeSeries.Adapters;
 using GSF;
-using GSF.ErrorManagement;
 using GSF.IO;
 using GSF.Reflection;
+using GSF.TimeSeries.Adapters;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -52,8 +50,8 @@ namespace ConfigurationSetupUtility.Screens
             #region [ Members ]
 
             // Fields
-            private Type m_type;
-            private string m_description;
+            private readonly Type m_type;
+            private readonly string m_description;
 
             #endregion
 
@@ -66,13 +64,7 @@ namespace ConfigurationSetupUtility.Screens
             public HistorianAdapter(Type type)
             {
                 m_type = type;
-
-                DescriptionAttribute descriptionAttribute;
-
-                if (m_type.TryGetAttribute(out descriptionAttribute))
-                    m_description = descriptionAttribute.Description;
-                else
-                    m_description = m_type.FullName;
+                m_description = GetDescription(type).Item1;
             }
 
             #endregion
@@ -82,31 +74,19 @@ namespace ConfigurationSetupUtility.Screens
             /// <summary>
             /// Gets type name of <see cref="HistorianAdapter"/>.
             /// </summary>
-            public string TypeName
-            {
-                get
-                {
-                    return m_type.FullName;
-                }
-            }
+            public string TypeName => m_type.FullName;
 
             /// <summary>
             /// Gets assembly name of <see cref="HistorianAdapter"/>.
             /// </summary>
-            public string AssemblyName
-            {
-                get
-                {
-                    return Path.GetFileName(m_type.Assembly.Location);
-                }
-            }
+            public string AssemblyName => Path.GetFileName(m_type.Assembly.Location);
 
             #endregion
 
             #region [ Methods ]
 
             /// <summary>
-            /// Provides the description of the <see cref="HistorianAdapter"/> as its string reprensentation.
+            /// Provides the description of the <see cref="HistorianAdapter"/> as its string representation.
             /// </summary>
             /// <returns>The description of the <see cref="HistorianAdapter"/>.</returns>
             public override string ToString()
@@ -117,11 +97,16 @@ namespace ConfigurationSetupUtility.Screens
             #endregion
         }
 
+        // Constants
+        private const string DefaultType = "TestingAdapters.VirtualOutputAdapter";
+        private const string DefaultAssembly = "TestingAdapters.dll";
+        private const string DefaultDescription = "No Archive: Configure openPDC without a local archive (recommended). This will add stub virtual output adapter.\r\n    Consider openHistorian v2 for archiving synchrophasor data, see openHistorian.com";
+
         // Fields
-        private HistorianConnectionStringScreen m_parametersScreen;
+        private readonly HistorianConnectionStringScreen m_parametersScreen;
         private Dictionary<string, object> m_state;
-        private List<HistorianAdapter> m_historianAdapters;
-        private HistorianAdapter m_defaultAdapter;
+        private readonly List<HistorianAdapter> m_historianAdapters;
+        private readonly HistorianAdapter m_defaultAdapter;
         private string m_assemblyName;
         private string m_typeName;
 
@@ -137,7 +122,7 @@ namespace ConfigurationSetupUtility.Screens
             m_parametersScreen = new HistorianConnectionStringScreen();
             m_historianAdapters = new List<HistorianAdapter>();
 
-            // This can fail if user is not running under proper credentials
+            // This could fail if user is not running under proper credentials
             try
             {
                 foreach (Type type in GetHistorianTypes())
@@ -152,19 +137,16 @@ namespace ConfigurationSetupUtility.Screens
 
             if (m_historianAdapters.Count > 0)
             {
-                m_defaultAdapter = m_historianAdapters.Find(adapter => adapter.TypeName == "HistorianAdapters.LocalOutputAdapter");
-
-                if (m_defaultAdapter == null)
-                    m_defaultAdapter = m_historianAdapters[0];
+                m_defaultAdapter = m_historianAdapters.Find(adapter => string.Equals(adapter.TypeName, DefaultType, StringComparison.Ordinal)) ?? m_historianAdapters[0];
 
                 m_assemblyName = m_defaultAdapter.AssemblyName;
                 m_typeName = m_defaultAdapter.TypeName;
             }
 
-            if (m_defaultAdapter == null)
+            if (m_defaultAdapter is null)
             {
-                m_assemblyName = FilePath.GetAbsolutePath("HistorianAdapters.dll");
-                m_typeName = "HistorianAdapters.LocalOutputAdapter";
+                m_assemblyName = FilePath.GetAbsolutePath(DefaultAssembly);
+                m_typeName = DefaultType;
             }
 
             InitializeComponent();
@@ -187,7 +169,7 @@ namespace ConfigurationSetupUtility.Screens
                 m_parametersScreen.RefreshConnectionStringParameters(assemblyName, typeName);
 
                 // Skip the connection parameters screen when selecting virtual historian
-                if (assemblyName != "TestingAdapters.dll" || typeName != "TestingAdapters.VirtualOutputAdapter")
+                if (!string.Equals(assemblyName, DefaultAssembly, StringComparison.OrdinalIgnoreCase) || !string.Equals(typeName, DefaultType, StringComparison.Ordinal))
                     return m_parametersScreen;
 
                 // Otherwise, setup is ready
@@ -199,37 +181,19 @@ namespace ConfigurationSetupUtility.Screens
         /// Gets a boolean indicating whether the user can advance to
         /// the next screen from the current screen.
         /// </summary>
-        public bool CanGoForward
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanGoForward => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can return to
         /// the previous screen from the current screen.
         /// </summary>
-        public bool CanGoBack
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanGoBack => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can cancel the
         /// setup process from the current screen.
         /// </summary>
-        public bool CanCancel
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanCancel => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user input is valid on the current page.
@@ -253,10 +217,7 @@ namespace ConfigurationSetupUtility.Screens
         /// </summary>
         public Dictionary<string, object> State
         {
-            get
-            {
-                return m_state;
-            }
+            get => m_state;
             set
             {
                 m_state = value;
@@ -306,22 +267,45 @@ namespace ConfigurationSetupUtility.Screens
         // Searches the assemblies in the current directory for historian implementations.
         // The historians are output adapters for which the initial value of
         // OutputIsForArchive is true.
-        private List<Type> GetHistorianTypes()
+        private static List<Type> GetHistorianTypes()
         {
+            //DescriptionAttribute descriptionAttribute;
+
+            // This crazy linq expression will only load output adapters where:
+            //      OutputIsForArchive = true and BrowsableState = Always
+            // then order the list by:
+            //      default type is listed first
+            //      types in default assembly listed second
+            //      items that have a description sorted above those that don't
+            //      then in alphabetical order
             return typeof(IOutputAdapter).LoadImplementations(true).Where(type =>
             {
-                IOutputAdapter adapter = Activator.CreateInstance(type) as IOutputAdapter;
-                return (adapter != null) && adapter.OutputIsForArchive;
-            }).ToList();
+                try
+                {
+                    return Activator.CreateInstance(type) is IOutputAdapter adapter && adapter.OutputIsForArchive;
+                }
+                catch (Exception ex)
+                {
+                    ((App)Application.Current).ErrorLogger.Log(ex);
+                    return false;
+                }
+            })
+            .Distinct()
+            .Where(type => GetEditorBrowsableState(type) == EditorBrowsableState.Always)
+            .Select(type => Tuple.Create(type, GetDescription(type)))
+            .OrderByDescending(pair => string.Equals(pair.Item1.FullName, DefaultType, StringComparison.Ordinal))
+            .ThenByDescending(pair => string.Equals(Path.GetFileName(pair.Item1.Assembly.Location), DefaultAssembly, StringComparison.OrdinalIgnoreCase))
+            .ThenByDescending(pair => pair.Item2.Item2)
+            .ThenBy(pair => pair.Item2.Item1)
+            .Select(pair => pair.Item1)
+            .ToList();
         }
 
         // Occurs when the user changes the selection in the historian list box.
         // It saves the selection made by the user for future steps in the setup process.
         private void HistorianAdapterListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            HistorianAdapter adapter = HistorianAdapterListBox.SelectedItem as HistorianAdapter;
-
-            if (adapter != null)
+            if (HistorianAdapterListBox.SelectedItem is HistorianAdapter adapter)
             {
                 m_assemblyName = adapter.AssemblyName;
                 m_typeName = adapter.TypeName;
@@ -347,7 +331,7 @@ namespace ConfigurationSetupUtility.Screens
             {
                 string newValue = currentValue.RemoveWhiteSpace().RemoveControlCharacters().ToUpper();
 
-                if (string.Compare(currentValue, newValue) != 0)
+                if (string.CompareOrdinal(currentValue, newValue) != 0)
                     AcronymTextBox.Text = newValue;
 
                 if (m_state != null)
@@ -367,6 +351,56 @@ namespace ConfigurationSetupUtility.Screens
         {
             if (m_state != null)
                 m_state["historianDescription"] = DescriptionTextBox.Text;
+        }
+
+        #endregion
+
+        #region [ Static ]
+
+        // Static Methods
+
+        /// <summary>
+        /// Gets the editor browsable state of the given type. This method will
+        /// search for a <see cref="EditorBrowsableAttribute"/> using reflection.
+        /// If none is found, it will default to <see cref="EditorBrowsableState.Always"/>.
+        /// </summary>
+        /// <param name="type">The type for which an editor browsable state is found.</param>
+        /// <returns>
+        /// Either the editor browsable state as defined by an <see cref="EditorBrowsableAttribute"/>
+        /// or else <see cref="EditorBrowsableState.Always"/>.
+        /// </returns>
+        private static EditorBrowsableState GetEditorBrowsableState(Type type)
+        {
+            if (type.TryGetAttribute(out EditorBrowsableAttribute editorBrowsableAttribute))
+                return editorBrowsableAttribute.State;
+
+            return EditorBrowsableState.Always;
+        }
+        /// <summary>
+        /// Gets a description of the given type. This method will search for a
+        /// <see cref="DescriptionAttribute"/> using reflection. If none is found,
+        /// it will default to the <see cref="Type.FullName"/> of the type.
+        /// </summary>
+        /// <param name="type">The type for which a description is found.</param>
+        /// <returns>
+        /// Either the description as defined by a <see cref="DescriptionAttribute"/>
+        /// or else the <see cref="Type.FullName"/> of the parameter - then <c>true</c>
+        /// if the description attribute existed (and was defined); else <c>false</c>.
+        /// </returns>
+        private static Tuple<string, bool> GetDescription(Type type)
+        {
+            if (string.Equals(type.FullName, DefaultType, StringComparison.Ordinal))
+                return new Tuple<string, bool>(DefaultDescription, true);
+
+            if (type.TryGetAttribute(out DescriptionAttribute descriptionAttribute))
+            {
+                // Treat null or empty string like there was no description
+                return string.IsNullOrWhiteSpace(descriptionAttribute.Description) ?
+                    Tuple.Create(type.FullName, false) :
+                    Tuple.Create(descriptionAttribute.Description, true);
+            }
+
+            return Tuple.Create(type.FullName, false);
         }
 
         #endregion
