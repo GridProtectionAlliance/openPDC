@@ -32,6 +32,7 @@ using System.Xml.Linq;
 using GSF;
 using GSF.Configuration;
 using GSF.Data;
+using GSF.Diagnostics;
 using GSF.IO;
 using GSF.Windows.ErrorManagement;
 using GSF.Reflection;
@@ -41,6 +42,8 @@ using openPDCManager.Properties;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
+// ReSharper disable RedundantExtendsListEntry
+// ReSharper disable ConstantConditionalAccessQualifier
 namespace openPDCManager
 {
     /// <summary>
