@@ -5,10 +5,10 @@
 //
 //  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
 //  the NOTICE file distributed with this work for additional information regarding copyright ownership.
-//  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+//  The GPA licenses this file to you under the MIT License (MIT), the "License"; you may
 //  not use this file except in compliance with the License. You may obtain a copy of the License at:
 //
-//      http://www.opensource.org/licenses/eclipse-1.0.php
+//      http://opensource.org/licenses/MIT
 //
 //  Unless agreed to in writing, the subject software distributed under the License is distributed on an
 //  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
@@ -70,13 +70,14 @@ namespace openPDCManager
             string systemName = null;
 
             AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+            Application.Current.SessionEnding += Application_SessionEnding;
 
             try
             {
                 string getElementValue(XElement[] elements, string name)
                 {
                     XElement element = elements.Elements("add").FirstOrDefault(elem =>
-                        elem.Attributes("name").Any<XAttribute>(nameAttribute =>
+                        elem.Attributes("name").Any(nameAttribute =>
                         string.Compare(nameAttribute.Value, name, StringComparison.OrdinalIgnoreCase) == 0));
 
                     return element?.Attributes("value").FirstOrDefault()?.Value;
@@ -88,6 +89,9 @@ namespace openPDCManager
                 {
                     XDocument hostConfig = XDocument.Load(configPath);
                     XElement[] systemSettings = hostConfig.Descendants(SystemSettings).ToArray();
+
+                    // Get system name from host service config
+                    systemName = getElementValue(systemSettings, "SystemName");
 
                     // Validate manager database connection as compared to host service
                     string hostConnectionString = getElementValue(systemSettings, "ConnectionString");
@@ -109,32 +113,44 @@ namespace openPDCManager
                             !hostDataProviderString.Equals(dataProviderString, StringComparison.OrdinalIgnoreCase) ||
                             !hostNodeID.Equals(nodeID, StringComparison.OrdinalIgnoreCase))
                         {
-                            if (System.Windows.Forms.MessageBox.Show(new NativeWindow(), "Manager database connection does not match host service. Do you want to correct this?", "Database Mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            bool mismatchHandled = false;
+
+                            if (Environment.CommandLine.Contains("-elevated") && Environment.CommandLine.Contains("-connection"))
                             {
-                                configSettings["ConnectionString"].Value = hostConnectionString;
-                                configSettings["DataProviderString"].Value = hostDataProviderString;
-                                configSettings["NodeID"].Value = hostNodeID;
+                                if (Environment.CommandLine.Contains("-connectionFix"))
+                                {
+                                    configSettings["ConnectionString"].Value = hostConnectionString;
+                                    configSettings["DataProviderString"].Value = hostDataProviderString;
+                                    configSettings["NodeID"].Value = hostNodeID;
+                                    config.Save();
+                                    mismatchHandled = true;
+                                }
+                                else if (Environment.CommandLine.Contains("-connectionKeep"))
+                                {
+                                    configSettings["KeepCustomConnection"].Value = "true";
+                                    config.Save();
+                                    mismatchHandled = true;
+                                }
                             }
-                            else
+                            
+                            if (!mismatchHandled)
                             {
-                                configSettings["KeepCustomConnection"].Value = "true";
+                                bool correctMismatch = System.Windows.Forms.MessageBox.Show(new NativeWindow(), "Manager database connection does not match host service. Do you want to correct this?", "Database Mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+                                string elevatedOperation = correctMismatch ? "-connectionFix" : "-connectionKeep";
+
+                                ProcessStartInfo startInfo = new ProcessStartInfo
+                                {
+                                    FileName = Environment.GetCommandLineArgs()[0],
+                                    Arguments = $"{string.Join(" ", Environment.GetCommandLineArgs().Skip(1))} -elevated {elevatedOperation}",
+                                    UseShellExecute = true,
+                                    Verb = "runas"
+                                };
+
+                                using (Process.Start(startInfo)) { }
+                                Environment.Exit(0);
                             }
-
-                            config.Save();
-
-                            ProcessStartInfo startInfo = new ProcessStartInfo
-                            {
-                                FileName = Environment.GetCommandLineArgs()[0],
-                                Arguments = string.Join(" ", Environment.GetCommandLineArgs().Skip(1)),
-                                UseShellExecute = true
-                            };
-
-                            using (Process.Start(startInfo)) { }
-                            Environment.Exit(0);
                         }
                     }
-
-                    systemName = getElementValue(systemSettings, "SystemName");
                 }
             }
             catch
@@ -184,7 +200,7 @@ namespace openPDCManager
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
                             FileName = Environment.GetCommandLineArgs()[0],
-                            Arguments = string.Join(" ", Environment.GetCommandLineArgs().Skip(1)) + " -elevated",
+                            Arguments = $"{string.Join(" ", Environment.GetCommandLineArgs().Skip(1))} -elevated",
                             UseShellExecute = true,
                             Verb = "runas"
                         };
@@ -239,7 +255,17 @@ namespace openPDCManager
 
         #region [ Methods ]
 
-        private void Application_SessionEnding(object sender, SessionEndingCancelEventArgs e) => Settings.Default.Save();
+        private static void Application_SessionEnding(object sender, SessionEndingCancelEventArgs e)
+        {
+            try
+            {
+                Settings.Default.Save();
+            }
+            catch (Exception ex)
+            {
+                Logger.SwallowException(ex);
+            }
+        }
 
         private string ErrorText()
         {
