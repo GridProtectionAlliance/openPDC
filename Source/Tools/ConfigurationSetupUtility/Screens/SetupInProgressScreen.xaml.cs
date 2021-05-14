@@ -2276,15 +2276,45 @@ namespace ConfigurationSetupUtility.Screens
 
             if (serviceConfigFile)
             {
-                configFile.Descendants("runtime").Remove();
+                XElement configuration = configFile.Element("configuration");
 
-                foreach (XElement configuration in configFile.Descendants("configuration"))
+                if (!(configuration is null))
                 {
-                    configuration.Add(new XElement("runtime",
-                        new XElement("gcConcurrent",
-                            new XAttribute("enabled", "true")),
-                        new XElement("gcServer",
-                            new XAttribute("enabled", "true"))));
+                    XElement runtime = configuration.Element("runtime");
+
+                    if (runtime is null)
+                    {
+                        configuration.Add(new XElement("runtime"));
+                        runtime = configuration.Element("runtime");
+                    }
+
+                    if (!(runtime is null))
+                    {
+                        void addOrUpdate(string name)
+                        {
+                            XElement element = runtime.Element(name);
+
+                            if (element is null)
+                            {
+                                runtime.Add(new XElement(name, new XAttribute("enabled", "true")));
+                            }
+                            else
+                            {
+                                XAttribute enabled = element.Attribute("enabled");
+
+                                if (enabled is null)
+                                    element.Add(new XAttribute("enabled", "true"));
+                                else
+                                    enabled.Value = "true";
+                            }
+                        }
+
+                        addOrUpdate("gcAllowVeryLargeObjects");
+                        addOrUpdate("gcConcurrent");
+                        addOrUpdate("gcServer");
+                        addOrUpdate("GCCpuGroup");
+                        addOrUpdate("Thread_UseAllCpuGroups");
+                    }
                 }
             }
 
