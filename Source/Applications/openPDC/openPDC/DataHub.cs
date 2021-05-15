@@ -157,6 +157,9 @@ namespace openPDC
         /// </summary>
         public int GetModbusProtocolID() => ModbusProtocolID;
 
+        public string GetProtocolCategory(int protocolID) =>
+            DataContext.Table<Protocol>().QueryRecordWhere("ID = {0}", protocolID)?.Category ?? "Undefined";
+
         [RecordOperation(typeof(Device), RecordOperation.QueryRecordCount)]
         public int QueryDeviceCount(Guid nodeID, string filterText)
         {
