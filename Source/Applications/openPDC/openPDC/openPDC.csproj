@@ -271,7 +271,13 @@
     <Content Include="Single Phase Power Calculations.TagTemplate" />
     <Content Include="Three Phase Power Calculations.TagTemplate" />
     <None Include="wwwroot\Companies.cshtml" />
+    <Content Include="wwwroot\Content\fonts\jsglyph.eot" />
+    <Content Include="wwwroot\Content\fonts\jsglyph.ttf" />
+    <Content Include="wwwroot\Content\fonts\jsglyph.woff" />
     <None Include="wwwroot\Devices.cshtml" />
+    <Content Include="wwwroot\Content\bootstrap-datetimepicker.css" />
+    <Content Include="wwwroot\Content\fonts\jsglyph.svg" />
+    <Content Include="wwwroot\Content\jquery.jspanel.css" />
     <Content Include="wwwroot\ParentStatus.cshtml" />
     <None Include="wwwroot\DeviceStatus.cshtml" />
     <None Include="wwwroot\GraphMeasurements.cshtml" />
@@ -286,6 +292,7 @@
     <None Include="wwwroot\RemoteConsole.cshtml" />
     <None Include="wwwroot\SelectTheme.cshtml" />
     <None Include="wwwroot\SelectTimeRange.cshtml" />
+    <Content Include="wwwroot\Scripts\jquery.jspanel.js" />
     <Content Include="wwwroot\Status.cshtml" />
     <None Include="wwwroot\Users.cshtml" />
     <None Include="wwwroot\VendorDevices.cshtml" />

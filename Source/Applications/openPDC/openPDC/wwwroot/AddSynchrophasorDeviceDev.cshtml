@@ -46,6 +46,7 @@
 @using System.Collections.Generic
 @using System.ComponentModel
 @using System.Net.Http
+@using System.Text.RegularExpressions
 @using System.Threading
 @using GSF.ComponentModel
 @using GSF.ComponentModel.DataAnnotations
@@ -54,7 +55,7 @@
 @using GSF.Web
 @using GSF.Web.Model
 @using GSF.Web.Shared
-@inherits ExtendedTemplateBase<openPDC.Model.AppModel>
+@inherits ExtendedTemplateBase<openHistorian.Model.AppModel>
 @{
     ViewBag.HidePageTitle = true;
     ViewBag.Title = "New Device Commissioning Wizard";
@@ -66,8 +67,7 @@
     string parameter;
     int deviceID;
 
-    if (!parameters.TryGetValue("DeviceID", out parameter) || !int.TryParse(parameter, out deviceID))
-    {
+    if (!parameters.TryGetValue("DeviceID", out parameter) || !int.TryParse(parameter, out deviceID)) {
         deviceID = 0;
     }
 
@@ -196,7 +196,28 @@
 
         div.panel-heading-condensed {
             height: 30px;
-            padding-top: 5px
+            padding-top: 5px;
+        }
+
+        div.include-phasor {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        input[type='checkbox'].include-phasor {
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        div.delete-phasor {
+            position: absolute;
+            margin-top: 32px;
+            margin-left: -20px;
+            cursor: pointer;
+        }
+
+        span.delete-phasor {
+            font-size: smaller;
         }
 
         tr.separator-top {
@@ -363,9 +384,11 @@
 @functions {
     private static Dictionary<string, object> s_appModelGlobal;
     private static Guid s_nodeID;
+    private static string s_companyAcronym;
     private static double s_defaultCalculationLagTime;
     private static double s_defaultCalculationLeadTime;
     private static int s_nominalFrequency;
+    private static string s_systemName;
 
     // Quasi-Static Properties
     private Dictionary<string, object> AppModelGlobal
@@ -398,6 +421,14 @@
         }
     }
 
+    private string CompanyAcronym
+    {
+        get
+        {
+            return !string.IsNullOrWhiteSpace(s_companyAcronym) ? s_companyAcronym : s_companyAcronym = (string)AppModelGlobal["CompanyAcronym"];
+        }
+    }
+
     private double DefaultCalculationLagTime
     {
         get
@@ -422,9 +453,36 @@
         }
     }
 
+    private string SystemName
+    {
+        get
+        {
+            if (s_systemName == default(string))
+            {
+                object value;
+
+                if (AppModelGlobal.TryGetValue("SystemName", out value))
+                {
+                    s_systemName = (string)value;
+
+                    if (s_systemName != null)
+                        s_systemName = Regex.Replace(s_systemName.Trim().ToUpperInvariant(), @"[^A-Z0-9\-!_\.@#\$]+", "_", RegexOptions.Compiled);
+
+                    if (!string.IsNullOrWhiteSpace(s_systemName))
+                        s_systemName = s_systemName + "!";
+                }
+
+                if (s_systemName == null)
+                    s_systemName = "";
+            }
+
+            return s_systemName;
+        }
+    }
+
     private string GetCurrentUserID()
     {
-        if ((object)Thread.CurrentPrincipal.Identity == null)
+        if (Thread.CurrentPrincipal.Identity == null)
             return UserInfo.CurrentUserID;
 
         return Thread.CurrentPrincipal.Identity.Name;
@@ -436,7 +494,7 @@
     {
         SecurityPrincipal securityPrincipal = ViewBag.SecurityPrincipal as SecurityPrincipal;
 
-        if ((object)securityPrincipal == null)
+        if (securityPrincipal == null)
             return false;
 
         return securityPrincipal.IsInRole("Administrator") || securityPrincipal.IsInRole("Editor");
@@ -460,6 +518,7 @@
         var viewModel = null;
         var deviceSignalTypes = [];
         var phasorSignalTypes = [];
+        var freqDeviceName = "@(SystemName)SYSTEM!FREQ";
 
         function showLoadingLabel() {
             $("#loadingDataLabel").css("visibility", "visible");
@@ -471,39 +530,176 @@
             setTimeout(function () { $("#loadingDataLabel").css("visibility", "hidden"); }, 500);
         }
 
+        @{ /* Make sure any updates to phase guessing is synchronized with "InputWizardDevices.cs" in the "GSF.PhasorProtocol.UI.WPF" assembly */ }
+        function phaseMatchExact(phaseLabel, phaseMatches) {
+            for (let i = 0; i < phaseMatches.length; i++) {
+                if (phaseLabel === phaseMatches[i])
+                    return true;
+            }
+
+            return false;
+        }
+
+        function phaseEndsWith(phaseLabel, phaseMatches, ignoreCase) {
+            if (ignoreCase)
+                phaseLabel = phaseLabel.toUpperCase();
+
+            for (let i = 0; i < phaseMatches.length; i++) {
+                let phaseMatch = phaseMatches[i];
+
+                if (ignoreCase)
+                    phaseMatch = phaseMatch.toUpperCase();
+
+                if (phaseLabel.endsWith(phaseMatch))
+                    return true;
+            }
+
+            return false;
+        }
+
+        function phaseContains(phaseLabel, phaseMatches, ignoreCase) {
+            if (ignoreCase)
+                phaseLabel = phaseLabel.toUpperCase();
+
+            for (let i = 0; i < phaseMatches.length; i++) {
+                let phaseMatch = phaseMatches[i];
+
+                if (ignoreCase)
+                    phaseMatch = phaseMatch.toUpperCase();
+
+                if (phaseLabel.indexOf(phaseMatch) > -1)
+                    return true;
+            }
+
+            return false;
+        }
+
+        function phaseMatchHighConfidence(phaseLabel, containsMatches, endsWithMatches) {
+            if (phaseEndsWith(phaseLabel, containsMatches, true))
+                return true;
+
+            const matches = containsMatches.concat(endsWithMatches);
+
+            for (let i = 0; i < matches.length; i++) {
+                const match = matches[i];
+                const variations = [ " " + match, "_" + match, "-" + match, "." + match ];
+
+                if (phaseEndsWith(phaseLabel, variations, false))
+                    return true;
+            }
+
+            for (let i = 0; i < containsMatches.length; i++) {
+                const match = containsMatches[i];
+                const variations = [ " " + match + " ", "_" + match + "_", "-" + match + "-", "-" + match + "_", "_" + match + "-", "." + match + "." ];
+
+                if (phaseContains(phaseLabel, variations, false))
+                    return true;
+            }
+
+            return false;
+        }
+
+        function phaseMatchLowConfidence(phaseLabel, phaseMatches) {
+            for (let i = 0; i < phaseMatches.length; i++) {
+                const match = phaseMatches[i];
+                const variations = [ " " + match, match + " ", "_" + match, match + "_", "_" + match + "_", "-" + match, match + "-", "-" + match + "-", "-" + match + "_", "_" + match + "-", "." + match, match + ".", "." + match + "." ];
+
+                if (phaseContains(phaseLabel, variations, true))
+                    return true;
+            }
+
+            return false;
+        }
+
         function guessPhase(phase, phasorLabel) {
-            if (!isEmpty(phase) && phase !== "+")
+            if (!isEmpty(phase) && phase !== "+" && !phase.endsWith("?"))
                 return phase;
 
-            if (phasorLabel.indexOf("_VA") > -1 || phasorLabel.indexOf("_IA") > -1 || phasorLabel.indexOf(" A ") > -1 || phasorLabel.indexOf(" APV") > -1 || phasorLabel.indexOf(" API") > -1 || phasorLabel.indexOf("VA ") > -1 || phasorLabel.indexOf("IA ") > -1 || phasorLabel.indexOf("VAPM") > -1 || phasorLabel.indexOf("IAPM") > -1 || phasorLabel.indexOf(".AV") > -1 || phasorLabel.indexOf(".AI") > -1)
-                return "A";
+            // Handle high confidence phase matches when no phase is defined or when phase is "+" - since positive sequence is often default value, it's treated with suspicion
+            if (isEmpty(phase) || phase === "+") {
+                if (phaseMatchExact(phasorLabel, [ "V1PM", "I1PM" ]) || phaseMatchHighConfidence(phasorLabel, [ "V1", "I1" ], [ "POS", "V1PM", "I1PM", "PS", "PSV", "PSI" ]) || phaseEndsWith(phasorLabel, [ "+SV", "+SI", "+V", "+I" ], true))
+                    return "+";
 
-            if (phasorLabel.indexOf("_VB") > -1 || phasorLabel.indexOf("_IB") > -1 || phasorLabel.indexOf(" B ") > -1 || phasorLabel.indexOf(" BPV") > -1 || phasorLabel.indexOf(" BPI") > -1 || phasorLabel.indexOf("VB ") > -1 || phasorLabel.indexOf("IB ") > -1 || phasorLabel.indexOf("VBPM") > -1 || phasorLabel.indexOf("IBPM") > -1 || phasorLabel.indexOf(".BV") > -1 || phasorLabel.indexOf(".BI") > -1)
-                return "B";
+                if (phaseMatchExact(phasorLabel, [ "V0PM", "I0PM", "VZPM", "IZPM" ]) || phaseMatchHighConfidence(phasorLabel, ["V0", "I0"], [ "ZERO", "ZPV", "ZPI", "VSPM", "V0PM", "I0PM", "VZPM", "IZPM", "ZS", "ZSV", "ZSI" ]) || phaseEndsWith(phasorLabel, [ "0SV", "0SI" ], true))
+                    return "0";
 
-            if (phasorLabel.indexOf("_VC") > -1 || phasorLabel.indexOf("_IC") > -1 || phasorLabel.indexOf(" C ") > -1 || phasorLabel.indexOf(" CPV") > -1 || phasorLabel.indexOf(" CPI") > -1 || phasorLabel.indexOf("VC ") > -1 || phasorLabel.indexOf("IC ") > -1 || phasorLabel.indexOf("VCPM") > -1 || phasorLabel.indexOf("ICPM") > -1 || phasorLabel.indexOf(".CV") > -1 || phasorLabel.indexOf(".CI") > -1)
-                return "C";
+                if (phaseMatchExact(phasorLabel, [ "VAPM", "IAPM" ]) || phaseMatchHighConfidence(phasorLabel, [ "VA", "IA" ], [ "APV", "API", "VAPM", "IAPM", "AV", "AI" ]))
+                    return "A";
 
-            if (phasorLabel.indexOf("_VN") > -1 || phasorLabel.indexOf("_IN") > -1 || phasorLabel.indexOf(" NEUT ") > -1 || phasorLabel.indexOf(" NPV") > -1 || phasorLabel.indexOf(" NPI") > -1 || phasorLabel.indexOf("VN ") > -1 || phasorLabel.indexOf("IN ") > -1 || phasorLabel.indexOf("VNPM") > -1 || phasorLabel.indexOf("INPM") > -1 || phasorLabel.indexOf(".NV") > -1 || phasorLabel.indexOf(".NI") > -1)
-                return "N";
+                if (phaseMatchExact(phasorLabel, [ "VBPM", "IBPM" ]) || phaseMatchHighConfidence(phasorLabel, [ "VB", "IB" ], [ "BPV", "BPI", "VBPM", "IBPM", "BV", "BI" ]))
+                    return "B";
 
-            if (phasorLabel.indexOf("_V0") > -1 || phasorLabel.indexOf("_I0") > -1 || phasorLabel.indexOf(" ZERO ") > -1 || phasorLabel.indexOf(" ZPV") > -1 || phasorLabel.indexOf(" ZPI") > -1 || phasorLabel.indexOf("VZ ") > -1 || phasorLabel.indexOf("IZ ") > -1 || phasorLabel.indexOf("VZPM") > -1 || phasorLabel.indexOf("IZPM") > -1 || phasorLabel.indexOf(".ZV") > -1 || phasorLabel.indexOf(".ZI") > -1 || phasorLabel.indexOf("_ZS") > -1)
-                return "0";
+                if (phaseMatchExact(phasorLabel, [ "VCPM", "ICPM" ]) || phaseMatchHighConfidence(phasorLabel, [ "VC", "IC" ], [ "CPV", "CPI", "VCPM", "ICPM", "CV", "CI" ]))
+                    return "C";
 
-            if (phasorLabel.indexOf("_V2") > -1 || phasorLabel.indexOf("_I2") > -1 || phasorLabel.indexOf(" NEG ") > -1 || phasorLabel.indexOf(" -SV") > -1 || phasorLabel.indexOf(" -SI") > -1 || phasorLabel.indexOf("V2 ") > -1 || phasorLabel.indexOf("I2 ") > -1 || phasorLabel.indexOf("V2PM") > -1 || phasorLabel.indexOf("I2PM") > -1 || phasorLabel.indexOf(".-V") > -1 || phasorLabel.indexOf(".-I") > -1 || phasorLabel.indexOf("_NS") > -1)
-                return "-";
+                if (phaseMatchExact(phasorLabel, [ "VNPM", "INPM" ]) || phaseMatchHighConfidence(phasorLabel, [ "VN", "IN" ], [ "NEUT", "NPV", "NPI", "VNPM", "INPM", "NV", "NI" ]))
+                    return "N";
 
-            if (phasorLabel.indexOf("_V1") > -1 || phasorLabel.indexOf("_I1") > -1 || phasorLabel.indexOf(" POS ") > -1 || phasorLabel.indexOf(" +SV") > -1 || phasorLabel.indexOf(" +SI") > -1 || phasorLabel.indexOf(" SI") > -1 || phasorLabel.indexOf("V1 ") > -1 || phasorLabel.indexOf("I1 ") > -1 || phasorLabel.indexOf("V1PM") > -1 || phasorLabel.indexOf("I1PM") > -1 || phasorLabel.indexOf(".+V") > -1 || phasorLabel.indexOf(".+I") > -1 || phasorLabel.indexOf("_PS") > -1)
-                return "+";
+                if (phaseMatchExact(phasorLabel, [ "V2PM", "I2PM" ]) || phaseMatchHighConfidence(phasorLabel, [ "V2", "I2" ], [ "NEG", "-SV", "-SI", "V2PM", "I2PM", "NS", "NSV", "NSI" ]))
+                    return "-";
+            }
 
-            return isEmpty(phase) ? "?" : phase;
+            // Handle lower confidence phase matches only when phase is not defined
+            if (isEmpty(phase)) {
+                // Since positive sequence is the default and always treated with accuracy suspicion, verify it's value first
+                if (phaseMatchLowConfidence(phasorLabel, [ "V1", "I1", "POS", "V1PM", "I1PM", "PS", "PSV", "PSI", "+SV", "+SI", "+V", "+I" ]))
+                    return "+?";
+
+                if (phaseMatchLowConfidence(phasorLabel, [ "V0", "I0", "ZERO", "ZPV", "ZPI", "VSPM", "VZPM", "IZPM", "ZS", "ZSV", "ZSI", "0SV", "0SI" ]))
+                    return "0?";
+
+                if (phaseMatchLowConfidence(phasorLabel, [ "VA", "IA", "APV", "API", "VAPM", "IAPM", "AV", "AI" ]))
+                    return "A?";
+
+                if (phaseMatchLowConfidence(phasorLabel, [ "VB", "IB", "BPV", "BPI", "VBPM", "IBPM", "BV", "BI" ]))
+                    return "B?";
+
+                if (phaseMatchLowConfidence(phasorLabel, [ "VC", "IC", "CPV", "CPI", "VCPM", "ICPM", "CV", "CI" ]))
+                    return "C?";
+
+                if (phaseMatchLowConfidence(phasorLabel, [ "VN", "IN", "NEUT", "NPV", "NPI", "VNPM", "INPM", "NV", "NI" ]))
+                    return "N?";
+
+                if (phaseMatchLowConfidence(phasorLabel, [ "V2", "I2", "NEG", "-SV", "-SI", "V2PM", "I2PM", "NS", "NSV", "NSI" ]))
+                    return "-?";
+
+                // Test for contains after checks with separators
+                if (phaseContains(phasorLabel, ["V1", "I1", "POS", "V1PM", "I1PM", "PS", "PSV", "PSI", "+SV", "+SI", "+V", "+I"], true))
+                    return "+?";
+
+                if (phaseContains(phasorLabel, ["V0", "I0", "ZERO", "ZPV", "ZPI", "VSPM", "VZPM", "IZPM", "ZS", "ZSV", "ZSI", "0SV", "0SI"], true))
+                    return "0?";
+
+                if (phaseContains(phasorLabel, ["VA", "IA", "APV", "API", "VAPM", "IAPM", "AV", "AI"], true))
+                    return "A?";
+
+                if (phaseContains(phasorLabel, ["VB", "IB", "BPV", "BPI", "VBPM", "IBPM", "BV", "BI"], true))
+                    return "B?";
+
+                if (phaseContains(phasorLabel, [ "VC", "IC", "CPV", "CPI", "VCPM", "ICPM", "CV", "CI" ], true))
+                    return "C?";
+
+                if (phaseContains(phasorLabel, ["VN", "IN", "NEUT", "NPV", "NPI", "VNPM", "INPM", "NV", "NI"], true))
+                    return "N?";
+
+                if (phaseContains(phasorLabel, ["V2", "I2", "NEG", "-SV", "-SI", "V2PM", "I2PM", "NS", "NSV", "NSI"], true))
+                    return "-?";
+
+                // -V and -I may match too often, so check these last
+                if (phaseMatchLowConfidence(phasorLabel, ["-V", "-I"]) || phaseContains(phasorLabel, ["-V", "-I"], true))
+                    return "-?";
+
+                return "+?";
+            }
+
+            return phase;
         }
 
         function guessNominalVoltage(nominalVoltage, phasorLabel, deviceLabel) {
-            if (!isEmpty(nominalVoltage) && nominalVoltage > 0)
+            if (!isEmpty(nominalVoltage) && nominalVoltage !== 0)
                 return nominalVoltage;
 
-            const commonVoltageLevels = ["69", "115", "230", "500", "765"];
+            const commonVoltageLevels = [ "44", "69", "115", "138", "161", "169", "230", "345", "500", "765", "1100" ];
 
             // Check phasor label before device
             for (let i = 0; i < commonVoltageLevels.length; i++) {
@@ -633,7 +829,7 @@
         }
 
         function updateTagName(evaluator, owner) {
-            let result = ko.observable();
+            const result = ko.observable();
 
             ko.computed(function () {
                 evaluator.call(owner).done(function (tagName) {
@@ -660,16 +856,16 @@
         }
 
         function formatAssociatedVoltageLabel(state) {
-            let parts = state.text.split("~");
-            let label = parts[0];
-            let orgLabel = parts.length > 1 ? parts[1] : undefined;
+            const parts = state.text.split("~");
+            const label = parts[0];
+            const orgLabel = parts.length > 1 ? parts[1] : undefined;
 
             if (isEmpty(orgLabel) || label === orgLabel) {
-                let $state = $("<span>" + state.text + "</span>");
+                const $state = $("<span>" + state.text + "</span>");
                 return $state;
             }
 
-            let $state = $("<span>" + label + " <span class='sub-text'>(" + orgLabel + ")</span></span>");
+            const $state = $("<span>" + label + " <span class='sub-text'>(" + orgLabel + ")</span></span>");
             return $state;
         }
 
@@ -1028,6 +1224,13 @@
                 for (let i = 0; i < deviceCount; i++) {
                     const cell = self.configFrame().Cells[i];
 
+                    // TODO: Update screen to accomodate lat/long at the device level
+                    if (!isEmpty(cell.Latitude))
+                        self.latitude(cell.Latitude);
+
+                    if (!isEmpty(cell.Longitude))
+                        self.longitude(cell.Longitude);
+
                     let cellAcronym = cell.IDLabel;
 
                     if (isEmpty(cellAcronym))
@@ -1096,6 +1299,9 @@
                         return {
                             ID: cell.ID,
                             ParentID: cell.ParentID,
+                            UniqueID: cell.UniqueID,
+                            Longitude: cell.Longitude,
+                            Latitude: cell.Latitude,
                             IDCode: cell.IDCode,
                             StationName: self.configFrame().Cells.length === 1 ? self.deviceName() : cell.IDLabel(),
                             IDLabel: cell.IDLabel(),
@@ -1106,6 +1312,8 @@
                         };
                     };
                 }
+
+                self.resortPhasors();
 
                 // Make sure table is refreshed
                 if (ko.options.deferUpdates)
@@ -1153,7 +1361,7 @@
                 self.configFrameDetails("Analyzing...");
 
                 phasorHub.extractConfigurationFrame(deviceID).done(self.loadConfigFrame).fail(function (error) {
-                    showErrorMessage(String.format("Failed to extract config file from existing device: {0}", error));
+                    showErrorMessage(String.format("Failed to extract config file from existing device: {0}", error), null, true);
 
                     self.configFrameDetails("Unavailable");
                     $("[id=voltageRow]").css("visibility", "visible");
@@ -1188,7 +1396,7 @@
                         serviceHub.sendCommand("connect " + deviceID);
                 })
                 .fail(function (error) {
-                    showErrorMessage(String.format("Failed to analyze config file: {0}", error));
+                    showErrorMessage(String.format("Failed to analyze config file: {0}", error), null, true);
 
                     self.configFrameDetails("Unavailable");
                     $("[id=voltageRow]").css("visibility", "visible");
@@ -1202,12 +1410,59 @@
                 self.errors.showAllMessages();
             };
 
+            self.resortPhasors = function () {
+                const voltages = self.voltages();
+                const currents = self.currents();
+
+                function sortPhasors(phasors) {
+                    phasors.sort(function (left, right) {
+                        // Sort by IDLabel first - in case there are multiple devices
+                        const leftIDLabel = String(left.Device.IDLabel()).trim().toUpperCase();
+                        const rightIDLabel = String(right.Device.IDLabel()).trim().toUpperCase();
+
+                        if (leftIDLabel < rightIDLabel)
+                            return -1;
+
+                        if (leftIDLabel > rightIDLabel)
+                            return 1;
+
+                        // Sort next by enabled flag such that disabled devices drop to bottom
+                        if (left.Enabled() && !right.Enabled())
+                            return -1;
+
+                        if (!left.Enabled() && right.Enabled())
+                            return 1;
+
+                        // Finally sort by phasor label
+                        const leftLabel = String(left.Label()).trim().toUpperCase();
+                        const rightLabel = String(right.Label()).trim().toUpperCase();
+
+                        if (leftLabel < rightLabel)
+                            return -1;
+
+                        if (leftLabel > rightLabel)
+                            return 1;
+
+                        return 0;
+                    });
+                }
+
+                sortPhasors(voltages);
+                sortPhasors(currents);
+
+                self.voltages.valueHasMutated();
+                self.currents.valueHasMutated();
+            };
+
             self.createObservableVoltage = function (cell, phasorDefinition, firstVoltage) {
                 const voltage = {};
                 const phasorLabel = notNull(phasorDefinition.Label).replaceAll(" ", "_").toUpperCase();
                 const nominalVoltage = guessNominalVoltage(phasorDefinition.NominalVoltage, phasorLabel, cell.IDLabel());
                 const phase = guessPhase(phasorDefinition.Phase, phasorLabel);
                 const vphmSignalType = getPhasorSignalType("VPHM");
+
+                voltage._enabled = ko.observable(!self.forwardOnly() && nominalVoltage >= 0);
+                voltage._taggedForDelete = ko.observable(false);
 
                 voltage.ID = phasorDefinition.ID;
                 voltage.Device = cell;
@@ -1216,25 +1471,65 @@
                 voltage.Phase = ko.observable(phase);
                 voltage.NominalVoltage = ko.observable(nominalVoltage);
                 voltage.FirstVoltage = firstVoltage;
-                voltage.Enabled = ko.observable(!self.forwardOnly());
+
+                voltage.Enabled = ko.pureComputed({
+                    read: voltage._enabled,
+                    write: function (value) {
+                        voltage._enabled(value);
+
+                        if (value) {
+                            // Un-tag for delete when enabled
+                            voltage.TaggedForDelete(false);
+                            voltage.NominalVoltage(Math.abs(voltage.NominalVoltage()));
+
+                            if (voltage.NominalVoltage() === 1)
+                                voltage.NominalVoltage(guessNominalVoltage(0, voltage.OriginalLabel, voltage.Device.IDLabel()));
+                        }
+                        else {
+                            if (voltage.NominalVoltage() === 0)
+                                voltage.NominalVoltage(-1);
+                            else
+                                voltage.NominalVoltage(Math.abs(voltage.NominalVoltage()) * -1);
+                        }
+
+                        self.resortPhasors();
+                    },
+                    owner: voltage
+                });
+
+                voltage.TaggedForDelete = ko.pureComputed({
+                    read: voltage._taggedForDelete,
+                    write: function (value) {
+                        voltage._taggedForDelete(value);
+
+                        // Uncheck enabled when tagging for deletion
+                        if (value)
+                            voltage.Enabled(false);
+                    },
+                    owner: voltage
+                });
+
                 voltage.TagName = updateTagName(function () {
                     return phasorHub.createPhasorPointTag(voltage.Device.IDLabel(), vphmSignalType.Acronym, voltage.Label(), voltage.Phase(), phasorDefinition.SourceIndex, voltage.NominalVoltage());
                 }, voltage);
 
                 voltage.Label.extend({ required: true });
+
                 voltage.Phase.extend({
                     required: true,
                     pattern: {
-                        message: "Must be one of: A, B, C, 0, +, - or N",
-                        params: "^[A-C0+\\-N]$"
+                        message: "Must be one of: A, B, C, 0, +, -, N or L",
+                        params: "^[A-C0+\\-NL]$"
                     }
                 });
+
                 voltage.NominalVoltage.extend({ required: true });
 
                 phasorDefinition.Voltage = voltage;
                 phasorDefinition.Label = voltage.Label;
                 phasorDefinition.Phase = voltage.Phase;
                 phasorDefinition.Enabled = voltage.Enabled;
+                phasorDefinition.TaggedForDelete = voltage.TaggedForDelete;
 
                 return voltage;
             };
@@ -1252,7 +1547,8 @@
 
                 current._associatedVoltage = ko.observable(-1);
                 current._phase = ko.observable("");
-                current._enabled = ko.observable(!self.forwardOnly());
+                current._enabled = ko.observable(!self.forwardOnly() && phasorDefinition.NominalVoltage >= 0);
+                current._taggedForDelete = ko.observable(false);
 
                 current.AssociatedVoltage = ko.pureComputed({
                     read: function () {
@@ -1347,9 +1643,27 @@
                     write: function (value) {
                         current._enabled(value);
 
-                        // Re-select associated voltage when enabled
-                        if (value)
+                        if (value) {
+                            // Re-select associated voltage when enabled
                             current.Phase(current.Phase());
+
+                            // Un-tag for delete when enabled
+                            current.TaggedForDelete(false);
+                        }
+
+                        self.resortPhasors();
+                    },
+                    owner: current
+                });
+
+                current.TaggedForDelete = ko.pureComputed({
+                    read: current._taggedForDelete,
+                    write: function (value) {
+                        current._taggedForDelete(value);
+
+                        // Uncheck enabled when tagging for deletion
+                        if (value)
+                            current.Enabled(false);
                     },
                     owner: current
                 });
@@ -1359,6 +1673,7 @@
                 }, current);
 
                 current.Label.extend({ required: true });
+
                 current.Phase.extend({
                     required: true,
                     pattern: {
@@ -1377,6 +1692,7 @@
                 phasorDefinition.Label = current.Label;
                 phasorDefinition.Phase = current.Phase;
                 phasorDefinition.Enabled = current.Enabled;
+                phasorDefinition.TaggedForDelete = current.TaggedForDelete;
 
                 return current;
             };
@@ -1441,11 +1757,11 @@
 
                     self.forwardOnly(false);
                     self.loadConfigFrame(configFrame);
-                }
+                };
 
                 reader.onloadend = function () {
                     if (reader.error && reader.error.message)
-                        showErrorMessage("Failed to load configuration: " + reader.error.message);
+                        showErrorMessage("Failed to load configuration: " + reader.error.message, null, true);
                 };
 
                 reader.readAsText(fileBlob);
@@ -1550,7 +1866,7 @@
                     measurement.SignalReference = signalReference;
                     measurement.SignalTypeID = signalType.ID;
                     measurement.Internal = true;
-                    measurement.Enabled = true;
+                    measurement.Enabled = phasorDefinition.Enabled();
 
                     return phasorHub.addNewOrUpdateMeasurement(measurement).fail(function (error) {
                         showErrorMessage("Save failed for new measurement " + signalReference + ": " + error);
@@ -1603,13 +1919,40 @@
                 }
 
                 // Separate voltage and current phasor definitions
+                const saveDevicePromises = [];
                 const voltages = [];
                 const currents = [];
 
                 for (let i = 0; i < cell.PhasorDefinitions.length; i++) {
                     const phasorDefinition = cell.PhasorDefinitions[i];
 
-                    if (phasorDefinition.Enabled()) {
+                    if (phasorDefinition.TaggedForDelete()) {
+                        saveDevicePromises.push(phasorHub.queryDeviceMeasurements(cell.ID).then(function (measurements) {
+                            const promises = [];
+
+                            // Remove measurements associated with phasor
+                            for (let j = 0; j < measurements.length; j++) {
+                                const measurement = measurements[j];
+
+                                if (measurement.PhasorSourceIndex === phasorDefinition.SourceIndex) {
+                                    promises.push(phasorHub.deleteMeasurement(measurement.PointID).fail(function (error) {
+                                        showErrorMessage("Failed to delete phasor measurement: " + error);
+                                    }));
+                                }
+                            }
+
+                            // Remove phasor
+                            promises.push(phasorHub.deletePhasor(phasorDefinition.ID).fail(function (error) {
+                                showErrorMessage("Failed to delete phasor: " + error);
+                            }));
+
+                            return $(promises).whenAll();
+                        })
+                            .fail(function (error) {
+                                showErrorMessage("Failed to query device measurements: " + error);
+                            }));
+                    }
+                    else {
                         if (phasorDefinition.PhasorType.toLowerCase() === "voltage")
                             voltages.push(phasorDefinition);
                         else
@@ -1621,14 +1964,14 @@
                     // Handle drop and (re)add phasors operation
                     const promise = cell.PhasorDefinitions.length > 0 ? phasorHub.deletePhasorsForDevice(cell.ID) : $.Deferred().resolve().promise();
 
-                    return promise.then(function () {
-                        const promises = [];
+                    saveDevicePromises.push(promise.then(function () {
+                        const voltagePromises = [];
                         const voltageIDMap = [];
 
                         for (let i = 0; i < voltages.length; i++) {
                             const voltage = voltages[i];
 
-                            promises.push(phasorHub.newPhasor().then(function (phasor) {
+                            voltagePromises.push(phasorHub.newPhasor().then(function (phasor) {
                                 phasor.DeviceID = cell.ID;
                                 phasor.Label = voltage.Label();
                                 phasor.Type = "V";
@@ -1673,71 +2016,84 @@
                             }));
                         }
 
-                        for (let i = 0; i < currents.length; i++) {
-                            const current = currents[i];
+                        // In the case of drop and add we make sure to complete all voltage phasor operations
+                        // before beginning current phasor operations so that voltageIDMap will be populated
+                        // with new voltage phasor IDs needed for destination phasor IDs
+                        return $(voltagePromises).whenAll().then(function () {
+                            const currentPromises = [];
 
-                            promises.push(phasorHub.newPhasor().then(function (phasor) {
-                                const associatedVoltage = current.Current.AssociatedVoltage();
-                                const voltage = lookupAssociatedVoltage(cell, associatedVoltage);
-                                let baseKV = 0;
+                            for (let i = 0; i < currents.length; i++) {
+                                const current = currents[i];
 
-                                if (voltage)
-                                    baseKV = voltage.Voltage.NominalVoltage();
+                                currentPromises.push(phasorHub.newPhasor().then(function (phasor) {
+                                    const associatedVoltage = current.Current.AssociatedVoltage();
+                                    const voltage = lookupAssociatedVoltage(cell, associatedVoltage);
+                                    let baseKV = 0;
 
-                                phasor.DeviceID = cell.ID;
-                                phasor.Label = current.Label();
-                                phasor.Type = "I";
-                                phasor.Phase = current.Phase();
-                                phasor.BaseKV = baseKV;
-                                phasor.DestinationPhasorID = voltageIDMap[associatedVoltage];
-                                phasor.SourceIndex = current.SourceIndex;
+                                    if (voltage)
+                                        baseKV = voltage.Voltage.NominalVoltage();
 
-                                if (phasor.DestinationPhasorID === undefined)
-                                    phasor.DestinationPhasorID = null;
+                                    if (!current.Enabled()) {
+                                        if (baseKV === 0)
+                                            baseKV = -1;
+                                        else
+                                            baseKV = Math.abs(baseKV) * -1;
+                                    }
 
-                                return phasorHub.addNewPhasor(phasor).then(function () {
-                                    return savePhasorMeasurement(cell, iphmSignalType, current, phasor.SourceIndex).then(function () {
-                                        return savePhasorMeasurement(cell, iphaSignalType, current, phasor.SourceIndex);
-                                    })
-                                    .then(function () {
-                                        const iphmSignalReference = String.format("{0}-{1}{2}", cell.IDLabel(), iphmSignalType.Suffix, phasor.SourceIndex);
+                                    phasor.DeviceID = cell.ID;
+                                    phasor.Label = current.Label();
+                                    phasor.Type = "I";
+                                    phasor.Phase = current.Phase();
+                                    phasor.BaseKV = baseKV;
+                                    phasor.DestinationPhasorID = voltageIDMap[associatedVoltage];
+                                    phasor.SourceIndex = current.SourceIndex;
 
-                                        return phasorHub.queryMeasurement(iphmSignalReference).done(function (measurement) {
-                                            current.iphmMeasurement = measurement;
+                                    if (phasor.DestinationPhasorID === undefined)
+                                        phasor.DestinationPhasorID = null;
+
+                                    return phasorHub.addNewPhasor(phasor).then(function () {
+                                        return savePhasorMeasurement(cell, iphmSignalType, current, phasor.SourceIndex).then(function () {
+                                            return savePhasorMeasurement(cell, iphaSignalType, current, phasor.SourceIndex);
+                                        })
+                                        .then(function () {
+                                            const iphmSignalReference = String.format("{0}-{1}{2}", cell.IDLabel(), iphmSignalType.Suffix, phasor.SourceIndex);
+
+                                            return phasorHub.queryMeasurement(iphmSignalReference).done(function (measurement) {
+                                                current.iphmMeasurement = measurement;
+                                            });
+                                        })
+                                        .then(function () {
+                                            const iphaSignalReference = String.format("{0}-{1}{2}", cell.IDLabel(), iphaSignalType.Suffix, phasor.SourceIndex);
+
+                                            return phasorHub.queryMeasurement(iphaSignalReference).done(function (measurement) {
+                                                current.iphaMeasurement = measurement;
+                                            });
                                         });
                                     })
-                                    .then(function () {
-                                        const iphaSignalReference = String.format("{0}-{1}{2}", cell.IDLabel(), iphaSignalType.Suffix, phasor.SourceIndex);
-
-                                        return phasorHub.queryMeasurement(iphaSignalReference).done(function (measurement) {
-                                            current.iphaMeasurement = measurement;
-                                        });
+                                    .fail(function (error) {
+                                        showErrorMessage("Failed to save new current phasor: " + error);
                                     });
                                 })
                                 .fail(function (error) {
-                                    showErrorMessage("Failed to save new current phasor: " + error);
-                                });
-                            })
-                            .fail(function (error) {
-                                showErrorMessage("Failed to create current new phasor: " + error);
-                            }));
-                        }
+                                    showErrorMessage("Failed to create current new phasor: " + error);
+                                }));
+                            }
 
-                        return $(promises).whenAll();
+                            return $(currentPromises).whenAll();
+                        });
                     })
                     .fail(function (error) {
                         showErrorMessage("Failed to delete old phasors: " + error);
-                    });
+                    }));
                 }
                 else {
                     // Handle update phasors operation
-                    const promises = [];
                     const voltageIDMap = [];
 
                     for (let i = 0; i < voltages.length; i++) {
                         const voltage = voltages[i];
 
-                        promises.push(phasorHub.queryPhasorForDevice(cell.ID, voltage.SourceIndex).then(function (phasor) {
+                        saveDevicePromises.push(phasorHub.queryPhasorForDevice(cell.ID, voltage.SourceIndex).then(function (phasor) {
                             phasor.DeviceID = cell.ID;
                             phasor.Label = voltage.Label();
                             phasor.Type = "V";
@@ -1779,7 +2135,7 @@
                     for (let i = 0; i < currents.length; i++) {
                         const current = currents[i];
 
-                        promises.push(phasorHub.queryPhasorForDevice(cell.ID, current.SourceIndex).then(function (phasor) {
+                        saveDevicePromises.push(phasorHub.queryPhasorForDevice(cell.ID, current.SourceIndex).then(function (phasor) {
                             phasor.DeviceID = cell.ID;
                             phasor.Label = current.Label();
                             phasor.Type = "I";
@@ -1787,6 +2143,13 @@
                             phasor.BaseKV = current.Current.AssociatedNominalVoltage();
                             phasor.DestinationPhasorID = voltageIDMap[current.Current.AssociatedVoltage()];
                             phasor.SourceIndex = current.SourceIndex;
+
+                            if (!current.Enabled()) {
+                                if (phasor.BaseKV === 0)
+                                    phasor.BaseKV = -1;
+                                else
+                                    phasor.BaseKV = Math.abs(phasor.BaseKV) * -1;
+                            }
 
                             if (phasor.DestinationPhasorID === undefined)
                                 phasor.DestinationPhasorID = null;
@@ -1818,9 +2181,9 @@
                             showErrorMessage("Failed to query current phasor: " + error);
                         }));
                     }
-
-                    return $(promises).whenAll();
                 }
+
+                return $(saveDevicePromises).whenAll();
             })
             .fail(function (error) {
                 showErrorMessage("Failed to query phasor count: " + error);
@@ -1895,7 +2258,7 @@
 
                             // Query existing measurement record for specified signal reference - function will create a new blank measurement record if one does not exist
                             promises.push(phasorHub.queryMeasurement(orgSignalReference).then(function (measurement) {
-                                return phasorHub.createIndexedPointTag(cell.IDLabel(), analogSignalType.Acronym, index).then(function (pointTag) {
+                                return phasorHub.createIndexedPointTag(cell.IDLabel(), analogSignalType.Acronym, index, analogDefinition.Label).then(function (pointTag) {
                                     measurement.DeviceID = cell.ID;
                                     measurement.HistorianID = viewModel.historianID();
                                     measurement.PointTag = pointTag;
@@ -1940,18 +2303,18 @@
 
                         for (let i = 0; i < cell.DigitalDefinitions.length; i++) {
                             const index = i + 1;
-                            const digitialDefinition = cell.DigitalDefinitions[i];
+                            const digitalDefinition = cell.DigitalDefinitions[i];
                             const orgSignalReference = String.format("{0}-{1}{2}", cell.OriginalAcronym(), digitalSignalType.Suffix, index);
                             const signalReference = String.format("{0}-{1}{2}", cell.IDLabel(), digitalSignalType.Suffix, index);
 
                             // Query existing measurement record for specified signal reference - function will create a new blank measurement record if one does not exist
                             promises.push(phasorHub.queryMeasurement(orgSignalReference).then(function (measurement) {
-                                return phasorHub.createIndexedPointTag(cell.IDLabel(), digitalSignalType.Acronym, index).then(function (pointTag) {
+                                return phasorHub.createIndexedPointTag(cell.IDLabel(), digitalSignalType.Acronym, index, digitalDefinition.Label).then(function (pointTag) {
                                     measurement.DeviceID = cell.ID;
                                     measurement.HistorianID = viewModel.historianID();
                                     measurement.PointTag = pointTag;
-                                    measurement.AlternateTag = digitialDefinition.Label;
-                                    measurement.Description = String.format("{0} Digital Value {1}: {2}", cell.IDLabel(), index, digitialDefinition.Label);
+                                    measurement.AlternateTag = digitalDefinition.Label;
+                                    measurement.Description = String.format("{0} Digital Value {1}: {2}", cell.IDLabel(), index, digitalDefinition.Label);
                                     measurement.SignalReference = signalReference;
                                     measurement.SignalTypeID = digitalSignalType.ID;
                                     measurement.Internal = true;
@@ -2014,11 +2377,8 @@
                                 powerCalculation.CurrentMagSignalID = iphmID;
                                 powerCalculation.Enabled = true;
 
-                                // For direct phase power calculations, do not apply voltage adjustment strategy
-                                if (phase === "A" || phase === "B" || phase === "C")
-                                    powerCalculation.CircuitDescription = circuitDescription + "; AdjustmentStrategy = None";
-                                else
-                                    powerCalculation.CircuitDescription = circuitDescription;
+                                // For all phase power calculations, do not apply any voltage adjustment strategy
+                                powerCalculation.CircuitDescription = circuitDescription + "; AdjustmentStrategy = None";
 
                                 if (powerCalculation.ID === 0) {
                                     return phasorHub.addNewPowerCalculation(powerCalculation).fail(function (error) {
@@ -2130,7 +2490,7 @@
                 attempt = 1;
 
             if (attempt > 4) {
-                showErrorMessage("Failed to find power output measurement after waiting 4 seconds - skipping 3-phase power calculations.");
+                showErrorMessage("Failed to find power output measurement after waiting 12 seconds - skipping 3-phase power calculations.");
                 return $.Deferred().resolve(null).promise();
             }
 
@@ -2147,17 +2507,17 @@
                     switch (type) {
                         case "MW":
                             if (powerCalculation.ActivePowerOutputSignalID == null || powerCalculation.ActivePowerOutputSignalID === 0)
-                                return delayedPromise(1000).then(function () { return queryPowerOutput(type, linePhase, ++attempt); });
+                                return delayedPromise(3000).then(function () { return queryPowerOutput(type, linePhase, ++attempt); });
 
                             return $.Deferred().resolve(powerCalculation.ActivePowerOutputSignalID).promise();
                         case "MVAR":
                             if (powerCalculation.ReactivePowerOutputSignalID == null || powerCalculation.ReactivePowerOutputSignalID === 0)
-                                return delayedPromise(1000).then(function () { return queryPowerOutput(type, linePhase, ++attempt); });
+                                return delayedPromise(3000).then(function () { return queryPowerOutput(type, linePhase, ++attempt); });
 
                             return $.Deferred().resolve(powerCalculation.ReactivePowerOutputSignalID).promise();
                         case "MVA":
                             if (powerCalculation.ApparentPowerOutputSignalID == null || powerCalculation.ApparentPowerOutputSignalID === 0)
-                                return delayedPromise(1000).then(function () { return queryPowerOutput(type, linePhase, ++attempt); });
+                                return delayedPromise(3000).then(function () { return queryPowerOutput(type, linePhase, ++attempt); });
 
                             return $.Deferred().resolve(powerCalculation.ApparentPowerOutputSignalID).promise();
                     }
@@ -2195,7 +2555,7 @@
                 let phaseBSignalID = null;
                 let phaseCSignalID = null;
 
-                // These queries will keep looping while power calculations are initializing until power output measurements exist or timeout after 4 seconds:
+                // These queries will keep looping while power calculations are initializing until power output measurements exist or timeout after 12 seconds:
                 queryPromises.push(queryPowerOutput(type, line.A, 1).then(function (signalID) {
                     phaseASignalID = signalID;
                 }));
@@ -2259,7 +2619,7 @@
                                         return serviceHub.sendCommand("initialize " + adapter.AdapterName);
                                     })
                                     .fail(function (error) {
-                                        showErrorMessage("Save failed for new custom action measurement: " + error);
+                                        showErrorMessage("Save failed for new custom action adapter: " + error);
                                     });
                                 })
                                 .fail(function (error) {
@@ -2302,7 +2662,7 @@
             //    IAA: Current A-Phase Angle     also IBA, ICA, INA                         IPOSA, INEGA, IZA
             //   FREQ: Frequency
             //   FNOM: Model.Global.NominalFrequency
-            //   FAVG: Frequency Average = system singleton where signal reference is "SYSTEM!FREQ-AVG-FQ"
+            //   FAVG: Frequency Average = system singleton where signal reference is "SYSTEM!FREQ-FQ"
             //  FLAGS: Status Flags
 
             const promises = [];
@@ -2325,6 +2685,9 @@
                 for (let j = 0; j < cell.PhasorDefinitions.length; j++) {
                     const phasorDefinition = cell.PhasorDefinitions[j];
                     const phase = phasorDefinition.Phase().toUpperCase();
+
+                    if (!phasorDefinition.Enabled())
+                        continue;
 
                     if (phasorDefinition.PhasorType.toLowerCase() === "voltage") {
                         const nominalVoltage = phasorDefinition.Voltage.NominalVoltage() * 1000; // Convert from kV
@@ -2425,7 +2788,7 @@
             }
 
             return $(promises).whenAll().then(function () {
-                return phasorHub.queryMeasurement("SYSTEM!FREQ-AVG-FQ");
+                return phasorHub.queryMeasurement(freqDeviceName + "-FQ");
             })
             .then(function (measurement) {
                 if (measurement && measurement.SignalID)
@@ -2435,7 +2798,7 @@
                 dynamicCalculation.initialized = true;
             })
             .fail(function (error) {
-                showErrorMessage("Failed to find average system frequency with SignalReference = 'SYSTEM!FREQ-AVG-FQ': " + error);
+                showErrorMessage("Failed to find average system frequency with SignalReference = '" + freqDeviceName + "-FQ': " + error);
             });
         }
 
@@ -2662,7 +3025,7 @@
                                             return serviceHub.sendCommand("initialize " + adapter.AdapterName);
                                         })
                                         .fail(function (error) {
-                                            showErrorMessage("Save failed for new custom action measurement: " + error);
+                                            showErrorMessage("Save failed for new custom action adapter: " + error);
                                         });
                                     })
                                     .fail(function (error) {
@@ -2687,14 +3050,36 @@
             });
         }
 
-        function saveTemplateCalculations(cell) {
+        function saveCustomActionAdapter(tagTemplate) {
+            return phasorHub.newCustomActionAdapter().then(function (adapter) {
+                adapter.NodeID = nodeID;
+                adapter.AdapterName = tagTemplate.TagName;
+                adapter.AssemblyName = tagTemplate.Equation;
+                adapter.TypeName = tagTemplate.Type;
+                adapter.ConnectionString = tagTemplate.Inputs.join(";");
+                adapter.LoadOrder = 1;
+                adapter.Enabled = true;
+
+                return phasorHub.addNewOrUpdateCustomActionAdapter(adapter).then(function () {
+                    return serviceHub.sendCommand("initialize " + adapter.AdapterName);
+                })
+                .fail(function (error) {
+                    showErrorMessage("Save failed for new custom action adapter: " + error);
+                });
+            })
+            .fail(function (error) {
+                showErrorMessage("Failed to create new custom action adapter record: " + error);
+            });
+        }
+
+        function saveTemplateCalculations(cell, index) {
             // Do not create calculations if only forwarding data
             if (viewModel.forwardOnly())
                 return $.Deferred().resolve().promise();
 
             const templateType = viewModel.templateType();
 
-            if (templateType.toUpperCase() === "NONE")
+            if (templateType.toUpperCase().startsWith("NONE:"))
                 return $.Deferred().resolve().promise();
 
             const calcSignalType = getDeviceSignalType("CALC");
@@ -2705,7 +3090,7 @@
             }
 
             return phasorHub.loadTemplate(templateType).then(function (tagTemplates) {
-                return phasorHub.validateCalculatorConfigurations(viewModel.historianID()).then(function () {
+                return phasorHub.validateCalculatorConfigurations(viewModel.historianID(), "@SystemName").then(function () {
                     return serviceHub.sendCommand("initialize PHASOR!AVERAGEFREQ").then(function () {
                         const promises = [];
 
@@ -2750,6 +3135,12 @@
                                 case "DYNAMICCALCULATOR":
                                     promises.push(saveDynamicCalculation(cell, tagTemplate, calcSignalType));
                                     break;
+                                default:
+                                    // All other template types are assumed to be custom action adapter defintions. Since
+                                    // these adpater defintions are singletons, only execute save for first device:
+                                    if (index === 0)
+                                        promises.push(saveCustomActionAdapter(tagTemplate));
+                                    break;
                             }
                         }
 
@@ -2770,7 +3161,7 @@
                 });
             })
             .fail(function (error) {
-                showErrorMessage("Failed to load " + templateType + " tag template: " + error);
+                showErrorMessage("Failed to load " + templateType + " tag template: " + error, null, true);
             });
         }
 
@@ -2793,7 +3184,7 @@
 
                     // Chain multiple devices saves behind one another...
                     deviceSaveChain = deviceSaveChain.then(function () {
-                        showInfoMessage(String.format("Saving \"{0}\" device {1} / {2} please wait...", cell.IDLabel(), index + 1, cellCount), -1);
+                        showInfoMessage(String.format("Saving \"{0}\" device {1} / {2} please wait...", cell.IDLabel(), index + 1, cellCount), -1, true);
 
                         // Query existing child device record - function will create a new blank device record if one does not exist
                         return phasorHub.queryDeviceByID(cell.ID).then(function (device) {
@@ -2804,7 +3195,7 @@
                                 return phasorHub.updateDevice(device).then(function () {
                                     // Save measurements and calculations associated with a directly edited child device
                                     return saveDeviceMeasurements(cell).then(function () {
-                                        return saveTemplateCalculations(cell);
+                                        return saveTemplateCalculations(cell, index);
                                     });
                                 });
                             }
@@ -2824,6 +3215,9 @@
 
                                 // Check if this is a new device or an edit to an existing one
                                 if (device.ID === 0) {
+                                    if (!isEmpty(cell.UniqueID))
+                                        device.UniqueID = cell.UniqueID;
+
                                     // Add new device record
                                     return phasorHub.addNewDevice(device).then(function () {
                                         // Get newly added device with auto-incremented ID
@@ -2832,15 +3226,15 @@
                                             cell.ID = newDevice.ID;
 
                                             return saveDeviceMeasurements(cell).then(function () {
-                                                return saveTemplateCalculations(cell);
+                                                return saveTemplateCalculations(cell, index);
                                             });
                                         })
                                         .fail(function (error) {
-                                            showErrorMessage("Failed while querying new device " + device.Acronym + " - no measurements saved: " + error);
+                                            showErrorMessage("Failed while querying new device " + device.Acronym + " - no measurements saved: " + error, null, true);
                                         });
                                     })
                                     .fail(function (error) {
-                                        showErrorMessage("Save failed for new device " + device.Acronym + ": " + error);
+                                        showErrorMessage("Save failed for new device " + device.Acronym + ": " + error, null, true);
                                     });
                                 }
                                 else {
@@ -2850,17 +3244,17 @@
                                         cell.ID = device.ID;
 
                                         return saveDeviceMeasurements(cell).then(function () {
-                                            return saveTemplateCalculations(cell);
+                                            return saveTemplateCalculations(cell, index);
                                         });
                                     })
                                     .fail(function (error) {
-                                        showErrorMessage("Update failed for existing device " + device.Acronym + " - no measurements updated: " + error);
+                                        showErrorMessage("Update failed for existing device " + device.Acronym + " - no measurements updated: " + error, null, true);
                                     });
                                 }
                             }
                         })
                         .fail(function (error) {
-                            showErrorMessage("Save failed for new device " + device.Acronym + " - could not create new or lookup existing device: " + error);
+                            showErrorMessage("Save failed for new device " + device.Acronym + " - could not create new or lookup existing device: " + error, null, true);
                         });
                     });
                 }
@@ -2873,23 +3267,18 @@
 
                 // Save measurements and calculations  associated with a directly connected device
                 return saveDeviceMeasurements(cell).then(function () {
-                    return saveTemplateCalculations(cell);
+                    return saveTemplateCalculations(cell, 0);
                 });
             }
         }
 
         function saveDeviceConnection() {
-            if (isEmpty(viewModel.configFrame().ConnectionString)) {
-                showErrorMessage("Cannot save device connection without a connection string");
-                return $.Deferred().resolve().promise();
-            }
-
             if (!hubIsConnected) {
                 showErrorMessage("Cannot save device connection, cannot connect to server.");
                 return $.Deferred().resolve().promise();
             }
 
-            showInfoMessage("Saving device connection, please wait...", -1);
+            showInfoMessage("Saving device connection, please wait...", -1, true);
             disableUIButtons();
 
             // Query existing device record - function will create a new blank device record if one does not exist
@@ -2914,6 +3303,9 @@
                     connectionString = connectionStringMap.joinKeyValuePairs();
                 }
 
+                if (connectionString === "null")
+                    connectionString = "";
+
                 device.Acronym = viewModel.deviceAcronym();
                 device.Name = viewModel.deviceName();
                 device.Longitude = viewModel.longitude();
@@ -2922,14 +3314,12 @@
                 device.ProtocolID = configFrame.ProtocolID;
                 device.FrameRate = configFrame.FrameRate;
                 device.AccessID = configFrame.IDCode;
-                device.IsConcentrator = configFrame.IsConcentrator || configFrame.Cells.length > 1;
+                device.IsConcentrator = !isEmpty(connectionString) && (configFrame.IsConcentrator || configFrame.Cells.length > 1);
 
                 if (isEmpty(device.Name))
                     device.Name = device.Acronym;
 
-                if (!isEmpty(connectionString))
-                    device.ConnectionString = connectionString;
-
+                device.ConnectionString = connectionString;
                 device.AutoStartDataParsingSequence = autoStartDataParsingSequence;
                 device.SkipDisableRealTimeData = skipDisableRealTimeData;
                 device.Enabled = true;
@@ -2952,12 +3342,12 @@
                             });
                         })
                         .fail(function (error) {
-                            showErrorMessage("Failed while querying new device " + device.Acronym + " - no measurements saved: " + error);
+                            showErrorMessage("Failed while querying new device " + device.Acronym + " - no measurements saved: " + error, null, true);
                             enableUIButtons();
                         });
                     })
                     .fail(function (error) {
-                        showErrorMessage("Save failed for new device " + device.Acronym + ": " + error);
+                        showErrorMessage("Save failed for new device " + device.Acronym + ": " + error, null, true);
                         enableUIButtons();
                     });
                 }
@@ -2976,13 +3366,13 @@
                         });
                     })
                     .fail(function (error) {
-                        showErrorMessage("Update failed for existing device " + device.Acronym + " - no measurements updated: " + error);
+                        showErrorMessage("Update failed for existing device " + device.Acronym + " - no measurements updated: " + error, null, true);
                         enableUIButtons();
                     });
                 }
             })
             .fail(function (error) {
-                showErrorMessage("Save failed for new device " + device.Acronym + " - could not create new or lookup existing device: " + error);
+                showErrorMessage("Save failed for new device " + device.Acronym + " - could not create new or lookup existing device: " + error, null, true);
                 enableUIButtons();
             });
         }
@@ -2999,7 +3389,7 @@
                 viewModel.latitude(device.Latitude);
             })
             .fail(function (error) {
-                showErrorMessage(String.format("Failed to load existing device \"{0}\": {1}", id, error));
+                showErrorMessage(String.format("Failed to load existing device \"{0}\": {1}", id, error), null, true);
             });
         }
 
@@ -3147,13 +3537,13 @@
             function encodeInfoMessage(message, timeout) {
                 // Html encode message
                 const encodedMessage = $("<div />").text(message).html();
-                showInfoMessage(encodedMessage, timeout);
+                showInfoMessage(encodedMessage, timeout, true);
             }
 
             function encodeErrorMessage(message, timeout) {
                 // Html encode message
                 const encodedMessage = $("<div />").text(message).html();
-                showErrorMessage(encodedMessage, timeout);
+                showErrorMessage(encodedMessage, timeout, true);
             }
 
             // Register info and error message handlers for each hub client
@@ -3195,7 +3585,7 @@
                         }, 1);
                     });
                 }
-            }
+            };
 
             // Enable knockout validation
             ko.validation.init({
@@ -3301,11 +3691,11 @@
 
             $("#inputESPMarker").focus(function() {
                 $(this).select();
-            })
+            });
 
             $("#inputNonESPMarker").focus(function() {
                 $(this).select();
-            })
+            });
 
             $("#latitude").focus(function() {
                 $(this).select();
@@ -3327,8 +3717,6 @@
                 if (deviceID > 0)
                     loadDeviceConnection(deviceID);
 
-                // TODO: Handle "instance" names for openPDC
-
                 const instanceNameSelect = $("#instanceName");
 
                 // Load available historian instance names, if not already loaded
@@ -3344,8 +3732,14 @@
                         // Select last value
                         var lastInstanceName = Cookies.get("instanceName");
 
-                        if (lastInstanceName === undefined)
-                            lastInstanceName = instanceNameSelect.eq(0).val();
+                        if (lastInstanceName === undefined) {
+                            // Assume name of PPA as default, if defined
+                            if (names.indexOf("PPA") !== -1)
+                                lastInstanceName = "PPA";
+                            // Otherwise select first available historian
+                            else if (names.length > 1)
+                                lastInstanceName = instanceNameSelect.eq(1).val();
+                        }
 
                         if (!isEmpty(lastInstanceName))
                             instanceNameSelect.val(lastInstanceName);
@@ -3516,13 +3910,14 @@
                                     <li>
                                         <a href="#tab1">Use Connection File</a>
                                     </li>
-                                    <li>
+                                    <li style="display: none">
+                                        @* TODO: Complete Build Connection Tab *@
                                         <a href="#tab2">Build Connection</a>
                                     </li>
                                 </ul>
                                 <hr style="margin: 0; border-top-color: lightgray" />
                                 <div class="input-group pull-right" style="margin-top: -35px">
-                                    <div class="checkbox">
+                                    <div class="checkbox" style="display: none">
                                         <label><input type="checkbox" data-bind="checked: forwardOnly"> Forward&nbsp;Only</label>
                                     </div>
                                 </div>
@@ -3608,7 +4003,7 @@
                     @if (userIsEditor)
                     {
                         <div class="input-group save-button pull-right">
-                            <button type="button" class="btn btn-primary pull-right" id="saveData" data-bind="disable: !isDirty() && (working() || validationErrors() > 0 || !phasorHubIsConnected() || isEmpty(configFrame().ConnectionString))">
+                            <button type="button" class="btn btn-primary pull-right" id="saveData" data-bind="disable: !isDirty() && (working() || validationErrors() > 0 || !phasorHubIsConnected())">
                                 <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Save&nbsp;Device&nbsp;
                             </button>
                         </div>
@@ -3628,7 +4023,7 @@
                 <td>
                     <div class="input-group" data-bind="css: { 'has-error': !fieldHasValue(deviceName, true), 'has-feedback': !fieldHasValue(deviceName, true) }">
                         <input id="inputDeviceName" type="text" class="form-control" style="width: 260px" data-bind="textInput: deviceName, disable: readOnly" required>
-                        <button type="button" class="input-group-addon" onclick="$('#deviceNameBuilderDialog').show()" data-bind="hidden: readOnly" style="line-height: inherit; width: 55px; margin-left: -1px; border-radius: 4px; border-top-left-radius: 0; border-bottom-left-radius: 0">Build</button>
+                        @*<button type="button" class="input-group-addon" onclick="$('#deviceNameBuilderDialog').show()" data-bind="hidden: readOnly" style="line-height: inherit; width: 55px; margin-left: -1px; border-radius: 4px; border-top-left-radius: 0; border-bottom-left-radius: 0">Build</button>*@
                         <span class="glyphicon glyphicon-remove form-control-feedback" data-bind="visible: !fieldHasValue(deviceName, true), style: { 'margin-right': readOnly() ? undefined: '54px' }"></span>
                     </div>
                     <div class="input-group save-button pull-right">
@@ -3750,7 +4145,7 @@
                     <td colspan="4" style="padding: 2px"></td>
                 </tr>
                 <!-- /ko -->
-                <tr id="voltageRow" style="visibility: hidden">
+                <tr id="voltageRow" style="visibility: hidden" data-bind="style: { 'background-color': TaggedForDelete() ? 'red' : '' }">
                     <!-- ko if: !FirstVoltage && $parent.configFrame().Cells.length > 1 -->
                     <td width="190px" class="text-left" style="padding-right: 20px">
                         <div class="input-group"></div>
@@ -3767,19 +4162,20 @@
                     <!-- /ko -->
                     <td width="210px" class="text-left" style="position: sticky">
                         <span class="org-label" data-bind="text: OriginalLabel, visible: OriginalLabel != Label()"></span>
-                        <div class="checkbox" style="margin-top: 0; margin-bottom: 0">
-                            <input type="checkbox" style="margin-top: 10px" data-bind="checked: Enabled">
+                        <div class="checkbox include-phasor" title="Include phasor when saving">
+                            <input type="checkbox" class="include-phasor" data-bind="checked: Enabled">
                         </div>
+                        <div class="delete-phasor" title="Mark phasor for deletion" data-bind="click: TaggedForDelete.bind($data, true)"><span class="glyphicon glyphicon-remove glyphicon-action-button delete-phasor"></span></div>
                         <div class="input-group" data-bind="css: { 'has-error': !fieldIsValid(Label, true), 'has-feedback': !fieldIsValid(Label, true), 'error-margin': !fieldIsValid(Label, true) }">
-                            <input type="text" class="form-control" style="width: 200px" data-bind="acronym: Label, textInput: Label, disable: $parent.readOnly() || !$data.Enabled()" required>
+                            <input type="text" class="form-control" style="width: 240px" data-bind="acronym: Label, textInput: Label, disable: $parent.readOnly() || !$data.Enabled()" required>
                             <span class="glyphicon glyphicon-remove form-control-feedback" style="z-index: 5" data-bind="visible: !fieldIsValid(Label, true)"></span>
                         </div>
-                        <span class="tag-name-label">Tag name:</span><span class="tag-name" data-bind="text: TagName"></span>
+                        <span class="tag-name-label">Tag name:&nbsp;</span><span class="tag-name" data-bind="text: TaggedForDelete() ? '*** MARKED FOR DELETION ***' : Enabled() ? TagName() : '*** REMOVED FROM UPDATE ***'"></span>
                     </td>
                     <td width="55px" class="text-center">
                         <span class="org-label" data-bind="visible: OriginalLabel != Label()">&nbsp;</span>
                         <div class="input-group" data-bind="css: { 'has-error': !fieldIsValid(Phase, true), 'has-feedback': !fieldIsValid(Phase, true), 'error-margin': !fieldIsValid(Phase, true) }">
-                            <input type="text" class="form-control" maxlength="1" style="width: 37px; margin-left: 3px" onclick="this.select()" data-bind="upperCase: Phase, textInput: Phase, style: { width: Phase.isValid() ? '37px' : '70px' }, selectOnError: Phase, enable: Enabled" placeholder="Ø" required>
+                            <input type="text" class="form-control" maxlength="1" style="width: 37px; margin-left: 3px" onclick="this.select()" data-bind="upperCase: Phase, textInput: Phase, style: { width: Phase.isValid() ? '37px' : '75px' }, selectOnError: Phase, enable: Enabled" placeholder="Ø" required>
                             <span class="glyphicon glyphicon-remove form-control-feedback" style="z-index: 5" data-bind="visible: !fieldIsValid(Phase, true)"></span>
                         </div>
                     </td>
@@ -3818,7 +4214,7 @@
                     <td colspan="4" style="padding: 2px"></td>
                 </tr>
                 <!-- /ko -->
-                <tr id="currentRow" style="visibility: hidden">
+                <tr id="currentRow" style="visibility: hidden" data-bind="style: { 'background-color': TaggedForDelete() ? 'red' : '' }">
                     <!-- ko if: !FirstCurrent && $parent.configFrame().Cells.length > 1 -->
                     <td width="190px" class="text-left" style="padding-right: 20px">
                         <div class="input-group"></div>
@@ -3835,19 +4231,20 @@
                     <!-- /ko -->
                     <td width="210px" class="text-left" style="position: sticky">
                         <span class="org-label" data-bind="text: OriginalLabel, visible: OriginalLabel != Label()"></span>
-                        <div class="checkbox" style="margin-top: 0; margin-bottom: 0">
-                            <input type="checkbox" style="margin-top: 10px" data-bind="checked: Enabled">
+                        <div class="checkbox include-phasor" title="Include phasor when saving">
+                            <input type="checkbox" class="include-phasor" data-bind="checked: Enabled">
                         </div>
+                        <div class="delete-phasor" title="Mark phasor for deletion" data-bind="click: TaggedForDelete.bind($data, true)"><span class="glyphicon glyphicon-remove glyphicon-action-button delete-phasor"></span></div>
                         <div class="input-group" data-bind="css: { 'has-error': !fieldIsValid(Label, true), 'has-feedback': !fieldIsValid(Label, true), 'error-margin': !fieldIsValid(Label, true) }">
                             <input type="text" class="form-control" style="width: 200px" data-bind="acronym: Label, textInput: Label, disable: $parent.readOnly() || !$data.Enabled()" required>
                             <span class="glyphicon glyphicon-remove form-control-feedback" style="z-index: 5" data-bind="visible: !fieldIsValid(Label, true)"></span>
                         </div>
-                        <span class="tag-name-label">Tag name:</span><span class="tag-name" data-bind="text: TagName"></span>
+                        <span class="tag-name-label">Tag name:&nbsp;</span><span class="tag-name" data-bind="text: TaggedForDelete() ? '*** MARKED FOR DELETION ***' : Enabled() ? TagName() : '*** REMOVED FROM UPDATE ***'"></span>
                     </td>
                     <td width="55px" class="text-center">
                         <span class="org-label" data-bind="visible: OriginalLabel != Label()">&nbsp;</span>
                         <div class="input-group" data-bind="css: { 'has-error': !fieldIsValid(Phase, true), 'has-feedback': !fieldIsValid(Phase, true), 'error-margin': !fieldIsValid(Phase, true)}">
-                            <input type="text" class="form-control" maxlength="1" style="width: 37px; margin-left: 3px" onclick="this.select()" data-bind="upperCase: Phase, textInput: Phase, style: { width: Phase.isValid() ? '37px' : '70px' }, selectOnError: Phase, enable: Enabled" placeholder="Ø" required>
+                            <input type="text" class="form-control" maxlength="1" style="width: 37px; margin-left: 3px" onclick="this.select()" data-bind="upperCase: Phase, textInput: Phase, style: { width: Phase.isValid() ? '37px' : '75px' }, selectOnError: Phase, enable: Enabled" placeholder="Ø" required>
                             <span class="glyphicon glyphicon-remove form-control-feedback" style="z-index: 5" data-bind="visible: !fieldIsValid(Phase, true)"></span>
                         </div>
                     </td>
@@ -4051,7 +4448,7 @@
                     </div>
                     <div class="form-group">
                         <div class="checkbox">
-                            <label><input type="checkbox" id="includeCompanyAcronym"> Include Company Acronym "@Model.Global.CompanyAcronym"</label>
+                            <label><input type="checkbox" id="includeCompanyAcronym"> Include Company Acronym "@CompanyAcronym"</label>
                         </div>
                     </div>
                 </form>
