@@ -81,7 +81,7 @@
 
     string deviceAcronym = null, deviceName = null, vendorName = null, deviceType = null,
     contactList = null, connectionString = null, displayData = null, stateName = null,
-    stateColor = null, parentAcronym = null, adapterAcronym = null, extraMessage = "";
+    stateColor = null, parentAcronym = null, adapterAcronym = null, extraMessage = "", stateAction = null;
 
     decimal longitude = 0.0M, latitude = 0.0M;
     int framesPerSecond = 30, refreshInterval = DeviceAlarmStateAdapter.DefaultMonitoringRate / 1000;
@@ -239,6 +239,7 @@
             {
                 stateName = alarmState.State;
                 stateColor = alarmState.Color;
+                stateAction = alarmState.RecommendedAction;
             }
         }
     }
@@ -286,6 +287,10 @@
     if (string.IsNullOrEmpty(parentAcronym))
     {
         parentAcronym = "";
+    }
+    if (string.IsNullOrEmpty(stateAction))
+    {
+        stateAction = "";
     }
 
     ViewBag.Title = deviceAcronym + " Device Status";
@@ -432,8 +437,9 @@
         </div>
     </div>
     <form role="form" method="post" action="@request.RequestUri.AbsolutePath?DeviceID=@deviceID&Salt=@salt" enctype="multipart/form-data">
-        <div class="btn-group" style="width: 100%">            
-            @if (targetParentDevices) {
+        <div class="btn-group" style="width: 100%">
+            @if (targetParentDevices)
+            {
                 <button type="submit" name="deviceInService" style="width: 30%" value="true">Reset to In-Service</button>
                 <button type="submit" name="deviceInService" style="width: 30%" value="false">Set to Out-of-Service</button>
                 <button type="button" style="width: 30%" onclick="Reconnect()">Reconnect Device</button>
@@ -441,13 +447,28 @@
                 <button id="setAcknowledge" type="button" style="width: 30%" onclick="SetAcknowledge('@deviceAcronym')" disabled>Acknowledge</button>
                 <button id="resetAcknowledge" type="button" style="width: 30%" onclick="ResetAcknowledge('@deviceAcronym')" disabled>Reset Acknowledge</button>
             }
-            else {
+            else
+            {
                 <button type="button" style="width: 30%" onclick="Reconnect()">Reconnect Device</button>
                 <button type="button" style="width: 30%" onclick="PingDevice()">Ping</button>
             }
             @Html.RequestVerificationToken()
         </div>
     </form>
+    @if (stateAction != "")
+    {
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">@stateName - Suggested Action:</h3>
+            </div>
+            <div class="panel-body">
+                @stateAction
+            </div>
+            <div class="panel-footer">
+                <button type="button" class="btn btn-default">Send Email</button>
+            </div>
+    </div>
+    }
 </div>
 @section Scripts {
     <script src="@Resources.Root/Shared/Scripts/jquery.subscriber.js"></script>
