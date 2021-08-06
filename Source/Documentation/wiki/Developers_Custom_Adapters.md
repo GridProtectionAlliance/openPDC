@@ -154,12 +154,12 @@ The `Initialize()` method can be overridden by your custom adapter class to init
 private string m_mandatorySetting;
 private string m_optionalSetting;
 
-// Initalize
+// Initialize
 // Connection string looks something like this:
 //   mandatorySetting=mandatoryValue; optionalSetting=optionalValue
 public override void  Initialize()
 {
-    base.Initalize();
+    base.Initialize();
     Dictionary<string, string> settings = Settings;
     string setting;
     m_mandatorySetting = settings["mandatorySetting"];
