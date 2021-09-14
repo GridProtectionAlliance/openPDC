@@ -11,6 +11,7 @@ namespace openPDC.Model
         public string ID { get; set; }
         public Guid SignalID { get; set; }
         public string PointTag { get; set; }
+        public long PointID { get; set; }
         public string SignalReference { get; set; }
         public string SignalAcronym { get; set; }
         public int PhasorSourceIndex { get; set; }
