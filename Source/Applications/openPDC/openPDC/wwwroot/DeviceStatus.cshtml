@@ -465,7 +465,7 @@
                 @stateAction
             </div>
             <div class="panel-footer">
-                <button type="button" class="btn btn-default">Send Email</button>
+                <button type="button" class="btn btn-default" onclick="SendEmail('@deviceAcronym')">Send Email</button>
             </div>
     </div>
     }
@@ -796,6 +796,12 @@
 
     function ResetAcknowledge(deviceAcronym) {
         dataHub.resetAcknowledge(deviceAcronym).done(function () {
+            location.reload(true);
+        });
+    }
+
+    function SendEmail(deviceAcronym) {
+        dataHub.sendEmail(deviceAcronym).done(function () {
             location.reload(true);
         });
     }

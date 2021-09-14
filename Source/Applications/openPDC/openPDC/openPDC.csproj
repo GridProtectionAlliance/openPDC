@@ -136,6 +136,9 @@
     <Reference Include="GSF.Core">
       <HintPath>..\..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
     </Reference>
+    <Reference Include="GSF.Historian">
+      <HintPath>..\..\..\Dependencies\GSF\GSF.Historian.dll</HintPath>
+    </Reference>
     <Reference Include="GSF.PhasorProtocols, Version=2.2.230.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Dependencies\GSF\GSF.PhasorProtocols.dll</HintPath>
@@ -404,7 +407,7 @@ XCOPY "$(SolutionDir)Data\SerializedSchema.bin" "$(TargetDir)" /Y
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

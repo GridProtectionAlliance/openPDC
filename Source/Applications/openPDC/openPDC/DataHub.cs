@@ -39,6 +39,12 @@ using ModbusAdapters;
 using ModbusAdapters.Model;
 using openPDC.Model;
 using Newtonsoft.Json.Linq;
+using GSF.Configuration;
+using GSF.Net.Smtp;
+using GSF.Web.Shared.Model;
+using GSF.Historian.Files;
+using GSF.Historian;
+using GSF.TimeSeries.Statistics;
 
 namespace openPDC
 {
@@ -494,6 +500,191 @@ namespace openPDC
             }
         }
 
+        [AuthorizeHubRole("Administrator, Editor")]
+        public void SendEmail(string acronym)
+        {
+            Device device = QueryDevice(acronym);
+
+            // Get Device State and other Information
+            AlarmDevice alarmDevice = DataContext.Table<AlarmDevice>().QueryRecordWhere("DeviceID = {0}", device.ID);
+
+            string stateName = "Unknown State";
+            string vendorName = "Unspecified";
+            string deviceType = "Unspecified";
+            string contactList = "None Defined";
+            string connectionString = "settings=none";
+            string parentAcronym = "";
+            decimal longitude = 0.0M, latitude = 0.0M;
+            int framesPerSecond = 30;
+            int? vendorDeviceID = device.VendorDeviceID;
+
+            if (device.ParentID.HasValue)
+            {
+                int parentID = device.ParentID.Value;
+
+                // If this is a concentrator child, get connection string of parent
+                Device parentDevice = DataContext.Table<Device>().QueryRecordWhere("ID = {0}", parentID);
+
+                if ((object)parentDevice != null)
+                {
+                    parentAcronym = parentDevice.Acronym;
+
+                    string childConnectionString = connectionString;
+
+                    // Settings in child connection string are not common
+                    if (string.IsNullOrWhiteSpace(childConnectionString))
+                    {
+                        childConnectionString = "";
+                    }
+                    else
+                    {
+                        childConnectionString = string.Format("; childDevice={0}; {1}", acronym, childConnectionString);
+                    }
+
+                    connectionString = string.Format("parentDevice={0}; {1}{2}", parentDevice.Acronym, parentDevice.ConnectionString, childConnectionString);
+                    vendorDeviceID = vendorDeviceID ?? parentDevice.VendorDeviceID;
+                }
+            }
+
+            if ((object)alarmDevice != null)
+            {
+                AlarmState alarmState = DataContext.Table<AlarmState>().QueryRecordWhere("ID = {0}", alarmDevice.StateID);
+                if (!string.IsNullOrEmpty(alarmState?.State))
+                    stateName = alarmState.State;
+            }
+
+            if (device.Longitude.HasValue)
+                longitude = device.Longitude.Value;
+
+            if (device.Latitude.HasValue)
+                latitude = device.Latitude.Value;
+         
+            if (device.FramesPerSecond.HasValue)
+               framesPerSecond = device.FramesPerSecond.Value;
+
+           
+
+            VendorDevice vendorDevice = DataContext.Table<VendorDevice>().QueryRecordWhere("ID = {0}", vendorDeviceID);
+
+            if ((object)vendorDevice != null)
+            {
+                if (!string.IsNullOrEmpty(vendorDevice?.Name))
+                    deviceType = vendorDevice.Name;
+
+                Vendor vendor = DataContext.Table<Vendor>().QueryRecordWhere("ID = {0}", vendorDevice.VendorID);
+
+                if (!string.IsNullOrEmpty(vendor?.Name))
+                    vendorName = vendor.Name;
+            }
+
+            if (!String.IsNullOrEmpty(device.ContactList))
+                contactList = device.ContactList;
+
+            if (!String.IsNullOrEmpty(device.ConnectionString))
+                connectionString = device.ConnectionString;
+
+            // ready Email to be send. Load settings from ConfigFile Only
+            string emailServer = Mail.DefaultSmtpServer;
+            string emailSender = string.Format("{0}@{1}.local", Environment.UserName, Environment.UserDomainName);
+            string emailRecipients = "";
+            ConfigurationFile config = ConfigurationFile.Current;
+            CategorizedSettingsElementCollection settings = config.Settings["deviceStatusNotification"];
+            settings.Add("EmailServer", emailServer, "SMTP server to use for sending the email notifications.");
+            settings.Add("EmailSender", emailSender, "Email address to be used for sending the email notifications.");
+            settings.Add("EmailRecipients", emailRecipients, "Email addresses (comma or semicolon delimited) where the email notifications are to be sent.");
+            emailServer = settings["EmailServer"].ValueAs(emailServer);
+            emailSender = settings["EmailSender"].ValueAs(emailSender);
+            emailRecipients = settings["EmailRecipients"].ValueAs(emailRecipients);
+
+            if (string.IsNullOrEmpty(emailRecipients))
+                throw new ArgumentNullException("EmailRecipients");
+
+            Mail briefMessage = new Mail(emailRecipients, emailSender, emailServer);
+            Mail detailedMessage = new Mail(emailSender, emailSender, emailServer);
+
+            briefMessage.Subject = $"{acronym} {stateName}";
+            detailedMessage.Subject = $"{acronym} {stateName}";
+            detailedMessage.Body = $"{acronym} is in {stateName} state. Please issue a field ticket to investigate\r\n\r\n";
+            detailedMessage.Body += $"Device Acronym: {acronym}\r\n";
+            detailedMessage.Body += $"Device Name: {device?.Name}\r\n";
+            detailedMessage.Body += $"Make: {vendorName}\r\n";
+            detailedMessage.Body += $"Model: {deviceType}\r\n";
+            detailedMessage.Body += $"Latitude: {latitude}\r\n";
+            detailedMessage.Body += $"Longitude: {longitude}\r\n";
+            detailedMessage.Body += $"Frames per Second: {framesPerSecond}\r\n";
+            detailedMessage.Body += $"Contacts: {contactList}\r\n";
+            detailedMessage.Body += $"Connection String:\r\n";
+            detailedMessage.Body += $"\t{String.Join("\r\n\t", connectionString.Split(';').Select(s => s.Trim()))}\r\n\r\n";
+            detailedMessage.Body += $"Last collected Statistics:\r\n";
+
+            detailedMessage.Body += GenerateStatsTable(acronym, parentAcronym);
+            foreach (string recipient in emailRecipients.Replace(" ", "").Split(';', ','))
+            {
+                string[] addressParts = recipient.Split(':');
+                if (addressParts.Length > 1)
+                {
+                    if (string.Compare(addressParts[1], "sms", true) == 0)
+                    {
+                        // A brief message is to be sent.
+                        briefMessage.ToRecipients = addressParts[0];
+                        briefMessage.Send();
+                    }
+                }
+                else
+                {
+                    // A detailed message is to be sent.
+                    detailedMessage.ToRecipients = recipient;
+                    detailedMessage.Send();
+                }
+            }
+
+        }
+
+        private string GenerateStatsTable(string deviceAcronym, string parentAcronym)
+        {
+            string tbl = "ID".PadRight(11) + "Description".PadRight(201) + "Value".PadRight(21) + "Time (UTC)".PadRight(20) + "\r\n";
+            tbl += string.Concat(Enumerable.Repeat("-", 253)) + "\r\n";
+
+            // Grab Stat Measurements
+            IEnumerable<MeasurementDetail> statmeasurements = DataContext.Table<MeasurementDetail>().QueryRecordsWhere("DeviceAcronym IN ({0},{1}) AND SignalAcronym = 'STAT'", deviceAcronym, parentAcronym);
+
+            // Read Current Values (+ 30 seconds back)
+            ConfigurationFile config = ConfigurationFile.Current;
+            CategorizedSettingsElementCollection settings = config.Settings["statArchiveFile"];
+
+            ArchiveReader archiveReader = new ArchiveReader();
+            archiveReader.Open(settings["FileName"].ValueAsString());
+
+            List<MetadataRecord> metadataRecords = archiveReader.MetadataFile.Read()
+                .Where(record => !string.IsNullOrEmpty(record.Name))
+                .ToList();
+
+            Dictionary<long,IEnumerable<IDataPoint>> data = statmeasurements.Select(item => item.PointID).ToDictionary(record => record, record => archiveReader.ReadData((int)record, DateTime.UtcNow.Subtract(new TimeSpan(0, 1, 0)), DateTime.UtcNow, false));
+
+            foreach (MeasurementDetail meas in statmeasurements)
+            {
+                tbl += meas.PointTag.Substring(meas.PointTag.LastIndexOf("!") + 1).Trim().PadRight(10) + " " + meas.Description.Trim().PadRight(200) + " ";
+                if (data.ContainsKey(meas.PointID) && data[meas.PointID].Count() > 0)
+                { 
+                    if (!StatisticsEngine.TryLookupStatisticSource(meas.SignalReference, out string source, out int signalIndex))
+                        tbl += "N/A".PadRight(20) + " " + "N/A".PadRight(20) + "\r\n";
+                    else
+                    {
+                        Statistic stat = DataContext.Table<Statistic>().QueryRecordWhere("Source = {0} AND SignalIndex = {1}", source, signalIndex);
+                        Type statType = Type.GetType(stat.DataType);
+                        if (statType == typeof(DateTime))
+                            tbl += String.Format(stat.DisplayFormat, new GSF.UnixTimeTag((decimal)data[meas.PointID].First().Value)).PadRight(20) + " " + data[meas.PointID].First().Time.ToString("HH:mm:ss.fff").PadRight(20) + "\r\n";
+                        else
+                            tbl += String.Format(stat.DisplayFormat, Convert.ChangeType(data[meas.PointID].First().Value, statType)).PadRight(20) + " " + data[meas.PointID].First().Time.ToString("HH:mm:ss.fff").PadRight(20) + "\r\n";
+                    }
+                    
+                }
+                else
+                    tbl += "N/A".PadRight(20) + " " + "N/A".PadRight(20) + "\r\n";
+            }
+
+            return tbl;
+        }
         #endregion
 
         #region [ Modbus Operations ]
