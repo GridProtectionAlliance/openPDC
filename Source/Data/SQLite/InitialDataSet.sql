@@ -256,3 +256,5 @@ INSERT INTO AlarmState (State, Color) VALUES ('Acknowledged', 'rosybrown');
 PRAGMA foreign_keys = ON;
  
 PRAGMA foreign_keys = ON;
+ 
+PRAGMA foreign_keys = ON;

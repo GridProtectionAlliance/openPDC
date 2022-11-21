@@ -256,3 +256,5 @@ INSERT INTO AlarmState (State, Color) VALUES ('Acknowledged', 'rosybrown');
 USE openPDC;
  
 USE openPDC;
+ 
+USE openPDC;
