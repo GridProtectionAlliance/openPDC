@@ -76,7 +76,7 @@ namespace openPDC.Adapters
         private LocationData LocationData => m_locationData ?? (m_locationData = new LocationData { DataSource = DataSource });
 
         /// <summary>
-        /// Validates that openHistorian Grafana data source is responding as expected.
+        /// Validates that openPDC Grafana Metadata data source is responding as expected.
         /// </summary>
         [HttpGet]
         public HttpResponseMessage Index()

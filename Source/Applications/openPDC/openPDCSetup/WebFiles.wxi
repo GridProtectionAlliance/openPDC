@@ -6,9 +6,6 @@
   <Component Id="AddSynchrophasorDevice_cshtml">
     <File Id="AddSynchrophasorDevice.cshtml" Name="AddSynchrophasorDevice.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\AddSynchrophasorDevice.cshtml" />
   </Component>
-  <Component Id="AddSynchrophasorDeviceDev_cshtml">
-    <File Id="AddSynchrophasorDeviceDev.cshtml" Name="AddSynchrophasorDeviceDev.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\AddSynchrophasorDeviceDev.cshtml" />
-  </Component>
   <Component Id="Companies_cshtml">
     <File Id="Companies.cshtml" Name="Companies.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Companies.cshtml" />
   </Component>

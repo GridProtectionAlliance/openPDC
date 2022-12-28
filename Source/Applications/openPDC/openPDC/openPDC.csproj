@@ -270,7 +270,6 @@
     <Content Include="Web.config" />
     <Content Include="wwwroot\AddDevice.cshtml" />
     <Content Include="wwwroot\AddSynchrophasorDevice.cshtml" />
-    <Content Include="wwwroot\AddSynchrophasorDeviceDev.cshtml" />
     <Content Include="Single Phase Power Calculations.TagTemplate" />
     <Content Include="Three Phase Power Calculations.TagTemplate" />
     <None Include="wwwroot\Companies.cshtml" />
