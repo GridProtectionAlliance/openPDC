@@ -101,7 +101,7 @@ namespace ConfigurationSetupUtility
             }
             catch (Exception ex)
             {
-                m_errorLogger.Log(new InvalidOperationException(string.Format("Warning: failed to create or validate the event log source for the openPDC Manager: {0}", ex.Message), ex), false);
+                m_errorLogger.Log(new InvalidOperationException($"Warning: failed to create or validate the event log source for the openPDC Manager: {ex.Message}", ex), false);
             }
 
             try

@@ -12,18 +12,18 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            
+
             <DockPanel Grid.Row="0">
                 <TextBlock Text="Please wait while we retrieve node information from your database..." TextAlignment="Center" TextWrapping="Wrap" DockPanel.Dock="Top" Margin="10,0" Name="m_infoTextBlock" />
                 <DataGrid Name="m_dataGrid" SelectionMode="Single" DockPanel.Dock="Bottom" Margin="10" SelectionChanged="DataGrid_SelectionChanged" IsReadOnly="True" Loaded="DataGrid_Loaded" />
             </DockPanel>
-            
+
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />

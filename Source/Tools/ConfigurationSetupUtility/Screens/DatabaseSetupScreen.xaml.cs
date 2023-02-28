@@ -1,14 +1,14 @@
 ﻿//******************************************************************************************************
 //  DatabaseSetupScreen.xaml.cs - Gbtc
 //
-//  Copyright © 2010, Grid Protection Alliance.  All Rights Reserved.
+//  Copyright © 2011, Grid Protection Alliance.  All Rights Reserved.
 //
 //  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
 //  the NOTICE file distributed with this work for additional information regarding copyright ownership.
-//  The GPA licenses this file to you under the Eclipse Public License -v 1.0 (the "License"); you may
+//  The GPA licenses this file to you under the MIT License (MIT), the "License"; you may
 //  not use this file except in compliance with the License. You may obtain a copy of the License at:
 //
-//      http://www.opensource.org/licenses/eclipse-1.0.php
+//      http://opensource.org/licenses/MIT
 //
 //  Unless agreed to in writing, the subject software distributed under the License is distributed on an
 //  "AS-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Refer to the
@@ -30,10 +30,10 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Win32;
 using GSF;
-using GSF.Data;
 using GSF.Configuration;
+using GSF.Data;
+using Microsoft.Win32;
 
 namespace ConfigurationSetupUtility.Screens
 {
@@ -99,58 +99,31 @@ namespace ConfigurationSetupUtility.Screens
         /// Gets a boolean indicating whether the user can advance to
         /// the next screen from the current screen.
         /// </summary>
-        public bool CanGoForward
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanGoForward => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can return to
         /// the previous screen from the current screen.
         /// </summary>
-        public bool CanGoBack
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanGoBack => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user can cancel the
         /// setup process from the current screen.
         /// </summary>
-        public bool CanCancel
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool CanCancel => true;
 
         /// <summary>
         /// Gets a boolean indicating whether the user input is valid on the current page.
         /// </summary>
-        public bool UserInputIsValid
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool UserInputIsValid => true;
 
         /// <summary>
         /// Collection shared among screens that represents the state of the setup.
         /// </summary>
         public Dictionary<string, object> State
         {
-            get
-            {
-                return m_state;
-            }
+            get => m_state;
             set
             {
                 m_state = value;
@@ -180,13 +153,12 @@ namespace ConfigurationSetupUtility.Screens
                 bool existing = Convert.ToBoolean(m_state["existing"]);
                 bool migrate = existing && Convert.ToBoolean(m_state["updateConfiguration"]);
                 Visibility existingVisibility = existing ? Visibility.Collapsed : Visibility.Visible;
-                object value;
 
                 m_initialDataScriptCheckBox.Visibility = existingVisibility;
                 m_sampleDataScriptCheckBox.Visibility = existingVisibility;
 
                 // Show new database warning anytime user will be creating a new database
-                if (m_state.TryGetValue("updateConfiguration", out value))
+                if (m_state.TryGetValue("updateConfiguration", out object value))
                     m_newDatabaseWarning.Visibility = Convert.ToBoolean(value) ? Visibility.Visible : Visibility.Collapsed;
                 else
                     m_newDatabaseWarning.Visibility = existingVisibility;
@@ -282,16 +254,13 @@ namespace ConfigurationSetupUtility.Screens
                         }
                         finally
                         {
-                            if (connection != null)
-                                connection.Dispose();
+                            connection?.Dispose();
                         }
                     }
                 }
                 if (!m_state.ContainsKey("securityUpgrade"))
                     m_state.Add("securityUpgrade", false);
             }
-
-
         }
 
         // Initializes the screens that can be used as the next screen based on user input.
