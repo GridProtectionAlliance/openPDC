@@ -4,6 +4,120 @@
         <name>GSF.Security</name>
     </assembly>
     <members>
+        <member name="M:GSF.Security.AzureADPassthroughPrincipal.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GSF.Security.AzureADPassthroughPrincipal" />
+            class representing an Azure AD user with a passthrough principal.
+            </summary>
+            <param name="name">The name of the user on whose behalf the code is running.</param>
+        </member>
+        <member name="T:GSF.Security.AzureADSettings">
+            <summary>
+            Represents settings needed for Azure Active Directory (AD) authentication.
+            </summary>
+        </member>
+        <member name="F:GSF.Security.AzureADSettings.DefaultSettingsCategory">
+            <summary>
+            Default category for Azure AD settings.
+            </summary>
+        </member>
+        <member name="F:GSF.Security.AzureADSettings.DefaultInstance">
+            <summary>
+            Default value for <see cref="P:GSF.Security.AzureADSettings.Instance"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.Security.AzureADSettings.DefaultTenantID">
+            <summary>
+            Default value for <see cref="P:GSF.Security.AzureADSettings.TenantID"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.Security.AzureADSettings.DefaultClientID">
+            <summary>
+            Default value for <see cref="P:GSF.Security.AzureADSettings.ClientID"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.Security.AzureADSettings.DefaultCallbackPath">
+            <summary>
+            Default value for <see cref="P:GSF.Security.AzureADSettings.CallbackPath"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.Security.AzureADSettings.DefaultSignedOutCallbackPath">
+            <summary>
+            Default value for <see cref="P:GSF.Security.AzureADSettings.SignedOutCallbackPath"/> property.
+            </summary>
+        </member>
+        <member name="F:GSF.Security.AzureADSettings.DefaultEnabled">
+            <summary>
+            Default value for <see cref="P:GSF.Security.AzureADSettings.Enabled"/> property.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.AzureADSettings.Instance">
+            <summary>
+            Gets or sets the Azure AD instance URL.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.AzureADSettings.TenantID">
+            <summary>
+            Gets or sets the Azure AD tenant ID.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.AzureADSettings.ClientID">
+            <summary>
+            Gets or sets the Azure AD client ID.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.AzureADSettings.CallbackPath">
+            <summary>
+            Gets or sets the Azure AD call-back path.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.AzureADSettings.SignedOutCallbackPath">
+            <summary>
+            Gets or sets the Azure AD signed out call-back path.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.AzureADSettings.Enabled">
+            <summary>
+            Gets the flag that determines if Azure AD is enabled.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.AzureADSettings.Authority">
+            <summary>
+            Gets the Azure AD authority (Instance + TenantID).
+            </summary>
+        </member>
+        <member name="P:GSF.Security.AzureADSettings.LastException">
+            <summary>
+            Gets the last exception, if any, encountered after getting a new Graph service client.
+            </summary>
+        </member>
+        <member name="M:GSF.Security.AzureADSettings.GetGraphClient(System.String)">
+            <summary>
+            Gets a new Graph service client.
+            </summary>
+            <returns>New Graph service client when Azure AD is enabled; otherwise, <c>null</c>.</returns>
+        </member>
+        <member name="M:GSF.Security.AzureADSettings.Load(System.String)">
+            <summary>
+            Loads Azure AD settings. Source based on target configuration.
+            </summary>
+            <param name="settingsCategory">Settings category to use for determine configuration location.</param>
+            <returns>Loaded <see cref="T:GSF.Security.AzureADSettings"/> settings instance.</returns>
+        </member>
+        <member name="M:GSF.Security.AzureADSettings.LoadFromAppSettings(System.String)">
+            <summary>
+            Loads Azure AD settings from the specified JSON application settings file.
+            </summary>
+            <param name="filepath">JSON settings file to load. Defaults to local "appsettings.json".</param>
+            <returns>Loaded <see cref="T:GSF.Security.AzureADSettings"/> settings instance.</returns>
+        </member>
+        <member name="M:GSF.Security.AzureADSettings.LoadFromConfig(System.String)">
+            <summary>
+            Loads Azure AD settings from categorized settings.
+            </summary>
+            <param name="settingsCategory">Settings category to use for settings load.</param>
+            <returns>Loaded <see cref="T:GSF.Security.AzureADSettings"/> settings instance.</returns>
+        </member>
         <member name="T:GSF.Security.TokenResponse">
             <summary>
             Defines a JSON token response for the <see cref="T:GSF.Security.OIDCSecurityProvider"/>.
@@ -215,7 +329,7 @@
         <member name="T:GSF.Security.AdoSecurityProvider">
             <summary>
             Represents an <see cref="T:GSF.Security.ISecurityProvider"/> that uses ADO.NET data source (SQL Server, MySQL, Oracle, etc.) for its
-            backend data store and authenticates internal users against Active Directory and external users against the database.
+            back-end data store and authenticates internal users against Active Directory and external users against the database.
             </summary>
             <example>
             Required config file entries (automatically added):
@@ -368,7 +482,7 @@
             Initializes a new instance of the <see cref="T:GSF.Security.AdoSecurityProvider"/> class.
             </summary>
             <param name="username">Name that uniquely identifies the user.</param>
-            <param name="canRefreshData">true if the security provider can refresh <see cref="T:GSF.Security.UserData"/> from the backend data store, otherwise false.</param>
+            <param name="canRefreshData">true if the security provider can refresh <see cref="T:GSF.Security.UserData"/> from the back-end data store, otherwise false.</param>
             <param name="canResetPassword">true if the security provider can reset user password, otherwise false.</param>
             <param name="canChangePassword">true if the security provider can change user password, otherwise false.</param>
         </member>
@@ -443,9 +557,9 @@
         </member>
         <member name="M:GSF.Security.AdoSecurityProvider.GetUserRoles(System.String)">
             <summary>
-            Gets a list of Roles for this user for a specified ApplicationId.
+            Gets a list of roles for this user for a specified application ID, i.e., target node ID.
             </summary>
-            <param name="applicationId">The applicationId for the roles to be returned.</param>
+            <param name="applicationId">The node ID for the roles to be returned.</param>
             <returns>The roles that the specified user has.</returns>
         </member>
         <member name="E:GSF.Security.AdoSecurityProvider.SecurityContextRefreshed">
@@ -923,6 +1037,16 @@
         <member name="P:GSF.Security.OIDCUserData.Token">
             <summary>
             Gets or sets the <see cref="T:GSF.Security.TokenResponse"/> associated with this user.
+            </summary>
+        </member>
+        <member name="T:GSF.Security.TokenCacheHelper">
+            <summary>
+            Defines a helper class for token cache management.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.TokenCacheHelper.CacheFilePath">
+            <summary>
+            Path to the token cache.
             </summary>
         </member>
         <member name="T:GSF.Security.UserRoleCache">
@@ -1694,6 +1818,11 @@
             Gets the user's login name.
             </summary>
         </member>
+        <member name="P:GSF.Security.SecurityIdentity.Type">
+            <summary>
+            Gets the user type.
+            </summary>
+        </member>
         <member name="P:GSF.Security.SecurityIdentity.Provider">
             <summary>
             Gets the <see cref="T:GSF.Security.ISecurityProvider"/> of the user.
@@ -2044,6 +2173,11 @@
         <member name="P:GSF.Security.UserData.IsExternal">
             <summary>
             Gets a boolean value that indicates whether the user is defined as an external user in the backend security data store.
+            </summary>
+        </member>
+        <member name="P:GSF.Security.UserData.IsAzureAD">
+            <summary>
+            Gets a boolean value that indicates whether the user is defined as an AzureAD account.
             </summary>
         </member>
         <member name="P:GSF.Security.UserData.IsDisabled">
