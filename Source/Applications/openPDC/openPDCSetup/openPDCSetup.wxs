@@ -18,7 +18,7 @@
 
     <Feature Id="AllProducts" Title="All Products" Level="1" Display="expand" ConfigurableDirectory="INSTALLFOLDER">
       <!-- openPDC -->
-      <Feature Id="openPDCFeature" Title="openPDC">
+      <Feature Id="openPDCFeature" Title="openPDC" Description="Installs the openPDC Windows service application along with any needed dependencies.">
         <ComponentGroupRef Id="openPDCComponents" />
         <ComponentGroupRef Id="AdapterComponents" />
         <ComponentGroupRef Id="ConfigurationSetupUtilityComponents" />
@@ -39,7 +39,7 @@
       </Feature>
 
       <!-- openPDC Manager -->
-      <Feature Id="openPDCManagerFeature" Title="openPDC Manager">
+      <Feature Id="openPDCManagerFeature" Title="openPDC Manager" Description="Installs the openPDC Manager Windows application along with any needed dependencies.">
         <ComponentGroupRef Id="openPDCManagerComponents" />
         <ComponentGroupRef Id="AdapterComponents" />
         <ComponentGroupRef Id="ConfigurationSetupUtilityComponents" />
@@ -50,48 +50,48 @@
       </Feature>
 
       <!-- openPDC Console -->
-      <Feature Id="openPDCConsoleFeature" Title="openPDC Console">
+      <Feature Id="openPDCConsoleFeature" Title="openPDC Console" Description="Installs the openPDC remote console application along with any needed dependencies.">
         <ComponentGroupRef Id="openPDCConsoleComponents" />
         <ComponentGroupRef Id="GSFDependencyComponents" />
         <ComponentGroupRef Id="AzureADDependencyComponents" />
       </Feature>
 
       <!-- openPDC Tools -->
-      <Feature Id="openPDCToolsFeature" Title="Tools">
-        <Feature Id="ConfigCrypterFeature" Title="Config Crypter">
+      <Feature Id="openPDCToolsFeature" Title="Tools" Description="Installs the openPDC support applications and tools along with any needed dependencies.">
+        <Feature Id="ConfigCrypterFeature" Title="Config Crypter" Description="The Config Crypter tool is used to encrypt text strings for use in XML-based configuration files, as well as import and export local cipher keys.">
           <ComponentGroupRef Id="ConfigCrypterComponents" />
         </Feature>
-        <Feature Id="ConfigurationEditorFeature" Title="Configuration Editor">
+        <Feature Id="ConfigurationEditorFeature" Title="XML Configuration Editor" Description="The XML Configuration Editor is used to modify XML-based application configuration files, i.e., files suffixed with '.exe.Config'.">
           <ComponentGroupRef Id="ConfigurationEditorComponents" />
         </Feature>
-        <Feature Id="CSVDataManagerFeature" Title="CSV Data Manager">
+        <Feature Id="CSVDataManagerFeature" Title="CSV Data Manager" Description="The CSV Data Manager tool is used for bulk database operations and is used to allow CSV based I/O for update and delete operations associated with a target database.">
           <ComponentGroupRef Id="CSVDataManagerComponents" />
         </Feature>
-        <Feature Id="HistorianPlaybackUtilityFeature" Title="Historian Playback Utility">
+        <Feature Id="HistorianPlaybackUtilityFeature" Title="Historian Playback Utility"" Description="The Historian Playback Utility is used to replay and export archived time-series data and/or statistics over a provided time range.">
           <ComponentGroupRef Id="HistorianPlaybackUtilityComponents" />
         </Feature>
-        <Feature Id="HistorianViewFeature" Title="Historian Trending Tool">
+        <Feature Id="HistorianViewFeature" Title="Historian View Utility" Description="The Historian View Utility is used to trend archived openHistorian time-series data over a provided time range.">
           <ComponentGroupRef Id="HistorianViewComponents" />
         </Feature>
-        <Feature Id="LogFileViewerFeature" Title="Log File Viewer">
+        <Feature Id="LogFileViewerFeature" Title="Log File Viewer" Description="The Log File Viewer tool is used to examine and filter logged diagnostics data and perform detailed analysis and filtering of log information.">
           <ComponentGroupRef Id="LogFileViewerComponents" />
         </Feature>
-        <Feature Id="NoInetFixUtilFeature" Title="No-Internet Fix Utility">
+        <Feature Id="NoInetFixUtilFeature" Title="No-Internet Fix Utility" Description="The No-Internet File Utility tool is used to update a system that does not have access to an Internet connection.">
           <ComponentRef Id="NoInetFixUtil" />
         </Feature>
-        <Feature Id="DNP3ConfigGeneratorFeature" Title="DNP3 Configuration Generator">
+        <Feature Id="DNP3ConfigGeneratorFeature" Title="DNP3 Configuration Generator" Description="The DNP3 Configuration Generator is a console tool to create a sample DNP3 configuration files and extract any needed DNP3 adapter dependencies.">
           <ComponentRef Id="DNP3ConfigGenerator" />
         </Feature>
-        <Feature Id="CreateOutputStreamFeature" Title="Create Output Stream Tool">
+        <Feature Id="CreateOutputStreamFeature" Title="Create Output Stream Tool" Description="The Create Output Stream Tool is a console tool to create an IEEE C37.118 output stream from a source CSV file.">
           <ComponentRef Id="CreateOutputStream"/>
         </Feature>
-        <Feature Id="MacrodyneControllerFeature" Title="Macrodyne Controller">
+        <Feature Id="MacrodyneControllerFeature" Title="Macrodyne Controller" Description="The Macrodyne Controller Utility tool allows remote configuration of Macrodyne PMUs">
           <ComponentGroupRef Id="MacrodyneControllerComponents" />
         </Feature>
-        <Feature Id="GEPDataExtractorFeature" Title="GEP Data Extractor">
+        <Feature Id="GEPDataExtractorFeature" Title="GEP Data Extractor" Description="The Gateway Exchange Protocol (GEP) Data Extraction Utility is used to export selected signals from a given time-range to CSV files.">
           <ComponentGroupRef Id="GEPDataExtractorComponents" />
         </Feature>
-        <Feature Id="UpdateTagNamesFeature" Title="Update Tag Names Tool">
+        <Feature Id="UpdateTagNamesFeature" Title="Update Tag Names Tool" Description="The Update Point Tag Name tool is used update the point tag naming expression used to automate naming of measurement points tags in time-series databases.">
           <ComponentGroupRef Id="UpdateTagNamesComponents" />
         </Feature>
 
