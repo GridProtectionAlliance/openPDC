@@ -67,7 +67,7 @@
         <Feature Id="CSVDataManagerFeature" Title="CSV Data Manager" Description="The CSV Data Manager tool is used for bulk database operations and is used to allow CSV based I/O for update and delete operations associated with a target database.">
           <ComponentGroupRef Id="CSVDataManagerComponents" />
         </Feature>
-        <Feature Id="HistorianPlaybackUtilityFeature" Title="Historian Playback Utility"" Description="The Historian Playback Utility is used to replay and export archived time-series data and/or statistics over a provided time range.">
+        <Feature Id="HistorianPlaybackUtilityFeature" Title="Historian Playback Utility" Description="The Historian Playback Utility is used to replay and export archived time-series data and/or statistics over a provided time range.">
           <ComponentGroupRef Id="HistorianPlaybackUtilityComponents" />
         </Feature>
         <Feature Id="HistorianViewFeature" Title="Historian View Utility" Description="The Historian View Utility is used to trend archived openHistorian time-series data over a provided time range.">
