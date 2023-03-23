@@ -434,6 +434,11 @@
             Default value for the <see cref="P:TestingAdapters.SynchronizeLocalClock.UpdateTolerance"/> property.
             </summary>
         </member>
+        <member name="F:TestingAdapters.SynchronizeLocalClock.DefaultPreferGoodTimeQuality">
+            <summary>
+            Default value for the <see cref="P:TestingAdapters.SynchronizeLocalClock.PreferGoodTimeQuality"/> property.
+            </summary>
+        </member>
         <member name="P:TestingAdapters.SynchronizeLocalClock.UpdateFrequency">
             <summary>
             Gets or sets the update frequency, in milliseconds, for setting the local system clock time.
@@ -442,6 +447,12 @@
         <member name="P:TestingAdapters.SynchronizeLocalClock.UpdateTolerance">
             <summary>
             Gets or sets the minimum update tolerance, in seconds, as deviation to current local time to check before updating the local clock.
+            </summary>
+        </member>
+        <member name="P:TestingAdapters.SynchronizeLocalClock.PreferGoodTimeQuality">
+            <summary>
+            Gets or sets flag that determines if good time quality should be preferred for clock syncs.
+            If false, absolute latest time will always be used regardless of reported quality.
             </summary>
         </member>
         <member name="P:TestingAdapters.SynchronizeLocalClock.UseLocalClockAsRealTime">
