@@ -155,4 +155,7 @@
     <MakeDir Directories="$(HelpDeployFolder)" Condition="!Exists('$(HelpDeployFolder)')"/>
     <Copy SourceFiles="@(HelpFilesToDeploy)" DestinationFolder="$(HelpDeployFolder)\%(HelpFilesToDeploy.RecursiveDir)"/>
   </Target>
+    <Target Name="AfterPushToServer" Condition="'$(DoNotPush)' == 'false' And '$(SkipVersioning)' != 'true'">
+    <Exec Command="%22$(AfterPushScript)%22 $(ProjectName) $(BuildTag)" Condition="'$(PushToVersionBranch)' == 'true' And Exists('$(AfterPushScript)')" />
+  </Target>
 </Project>

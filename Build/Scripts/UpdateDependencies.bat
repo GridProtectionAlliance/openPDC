@@ -1,7 +1,7 @@
 ::*******************************************************************************************************
 ::  UpdateDependencies.bat - Gbtc
 ::
-::  Copyright © 2013, Grid Protection Alliance.  All Rights Reserved.
+::  Copyright ï¿½ 2013, Grid Protection Alliance.  All Rights Reserved.
 ::
 ::  Licensed to the Grid Protection Alliance (GPA) under one or more contributor license agreements. See
 ::  the NOTICE file distributed with this work for additional information regarding copyright ownership.
@@ -165,8 +165,16 @@ IF NOT "%donotpush%" == "" GOTO Finish
 ECHO.
 ECHO Pushing changes to remote repository...
 "%git%" push
+FOR /F "tokens=* USEBACKQ" %%F IN (`"%git%" describe --tags --abbrev^=0`) DO SET version=%%F
+SET remotebranch=master
+IF "%pushtoversionbranch%" == "true" SET remotebranch=ud-%version%
+"%git%" push origin HEAD:%remotebranch%
+
+:AfterPushChanges
 CD /D %pwd%
+IF EXIST "%afterpushscript%" CALL "%afterpushscript%" openPDC %remotebranch%
 
 :Finish
+CD /D %pwd%
 ECHO.
 ECHO Update complete
