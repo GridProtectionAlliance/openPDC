@@ -23,25 +23,26 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Markup;
 using System.Xml.Linq;
 using GSF;
 using GSF.Configuration;
 using GSF.Data;
 using GSF.Diagnostics;
 using GSF.IO;
-using GSF.Windows.ErrorManagement;
 using GSF.Reflection;
 using GSF.TimeSeries;
 using GSF.TimeSeries.UI;
+using GSF.Windows.ErrorManagement;
 using openPDCManager.Properties;
 using Application = System.Windows.Application;
-using MessageBox = System.Windows.MessageBox;
 
 // ReSharper disable RedundantExtendsListEntry
 // ReSharper disable ConstantConditionalAccessQualifier
@@ -73,6 +74,7 @@ namespace openPDCManager
             string systemName = null;
 
             AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+            Current.Startup += Application_Startup;
             Current.SessionEnding += Application_SessionEnding;
 
             try
@@ -273,6 +275,19 @@ namespace openPDCManager
         #endregion
 
         #region [ Methods ]
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            try
+            {
+                XmlLanguage xmlLanguage = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.Name);
+                FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(xmlLanguage));
+            }
+            catch (Exception ex)
+            {
+                Logger.SwallowException(ex);
+            }
+        }
 
         private static void Application_SessionEnding(object sender, SessionEndingCancelEventArgs e)
         {
