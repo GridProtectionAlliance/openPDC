@@ -35,6 +35,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using GrafanaAdapters;
+using GrafanaAdapters.Model.Database;
 using ModbusAdapters;
 using ModbusAdapters.Model;
 using openPDC.Model;
