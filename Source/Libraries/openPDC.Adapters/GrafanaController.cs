@@ -22,8 +22,8 @@
 //******************************************************************************************************
 
 using GrafanaAdapters;
-using GrafanaAdapters.DataSources;
-using GrafanaAdapters.DataSources.BuiltIn;
+using GrafanaAdapters.DataSourceValueTypes;
+using GrafanaAdapters.DataSourceValueTypes.BuiltIn;
 using GrafanaAdapters.Functions;
 using GrafanaAdapters.Model.Annotations;
 using GrafanaAdapters.Model.Common;
@@ -51,6 +51,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.Http;
+using GSF.Collections;
 using AlarmState = GrafanaAdapters.Model.Database.AlarmState;
 using CancellationToken = System.Threading.CancellationToken;
 
@@ -79,13 +80,13 @@ namespace openPDC.Adapters
                 InstanceName = instanceName;
             }
 
-            protected override async IAsyncEnumerable<DataSourceValue> QueryDataSourceValues(QueryParameters queryParameters, Dictionary<ulong, string> targetMap, [EnumeratorCancellation] CancellationToken cancellationToken)
+            protected override async IAsyncEnumerable<DataSourceValue> QueryDataSourceValues(QueryParameters queryParameters, OrderedDictionary<ulong, (string, string)> targetMap, [EnumeratorCancellation] CancellationToken cancellationToken)
             {
                 await foreach (IDataPoint dataPoint in m_archiveReader.ReadData(targetMap.Keys.Select(pointID => (int)pointID), queryParameters.StartTime, queryParameters.StopTime, false).ToAsyncEnumerable().WithCancellation(cancellationToken))
                 {
                     yield return new DataSourceValue
                     {
-                        Target = targetMap[(ulong)dataPoint.HistorianID],
+                        ID = targetMap[(ulong)dataPoint.HistorianID],
                         Value = dataPoint.Value,
                         Time = (dataPoint.Time.ToDateTime().Ticks - m_baseTicks) / (double)Ticks.PerMillisecond,
                         Flags = dataPoint.Quality.MeasurementQuality()
@@ -239,7 +240,7 @@ namespace openPDC.Adapters
         }
 
         /// <summary>
-        /// Gets the data source value types, i.e., any type that has implemented <see cref="IDataSourceValue"/>,
+        /// Gets the data source value types, i.e., any type that has implemented <see cref="IDataSourceValueType"/>,
         /// that have been loaded into the application domain.
         /// </summary>
         [HttpPost]
@@ -250,7 +251,7 @@ namespace openPDC.Adapters
 
         /// <summary>
         /// Gets the table names that, at a minimum, contain all the fields that the value type has defined as
-        /// required, see <see cref="IDataSourceValue.RequiredMetadataFieldNames"/>.
+        /// required, see <see cref="IDataSourceValueType.RequiredMetadataFieldNames"/>.
         /// </summary>
         /// <param name="request">Search request.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
