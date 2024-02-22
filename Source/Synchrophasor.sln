@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{BD933E0E-B3FD-470B-B53B-56DA8BC27467}"
 EndProject
@@ -26,22 +26,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{E7006E3E-A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", "{9A59B9E0-A36F-4C52-8568-CB004B20885B}"
 	ProjectSection(SolutionItems) = preProject
-		Data\SQL Server\_InitialDataSet.sql = Data\SQL Server\_InitialDataSet.sql
-		Data\SQL Server\_openPDC.sql = Data\SQL Server\_openPDC.sql
 		Data\SQL Server\AuditLog.sql = Data\SQL Server\AuditLog.sql
 		Data\SQL Server\InitialDataSet.sql = Data\SQL Server\InitialDataSet.sql
 		Data\SQL Server\openPDC.sql = Data\SQL Server\openPDC.sql
 		Data\SQL Server\SampleDataSet.sql = Data\SQL Server\SampleDataSet.sql
+		Data\SQL Server\_InitialDataSet.sql = Data\SQL Server\_InitialDataSet.sql
+		Data\SQL Server\_openPDC.sql = Data\SQL Server\_openPDC.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{B1AC9848-2909-4A7B-9541-8EA4E89E72F1}"
 	ProjectSection(SolutionItems) = preProject
-		Data\MySQL\_InitialDataSet.sql = Data\MySQL\_InitialDataSet.sql
-		Data\MySQL\_openPDC.sql = Data\MySQL\_openPDC.sql
 		Data\MySQL\AuditLog.sql = Data\MySQL\AuditLog.sql
 		Data\MySQL\InitialDataSet.sql = Data\MySQL\InitialDataSet.sql
 		Data\MySQL\openPDC.sql = Data\MySQL\openPDC.sql
 		Data\MySQL\SampleDataSet.sql = Data\MySQL\SampleDataSet.sql
+		Data\MySQL\_InitialDataSet.sql = Data\MySQL\_InitialDataSet.sql
+		Data\MySQL\_openPDC.sql = Data\MySQL\_openPDC.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openPDC", "openPDC", "{CE260396-797B-45DF-AC53-E4FC553B57C0}"
@@ -108,24 +108,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Help Me Choose Diagrams", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{53255BB7-2046-4606-BF76-7B5C13F49819}"
 	ProjectSection(SolutionItems) = preProject
-		Data\SQLite\_InitialDataSet.sql = Data\SQLite\_InitialDataSet.sql
-		Data\SQLite\_openPDC.sql = Data\SQLite\_openPDC.sql
 		Data\SQLite\InitialDataSet.sql = Data\SQLite\InitialDataSet.sql
 		Data\SQLite\openPDC-InitialDataSet.db = Data\SQLite\openPDC-InitialDataSet.db
 		Data\SQLite\openPDC-SampleDataSet.db = Data\SQLite\openPDC-SampleDataSet.db
 		Data\SQLite\openPDC.sql = Data\SQLite\openPDC.sql
 		Data\SQLite\SampleDataSet.sql = Data\SQLite\SampleDataSet.sql
 		Data\SQLite\sqlite3.exe = Data\SQLite\sqlite3.exe
+		Data\SQLite\_InitialDataSet.sql = Data\SQLite\_InitialDataSet.sql
+		Data\SQLite\_openPDC.sql = Data\SQLite\_openPDC.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Oracle", "Oracle", "{051BD028-6567-442A-B7C5-A5DD9F70B357}"
 	ProjectSection(SolutionItems) = preProject
-		Data\Oracle\_InitialDataSet.sql = Data\Oracle\_InitialDataSet.sql
-		Data\Oracle\_openPDC.sql = Data\Oracle\_openPDC.sql
 		Data\Oracle\AuditLog.sql = Data\Oracle\AuditLog.sql
 		Data\Oracle\InitialDataSet.sql = Data\Oracle\InitialDataSet.sql
 		Data\Oracle\openPDC.sql = Data\Oracle\openPDC.sql
 		Data\Oracle\SampleDataSet.sql = Data\Oracle\SampleDataSet.sql
+		Data\Oracle\_InitialDataSet.sql = Data\Oracle\_InitialDataSet.sql
+		Data\Oracle\_openPDC.sql = Data\Oracle\_openPDC.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22F-4900-984D-8751836859B5}"
@@ -242,20 +242,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GSF", "GSF", "{A72A7B6D-E22
 		Dependencies\GSF\WavInputAdapter.XML = Dependencies\GSF\WavInputAdapter.XML
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WiX", "WiX", "{6CFC0EB9-8610-4200-806B-E2B62B63F8B3}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\WiX\WixNetFxExtension.dll = Dependencies\WiX\WixNetFxExtension.dll
-		Dependencies\WiX\WixUIExtension.dll = Dependencies\WiX\WixUIExtension.dll
-		Dependencies\WiX\WixUtilExtension.dll = Dependencies\WiX\WixUtilExtension.dll
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", "{73515839-30AD-40E6-809F-A891F2C95599}"
 	ProjectSection(SolutionItems) = preProject
-		Data\PostgreSQL\_InitialDataSet.sql = Data\PostgreSQL\_InitialDataSet.sql
-		Data\PostgreSQL\_openPDC.sql = Data\PostgreSQL\_openPDC.sql
 		Data\PostgreSQL\InitialDataSet.sql = Data\PostgreSQL\InitialDataSet.sql
 		Data\PostgreSQL\openPDC.sql = Data\PostgreSQL\openPDC.sql
 		Data\PostgreSQL\SampleDataSet.sql = Data\PostgreSQL\SampleDataSet.sql
+		Data\PostgreSQL\_InitialDataSet.sql = Data\PostgreSQL\_InitialDataSet.sql
+		Data\PostgreSQL\_openPDC.sql = Data\PostgreSQL\_openPDC.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{67A6D68C-ACAE-4BA5-A8A2-2AA96D0DB322}"
@@ -553,7 +546,6 @@ Global
 		{53255BB7-2046-4606-BF76-7B5C13F49819} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{051BD028-6567-442A-B7C5-A5DD9F70B357} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{A72A7B6D-E22F-4900-984D-8751836859B5} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
-		{6CFC0EB9-8610-4200-806B-E2B62B63F8B3} = {A19659A8-EA00-4D5E-90C5-E8ABE7F4FB1C}
 		{73515839-30AD-40E6-809F-A891F2C95599} = {E7006E3E-A430-4AB2-A6CA-7653D7F62D4B}
 		{0BF2447E-252D-4712-B154-E350AF463081} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
 		{449F2CB1-89BF-4E75-8E6C-C42FEB1AB087} = {CE260396-797B-45DF-AC53-E4FC553B57C0}
