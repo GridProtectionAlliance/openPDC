@@ -22,6 +22,8 @@
 //******************************************************************************************************
 
 using System;
+using System.Collections.Concurrent;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Security;
@@ -51,6 +53,13 @@ namespace openPDC
     {
         #region [ Members ]
 
+        // Nested Types
+        private class ReturnValueState
+        {
+            public readonly ManualResetEventSlim WaitHandle = new(false);
+            public string ReturnValue;
+        }
+
         // Constants
         private const int DefaultMaximumDiagnosticLogSize = 10;
 
@@ -67,6 +76,7 @@ namespace openPDC
         public event EventHandler<EventArgs<Exception>> LoggedException;
 
         // Fields
+        private readonly ConcurrentDictionary<ClientRequestInfo, ReturnValueState> m_returnValueStates;
         private IDisposable m_webAppHost;
         private bool m_serviceStopping;
         private bool m_disposed;
@@ -81,6 +91,8 @@ namespace openPDC
         public ServiceHost()
         {
             ServiceName = "openPDC";
+
+            m_returnValueStates = new ConcurrentDictionary<ClientRequestInfo, ReturnValueState>();
         }
 
         #endregion
@@ -391,17 +403,26 @@ namespace openPDC
         /// <param name="clientID">Client ID of sender.</param>
         /// <param name="principal">The principal used for role-based security.</param>
         /// <param name="userInput">Request string.</param>
-        public void SendRequest(Guid clientID, IPrincipal principal, string userInput)
+        /// <param name="expectsReturnValue">Flag that determines if a command return value is expected.</param>
+        /// <param name="returnValueTimeout">Timeout for return value response.</param>
+        /// <returns>
+        /// A tuple representing the response to the request.
+        /// </returns>
+        /// <remarks>
+        /// Setting <paramref name="expectsReturnValue"/> to <c>true</c> will block the calling thread
+        /// until a response is received or the timeout is reached.
+        /// </remarks>
+        public (HttpStatusCode statusCode, string response) SendCommand(Guid clientID, IPrincipal principal, string userInput, bool expectsReturnValue = false, int returnValueTimeout = 5000)
         {
             ClientRequest request = ClientRequest.Parse(userInput);
 
             if (request is null)
-                return;
+                return (HttpStatusCode.BadRequest, "Request not recognized.");
 
             if (SecurityProviderUtility.IsResourceSecurable(request.Command) && !SecurityProviderUtility.IsResourceAccessible(request.Command, principal))
             {
-                ServiceHelper.UpdateStatus(clientID, UpdateType.Alarm, $"Access to \"{request.Command}\" is denied.\r\n\r\n");
-                return;
+                ServiceHelper.UpdateStatus(clientID, UpdateType.Alarm, $"Access to \"{request.Command}\" is denied for user \"{principal?.Identity?.Name}\".\r\n\r\n");
+                return (HttpStatusCode.Unauthorized, $"Access to \"{request.Command}\" is denied.");
             }
 
             ClientRequestHandler requestHandler = ServiceHelper.FindClientRequestHandler(request.Command);
@@ -409,14 +430,71 @@ namespace openPDC
             if (requestHandler is null)
             {
                 ServiceHelper.UpdateStatus(clientID, UpdateType.Alarm, $"Command \"{request.Command}\" is not supported.\r\n\r\n");
-                return;
+                return (HttpStatusCode.NotFound, $"Command \"{request.Command}\" is not supported.");
             }
 
-            ClientInfo clientInfo = new ClientInfo { ClientID = clientID };
+            // Establish client info for the current user
+            ClientInfo clientInfo = new() { ClientID = clientID };
             clientInfo.SetClientUser(principal);
 
-            ClientRequestInfo requestInfo = new ClientRequestInfo(clientInfo, request);
-            requestHandler.HandlerMethod(requestInfo);
+            // Set up request info
+            ClientRequestInfo requestInfo = new(clientInfo, request);
+            string response = null;
+
+            // If expecting a return value, set up a wait handle to wait for response
+            if (expectsReturnValue)
+            {
+                // Establish wait handle and result for return value state
+                ReturnValueState state = new();
+                bool signaled;
+
+                try
+                {
+                    // Track per client + command return value state
+                    m_returnValueStates[requestInfo] = state;
+
+                    // Execute command request (return value expected)
+                    requestHandler.HandlerMethod(requestInfo);
+
+                    // Wait for command return value
+                    signaled = state.WaitHandle.Wait(returnValueTimeout);
+                }
+                finally
+                {
+                    m_returnValueStates.TryRemove(requestInfo, out _);
+                }
+
+                if (!signaled)
+                    return (HttpStatusCode.RequestTimeout, "Command return value request timed out.");
+
+                response = state.ReturnValue;
+            }
+            else
+            {
+                // Execute command request (no return value expected)
+                requestHandler.HandlerMethod(requestInfo);
+            }
+
+            return (HttpStatusCode.OK, response ?? (expectsReturnValue ? "" : "Request succeeded."));
+        }
+
+        // Intercept responses to client requests to capture return value
+        protected override void SendResponseWithAttachment(ClientRequestInfo requestInfo, bool success, object attachment, string status, params object[] args)
+        {
+            // Look for requests that were generated locally
+            if (m_returnValueStates.TryGetValue(requestInfo, out ReturnValueState state) && state is not null)
+            {
+                if (attachment is not null)
+                {
+                    state.ReturnValue = attachment is Array array ?
+                        string.Join(",", array.OfType<object>().Select(val => val.ToString())) :
+                        attachment.ToString();
+                }
+
+                state.WaitHandle?.Set();
+            }
+
+            base.SendResponseWithAttachment(requestInfo, success, attachment, status, args);
         }
 
         public void DisconnectClient(Guid clientID)

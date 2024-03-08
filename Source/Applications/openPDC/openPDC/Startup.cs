@@ -139,6 +139,20 @@ namespace openPDC
             // Load ServiceHub SignalR class
             app.MapSignalR(hubConfig);
 
+            // Map service API controller
+            try
+            {
+                httpConfig.Routes.MapHttpRoute(
+                    name: "ServiceAPI",
+                    routeTemplate: "Service/{action}/{command}/{returnValueTimeout}",
+                    defaults: new { action = "Index", Controller = "Service", returnValueTimeout = RouteParameter.Optional }
+                );
+            }
+            catch (Exception ex)
+            {
+                Program.Host.LogException(new InvalidOperationException($"Failed to initialize service controller: {ex.Message}", ex));
+            }
+
             // Map custom API controllers
             try
             {
