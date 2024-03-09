@@ -485,16 +485,20 @@ public class ServiceHost : ServiceHostBase
     // Intercept responses to client requests to capture return value
     protected override void SendResponseWithAttachment(ClientRequestInfo requestInfo, bool success, object attachment, string status, params object[] args)
     {
+        static string ToStringRepresentation(object value, string separator)
+        {
+            return value switch
+            {
+                null => "null",
+                Array array => string.Join(separator, array.OfType<object>().Select(val => ToStringRepresentation(val, " "))),
+                _ => value.ToString()
+            };
+        }
+
         // Look for requests that were generated locally
         if (m_returnValueStates.TryGetValue(requestInfo, out ReturnValueState state) && state is not null)
         {
-            if (attachment is not null)
-            {
-                state.ReturnValue = attachment is Array array ?
-                    string.Join(",", array.OfType<object>().Select(val => val.ToString())) :
-                    attachment.ToString();
-            }
-
+            state.ReturnValue = ToStringRepresentation(attachment, ",");
             state.WaitHandle?.Set();
         }
 
