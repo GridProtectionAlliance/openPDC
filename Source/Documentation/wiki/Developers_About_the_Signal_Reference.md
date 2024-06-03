@@ -27,7 +27,7 @@ This field is normally for internal use only and is stored in a field associated
 | Digital Value |    | **DV** | Yes |
 | Analog Value |    | **AV** | Yes |
 | Status Flags |    | **SF** | No |
-
+| Quality Flags |    | **QF** | No |
 
 Examples below follow the prescribed format of: the PMU/device acronym, a dash and one of the above abbreviations. Also, if the type of point is indexed, adding the associated entry index, for example:
 
@@ -48,6 +48,7 @@ Examples below follow the prescribed format of: the PMU/device acronym, a dash a
 | SHELBY-DV1 | Digital Value 1 |
 | SHELBY-DV2 | Digital Value 2 |
 | SHELBY-SF | Status Flags |
+| SHELBY-QF | Quality Flags |
 
 Using this information you can map individual measurements to and from most any synchrophasor protocol data frame.
 
