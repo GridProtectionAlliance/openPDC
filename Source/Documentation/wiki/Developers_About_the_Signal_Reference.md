@@ -45,8 +45,10 @@ Examples below follow the prescribed format of: the PMU/device acronym, a dash a
 | SHELBY-PA5 | Angle associated with Phasor5 entry |
 | SHELBY-FQ | Frequency value associated with Frequency entry |
 | SHELBY-DF | Rate of frequency change associated with Frequency entry |
-| SHELBY-DV1 | Digital Value 1 |
-| SHELBY-DV2 | Digital Value 2 |
+| SHELBY-DV1 | Digital Word Value 1 (16-bits) |
+| SHELBY-DV2 | Digital Word Value 2 (16-bits) |
+| SHELBY-AV1 | Analog Value 1 |
+| SHELBY-AV2 | Analog Value 2 |
 | SHELBY-SF | Status Flags |
 | SHELBY-QF | Quality Flags |
 
