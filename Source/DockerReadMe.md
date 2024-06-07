@@ -17,7 +17,7 @@ docker tag openpdc gridprotectionalliance/openpdc:v2.9.148
 ```
 
 ### Push Tagged Docker Image to dockerhub
-This push the tagged image `gridprotectionalliance/openpdc:v2.9.148` to dockerhub:
+This pushes the tagged image `gridprotectionalliance/openpdc:v2.9.148` to dockerhub:
 ```sh
 docker push gridprotectionalliance/openpdc:v2.9.148
 ```
