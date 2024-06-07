@@ -50,7 +50,7 @@ RUN sqlite3 -line /opt/openPDC/ConfigurationCache/openPDC.db "INSERT INTO UserAc
     sqlite3 -line /opt/openPDC/ConfigurationCache/openPDC.db "INSERT INTO ApplicationRoleUserAccount(ApplicationRoleID, UserAccountID) VALUES((SELECT ID FROM ApplicationRole WHERE Name = 'Administrator'), (SELECT ID FROM UserAccount WHERE Name = '${OPENPDC_USER}'));"
 
 # Expose necessary ports
-EXPOSE 8280 7165 6175 8900
+EXPOSE 8280 7165 6165 8900
 
 # Start the openPDC service with the -RunAsConsole parameter
 CMD ["mono", "openPDC.exe", "-RunAsConsole"]
