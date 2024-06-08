@@ -40,17 +40,21 @@ With version 2.1 or later, the openPDC can be deployed in [POSIX environments](h
 
 * For Windows:
   * Make sure your system meets all the requirements below:
-    * Choose a [download](#downloads) below.
-    * Unzip if necessary.
-    * Run openPDCSetup.msi.
-    * Follow the wizard.
-    * Enjoy.
+    * Choose a [download](#downloads) below
+    * Unzip if necessary
+    * Run `openPDCSetup.msi`
+    * Follow the wizard
+
 * For POSIX OS:
-  * See [Deploying the openPDC on POSIX Platforms](https://gpags.sharepoint.com/TeamSite/_layouts/15/WopiFrame.aspx?guestaccesstoken=ADyQzHPxsfTh9qs4glPelL78SoBA1pTJV1%2fWy6b0ct4%3d&docid=08819043371f24a089e4924e86525dd69&action=view).
+  * See "openPDC POSIX Deployment Steps" section for [latest release](https://github.com/GridProtectionAlliance/openPDC/releases/latest)
+  * For more information, see [Deploying the openPDC on POSIX Platforms](https://gpags.sharepoint.com/TeamSite/_layouts/15/WopiFrame.aspx?guestaccesstoken=ADyQzHPxsfTh9qs4glPelL78SoBA1pTJV1%2fWy6b0ct4%3d&docid=08819043371f24a089e4924e86525dd69&action=view)
+
+* For Docker:
+  * https://hub.docker.com/r/gridprotectionalliance/openpdc
 
 ## Requirements
 
-* .NET 4.6 or higher.
+* .NET 4.8 or higher.
 * 64-bit Windows 7 or newer or POSIX OS, e.g. Linux or Mac.
 * Database management system such as:
   * SQL Server (Express version is fine)
