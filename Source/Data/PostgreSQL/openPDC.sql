@@ -36,7 +36,7 @@
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW SchemaVersion AS
-SELECT 15 AS VersionNumber;
+SELECT 16 AS VersionNumber;
 
 CREATE EXTENSION "uuid-ossp";
 
@@ -651,6 +651,7 @@ CREATE TABLE AccessLog (
     ID SERIAL NOT NULL PRIMARY KEY,
     UserName VARCHAR(200) NOT NULL,
     AccessGranted SMALLINT NOT NULL,	
+    NodeID NCHAR(36) NOT NULL,
     CreatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -1897,20 +1898,6 @@ SELECT AlarmDevice.ID, Device.Name, AlarmState.State, AlarmState.Color, AlarmDev
 FROM AlarmDevice
     INNER JOIN AlarmState ON AlarmDevice.StateID = AlarmState.ID
     INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID; 
--- *******************************************************************************************
--- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
--- *******************************************************************************************
-CREATE VIEW LocalSchemaVersion AS
-SELECT 3 AS VersionNumber;
-
-CREATE TABLE DataAvailability(
-	ID SERIAL NOT NULL PRIMARY KEY,
-	GoodAvailableData DOUBLE PRECISION NOT NULL,
-	BadAvailableData DOUBLE PRECISION NOT NULL,
-	TotalAvailableData DOUBLE PRECISION NOT NULL
-);
-
- 
 -- *******************************************************************************************
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************

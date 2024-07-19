@@ -38,7 +38,7 @@
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
 CREATE VIEW SchemaVersion AS
-SELECT 15 AS VersionNumber
+SELECT 16 AS VersionNumber
 FROM dual;
 
 CREATE TABLE ErrorLog(
@@ -948,6 +948,7 @@ CREATE TABLE AccessLog (
     ID NUMBER NOT NULL,
     UserName VARCHAR2(200) NOT NULL,
     AccessGranted NUMBER NOT NULL,
+    NodeID VARCHAR2(36) NOT NULL,
     CreatedOn DATE NOT NULL
 );
 
@@ -2814,30 +2815,6 @@ FROM AlarmDevice
     INNER JOIN AlarmState ON AlarmDevice.StateID = AlarmState.ID
     INNER JOIN Device ON AlarmDevice.DeviceID = Device.ID;
  
--- *******************************************************************************************
--- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
--- *******************************************************************************************
-CREATE VIEW LocalSchemaVersion AS
-SELECT 3 AS VersionNumber
-FROM dual;
-
-CREATE TABLE DataAvailability(
-	ID NUMBER NOT NULL,
-	GoodAvailableData NUMBER NOT NULL,
-	BadAvailableData NUMBER NOT NULL,
-	TotalAvailableData NUMBER NOT NULL
-);
-
-CREATE UNIQUE INDEX IX_DataAvailability_ID ON DataAvailability (ID ASC) TABLESPACE openPDC_INDEX;
-
-ALTER TABLE DataAvailability ADD CONSTRAINT PK_DataAvailability PRIMARY KEY (ID);
-
-CREATE SEQUENCE SEQ_DataAvailability START WITH 1 INCREMENT BY 1;
-
-CREATE TRIGGER AI_DataAvailability BEFORE INSERT ON DataAvailability
-    FOR EACH ROW BEGIN SELECT SEQ_DataAvailability.nextval INTO :NEW.ID FROM dual;
-END;
-/ 
 -- *******************************************************************************************
 -- IMPORTANT NOTE: When making updates to this schema, please increment the version number!
 -- *******************************************************************************************
