@@ -160,6 +160,7 @@
     <Property Id="INSTALLOPTIONALFEATURE" Secure="yes" />
 
     <Property Id="SERVICENAME" Value="$(var.openPDC.TargetName)" />
+    <Property Id="SERVICEACCOUNT" Secure="yes" />
     <Property Id="SERVICEPASSWORD" Hidden="yes" />
     <Property Id="HTTPSERVICEPORTS" Value="6051,6052,6151,6152,6352,6452,5018,8280" />
     <Property Id="COMPANYNAME" Value="Grid Protection Alliance" />
