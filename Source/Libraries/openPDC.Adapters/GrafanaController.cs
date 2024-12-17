@@ -23,7 +23,6 @@
 
 using GrafanaAdapters;
 using GrafanaAdapters.DataSourceValueTypes;
-using GrafanaAdapters.DataSourceValueTypes.BuiltIn;
 using GrafanaAdapters.Functions;
 using GrafanaAdapters.Model.Annotations;
 using GrafanaAdapters.Model.Common;
@@ -63,6 +62,8 @@ namespace openPDC.Adapters
     /// </summary>
     public class GrafanaController : ApiController
     {
+        #region [ Members ]
+
         // Represents a historian 1.0 data source for the Grafana adapter.
         internal sealed class OH1DataSource : GrafanaDataSourceBase, IDisposable
         {
@@ -78,6 +79,9 @@ namespace openPDC.Adapters
                 m_baseTicks = UnixTimeTag.BaseTicks.Value;
 
                 InstanceName = instanceName;
+
+                MaximumSearchTargetsPerRequest = s_maximumSearchTargetsPerRequest;
+                MaximumAnnotationsPerRequest = s_maximumAnnotationsPerRequest;
             }
 
             protected override async IAsyncEnumerable<DataSourceValue> QueryDataSourceValues(QueryParameters queryParameters, OrderedDictionary<ulong, (string, string)> targetMap, [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -123,6 +127,31 @@ namespace openPDC.Adapters
         // Fields
         private GrafanaDataSourceBase m_dataSource;
 
+        #endregion
+
+        #region [ Properties ]
+
+        /// <summary>
+        /// Gets the default API path string for this controller.
+        /// </summary>
+        protected virtual string DefaultAPIPath
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(s_defaultAPIPath))
+                    return s_defaultAPIPath;
+
+                string controllerName = GetType().Name.ToLowerInvariant();
+
+                if (controllerName.EndsWith("controller") && controllerName.Length > 10)
+                    controllerName = controllerName.Substring(0, controllerName.Length - 10);
+
+                s_defaultAPIPath = $"/api/{controllerName}";
+
+                return s_defaultAPIPath;
+            }
+        }
+
         /// <summary>
         /// Gets historian data source for this Grafana adapter.
         /// </summary>
@@ -145,7 +174,7 @@ namespace openPDC.Adapters
                 }
                 else
                 {
-                    string[] pathElements = uriPath.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] pathElements = uriPath.Split(["/"], StringSplitOptions.RemoveEmptyEntries);
 
                     if (pathElements.Length > 2)
                         instanceName = pathElements[1].Trim();
@@ -157,9 +186,9 @@ namespace openPDC.Adapters
 
                 //                                                   012345
                 // Support optional version in instance name (e.g., "1.0-STAT")
-                const string versionPattern = @"^(\d+\.\d+)-";
+                const string VersionPattern = @"^(\d+\.\d+)-";
 
-                Match match = Regex.Match(instanceName, versionPattern);
+                Match match = Regex.Match(instanceName, VersionPattern);
                 int version = 0;
 
                 if (match.Success)
@@ -181,26 +210,10 @@ namespace openPDC.Adapters
             }
         }
 
-        /// <summary>
-        /// Gets the default API path string for this controller.
-        /// </summary>
-        protected virtual string DefaultAPIPath
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(s_defaultAPIPath))
-                    return s_defaultAPIPath;
+        #endregion
 
-                string controllerName = GetType().Name.ToLowerInvariant();
+        #region [ Methods ]
 
-                if (controllerName.EndsWith("controller") && controllerName.Length > 10)
-                    controllerName = controllerName.Substring(0, controllerName.Length - 10);
-
-                s_defaultAPIPath = $"/api/{controllerName}";
-
-                return s_defaultAPIPath;
-            }
-        }
         /// <summary>
         /// Releases the unmanaged resources that are used by the object and, optionally, releases the managed resources.
         /// </summary>
@@ -371,6 +384,45 @@ namespace openPDC.Adapters
             return DataSource?.Annotations(request, cancellationToken) ?? Task.FromResult(new List<AnnotationResponse>());
         }
 
+        #endregion
+
+        #region [ Static ]
+
+        // Static Fields
+        private static readonly int s_maximumSearchTargetsPerRequest;
+        private static readonly int s_maximumAnnotationsPerRequest;
+        private static string s_defaultAPIPath;
+
+        // Static Constructor
+        static GrafanaController()
+        {
+            const int DefaultMaximumSearchTargetsPerRequest = 200;
+            const int DefaultMaximumAnnotationsPerRequest = 100;
+
+            try
+            {
+                // Make sure Grafana specific default threshold settings exist
+                CategorizedSettingsElementCollection thresholdSettings = ConfigurationFile.Current.Settings["thresholdSettings"];
+
+                // Make sure needed settings exist
+                thresholdSettings.Add("GrafanaMaximumSearchTargets", DefaultMaximumSearchTargetsPerRequest, "Defines maximum number of search targets to return during a Grafana search query.");
+                thresholdSettings.Add("GrafanaMaximumAnnotations", DefaultMaximumAnnotationsPerRequest, "Defines maximum number of annotations to return during a Grafana annotation query.");
+
+                // Get settings as currently defined in configuration file
+                s_maximumSearchTargetsPerRequest = thresholdSettings["GrafanaMaximumSearchTargets"].ValueAs(DefaultMaximumSearchTargetsPerRequest);
+                s_maximumAnnotationsPerRequest = thresholdSettings["GrafanaMaximumAnnotations"].ValueAs(DefaultMaximumAnnotationsPerRequest);
+            }
+            catch (Exception ex)
+            {
+                Logger.SwallowException(ex);
+
+                s_maximumSearchTargetsPerRequest = DefaultMaximumSearchTargetsPerRequest;
+                s_maximumAnnotationsPerRequest = DefaultMaximumAnnotationsPerRequest;
+            }
+        }
+
+        // Static Methods
+
         private static LocalOutputAdapter GetAdapterInstance(string instanceName)
         {
             if (string.IsNullOrWhiteSpace(instanceName))
@@ -378,7 +430,7 @@ namespace openPDC.Adapters
 
             return LocalOutputAdapter.Instances.TryGetValue(instanceName, out LocalOutputAdapter adapterInstance) ? adapterInstance : null;
         }
-
-        private static string s_defaultAPIPath;
     }
+
+    #endregion
 }
