@@ -30,12 +30,14 @@ using GrafanaAdapters.Model.Database;
 using GrafanaAdapters.Model.Functions;
 using GrafanaAdapters.Model.Metadata;
 using GSF;
+using GSF.Collections;
 using GSF.Configuration;
 using GSF.Data;
 using GSF.Data.Model;
 using GSF.Diagnostics;
 using GSF.Historian;
 using GSF.Historian.Files;
+using GSF.TimeSeries;
 using GSF.Web.Security;
 using HistorianAdapters;
 using openPDC.Model;
@@ -48,389 +50,650 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Web.Http;
-using GSF.Collections;
+using DataQualityMonitoring;
 using AlarmState = GrafanaAdapters.Model.Database.AlarmState;
 using CancellationToken = System.Threading.CancellationToken;
+using Timer = System.Timers.Timer;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
-namespace openPDC.Adapters
+namespace openPDC.Adapters;
+
+/// <summary>
+/// Represents a REST based API for a simple JSON based Grafana data source.
+/// </summary>
+public class GrafanaController : ApiController
 {
-    /// <summary>
-    /// Represents a REST based API for a simple JSON based Grafana data source.
-    /// </summary>
-    public class GrafanaController : ApiController
+    #region [ Members ]
+
+    // Represents a historian 1.0 data source for the Grafana adapter.
+    internal sealed class OH1DataSource : GrafanaDataSourceBase, IDisposable
     {
-        #region [ Members ]
+        private readonly ArchiveReader m_archiveReader;
+        private static readonly long s_baseTicks = UnixTimeTag.BaseTicks.Value;
 
-        // Represents a historian 1.0 data source for the Grafana adapter.
-        internal sealed class OH1DataSource : GrafanaDataSourceBase, IDisposable
+        public OH1DataSource(string instanceName)
         {
-            private readonly ArchiveReader m_archiveReader;
-            private readonly long m_baseTicks;
+            m_archiveReader = new ArchiveReader();
+            m_archiveReader.DataReadException += (_, args) => Logger.SwallowException(args.Argument);
+            m_archiveReader.Open(GetArchiveFileName(instanceName));
 
-            public OH1DataSource(string instanceName)
-            {
-                m_archiveReader = new ArchiveReader();
-                m_archiveReader.DataReadException += (_, args) => Logger.SwallowException(args.Argument);
-                m_archiveReader.Open(GetArchiveFileName(instanceName));
+            InstanceName = instanceName;
 
-                m_baseTicks = UnixTimeTag.BaseTicks.Value;
-
-                InstanceName = instanceName;
-
-                MaximumSearchTargetsPerRequest = s_maximumSearchTargetsPerRequest;
-                MaximumAnnotationsPerRequest = s_maximumAnnotationsPerRequest;
-            }
-
-            protected override async IAsyncEnumerable<DataSourceValue> QueryDataSourceValues(QueryParameters queryParameters, OrderedDictionary<ulong, (string, string)> targetMap, [EnumeratorCancellation] CancellationToken cancellationToken)
-            {
-                await foreach (IDataPoint dataPoint in m_archiveReader.ReadData(targetMap.Keys.Select(pointID => (int)pointID), queryParameters.StartTime, queryParameters.StopTime, false).ToAsyncEnumerable().WithCancellation(cancellationToken))
-                {
-                    yield return new DataSourceValue
-                    {
-                        ID = targetMap[(ulong)dataPoint.HistorianID],
-                        Value = dataPoint.Value,
-                        Time = (dataPoint.Time.ToDateTime().Ticks - m_baseTicks) / (double)Ticks.PerMillisecond,
-                        Flags = dataPoint.Quality.MeasurementQuality()
-                    };
-                }
-            }
-
-            public void Dispose()
-            {
-                m_archiveReader?.Dispose();
-            }
-
-            private static readonly ConcurrentDictionary<string, string> s_archiveFileNames = new();
-
-            private static string GetArchiveFileName(string instanceName)
-            {
-                instanceName = instanceName.ToLowerInvariant();
-
-                if (s_archiveFileNames.TryGetValue(instanceName, out string archiveFileName))
-                    return archiveFileName;
-
-                CategorizedSettingsElementCollection settings = ConfigurationFile.Current.Settings[$"{instanceName}ArchiveFile"];
-                archiveFileName = settings?["FileName"]?.Value;
-
-                if (string.IsNullOrWhiteSpace(archiveFileName))
-                    archiveFileName = instanceName.Equals("stat") ? @"Statistics\stat_archive.d" : $@"{instanceName}\{instanceName}_archive.d";
-
-                s_archiveFileNames[instanceName] = archiveFileName;
-
-                return archiveFileName;
-            }
+            MaximumSearchTargetsPerRequest = s_maximumSearchTargetsPerRequest;
+            MaximumAnnotationsPerRequest = s_maximumAnnotationsPerRequest;
         }
 
-        // Fields
-        private GrafanaDataSourceBase m_dataSource;
-
-        #endregion
-
-        #region [ Properties ]
-
-        /// <summary>
-        /// Gets the default API path string for this controller.
-        /// </summary>
-        protected virtual string DefaultAPIPath
+        protected override async IAsyncEnumerable<DataSourceValue> QueryDataSourceValues(QueryParameters queryParameters, OrderedDictionary<ulong, (string, string)> targetMap, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            get
+            DateTime startTime = queryParameters.StartTime;
+            DateTime stopTime = queryParameters.StopTime;
+            Dictionary<ulong, (Ticks, int)> lastAlarmValues = [];
+
+            // Check if any of the points being trended are alarm measurements
+            foreach (ulong pointID in targetMap.Keys.Where(IsAlarmMeasurement))
             {
-                if (!string.IsNullOrEmpty(s_defaultAPIPath))
-                    return s_defaultAPIPath;
+                // Query first alarm state in reverse time order to get last state before query range, note that
+                // when start time is greater than end time, API assumes query is to be processed in reverse
+                IDataPoint dataPoint = m_archiveReader.ReadData((int)pointID, startTime.AddMilliseconds(-1.0D), startTime.AddDays(-s_reverseAlarmSearchLimit), false).FirstOrDefault();
 
-                string controllerName = GetType().Name.ToLowerInvariant();
+                // If no data point is found in search limit, skip to next alarm point
+                if (dataPoint is null)
+                    continue;
 
-                if (controllerName.EndsWith("controller") && controllerName.Length > 10)
-                    controllerName = controllerName.Substring(0, controllerName.Length - 10);
-
-                s_defaultAPIPath = $"/api/{controllerName}";
-
-                return s_defaultAPIPath;
-            }
-        }
-
-        /// <summary>
-        /// Gets historian data source for this Grafana adapter.
-        /// </summary>
-        protected GrafanaDataSourceBase DataSource
-        {
-            get
-            {
-                if (m_dataSource is not null)
-                    return m_dataSource;
-
-                string uriPath = Request.RequestUri.PathAndQuery;
-                string instanceName;
-
-                if (uriPath.StartsWith(DefaultAPIPath, StringComparison.OrdinalIgnoreCase))
+                // Report any prior alarm value at the start of query
+                yield return new DataSourceValue
                 {
-                    // No instance provided in URL, lookup default instance name
-                    using AdoDataConnection connection = new("systemSettings");
-                    TableOperations<Historian> historianTable = new(connection);
-                    instanceName = historianTable.QueryRecordWhere("TypeName = 'HistorianAdapters.LocalOutputAdapter'")?.Acronym ?? "STAT";
-                }
-                else
-                {
-                    string[] pathElements = uriPath.Split(["/"], StringSplitOptions.RemoveEmptyEntries);
-
-                    if (pathElements.Length > 2)
-                        instanceName = pathElements[1].Trim();
-                    else
-                        throw new InvalidOperationException($"Unexpected API URL route destination encountered: {Request.RequestUri}");
-                }
-
-                Debug.Assert(!string.IsNullOrWhiteSpace(instanceName));
-
-                //                                                   012345
-                // Support optional version in instance name (e.g., "1.0-STAT")
-                const string VersionPattern = @"^(\d+\.\d+)-";
-
-                Match match = Regex.Match(instanceName, VersionPattern);
-                int version = 0;
-
-                if (match.Success)
-                {
-                    string decimalValue = match.Groups[1].Value;
-                    instanceName = instanceName.Substring(decimalValue.Length + 1);
-                    version = int.Parse(decimalValue.Split('.')[0]);
-                }
-
-                if (version != 1)
-                    throw new InvalidOperationException($"Unsupported historian version encountered: {version}");
-
-                m_dataSource = new OH1DataSource(instanceName)
-                {
-                    Metadata = GetAdapterInstance(instanceName)?.DataSource
+                    ID = targetMap[pointID],
+                    Value = dataPoint.Value,
+                    Time = (startTime.Ticks - s_baseTicks) / (double)Ticks.PerMillisecond,
+                    Flags = MeasurementStateFlags.Normal
                 };
 
-                return m_dataSource;
+                lastAlarmValues[pointID] = (startTime.Ticks, dataPoint.Value > 0.0D ? 1 : 0);
             }
-        }
 
-        #endregion
-
-        #region [ Methods ]
-
-        /// <summary>
-        /// Releases the unmanaged resources that are used by the object and, optionally, releases the managed resources.
-        /// </summary>
-        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-
-            if (!disposing)
-                return;
-
-            if (m_dataSource is IDisposable disposable)
-                disposable.Dispose();
-        }
-
-        /// <summary>
-        /// Validates that openHistorian Grafana data source is responding as expected.
-        /// </summary>
-        [HttpGet]
-        public HttpResponseMessage Index()
-        {
-            return new HttpResponseMessage(HttpStatusCode.OK);
-        }
-
-        /// <summary>
-        /// Queries openHistorian as a Grafana data source.
-        /// </summary>
-        /// <param name="request">Query request.</param>
-        /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
-        [HttpPost]
-        public virtual Task<IEnumerable<TimeSeriesValues>> Query(QueryRequest request, CancellationToken cancellationToken)
-        {
-            if (request.targets.FirstOrDefault()?.target is null)
-                return Task.FromResult(Enumerable.Empty<TimeSeriesValues>());
-
-            return DataSource?.Query(request, cancellationToken) ?? Task.FromResult(Enumerable.Empty<TimeSeriesValues>());
-        }
-
-        /// <summary>
-        /// Gets the data source value types, i.e., any type that has implemented <see cref="IDataSourceValueType"/>,
-        /// that have been loaded into the application domain.
-        /// </summary>
-        [HttpPost]
-        public virtual IEnumerable<DataSourceValueType> GetValueTypes()
-        {
-            return DataSource?.GetValueTypes() ?? Enumerable.Empty<DataSourceValueType>();
-        }
-
-        /// <summary>
-        /// Gets the table names that, at a minimum, contain all the fields that the value type has defined as
-        /// required, see <see cref="IDataSourceValueType.RequiredMetadataFieldNames"/>.
-        /// </summary>
-        /// <param name="request">Search request.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        [HttpPost]
-        public virtual Task<IEnumerable<string>> GetValueTypeTables(SearchRequest request, CancellationToken cancellationToken)
-        {
-            return DataSource?.GetValueTypeTables(request, cancellationToken) ?? Task.FromResult(Enumerable.Empty<string>());
-        }
-
-        /// <summary>
-        /// Gets the field names for a given table.
-        /// </summary>
-        /// <param name="request">Search request.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        [HttpPost]
-        public virtual Task<IEnumerable<FieldDescription>> GetValueTypeTableFields(SearchRequest request, CancellationToken cancellationToken)
-        {
-            return DataSource?.GetValueTypeTableFields(request, cancellationToken) ?? Task.FromResult(Enumerable.Empty<FieldDescription>());
-        }
-
-        /// <summary>
-        /// Gets the functions that are available for a given data source value type.
-        /// </summary>
-        /// <param name="request">Search request.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <remarks>
-        /// <see cref="SearchRequest.expression"/> is used to filter functions by group operation, specifically a
-        /// value of "None", "Slice", or "Set" as defined in the <see cref="GroupOperations"/> enumeration. If all
-        /// function descriptions are desired, regardless of group operation, an empty string can be provided.
-        /// Combinations are also supported, e.g., "Slice,Set".
-        /// </remarks>
-        [HttpPost]
-        public virtual Task<IEnumerable<FunctionDescription>> GetValueTypeFunctions(SearchRequest request, CancellationToken cancellationToken)
-        {
-            return DataSource?.GetValueTypeFunctions(request, cancellationToken) ?? Task.FromResult(Enumerable.Empty<FunctionDescription>());
-        }
-
-        /// <summary>
-        /// Search openHistorian for a target.
-        /// </summary>
-        /// <param name="request">Search target.</param>
-        /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
-        [HttpPost]
-        public virtual Task<string[]> Search(SearchRequest request, CancellationToken cancellationToken)
-        {
-            return DataSource?.Search(request, cancellationToken) ?? Task.FromResult(Array.Empty<string>());
-        }
-
-        /// <summary>
-        /// Reloads data source value types cache.
-        /// </summary>
-        /// <remarks>
-        /// This function is used to support dynamic data source value type loading. Function only needs to be called
-        /// when a new data source value is added to Grafana at run-time and end-user wants to use newly installed
-        /// data source value type without restarting host.
-        /// </remarks>
-        [HttpGet]
-        [AuthorizeControllerRole("Administrator")]
-        public virtual void ReloadValueTypes()
-        {
-            DataSource?.ReloadDataSourceValueTypes();
-        }
-
-        /// <summary>
-        /// Reloads Grafana functions cache.
-        /// </summary>
-        /// <remarks>
-        /// This function is used to support dynamic loading for Grafana functions. Function only needs to be called
-        /// when a new function is added to Grafana at run-time and end-user wants to use newly installed function
-        /// without restarting host.
-        /// </remarks>
-        [HttpGet]
-        [AuthorizeControllerRole("Administrator")]
-        public virtual void ReloadGrafanaFunctions()
-        {
-            DataSource?.ReloadGrafanaFunctions();
-        }
-
-        /// <summary>
-        /// Queries openHistorian for alarm state.
-        /// </summary>
-        /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
-        [HttpPost]
-        public virtual Task<IEnumerable<AlarmDeviceStateView>> GetAlarmState(CancellationToken cancellationToken)
-        {
-            return DataSource?.GetAlarmState(cancellationToken) ?? Task.FromResult(Enumerable.Empty<AlarmDeviceStateView>());
-        }
-
-        /// <summary>
-        /// Queries openHistorian for device alarms.
-        /// </summary>
-        /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
-        [HttpPost]
-        public virtual Task<IEnumerable<AlarmState>> GetDeviceAlarms(CancellationToken cancellationToken)
-        {
-            return DataSource?.GetDeviceAlarms(cancellationToken) ?? Task.FromResult(Enumerable.Empty<AlarmState>());
-        }
-
-        /// <summary>
-        /// Queries openHistorian for device groups.
-        /// </summary>
-        /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
-        [HttpPost]
-        public virtual Task<IEnumerable<DeviceGroup>> GetDeviceGroups(CancellationToken cancellationToken)
-        {
-            return DataSource?.GetDeviceGroups(cancellationToken) ?? Task.FromResult(Enumerable.Empty<DeviceGroup>());
-        }
-
-        /// <summary>
-        /// Queries openHistorian for annotations in a time-range (e.g., Alarms).
-        /// </summary>
-        /// <param name="request">Annotation request.</param>
-        /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
-        [HttpPost]
-        public virtual Task<List<AnnotationResponse>> Annotations(AnnotationRequest request, CancellationToken cancellationToken)
-        {
-            return DataSource?.Annotations(request, cancellationToken) ?? Task.FromResult(new List<AnnotationResponse>());
-        }
-
-        #endregion
-
-        #region [ Static ]
-
-        // Static Fields
-        private static readonly int s_maximumSearchTargetsPerRequest;
-        private static readonly int s_maximumAnnotationsPerRequest;
-        private static string s_defaultAPIPath;
-
-        // Static Constructor
-        static GrafanaController()
-        {
-            const int DefaultMaximumSearchTargetsPerRequest = 200;
-            const int DefaultMaximumAnnotationsPerRequest = 100;
-
-            try
+            // Query historian for data points over the specified time range
+            await foreach (IDataPoint dataPoint in m_archiveReader.ReadData(targetMap.Keys.Select(pointID => (int)pointID), startTime, stopTime, false).ToAsyncEnumerable().WithCancellation(cancellationToken))
             {
-                // Make sure Grafana specific default threshold settings exist
-                CategorizedSettingsElementCollection thresholdSettings = ConfigurationFile.Current.Settings["thresholdSettings"];
+                ulong pointID = (ulong)dataPoint.HistorianID;
+                long pointTime = dataPoint.Time.ToDateTime().Ticks;
 
-                // Make sure needed settings exist
-                thresholdSettings.Add("GrafanaMaximumSearchTargets", DefaultMaximumSearchTargetsPerRequest, "Defines maximum number of search targets to return during a Grafana search query.");
-                thresholdSettings.Add("GrafanaMaximumAnnotations", DefaultMaximumAnnotationsPerRequest, "Defines maximum number of annotations to return during a Grafana annotation query.");
+                yield return new DataSourceValue
+                {
+                    ID = targetMap[pointID],
+                    Value = dataPoint.Value,
+                    Time = (pointTime - s_baseTicks) / (double)Ticks.PerMillisecond,
+                    Flags = dataPoint.Quality.MeasurementQuality()
+                };
 
-                // Get settings as currently defined in configuration file
-                s_maximumSearchTargetsPerRequest = thresholdSettings["GrafanaMaximumSearchTargets"].ValueAs(DefaultMaximumSearchTargetsPerRequest);
-                s_maximumAnnotationsPerRequest = thresholdSettings["GrafanaMaximumAnnotations"].ValueAs(DefaultMaximumAnnotationsPerRequest);
+                if (!IsAlarmMeasurement(pointID))
+                    continue;
+
+                if (!lastAlarmValues.TryGetValue(pointID, out (Ticks time, int) last) || pointTime > last.time)
+                    lastAlarmValues[pointID] = (pointTime, dataPoint.Value > 0.0D ? 1 : 0);
+
+                // If data point time matches one in alarm measurement buffer, remove any matching point ID that was already recorded in historian.
+                // Since matching values found in the archive will already have been trended, they are no longer needed in the memory buffer.
+                if (s_alarmMeasurementBuffer.TryGetValue(pointTime, out ConcurrentDictionary<ulong, int> measurementBuffer))
+                    measurementBuffer.TryRemove(pointID, out _);
             }
-            catch (Exception ex)
-            {
-                Logger.SwallowException(ex);
 
-                s_maximumSearchTargetsPerRequest = DefaultMaximumSearchTargetsPerRequest;
-                s_maximumAnnotationsPerRequest = DefaultMaximumAnnotationsPerRequest;
+            if (s_alarmMeasurementBuffer.Count == 0)
+                yield break;
+
+            // Report any alarm change states that occurred during the query range but are not yet available in the historian.
+            // This real-time operation helps ensure any alarm measurements that were published in the query range get trended
+            // even when the historian has not yet finished recording them.
+            foreach (KeyValuePair<Ticks, ConcurrentDictionary<ulong, int>> timeBufferPair in s_alarmMeasurementBuffer)
+            {
+                long alarmTime = timeBufferPair.Key;
+                ConcurrentDictionary<ulong, int> measurementBuffer = timeBufferPair.Value;
+
+                // If no more alarm measurements exist for this time, remove it from the buffer
+                if (measurementBuffer.Count == 0)
+                {
+                    // This is safe, enumeration operates over a snapshot of the collection
+                    s_alarmMeasurementBuffer.TryRemove(alarmTime, out _);
+                    continue;
+                }
+
+                // Ignore any alarm measurements that are outside the query time range
+                if (alarmTime < startTime.Ticks || alarmTime > stopTime.Ticks)
+                    continue;
+
+                foreach (KeyValuePair<ulong, int> idValuePair in measurementBuffer)
+                {
+                    ulong pointID = idValuePair.Key;
+                    int value = idValuePair.Value;
+
+                    // Ignore any alarm measurements that are not in the query target map
+                    if (!targetMap.TryGetValue(pointID, out (string, string) id))
+                        continue;
+
+                    yield return new DataSourceValue
+                    {
+                        ID = id,
+                        Value = value,
+                        Time = (alarmTime - s_baseTicks) / (double)Ticks.PerMillisecond,
+                        Flags = MeasurementStateFlags.Normal
+                    };
+
+                    if (!lastAlarmValues.TryGetValue(pointID, out (Ticks time, int) last) || alarmTime > last.time)
+                        lastAlarmValues[pointID] = (alarmTime, value);
+                }
+            }
+
+            // Report any ongoing alarm values at the end of the query range
+            foreach (KeyValuePair<ulong, (Ticks, int)> idTimeValuePair in lastAlarmValues)
+            {
+                ulong pointID = idTimeValuePair.Key;
+                (Ticks lastTime, int lastValue) = idTimeValuePair.Value;
+
+                // Ignore last point if trended time is already at the end of the query range
+                if (lastTime >= stopTime.Ticks)
+                    continue;
+
+                if (!targetMap.TryGetValue(pointID, out (string, string) id))
+                    continue;
+
+                yield return new DataSourceValue
+                {
+                    ID = id,
+                    Value = lastValue,
+                    Time = (stopTime.Ticks - s_baseTicks) / (double)Ticks.PerMillisecond,
+                    Flags = MeasurementStateFlags.Normal
+                };
             }
         }
 
-        // Static Methods
-
-        private static LocalOutputAdapter GetAdapterInstance(string instanceName)
+        public void Dispose()
         {
-            if (string.IsNullOrWhiteSpace(instanceName))
-                return null;
+            m_archiveReader?.Dispose();
+        }
 
-            return LocalOutputAdapter.Instances.TryGetValue(instanceName, out LocalOutputAdapter adapterInstance) ? adapterInstance : null;
+        private static readonly ConcurrentDictionary<string, string> s_archiveFileNames = new();
+
+        private static string GetArchiveFileName(string instanceName)
+        {
+            instanceName = instanceName.ToLowerInvariant();
+
+            if (s_archiveFileNames.TryGetValue(instanceName, out string archiveFileName))
+                return archiveFileName;
+
+            CategorizedSettingsElementCollection settings = ConfigurationFile.Current.Settings[$"{instanceName}ArchiveFile"];
+            archiveFileName = settings?["FileName"]?.Value;
+
+            // For fall-back operation, check for common instance names using their historical folder locations
+            if (string.IsNullOrWhiteSpace(archiveFileName))
+                archiveFileName = instanceName.Equals("stat", StringComparison.OrdinalIgnoreCase) ? @"Statistics\stat_archive.d" :
+                    instanceName.Equals("ppa", StringComparison.OrdinalIgnoreCase) ? @"Archive\ppa_archive.d" :
+                    $@"{instanceName}\{instanceName}_archive.d";
+
+            s_archiveFileNames[instanceName] = archiveFileName;
+
+            return archiveFileName;
         }
     }
+
+    // Fields
+    private GrafanaDataSourceBase m_dataSource;
+
+    #endregion
+
+    #region [ Properties ]
+
+    /// <summary>
+    /// Gets the default API path string for this controller.
+    /// </summary>
+    protected virtual string DefaultAPIPath
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(s_defaultAPIPath))
+                return s_defaultAPIPath;
+
+            string controllerName = GetType().Name.ToLowerInvariant();
+
+            if (controllerName.EndsWith("controller") && controllerName.Length > 10)
+                controllerName = controllerName.Substring(0, controllerName.Length - 10);
+
+            s_defaultAPIPath = $"/api/{controllerName}";
+
+            return s_defaultAPIPath;
+        }
+    }
+
+    /// <summary>
+    /// Gets historian data source for this Grafana adapter.
+    /// </summary>
+    protected GrafanaDataSourceBase DataSource
+    {
+        get
+        {
+            if (m_dataSource is not null)
+                return m_dataSource;
+
+            string uriPath = Request.RequestUri.PathAndQuery;
+            string instanceName;
+
+            if (uriPath.StartsWith(DefaultAPIPath, StringComparison.OrdinalIgnoreCase))
+            {
+                // No instance provided in URL, lookup default instance name
+                using AdoDataConnection connection = new("systemSettings");
+                TableOperations<Historian> historianTable = new(connection);
+                instanceName = historianTable.QueryRecordWhere("TypeName = 'HistorianAdapters.LocalOutputAdapter'")?.Acronym ?? "STAT";
+            }
+            else
+            {
+                string[] pathElements = uriPath.Split(["/"], StringSplitOptions.RemoveEmptyEntries);
+
+                if (pathElements.Length > 2)
+                    instanceName = pathElements[1].Trim();
+                else
+                    throw new InvalidOperationException($"Unexpected API URL route destination encountered: {Request.RequestUri}");
+            }
+
+            Debug.Assert(!string.IsNullOrWhiteSpace(instanceName));
+
+            //                                                   012345
+            // Support optional version in instance name (e.g., "1.0-STAT")
+            const string VersionPattern = @"^(\d+\.\d+)-";
+
+            Match match = Regex.Match(instanceName, VersionPattern);
+            int version = 0;
+
+            if (match.Success)
+            {
+                string decimalValue = match.Groups[1].Value;
+                instanceName = instanceName.Substring(decimalValue.Length + 1);
+                version = int.Parse(decimalValue.Split('.')[0]);
+            }
+
+            if (version != 1)
+                throw new InvalidOperationException($"Unsupported historian version encountered: {version}");
+
+            m_dataSource = new OH1DataSource(instanceName)
+            {
+                Metadata = GetAdapterInstance(instanceName)?.DataSource
+            };
+
+            return m_dataSource;
+        }
+    }
+
+    #endregion
+
+    #region [ Methods ]
+
+    /// <summary>
+    /// Releases the unmanaged resources that are used by the object and, optionally, releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+
+        if (!disposing)
+            return;
+
+        if (m_dataSource is IDisposable disposable)
+            disposable.Dispose();
+    }
+
+    /// <summary>
+    /// Validates that openHistorian Grafana data source is responding as expected.
+    /// </summary>
+    [HttpGet]
+    public HttpResponseMessage Index()
+    {
+        return new HttpResponseMessage(HttpStatusCode.OK);
+    }
+
+    /// <summary>
+    /// Queries openHistorian as a Grafana data source.
+    /// </summary>
+    /// <param name="request">Query request.</param>
+    /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+    [HttpPost]
+    public virtual Task<IEnumerable<TimeSeriesValues>> Query(QueryRequest request, CancellationToken cancellationToken)
+    {
+        if (request.targets.FirstOrDefault()?.target is null)
+            return Task.FromResult(Enumerable.Empty<TimeSeriesValues>());
+
+        return DataSource?.Query(request, cancellationToken) ?? Task.FromResult(Enumerable.Empty<TimeSeriesValues>());
+    }
+
+    /// <summary>
+    /// Gets the data source value types, i.e., any type that has implemented <see cref="IDataSourceValueType"/>,
+    /// that have been loaded into the application domain.
+    /// </summary>
+    [HttpPost]
+    public virtual IEnumerable<DataSourceValueType> GetValueTypes()
+    {
+        return DataSource?.GetValueTypes() ?? Enumerable.Empty<DataSourceValueType>();
+    }
+
+    /// <summary>
+    /// Gets the table names that, at a minimum, contain all the fields that the value type has defined as
+    /// required, see <see cref="IDataSourceValueType.RequiredMetadataFieldNames"/>.
+    /// </summary>
+    /// <param name="request">Search request.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    [HttpPost]
+    public virtual Task<IEnumerable<string>> GetValueTypeTables(SearchRequest request, CancellationToken cancellationToken)
+    {
+        return DataSource?.GetValueTypeTables(request, cancellationToken) ?? Task.FromResult(Enumerable.Empty<string>());
+    }
+
+    /// <summary>
+    /// Gets the field names for a given table.
+    /// </summary>
+    /// <param name="request">Search request.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    [HttpPost]
+    public virtual Task<IEnumerable<FieldDescription>> GetValueTypeTableFields(SearchRequest request, CancellationToken cancellationToken)
+    {
+        return DataSource?.GetValueTypeTableFields(request, cancellationToken) ?? Task.FromResult(Enumerable.Empty<FieldDescription>());
+    }
+
+    /// <summary>
+    /// Gets the functions that are available for a given data source value type.
+    /// </summary>
+    /// <param name="request">Search request.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <remarks>
+    /// <see cref="SearchRequest.expression"/> is used to filter functions by group operation, specifically a
+    /// value of "None", "Slice", or "Set" as defined in the <see cref="GroupOperations"/> enumeration. If all
+    /// function descriptions are desired, regardless of group operation, an empty string can be provided.
+    /// Combinations are also supported, e.g., "Slice,Set".
+    /// </remarks>
+    [HttpPost]
+    public virtual Task<IEnumerable<FunctionDescription>> GetValueTypeFunctions(SearchRequest request, CancellationToken cancellationToken)
+    {
+        return DataSource?.GetValueTypeFunctions(request, cancellationToken) ?? Task.FromResult(Enumerable.Empty<FunctionDescription>());
+    }
+
+    /// <summary>
+    /// Search openHistorian for a target.
+    /// </summary>
+    /// <param name="request">Search target.</param>
+    /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+    [HttpPost]
+    public virtual Task<string[]> Search(SearchRequest request, CancellationToken cancellationToken)
+    {
+        return DataSource?.Search(request, cancellationToken) ?? Task.FromResult(Array.Empty<string>());
+    }
+
+    /// <summary>
+    /// Reloads data source value types cache.
+    /// </summary>
+    /// <remarks>
+    /// This function is used to support dynamic data source value type loading. Function only needs to be called
+    /// when a new data source value is added to Grafana at run-time and end-user wants to use newly installed
+    /// data source value type without restarting host.
+    /// </remarks>
+    [HttpGet]
+    [AuthorizeControllerRole("Administrator")]
+    public virtual void ReloadValueTypes()
+    {
+        DataSource?.ReloadDataSourceValueTypes();
+    }
+
+    /// <summary>
+    /// Reloads Grafana functions cache.
+    /// </summary>
+    /// <remarks>
+    /// This function is used to support dynamic loading for Grafana functions. Function only needs to be called
+    /// when a new function is added to Grafana at run-time and end-user wants to use newly installed function
+    /// without restarting host.
+    /// </remarks>
+    [HttpGet]
+    [AuthorizeControllerRole("Administrator")]
+    public virtual void ReloadGrafanaFunctions()
+    {
+        DataSource?.ReloadGrafanaFunctions();
+    }
+
+    /// <summary>
+    /// Queries openHistorian for alarm state.
+    /// </summary>
+    /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+    [HttpPost]
+    public virtual Task<IEnumerable<AlarmDeviceStateView>> GetAlarmState(CancellationToken cancellationToken)
+    {
+        return DataSource?.GetAlarmState(cancellationToken) ?? Task.FromResult(Enumerable.Empty<AlarmDeviceStateView>());
+    }
+
+    /// <summary>
+    /// Queries openHistorian for device alarms.
+    /// </summary>
+    /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+    [HttpPost]
+    public virtual Task<IEnumerable<AlarmState>> GetDeviceAlarms(CancellationToken cancellationToken)
+    {
+        return DataSource?.GetDeviceAlarms(cancellationToken) ?? Task.FromResult(Enumerable.Empty<AlarmState>());
+    }
+
+    /// <summary>
+    /// Queries openHistorian for device groups.
+    /// </summary>
+    /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+    [HttpPost]
+    public virtual Task<IEnumerable<DeviceGroup>> GetDeviceGroups(CancellationToken cancellationToken)
+    {
+        return DataSource?.GetDeviceGroups(cancellationToken) ?? Task.FromResult(Enumerable.Empty<DeviceGroup>());
+    }
+
+    /// <summary>
+    /// Queries openHistorian for annotations in a time-range (e.g., Alarms).
+    /// </summary>
+    /// <param name="request">Annotation request.</param>
+    /// <param name="cancellationToken">Propagates notification from client that operations should be canceled.</param>
+    [HttpPost]
+    public virtual Task<List<AnnotationResponse>> Annotations(AnnotationRequest request, CancellationToken cancellationToken)
+    {
+        return DataSource?.Annotations(request, cancellationToken) ?? Task.FromResult(new List<AnnotationResponse>());
+    }
+
+    #endregion
+
+    #region [ Static ]
+
+    // Static Fields
+    private static readonly Regex s_intervalExpression = new(@"(?<Value>\d+\.?\d*)(?<Unit>\w+)", RegexOptions.Compiled);
+    private static readonly int s_maximumSearchTargetsPerRequest;
+    private static readonly int s_maximumAnnotationsPerRequest;
+    private static readonly double s_reverseAlarmSearchLimit;
+    private static readonly double s_alarmMeasurementBufferSize;
+    private static readonly ConcurrentDictionary<Ticks, ConcurrentDictionary<ulong, int>> s_alarmMeasurementBuffer;
+    private static readonly Timer s_alarmBufferCurtailmentTimer;
+    private static HashSet<ulong> s_alarmMeasurements;
+
+    // Static Constructor
+    static GrafanaController()
+    {
+        const int DefaultMaximumSearchTargetsPerRequest = 200;
+        const int DefaultMaximumAnnotationsPerRequest = 100;
+        const double DefaultReverseAlarmSearchLimit = 1.0D;
+        const double DefaultAlarmMeasurementBufferSize = 3.0D;
+
+        try
+        {
+            // Make sure Grafana specific default threshold settings exist
+            CategorizedSettingsElementCollection thresholdSettings = ConfigurationFile.Current.Settings["thresholdSettings"];
+
+            // Make sure needed settings exist
+            thresholdSettings.Add("GrafanaMaximumSearchTargets", DefaultMaximumSearchTargetsPerRequest, "Defines maximum number of search targets to return during a Grafana search query.");
+            thresholdSettings.Add("GrafanaMaximumAnnotations", DefaultMaximumAnnotationsPerRequest, "Defines maximum number of annotations to return during a Grafana annotation query.");
+            thresholdSettings.Add("ReverseAlarmSearchLimit", DefaultReverseAlarmSearchLimit, "Defines the maximum time range, in floating-point days, to execute a reverse order query to find last alarm change state.");
+            thresholdSettings.Add("AlarmMeasurementBufferSize", DefaultAlarmMeasurementBufferSize, "Defines the maximum time window, in floating-point seconds, to buffer latest alarm measurements relative to local clock.");
+
+            // Get settings as currently defined in configuration file
+            s_maximumSearchTargetsPerRequest = thresholdSettings["GrafanaMaximumSearchTargets"].ValueAs(DefaultMaximumSearchTargetsPerRequest);
+            s_maximumAnnotationsPerRequest = thresholdSettings["GrafanaMaximumAnnotations"].ValueAs(DefaultMaximumAnnotationsPerRequest);
+            s_reverseAlarmSearchLimit = thresholdSettings["ReverseAlarmSearchLimit"].ValueAs(DefaultReverseAlarmSearchLimit);
+            s_alarmMeasurementBufferSize = thresholdSettings["AlarmMeasurementBufferSize"].ValueAs(DefaultAlarmMeasurementBufferSize);
+
+            ConfigurationFile.Current.Save();
+        }
+        catch (Exception ex)
+        {
+            Logger.SwallowException(ex);
+
+            s_maximumSearchTargetsPerRequest = DefaultMaximumSearchTargetsPerRequest;
+            s_maximumAnnotationsPerRequest = DefaultMaximumAnnotationsPerRequest;
+            s_reverseAlarmSearchLimit = DefaultReverseAlarmSearchLimit;
+            s_alarmMeasurementBufferSize = DefaultAlarmMeasurementBufferSize;
+        }
+
+        s_alarmMeasurementBuffer = [];
+
+        s_alarmBufferCurtailmentTimer = new Timer(1000.0D)
+        {
+            AutoReset = true,
+            Enabled = false
+        };
+
+        s_alarmBufferCurtailmentTimer.Elapsed += AlarmBufferCurtailmentTimer_Elapsed;
+    }
+
+    // Static Methods
+
+    private static bool IsAlarmMeasurement(ulong pointID)
+    {
+        // If alarm adapter is not available yet, then no point can be determined to be an alarm measurement
+        if (AlarmAdapter.Default is null)
+            return false;
+
+        // If alarm measurement map has already been initialized, check if pointID is in the set
+        if (s_alarmMeasurements is not null)
+            return s_alarmMeasurements.Contains(pointID);
+
+        // Initialize alarm measurement map - multiple threads may try to initialize at the same time,
+        // if alarm measurements is not null here, another thread has already initialized it, so just
+        // check if pointID is in the set
+        if (Interlocked.CompareExchange(ref s_alarmMeasurements, GetAlarmMeasurements(), null) is not null)
+            return s_alarmMeasurements.Contains(pointID);
+
+        // Attach to alarm engine inputs updated event to automatically handle alarm configuration changes
+        AlarmAdapter.Default.InputMeasurementKeysUpdated += (_, _) =>
+        {
+            Interlocked.Exchange(ref s_alarmMeasurements, GetAlarmMeasurements());
+        };
+
+        // Attach to alarm engine new measurements event to buffer recent alarm measurements
+        AlarmAdapter.Default.NewMeasurements += (_, args) =>
+        {
+            ICollection<IMeasurement> measurements = args.Argument;
+
+            if (measurements is null)
+                return;
+
+            foreach (IMeasurement measurement in measurements)
+            {
+                if (!s_alarmMeasurements.Contains(measurement.Key.ID))
+                    continue;
+
+                // Add alarm measurement to buffer
+                ConcurrentDictionary<ulong, int> measurementBuffer = s_alarmMeasurementBuffer.GetOrAdd(measurement.Timestamp, _ => new ConcurrentDictionary<ulong, int>());
+                measurementBuffer[measurement.Key.ID] = measurement.AdjustedValue > 0.0D ? 1 : 0;
+            }
+        };
+
+        return s_alarmMeasurements.Contains(pointID);
+    }
+
+    private static HashSet<ulong> GetAlarmMeasurements()
+    {
+        MeasurementKey[] alarmInputMeasurements = AlarmAdapter.Default.InputMeasurementKeys;
+
+        if (alarmInputMeasurements is null || alarmInputMeasurements.Length == 0)
+            return [];
+
+        HashSet<ulong> alarmMeasurements = [];
+
+        foreach (ICollection<Alarm> alarms in alarmInputMeasurements.Select(key => AlarmAdapter.Default.GetAlarmStatus(key.SignalID)))
+        {
+            if (alarms is not { Count: > 0 })
+                continue;
+
+            foreach (Alarm alarm in alarms)
+            {
+                if (alarm.AssociatedMeasurementID is null)
+                    continue;
+
+                MeasurementKey alarmOutputMeasurement = MeasurementKey.LookUpBySignalID(alarm.AssociatedMeasurementID.Value);
+
+                if (alarmOutputMeasurement != MeasurementKey.Undefined)
+                    alarmMeasurements.Add(alarmOutputMeasurement.ID);
+            }
+        }
+
+        return alarmMeasurements;
+    }
+
+    private static void AlarmBufferCurtailmentTimer_Elapsed(object sender, ElapsedEventArgs e)
+    {
+        // Get buffer window expiration time based on configured size relative to local clock
+        long bufferExpirationTime = DateTime.UtcNow.AddSeconds(-s_alarmMeasurementBufferSize).Ticks;
+
+        // Remove any alarm measurements older than the defined buffer window size
+        foreach (KeyValuePair<Ticks, ConcurrentDictionary<ulong, int>> kvp in s_alarmMeasurementBuffer)
+        {
+            if (kvp.Key < bufferExpirationTime)
+                s_alarmMeasurementBuffer.TryRemove(kvp.Key, out _);
+        }
+    }
+
+    private static bool TryParseInterval(string interval, out TimeSpan timeSpan)
+    {
+        if (string.IsNullOrWhiteSpace(interval))
+        {
+            timeSpan = TimeSpan.Zero;
+            return false;
+        }
+
+        Match match = s_intervalExpression.Match(interval);
+
+        if (match.Success && double.TryParse(match.Result("${Value}"), out double value))
+        {
+            switch (match.Result("${Unit}").Trim().ToLowerInvariant())
+            {
+                case "ms":
+                    timeSpan = TimeSpan.FromMilliseconds(value);
+                    return true;
+                case "s":
+                    timeSpan = TimeSpan.FromSeconds(value);
+                    return true;
+                case "m":
+                    timeSpan = TimeSpan.FromMinutes(value);
+                    return true;
+                case "h":
+                    timeSpan = TimeSpan.FromHours(value);
+                    return true;
+                case "d":
+                    timeSpan = TimeSpan.FromDays(value);
+                    return true;
+            }
+        }
+
+        timeSpan = TimeSpan.Zero;
+        return false;
+    }
+
+    private static LocalOutputAdapter GetAdapterInstance(string instanceName)
+    {
+        if (string.IsNullOrWhiteSpace(instanceName))
+            return null;
+
+        return LocalOutputAdapter.Instances.TryGetValue(instanceName, out LocalOutputAdapter adapterInstance) ? adapterInstance : null;
+    }
+
+    private static string s_defaultAPIPath;
 
     #endregion
 }
