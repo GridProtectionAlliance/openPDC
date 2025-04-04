@@ -94,6 +94,18 @@ public class ServiceHost : ServiceHostBase
     {
         ServiceName = "openPDC";
         
+        try
+        {
+            // Ensure setting exists that will allow for secure order by expressions
+            CategorizedSettingsElementCollection systemSettings = ConfigurationFile.Current.Settings["systemSettings"];
+            systemSettings.Add("EnableSecureOrderBy", true, "Enables validated security in 'ORDER BY' expressions used by table operations.");
+            ConfigurationFile.Current.Save();
+        }
+        catch (Exception ex)
+        {
+            Logger.SwallowException(ex);
+        }
+
         RestoreEmbeddedResources();
         
         m_returnValueStates = new ConcurrentDictionary<ClientRequestInfo, ReturnValueState>();
