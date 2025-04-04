@@ -34,7 +34,7 @@
   <ItemGroup>
     <Reference Include="DataQualityMonitoring, Version=2.4.194.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\openHistorian\Source\Dependencies\GSF\DataQualityMonitoring.dll</HintPath>
+      <HintPath>..\..\Dependencies\GSF\DataQualityMonitoring.dll</HintPath>
     </Reference>
     <Reference Include="GrafanaAdapters">
       <HintPath>..\..\Dependencies\GSF\GrafanaAdapters.dll</HintPath>
