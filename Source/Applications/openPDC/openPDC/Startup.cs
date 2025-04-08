@@ -55,6 +55,28 @@ namespace openPDC
     {
         public void Configuration(IAppBuilder app)
         {
+            // Add Content-Security Headers
+            app.Use(async (context, next) =>
+            {
+                try
+                {
+                    await next();
+
+                    if (!context.Response.Headers.ContainsKey("Content-Security-Policy"))
+                        context.Response.Headers.Add("Content-Security-Policy", ["default-src: 'self'"]);
+
+                    if (context.Request.Scheme == "https" && !context.Response.Headers.ContainsKey("Strict-Transport-Security"))
+                        context.Response.Headers.Add("Strict-Transport-Security", ["max-age=31536000", "includeSubDomains"]);
+
+                    if (!context.Response.Headers.ContainsKey("X-Content-Type-Options"))
+                        context.Response.Headers.Add("X-Content-Type-Options", ["nosniff"]);
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Ignoring ObjectDisposedException that can occur when the response is already completed
+                }
+            });
+
             // Modify the JSON serializer to serialize dates as UTC - otherwise, timezone will not be appended
             // to date strings and browsers will select whatever timezone suits them
             JsonSerializerSettings settings = JsonUtility.CreateDefaultSerializerSettings();
