@@ -24,6 +24,7 @@
 @using System.Linq
 @using System.Net.Http
 @using GSF
+@using GSF.Data
 @using GSF.Data.Model
 @using GSF.Web
 @using GSF.Web.Model
@@ -64,7 +65,7 @@
         }
         else if (parameters.TryGetValue("UniqueID", out deviceGuid))
         {
-            int.TryParse(dataContext.Connection.ExecuteScalar<string>("SELECT ID FROM Device WHERE UniqueID = '" + deviceGuid + "'"), out deviceID);
+            int.TryParse(dataContext.Connection.ExecuteScalar<string>(DataExtensions.DefaultTimeoutDuration, "SELECT ID FROM Device WHERE UniqueID = {0}", deviceGuid), out deviceID);
         }
     }
     else
