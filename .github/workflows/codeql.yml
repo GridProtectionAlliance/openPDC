@@ -1,0 +1,38 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  schedule:
+    - cron: '18 17 * * 5'
+
+jobs:
+  analyze:
+    runs-on: windows-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Build solution
+      run: msbuild Source/openPDC.sln -t:restore,build -p:Configuration=Debug -p:UseSharedCompilation=false -p:PostBuildEvent=
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
