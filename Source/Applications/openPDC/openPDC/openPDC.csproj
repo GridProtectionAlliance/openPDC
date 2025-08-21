@@ -284,6 +284,7 @@
     <Content Include="Web.config" />
     <Content Include="wwwroot\AddDevice.cshtml" />
     <Content Include="wwwroot\AddSynchrophasorDevice.cshtml" />
+    <Content Include="wwwroot\BulkTagTemplate.cshtml" />
     <None Include="wwwroot\Companies.cshtml" />
     <Content Include="wwwroot\Content\fonts\jsglyph.eot" />
     <Content Include="wwwroot\Content\fonts\jsglyph.ttf" />
