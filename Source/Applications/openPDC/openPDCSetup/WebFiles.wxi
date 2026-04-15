@@ -6,6 +6,9 @@
   <Component Id="AddSynchrophasorDevice_cshtml">
     <File Id="AddSynchrophasorDevice.cshtml" Name="AddSynchrophasorDevice.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\AddSynchrophasorDevice.cshtml" />
   </Component>
+  <Component Id="BulkTagTemplate_cshtml">
+    <File Id="BulkTagTemplate.cshtml" Name="BulkTagTemplate.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\BulkTagTemplate.cshtml" />
+  </Component>
   <Component Id="Companies_cshtml">
     <File Id="Companies.cshtml" Name="Companies.cshtml" Source="$(var.SolutionDir)Applications\openPDC\openPDC\wwwroot\Companies.cshtml" />
   </Component>
