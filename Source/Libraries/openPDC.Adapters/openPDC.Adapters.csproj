@@ -96,7 +96,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants\StringConstant.cs" />
+    <Compile Include="DeviceController.cs" />
+    <Compile Include="DevicePhasorController.cs" />
     <Compile Include="GrafanaController.cs" />
+    <Compile Include="PhasorController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
