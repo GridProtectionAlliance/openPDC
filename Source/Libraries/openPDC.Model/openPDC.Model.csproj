@@ -53,6 +53,7 @@
     <Compile Include="DataAvailability.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="DeviceDetail.cs" />
+    <Compile Include="DeviceWithPhasors.cs" />
     <Compile Include="Historian.cs" />
     <Compile Include="Interconnection.cs" />
     <Compile Include="Measurement.cs" />
