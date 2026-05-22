@@ -6,12 +6,12 @@ using System.Collections.Generic;
 namespace openPDC.Model
 {
     /// <summary>
-    /// DTO que representa um Device com seus Phasors associados.
+    /// DTO that represents a Device with its associated Phasors.
     /// </summary>
     public class DeviceWithPhasors
     {
         /// <summary>
-        /// Construtor padrão.
+        /// Default constructor.
         /// </summary>
         public DeviceWithPhasors()
         {
@@ -19,12 +19,12 @@ namespace openPDC.Model
         }
 
         /// <summary>
-        /// Informações do Device (PMU).
+        /// Device Information(PMU).
         /// </summary>
         public DeviceDetail Device { get; set; }
 
         /// <summary>
-        /// Lista de Phasors associados ao Device.
+        /// List of Phasors associated with the Device.
         /// </summary>
         public List<PhasorDetail> Phasors { get; set; }
     }
