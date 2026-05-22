@@ -21,11 +21,6 @@
 //
 //******************************************************************************************************
 
-using System;
-using System.Security;
-using System.Web.Http;
-using System.Web.Http.Cors;
-using System.Web.Http.ExceptionHandling;
 using GSF.IO;
 using GSF.Web;
 using GSF.Web.Hosting;
@@ -36,9 +31,14 @@ using Microsoft.AspNet.SignalR.Json;
 using ModbusAdapters;
 using Newtonsoft.Json;
 using openPDC.Adapters;
-using Owin;
 using openPDC.Model;
+using Owin;
 using PhasorWebUI;
+using System;
+using System.Security;
+using System.Web.Http;
+using System.Web.Http.Cors;
+using System.Web.Http.ExceptionHandling;
 
 namespace openPDC
 {
@@ -53,6 +53,11 @@ namespace openPDC
 
     public class Startup
     {
+        /// <summary>
+        /// Gets the authentication options used for the hosted web server.
+        /// </summary>
+        public static AuthenticationOptions AuthenticationOptions { get; } = new AuthenticationOptions();
+
         public void Configuration(IAppBuilder app)
         {
             // Add Content-Security Headers
@@ -77,15 +82,16 @@ namespace openPDC
                 }
             });
 
-            // Modify the JSON serializer to serialize dates as UTC - otherwise, timezone will not be appended
-            // to date strings and browsers will select whatever timezone suits them
+            // Modify the JSON serializer to serialize dates as UTC - otherwise, timezone will not
+            // be appended to date strings and browsers will select whatever timezone suits them
             JsonSerializerSettings settings = JsonUtility.CreateDefaultSerializerSettings();
             settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
             JsonSerializer serializer = JsonSerializer.Create(settings);
             GlobalHost.DependencyResolver.Register(typeof(JsonSerializer), () => serializer);
             AppModel model = Program.Host.Model;
 
-            // Load security hub into application domain before establishing SignalR hub configuration, initializing default status and exception handlers
+            // Load security hub into application domain before establishing SignalR hub
+            // configuration, initializing default status and exception handlers
             try
             {
                 using (new SecurityHub(
@@ -119,7 +125,7 @@ namespace openPDC
                     Program.Host.LogException
                 ))
                 {
-                    WebExtensions.AddEmbeddedResourceAssembly(hub.GetType().Assembly);                  
+                    WebExtensions.AddEmbeddedResourceAssembly(hub.GetType().Assembly);
                 }
             }
             catch (Exception ex)
@@ -145,9 +151,8 @@ namespace openPDC
             // Enable GSF role-based security authentication
             app.UseAuthentication(AuthenticationOptions);
 
-            // Enable cross-domain scripting default policy - controllers can manually
-            // apply "EnableCors" attribute to class or an action to override default
-            // policy configured here
+            // Enable cross-domain scripting default policy - controllers can manually apply
+            // "EnableCors" attribute to class or an action to override default policy configured here
             try
             {
                 if (!string.IsNullOrWhiteSpace(model.Global.DefaultCorsOrigins))
@@ -180,6 +185,12 @@ namespace openPDC
             {
                 using (new GrafanaController()) { }
 
+                using (new DeviceController()) { }
+
+                using (new PhasorController()) { }
+
+                using (new DevicePhasorController()) { }
+
                 httpConfig.Routes.MapHttpRoute(
                     name: "CustomAPIs",
                     routeTemplate: "api/{controller}/{action}/{id}",
@@ -208,8 +219,8 @@ namespace openPDC
         {
             try
             {
-                // Wrap class reference in lambda function to force
-                // assembly load errors to occur within the try-catch
+                // Wrap class reference in lambda function to force assembly load errors to occur
+                // within the try-catch
                 new Action(() =>
                 {
                     // Make embedded resources of Modbus poller available to web server
@@ -224,12 +235,7 @@ namespace openPDC
                 Program.Host.LogException(new InvalidOperationException($"Failed to load Modbus assembly: {ex.Message}", ex));
             }
         }
-        
-        // Static Properties
 
-        /// <summary>
-        /// Gets the authentication options used for the hosted web server.
-        /// </summary>
-        public static AuthenticationOptions AuthenticationOptions { get; } = new AuthenticationOptions();
+        // Static Properties
     }
 }
