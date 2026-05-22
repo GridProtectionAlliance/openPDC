@@ -16,8 +16,8 @@ using System.Web.Http.Description;
 namespace openPDC.Adapters
 {
     /// <summary>
-    /// Controller for combined Device and Phasor operations. Provides endpoints to
-    /// query devices (PMUs) along with their phasors in a single request.
+    /// Controller for combined Device and Phasor operations. Provides endpoints to query devices
+    /// (PMUs) along with their phasors in a single request.
     /// </summary>
     public class DevicePhasorController : ApiController
     {
@@ -267,7 +267,7 @@ namespace openPDC.Adapters
                 }
 
                 RecordRestriction phasorRestriction = new("DeviceAcronym = {0}", acronym);
-                var phasors = phasorTable.QueryRecords(StringConstant.SourceIndex, true, int.MaxValue, 0, phasorRestriction).ToList();
+                var phasors = phasorTable.QueryRecords(StringConstant.SourceIndex, phasorRestriction).ToList();
 
                 var result = new DeviceWithPhasors
                 {
@@ -276,6 +276,7 @@ namespace openPDC.Adapters
                 };
 
                 Log.Publish(MessageLevel.Info, nameof(GetDeviceWithPhasorsByAcronym), $"Returned device {acronym} with {phasors.Count} phasors");
+
                 return Ok(result);
             }
             catch (Exception ex)
