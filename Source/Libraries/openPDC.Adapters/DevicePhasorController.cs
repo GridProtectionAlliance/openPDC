@@ -104,7 +104,7 @@ namespace openPDC.Adapters
                 var csv = new StringBuilder();
 
                 // Cabeçalho
-                csv.AppendLine("DeviceAcronym,DeviceName,CompanyAcronym,VendorAcronym,ProtocolName,FramesPerSecond,DeviceEnabled,Latitude,Longitude,PhasorID,PhasorLabel,PhasorType,PhasorPhase,SourceIndex,BaseKV");
+                csv.AppendLine("DeviceAcronym,DeviceName,CompanyAcronym,VendorAcronym,ProtocolName,IsConcentrator,FramesPerSecond,DeviceEnabled,Latitude,Longitude,PhasorID,PhasorLabel,PhasorType,PhasorPhase,SourceIndex,BaseKV");
 
                 // Dados
                 foreach (var device in devices)
@@ -115,13 +115,13 @@ namespace openPDC.Adapters
                     {
                         foreach (var phasor in devicePhasors)
                         {
-                            csv.AppendLine($"{EscapeCsvField(device.Acronym)},{EscapeCsvField(device.Name)},{EscapeCsvField(device.CompanyAcronym)},{EscapeCsvField(device.VendorAcronym)},{EscapeCsvField(device.ProtocolName)},{device.FramesPerSecond},{device.Enabled},{device.Latitude},{device.Longitude},{phasor.ID},{EscapeCsvField(phasor.Label)},{EscapeCsvField(phasor.Type)},{EscapeCsvField(phasor.Phase)},{phasor.SourceIndex},{phasor.BaseKV}");
+                            csv.AppendLine($"{EscapeCsvField(device.Acronym)},{EscapeCsvField(device.Name)},{EscapeCsvField(device.CompanyAcronym)},{EscapeCsvField(device.VendorAcronym)},{EscapeCsvField(device.ProtocolName)},{EscapeCsvField(device.IsConcentrator.ToString())},{device.FramesPerSecond},{device.Enabled},{device.Latitude},{device.Longitude},{phasor.ID},{EscapeCsvField(phasor.Label)},{EscapeCsvField(phasor.Type)},{EscapeCsvField(phasor.Phase)},{phasor.SourceIndex},{phasor.BaseKV}");
                         }
                     }
                     else
                     {
                         // Device without phasors - add line with device information only
-                        csv.AppendLine($"{EscapeCsvField(device.Acronym)},{EscapeCsvField(device.Name)},{EscapeCsvField(device.CompanyAcronym)},{EscapeCsvField(device.VendorAcronym)},{EscapeCsvField(device.ProtocolName)},{device.FramesPerSecond},{device.Enabled},{device.Latitude},{device.Longitude},,,,,0,0");
+                        csv.AppendLine($"{EscapeCsvField(device.Acronym)},{EscapeCsvField(device.Name)},{EscapeCsvField(device.CompanyAcronym)},{EscapeCsvField(device.VendorAcronym)},{EscapeCsvField(device.ProtocolName)},{EscapeCsvField(device.IsConcentrator.ToString())},{device.FramesPerSecond},{device.Enabled},{device.Latitude},{device.Longitude},,,,,0,0");
                     }
                 }
 
