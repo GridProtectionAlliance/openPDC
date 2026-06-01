@@ -39,8 +39,18 @@
     <Reference Include="GrafanaAdapters">
       <HintPath>..\..\Dependencies\GSF\GrafanaAdapters.dll</HintPath>
     </Reference>
+    <Reference Include="GSF.Communication, Version=2.4.299.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\openPDC\Source\Dependencies\GSF\GSF.Communication.dll</HintPath>
+    </Reference>
     <Reference Include="GSF.Core">
       <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.PhasorProtocols">
+      <HintPath>..\..\Dependencies\GSF\GSF.PhasorProtocols.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting">
+      <HintPath>..\..\Dependencies\GSF\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="GSF.Historian, Version=2.4.169.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
