@@ -59,7 +59,7 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Info, nameof(GetAllDevicesWithPhasors), "Querying all devices with phasors");
 
                 using AdoDataConnection context = DataContext;
-                TableOperations<DeviceDetail> deviceTable = new(context);
+                TableOperations<Device> deviceTable = new(context);
                 TableOperations<PhasorDetail> phasorTable = new(context);
 
                 var devices = deviceTable.QueryRecords(StringConstant.Acronym).ToList();
@@ -159,7 +159,7 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Info, nameof(GetDevicesWithPhasorsByCompany), $"Querying devices with phasors for company: {companyAcronym}");
 
                 using AdoDataConnection context = DataContext;
-                TableOperations<DeviceDetail> deviceTable = new(context);
+                TableOperations<Device> deviceTable = new(context);
                 TableOperations<PhasorDetail> phasorTable = new(context);
 
                 RecordRestriction deviceRestriction = new("CompanyAcronym = {0}", companyAcronym);
@@ -207,7 +207,7 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Info, nameof(GetDevicesWithPhasorsByStatus), $"Querying {status} devices with phasors");
 
                 using AdoDataConnection context = DataContext;
-                TableOperations<DeviceDetail> deviceTable = new(context);
+                TableOperations<Device> deviceTable = new(context);
                 TableOperations<PhasorDetail> phasorTable = new(context);
 
                 RecordRestriction deviceRestriction = new("Enabled = {0}", enabled ? 1 : 0);
@@ -254,7 +254,7 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Info, nameof(GetDeviceWithPhasorsByAcronym), $"Querying device {acronym} with phasors");
 
                 using AdoDataConnection context = DataContext;
-                TableOperations<DeviceDetail> deviceTable = new(context);
+                TableOperations<Device> deviceTable = new(context);
                 TableOperations<PhasorDetail> phasorTable = new(context);
 
                 RecordRestriction deviceRestriction = new("Acronym = {0}", acronym);

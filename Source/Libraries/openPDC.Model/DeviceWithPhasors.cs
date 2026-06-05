@@ -21,7 +21,7 @@ namespace openPDC.Model
         /// <summary>
         /// Device Information(PMU).
         /// </summary>
-        public DeviceDetail Device { get; set; }
+        public Device Device { get; set; }
 
         /// <summary>
         /// List of Phasors associated with the Device.
