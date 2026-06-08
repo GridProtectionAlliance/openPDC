@@ -396,6 +396,18 @@ namespace openPDC.Adapters
                     ex is System.Data.Common.DbException ||
                     ex is InvalidOperationException;
 
+        private static int LookupSignalTypeID(AdoDataConnection context, string suffix)
+        {
+            try
+            {
+                return context.ExecuteScalar<int>("SELECT ID FROM SignalType WHERE Suffix = {0}", suffix);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         /// <summary>
         /// Parses the SOAP XML of a .PmuConnection file and returns the connection settings. The
         /// file is produced by PMU Connection Tester via SoapFormatter; reading the XML directly
@@ -434,6 +446,14 @@ namespace openPDC.Adapters
                 FrameRate = ParseInt("FrameRate", 30)
             };
         }
+
+        private static string PmuSignalDescription(string suffix) => suffix switch
+        {
+            "FQ" => "Frequency",
+            "DF" => "Frequency Derivative",
+            "SF" => "Status Flags",
+            _ => suffix
+        };
 
         /// <summary>
         /// Connects to a PMU/PDC using MultiProtocolFrameParser (same engine as openPDC adapters)
@@ -523,29 +543,37 @@ namespace openPDC.Adapters
 
         /// <summary>
         /// Processes all cells from the configuration frame, creating child devices (if
-        /// concentrator) and saving their phasor definitions.
+        /// concentrator) and saving their phasor definitions and measurements.
         /// </summary>
         private void ProcessAllCells(IConfigurationFrame configFrame, ConnectionSettings settings, int parentDeviceID,
-            int? protocolID, bool isConcentrator, ref int savedDeviceCount)
+            int? protocolID, bool isConcentrator, string parentAcronym, string parentName, ref int savedDeviceCount)
         {
             using AdoDataConnection context = DataContext;
             TableOperations<Phasor> phasorTable = new(context);
+            TableOperations<Measurement> measurementTable = new(context);
 
             foreach (IConfigurationCell cell in configFrame.Cells)
             {
                 int targetDeviceID;
+                string targetAcronym;
+                string targetName;
 
                 if (isConcentrator)
                 {
                     targetDeviceID = ProcessAndSaveChildDevice(cell, settings, parentDeviceID, protocolID);
+                    targetAcronym = SanitizeAcronym(cell.StationName);
+                    targetName = cell.StationName;
                     savedDeviceCount++;
                 }
                 else
                 {
                     targetDeviceID = parentDeviceID;
+                    targetAcronym = parentAcronym;
+                    targetName = parentName;
                 }
 
                 SavePhaseorsForCell(cell, targetDeviceID, phasorTable);
+                SaveMeasurementsForCell(cell, targetDeviceID, targetAcronym, targetName, measurementTable, context);
             }
         }
 
@@ -593,12 +621,161 @@ namespace openPDC.Adapters
             var parentDeviceID = UpsertDeviceRecord(parentDevice);
 
             int savedDeviceCount = 1;
-            ProcessAllCells(configFrame, settings, parentDeviceID, protocolID, isConcentrator, ref savedDeviceCount);
+            ProcessAllCells(configFrame, settings, parentDeviceID, protocolID, isConcentrator, acronym, name, ref savedDeviceCount);
 
             Log.Publish(MessageLevel.Info, nameof(UpsertDeviceByPmuConnectionFile),
                 $"Saved {savedDeviceCount} device(s) for acronym '{acronym}'");
 
             return savedDeviceCount;
+        }
+
+        /// <summary>
+        /// Creates or updates all measurements for a configuration cell: PMU-level signals
+        /// (frequency, dF/dt, status flags), phasor magnitude/angle pairs, analog values, and
+        /// digital values. Matches openPDCManager's SaveDevice/SavePhasor measurement pattern.
+        /// </summary>
+        private void SaveMeasurementsForCell(IConfigurationCell cell, int deviceID, string deviceAcronym,
+            string deviceName, TableOperations<Measurement> measurementTable, AdoDataConnection context)
+        {
+            TableOperations<DeviceDetail> deviceDetailTable = new(context);
+            var deviceDetail = deviceDetailTable.QueryRecordWhere("Acronym = {0}", deviceAcronym);
+            string companyAcronym = deviceDetail?.CompanyAcronym ?? string.Empty;
+            string vendorAcronym = deviceDetail?.VendorAcronym ?? string.Empty;
+
+            var nowTime = DateTime.Now;
+            var now = new DateTime(nowTime.Year, nowTime.Month, nowTime.Day, nowTime.Hour, nowTime.Minute, nowTime.Second, nowTime.Millisecond, DateTimeKind.Local);
+            var user = User.Identity.Name;
+
+            // Pre-load all relevant signal type IDs in one pass to avoid per-measurement round-trips.
+            var signalTypeIds = new Dictionary<string, int>();
+            foreach (string suffix in new[] { "FQ", "DF", "SF", "PM", "PA", "IM", "IA", "AV", "DV" })
+            {
+                int id = LookupSignalTypeID(context, suffix);
+                if (id > 0)
+                    signalTypeIds[suffix] = id;
+            }
+
+            // PMU-level: Frequency (FQ), dF/dt (DF), Status Flags (SF)
+            foreach (string suffix in new[] { "FQ", "DF", "SF" })
+            {
+                if (!signalTypeIds.TryGetValue(suffix, out int signalTypeID))
+                    continue;
+
+                UpsertMeasurement(measurementTable, new Measurement
+                {
+                    DeviceID = deviceID,
+                    PointTag = $"{companyAcronym}_{deviceAcronym}:{vendorAcronym}{suffix}",
+                    SignalTypeID = signalTypeID,
+                    SignalReference = $"{deviceAcronym}-{suffix}",
+                    Description = $"{deviceName} {PmuSignalDescription(suffix)}",
+                    Internal = true,
+                    Enabled = true,
+                    Adder = 0.0d,
+                    Multiplier = 1.0d,
+                    CreatedBy = user,
+                    UpdatedBy = user,
+                    CreatedOn = now,
+                    UpdatedOn = now
+                });
+            }
+
+            // Phasor measurements: magnitude and angle for each defined (non-unused) phasor.
+            int phasorIndex = 1;
+            foreach (IPhasorDefinition phasorDef in cell.PhasorDefinitions)
+            {
+                string label = phasorDef.Label?.Trim() ?? string.Empty;
+
+                if (string.IsNullOrEmpty(label) || label.Equals("unused", StringComparison.OrdinalIgnoreCase))
+                {
+                    phasorIndex++;
+                    continue;
+                }
+
+                bool isVoltage = phasorDef.PhasorType == GSF.Units.EE.PhasorType.Voltage;
+                string magnitudeSuffix = isVoltage ? "PM" : "IM";
+                string angleSuffix = isVoltage ? "PA" : "IA";
+
+                foreach ((string sfx, string measurementLabel) in new[] { (magnitudeSuffix, "Magnitude"), (angleSuffix, "Angle") })
+                {
+                    if (!signalTypeIds.TryGetValue(sfx, out int signalTypeID))
+                        continue;
+
+                    UpsertMeasurement(measurementTable, new Measurement
+                    {
+                        DeviceID = deviceID,
+                        PointTag = $"{companyAcronym}_{deviceAcronym}-{sfx}{phasorIndex}:{vendorAcronym}{sfx}",
+                        SignalTypeID = signalTypeID,
+                        PhasorSourceIndex = phasorIndex,
+                        SignalReference = $"{deviceAcronym}-{sfx}{phasorIndex}",
+                        Description = $"{deviceName} {label} {measurementLabel}",
+                        Internal = true,
+                        Enabled = true,
+                        Adder = 0.0d,
+                        Multiplier = 1.0d,
+                        CreatedBy = user,
+                        UpdatedBy = user,
+                        CreatedOn = now,
+                        UpdatedOn = now
+                    });
+                }
+
+                phasorIndex++;
+            }
+
+            // Analog values
+            if (signalTypeIds.TryGetValue("AV", out int avTypeID))
+            {
+                int analogIndex = 1;
+                foreach (IAnalogDefinition _ in cell.AnalogDefinitions)
+                {
+                    UpsertMeasurement(measurementTable, new Measurement
+                    {
+                        DeviceID = deviceID,
+                        PointTag = $"{companyAcronym}_{deviceAcronym}:{vendorAcronym}A{analogIndex}",
+                        SignalTypeID = avTypeID,
+                        SignalReference = $"{deviceAcronym}-AV{analogIndex}",
+                        Description = $"{deviceName} Analog Value {analogIndex}",
+                        Internal = true,
+                        Enabled = true,
+                        Adder = 0.0d,
+                        Multiplier = 1.0d,
+                        CreatedBy = user,
+                        UpdatedBy = user,
+                        CreatedOn = now,
+                        UpdatedOn = now
+                    });
+                    analogIndex++;
+                }
+            }
+
+            // Digital values
+            if (signalTypeIds.TryGetValue("DV", out int dvTypeID))
+            {
+                int digitalIndex = 1;
+                foreach (IDigitalDefinition _ in cell.DigitalDefinitions)
+                {
+                    UpsertMeasurement(measurementTable, new Measurement
+                    {
+                        DeviceID = deviceID,
+                        PointTag = $"{companyAcronym}_{deviceAcronym}:{vendorAcronym}D{digitalIndex}",
+                        SignalTypeID = dvTypeID,
+                        SignalReference = $"{deviceAcronym}-DV{digitalIndex}",
+                        Description = $"{deviceName} Digital Value {digitalIndex}",
+                        Internal = true,
+                        Enabled = true,
+                        Adder = 0.0d,
+                        Multiplier = 1.0d,
+                        CreatedBy = user,
+                        UpdatedBy = user,
+                        CreatedOn = now,
+                        UpdatedOn = now
+                    });
+                    digitalIndex++;
+                }
+            }
+
+            Log.Publish(MessageLevel.Info, nameof(SaveMeasurementsForCell),
+                $"Measurements saved for device '{deviceAcronym}'");
         }
 
         /// <summary>
@@ -693,6 +870,26 @@ namespace openPDC.Adapters
             }
 
             return deviceInDatabase.ID;
+        }
+
+        /// <summary>
+        /// Inserts a new measurement or updates the existing one matched by SignalReference.
+        /// Preserves the SignalID (GUID) of existing records on update.
+        /// </summary>
+        private void UpsertMeasurement(TableOperations<Measurement> measurementTable, Measurement measurement)
+        {
+            var existing = measurementTable.QueryRecordWhere("SignalReference = {0}", measurement.SignalReference);
+
+            if (existing == null)
+            {
+                measurement.SignalID = Guid.NewGuid();
+                measurementTable.AddNewRecord(measurement);
+            }
+            else
+            {
+                measurement.SignalID = existing.SignalID;
+                measurementTable.UpdateRecord(measurement, new RecordRestriction("SignalReference = {0}", measurement.SignalReference));
+            }
         }
 
         private async Task<(string, string, byte[])> ValidateRequest()
