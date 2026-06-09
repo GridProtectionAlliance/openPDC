@@ -4,6 +4,7 @@ using GSF.Data.Model;
 using GSF.Diagnostics;
 using GSF.PhasorProtocols;
 using GSF.Security.Model;
+using GSF.Web.Shared.Model;
 using openPDC.Adapters.Constants;
 using openPDC.Model;
 using System;
@@ -273,12 +274,12 @@ namespace openPDC.Adapters
         {
             try
             {
-                (string acronym, string name, byte[] fileBytes) = await ValidateRequest();
+                var validRequest = await ValidateRequest();
 
                 ConnectionSettings settings;
 
-                using (var stream = new MemoryStream(fileBytes))
-                    settings = ParsePmuConnectionFile(stream, acronym);
+                using (var stream = new MemoryStream(validRequest.FileBytes))
+                    settings = ParsePmuConnectionFile(stream, validRequest.Acronym);
 
                 Log.Publish(MessageLevel.Info, nameof(UpsertDeviceByPmuConnectionFile),
                     $"Parsed: Protocol={settings.PhasorProtocol}, Transport={settings.TransportProtocol}, " +
@@ -302,8 +303,8 @@ namespace openPDC.Adapters
                     Log.Publish(MessageLevel.Info, nameof(UpsertDeviceByPmuConnectionFile),
                         $"Received configuration frame with {configFrame.Cells.Count} device(s)");
 
-                    int count = await ProcessConfigurationFrame(settings, configFrame, acronym, name);
-                    return (count, acronym);
+                    int count = await ProcessConfigurationFrame(settings, configFrame, validRequest);
+                    return (count, validRequest.Acronym);
                 }, nameof(UpsertDeviceByPmuConnectionFile));
 
                 return Ok(new { devices = savedDeviceCount, acronym = resultAcronym });
@@ -500,6 +501,42 @@ namespace openPDC.Adapters
         }
 
         /// <summary>
+        /// Resolves human-readable identifiers (acronym/name) into database IDs. Returns null for
+        /// each field whose identifier was empty or not found; logs a warning on a miss so the
+        /// caller is aware without aborting the whole import.
+        /// </summary>
+        private static DeviceMetadata ResolveDeviceMetadata(DeviceMetadata validRequest)
+        {
+            using AdoDataConnection context = DataContext;
+
+            TableOperations<Company> companyTable = new(context);
+            RecordRestriction restrictionCompany = new("Acronym = {0}", validRequest.CompanyAcronym);
+            var company = companyTable.QueryRecords(restriction: restrictionCompany).FirstOrDefault();
+
+            TableOperations<Historian> historianTable = new(context);
+            RecordRestriction restrictionHistorian = new("Acronym = {0}", validRequest.HistorianAcronym);
+            var historian = historianTable.QueryRecords(restriction: restrictionHistorian).FirstOrDefault();
+
+            TableOperations<VendorDevice> vendorDeviceTable = new(context);
+            RecordRestriction restrictionVendorDevice = new("Name = {0}", validRequest.VendorDeviceName);
+            var vendorDevice = vendorDeviceTable.QueryRecords(restriction: restrictionVendorDevice).FirstOrDefault();
+
+            TableOperations<Interconnection> interconnectionTable = new(context);
+            RecordRestriction restrictionInterconnection = new("Name = {0}", validRequest.InterconnectionName);
+            var interconnection = interconnectionTable.QueryRecords(restriction: restrictionInterconnection).FirstOrDefault();
+
+            var deviceMetadata = new DeviceMetadata
+            {
+                CompanyID = company?.ID,
+                HistorianID = historian?.ID,
+                VendorDeviceID = vendorDevice?.ID,
+                InterconnectionID = interconnection?.ID
+            };
+
+            return deviceMetadata;
+        }
+
+        /// <summary>
         /// Converts a PMU station name into a valid openPDC device acronym (uppercase, alphanumeric
         /// + underscore only).
         /// </summary>
@@ -513,17 +550,46 @@ namespace openPDC.Adapters
         }
 
         /// <summary>
+        /// Inserts a new measurement or updates the existing one matched by SignalReference.
+        /// Preserves the SignalID (GUID) of existing records on update.
+        /// </summary>
+        private static void UpsertMeasurement(TableOperations<Measurement> measurementTable, Measurement measurement)
+        {
+            var existing = measurementTable.QueryRecordWhere("SignalReference = {0}", measurement.SignalReference);
+
+            if (existing == null)
+            {
+                measurement.SignalID = Guid.NewGuid();
+                measurementTable.AddNewRecord(measurement);
+            }
+            else
+            {
+                measurement.SignalID = existing.SignalID;
+                measurementTable.UpdateRecord(measurement, new RecordRestriction("SignalReference = {0}", measurement.SignalReference));
+            }
+        }
+
+        /// <summary>
         /// Builds a Device object for the parent/main device (either concentrator or standalone PMU).
         /// </summary>
-        private Device BuildParentDevice(string acronym, string name, bool isConcentrator, int? protocolID,
-            ConnectionSettings settings, IConfigurationFrame configFrame, string deviceConnectionString)
+        private Device BuildParentDevice(DeviceMetadata validRequest,
+                                         bool isConcentrator,
+                                         int? protocolID,
+                                         ConnectionSettings settings,
+                                         IConfigurationFrame configFrame,
+                                         string deviceConnectionString,
+                                         DeviceMetadata deviceMetadata)
         {
             return new Device
             {
-                Acronym = acronym,
-                Name = name,
+                Acronym = validRequest.Acronym,
+                Name = validRequest.Name,
                 IsConcentrator = isConcentrator,
                 ProtocolID = protocolID,
+                CompanyID = deviceMetadata.CompanyID,
+                HistorianID = deviceMetadata.HistorianID,
+                VendorDeviceID = deviceMetadata.VendorDeviceID,
+                InterconnectionID = deviceMetadata.InterconnectionID,
                 AccessID = isConcentrator
                     ? (int)configFrame.IDCode
                     : (int)configFrame.Cells.Cast<IConfigurationCell>().First().IDCode,
@@ -545,8 +611,14 @@ namespace openPDC.Adapters
         /// Processes all cells from the configuration frame, creating child devices (if
         /// concentrator) and saving their phasor definitions and measurements.
         /// </summary>
-        private void ProcessAllCells(IConfigurationFrame configFrame, ConnectionSettings settings, int parentDeviceID,
-            int? protocolID, bool isConcentrator, string parentAcronym, string parentName, ref int savedDeviceCount)
+        private void ProcessAllCells(IConfigurationFrame configFrame,
+                                     ConnectionSettings settings,
+                                     int parentDeviceID,
+                                     int? protocolID,
+                                     bool isConcentrator,
+                                     DeviceMetadata validRequest,
+                                     DeviceMetadata deviceMetadata,
+                                     ref int savedDeviceCount)
         {
             using AdoDataConnection context = DataContext;
             TableOperations<Phasor> phasorTable = new(context);
@@ -560,7 +632,7 @@ namespace openPDC.Adapters
 
                 if (isConcentrator)
                 {
-                    targetDeviceID = ProcessAndSaveChildDevice(cell, settings, parentDeviceID, protocolID);
+                    targetDeviceID = ProcessAndSaveChildDevice(cell, settings, parentDeviceID, protocolID, deviceMetadata);
                     targetAcronym = SanitizeAcronym(cell.StationName);
                     targetName = cell.StationName;
                     savedDeviceCount++;
@@ -568,12 +640,12 @@ namespace openPDC.Adapters
                 else
                 {
                     targetDeviceID = parentDeviceID;
-                    targetAcronym = parentAcronym;
-                    targetName = parentName;
+                    targetAcronym = validRequest.Acronym;
+                    targetName = validRequest.Name;
                 }
 
                 SavePhaseorsForCell(cell, targetDeviceID, phasorTable);
-                SaveMeasurementsForCell(cell, targetDeviceID, targetAcronym, targetName, measurementTable, context);
+                SaveMeasurementsForCell(cell, targetDeviceID, targetAcronym, targetName, deviceMetadata.HistorianID, measurementTable, context);
             }
         }
 
@@ -581,7 +653,11 @@ namespace openPDC.Adapters
         /// Processes a cell from a concentrator, creating a child device record for it. Returns the
         /// ID of the created or updated child device.
         /// </summary>
-        private int ProcessAndSaveChildDevice(IConfigurationCell cell, ConnectionSettings settings, int parentDeviceID, int? protocolID)
+        private int ProcessAndSaveChildDevice(IConfigurationCell cell,
+                                              ConnectionSettings settings,
+                                              int parentDeviceID,
+                                              int? protocolID,
+                                              DeviceMetadata deviceMetadata)
         {
             string cellAcronym = SanitizeAcronym(cell.StationName);
 
@@ -591,6 +667,10 @@ namespace openPDC.Adapters
                 Name = cell.StationName,
                 IsConcentrator = false,
                 ProtocolID = protocolID,
+                CompanyID = deviceMetadata.CompanyID,
+                HistorianID = deviceMetadata.HistorianID,
+                VendorDeviceID = deviceMetadata.VendorDeviceID,
+                InterconnectionID = deviceMetadata.InterconnectionID,
                 AccessID = (int)cell.IDCode,
                 ParentID = parentDeviceID,
                 FramesPerSecond = settings.FrameRate > 0 ? settings.FrameRate : 30,
@@ -609,7 +689,7 @@ namespace openPDC.Adapters
             return UpsertDeviceRecord(concentrator);
         }
 
-        private async Task<int> ProcessConfigurationFrame(ConnectionSettings settings, IConfigurationFrame configFrame, string acronym, string name)
+        private async Task<int> ProcessConfigurationFrame(ConnectionSettings settings, IConfigurationFrame configFrame, DeviceMetadata validRequest)
         {
             using AdoDataConnection context = DataContext;
 
@@ -617,14 +697,18 @@ namespace openPDC.Adapters
             bool isConcentrator = configFrame.Cells.Count > 1;
             string deviceConnectionString = $"TransportProtocol={settings.TransportProtocol};{settings.ConnectionString}";
 
-            var parentDevice = BuildParentDevice(acronym, name, isConcentrator, protocolID, settings, configFrame, deviceConnectionString);
+            var deviceMetadata = ResolveDeviceMetadata(validRequest);
+
+            var parentDevice = BuildParentDevice(validRequest, isConcentrator, protocolID, settings, configFrame, deviceConnectionString, deviceMetadata);
+
             var parentDeviceID = UpsertDeviceRecord(parentDevice);
 
             int savedDeviceCount = 1;
-            ProcessAllCells(configFrame, settings, parentDeviceID, protocolID, isConcentrator, acronym, name, ref savedDeviceCount);
+
+            ProcessAllCells(configFrame, settings, parentDeviceID, protocolID, isConcentrator, validRequest, deviceMetadata, ref savedDeviceCount);
 
             Log.Publish(MessageLevel.Info, nameof(UpsertDeviceByPmuConnectionFile),
-                $"Saved {savedDeviceCount} device(s) for acronym '{acronym}'");
+                $"Saved {savedDeviceCount} device(s) for acronym '{validRequest.Acronym}'");
 
             return savedDeviceCount;
         }
@@ -634,8 +718,13 @@ namespace openPDC.Adapters
         /// (frequency, dF/dt, status flags), phasor magnitude/angle pairs, analog values, and
         /// digital values. Matches openPDCManager's SaveDevice/SavePhasor measurement pattern.
         /// </summary>
-        private void SaveMeasurementsForCell(IConfigurationCell cell, int deviceID, string deviceAcronym,
-            string deviceName, TableOperations<Measurement> measurementTable, AdoDataConnection context)
+        private void SaveMeasurementsForCell(IConfigurationCell cell,
+                                             int deviceID,
+                                             string deviceAcronym,
+                                             string deviceName,
+                                             int? historianID,
+                                             TableOperations<Measurement> measurementTable,
+                                             AdoDataConnection context)
         {
             TableOperations<DeviceDetail> deviceDetailTable = new(context);
             var deviceDetail = deviceDetailTable.QueryRecordWhere("Acronym = {0}", deviceAcronym);
@@ -648,11 +737,14 @@ namespace openPDC.Adapters
 
             // Pre-load all relevant signal type IDs in one pass to avoid per-measurement round-trips.
             var signalTypeIds = new Dictionary<string, int>();
+
             foreach (string suffix in new[] { "FQ", "DF", "SF", "PM", "PA", "IM", "IA", "AV", "DV" })
             {
-                int id = LookupSignalTypeID(context, suffix);
-                if (id > 0)
-                    signalTypeIds[suffix] = id;
+                TableOperations<GSF.TimeSeries.Model.SignalType> signalTypeTable = new(context);
+                var signalType = signalTypeTable.QueryRecordWhere("Suffix = {0}", suffix);
+
+                if (signalType?.ID > 0)
+                    signalTypeIds[suffix] = signalType.ID;
             }
 
             // PMU-level: Frequency (FQ), dF/dt (DF), Status Flags (SF)
@@ -664,6 +756,7 @@ namespace openPDC.Adapters
                 UpsertMeasurement(measurementTable, new Measurement
                 {
                     DeviceID = deviceID,
+                    HistorianID = historianID,
                     PointTag = $"{companyAcronym}_{deviceAcronym}:{vendorAcronym}{suffix}",
                     SignalTypeID = signalTypeID,
                     SignalReference = $"{deviceAcronym}-{suffix}",
@@ -703,6 +796,7 @@ namespace openPDC.Adapters
                     UpsertMeasurement(measurementTable, new Measurement
                     {
                         DeviceID = deviceID,
+                        HistorianID = historianID,
                         PointTag = $"{companyAcronym}_{deviceAcronym}-{sfx}{phasorIndex}:{vendorAcronym}{sfx}",
                         SignalTypeID = signalTypeID,
                         PhasorSourceIndex = phasorIndex,
@@ -731,6 +825,7 @@ namespace openPDC.Adapters
                     UpsertMeasurement(measurementTable, new Measurement
                     {
                         DeviceID = deviceID,
+                        HistorianID = historianID,
                         PointTag = $"{companyAcronym}_{deviceAcronym}:{vendorAcronym}A{analogIndex}",
                         SignalTypeID = avTypeID,
                         SignalReference = $"{deviceAcronym}-AV{analogIndex}",
@@ -757,6 +852,7 @@ namespace openPDC.Adapters
                     UpsertMeasurement(measurementTable, new Measurement
                     {
                         DeviceID = deviceID,
+                        HistorianID = historianID,
                         PointTag = $"{companyAcronym}_{deviceAcronym}:{vendorAcronym}D{digitalIndex}",
                         SignalTypeID = dvTypeID,
                         SignalReference = $"{deviceAcronym}-DV{digitalIndex}",
@@ -872,27 +968,7 @@ namespace openPDC.Adapters
             return deviceInDatabase.ID;
         }
 
-        /// <summary>
-        /// Inserts a new measurement or updates the existing one matched by SignalReference.
-        /// Preserves the SignalID (GUID) of existing records on update.
-        /// </summary>
-        private void UpsertMeasurement(TableOperations<Measurement> measurementTable, Measurement measurement)
-        {
-            var existing = measurementTable.QueryRecordWhere("SignalReference = {0}", measurement.SignalReference);
-
-            if (existing == null)
-            {
-                measurement.SignalID = Guid.NewGuid();
-                measurementTable.AddNewRecord(measurement);
-            }
-            else
-            {
-                measurement.SignalID = existing.SignalID;
-                measurementTable.UpdateRecord(measurement, new RecordRestriction("SignalReference = {0}", measurement.SignalReference));
-            }
-        }
-
-        private async Task<(string, string, byte[])> ValidateRequest()
+        private async Task<DeviceMetadata> ValidateRequest()
         {
             if (!Request.Content.IsMimeMultipartContent())
                 throw new InvalidOperationException("Expected multipart/form-data content with a .PmuConnection file");
@@ -903,6 +979,10 @@ namespace openPDC.Adapters
             string acronym = null;
             string name = null;
             byte[] fileBytes = null;
+            string companyAcronym = null;
+            string historianAcronym = null;
+            string vendorDeviceName = null;
+            string interconnectionName = null;
 
             foreach (var content in provider.Contents)
             {
@@ -915,6 +995,14 @@ namespace openPDC.Adapters
                     acronym = await content.ReadAsStringAsync();
                 else if (string.Equals(fieldName, "name", StringComparison.OrdinalIgnoreCase))
                     name = await content.ReadAsStringAsync();
+                else if (string.Equals(fieldName, "companyAcronym", StringComparison.OrdinalIgnoreCase))
+                    companyAcronym = await content.ReadAsStringAsync();
+                else if (string.Equals(fieldName, "historianAcronym", StringComparison.OrdinalIgnoreCase))
+                    historianAcronym = await content.ReadAsStringAsync();
+                else if (string.Equals(fieldName, "vendorDeviceName", StringComparison.OrdinalIgnoreCase))
+                    vendorDeviceName = await content.ReadAsStringAsync();
+                else if (string.Equals(fieldName, "interconnectionName", StringComparison.OrdinalIgnoreCase))
+                    interconnectionName = await content.ReadAsStringAsync();
             }
 
             if (fileBytes == null || fileBytes.Length == 0)
@@ -925,7 +1013,18 @@ namespace openPDC.Adapters
 
             name = string.IsNullOrWhiteSpace(name) ? acronym : name;
 
-            return (acronym, name, fileBytes);
+            var deviceByPmuConnectionFile = new DeviceMetadata
+            {
+                Acronym = acronym,
+                Name = name,
+                FileBytes = fileBytes,
+                CompanyAcronym = companyAcronym,
+                HistorianAcronym = historianAcronym,
+                VendorDeviceName = vendorDeviceName,
+                InterconnectionName = interconnectionName
+            };
+
+            return deviceByPmuConnectionFile;
         }
 
         #endregion [ Methods ]
