@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\Build\Output\Debug\Applications\openPDC\openPDC.Adapters.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\Build\Output\Release\Applications\openPDC\openPDC.Adapters.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DataQualityMonitoring, Version=2.4.194.0, Culture=neutral, processorArchitecture=MSIL">

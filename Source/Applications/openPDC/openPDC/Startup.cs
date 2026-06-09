@@ -34,7 +34,9 @@ using openPDC.Adapters;
 using openPDC.Model;
 using Owin;
 using PhasorWebUI;
+using Swashbuckle.Application;
 using System;
+using System.IO;
 using System.Security;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -67,7 +69,9 @@ namespace openPDC
                 {
                     await next();
 
-                    if (!context.Response.Headers.ContainsKey("Content-Security-Policy"))
+                    bool isSwaggerPath = context.Request.Path.Value?.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase) == true;
+
+                    if (!isSwaggerPath && !context.Response.Headers.ContainsKey("Content-Security-Policy"))
                         context.Response.Headers.Add("Content-Security-Policy", ["default-src: 'self'"]);
 
                     if (context.Request.Scheme == "https" && !context.Response.Headers.ContainsKey("Strict-Transport-Security"))
@@ -204,6 +208,30 @@ namespace openPDC
 
             // Set configuration to use reflection to setup routes
             httpConfig.MapHttpAttributeRoutes();
+
+            // Configure Swagger UI for custom API documentation
+            try
+            {
+                httpConfig.EnableSwagger(c =>
+                {
+                    c.SingleApiVersion("v1", "openPDC Custom APIs")
+                        .Description("REST API endpoints for device management and phasor data in openPDC.");
+
+                    string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
+                    string openPDCXml = Path.Combine(baseDir, "openPDC.xml");
+                    if (File.Exists(openPDCXml))
+                        c.IncludeXmlComments(openPDCXml);
+
+                    string adaptersXml = Path.Combine(baseDir, "openPDC.Adapters.xml");
+                    if (File.Exists(adaptersXml))
+                        c.IncludeXmlComments(adaptersXml);
+                }).EnableSwaggerUi();
+            }
+            catch (Exception ex)
+            {
+                Program.Host.LogException(new InvalidOperationException($"Failed to initialize Swagger: {ex.Message}", ex));
+            }
 
             // Load the WebPageController class and assign its routes
             app.UseWebApi(httpConfig);
