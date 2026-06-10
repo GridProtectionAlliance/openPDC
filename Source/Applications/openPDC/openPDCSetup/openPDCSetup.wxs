@@ -133,7 +133,7 @@
       <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="8">NOT(INSTALLSERVICEFEATURE)</Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CompanyInfoDialog">INSTALLSERVICEFEATURE</Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg">NOT(INSTALLSERVICEFEATURE)</Publish>
-      <Publish Dialog="CustomExitDialog" Control="Finish" Event="DoAction" Value="StartCSUProcessAction">WIXUI_CUSTOMEXITDIALOGOPTIONALCHECKBOX = 1</Publish>
+      <Publish Dialog="CustomExitDialog" Control="Finish" Event="DoAction" Value="StartCSUProcessAction">WIXUI_CUSTOMEXITDIALOGOPTIONALCHECKBOX = 1 AND NOT CHAINED</Publish>
     </UI>
 
     <Icon Id="openPDC.ico.exe" SourceFile="$(var.openPDC.TargetPath)" />
@@ -198,9 +198,15 @@
     <!-- Add/Remove Programs Icon -->
     <Property Id="ARPPRODUCTICON" Value="openPDC.ico.exe" />
 
+    <!-- Set to 1 by a chaining bundle (e.g. a WiX Burn bootstrapper) to suppress this MSI's
+         "Launch Configuration Setup Utility" checkbox/action, so the CSU is launched AFTER the
+         bundle's additional packages instead of at the end of this base MSI. Unset for normal
+         standalone installs, so default behavior is unchanged. -->
+    <Property Id="CHAINED" Secure="yes" />
+
     <!-- Display checkbox to select whether to launch the CSU -->
-    <SetProperty Id="WIXUI_CUSTOMEXITDIALOGOPTIONALCHECKBOX" Value="1" After="ExecuteAction" Sequence="ui">(NOT Installed OR WixUI_InstallMode = "Change") AND ($ConfigurationSetupUtility=3 OR (?ConfigurationSetupUtility=3 AND $ConfigurationSetupUtility=-1))</SetProperty>
-    <SetProperty Id="WIXUI_CUSTOMEXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Configuration Setup Utility" After="ExecuteAction" Sequence="ui">(NOT Installed OR WixUI_InstallMode = "Change") AND ($ConfigurationSetupUtility=3 OR (?ConfigurationSetupUtility=3 AND $ConfigurationSetupUtility=-1))</SetProperty>
+    <SetProperty Id="WIXUI_CUSTOMEXITDIALOGOPTIONALCHECKBOX" Value="1" After="ExecuteAction" Sequence="ui">(NOT Installed OR WixUI_InstallMode = "Change") AND ($ConfigurationSetupUtility=3 OR (?ConfigurationSetupUtility=3 AND $ConfigurationSetupUtility=-1)) AND NOT CHAINED</SetProperty>
+    <SetProperty Id="WIXUI_CUSTOMEXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Configuration Setup Utility" After="ExecuteAction" Sequence="ui">(NOT Installed OR WixUI_InstallMode = "Change") AND ($ConfigurationSetupUtility=3 OR (?ConfigurationSetupUtility=3 AND $ConfigurationSetupUtility=-1)) AND NOT CHAINED</SetProperty>
 
     <!-- Custom Actions -->
     <Binary Id="InstallerActions" SourceFile="$(var.SolutionDir)\Dependencies\GSF\GSF.InstallerActions.CA.dll" />

@@ -19,11 +19,11 @@
       </Dialog>
 
       <InstallUISequence>
-        <Show Dialog="CustomExitDialog" OnExit="success" Overridable="yes" />
+        <Show Dialog="CustomExitDialog" OnExit="success" Overridable="yes">NOT CHAINED</Show>
       </InstallUISequence>
 
       <AdminUISequence>
-        <Show Dialog="CustomExitDialog" OnExit="success" Overridable="yes" />
+        <Show Dialog="CustomExitDialog" OnExit="success" Overridable="yes">NOT CHAINED</Show>
       </AdminUISequence>
     </UI>
 	</Fragment>
