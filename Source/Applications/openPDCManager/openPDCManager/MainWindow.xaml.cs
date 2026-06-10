@@ -158,7 +158,7 @@ namespace openPDCManager
             XmlRootAttribute xmlRootAttribute = new("MenuDataItems");
             XmlSerializer serializer = new(typeof(ObservableCollection<MenuDataItem>), xmlRootAttribute);
 
-            using (XmlReader reader = XmlReader.Create(FilePath.GetAbsolutePath("Menu.xml")))
+            using (XmlReader reader = XmlReader.Create(CommonFunctions.GetMenuFilePath()))
             {
                 m_menuDataItems = (ObservableCollection<MenuDataItem>)serializer.Deserialize(reader);
             }
