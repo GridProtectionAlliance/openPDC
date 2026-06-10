@@ -397,18 +397,6 @@ namespace openPDC.Adapters
                     ex is System.Data.Common.DbException ||
                     ex is InvalidOperationException;
 
-        private static int LookupSignalTypeID(AdoDataConnection context, string suffix)
-        {
-            try
-            {
-                return context.ExecuteScalar<int>("SELECT ID FROM SignalType WHERE Suffix = {0}", suffix);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
         /// <summary>
         /// Parses the SOAP XML of a .PmuConnection file and returns the connection settings. The
         /// file is produced by PMU Connection Tester via SoapFormatter; reading the XML directly
@@ -451,7 +439,7 @@ namespace openPDC.Adapters
         private static string PmuSignalDescription(string suffix) => suffix switch
         {
             "FQ" => "Frequency",
-            "DF" => "Frequency Derivative",
+            "DF" => "Frequency Delta (dF/dT)",
             "SF" => "Status Flags",
             _ => suffix
         };
@@ -717,6 +705,10 @@ namespace openPDC.Adapters
         /// Creates or updates all measurements for a configuration cell: PMU-level signals
         /// (frequency, dF/dt, status flags), phasor magnitude/angle pairs, analog values, and
         /// digital values. Matches openPDCManager's SaveDevice/SavePhasor measurement pattern.
+        /// PointTag format mirrors the Device Wizard: PMU signals :
+        /// {company}_{device}:{vendor}{abbreviation} e.g. GPA_SHELBY:SHELPMUF Phasors :
+        /// {company}_{device}-{suffix}{idx}:{vendor}{abbreviation} e.g. GPA_SHELBY-PM1:SHELPMУВ
+        /// Analog : {company}_{device}:{vendor}A{idx} Digital : {company}_{device}:{vendor}D{idx}
         /// </summary>
         private void SaveMeasurementsForCell(IConfigurationCell cell,
                                              int deviceID,
@@ -729,36 +721,65 @@ namespace openPDC.Adapters
             TableOperations<DeviceDetail> deviceDetailTable = new(context);
             var deviceDetail = deviceDetailTable.QueryRecordWhere("Acronym = {0}", deviceAcronym);
             string companyAcronym = deviceDetail?.CompanyAcronym ?? string.Empty;
-            string vendorAcronym = deviceDetail?.VendorAcronym ?? string.Empty;
 
             var nowTime = DateTime.Now;
             var now = new DateTime(nowTime.Year, nowTime.Month, nowTime.Day, nowTime.Hour, nowTime.Minute, nowTime.Second, nowTime.Millisecond, DateTimeKind.Local);
             var user = User.Identity.Name;
 
-            // Pre-load all relevant signal type IDs in one pass to avoid per-measurement round-trips.
-            var signalTypeIds = new Dictionary<string, int>();
+            // Pre-load SignalType records. PMU types (FQ/DF/SF) carry their Acronym used verbatim
+            // in the tag. Phasor types are keyed by Suffix (PM/PA) in separate voltage/current
+            // maps; only the first char of Abbreviation is used in the phasor tag.
+            TableOperations<GSF.TimeSeries.Model.SignalType> sigTypeTable = new(context);
 
-            foreach (string suffix in new[] { "FQ", "DF", "SF", "PM", "PA", "IM", "IA", "AV", "DV" })
+            var pmuTypes = new Dictionary<string, (int ID, string Acronym)>();
+            foreach (string pmuSuffix in new[] { "FQ", "DF", "SF" })
             {
-                TableOperations<GSF.TimeSeries.Model.SignalType> signalTypeTable = new(context);
-                var signalType = signalTypeTable.QueryRecordWhere("Suffix = {0}", suffix);
-
-                if (signalType?.ID > 0)
-                    signalTypeIds[suffix] = signalType.ID;
+                var st = sigTypeTable.QueryRecordWhere("Suffix = {0} AND Source = 'PMU'", pmuSuffix);
+                if (st?.ID > 0)
+                    pmuTypes[pmuSuffix] = (st.ID, st.Acronym ?? pmuSuffix);
             }
 
-            // PMU-level: Frequency (FQ), dF/dt (DF), Status Flags (SF)
+            // Voltage phasors: VPHM (PM, Abbreviation='V') and VPHA (PA, Abbreviation='VH')
+            var voltagePhasorTypes = new Dictionary<string, (int ID, string Abbreviation)>();
+            foreach (string acronym in new[] { "VPHM", "VPHA" })
+            {
+                var st = sigTypeTable.QueryRecordWhere("Acronym = {0}", acronym);
+                if (st?.ID > 0)
+                    voltagePhasorTypes[st.Suffix] = (st.ID, st.Abbreviation ?? string.Empty);
+            }
+
+            // Current phasors: IPHM (PM, Abbreviation='I') and IPHA (PA, Abbreviation='IH')
+            var currentPhasorTypes = new Dictionary<string, (int ID, string Abbreviation)>();
+            foreach (string acronym in new[] { "IPHM", "IPHA" })
+            {
+                var st = sigTypeTable.QueryRecordWhere("Acronym = {0}", acronym);
+                if (st?.ID > 0)
+                    currentPhasorTypes[st.Suffix] = (st.ID, st.Abbreviation ?? string.Empty);
+            }
+
+            var alogST = sigTypeTable.QueryRecordWhere("Acronym = {0}", "ALOG");
+            var digiST = sigTypeTable.QueryRecordWhere("Acronym = {0}", "DIGI");
+
+            // Phasors are saved by SavePhaseorsForCell before this call; read their Phase values so
+            // the PointTag reflects the correct phase. Default is '+' (positive sequence).
+            TableOperations<Phasor> phasorTable = new(context);
+            var savedPhasors = phasorTable
+                .QueryRecords(restriction: new RecordRestriction("DeviceID = {0}", deviceID))
+                .ToDictionary(p => p.SourceIndex, p => p.Phase ?? "+");
+
+            // PMU-level signals — PointTag: {company}_{device}:{SignalType.Acronym} Matches
+            // expression: [?Source!=Phasor[?Acronym!=ALOG[:{SignalType.Acronym}]]]
             foreach (string suffix in new[] { "FQ", "DF", "SF" })
             {
-                if (!signalTypeIds.TryGetValue(suffix, out int signalTypeID))
+                if (!pmuTypes.TryGetValue(suffix, out var pmuType))
                     continue;
 
                 UpsertMeasurement(measurementTable, new Measurement
                 {
                     DeviceID = deviceID,
                     HistorianID = historianID,
-                    PointTag = $"{companyAcronym}_{deviceAcronym}:{vendorAcronym}{suffix}",
-                    SignalTypeID = signalTypeID,
+                    PointTag = $"{companyAcronym}_{deviceAcronym}:{pmuType.Acronym}",
+                    SignalTypeID = pmuType.ID,
                     SignalReference = $"{deviceAcronym}-{suffix}",
                     Description = $"{deviceName} {PmuSignalDescription(suffix)}",
                     Internal = true,
@@ -772,7 +793,9 @@ namespace openPDC.Adapters
                 });
             }
 
-            // Phasor measurements: magnitude and angle for each defined (non-unused) phasor.
+            // Phasor measurements: magnitude (PM) and angle (PA) for each defined phasor.
+            // PointTag: {company}_{device}:{cleanLabel}_{Abbr[0]}{phaseStr}[.MAG|.ANG]
+            // Replicates: eval{Label.Trim().ToUpper().Replace(' ','_')}_eval{Abbr.Substring(0,1)} eval{Phase=='+'?'1':(Phase=='-'?'2':Phase)}[.MAG|.ANG]
             int phasorIndex = 1;
             foreach (IPhasorDefinition phasorDef in cell.PhasorDefinitions)
             {
@@ -785,20 +808,31 @@ namespace openPDC.Adapters
                 }
 
                 bool isVoltage = phasorDef.PhasorType == GSF.Units.EE.PhasorType.Voltage;
-                string magnitudeSuffix = isVoltage ? "PM" : "IM";
-                string angleSuffix = isVoltage ? "PA" : "IA";
+                var phasorTypes = isVoltage ? voltagePhasorTypes : currentPhasorTypes;
 
-                foreach ((string sfx, string measurementLabel) in new[] { (magnitudeSuffix, "Magnitude"), (angleSuffix, "Angle") })
+                string phase = savedPhasors.TryGetValue(phasorIndex, out string savedPhase) ? savedPhase : "+";
+                string phaseStr = phase == "+" ? "1" : (phase == "-" ? "2" : phase);
+                string cleanLabel = label.ToUpper().Replace(' ', '_');
+
+                foreach (string sfx in new[] { "PM", "PA" })
                 {
-                    if (!signalTypeIds.TryGetValue(sfx, out int signalTypeID))
+                    if (!phasorTypes.TryGetValue(sfx, out var phasorType))
                         continue;
+
+                    string abbrFirst = phasorType.Abbreviation.Length > 0
+                        ? phasorType.Abbreviation.Substring(0, 1)
+                        : string.Empty;
+                    string tagSuffix = sfx == "PM" ? ".MAG" : ".ANG";
+                    string measurementLabel = sfx == "PM"
+                        ? (isVoltage ? "Voltage Magnitude" : "Current Magnitude")
+                        : (isVoltage ? "Voltage Angle" : "Current Angle");
 
                     UpsertMeasurement(measurementTable, new Measurement
                     {
                         DeviceID = deviceID,
                         HistorianID = historianID,
-                        PointTag = $"{companyAcronym}_{deviceAcronym}-{sfx}{phasorIndex}:{vendorAcronym}{sfx}",
-                        SignalTypeID = signalTypeID,
+                        PointTag = $"{companyAcronym}_{deviceAcronym}:{cleanLabel}_{abbrFirst}{phaseStr}{tagSuffix}",
+                        SignalTypeID = phasorType.ID,
                         PhasorSourceIndex = phasorIndex,
                         SignalReference = $"{deviceAcronym}-{sfx}{phasorIndex}",
                         Description = $"{deviceName} {label} {measurementLabel}",
@@ -816,18 +850,24 @@ namespace openPDC.Adapters
                 phasorIndex++;
             }
 
-            // Analog values
-            if (signalTypeIds.TryGetValue("AV", out int avTypeID))
+            // Analog values — PointTag: {company}_{device}:{cleanLabel} or :ALOG{idx:D2}
+            // Replicates: [?Acronym=ALOG[:eval{Label.Length>0?Label.Trim().ToUpper():ALOG+idx:D2}]]
+            if (alogST?.ID > 0)
             {
                 int analogIndex = 1;
-                foreach (IAnalogDefinition _ in cell.AnalogDefinitions)
+                foreach (IAnalogDefinition analogDef in cell.AnalogDefinitions)
                 {
+                    string analogLabel = analogDef.Label?.Trim() ?? string.Empty;
+                    string analogTag = !string.IsNullOrEmpty(analogLabel)
+                        ? analogLabel.ToUpper().Replace(' ', '_')
+                        : $"ALOG{analogIndex:D2}";
+
                     UpsertMeasurement(measurementTable, new Measurement
                     {
                         DeviceID = deviceID,
                         HistorianID = historianID,
-                        PointTag = $"{companyAcronym}_{deviceAcronym}:{vendorAcronym}A{analogIndex}",
-                        SignalTypeID = avTypeID,
+                        PointTag = $"{companyAcronym}_{deviceAcronym}:{analogTag}",
+                        SignalTypeID = alogST.ID,
                         SignalReference = $"{deviceAcronym}-AV{analogIndex}",
                         Description = $"{deviceName} Analog Value {analogIndex}",
                         Internal = true,
@@ -843,8 +883,8 @@ namespace openPDC.Adapters
                 }
             }
 
-            // Digital values
-            if (signalTypeIds.TryGetValue("DV", out int dvTypeID))
+            // Digital values — PointTag: {company}_{device}:DIGI{idx:D2}
+            if (digiST?.ID > 0)
             {
                 int digitalIndex = 1;
                 foreach (IDigitalDefinition _ in cell.DigitalDefinitions)
@@ -853,8 +893,8 @@ namespace openPDC.Adapters
                     {
                         DeviceID = deviceID,
                         HistorianID = historianID,
-                        PointTag = $"{companyAcronym}_{deviceAcronym}:{vendorAcronym}D{digitalIndex}",
-                        SignalTypeID = dvTypeID,
+                        PointTag = $"{companyAcronym}_{deviceAcronym}:DIGI{digitalIndex:D2}",
+                        SignalTypeID = digiST.ID,
                         SignalReference = $"{deviceAcronym}-DV{digitalIndex}",
                         Description = $"{deviceName} Digital Value {digitalIndex}",
                         Internal = true,
