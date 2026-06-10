@@ -450,7 +450,7 @@ namespace openPDC.Adapters
         /// null on timeout.
         /// </summary>
         private static async Task<IConfigurationFrame> RequestConfigurationFrameAsync(
-            string connectionString, int timeoutSeconds = 60)
+            string connectionString, int timeoutSeconds = 240)
         {
             var tcs = new TaskCompletionSource<IConfigurationFrame>();
 
