@@ -100,7 +100,7 @@ namespace openPDC.Adapters
 
                 var devices = deviceTable.QueryRecords(StringConstant.Acronym).ToList();
                 var allPhasors = phasorTable.QueryRecords("DeviceID, SourceIndex").ToList();
-                var measurementsByDevice = LoadMeasurementsByDevice(context);
+                var measurementsByDevice = CommonController.LoadMeasurementsByDevice(context);
 
                 var csv = new StringBuilder();
 
@@ -395,39 +395,6 @@ namespace openPDC.Adapters
             }
 
             return field;
-        }
-
-        /// <summary>
-        /// Private helper method to load all measurements grouped by device. This method caches
-        /// measurements in memory to avoid multiple database queries.
-        /// </summary>
-        /// <param name="context">The database context.</param>
-        /// <returns>Dictionary of measurements keyed by device acronym.</returns>
-        private static Dictionary<string, DeviceMeasurements> LoadMeasurementsByDevice(AdoDataConnection context)
-        {
-            TableOperations<MeasurementDetail> measurementTable = new(context);
-            var allMeasurements = measurementTable.QueryRecords("DeviceAcronym, PointTag").ToList();
-
-            var measurementsByDevice = new Dictionary<string, DeviceMeasurements>();
-
-            foreach (var measurement in allMeasurements)
-            {
-                if (!measurementsByDevice.ContainsKey(measurement.DeviceAcronym))
-                {
-                    measurementsByDevice[measurement.DeviceAcronym] = new DeviceMeasurements();
-                }
-
-                if (measurement.SignalAcronym == "ALOG")
-                {
-                    measurementsByDevice[measurement.DeviceAcronym].Analogs.Add(measurement);
-                }
-                else if (measurement.SignalAcronym == "DIGI")
-                {
-                    measurementsByDevice[measurement.DeviceAcronym].Digitals.Add(measurement);
-                }
-            }
-
-            return measurementsByDevice;
         }
 
         #endregion [ Methods ]
