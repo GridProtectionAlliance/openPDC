@@ -302,7 +302,7 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Info, nameof(GetDeviceWithPhasorsByAcronymAsCsv), $"Generating CSV for device {acronym} with phasors");
 
                 using AdoDataConnection context = DataContext;
-                TableOperations<DeviceDetail> deviceTable = new(context);
+                TableOperations<Device> deviceTable = new(context);
                 TableOperations<PhasorDetail> phasorTable = new(context);
 
                 RecordRestriction deviceRestriction = new("Acronym = {0}", acronym);
@@ -321,8 +321,9 @@ namespace openPDC.Adapters
 
                 // Cabeçalho do Device
                 csv.AppendLine("# Device Information");
-                csv.AppendLine("Acronym,Name,CompanyAcronym,VendorAcronym,ProtocolName,FramesPerSecond,Enabled,Latitude,Longitude");
-                csv.AppendLine($"{EscapeCsvField(device.Acronym)},{EscapeCsvField(device.Name)},{EscapeCsvField(device.CompanyAcronym)},{EscapeCsvField(device.VendorAcronym)},{EscapeCsvField(device.ProtocolName)},{device.FramesPerSecond},{device.Enabled},{device.Latitude},{device.Longitude}");
+                csv.AppendLine("AccessID,Acronym,AllowedParsingExceptions,AllowUseOfCachedConfiguration,AutoStartDataParsingSequence,CompanyID,ConnectionString,ConnectOnDemand,ContactList,CreatedBy,CreatedOn,DataLossInterval,DelayedConnectionInterval,Enabled,FramesPerSecond,HistorianID,ID,InterconnectionID,IsConcentrator,Latitude,LoadOrder,Longitude,MeasuredLines,MeasurementReportingInterval,Name,NodeID,OriginalSource,ParentID,ParsingExceptionWindow,ProtocolID,SkipDisableRealTimeData,TimeAdjustmentTicks,TimeZone,UniqueID,UpdatedBy,UpdatedOn,VendorDeviceID");
+
+                csv.AppendLine($"{device.AccessID},{EscapeCsvField(device.Acronym)},{device.AllowedParsingExceptions},{device.AllowUseOfCachedConfiguration},{device.AutoStartDataParsingSequence},{device.CompanyID},{EscapeCsvField(device.ConnectionString)},{device.ConnectOnDemand},{EscapeCsvField(device.ContactList)},{EscapeCsvField(device.CreatedBy)},{device.CreatedOn:o},{device.DataLossInterval},{device.DelayedConnectionInterval},{device.Enabled},{device.FramesPerSecond},{device.HistorianID},{device.ID},{device.InterconnectionID},{device.IsConcentrator},{device.Latitude},{device.LoadOrder},{device.Longitude},{device.MeasuredLines},{device.MeasurementReportingInterval},{EscapeCsvField(device.Name)},{device.NodeID},{EscapeCsvField(device.OriginalSource)},{device.ParentID},{device.ParsingExceptionWindow},{device.ProtocolID},{device.SkipDisableRealTimeData},{device.TimeAdjustmentTicks},{EscapeCsvField(device.TimeZone)},{device.UniqueID},{EscapeCsvField(device.UpdatedBy)},{device.UpdatedOn:o},{device.VendorDeviceID}");
 
                 // Linha em branco
                 csv.AppendLine();

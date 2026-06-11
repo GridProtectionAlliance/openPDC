@@ -60,7 +60,7 @@ namespace openPDC.Adapters
         /// <response code="200">Returns the list of devices</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<DeviceDetail>))]
+        [ResponseType(typeof(IEnumerable<Device>))]
         public IHttpActionResult GetAllDevices()
         {
             try
@@ -68,7 +68,7 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Info, nameof(GetAllDevices), "Querying all devices");
 
                 using AdoDataConnection context = DataContext;
-                TableOperations<DeviceDetail> deviceTable = new(context);
+                TableOperations<Device> deviceTable = new(context);
                 var devices = deviceTable.QueryRecords(StringConstant.Acronym);
 
                 Log.Publish(MessageLevel.Info, nameof(GetAllDevices), $"Returned {devices.Count()} devices");
@@ -90,7 +90,7 @@ namespace openPDC.Adapters
         /// <response code="404">Device not found</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(DeviceDetail))]
+        [ResponseType(typeof(Device))]
         public IHttpActionResult GetDeviceByAcronym(string acronym)
         {
             try
@@ -98,7 +98,7 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Info, nameof(GetDeviceByAcronym), $"Querying device with acronym: {acronym}");
 
                 using AdoDataConnection context = DataContext;
-                TableOperations<DeviceDetail> deviceTable = new(context);
+                TableOperations<Device> deviceTable = new(context);
                 RecordRestriction restriction = new("Acronym = {0}", acronym);
                 var device = deviceTable.QueryRecords(restriction: restriction).FirstOrDefault();
 
@@ -127,7 +127,7 @@ namespace openPDC.Adapters
         /// <response code="404">No devices found for the company</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<DeviceDetail>))]
+        [ResponseType(typeof(IEnumerable<Device>))]
         public IHttpActionResult GetDevicesByCompany(string companyAcronym)
         {
             try
@@ -135,9 +135,12 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Info, nameof(GetDevicesByCompany), $"Querying devices for company: {companyAcronym}");
 
                 using AdoDataConnection context = DataContext;
-                TableOperations<DeviceDetail> deviceTable = new(context);
-                RecordRestriction restriction = new("CompanyAcronym = {0}", companyAcronym);
-                var devices = deviceTable.QueryRecords(StringConstant.Acronym, restriction: restriction).ToList();
+
+                TableOperations<Company> companyTable = new(context);
+                var company = companyTable.QueryRecordsWhere("Acronym = {0}", companyAcronym).FirstOrDefault();
+
+                TableOperations<Device> deviceTable = new(context);
+                var devices = deviceTable.QueryRecordsWhere("CompanyID = {0}", company?.ID).ToList();
 
                 if (!devices.Any())
                 {
@@ -164,7 +167,7 @@ namespace openPDC.Adapters
         /// <response code="404">No devices found for the protocol</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<DeviceDetail>))]
+        [ResponseType(typeof(IEnumerable<Device>))]
         public IHttpActionResult GetDevicesByProtocol(string protocolName)
         {
             try
@@ -172,9 +175,12 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Info, nameof(GetDevicesByProtocol), $"Querying devices for protocol: {protocolName}");
 
                 using AdoDataConnection context = DataContext;
-                TableOperations<DeviceDetail> deviceTable = new(context);
-                RecordRestriction restriction = new("ProtocolName = {0}", protocolName);
-                var devices = deviceTable.QueryRecords(StringConstant.Acronym, restriction: restriction).ToList();
+
+                TableOperations<Protocol> protocolTable = new(context);
+                var protocol = protocolTable.QueryRecordsWhere("Name = {0}", protocolName).FirstOrDefault();
+
+                TableOperations<Device> deviceTable = new(context);
+                var devices = deviceTable.QueryRecordsWhere("ProtocolID = {0}", protocol?.ID).ToList();
 
                 if (!devices.Any())
                 {
@@ -201,7 +207,7 @@ namespace openPDC.Adapters
         /// <response code="404">No devices found with the specified status</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<DeviceDetail>))]
+        [ResponseType(typeof(IEnumerable<Device>))]
         public IHttpActionResult GetDevicesByStatus(bool enabled)
         {
             try
@@ -210,7 +216,7 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Info, nameof(GetDevicesByStatus), $"Querying {status} devices");
 
                 using AdoDataConnection context = DataContext;
-                TableOperations<DeviceDetail> deviceTable = new(context);
+                TableOperations<Device> deviceTable = new(context);
                 RecordRestriction restriction = new("Enabled = {0}", enabled ? 1 : 0);
                 var devices = deviceTable.QueryRecords(StringConstant.Acronym, restriction: restriction).ToList();
 
@@ -718,9 +724,9 @@ namespace openPDC.Adapters
                                              TableOperations<Measurement> measurementTable,
                                              AdoDataConnection context)
         {
-            TableOperations<DeviceDetail> deviceDetailTable = new(context);
-            var deviceDetail = deviceDetailTable.QueryRecordWhere("Acronym = {0}", deviceAcronym);
-            string companyAcronym = deviceDetail?.CompanyAcronym ?? string.Empty;
+            TableOperations<DeviceDetail> DeviceTable = new(context);
+            var Device = DeviceTable.QueryRecordWhere("Acronym = {0}", deviceAcronym);
+            string companyAcronym = Device?.CompanyAcronym ?? string.Empty;
 
             var nowTime = DateTime.Now;
             var now = new DateTime(nowTime.Year, nowTime.Month, nowTime.Day, nowTime.Hour, nowTime.Minute, nowTime.Second, nowTime.Millisecond, DateTimeKind.Local);
