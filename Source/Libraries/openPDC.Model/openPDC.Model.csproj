@@ -52,8 +52,10 @@
     <Compile Include="CustomActionAdapter.cs" />
     <Compile Include="DataAvailability.cs" />
     <Compile Include="Device.cs" />
+    <Compile Include="DeviceMeasurements.cs" />
     <Compile Include="DeviceMetadata.cs" />
     <Compile Include="DeviceDetail.cs" />
+    <Compile Include="DeviceWithMeasurements.cs" />
     <Compile Include="DeviceWithPhasors.cs" />
     <Compile Include="Historian.cs" />
     <Compile Include="Interconnection.cs" />

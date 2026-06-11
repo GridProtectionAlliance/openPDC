@@ -54,43 +54,53 @@ namespace openPDC.Adapters
         #region [ Methods ]
 
         /// <summary>
-        /// Gets all devices (PMUs) in the system.
+        /// Gets all devices (PMUs) in the system with their associated Analog and Digital measurements.
         /// </summary>
-        /// <returns>List of all registered devices.</returns>
-        /// <response code="200">Returns the list of devices</response>
+        /// <returns>List of all registered devices with Analogs and Digitals.</returns>
+        /// <response code="200">Returns the list of devices with Analogs and Digitals</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<Device>))]
+        [ResponseType(typeof(IEnumerable<DeviceWithMeasurements>))]
         public IHttpActionResult GetAllDevices()
         {
             try
             {
-                Log.Publish(MessageLevel.Info, nameof(GetAllDevices), "Querying all devices");
+                Log.Publish(MessageLevel.Info, nameof(GetAllDevices), "Querying all devices with Analogs and Digitals");
 
                 using AdoDataConnection context = DataContext;
                 TableOperations<Device> deviceTable = new(context);
-                var devices = deviceTable.QueryRecords(StringConstant.Acronym);
+                TableOperations<MeasurementDetail> measurementTable = new(context);
 
-                Log.Publish(MessageLevel.Info, nameof(GetAllDevices), $"Returned {devices.Count()} devices");
-                return Ok(devices);
+                var devices = deviceTable.QueryRecords(StringConstant.Acronym).ToList();
+                var allMeasurements = measurementTable.QueryRecords("DeviceAcronym, PointTag").ToList();
+
+                var result = devices.Select(device => new DeviceWithMeasurements
+                {
+                    Device = device,
+                    Analogs = [.. allMeasurements.Where(m => m.DeviceAcronym == device.Acronym && m.SignalAcronym == "ALOG")],
+                    Digitals = [.. allMeasurements.Where(m => m.DeviceAcronym == device.Acronym && m.SignalAcronym == "DIGI")]
+                }).ToList();
+
+                Log.Publish(MessageLevel.Info, nameof(GetAllDevices), $"Returned {result.Count} devices with Analogs and Digitals");
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                Log.Publish(MessageLevel.Error, nameof(GetAllDevices), "Error querying devices", exception: ex);
+                Log.Publish(MessageLevel.Error, nameof(GetAllDevices), "Error querying devices with Analogs and Digitals", exception: ex);
                 return InternalServerError(ex);
             }
         }
 
         /// <summary>
-        /// Gets a specific device by Acronym.
+        /// Gets a specific device by Acronym with its associated Analog and Digital measurements.
         /// </summary>
         /// <param name="acronym">Device (PMU) acronym.</param>
-        /// <returns>Specified device.</returns>
-        /// <response code="200">Returns the device</response>
+        /// <returns>Specified device with Analogs and Digitals.</returns>
+        /// <response code="200">Returns the device with Analogs and Digitals</response>
         /// <response code="404">Device not found</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(Device))]
+        [ResponseType(typeof(DeviceWithMeasurements))]
         public IHttpActionResult GetDeviceByAcronym(string acronym)
         {
             try
@@ -108,8 +118,20 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                Log.Publish(MessageLevel.Info, nameof(GetDeviceByAcronym), $"Device found: {acronym}");
-                return Ok(device);
+                var measurementsByDevice = LoadMeasurementsByDevice(context);
+                var measurements = measurementsByDevice.ContainsKey(device.Acronym)
+                    ? measurementsByDevice[device.Acronym]
+                    : new DeviceMeasurements();
+
+                var result = new DeviceWithMeasurements
+                {
+                    Device = device,
+                    Analogs = measurements.Analogs,
+                    Digitals = measurements.Digitals
+                };
+
+                Log.Publish(MessageLevel.Info, nameof(GetDeviceByAcronym), $"Device found: {acronym} with {measurements.Analogs.Count} Analogs and {measurements.Digitals.Count} Digitals");
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -119,15 +141,15 @@ namespace openPDC.Adapters
         }
 
         /// <summary>
-        /// Gets devices by company.
+        /// Gets devices by company with their associated Analog and Digital measurements.
         /// </summary>
         /// <param name="companyAcronym">Company acronym.</param>
-        /// <returns>List of devices from the specified company.</returns>
-        /// <response code="200">Returns the list of devices</response>
+        /// <returns>List of devices from the specified company with Analogs and Digitals.</returns>
+        /// <response code="200">Returns the list of devices with Analogs and Digitals</response>
         /// <response code="404">No devices found for the company</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<Device>))]
+        [ResponseType(typeof(IEnumerable<DeviceWithMeasurements>))]
         public IHttpActionResult GetDevicesByCompany(string companyAcronym)
         {
             try
@@ -148,8 +170,16 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                Log.Publish(MessageLevel.Info, nameof(GetDevicesByCompany), $"Returned {devices.Count} devices from company {companyAcronym}");
-                return Ok(devices);
+                var measurementsByDevice = LoadMeasurementsByDevice(context);
+                var result = devices.Select(device => new DeviceWithMeasurements
+                {
+                    Device = device,
+                    Analogs = measurementsByDevice.ContainsKey(device.Acronym) ? measurementsByDevice[device.Acronym].Analogs : [],
+                    Digitals = measurementsByDevice.ContainsKey(device.Acronym) ? measurementsByDevice[device.Acronym].Digitals : []
+                }).ToList();
+
+                Log.Publish(MessageLevel.Info, nameof(GetDevicesByCompany), $"Returned {result.Count} devices from company {companyAcronym}");
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -159,15 +189,15 @@ namespace openPDC.Adapters
         }
 
         /// <summary>
-        /// Gets devices by protocol.
+        /// Gets devices by protocol with their associated Analog and Digital measurements.
         /// </summary>
         /// <param name="protocolName">Protocol name (e.g.: IeeeC37_118V1, SEL Fast Message).</param>
-        /// <returns>List of devices using the specified protocol.</returns>
-        /// <response code="200">Returns the list of devices</response>
+        /// <returns>List of devices using the specified protocol with Analogs and Digitals.</returns>
+        /// <response code="200">Returns the list of devices with Analogs and Digitals</response>
         /// <response code="404">No devices found for the protocol</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<Device>))]
+        [ResponseType(typeof(IEnumerable<DeviceWithMeasurements>))]
         public IHttpActionResult GetDevicesByProtocol(string protocolName)
         {
             try
@@ -188,8 +218,16 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                Log.Publish(MessageLevel.Info, nameof(GetDevicesByProtocol), $"Returned {devices.Count} devices for protocol {protocolName}");
-                return Ok(devices);
+                var measurementsByDevice = LoadMeasurementsByDevice(context);
+                var result = devices.Select(device => new DeviceWithMeasurements
+                {
+                    Device = device,
+                    Analogs = measurementsByDevice.ContainsKey(device.Acronym) ? measurementsByDevice[device.Acronym].Analogs : [],
+                    Digitals = measurementsByDevice.ContainsKey(device.Acronym) ? measurementsByDevice[device.Acronym].Digitals : []
+                }).ToList();
+
+                Log.Publish(MessageLevel.Info, nameof(GetDevicesByProtocol), $"Returned {result.Count} devices for protocol {protocolName}");
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -199,15 +237,15 @@ namespace openPDC.Adapters
         }
 
         /// <summary>
-        /// Gets enabled or disabled devices.
+        /// Gets enabled or disabled devices with their associated Analog and Digital measurements.
         /// </summary>
         /// <param name="enabled">true for enabled, false for disabled.</param>
-        /// <returns>List of devices filtered by status.</returns>
-        /// <response code="200">Returns the list of devices</response>
+        /// <returns>List of devices filtered by status with Analogs and Digitals.</returns>
+        /// <response code="200">Returns the list of devices with Analogs and Digitals</response>
         /// <response code="404">No devices found with the specified status</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<Device>))]
+        [ResponseType(typeof(IEnumerable<DeviceWithMeasurements>))]
         public IHttpActionResult GetDevicesByStatus(bool enabled)
         {
             try
@@ -226,8 +264,16 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                Log.Publish(MessageLevel.Info, nameof(GetDevicesByStatus), $"Returned {devices.Count} {status} devices");
-                return Ok(devices);
+                var measurementsByDevice = LoadMeasurementsByDevice(context);
+                var result = devices.Select(device => new DeviceWithMeasurements
+                {
+                    Device = device,
+                    Analogs = measurementsByDevice.ContainsKey(device.Acronym) ? measurementsByDevice[device.Acronym].Analogs : [],
+                    Digitals = measurementsByDevice.ContainsKey(device.Acronym) ? measurementsByDevice[device.Acronym].Digitals : []
+                }).ToList();
+
+                Log.Publish(MessageLevel.Info, nameof(GetDevicesByStatus), $"Returned {result.Count} {status} devices");
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -397,11 +443,44 @@ namespace openPDC.Adapters
         }
 
         private static bool IsTransientException(Exception ex) =>
-                    ex is TimeoutException ||
-                    ex is System.Net.Sockets.SocketException ||
-                    ex is System.IO.IOException ||
-                    ex is System.Data.Common.DbException ||
-                    ex is InvalidOperationException;
+                            ex is TimeoutException ||
+                            ex is System.Net.Sockets.SocketException ||
+                            ex is System.IO.IOException ||
+                            ex is System.Data.Common.DbException ||
+                            ex is InvalidOperationException;
+
+        /// <summary>
+        /// Private helper method to load all measurements grouped by device. This method caches
+        /// measurements in memory to avoid multiple database queries.
+        /// </summary>
+        /// <param name="context">The database context.</param>
+        /// <returns>Dictionary of measurements keyed by device acronym.</returns>
+        private static Dictionary<string, DeviceMeasurements> LoadMeasurementsByDevice(AdoDataConnection context)
+        {
+            TableOperations<MeasurementDetail> measurementTable = new(context);
+            var allMeasurements = measurementTable.QueryRecords("DeviceAcronym, PointTag").ToList();
+
+            var measurementsByDevice = new Dictionary<string, DeviceMeasurements>();
+
+            foreach (var measurement in allMeasurements)
+            {
+                if (!measurementsByDevice.ContainsKey(measurement.DeviceAcronym))
+                {
+                    measurementsByDevice[measurement.DeviceAcronym] = new DeviceMeasurements();
+                }
+
+                if (measurement.SignalAcronym == "ALOG")
+                {
+                    measurementsByDevice[measurement.DeviceAcronym].Analogs.Add(measurement);
+                }
+                else if (measurement.SignalAcronym == "DIGI")
+                {
+                    measurementsByDevice[measurement.DeviceAcronym].Digitals.Add(measurement);
+                }
+            }
+
+            return measurementsByDevice;
+        }
 
         /// <summary>
         /// Parses the SOAP XML of a .PmuConnection file and returns the connection settings. The
