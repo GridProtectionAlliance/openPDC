@@ -108,6 +108,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonController.cs" />
     <Compile Include="Constants\StringConstant.cs" />
     <Compile Include="DeviceController.cs" />
     <Compile Include="DevicePhasorController.cs" />

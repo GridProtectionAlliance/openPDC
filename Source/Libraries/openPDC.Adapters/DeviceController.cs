@@ -1,4 +1,3 @@
-using GSF.Communication;
 using GSF.Data;
 using GSF.Data.Model;
 using GSF.Diagnostics;
@@ -13,12 +12,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using System.Xml.Linq;
 
 namespace openPDC.Adapters
 {
@@ -30,8 +26,6 @@ namespace openPDC.Adapters
     {
         #region [ Members ]
 
-        private const int RetryBaseDelayMs = 1000;
-        private const int RetryMaxAttempts = 3;
         private static readonly LogPublisher Log = Logger.CreatePublisher(typeof(DeviceController), MessageClass.Application);
 
         #endregion [ Members ]
@@ -118,7 +112,7 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                var measurementsByDevice = LoadMeasurementsByDevice(context);
+                var measurementsByDevice = CommonController.LoadMeasurementsByDevice(context);
                 var measurements = measurementsByDevice.ContainsKey(device.Acronym)
                     ? measurementsByDevice[device.Acronym]
                     : new DeviceMeasurements();
@@ -170,7 +164,7 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                var measurementsByDevice = LoadMeasurementsByDevice(context);
+                var measurementsByDevice = CommonController.LoadMeasurementsByDevice(context);
                 var result = devices.Select(device => new DeviceWithMeasurements
                 {
                     Device = device,
@@ -218,7 +212,7 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                var measurementsByDevice = LoadMeasurementsByDevice(context);
+                var measurementsByDevice = CommonController.LoadMeasurementsByDevice(context);
                 var result = devices.Select(device => new DeviceWithMeasurements
                 {
                     Device = device,
@@ -264,7 +258,7 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                var measurementsByDevice = LoadMeasurementsByDevice(context);
+                var measurementsByDevice = CommonController.LoadMeasurementsByDevice(context);
                 var result = devices.Select(device => new DeviceWithMeasurements
                 {
                     Device = device,
@@ -299,7 +293,7 @@ namespace openPDC.Adapters
         {
             try
             {
-                var deviceIdInDatabase = ExecuteWithRetry(() => UpsertDeviceRecord(device), nameof(UpsertDevice));
+                var deviceIdInDatabase = CommonController.ExecuteWithRetry(() => UpsertDeviceRecord(device), nameof(UpsertDevice));
                 Log.Publish(MessageLevel.Info, nameof(UpsertDevice), $"Device {device.Acronym} upserted successfully");
 
                 return Ok(deviceIdInDatabase);
@@ -331,7 +325,7 @@ namespace openPDC.Adapters
                 ConnectionSettings settings;
 
                 using (var stream = new MemoryStream(validRequest.FileBytes))
-                    settings = ParsePmuConnectionFile(stream, validRequest.Acronym);
+                    settings = CommonController.ParsePmuConnectionFile(stream, validRequest.Acronym);
 
                 Log.Publish(MessageLevel.Info, nameof(UpsertDeviceByPmuConnectionFile),
                     $"Parsed: Protocol={settings.PhasorProtocol}, Transport={settings.TransportProtocol}, " +
@@ -339,14 +333,14 @@ namespace openPDC.Adapters
 
                 // Connect to the PMU and request its configuration frame, mirroring the
                 // openPDCManager "Request Configuration" flow.
-                string frameParserConnectionString = BuildFrameParserConnectionString(settings);
+                string frameParserConnectionString = CommonController.BuildFrameParserConnectionString(settings);
 
                 Log.Publish(MessageLevel.Info, nameof(UpsertDeviceByPmuConnectionFile),
                     $"Requesting configuration frame from: {settings.ConnectionString}");
 
-                (int savedDeviceCount, string resultAcronym) = await ExecuteWithRetryAsync(async () =>
+                (int savedDeviceCount, string resultAcronym) = await CommonController.ExecuteWithRetry(async () =>
                 {
-                    IConfigurationFrame configFrame = await RequestConfigurationFrameAsync(frameParserConnectionString);
+                    IConfigurationFrame configFrame = await CommonController.RequestConfigurationFrameAsync(frameParserConnectionString);
 
                     if (configFrame == null)
                         throw new TimeoutException(
@@ -371,274 +365,6 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Error, nameof(UpsertDeviceByPmuConnectionFile),
                     "Error upserting device from .PmuConnection file", exception: ex);
                 return InternalServerError(ex);
-            }
-        }
-
-        /// <summary>
-        /// Builds the MultiProtocolFrameParser connection string from deserialized .PmuConnection settings.
-        /// Format: phasorProtocol=X;accessID=Y;transportProtocol=Z;server=A;port=B;...
-        /// </summary>
-        private static string BuildFrameParserConnectionString(ConnectionSettings settings)
-        {
-            var sb = new StringBuilder();
-
-            sb.Append($"phasorProtocol={settings.PhasorProtocol};");
-
-            if (settings.PmuID > 0)
-                sb.Append($"accessID={settings.PmuID};");
-
-            sb.Append($"transportProtocol={settings.TransportProtocol};");
-
-            if (!string.IsNullOrEmpty(settings.ConnectionString))
-                sb.Append(settings.ConnectionString.TrimEnd(';'));
-
-            return sb.ToString().TrimEnd(';');
-        }
-
-        private static T ExecuteWithRetry<T>(Func<T> operation, string callerName)
-        {
-            for (int attempt = 1; ; attempt++)
-            {
-                try
-                {
-                    return operation();
-                }
-                catch (Exception ex) when (IsTransientException(ex) && attempt < RetryMaxAttempts)
-                {
-                    int delayMs = RetryBaseDelayMs * (int)Math.Pow(2, attempt - 1);
-                    Log.Publish(MessageLevel.Warning, callerName,
-                        $"Attempt {attempt}/{RetryMaxAttempts} failed ({ex.GetType().Name}): {ex.Message}. Retrying in {delayMs}ms...");
-                    System.Threading.Thread.Sleep(delayMs);
-                }
-            }
-        }
-
-        private static async Task<T> ExecuteWithRetryAsync<T>(Func<Task<T>> operation, string callerName)
-        {
-            for (int attempt = 1; ; attempt++)
-            {
-                try
-                {
-                    return await operation();
-                }
-                catch (Exception ex) when (IsTransientException(ex) && attempt < RetryMaxAttempts)
-                {
-                    int delayMs = RetryBaseDelayMs * (int)Math.Pow(2, attempt - 1);
-                    Log.Publish(MessageLevel.Warning, callerName,
-                        $"Attempt {attempt}/{RetryMaxAttempts} failed ({ex.GetType().Name}): {ex.Message}. Retrying in {delayMs}ms...");
-                    await Task.Delay(delayMs);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Retrieves the protocol ID for the given PhasorProtocol enum value.
-        /// </summary>
-        private static int? GetProtocolID(PhasorProtocol phasorProtocol)
-        {
-            using AdoDataConnection context = DataContext;
-            TableOperations<Protocol> protocolTable = new(context);
-            var protocol = protocolTable.QueryRecordWhere("Acronym = {0}", phasorProtocol.ToString());
-            return protocol?.ID;
-        }
-
-        private static bool IsTransientException(Exception ex) =>
-                            ex is TimeoutException ||
-                            ex is System.Net.Sockets.SocketException ||
-                            ex is System.IO.IOException ||
-                            ex is System.Data.Common.DbException ||
-                            ex is InvalidOperationException;
-
-        /// <summary>
-        /// Private helper method to load all measurements grouped by device. This method caches
-        /// measurements in memory to avoid multiple database queries.
-        /// </summary>
-        /// <param name="context">The database context.</param>
-        /// <returns>Dictionary of measurements keyed by device acronym.</returns>
-        private static Dictionary<string, DeviceMeasurements> LoadMeasurementsByDevice(AdoDataConnection context)
-        {
-            TableOperations<MeasurementDetail> measurementTable = new(context);
-            var allMeasurements = measurementTable.QueryRecords("DeviceAcronym, PointTag").ToList();
-
-            var measurementsByDevice = new Dictionary<string, DeviceMeasurements>();
-
-            foreach (var measurement in allMeasurements)
-            {
-                if (!measurementsByDevice.ContainsKey(measurement.DeviceAcronym))
-                {
-                    measurementsByDevice[measurement.DeviceAcronym] = new DeviceMeasurements();
-                }
-
-                if (measurement.SignalAcronym == "ALOG")
-                {
-                    measurementsByDevice[measurement.DeviceAcronym].Analogs.Add(measurement);
-                }
-                else if (measurement.SignalAcronym == "DIGI")
-                {
-                    measurementsByDevice[measurement.DeviceAcronym].Digitals.Add(measurement);
-                }
-            }
-
-            return measurementsByDevice;
-        }
-
-        /// <summary>
-        /// Parses the SOAP XML of a .PmuConnection file and returns the connection settings. The
-        /// file is produced by PMU Connection Tester via SoapFormatter; reading the XML directly
-        /// avoids a dependency on the old TVA serialization assemblies.
-        /// </summary>
-        private static ConnectionSettings ParsePmuConnectionFile(Stream fileStream, string acronym)
-        {
-            Log.Publish(MessageLevel.Info, nameof(UpsertDeviceByPmuConnectionFile), $"Parsing .PmuConnection file for device: {acronym}");
-
-            XDocument doc = XDocument.Load(fileStream);
-
-            XElement settingsElement = doc.Descendants()
-                .FirstOrDefault(e => e.Name.LocalName == "ConnectionSettings");
-
-            if (settingsElement == null)
-                throw new InvalidDataException(
-                    "Invalid .PmuConnection file: ConnectionSettings element not found");
-
-            string GetValue(string localName) => settingsElement.Elements().FirstOrDefault(e => e.Name.LocalName == localName)?.Value;
-
-            int ParseInt(string localName, int fallback = 0)
-            {
-                string val = GetValue(localName);
-                return int.TryParse(val, out int result) ? result : fallback;
-            }
-
-            Enum.TryParse(GetValue("PhasorProtocol"), out PhasorProtocol phasorProtocol);
-            Enum.TryParse(GetValue("TransportProtocol"), out TransportProtocol transportProtocol);
-
-            return new ConnectionSettings
-            {
-                PhasorProtocol = phasorProtocol,
-                TransportProtocol = transportProtocol,
-                ConnectionString = GetValue("ConnectionString"),
-                PmuID = ParseInt("PmuID"),
-                FrameRate = ParseInt("FrameRate", 30)
-            };
-        }
-
-        private static string PmuSignalDescription(string suffix) => suffix switch
-        {
-            "FQ" => "Frequency",
-            "DF" => "Frequency Delta (dF/dT)",
-            "SF" => "Status Flags",
-            _ => suffix
-        };
-
-        /// <summary>
-        /// Connects to a PMU/PDC using MultiProtocolFrameParser (same engine as openPDC adapters)
-        /// and waits up to <paramref name="timeoutSeconds"/> for its configuration frame. Returns
-        /// null on timeout.
-        /// </summary>
-        private static async Task<IConfigurationFrame> RequestConfigurationFrameAsync(
-            string connectionString, int timeoutSeconds = 240)
-        {
-            var tcs = new TaskCompletionSource<IConfigurationFrame>();
-
-            using var parser = new MultiProtocolFrameParser();
-            parser.ConnectionString = connectionString;
-            parser.AutoStartDataParsingSequence = true;
-            parser.SkipDisableRealTimeData = true;
-            parser.MaximumConnectionAttempts = 3;
-
-            parser.ReceivedConfigurationFrame += (sender, e) =>
-                tcs.TrySetResult(e.Argument);
-
-            parser.ConnectionException += (sender, e) =>
-            {
-                // Argument2 is the attempt number; fail only after the last attempt.
-                if (e.Argument2 >= parser.MaximumConnectionAttempts)
-                    tcs.TrySetException(new InvalidOperationException(
-                        $"Connection failed after {parser.MaximumConnectionAttempts} attempt(s): {e.Argument1?.Message}"));
-            };
-
-            try
-            {
-                parser.Start();
-
-                var completed = await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(timeoutSeconds)));
-
-                if (completed != tcs.Task)
-                    return null; // timeout
-
-                return await tcs.Task; // re-throws if faulted via ConnectionException
-            }
-            finally
-            {
-                parser.Stop();
-            }
-        }
-
-        /// <summary>
-        /// Resolves human-readable identifiers (acronym/name) into database IDs. Returns null for
-        /// each field whose identifier was empty or not found; logs a warning on a miss so the
-        /// caller is aware without aborting the whole import.
-        /// </summary>
-        private static DeviceMetadata ResolveDeviceMetadata(DeviceMetadata validRequest)
-        {
-            using AdoDataConnection context = DataContext;
-
-            TableOperations<Company> companyTable = new(context);
-            RecordRestriction restrictionCompany = new("Acronym = {0}", validRequest.CompanyAcronym);
-            var company = companyTable.QueryRecords(restriction: restrictionCompany).FirstOrDefault();
-
-            TableOperations<Historian> historianTable = new(context);
-            RecordRestriction restrictionHistorian = new("Acronym = {0}", validRequest.HistorianAcronym);
-            var historian = historianTable.QueryRecords(restriction: restrictionHistorian).FirstOrDefault();
-
-            TableOperations<VendorDevice> vendorDeviceTable = new(context);
-            RecordRestriction restrictionVendorDevice = new("Name = {0}", validRequest.VendorDeviceName);
-            var vendorDevice = vendorDeviceTable.QueryRecords(restriction: restrictionVendorDevice).FirstOrDefault();
-
-            TableOperations<Interconnection> interconnectionTable = new(context);
-            RecordRestriction restrictionInterconnection = new("Name = {0}", validRequest.InterconnectionName);
-            var interconnection = interconnectionTable.QueryRecords(restriction: restrictionInterconnection).FirstOrDefault();
-
-            var deviceMetadata = new DeviceMetadata
-            {
-                CompanyID = company?.ID,
-                HistorianID = historian?.ID,
-                VendorDeviceID = vendorDevice?.ID,
-                InterconnectionID = interconnection?.ID
-            };
-
-            return deviceMetadata;
-        }
-
-        /// <summary>
-        /// Converts a PMU station name into a valid openPDC device acronym (uppercase, alphanumeric
-        /// + underscore only).
-        /// </summary>
-        private static string SanitizeAcronym(string stationName)
-        {
-            if (string.IsNullOrWhiteSpace(stationName))
-                return "PMU_UNKNOWN";
-
-            return Regex.Replace(stationName.ToUpperInvariant().Trim(), @"[^A-Z0-9_]", "_")
-                        .TrimStart('_');
-        }
-
-        /// <summary>
-        /// Inserts a new measurement or updates the existing one matched by SignalReference.
-        /// Preserves the SignalID (GUID) of existing records on update.
-        /// </summary>
-        private static void UpsertMeasurement(TableOperations<Measurement> measurementTable, Measurement measurement)
-        {
-            var existing = measurementTable.QueryRecordWhere("SignalReference = {0}", measurement.SignalReference);
-
-            if (existing == null)
-            {
-                measurement.SignalID = Guid.NewGuid();
-                measurementTable.AddNewRecord(measurement);
-            }
-            else
-            {
-                measurement.SignalID = existing.SignalID;
-                measurementTable.UpdateRecord(measurement, new RecordRestriction("SignalReference = {0}", measurement.SignalReference));
             }
         }
 
@@ -706,7 +432,7 @@ namespace openPDC.Adapters
                 if (isConcentrator)
                 {
                     targetDeviceID = ProcessAndSaveChildDevice(cell, settings, parentDeviceID, protocolID, deviceMetadata);
-                    targetAcronym = SanitizeAcronym(cell.StationName);
+                    targetAcronym = CommonController.SanitizeAcronym(cell.StationName);
                     targetName = cell.StationName;
                     savedDeviceCount++;
                 }
@@ -732,7 +458,7 @@ namespace openPDC.Adapters
                                               int? protocolID,
                                               DeviceMetadata deviceMetadata)
         {
-            string cellAcronym = SanitizeAcronym(cell.StationName);
+            string cellAcronym = CommonController.SanitizeAcronym(cell.StationName);
 
             var concentrator = new Device
             {
@@ -766,11 +492,11 @@ namespace openPDC.Adapters
         {
             using AdoDataConnection context = DataContext;
 
-            int? protocolID = GetProtocolID(settings.PhasorProtocol);
+            int? protocolID = CommonController.GetProtocolID(settings.PhasorProtocol, context);
             bool isConcentrator = configFrame.Cells.Count > 1;
             string deviceConnectionString = $"TransportProtocol={settings.TransportProtocol};{settings.ConnectionString}";
 
-            var deviceMetadata = ResolveDeviceMetadata(validRequest);
+            var deviceMetadata = CommonController.ResolveDeviceMetadata(validRequest, context);
 
             var parentDevice = BuildParentDevice(validRequest, isConcentrator, protocolID, settings, configFrame, deviceConnectionString, deviceMetadata);
 
@@ -859,14 +585,14 @@ namespace openPDC.Adapters
                 if (!pmuTypes.TryGetValue(suffix, out var pmuType))
                     continue;
 
-                UpsertMeasurement(measurementTable, new Measurement
+                CommonController.UpsertMeasurement(measurementTable, new Measurement
                 {
                     DeviceID = deviceID,
                     HistorianID = historianID,
                     PointTag = $"{companyAcronym}_{deviceAcronym}:{pmuType.Acronym}",
                     SignalTypeID = pmuType.ID,
                     SignalReference = $"{deviceAcronym}-{suffix}",
-                    Description = $"{deviceName} {PmuSignalDescription(suffix)}",
+                    Description = $"{deviceName} {CommonController.PmuSignalDescription(suffix)}",
                     Internal = true,
                     Enabled = true,
                     Adder = 0.0d,
@@ -912,7 +638,7 @@ namespace openPDC.Adapters
                         ? (isVoltage ? "Voltage Magnitude" : "Current Magnitude")
                         : (isVoltage ? "Voltage Angle" : "Current Angle");
 
-                    UpsertMeasurement(measurementTable, new Measurement
+                    CommonController.UpsertMeasurement(measurementTable, new Measurement
                     {
                         DeviceID = deviceID,
                         HistorianID = historianID,
@@ -947,7 +673,7 @@ namespace openPDC.Adapters
                         ? analogLabel.ToUpper().Replace(' ', '_')
                         : $"ALOG{analogIndex:D2}";
 
-                    UpsertMeasurement(measurementTable, new Measurement
+                    CommonController.UpsertMeasurement(measurementTable, new Measurement
                     {
                         DeviceID = deviceID,
                         HistorianID = historianID,
@@ -974,7 +700,7 @@ namespace openPDC.Adapters
                 int digitalIndex = 1;
                 foreach (IDigitalDefinition _ in cell.DigitalDefinitions)
                 {
-                    UpsertMeasurement(measurementTable, new Measurement
+                    CommonController.UpsertMeasurement(measurementTable, new Measurement
                     {
                         DeviceID = deviceID,
                         HistorianID = historianID,
