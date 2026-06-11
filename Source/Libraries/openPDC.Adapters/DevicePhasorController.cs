@@ -92,7 +92,7 @@ namespace openPDC.Adapters
         {
             try
             {
-                Log.Publish(MessageLevel.Info, nameof(GetAllDevicesWithPhasorsAsCsv), "Generating CSV with all devices and phasors");
+                Log.Publish(MessageLevel.Info, nameof(GetAllDevicesWithPhasorsAsCsv), "Generating CSV with all devices, phasors, analogs and digitals");
 
                 using AdoDataConnection context = DataContext;
                 TableOperations<DeviceDetail> deviceTable = new(context);
@@ -100,28 +100,52 @@ namespace openPDC.Adapters
 
                 var devices = deviceTable.QueryRecords(StringConstant.Acronym).ToList();
                 var allPhasors = phasorTable.QueryRecords("DeviceID, SourceIndex").ToList();
+                var measurementsByDevice = LoadMeasurementsByDevice(context);
 
                 var csv = new StringBuilder();
 
                 // Cabeçalho
-                csv.AppendLine("DeviceAcronym,DeviceName,CompanyAcronym,VendorAcronym,ProtocolName,IsConcentrator,FramesPerSecond,DeviceEnabled,Latitude,Longitude,PhasorID,PhasorLabel,PhasorType,PhasorPhase,SourceIndex,BaseKV");
+                csv.AppendLine("Type,DeviceAcronym,DeviceName,CompanyAcronym,VendorAcronym,ProtocolName,IsConcentrator,FramesPerSecond,DeviceEnabled,Latitude,Longitude,ID,Label,MeasurementType,Phase,SourceIndex,BaseKV,PointTag");
 
                 // Dados
                 foreach (var device in devices)
                 {
                     var devicePhasors = allPhasors.Where(p => p.DeviceAcronym == device.Acronym).OrderBy(p => p.SourceIndex).ToList();
+                    var deviceMeasurements = measurementsByDevice.ContainsKey(device.Acronym)
+                        ? measurementsByDevice[device.Acronym]
+                        : new DeviceMeasurements { Analogs = new List<MeasurementDetail>(), Digitals = new List<MeasurementDetail>() };
 
+                    // Adicionar linhas para phasors
                     if (devicePhasors.Any())
                     {
                         foreach (var phasor in devicePhasors)
                         {
-                            csv.AppendLine($"{EscapeCsvField(device.Acronym)},{EscapeCsvField(device.Name)},{EscapeCsvField(device.CompanyAcronym)},{EscapeCsvField(device.VendorAcronym)},{EscapeCsvField(device.ProtocolName)},{EscapeCsvField(device.IsConcentrator.ToString())},{device.FramesPerSecond},{device.Enabled},{device.Latitude},{device.Longitude},{phasor.ID},{EscapeCsvField(phasor.Label)},{EscapeCsvField(phasor.Type)},{EscapeCsvField(phasor.Phase)},{phasor.SourceIndex},{phasor.BaseKV}");
+                            csv.AppendLine($"Phasor,{EscapeCsvField(device.Acronym)},{EscapeCsvField(device.Name)},{EscapeCsvField(device.CompanyAcronym)},{EscapeCsvField(device.VendorAcronym)},{EscapeCsvField(device.ProtocolName)},{EscapeCsvField(device.IsConcentrator.ToString())},{device.FramesPerSecond},{device.Enabled},{device.Latitude},{device.Longitude},{phasor.ID},{EscapeCsvField(phasor.Label)},{EscapeCsvField(phasor.Type)},{EscapeCsvField(phasor.Phase)},{phasor.SourceIndex},{phasor.BaseKV},");
                         }
                     }
-                    else
+
+                    // Adicionar linhas para analógicos
+                    if (deviceMeasurements.Analogs != null && deviceMeasurements.Analogs.Any())
                     {
-                        // Device without phasors - add line with device information only
-                        csv.AppendLine($"{EscapeCsvField(device.Acronym)},{EscapeCsvField(device.Name)},{EscapeCsvField(device.CompanyAcronym)},{EscapeCsvField(device.VendorAcronym)},{EscapeCsvField(device.ProtocolName)},{EscapeCsvField(device.IsConcentrator.ToString())},{device.FramesPerSecond},{device.Enabled},{device.Latitude},{device.Longitude},,,,,0,0");
+                        foreach (var analog in deviceMeasurements.Analogs)
+                        {
+                            csv.AppendLine($"Analog,{EscapeCsvField(device.Acronym)},{EscapeCsvField(device.Name)},{EscapeCsvField(device.CompanyAcronym)},{EscapeCsvField(device.VendorAcronym)},{EscapeCsvField(device.ProtocolName)},{EscapeCsvField(device.IsConcentrator.ToString())},{device.FramesPerSecond},{device.Enabled},{device.Latitude},{device.Longitude},{analog.ID},{EscapeCsvField(analog.PointTag)},,,,{EscapeCsvField(analog.PointTag)}");
+                        }
+                    }
+
+                    // Adicionar linhas para digitais
+                    if (deviceMeasurements.Digitals != null && deviceMeasurements.Digitals.Any())
+                    {
+                        foreach (var digital in deviceMeasurements.Digitals)
+                        {
+                            csv.AppendLine($"Digital,{EscapeCsvField(device.Acronym)},{EscapeCsvField(device.Name)},{EscapeCsvField(device.CompanyAcronym)},{EscapeCsvField(device.VendorAcronym)},{EscapeCsvField(device.ProtocolName)},{EscapeCsvField(device.IsConcentrator.ToString())},{device.FramesPerSecond},{device.Enabled},{device.Latitude},{device.Longitude},{digital.ID},{EscapeCsvField(digital.PointTag)},,,,{EscapeCsvField(digital.PointTag)}");
+                        }
+                    }
+
+                    // Se device não tem phasors nem medidas, add linha com device info only
+                    if (!devicePhasors.Any() && (deviceMeasurements.Analogs == null || !deviceMeasurements.Analogs.Any()) && (deviceMeasurements.Digitals == null || !deviceMeasurements.Digitals.Any()))
+                    {
+                        csv.AppendLine($"Device,{EscapeCsvField(device.Acronym)},{EscapeCsvField(device.Name)},{EscapeCsvField(device.CompanyAcronym)},{EscapeCsvField(device.VendorAcronym)},{EscapeCsvField(device.ProtocolName)},{EscapeCsvField(device.IsConcentrator.ToString())},{device.FramesPerSecond},{device.Enabled},{device.Latitude},{device.Longitude},,,,,0,0,");
                     }
                 }
 
@@ -371,6 +395,39 @@ namespace openPDC.Adapters
             }
 
             return field;
+        }
+
+        /// <summary>
+        /// Private helper method to load all measurements grouped by device. This method caches
+        /// measurements in memory to avoid multiple database queries.
+        /// </summary>
+        /// <param name="context">The database context.</param>
+        /// <returns>Dictionary of measurements keyed by device acronym.</returns>
+        private static Dictionary<string, DeviceMeasurements> LoadMeasurementsByDevice(AdoDataConnection context)
+        {
+            TableOperations<MeasurementDetail> measurementTable = new(context);
+            var allMeasurements = measurementTable.QueryRecords("DeviceAcronym, PointTag").ToList();
+
+            var measurementsByDevice = new Dictionary<string, DeviceMeasurements>();
+
+            foreach (var measurement in allMeasurements)
+            {
+                if (!measurementsByDevice.ContainsKey(measurement.DeviceAcronym))
+                {
+                    measurementsByDevice[measurement.DeviceAcronym] = new DeviceMeasurements();
+                }
+
+                if (measurement.SignalAcronym == "ALOG")
+                {
+                    measurementsByDevice[measurement.DeviceAcronym].Analogs.Add(measurement);
+                }
+                else if (measurement.SignalAcronym == "DIGI")
+                {
+                    measurementsByDevice[measurement.DeviceAcronym].Digitals.Add(measurement);
+                }
+            }
+
+            return measurementsByDevice;
         }
 
         #endregion [ Methods ]
