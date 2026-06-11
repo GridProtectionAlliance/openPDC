@@ -4,6 +4,7 @@ using GSF.Data.Model;
 using GSF.Diagnostics;
 using GSF.PhasorProtocols;
 using GSF.Web.Shared.Model;
+using openPDC.Adapters.Constants;
 using openPDC.Model;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,14 @@ namespace openPDC.Adapters
         private const int RetryBaseDelayMs = 1000;
         private const int RetryMaxAttempts = 3;
         private static readonly LogPublisher Log = Logger.CreatePublisher(typeof(CommonController), MessageClass.Application);
+
+        private static AdoDataConnection DataContext
+        {
+            get
+            {
+                return new AdoDataConnection(StringConstant.SystemSettings);
+            }
+        }
 
         #endregion [ Members ]
 
@@ -83,8 +92,9 @@ namespace openPDC.Adapters
         /// </summary>
         /// <param name="context">The database context.</param>
         /// <returns>Dictionary of measurements keyed by device acronym.</returns>
-        public static Dictionary<string, DeviceMeasurements> LoadMeasurementsByDevice(AdoDataConnection context)
+        public static Dictionary<string, DeviceMeasurements> LoadMeasurementsByDevice()
         {
+            using AdoDataConnection context = DataContext;
             TableOperations<MeasurementDetail> measurementTable = new(context);
             var allMeasurements = measurementTable.QueryRecords("DeviceAcronym, PointTag").ToList();
 
@@ -92,18 +102,21 @@ namespace openPDC.Adapters
 
             foreach (var measurement in allMeasurements)
             {
-                if (!measurementsByDevice.ContainsKey(measurement.DeviceAcronym))
+                if (measurement.DeviceAcronym is not null)
                 {
-                    measurementsByDevice[measurement.DeviceAcronym] = new DeviceMeasurements();
-                }
+                    if (!measurementsByDevice.ContainsKey(measurement.DeviceAcronym))
+                    {
+                        measurementsByDevice[measurement.DeviceAcronym] = new DeviceMeasurements();
+                    }
 
-                if (measurement.SignalAcronym == "ALOG")
-                {
-                    measurementsByDevice[measurement.DeviceAcronym].Analogs.Add(measurement);
-                }
-                else if (measurement.SignalAcronym == "DIGI")
-                {
-                    measurementsByDevice[measurement.DeviceAcronym].Digitals.Add(measurement);
+                    if (measurement.SignalAcronym == "ALOG")
+                    {
+                        measurementsByDevice[measurement.DeviceAcronym].Analogs.Add(measurement);
+                    }
+                    else if (measurement.SignalAcronym == "DIGI")
+                    {
+                        measurementsByDevice[measurement.DeviceAcronym].Digitals.Add(measurement);
+                    }
                 }
             }
 

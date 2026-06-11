@@ -102,6 +102,7 @@ namespace openPDC.Adapters
                 Log.Publish(MessageLevel.Info, nameof(GetDeviceByAcronym), $"Querying device with acronym: {acronym}");
 
                 using AdoDataConnection context = DataContext;
+
                 TableOperations<Device> deviceTable = new(context);
                 RecordRestriction restriction = new("Acronym = {0}", acronym);
                 var device = deviceTable.QueryRecords(restriction: restriction).FirstOrDefault();
@@ -112,7 +113,7 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                var measurementsByDevice = CommonController.LoadMeasurementsByDevice(context);
+                var measurementsByDevice = CommonController.LoadMeasurementsByDevice();
                 var measurements = measurementsByDevice.ContainsKey(device.Acronym)
                     ? measurementsByDevice[device.Acronym]
                     : new DeviceMeasurements();
@@ -124,7 +125,7 @@ namespace openPDC.Adapters
                     Digitals = measurements.Digitals
                 };
 
-                Log.Publish(MessageLevel.Info, nameof(GetDeviceByAcronym), $"Device found: {acronym} with {measurements.Analogs.Count} Analogs and {measurements.Digitals.Count} Digitals");
+                Log.Publish(MessageLevel.Info, nameof(GetDeviceByAcronym), $"Device found: {acronym} with {measurements.Analogs?.Count ?? 0} Analogs and {measurements.Digitals?.Count ?? 0} Digitals");
                 return Ok(result);
             }
             catch (Exception ex)
@@ -164,7 +165,7 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                var measurementsByDevice = CommonController.LoadMeasurementsByDevice(context);
+                var measurementsByDevice = CommonController.LoadMeasurementsByDevice();
                 var result = devices.Select(device => new DeviceWithMeasurements
                 {
                     Device = device,
@@ -212,7 +213,7 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                var measurementsByDevice = CommonController.LoadMeasurementsByDevice(context);
+                var measurementsByDevice = CommonController.LoadMeasurementsByDevice();
                 var result = devices.Select(device => new DeviceWithMeasurements
                 {
                     Device = device,
@@ -258,7 +259,7 @@ namespace openPDC.Adapters
                     return NotFound();
                 }
 
-                var measurementsByDevice = CommonController.LoadMeasurementsByDevice(context);
+                var measurementsByDevice = CommonController.LoadMeasurementsByDevice();
                 var result = devices.Select(device => new DeviceWithMeasurements
                 {
                     Device = device,

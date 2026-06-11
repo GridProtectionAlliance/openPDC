@@ -100,7 +100,7 @@ namespace openPDC.Adapters
 
                 var devices = deviceTable.QueryRecords(StringConstant.Acronym).ToList();
                 var allPhasors = phasorTable.QueryRecords("DeviceID, SourceIndex").ToList();
-                var measurementsByDevice = CommonController.LoadMeasurementsByDevice(context);
+                var measurementsByDevice = CommonController.LoadMeasurementsByDevice();
 
                 var csv = new StringBuilder();
 
