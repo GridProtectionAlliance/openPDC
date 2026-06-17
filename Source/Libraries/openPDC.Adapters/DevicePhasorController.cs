@@ -51,7 +51,7 @@ namespace openPDC.Adapters
         /// <response code="200">Returns the list of devices with phasors</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<DeviceWithPhasors>))]
+        [ResponseType(typeof(IEnumerable<DeviceWithPhasorsAndMesurements>))]
         public IHttpActionResult GetAllDevicesWithPhasors()
         {
             try
@@ -61,14 +61,18 @@ namespace openPDC.Adapters
                 using AdoDataConnection context = DataContext;
                 TableOperations<Device> deviceTable = new(context);
                 TableOperations<PhasorDetail> phasorTable = new(context);
+                TableOperations<MeasurementDetail> measurementTable = new(context);
 
                 var devices = deviceTable.QueryRecords(StringConstant.Acronym).ToList();
                 var allPhasors = phasorTable.QueryRecords("DeviceID, SourceIndex").ToList();
+                var allMeasurements = measurementTable.QueryRecords("DeviceAcronym, PointTag").ToList();
 
-                var result = devices.Select(device => new DeviceWithPhasors
+                var result = devices.Select(device => new DeviceWithPhasorsAndMesurements
                 {
                     Device = device,
-                    Phasors = [.. allPhasors.Where(p => p.DeviceAcronym == device.Acronym).OrderBy(p => p.SourceIndex)]
+                    Phasors = [.. allPhasors.Where(p => p.DeviceAcronym == device.Acronym).OrderBy(p => p.SourceIndex)],
+                    Analogs = [.. allMeasurements.Where(m => m.DeviceAcronym == device.Acronym && m.SignalAcronym == "ALOG")],
+                    Digitals = [.. allMeasurements.Where(m => m.DeviceAcronym == device.Acronym && m.SignalAcronym == "DIGI")]
                 }).ToList();
 
                 Log.Publish(MessageLevel.Info, nameof(GetAllDevicesWithPhasors), $"Returned {result.Count} devices with phasors");
@@ -175,7 +179,7 @@ namespace openPDC.Adapters
         /// <response code="404">No devices found for the company</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<DeviceWithPhasors>))]
+        [ResponseType(typeof(IEnumerable<DeviceWithPhasorsAndMesurements>))]
         public IHttpActionResult GetDevicesWithPhasorsByCompany(string companyAcronym)
         {
             try
@@ -185,9 +189,12 @@ namespace openPDC.Adapters
                 using AdoDataConnection context = DataContext;
                 TableOperations<Device> deviceTable = new(context);
                 TableOperations<PhasorDetail> phasorTable = new(context);
+                TableOperations<MeasurementDetail> measurementTable = new(context);
 
                 RecordRestriction deviceRestriction = new("CompanyAcronym = {0}", companyAcronym);
                 var devices = deviceTable.QueryRecords(StringConstant.Acronym, restriction: deviceRestriction).ToList();
+
+                var allMeasurements = measurementTable.QueryRecords("DeviceAcronym, PointTag").ToList();
 
                 if (!devices.Any())
                 {
@@ -197,10 +204,12 @@ namespace openPDC.Adapters
 
                 var allPhasors = phasorTable.QueryRecords("DeviceID, SourceIndex").ToList();
 
-                var result = devices.Select(device => new DeviceWithPhasors
+                var result = devices.Select(device => new DeviceWithPhasorsAndMesurements
                 {
                     Device = device,
-                    Phasors = [.. allPhasors.Where(p => p.DeviceAcronym == device.Acronym).OrderBy(p => p.SourceIndex)]
+                    Phasors = [.. allPhasors.Where(p => p.DeviceAcronym == device.Acronym).OrderBy(p => p.SourceIndex)],
+                    Analogs = [.. allMeasurements.Where(m => m.DeviceAcronym == device.Acronym && m.SignalAcronym == "ALOG")],
+                    Digitals = [.. allMeasurements.Where(m => m.DeviceAcronym == device.Acronym && m.SignalAcronym == "DIGI")]
                 }).ToList();
 
                 Log.Publish(MessageLevel.Info, nameof(GetDevicesWithPhasorsByCompany), $"Returned {result.Count} devices from company {companyAcronym}");
@@ -222,7 +231,7 @@ namespace openPDC.Adapters
         /// <response code="404">No devices found with the specified status</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(IEnumerable<DeviceWithPhasors>))]
+        [ResponseType(typeof(IEnumerable<DeviceWithPhasorsAndMesurements>))]
         public IHttpActionResult GetDevicesWithPhasorsByStatus(bool enabled)
         {
             try
@@ -233,9 +242,11 @@ namespace openPDC.Adapters
                 using AdoDataConnection context = DataContext;
                 TableOperations<Device> deviceTable = new(context);
                 TableOperations<PhasorDetail> phasorTable = new(context);
+                TableOperations<MeasurementDetail> measurementTable = new(context);
 
                 RecordRestriction deviceRestriction = new("Enabled = {0}", enabled ? 1 : 0);
                 var devices = deviceTable.QueryRecords(StringConstant.Acronym, restriction: deviceRestriction).ToList();
+                var allMeasurements = measurementTable.QueryRecords("DeviceAcronym, PointTag").ToList();
 
                 if (!devices.Any())
                 {
@@ -245,10 +256,12 @@ namespace openPDC.Adapters
 
                 var allPhasors = phasorTable.QueryRecords("DeviceID, SourceIndex").ToList();
 
-                var result = devices.Select(device => new DeviceWithPhasors
+                var result = devices.Select(device => new DeviceWithPhasorsAndMesurements
                 {
                     Device = device,
-                    Phasors = [.. allPhasors.Where(p => p.DeviceAcronym == device.Acronym).OrderBy(p => p.SourceIndex)]
+                    Phasors = [.. allPhasors.Where(p => p.DeviceAcronym == device.Acronym).OrderBy(p => p.SourceIndex)],
+                    Analogs = [.. allMeasurements.Where(m => m.DeviceAcronym == device.Acronym && m.SignalAcronym == "ALOG")],
+                    Digitals = [.. allMeasurements.Where(m => m.DeviceAcronym == device.Acronym && m.SignalAcronym == "DIGI")]
                 }).ToList();
 
                 Log.Publish(MessageLevel.Info, nameof(GetDevicesWithPhasorsByStatus), $"Returned {result.Count} {status} devices");
@@ -270,42 +283,46 @@ namespace openPDC.Adapters
         /// <response code="404">Device not found</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        [ResponseType(typeof(DeviceWithPhasors))]
-        public IHttpActionResult GetDeviceWithPhasorsByAcronym(string acronym)
+        [ResponseType(typeof(DeviceWithPhasorsAndMesurements))]
+        public IHttpActionResult GetDeviceWithPhasorsAndMesurementsByAcronym(string acronym)
         {
             try
             {
-                Log.Publish(MessageLevel.Info, nameof(GetDeviceWithPhasorsByAcronym), $"Querying device {acronym} with phasors");
+                Log.Publish(MessageLevel.Info, nameof(GetDeviceWithPhasorsAndMesurementsByAcronym), $"Querying device {acronym} with phasors");
 
                 using AdoDataConnection context = DataContext;
                 TableOperations<Device> deviceTable = new(context);
                 TableOperations<PhasorDetail> phasorTable = new(context);
+                TableOperations<MeasurementDetail> measurementTable = new(context);
 
                 RecordRestriction deviceRestriction = new("Acronym = {0}", acronym);
                 var device = deviceTable.QueryRecords(restriction: deviceRestriction).FirstOrDefault();
+                var allMeasurements = measurementTable.QueryRecords("DeviceAcronym, PointTag").ToList();
 
                 if (device == null)
                 {
-                    Log.Publish(MessageLevel.Warning, nameof(GetDeviceWithPhasorsByAcronym), $"Device not found: {acronym}");
+                    Log.Publish(MessageLevel.Warning, nameof(GetDeviceWithPhasorsAndMesurementsByAcronym), $"Device not found: {acronym}");
                     return NotFound();
                 }
 
                 RecordRestriction phasorRestriction = new("DeviceAcronym = {0}", acronym);
                 var phasors = phasorTable.QueryRecords(StringConstant.SourceIndex, phasorRestriction).ToList();
 
-                var result = new DeviceWithPhasors
+                var result = new DeviceWithPhasorsAndMesurements
                 {
                     Device = device,
-                    Phasors = phasors
+                    Phasors = phasors,
+                    Analogs = [.. allMeasurements.Where(m => m.DeviceAcronym == device.Acronym && m.SignalAcronym == "ALOG")],
+                    Digitals = [.. allMeasurements.Where(m => m.DeviceAcronym == device.Acronym && m.SignalAcronym == "DIGI")]
                 };
 
-                Log.Publish(MessageLevel.Info, nameof(GetDeviceWithPhasorsByAcronym), $"Returned device {acronym} with {phasors.Count} phasors");
+                Log.Publish(MessageLevel.Info, nameof(GetDeviceWithPhasorsAndMesurementsByAcronym), $"Returned device {acronym} with {phasors.Count} phasors");
 
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                Log.Publish(MessageLevel.Error, nameof(GetDeviceWithPhasorsByAcronym), $"Error querying device {acronym}", exception: ex);
+                Log.Publish(MessageLevel.Error, nameof(GetDeviceWithPhasorsAndMesurementsByAcronym), $"Error querying device {acronym}", exception: ex);
                 return InternalServerError(ex);
             }
         }
@@ -319,11 +336,11 @@ namespace openPDC.Adapters
         /// <response code="404">Device not found</response>
         /// <response code="500">Internal error processing the request</response>
         [HttpGet]
-        public HttpResponseMessage GetDeviceWithPhasorsByAcronymAsCsv(string acronym)
+        public HttpResponseMessage GetDeviceWithPhasorsAndMesurementsByAcronymAsCsv(string acronym)
         {
             try
             {
-                Log.Publish(MessageLevel.Info, nameof(GetDeviceWithPhasorsByAcronymAsCsv), $"Generating CSV for device {acronym} with phasors");
+                Log.Publish(MessageLevel.Info, nameof(GetDeviceWithPhasorsAndMesurementsByAcronymAsCsv), $"Generating CSV for device {acronym} with phasors");
 
                 using AdoDataConnection context = DataContext;
                 TableOperations<Device> deviceTable = new(context);
@@ -334,7 +351,7 @@ namespace openPDC.Adapters
 
                 if (device == null)
                 {
-                    Log.Publish(MessageLevel.Warning, nameof(GetDeviceWithPhasorsByAcronymAsCsv), $"Device not found: {acronym}");
+                    Log.Publish(MessageLevel.Warning, nameof(GetDeviceWithPhasorsAndMesurementsByAcronymAsCsv), $"Device not found: {acronym}");
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
@@ -369,12 +386,12 @@ namespace openPDC.Adapters
                     FileName = $"device_{acronym}_phasors.csv"
                 };
 
-                Log.Publish(MessageLevel.Info, nameof(GetDeviceWithPhasorsByAcronymAsCsv), $"CSV generated for device {acronym} with {phasors.Count} phasors");
+                Log.Publish(MessageLevel.Info, nameof(GetDeviceWithPhasorsAndMesurementsByAcronymAsCsv), $"CSV generated for device {acronym} with {phasors.Count} phasors");
                 return response;
             }
             catch (Exception ex)
             {
-                Log.Publish(MessageLevel.Error, nameof(GetDeviceWithPhasorsByAcronymAsCsv), $"Error generating CSV for device {acronym}", exception: ex);
+                Log.Publish(MessageLevel.Error, nameof(GetDeviceWithPhasorsAndMesurementsByAcronymAsCsv), $"Error generating CSV for device {acronym}", exception: ex);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { message = ex.Message });
             }
         }

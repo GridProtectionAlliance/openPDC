@@ -56,7 +56,7 @@
     <Compile Include="DeviceMetadata.cs" />
     <Compile Include="DeviceDetail.cs" />
     <Compile Include="DeviceWithMeasurements.cs" />
-    <Compile Include="DeviceWithPhasors.cs" />
+    <Compile Include="DeviceWithPhasorsAndMesurements.cs" />
     <Compile Include="Historian.cs" />
     <Compile Include="Interconnection.cs" />
     <Compile Include="Measurement.cs" />
