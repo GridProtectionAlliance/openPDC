@@ -1137,6 +1137,11 @@
           <netfx:NativeImage Id="ngen_System.Web.Http.Cors.dll" Platform="64bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
         </File>
       </Component>
+      <Component Id="Swashbuckle.Core">
+        <File Id="Swashbuckle.Core.dll" Name="Swashbuckle.Core.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Swashbuckle.Core.dll">
+          <netfx:NativeImage Id="ngen_Swashbuckle.Core.dll" Platform="64bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>
+        </File>
+      </Component>
       <Component Id="Microsoft.Owin">
         <File Id="Microsoft.Owin.dll" Name="Microsoft.Owin.dll" Source="$(var.SolutionDir)\Dependencies\GSF\Microsoft.Owin.dll">
           <netfx:NativeImage Id="ngen_Microsoft.Owin.dll" Platform="64bit" Priority="0" AppBaseDirectory="INSTALLFOLDER"/>

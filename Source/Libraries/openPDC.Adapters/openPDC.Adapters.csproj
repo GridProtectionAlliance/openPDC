@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\Build\Output\Debug\Applications\openPDC\openPDC.Adapters.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\Build\Output\Release\Applications\openPDC\openPDC.Adapters.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DataQualityMonitoring, Version=2.4.194.0, Culture=neutral, processorArchitecture=MSIL">
@@ -39,8 +41,18 @@
     <Reference Include="GrafanaAdapters">
       <HintPath>..\..\Dependencies\GSF\GrafanaAdapters.dll</HintPath>
     </Reference>
+    <Reference Include="GSF.Communication, Version=2.4.299.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\openPDC\Source\Dependencies\GSF\GSF.Communication.dll</HintPath>
+    </Reference>
     <Reference Include="GSF.Core">
       <HintPath>..\..\Dependencies\GSF\GSF.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GSF.PhasorProtocols">
+      <HintPath>..\..\Dependencies\GSF\GSF.PhasorProtocols.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting">
+      <HintPath>..\..\Dependencies\GSF\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="GSF.Historian, Version=2.4.169.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -96,7 +108,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonController.cs" />
+    <Compile Include="Constants\StringConstant.cs" />
+    <Compile Include="DeviceController.cs" />
+    <Compile Include="DevicePhasorController.cs" />
     <Compile Include="GrafanaController.cs" />
+    <Compile Include="PhasorController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

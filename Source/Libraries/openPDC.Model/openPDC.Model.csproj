@@ -52,12 +52,17 @@
     <Compile Include="CustomActionAdapter.cs" />
     <Compile Include="DataAvailability.cs" />
     <Compile Include="Device.cs" />
+    <Compile Include="DeviceMeasurements.cs" />
+    <Compile Include="DeviceMetadata.cs" />
     <Compile Include="DeviceDetail.cs" />
+    <Compile Include="DeviceWithMeasurements.cs" />
+    <Compile Include="DeviceWithPhasorsAndMesurements.cs" />
     <Compile Include="Historian.cs" />
     <Compile Include="Interconnection.cs" />
     <Compile Include="Measurement.cs" />
     <Compile Include="MeasurementDetail.cs" />
     <Compile Include="MeasurementValue.cs" />
+    <Compile Include="Phasor.cs" />
     <Compile Include="PhasorDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol.cs" />
