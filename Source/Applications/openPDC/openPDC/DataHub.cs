@@ -348,6 +348,7 @@ public class DataHub : RecordOperationsHub<DataHub>, IDirectoryBrowserOperations
         DataContext.Table<Measurement>().UpdateRecord(measurement);
     }
 
+    [AuthorizeHubRole("Administrator, Editor")]
     public void AddNewOrUpdateMeasurement(Measurement measurement)
     {
         DataContext.Table<Measurement>().AddNewOrUpdateRecord(measurement);
@@ -441,26 +442,31 @@ public class DataHub : RecordOperationsHub<DataHub>, IDirectoryBrowserOperations
 
     #region [ DirectoryBrowser Operations ]
 
+    [AuthorizeHubRole("Administrator")]
     public IEnumerable<string> LoadDirectories(string rootFolder, bool showHidden)
     {
         return DirectoryBrowserOperations.LoadDirectories(rootFolder, showHidden);
     }
 
+    [AuthorizeHubRole("Administrator")]
     public bool IsLogicalDrive(string path)
     {
         return DirectoryBrowserOperations.IsLogicalDrive(path);
     }
 
+    [AuthorizeHubRole("Administrator")]
     public string ResolvePath(string path)
     {
         return DirectoryBrowserOperations.ResolvePath(path);
     }
 
+    [AuthorizeHubRole("Administrator")]
     public string CombinePath(string path1, string path2)
     {
         return DirectoryBrowserOperations.CombinePath(path1, path2);
     }
 
+    [AuthorizeHubRole("Administrator")]
     public void CreatePath(string path)
     {
         DirectoryBrowserOperations.CreatePath(path);
@@ -721,11 +727,13 @@ public class DataHub : RecordOperationsHub<DataHub>, IDirectoryBrowserOperations
 
     #region [ Modbus Operations ]
 
+    [AuthorizeHubRole("Administrator, Editor")]
     public Task<bool> ModbusConnect(string connectionString)
     {
         return m_modbusOperations.ModbusConnect(connectionString);
     }
 
+    [AuthorizeHubRole("Administrator, Editor")]
     public void ModbusDisconnect()
     {
         m_modbusOperations.ModbusDisconnect();
@@ -783,6 +791,7 @@ public class DataHub : RecordOperationsHub<DataHub>, IDirectoryBrowserOperations
         }
     }
 
+    [AuthorizeHubRole("Administrator, Editor")]
     public async Task WriteCoils(ushort startAddress, bool[] data)
     {
         try
@@ -795,6 +804,7 @@ public class DataHub : RecordOperationsHub<DataHub>, IDirectoryBrowserOperations
         }
     }
 
+    [AuthorizeHubRole("Administrator, Editor")]
     public async Task WriteHoldingRegisters(ushort startAddress, ushort[] data)
     {
         try
@@ -853,6 +863,7 @@ public class DataHub : RecordOperationsHub<DataHub>, IDirectoryBrowserOperations
     /// </summary>
     /// <param name="path">Directory path to test for existence.</param>
     /// <returns><c>true</c> if directory exists; otherwise, <c>false</c>.</returns>
+    [AuthorizeHubRole("Administrator, Editor")]
     public bool DirectoryExists(string path)
     {
         return Directory.Exists(path);
@@ -863,6 +874,7 @@ public class DataHub : RecordOperationsHub<DataHub>, IDirectoryBrowserOperations
     /// </summary>
     /// <param name="path">Path and file name to test for existence.</param>
     /// <returns><c>true</c> if file exists; otherwise, <c>false</c>.</returns>
+    [AuthorizeHubRole("Administrator, Editor")]
     public bool FileExists(string path)
     {
         return File.Exists(path);
